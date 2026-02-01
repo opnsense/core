@@ -12,9 +12,9 @@
         </general>
         <forward_ddns>
             <ddns_domains type="ArrayField">
-                <name type="HostnameField">
+                <name type="\OPNsense\Kea\FieldTypes\KeaFQDNField">
                     <IpAllowed>N</IpAllowed>
-                    <ValidationMessage>Please specify a valid domain name.</ValidationMessage>
+                    <ValidationMessage>Please specify a valid fully qualified domain name.</ValidationMessage>
                     <Constraints>
                         <check001>
                             <type>UniqueConstraint</type>
@@ -43,9 +43,9 @@
         </forward_ddns>
         <reverse_ddns>
             <ddns_domains type="ArrayField">
-                <name type="HostnameField">
+                <name type="\OPNsense\Kea\FieldTypes\KeaFQDNField">
                     <IpAllowed>N</IpAllowed>
-                    <ValidationMessage>Please specify a valid domain name.</ValidationMessage>
+                    <ValidationMessage>Please specify a valid fully qualified domain name.</ValidationMessage>
                     <Constraints>
                         <check001>
                             <type>UniqueConstraint</type>
