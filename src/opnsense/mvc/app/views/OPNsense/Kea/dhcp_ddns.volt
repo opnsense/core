@@ -57,15 +57,6 @@
             }
         );
 
-        $("#{{formGridDnsServer['table_id']}}" ).UIBootgrid(
-            {   search:'/api/kea/dhcpddns/search_dns_server',
-                get:'/api/kea/dhcpddns/get_dns_server/',
-                set:'/api/kea/dhcpddns/set_dns_server/',
-                add:'/api/kea/dhcpddns/add_dns_server/',
-                del:'/api/kea/dhcpddns/del_dns_server/'
-            }
-        );
-
         $("#reconfigureAct").SimpleActionButton({
             onPreAction: function() {
                 const dfObj = new $.Deferred();
@@ -84,7 +75,6 @@
     <li><a data-toggle="tab" href="#forward-domains" id="tab_forward"> {{ lang._('Forward Domains') }} </a></li>
     <li><a data-toggle="tab" href="#reverse-domains" id="tab_reverse"> {{ lang._('Reverse Domains') }} </a></li>
     <li><a data-toggle="tab" href="#tsig-keys" id="tab_tsig"> {{ lang._('TSIG Keys') }} </a></li>
-    <li><a data-toggle="tab" href="#dns-servers" id="tab_dns"> {{ lang._('DNS Servers') }} </a></li>
     </ul>
 <div class="tab-content content-box">
     <div id="settings"  class="tab-pane fade in active">
@@ -99,13 +89,9 @@
     <div id="tsig-keys" class="tab-pane fade in">
         {{ partial('layout_partials/base_bootgrid_table', formGridTsigKey)}}
     </div>
-    <div id="dns-servers" class="tab-pane fade in">
-        {{ partial('layout_partials/base_bootgrid_table', formGridDnsServer)}}
-    </div>
 </div>
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/kea/service/reconfigure'}) }}
 {{ partial("layout_partials/base_dialog",['fields':formDialogForwardDomain,'id':formGridForwardDomain['edit_dialog_id'],'label':lang._('Edit Forward Domain')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogReverseDomain,'id':formGridReverseDomain['edit_dialog_id'],'label':lang._('Edit Reverse Domain')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogTsigKey,'id':formGridTsigKey['edit_dialog_id'],'label':lang._('Edit TSIG Key')])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogDnsServer,'id':formGridDnsServer['edit_dialog_id'],'label':lang._('Edit DNS Server')])}}

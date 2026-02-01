@@ -6,15 +6,21 @@
         <help>Reverse DDNS domain (e.g. 0.168.192.in-addr.arpa. or ip6.arpa. variant)</help>
     </field>
     <field>
+        <id>ddns_domains.ip_address</id>
+        <label>IP address</label>
+        <type>text</type>
+        <help>The IP address of the DNS server to update.</help>
+    </field>
+    <field>
+        <id>ddns_domains.port</id>
+        <label>Port</label>
+        <type>text</type>
+        <help>The port on which the DNS server listens. (Default: 53)</help>
+    </field>
+    <field>
         <id>ddns_domains.key_name</id>
         <label>TSIG key</label>
         <type>dropdown</type>
-        <help>Select an optional TSIG key to authenticate updates for this reverse zone. Note: if a DNS server has a TSIG key configured, that server-specific key takes precedence over the domain key.</help>
-    </field>
-    <field>
-        <id>ddns_domains.dns_servers</id>
-        <label>DNS servers</label>
-        <type>select_multiple</type>
-        <help>Select one or more shared DNS servers to update for this reverse zone.</help>
+        <help>Select an optional TSIG key to authenticate updates for this server.</help>
     </field>
 </form>

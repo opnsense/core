@@ -111,30 +111,4 @@ class DhcpddnsController extends ApiMutableModelControllerBase
     {
         return $this->delBase('tsig_keys', $uuid);
     }
-
-    /* Shared DNS servers */
-    public function searchDnsServerAction()
-    {
-        return $this->searchBase('dns_servers', null, 'ip_address');
-    }
-
-    public function getDnsServerAction($uuid = null)
-    {
-        return $this->getBase('dns_servers', 'dns_servers', $uuid);
-    }
-
-    public function addDnsServerAction()
-    {
-        return $this->addBase('dns_servers', 'dns_servers');
-    }
-
-    public function setDnsServerAction($uuid)
-    {
-        return $this->setBase('dns_servers', 'dns_servers', $uuid);
-    }
-
-    public function delDnsServerAction($uuid)
-    {
-        return $this->delBase('dns_servers', $uuid);
-    }
 }

@@ -78,37 +78,6 @@ class KeaDhcpDdns extends BaseModel
     }
 
     /**
-     * Build a map of shared DNS servers defined at root level (dns_servers)
-     * keyed by their UUID for quick lookup.
-     * @return array<string,array>
-     */
-    private function getSharedDnsServersMap()
-    {
-        $map = [];
-        $tsigNameMap = $this->getTsigKeyNameMap();
-        foreach ($this->dns_servers->iterateItems() as $uuid => $srv) {
-            $item = [];
-            if (!($srv->ip_address->isEmpty())) {
-                $item['ip-address'] = $srv->ip_address->getValue();
-            }
-            if (!($srv->port->isEmpty())) {
-                $item['port'] = $srv->port->asInt();
-            }
-            if (!($srv->key_name->isEmpty())) {
-                $kn = $srv->key_name->getValue();
-                // key_name is a ModelRelationField (UUID). Resolve to TSIG key name.
-                if (!empty($tsigNameMap[$kn])) {
-                    $item['key-name'] = $tsigNameMap[$kn];
-                }
-            }
-            if (!empty($item)) {
-                $map[$uuid] = $item;
-            }
-        }
-        return $map;
-    }
-
-    /**
      * Build a map uuid => tsig key name for quick lookup when resolving relations.
      * @return array<string,string>
      */
@@ -145,7 +114,6 @@ class KeaDhcpDdns extends BaseModel
 
     private function buildDomains ($domainsNode) {
         $domains = [];
-        $serversMap = $this->getSharedDnsServersMap();
         $tsigNameMap = $this->getTsigKeyNameMap();
         foreach ($domainsNode->iterateItems() as $domain) {
             $entry = [];
@@ -153,26 +121,22 @@ class KeaDhcpDdns extends BaseModel
                 // emit stored value as-is; validation ensures FQDN (trailing dot)
                 $entry['name'] = $domain->name->getValue();
             }
+            $server = [];
+            if (!($domain->ip_address->isEmpty())) {
+                $server['ip-address'] = $domain->ip_address->getValue();
+            }
+            if (!($domain->port->isEmpty())) {
+                $server['port'] = $domain->port->asInt();
+            }
             if (!($domain->key_name->isEmpty())) {
                 $kn = $domain->key_name->getValue(); // UUID from ModelRelationField
                 if (!empty($tsigNameMap[$kn])) {
-                    $entry['key-name'] = $tsigNameMap[$kn];
+                    $server['key-name'] = $tsigNameMap[$kn];
                 }
             }
 
-            // dns-servers referenced via ModelRelationField (comma-separated UUIDs)
-            $servers = [];
-            $refs = !($domain->dns_servers->isEmpty()) ? $domain->dns_servers->getValue() : '';
-            if (!empty($refs)) {
-                foreach (array_filter(explode(',', $refs)) as $uuid) {
-                    if (empty($uuid) || empty($serversMap[$uuid])) {
-                        continue;
-                    }
-                    $servers[] = $serversMap[$uuid];
-                }
-            }
-            if (!empty($servers)) {
-                $entry['dns-servers'] = $servers;
+            if (!empty($server)) {
+                $entry['dns-servers'] = [$server];
             }
 
             if (!empty($entry)) {
