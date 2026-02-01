@@ -108,7 +108,8 @@
         /* hook import/export buttons */
         $("#upload_rules").SimpleFileUploadDlg({
             onAction: function(){
-                $('#{{formGridFilterRule["edit_dialog_id"]}}').bootgrid('reload');
+                $("#{{formGridFilterRule['table_id']}}").bootgrid('reload');
+                $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
             }
         });
 
@@ -444,7 +445,7 @@
                         const usedAdvancedFields = [];
 
                         advancedFieldIds.forEach(function (fieldId) {
-                            const value = row[fieldId];
+                            const value = row["%" + fieldId] ?? row[fieldId];
                             if (value !== undefined) {
                                 const lowerValue = value.toString().toLowerCase().trim();
                                 // Check: if the value is empty OR starts with any default prefix, consider it default
@@ -558,6 +559,17 @@
                                 <div>${firstGroup}</div>
                                 <div>${secondGroup}</div>
                             </div>
+                        `;
+                    },
+                    sched: function(column, row) {
+                        if (row[column.id] === '') {
+                            return "";
+                        }
+                        return `
+                            ${row[column.id]} &nbsp;
+                            <a href="/firewall_schedule_edit.php?name=${row[column.id]}" data-toggle="tooltip" title="{{ lang._('Edit') }}">
+                                <i class="fa fa-calendar text-muted"></i>
+                            </a>
                         `;
                     },
                 },

@@ -40,6 +40,8 @@ class Shell
      */
     public static function exec_safe($format, $args = [])
     {
+        $command = '/usr/bin/true';
+
         if (!is_array($format)) {
             $format = [$format];
         }
@@ -49,10 +51,17 @@ class Shell
         }
 
         foreach ($args as $id => $arg) {
+            /* XXX casts to string, formatter only really supports %% and %s */
             $args[$id] = escapeshellarg($arg ?? '');
         }
 
-        return vsprintf(implode(' ', $format), $args);
+        try {
+            $command = vsprintf(implode(' ', $format), $args);
+        } catch (\Error $e) {
+            error_log($e);
+        }
+
+        return $command;
     }
 
     /**

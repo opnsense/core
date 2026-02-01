@@ -338,7 +338,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/KeyPairsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/LegacySubsystemController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/ManualSpdController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/ManualSPDController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/PoolsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/PreSharedKeysController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/Api/SadController.php
@@ -388,7 +388,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VipController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VlanController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VxlanController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VxLanController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogBridge.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogGif.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogGre.xml

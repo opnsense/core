@@ -441,14 +441,18 @@ class FilterController extends FilterBaseController
         if ($this->request->isGet()) {
             /* categories have unique names, export names instead of ids so we can easily map them on other targets */
             $categories = [];
+            $aliases = [];
             foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
                 $categories[$key] = $category->name->getValue();
+            }
+            foreach ((new Alias())->aliases->alias->iterateItems() as $key => $alias) {
+                $aliases[$key] = $alias->name->getValue();
             }
             /* XXX:  as shaper1/2 don't have functional keys, we can only export uuid's here*/
             $this->exportCsv($this->getModel()->rules->rule->asRecordSet(
                 false,
                 ['sort_order', 'prio_group'],
-                function ($node, $record) use ($categories) {
+                function ($node, $record) use ($categories, $aliases) {
                     if (!empty($record['categories'])) {
                         $cats = [];
                         foreach (explode(',', $record['categories']) as $key) {
@@ -457,6 +461,9 @@ class FilterController extends FilterBaseController
                             }
                         }
                         $record['categories'] = implode(',', $cats);
+                    }
+                    if (!empty($record['overload']) && isset($aliases[$record['overload']])) {
+                        $record['overload'] = $aliases[$record['overload']];
                     }
                     return array_merge(['@uuid' => $node->getAttribute('uuid')], $record);
                 }
@@ -469,15 +476,18 @@ class FilterController extends FilterBaseController
         if ($this->request->isPost() && $this->request->hasPost('payload')) {
             /* catgories have unique names, need to map them to uuids */
             $categories = [];
+            $aliases = [];
             foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
                 $categories[$category->name->getValue()] = $key;
             }
-            $that = $this;
+            foreach ((new Alias())->aliases->alias->iterateItems() as $key => $alias) {
+                $aliases[$alias->name->getValue()] = $key;
+            }
             return $this->importCsv(
                 'rules.rule',
                 $this->request->getPost('payload'),
                 ['@uuid'],
-                function (&$record) use ($categories, $that) {
+                function (&$record) use ($categories, $aliases) {
                     if (!empty($record['categories'])) {
                         /* only map what we know, ignore the rest */
                         $cats = [];
@@ -488,10 +498,8 @@ class FilterController extends FilterBaseController
                         }
                         $record['categories'] = implode(',', $cats);
                     }
-                    if (!empty($record['@uuid']) && !$that->isValidUUID($record['@uuid'])) {
-                        throw new \Exception(
-                            sprintf("Invalid UUID offered (%s)", $record['@uuid'])
-                        );
+                    if (!empty($record['overload']) && isset($aliases[$record['overload']])) {
+                        $record['overload'] = $aliases[$record['overload']];
                     }
                 }
             );

@@ -32,6 +32,13 @@
       </help>
     </field>
     <field>
+       <id>ping.settings.interval</id>
+       <label>Interval (seconds)</label>
+       <type>text</type>
+       <hint>1</hint>
+       <help>Specify the number of seconds to wait between sending pings.</help>
+    </field>
+    <field>
        <id>ping.settings.description</id>
        <label>Description</label>
        <type>text</type>
