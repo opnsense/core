@@ -29,7 +29,6 @@ namespace OPNsense\Kea;
 
 use OPNsense\Core\File;
 use OPNsense\Base\BaseModel;
-use OPNsense\Base\Messages\Message;
 
 class KeaDhcpDdns extends BaseModel
 {
@@ -38,26 +37,40 @@ class KeaDhcpDdns extends BaseModel
         return $this->general->enabled->isEqual('1');
     }
 
-    private function getTsigKeys() {
-        return array_values($this->tsig_keys->getNodes());
+    private function getTsigKeys()
+    {
+        $tsig_keys = [];
+        foreach ($this->tsig_keys->iterateItems() as $key) {
+            $tsig_keys[] = [
+                'name' => $key->name->getValue(),
+                'algorithm' => $key->algorithm->getValue(),
+                'secret' => $key->secret->getValue(),
+            ];
+        }
+        return $tsig_keys;
     }
 
-    private function buildDomains($domainsNode) {
-        $tsigKeys = array_column(array_values($this->tsig_keys->getNodes()), 'name', '__uuid__');
-
-        return array_map(function ($domain) use ($tsigKeys) {
+    private function buildDomains($domainsNode)
+    {
+        $domains = [];
+        $tsigNameMap = [];
+        foreach ($this->tsig_keys->iterateItems() as $uuid => $key) {
+            $tsigNameMap[$uuid] = $key->name->getValue();
+        }
+        foreach ($domainsNode->iterateItems() as $domain) {
             $server = [
                 'ip-address' => $domain->ip_address->getValue(),
                 'port' => $domain->port->asInt()
             ];
-            if (!empty($tsigKeys[$domain->key_name->getValue()])) {
-                $server['key-name'] = $tsigKeys[$domain->key_name->getValue()];
+            if (!empty($tsigNameMap[$domain->key_name->getValue()])) {
+                $server['key-name'] = $tsigNameMap[$domain->key_name->getValue()];
             }
-            return [
+            $domains[] = [
                 'name' => $domain->name->getValue(),
                 'dns-servers' => [$server]
             ];
-        }, iterator_to_array($domainsNode->iterateItems()));
+        }
+        return $domains;
     }
 
     public function generateConfig($target = '/usr/local/etc/kea/kea-dhcp-ddns.conf')
