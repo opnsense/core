@@ -83,7 +83,7 @@ class LeasesController extends ApiControllerBase
             if (!empty($host->hwaddr)) {
                 foreach (explode(',', (string)$host->hwaddr) as $hwaddr) {
                     if (!empty($hwaddr)) {
-                        $reservedKeys[] = $hwaddr;
+                        $reservedKeys[] = strtolower($hwaddr);
                     }
                 }
             }
