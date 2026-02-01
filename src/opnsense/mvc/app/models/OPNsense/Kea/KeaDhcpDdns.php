@@ -42,30 +42,16 @@ class KeaDhcpDdns extends BaseModel
         $messages = parent::performValidation($validateFullModel);
 
         // Explicitly validate that forward and reverse domain names end with a dot (FQDN)
-        foreach ($this->forward_ddns->ddns_domains->iterateItems() as $domain) {
-            if (!$validateFullModel && !$domain->isFieldChanged()) {
-                continue;
-            }
-            if (!($domain->name->isEmpty()) && !str_ends_with($domain->name->getValue(), '.')) {
-                $messages->appendMessage(
-                    new Message(
+        foreach ([$this->forward_ddns->ddns_domains, $this->reverse_ddns->ddns_domains] as $node) {
+            foreach ($node->iterateItems() as $domain) {
+                if (($validateFullModel || $domain->isFieldChanged()) &&
+                    !($domain->name->isEmpty()) && !str_ends_with($domain->name->getValue(), '.')
+                ) {
+                    $messages->appendMessage(new Message(
                         gettext('Domain must be a fully qualified domain name ending with a dot.'),
                         $domain->__reference . '.name'
-                    )
-                );
-            }
-        }
-        foreach ($this->reverse_ddns->ddns_domains->iterateItems() as $domain) {
-            if (!$validateFullModel && !$domain->isFieldChanged()) {
-                continue;
-            }
-            if (!($domain->name->isEmpty()) && !str_ends_with($domain->name->getValue(), '.')) {
-                $messages->appendMessage(
-                    new Message(
-                        gettext('Domain must be a fully qualified domain name ending with a dot.'),
-                        $domain->__reference . '.name'
-                    )
-                );
+                    ));
+                }
             }
         }
 
@@ -77,113 +63,58 @@ class KeaDhcpDdns extends BaseModel
         return $this->general->enabled->isEqual('1');
     }
 
-    /**
-     * Build a map uuid => tsig key name for quick lookup when resolving relations.
-     * @return array<string,string>
-     */
-    private function getTsigKeyNameMap()
-    {
-        $map = [];
-        foreach ($this->tsig_keys->iterateItems() as $uuid => $key) {
-            if (!($key->name->isEmpty())) {
-                $map[$uuid] = $key->name->getValue();
-            }
-        }
-        return $map;
-    }
-
     private function getTsigKeys() {
         $tsig_keys = [];
         foreach ($this->tsig_keys->iterateItems() as $key) {
-            $item = [];
-            if (!($key->name->isEmpty())) {
-                $item['name'] = $key->name->getValue();
-            }
-            if (!($key->algorithm->isEmpty())) {
-                $item['algorithm'] = $key->algorithm->getValue();
-            }
-            if (!($key->secret->isEmpty())) {
-                $item['secret'] = $key->secret->getValue();
-            }
-            if (!empty($item)) {
-                $tsig_keys[] = $item;
-            }
+            $tsig_keys[] = [
+                'name' => $key->name->getValue(),
+                'algorithm' => $key->algorithm->getValue(),
+                'secret' => $key->secret->getValue(),
+            ];
         }
         return $tsig_keys;
     }
 
-    private function buildDomains ($domainsNode) {
+    private function buildDomains($domainsNode) {
         $domains = [];
-        $tsigNameMap = $this->getTsigKeyNameMap();
+        $tsigNameMap = [];
+        foreach ($this->tsig_keys->iterateItems() as $uuid => $key) {
+            $tsigNameMap[$uuid] = $key->name->getValue();
+        }
         foreach ($domainsNode->iterateItems() as $domain) {
-            $entry = [];
-            if (!($domain->name->isEmpty())) {
-                // emit stored value as-is; validation ensures FQDN (trailing dot)
-                $entry['name'] = $domain->name->getValue();
+            $server = [
+                'ip-address' => $domain->ip_address->getValue(),
+                'port' => $domain->port->asInt()
+            ];
+            if (!empty($tsigNameMap[$domain->key_name->getValue()])) {
+                $server['key-name'] = $tsigNameMap[$domain->key_name->getValue()];
             }
-            $server = [];
-            if (!($domain->ip_address->isEmpty())) {
-                $server['ip-address'] = $domain->ip_address->getValue();
-            }
-            if (!($domain->port->isEmpty())) {
-                $server['port'] = $domain->port->asInt();
-            }
-            if (!($domain->key_name->isEmpty())) {
-                $kn = $domain->key_name->getValue(); // UUID from ModelRelationField
-                if (!empty($tsigNameMap[$kn])) {
-                    $server['key-name'] = $tsigNameMap[$kn];
-                }
-            }
-
-            if (!empty($server)) {
-                $entry['dns-servers'] = [$server];
-            }
-
-            if (!empty($entry)) {
-                $domains[] = $entry;
-            }
+            $domains[] = [
+                'name' => $domain->name->getValue(),
+                'dns-servers' => [$server]
+            ];
         }
         return $domains;
     }
 
-    private function getForwardDomains() {
-        return $this->buildDomains($this->forward_ddns->ddns_domains);
-    }
-
-    private function getReverseDomains() {
-        return $this->buildDomains($this->reverse_ddns->ddns_domains);
-    }
-
     public function generateConfig($target = '/usr/local/etc/kea/kea-dhcp-ddns.conf')
     {
-        $result = [
-            'DhcpDdns' => [
-                'ip-address' => '127.0.0.1',
-                'port' => 53001,
-                'control-socket' => [
-                    'socket-type' => 'unix',
-                    'socket-name' => '/var/run/kea/kea-ddns-ctrl-socket'
-                ],
-                'loggers' => [
-                    [
-                        'name' => 'kea-dhcp-ddns',
-                        'output_options' => [
-                            [
-                                'output' => 'syslog'
-                            ]
-                        ],
-                        'severity' => 'INFO',
-                    ]
-                ],
-                'tsig-keys' => $this->getTsigKeys(),
-                'forward-ddns' => [
-                    'ddns-domains' => $this->getForwardDomains()
-                ],
-                'reverse-ddns' => [
-                    'ddns-domains' => $this->getReverseDomains()
-                ]
-            ]
-        ];
+        $result = ['DhcpDdns' => [
+            'ip-address' => '127.0.0.1',
+            'port' => 53001,
+            'control-socket' => [
+                'socket-type' => 'unix',
+                'socket-name' => '/var/run/kea/kea-ddns-ctrl-socket'
+            ],
+            'loggers' => [[
+                'name' => 'kea-dhcp-ddns',
+                'output_options' => [['output' => 'syslog']],
+                'severity' => 'INFO',
+            ]],
+            'tsig-keys' => $this->getTsigKeys(),
+            'forward-ddns' => ['ddns-domains' => $this->buildDomains($this->forward_ddns->ddns_domains)],
+            'reverse-ddns' => ['ddns-domains' => $this->buildDomains($this->reverse_ddns->ddns_domains)]
+        ]];
 
         File::file_put_contents($target, json_encode($result, JSON_PRETTY_PRINT), 0600);
     }

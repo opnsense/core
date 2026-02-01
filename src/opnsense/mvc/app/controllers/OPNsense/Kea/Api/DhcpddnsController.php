@@ -34,81 +34,21 @@ class DhcpddnsController extends ApiMutableModelControllerBase
     protected static $internalModelName = 'dhcp_ddns';
     protected static $internalModelClass = 'OPNsense\Kea\KeaDhcpDdns';
 
-    /* Forward DDNS domains */
-    public function searchForwardDomainAction()
-    {
-        return $this->searchBase('forward_ddns.ddns_domains', null, 'name');
-    }
+    public function searchForwardDomainAction() { return $this->searchBase('forward_ddns.ddns_domains', null, 'name'); }
+    public function getForwardDomainAction($uuid = null) { return $this->getBase('ddns_domains', 'forward_ddns.ddns_domains', $uuid); }
+    public function addForwardDomainAction() { return $this->addBase('ddns_domains', 'forward_ddns.ddns_domains'); }
+    public function setForwardDomainAction($uuid) { return $this->setBase('ddns_domains', 'forward_ddns.ddns_domains', $uuid); }
+    public function delForwardDomainAction($uuid) { return $this->delBase('forward_ddns.ddns_domains', $uuid); }
 
-    public function getForwardDomainAction($uuid = null)
-    {
-        return $this->getBase('ddns_domains', 'forward_ddns.ddns_domains', $uuid);
-    }
+    public function searchReverseDomainAction() { return $this->searchBase('reverse_ddns.ddns_domains', null, 'name'); }
+    public function getReverseDomainAction($uuid = null) { return $this->getBase('ddns_domains', 'reverse_ddns.ddns_domains', $uuid); }
+    public function addReverseDomainAction() { return $this->addBase('ddns_domains', 'reverse_ddns.ddns_domains'); }
+    public function setReverseDomainAction($uuid) { return $this->setBase('ddns_domains', 'reverse_ddns.ddns_domains', $uuid); }
+    public function delReverseDomainAction($uuid) { return $this->delBase('reverse_ddns.ddns_domains', $uuid); }
 
-    public function addForwardDomainAction()
-    {
-        return $this->addBase('ddns_domains', 'forward_ddns.ddns_domains');
-    }
-
-    public function setForwardDomainAction($uuid)
-    {
-        return $this->setBase('ddns_domains', 'forward_ddns.ddns_domains', $uuid);
-    }
-
-    public function delForwardDomainAction($uuid)
-    {
-        return $this->delBase('forward_ddns.ddns_domains', $uuid);
-    }
-
-    /* Reverse DDNS domains */
-    public function searchReverseDomainAction()
-    {
-        return $this->searchBase('reverse_ddns.ddns_domains', null, 'name');
-    }
-
-    public function getReverseDomainAction($uuid = null)
-    {
-        return $this->getBase('ddns_domains', 'reverse_ddns.ddns_domains', $uuid);
-    }
-
-    public function addReverseDomainAction()
-    {
-        return $this->addBase('ddns_domains', 'reverse_ddns.ddns_domains');
-    }
-
-    public function setReverseDomainAction($uuid)
-    {
-        return $this->setBase('ddns_domains', 'reverse_ddns.ddns_domains', $uuid);
-    }
-
-    public function delReverseDomainAction($uuid)
-    {
-        return $this->delBase('reverse_ddns.ddns_domains', $uuid);
-    }
-
-    /* TSIG keys */
-    public function searchTsigKeyAction()
-    {
-        return $this->searchBase('tsig_keys', null, 'name');
-    }
-
-    public function getTsigKeyAction($uuid = null)
-    {
-        return $this->getBase('tsig_keys', 'tsig_keys', $uuid);
-    }
-
-    public function addTsigKeyAction()
-    {
-        return $this->addBase('tsig_keys', 'tsig_keys');
-    }
-
-    public function setTsigKeyAction($uuid)
-    {
-        return $this->setBase('tsig_keys', 'tsig_keys', $uuid);
-    }
-
-    public function delTsigKeyAction($uuid)
-    {
-        return $this->delBase('tsig_keys', $uuid);
-    }
+    public function searchTsigKeyAction() { return $this->searchBase('tsig_keys', null, 'name'); }
+    public function getTsigKeyAction($uuid = null) { return $this->getBase('tsig_keys', 'tsig_keys', $uuid); }
+    public function addTsigKeyAction() { return $this->addBase('tsig_keys', 'tsig_keys'); }
+    public function setTsigKeyAction($uuid) { return $this->setBase('tsig_keys', 'tsig_keys', $uuid); }
+    public function delTsigKeyAction($uuid) { return $this->delBase('tsig_keys', $uuid); }
 }
