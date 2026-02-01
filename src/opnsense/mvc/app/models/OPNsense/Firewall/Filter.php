@@ -366,4 +366,22 @@ class Filter extends BaseModel
         }
         return false;
     }
+
+    public function hasSchedule()
+    {
+        foreach ($this->rules->rule->iterateItems() as $rule) {
+            if (!$rule->sched->isEmpty() && !$rule->enabled->isEmpty()) {
+                return true;
+            }
+        }
+        $cfg = (\OPNsense\Core\Config::getInstance())->object();
+        if (isset($cfg->filter->rule)) {
+            foreach ($cfg->filter->children() as $tag => $rule) {
+                if ($tag === 'rule' && !empty($rule->sched) && empty((string)$rule->disabled)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
