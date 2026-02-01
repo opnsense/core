@@ -377,9 +377,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         $node = $mdl->getNodeByReference($node_reference . '.' . $uuid);
 
         if ($node === null) {
-            throw new UserException(
-                gettext("Rule not found")
-            );
+            throw new UserException(gettext('Rule not found'));
         }
 
         $node->log = $log;
