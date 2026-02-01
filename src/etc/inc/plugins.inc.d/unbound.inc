@@ -274,10 +274,7 @@ function unbound_generate_config()
             (isset($dots['client_tls_enabled']) and ($dots['client_tls_enabled'] == '1')) or
             (isset($dots['client_tls_enabled']) and ($dots['client_tls_enabled'] == '1')))) {
             $cert_refid = $dots['cert'][0];
-            $tls_settings .= "# before loop\n";
             $certs = $config['cert'];
-            $num = count($certs);
-            $tls_settings .= "# Certs configured: $num\n";
             foreach ($certs as $cert) {
                 if ($cert_refid == $cert['refid']) {
                     $tls_settings .= "# Certificate refid: $cert_refid\n";
