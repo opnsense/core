@@ -286,6 +286,7 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
+            <formatter>sched</formatter>
         </grid_view>
     </field>
     <!-- XXX: start as advanced, promote to non-advanced feature in a later version -->

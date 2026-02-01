@@ -476,6 +476,16 @@ abstract class Rule
         return 'internal2'; // late
     }
 
+    public function updateDescription($descr)
+    {
+        $this->rule['descr'] = $descr;
+    }
+
+    public function disable()
+    {
+        $this->rule['disabled'] = 1;
+    }
+
     /**
      * return raw rule
      */

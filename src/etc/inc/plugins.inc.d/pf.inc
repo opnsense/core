@@ -58,36 +58,31 @@ function pf_cron()
 {
     global $config;
 
-    $jobs = array();
+    $jobs = [];
 
-    if (isset($config['filter']['rule'])) {
-        foreach ($config['filter']['rule'] as $rule) {
-            if (empty($rule['disabled']) && !empty($rule['sched'])) {
-                $jobs[]['autocron'] = array('/usr/bin/logger "reload filter for configured schedules" ; /usr/local/etc/rc.filter_configure', '1,16,31,46');
-                break;
-            }
-        }
+    if ((new OPNsense\Firewall\Filter(true))->hasSchedule()) {
+        $jobs[]['autocron'] = ['/usr/bin/logger "reload filter for configured schedules" ; /usr/local/etc/rc.filter_configure', '1,16,31,46'];
     }
 
     /* bogons fetch always set in default config.xml */
     switch ($config['system']['bogons']['interval']) {
         case 'daily':
-            $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d filter schedule bogons', '1', '3', '*', '*', '*');
+            $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d filter schedule bogons', '1', '3', '*', '*', '*'];
             break;
         case 'weekly':
-            $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d filter schedule bogons', '1', '3', '*', '*', '0');
+            $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d filter schedule bogons', '1', '3', '*', '*', '0'];
             break;
         case 'monthly':
         default:
-            $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d filter schedule bogons', '1', '3', '1', '*', '*');
+            $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d filter schedule bogons', '1', '3', '1', '*', '*'];
             break;
     }
 
-    $jobs[]['autocron'] = array(
+    $jobs[]['autocron'] = [
         '/usr/local/bin/flock -n -E 0 -o /tmp/filter_update_tables.lock ' .
         '/usr/local/opnsense/scripts/filter/update_tables.py --quick',
         '*'
-    );
+    ];
 
     return $jobs;
 }
