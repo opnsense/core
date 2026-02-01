@@ -72,23 +72,6 @@ class KeaDhcpv6 extends BaseModel
             }
         }
 
-        // Enforce that ddns qualifying suffix ends with a dot when set
-        foreach ($this->subnets->subnet6->iterateItems() as $subnet) {
-            if (!$validateFullModel && !$subnet->isFieldChanged()) {
-                continue;
-            }
-            $suffix = $subnet->ddns_options->qualifying_suffix;
-            if ($subnet->ddns_options->send_updates->isEqual('1') &&
-                !($suffix->isEmpty()) && !str_ends_with($suffix->getValue(), '.')) {
-                $messages->appendMessage(
-                    new Message(
-                        gettext('DDNS qualifying suffix must end with a dot.'),
-                        $subnet->__reference . '.ddns_options.qualifying_suffix'
-                    )
-                );
-            }
-        }
-
         return $messages;
     }
 

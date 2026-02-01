@@ -139,7 +139,7 @@
                 <ddns_options>
                     <send_updates type="BooleanField"/>
                     <update_on_renew type="BooleanField"/>
-                    <qualifying_suffix type="HostnameField"/>
+                    <qualifying_suffix type="\OPNsense\Kea\FieldTypes\KeaFQDNField"/>
                     <conflict_resolution_mode type="OptionField">
                         <Default>check-with-dhcid</Default>
                         <Required>Y</Required>

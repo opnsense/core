@@ -33,68 +33,31 @@ use OPNsense\Base\Messages\Message;
 
 class KeaDhcpDdns extends BaseModel
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function performValidation($validateFullModel = false)
-    {
-        // Run default field-level validators first
-        $messages = parent::performValidation($validateFullModel);
-
-        // Explicitly validate that forward and reverse domain names end with a dot (FQDN)
-        foreach ([$this->forward_ddns->ddns_domains, $this->reverse_ddns->ddns_domains] as $node) {
-            foreach ($node->iterateItems() as $domain) {
-                if (($validateFullModel || $domain->isFieldChanged()) &&
-                    !($domain->name->isEmpty()) && !str_ends_with($domain->name->getValue(), '.')
-                ) {
-                    $messages->appendMessage(new Message(
-                        gettext('Domain must be a fully qualified domain name ending with a dot.'),
-                        $domain->__reference . '.name'
-                    ));
-                }
-            }
-        }
-
-        return $messages;
-    }
-
     public function isEnabled()
     {
         return $this->general->enabled->isEqual('1');
     }
 
     private function getTsigKeys() {
-        $tsig_keys = [];
-        foreach ($this->tsig_keys->iterateItems() as $key) {
-            $tsig_keys[] = [
-                'name' => $key->name->getValue(),
-                'algorithm' => $key->algorithm->getValue(),
-                'secret' => $key->secret->getValue(),
-            ];
-        }
-        return $tsig_keys;
+        return array_values($this->tsig_keys->getNodes());
     }
 
     private function buildDomains($domainsNode) {
-        $domains = [];
-        $tsigNameMap = [];
-        foreach ($this->tsig_keys->iterateItems() as $uuid => $key) {
-            $tsigNameMap[$uuid] = $key->name->getValue();
-        }
-        foreach ($domainsNode->iterateItems() as $domain) {
+        $tsigKeys = array_column(array_values($this->tsig_keys->getNodes()), 'name', '__uuid__');
+
+        return array_map(function ($domain) use ($tsigKeys) {
             $server = [
                 'ip-address' => $domain->ip_address->getValue(),
                 'port' => $domain->port->asInt()
             ];
-            if (!empty($tsigNameMap[$domain->key_name->getValue()])) {
-                $server['key-name'] = $tsigNameMap[$domain->key_name->getValue()];
+            if (!empty($tsigKeys[$domain->key_name->getValue()])) {
+                $server['key-name'] = $tsigKeys[$domain->key_name->getValue()];
             }
-            $domains[] = [
+            return [
                 'name' => $domain->name->getValue(),
                 'dns-servers' => [$server]
             ];
-        }
-        return $domains;
+        }, iterator_to_array($domainsNode->iterateItems()));
     }
 
     public function generateConfig($target = '/usr/local/etc/kea/kea-dhcp-ddns.conf')
