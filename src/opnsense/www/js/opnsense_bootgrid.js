@@ -1139,7 +1139,7 @@ class UIBootgrid {
                 </button>
             `);
 
-            if (key === 'add' || key === 'delete-selected' || key === 'toggle-selected') {
+            if (command?.primary) {
                 $commandContainer.append($element);
             } else {
                 $element.appendTo($footerSecondary);
@@ -1535,6 +1535,8 @@ class UIBootgrid {
     * - requires: an array of strings marking which this.crud properties are required
     * - sequence: order of commands rendering
     * - footer: true|false whether this command should be rendered in the table footer
+    * - primary: true|false only if footer: true, whether this command should be rendered as part
+    *            of the primary button container (intended for primary CRUD actions)
     * - classname: required. icon class added to the span inside the button element
     * - filter: a function that returns true or false determining if the command should be rendered.
     *           the cell object is passed in only if footer: false
@@ -1551,6 +1553,7 @@ class UIBootgrid {
                 classname: 'fa fa-plus fa-fw',
                 sequence: 100,
                 footer: true,
+                primary: true,
                 title: this._translate('add')
             },
             "edit": {
@@ -1593,8 +1596,8 @@ class UIBootgrid {
                     }
                 }
             },
-            "toggle-selected": {
-                method: this.command_toggle_selected.bind(this),
+            "enable-selected": {
+                method: this.command_toggle_selected.bind(this, true),
                 requires: ['toggle'],
                 classname: 'fa fa-fw fa-check-square-o',
                 sequence: 200,
@@ -1602,15 +1605,28 @@ class UIBootgrid {
                     return this.options.selection && this.options.multiSelect && !this.options.stickySelect;
                 },
                 footer: true,
-                title: this._translate('toggleSelected'),
-
+                primary: true,
+                title: this._translate('enableSelected'),
+            },
+            "disable-selected": {
+                method: this.command_toggle_selected.bind(this, false),
+                requires: ['toggle'],
+                classname: 'fa fa-fw fa-square-o',
+                sequence: 300,
+                filter: () => {
+                    return this.options.selection && this.options.multiSelect && !this.options.stickySelect;
+                },
+                footer: true,
+                primary: true,
+                title: this._translate('disableSelected'),
             },
             "delete-selected": {
                 method: this.command_delete_selected.bind(this),
                 requires: ['del'],
                 classname: 'fa fa-trash-o fa-fw',
-                sequence: 300,
+                sequence: 400,
                 footer: true,
+                primary: true,
                 title: this._translate('deleteSelected')
             }
         };
@@ -2065,14 +2081,14 @@ class UIBootgrid {
         });
     }
 
-    command_toggle_selected(event) {
+    command_toggle_selected(enable, event) {
         event.stopPropagation();
         const rows = this.table.getSelectedData();
         if (rows.length > 0) {
             const deferreds = [];
             rows.forEach((row) => {
                 const uuid = row[this.options.datakey];
-                deferreds.push(ajaxCall(this.crud['toggle'] + uuid, {}, null));
+                deferreds.push(ajaxCall(`${this.crud['toggle']}${uuid}/${enable ? "1" : "0"}`, {}, null));
             })
             $.when.apply(null, deferreds).done(() => {
                 this._reload(true);
