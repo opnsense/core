@@ -30,6 +30,11 @@
     flex-wrap: wrap;
 }
 
+.bootgrid-footer-commands {
+    padding-left: 8px;
+    padding-right: 15px;
+}
+
 @media (max-width: 1024px) {
     .bootgrid-header .actionBar {
         flex-wrap: wrap;
