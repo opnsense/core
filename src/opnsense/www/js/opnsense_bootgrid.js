@@ -1028,7 +1028,6 @@ class UIBootgrid {
         const $menu = $(`#${this.id}-columnselect-items`);
         $menu.on("input", ".columnsearch", function () {
             var q = $.trim($(this).val()).toLowerCase();
-            console.log(q);
 
             $menu.children("li").not(".columnsearch-li, .divider").each(function () {
                 var text = $(this).text().trim().toLowerCase();
