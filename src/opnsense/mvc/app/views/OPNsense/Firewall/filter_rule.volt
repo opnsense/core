@@ -523,8 +523,9 @@
                         const states  = row["states"] ?? "";
                         const packets = row["packets"] ?? "";
                         const bytes   = row["bytes"] ?? "";
+                        const uuid    = row["uuid"] ?? "";
 
-                        function render(icon, title, value, is_number = false) {
+                        function render(icon, title, value, is_number = false, link = null) {
                             if (!value || value === "0") {
                                 return "";
                             }
@@ -534,14 +535,18 @@
 
                             return `
                                 <span data-toggle="tooltip" title="${title}: ${numValue.toLocaleString()}">
-                                    <i class="fa fa-fw ${icon} text-muted"></i> ${formatted}
+                                    ${link
+                                        ? `<a href="${link}" target="_blank" rel="noopener noreferrer" id="${uuid}_states">
+                                            <i class="fa fa-fw ${icon}"></i> ${formatted}
+                                        </a>`
+                                        : `<i class="fa fa-fw ${icon}"></i> ${formatted}`}
                                 </span>
                             `;
                         }
 
                         const parts = [
+                            render("fa-chart-line", "{{ lang._('States') }}", states, true, `/ui/diagnostics/firewall/states#${uuid}`),
                             render("fa-bullseye", "{{ lang._('Evaluations') }}", evals, true),
-                            render("fa-chart-line", "{{ lang._('States') }}", states, true),
                             render("fa-box", "{{ lang._('Packets') }}", packets, true),
                             render("fa-database", "{{ lang._('Bytes') }}", bytes)
                         ].filter(Boolean);
