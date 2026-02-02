@@ -1024,6 +1024,17 @@ class UIBootgrid {
 
         this.$element.before($(this._getHeader()));
 
+        // column selection dropdown search bar
+        const $menu = $(`#${this.id}-columnselect-items`);
+        $menu.on("input", ".columnsearch", function () {
+            var q = $.trim($(this).val()).toLowerCase();
+
+            $menu.children("li").not(".columnsearch-li, .divider").each(function () {
+                var text = $(this).text().trim().toLowerCase();
+                $(this).toggle(text.indexOf(q) !== -1);
+            });
+        });
+
         // search functionality
         $(`#${this.id}-search-field`).val(this.searchPhrase).on("keyup", (e) => {
             this._search($(`#${this.id}-search-field`).val(), e);
@@ -1220,7 +1231,12 @@ class UIBootgrid {
                                     <span class="dropdown-text"><span class="icon fa-solid fa-list"></span></span>
                                     <span class="caret"></span>
                                 </button>
-                                <ul id="${this.id}-columnselect-items" class="dropdown-menu pull-right" role="menu"></ul>
+                                <ul id="${this.id}-columnselect-items" class="dropdown-menu pull-right" role="menu">
+                                    <li class="dropdown-search columnsearch-li">
+                                        <input type="text" class="form-control input-sm columnsearch" placeholder="${this._translate('searchColumns')}"/>
+                                    </li>
+                                    <li class="divider"></li>
+                                </ul>
                             </div>
                         </div>
                     </div>

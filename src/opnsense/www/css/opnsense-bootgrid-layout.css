@@ -35,6 +35,10 @@
     padding-right: 15px;
 }
 
+.dropdown-menu .dropdown-search {
+  padding: 6px 10px;
+}
+
 @media (max-width: 1024px) {
     .bootgrid-header .actionBar {
         flex-wrap: wrap;
