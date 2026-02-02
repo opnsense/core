@@ -172,7 +172,7 @@ class ApiControllerBase extends ControllerRoot
             $this->response->setHeader($parts[0], ltrim($parts[1]));
         }
         rewind($stream);
-        $this->response->setContent($stream);
+        $this->response->setContent($stream, true);
     }
 
     /**
