@@ -140,12 +140,19 @@
                                 <span class="fa fa-fw fa-arrow-left"></span>
                             </button>
 
-                            <button type="button" class="btn btn-xs btn-default command-toggle_log bootgrid-tooltip"
-                                data-row-id="${row.uuid}" data-value="${row.log}"
+                            <button type="button"
+                                class="btn btn-xs btn-default bootgrid-tooltip command-toggle_log"
+                                data-row-id="${row.uuid}"
+                                data-value="${row.log}"
                                 title="${row.log == '1'
                                     ? '{{ lang._("Disable Logging") }}'
                                     : '{{ lang._("Enable Logging") }}'}">
-                                <i class="fa fa-exclamation-circle fa-fw ${row.log == '1' ? 'text-info' : 'text-muted'}"></i>
+
+                                <i class="fa fa-fw
+                                    ${row.log == '1'
+                                        ? 'fa-bell text-info'
+                                        : 'fa-bell-slash text-muted'}">
+                                </i>
                             </button>
 
                             <button type="button" class="btn btn-xs btn-default command-edit
