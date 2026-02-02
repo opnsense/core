@@ -653,7 +653,6 @@
         <grid_view>
             <formatter>statistics</formatter>
             <sequence>115</sequence>
-            <min-width>200</min-width>
         </grid_view>
     </field>
     <field>
