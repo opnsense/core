@@ -1690,7 +1690,18 @@ function _interfaces_wlan_clone($device, $wlcfg)
 
         legacy_interface_destroy($device);
 
-        if (mwexecf('/sbin/ifconfig wlan create wlandev %s %s bssid name %s', [$baseif, $mode, $device])) {
+        $wlan_frmt = ['/sbin/ifconfig wlan create wlandev %s'];
+        $wlan_args = [$baseif];
+
+        if (strlen($mode)) {
+            $wlan_args[] = $mode;
+            $wlan_frmt[] = '%s';
+        }
+
+        $wlan_frmt[] = 'bssid name %s';
+        $wlan_args[] = $device;
+
+        if (mwexecf($wlan_frmt, $wlan_args)) {
             log_msg("Failed to clone interface {$baseif} to {$device}", LOG_ERR);
             return null;
         }
