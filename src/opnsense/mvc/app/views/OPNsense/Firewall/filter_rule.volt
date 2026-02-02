@@ -557,7 +557,7 @@
                         `;
                     },
                     sched: function(column, row) {
-                        if (row.isGroup || !row.uuid.includes('-')) {
+                        if (row.isGroup || typeof row[column.id] !== "string" || row[column.id] === "") {
                             return "";
                         }
                         return `
