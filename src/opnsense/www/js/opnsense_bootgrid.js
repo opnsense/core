@@ -164,6 +164,8 @@ class UIBootgrid {
             deleteSelectedButton: false,
             commands: {}, //additional registered commands
             virtualDOM: false,
+            selection: true,
+            multiSelect: true,
             stickySelect: false,
             rowSelect: false,
             triggerEditFor: null,
@@ -248,11 +250,15 @@ class UIBootgrid {
             this.compatOptions['selectableRows'] = 1;
             if (bootGridOptions?.multiSelect ?? true) {
                 this.compatOptions['selectableRows'] = true;
+            } else {
+                this.options.multiSelect = false;
             }
             // TODO rowSelect toggle (currently not support by tabulator)
 
             this.options.rowSelect = bootGridOptions?.rowSelect ?? false;
         } else {
+            this.options.selection = false;
+            this.options.multiSelect = false;
              // remove checkbox select column
             this.compatOptions['rowHeader'] = null;
         }
@@ -1133,7 +1139,7 @@ class UIBootgrid {
                 </button>
             `);
 
-            if (key === 'add' || key === 'delete-selected') {
+            if (key === 'add' || key === 'delete-selected' || key === 'toggle-selected') {
                 $commandContainer.append($element);
             } else {
                 $element.appendTo($footerSecondary);
@@ -1587,11 +1593,23 @@ class UIBootgrid {
                     }
                 }
             },
+            "toggle-selected": {
+                method: this.command_toggle_selected.bind(this),
+                requires: ['toggle'],
+                classname: 'fa fa-fw fa-check-square-o',
+                sequence: 200,
+                filter: () => {
+                    return this.options.selection && this.options.multiSelect && !this.options.stickySelect;
+                },
+                footer: true,
+                title: this._translate('toggleSelected'),
+
+            },
             "delete-selected": {
                 method: this.command_delete_selected.bind(this),
                 requires: ['del'],
                 classname: 'fa fa-trash-o fa-fw',
-                sequence: 100,
+                sequence: 300,
                 footer: true,
                 title: this._translate('deleteSelected')
             }
@@ -2045,6 +2063,22 @@ class UIBootgrid {
             this._reload(true);
             this.showSaveAlert(event);
         });
+    }
+
+    command_toggle_selected(event) {
+        event.stopPropagation();
+        const rows = this.table.getSelectedData();
+        if (rows.length > 0) {
+            const deferreds = [];
+            rows.forEach((row) => {
+                const uuid = row[this.options.datakey];
+                deferreds.push(ajaxCall(this.crud['toggle'] + uuid, {}, null));
+            })
+            $.when.apply(null, deferreds).done(() => {
+                this._reload(true);
+                this.showSaveAlert(event);
+            });
+        }
     }
 
     _debounce(f, delay = 50, ensure = true) {

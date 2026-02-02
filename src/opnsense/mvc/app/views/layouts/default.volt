@@ -314,6 +314,7 @@
         $.extend(jQuery.fn.UIBootgrid.translations, {
             add: "{{ lang._('Add') }}",
             deleteSelected: "{{ lang._('Delete selected') }}",
+            toggleSelected: "{{ lang._('Toggle selected') }}",
             edit: "{{ lang._('Edit') }}",
             disable: "{{ lang._('Disable') }}",
             enable: "{{ lang._('Enable') }}",
