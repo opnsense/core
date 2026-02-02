@@ -562,7 +562,7 @@
                         `;
                     },
                     sched: function(column, row) {
-                        if (row[column.id] === '') {
+                        if (row.isGroup || typeof row[column.id] !== "string" || row[column.id] === "") {
                             return "";
                         }
                         return `
