@@ -161,24 +161,26 @@
                     if ( $('#category_filter').val().length > 0) {
                         request['category'] = $('#category_filter').val();
                     }
-                    // Add interface selectpicker, or fall back to hash for the first load
-                    let selectedInterface = $('#interface_select').val();
-                    if (
-                        (selectedInterface === null || selectedInterface === undefined || selectedInterface === '') &&
-                        pendingUrlInterface
-                    ) {
-                        request['interface'] = pendingUrlInterface;
-                        pendingUrlInterface = null; // consume the hash so it is not used again
-                    // ALL interfaces
-                    } else if (selectedInterface === '*') {
-                        // do not send interface parameter!
-                    } else if (selectedInterface !== null && selectedInterface !== undefined) {
-                        request['interface'] = selectedInterface;
+                    // Resolve interface (UI first, hash bootstrap)
+                    let iface = $('#interface_select').val();
+
+                    if (iface == null && pendingUrlInterface != null) {
+                        iface = pendingUrlInterface;
+                        pendingUrlInterface = null;
                     }
+
+                    if (iface === '__floating') {
+                        request.interface = '';
+                    } else if (iface !== null && iface !== '__*') {
+                        request.interface = iface;
+                    }
+                    // '__*' omit parameter for all rules
+
                     if (inspectEnabled) {
                         // Send as a comma separated string
                         request['show_all'] = true;
                     }
+
                     return request;
                 },
                 // convert the flat rows into a tree view
@@ -764,10 +766,9 @@
                         if (allOptions.includes(ifaceFromHash)) {
                             $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
                         }
-                    }
+                    } else {
                     // Default to ALL interfaces when nothing is selected and no hash applied
-                    if (!match && $('#interface_select').val() === null) {
-                        $('#interface_select').val('*').selectpicker('refresh');
+                        $('#interface_select').selectpicker('val', '__*');
                     }
                     interfaceInitialized = true;
 
