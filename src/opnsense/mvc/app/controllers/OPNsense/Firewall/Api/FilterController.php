@@ -158,17 +158,13 @@ class FilterController extends FilterBaseController
             }
             $is_cat = empty($categories) || array_intersect($r_categories, $categories);
 
-            if ($interfaces === null) {
-                // ALL interfaces, interface always matches
-                $is_if = true;
+            if (!empty($record['interfacenot'])) {
+                $is_if = !array_intersect(explode(',', $record['interface'] ?? ''), $interfaces ?? []);
             } else {
-                if (!empty($record['interfacenot'])) {
-                    $is_if = !array_intersect(explode(',', $record['interface'] ?? ''), $interfaces);
-                } else {
-                    $is_if = array_intersect(explode(',', $record['interface'] ?? ''), $interfaces);
-                }
-                $is_if = $is_if || empty($record['interface']);
+                $is_if = array_intersect(explode(',', $record['interface'] ?? ''), $interfaces ?? []);
             }
+            // ALL interfaces always matches
+            $is_if = $interfaces === null || $is_if || empty($record['interface']);
 
             if ($is_cat && $is_if) {
                 /* translate/convert legacy fields before returning, similar to mvc handling */
