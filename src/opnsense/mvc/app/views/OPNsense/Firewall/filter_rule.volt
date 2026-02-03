@@ -166,7 +166,7 @@
 
                     if (selectedInterface == null && pendingUrlInterface != null) {
                         selectedInterface = pendingUrlInterface;
-                        pendingUrlInterface = null;
+                        pendingUrlInterface = null; // consume the hash so it is not used again
                     }
 
                     if (selectedInterface === '__floating') {
