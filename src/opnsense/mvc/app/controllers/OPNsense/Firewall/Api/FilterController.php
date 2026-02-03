@@ -429,7 +429,7 @@ class FilterController extends FilterBaseController
         ];
 
         // Floating
-        $result['floating']['items'][] = $makeItem('__floating', gettext('Any'), $ruleCounts['floating'] ?? 0, 'floating');
+        $result['floating']['items'][] = $makeItem('__floating', gettext('Floating'), $ruleCounts['floating'] ?? 0, 'floating');
 
         // Groups
         foreach ((new \OPNsense\Firewall\Group())->ifgroupentry->iterateItems() as $groupItem) {
