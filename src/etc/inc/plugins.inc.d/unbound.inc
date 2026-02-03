@@ -610,8 +610,9 @@ function unbound_add_host_entries($ifconfig_details)
                     }
                 }
 
-                foreach ($tmp_aliases as $alias) {
+                foreach ($tmp_aliases as $alias_idx => $alias) {
                     $override_is_main = $alias === $tmp_aliases[0];
+                    $is_first_alias = $alias_idx === 1;
 
                     if ($alias['hostname'] != '') {
                         $alias['hostname'] .= '.';
@@ -625,13 +626,13 @@ function unbound_add_host_entries($ifconfig_details)
                                 $unbound_entries .= "local-zone: \"{$alias['domain']}\" redirect\n";
                                 $unbound_entries .= "local-data: \"{$alias['domain']} {$host->ttl} IN {$host->rr} {$host->server}\"\n";
                             } else {
-                                if (($override_is_main || $tmp_aliases[0]['hostname'] === '*') && !in_array($host->server->getValue(), $ptr_records, true)) {
-                                    /* Only generate a PTR record for the non-alias override and only if the IP is not already associated with a PTR.
-                                     * The exception to this is an alias whose parent uses a wildcard and as such does not specify a PTR record.
+                                if ((($override_is_main && $tmp_aliases[0]['hostname'] !== '*') || ($tmp_aliases[0]['hostname'] === '*' && $is_first_alias)) && !in_array($host->server->getValue(), $ptr_records, true)) {
+                                    /* Only generate a PTR record for the non-alias override (when not a wildcard) and only if the IP is not already associated with a PTR.
+                                     * When a wildcard is used, only the first alias receives the PTR record.
                                      */
                                     $unbound_entries .= "local-data-ptr: \"{$host->server} {$alias['hostname']}{$alias['domain']}\"\n";
                                     $ptr_records[] = $host->server->getValue();
-                                } else {
+                                } elseif (!$override_is_main && !($tmp_aliases[0]['hostname'] === '*' && $is_first_alias) && in_array($host->server->getValue(), $ptr_records, true)) {
                                     syslog(LOG_WARNING, 'PTR record already exists for ' . $alias['hostname'] . $alias['domain'] . '(' . $host->server . ')');
                                 }
                                 $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} {$host->ttl} IN {$host->rr} {$host->server}\"\n";
