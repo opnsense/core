@@ -169,9 +169,9 @@
                     }
                     if (selectedInterface === '__floating') {
                         request.interface = '';
-                    } else if (selectedInterface !== null && selectedInterface !== '__*') {
+                    } else if (selectedInterface !== null && selectedInterface !== '__any') {
                         request.interface = selectedInterface;
-                        // '__*' omit parameter for all rules
+                        // '__any' omit parameter for all rules
                     }
                     if (inspectEnabled) {
                         // Send as a comma separated string
@@ -764,7 +764,7 @@
                         }
                     } else {
                         // Default to ALL interfaces
-                        $('#interface_select').selectpicker('val', '__*');
+                        $('#interface_select').selectpicker('val', '__any');
                     }
                     interfaceInitialized = true;
 

@@ -442,7 +442,7 @@ class FilterController extends FilterBaseController
         }
 
         // ALL rules
-        $result['any']['items'][] = $makeItem('__*', gettext('All rules'), $totalRules, 'any');
+        $result['any']['items'][] = $makeItem('__any', gettext('All rules'), $totalRules, 'any');
 
         // Sort items by count and alphabetically
         foreach ($result as &$section) {
