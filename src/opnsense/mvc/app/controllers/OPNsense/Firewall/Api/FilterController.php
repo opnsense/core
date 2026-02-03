@@ -413,7 +413,6 @@ class FilterController extends FilterBaseController
                 $ruleCounts[$interfaces[0]] = ($ruleCounts[$interfaces[0]] ?? 0) + 1;
             }
         }
-        // ALL rules
         $totalRules = array_sum($ruleCounts);
 
         // Helper to build item with label and count

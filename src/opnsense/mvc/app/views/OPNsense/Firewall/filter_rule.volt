@@ -161,20 +161,20 @@
                     if ( $('#category_filter').val().length > 0) {
                         request['category'] = $('#category_filter').val();
                     }
-                    // Resolve interface (UI first, hash bootstrap)
-                    let iface = $('#interface_select').val();
+                    // Add interface selectpicker, or fall back to hash for the first load
+                    let selectedInterface = $('#interface_select').val();
 
-                    if (iface == null && pendingUrlInterface != null) {
-                        iface = pendingUrlInterface;
+                    if (selectedInterface == null && pendingUrlInterface != null) {
+                        selectedInterface = pendingUrlInterface;
                         pendingUrlInterface = null;
                     }
 
-                    if (iface === '__floating') {
+                    if (selectedInterface === '__floating') {
                         request.interface = '';
-                    } else if (iface !== null && iface !== '__*') {
-                        request.interface = iface;
+                    } else if (selectedInterface !== null && selectedInterface !== '__*') {
+                        request.interface = selectedInterface;
+                        // '__*' omit parameter for all rules
                     }
-                    // '__*' omit parameter for all rules
 
                     if (inspectEnabled) {
                         // Send as a comma separated string
@@ -766,7 +766,7 @@
                             $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
                         }
                     } else {
-                    // Default to ALL interfaces when nothing is selected and no hash applied
+                        // Default to ALL interfaces
                         $('#interface_select').selectpicker('val', '__*');
                     }
                     interfaceInitialized = true;
