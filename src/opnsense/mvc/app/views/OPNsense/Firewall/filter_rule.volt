@@ -163,19 +163,16 @@
                     }
                     // Add interface selectpicker, or fall back to hash for the first load
                     let selectedInterface = $('#interface_select').val();
-
                     if (selectedInterface == null && pendingUrlInterface != null) {
                         selectedInterface = pendingUrlInterface;
                         pendingUrlInterface = null; // consume the hash so it is not used again
                     }
-
                     if (selectedInterface === '__floating') {
                         request.interface = '';
                     } else if (selectedInterface !== null && selectedInterface !== '__*') {
                         request.interface = selectedInterface;
                         // '__*' omit parameter for all rules
                     }
-
                     if (inspectEnabled) {
                         // Send as a comma separated string
                         request['show_all'] = true;
