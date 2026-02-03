@@ -163,8 +163,8 @@ class FilterController extends FilterBaseController
             } else {
                 $is_if = array_intersect(explode(',', $record['interface'] ?? ''), $interfaces ?? []);
             }
-            // ALL interfaces always matches
-            $is_if = $interfaces === null || $is_if || empty($record['interface']);
+            // ALL interfaces or floating always matches
+            $is_if = $is_if || $interfaces === null || empty($record['interface']);
 
             if ($is_cat && $is_if) {
                 /* translate/convert legacy fields before returning, similar to mvc handling */
