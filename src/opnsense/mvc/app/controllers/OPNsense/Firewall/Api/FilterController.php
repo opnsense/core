@@ -81,24 +81,32 @@ class FilterController extends FilterBaseController
     {
         $categories = $this->request->get('category');
         $show_all = !empty($this->request->get('show_all'));
-        if (!empty($this->request->get('interface'))) {
-            $interfaces = explode(',', $this->request->get('interface'));
-            if ($show_all) {
-                /* add groups which contain the selected interface when looking at full impact*/
+        if (!$this->request->has('interface')) {
+            // ALL rules
+            $interfaces = null;
+        } else {
+            // interface param may be empty
+            $interfaces = array_filter(explode(',', (string)$this->request->get('interface')), 'strlen');
+
+            if ($show_all && !empty($interfaces)) {
+                /* add groups which contain the selected interface when looking at full impact */
                 foreach ((new Group())->ifgroupentry->iterateItems() as $groupItem) {
                     if (array_intersect($interfaces, $groupItem->members->getValues())) {
                         $interfaces[] = $groupItem->ifname->getValue();
                     }
                 }
             }
-        } else {
-            $interfaces = [];
         }
 
         /* filter logic for mvc rules */
         $filter_funct_mvc = function ($record) use ($categories, $interfaces, $show_all) {
             $is_cat = empty($categories) || array_intersect(explode(',', $record->categories), $categories);
             $rule_interfaces = $record->interface->getValues();
+
+            // ALL rules, skip interface logic entirely
+            if ($interfaces === null) {
+                return $is_cat;
+            }
 
             if (!$record->interfacenot->isEmpty()) {
                 $if_intersects = !array_intersect($interfaces, $rule_interfaces); /* All but interface */
@@ -150,12 +158,17 @@ class FilterController extends FilterBaseController
             }
             $is_cat = empty($categories) || array_intersect($r_categories, $categories);
 
-            if (!empty($record['interfacenot'])) {
-                $is_if = !array_intersect(explode(',', $record['interface'] ?? ''), $interfaces);
+            if ($interfaces === null) {
+                // ALL interfaces, interface always matches
+                $is_if = true;
             } else {
-                $is_if = array_intersect(explode(',', $record['interface'] ?? ''), $interfaces);
+                if (!empty($record['interfacenot'])) {
+                    $is_if = !array_intersect(explode(',', $record['interface'] ?? ''), $interfaces);
+                } else {
+                    $is_if = array_intersect(explode(',', $record['interface'] ?? ''), $interfaces);
+                }
+                $is_if = $is_if || empty($record['interface']);
             }
-            $is_if = $is_if || empty($record['interface']);
 
             if ($is_cat && $is_if) {
                 /* translate/convert legacy fields before returning, similar to mvc handling */
@@ -383,6 +396,11 @@ class FilterController extends FilterBaseController
                 'label' => gettext('Interfaces'),
                 'icon' => 'fa fa-ethernet text-info',
                 'items' => []
+            ],
+            'any' => [
+                'label' => gettext('Any'),
+                'icon' => 'fa fa-globe-europe text-muted',
+                'items' => []
             ]
         ];
 
@@ -399,6 +417,8 @@ class FilterController extends FilterBaseController
                 $ruleCounts[$interfaces[0]] = ($ruleCounts[$interfaces[0]] ?? 0) + 1;
             }
         }
+        // ALL rules
+        $totalRules = array_sum($ruleCounts);
 
         // Helper to build item with label and count
         $makeItem = fn($value, $label, $count, $type) => [
@@ -425,6 +445,9 @@ class FilterController extends FilterBaseController
                 $result['interfaces']['items'][] = $makeItem($key, $descr, $ruleCounts[$key] ?? 0, 'interface');
             }
         }
+
+        // ALL rules
+        $result['any']['items'][] = $makeItem('*', gettext('All rules'), $totalRules, 'any');
 
         // Sort items by count and alphabetically
         foreach ($result as &$section) {

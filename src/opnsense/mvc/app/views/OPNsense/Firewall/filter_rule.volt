@@ -163,10 +163,16 @@
                     }
                     // Add interface selectpicker, or fall back to hash for the first load
                     let selectedInterface = $('#interface_select').val();
-                    if ((!selectedInterface || selectedInterface.length === 0) && pendingUrlInterface) {
+                    if (
+                        (selectedInterface === null || selectedInterface === undefined || selectedInterface === '') &&
+                        pendingUrlInterface
+                    ) {
                         request['interface'] = pendingUrlInterface;
                         pendingUrlInterface = null; // consume the hash so it is not used again
-                    } else if (selectedInterface && selectedInterface.length > 0) {
+                    // ALL interfaces
+                    } else if (selectedInterface === '*') {
+                        // do not send interface parameter!
+                    } else if (selectedInterface !== null && selectedInterface !== undefined) {
                         request['interface'] = selectedInterface;
                     }
                     if (inspectEnabled) {
@@ -728,7 +734,8 @@
                             const bgClassMap = {
                                 floating: 'bg-primary',
                                 group: 'bg-warning',
-                                interface: 'bg-info'
+                                interface: 'bg-info',
+                                any: 'text-muted'
                             };
                             const badgeClass = bgClassMap[item.type] || 'bg-info';
 
@@ -757,6 +764,10 @@
                         if (allOptions.includes(ifaceFromHash)) {
                             $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
                         }
+                    }
+                    // Default to ALL interfaces when nothing is selected and no hash applied
+                    if (!match && ($('#interface_select').val() === null || $('#interface_select').val() === '')) {
+                        $('#interface_select').val('*').selectpicker('refresh');
                     }
                     interfaceInitialized = true;
 
