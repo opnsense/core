@@ -766,7 +766,7 @@
                         }
                     }
                     // Default to ALL interfaces when nothing is selected and no hash applied
-                    if (!match && ($('#interface_select').val() === null || $('#interface_select').val() === '')) {
+                    if (!match && $('#interface_select').val() === null) {
                         $('#interface_select').val('*').selectpicker('refresh');
                     }
                     interfaceInitialized = true;
