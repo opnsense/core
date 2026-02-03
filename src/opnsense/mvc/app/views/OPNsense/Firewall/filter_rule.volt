@@ -864,6 +864,28 @@
 
         // Hook into add event
         $('#{{formGridFilterRule["edit_dialog_id"]}}').on('opnsense_bootgrid_mapped', function(e, actionType) {
+            if (actionType === 'edit' || actionType === 'clone') {
+                /*
+                 * During rule edit, bootgrid maps values into the underlying inputs
+                 * after bootstrap-select has already been initialized.
+                 *
+                 * bootstrap-select does not observe programmatic value changes,
+                 * which can leave the UI desynced ("Nothing selected") even though
+                 * the value and option exist.
+                 *
+                 * Explicitly sync the picker to fix this.
+                 */
+                ['source_net', 'source_port', 'destination_port', 'destination_net'].forEach(function (name) {
+                    const $input  = $('#rule\\.' + name);
+                    const value   = $input.val();
+                    const $select = $('select[for="rule.' + name + '"]');
+
+                    if (value && $select.length) {
+                        $select.val(Array.isArray(value) ? value : [value]).selectpicker('refresh');
+                    }
+                });
+                return;
+            }
             if (actionType === 'add') {
                 // and choose same interface in new rule as selected in #interface_select
                 const selectedInterface = $('#interface_select').val();
