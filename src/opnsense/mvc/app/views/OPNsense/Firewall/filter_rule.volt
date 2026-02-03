@@ -180,7 +180,6 @@
                         // Send as a comma separated string
                         request['show_all'] = true;
                     }
-
                     return request;
                 },
                 // convert the flat rows into a tree view
