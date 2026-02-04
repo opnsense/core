@@ -163,11 +163,15 @@
                     }
                     // Add interface selectpicker, or fall back to hash for the first load
                     let selectedInterface = $('#interface_select').val();
-                    if ((!selectedInterface || selectedInterface.length === 0) && pendingUrlInterface) {
-                        request['interface'] = pendingUrlInterface;
+                    if (selectedInterface == null && pendingUrlInterface != null) {
+                        selectedInterface = pendingUrlInterface;
                         pendingUrlInterface = null; // consume the hash so it is not used again
-                    } else if (selectedInterface && selectedInterface.length > 0) {
-                        request['interface'] = selectedInterface;
+                    }
+                    if (selectedInterface === '__floating') {
+                        request.interface = '';
+                    } else if (selectedInterface !== null && selectedInterface !== '__any') {
+                        request.interface = selectedInterface;
+                        // '__any' omit parameter for all rules
                     }
                     if (inspectEnabled) {
                         // Send as a comma separated string
@@ -728,7 +732,8 @@
                             const bgClassMap = {
                                 floating: 'bg-primary',
                                 group: 'bg-warning',
-                                interface: 'bg-info'
+                                interface: 'bg-info',
+                                any: ''
                             };
                             const badgeClass = bgClassMap[item.type] || 'bg-info';
 
@@ -739,7 +744,6 @@
                                     <span>
                                         ${count > 0 ? `<span class="badge badge-sm ${badgeClass}">${count}</span>` : ''}
                                         ${label}
-                                        <small class="text-muted ms-2"><em>${subtext}</em></small>
                                     </span>
                                 `.trim()
                             };
@@ -757,6 +761,9 @@
                         if (allOptions.includes(ifaceFromHash)) {
                             $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
                         }
+                    } else {
+                        // Default to ALL interfaces
+                        $('#interface_select').selectpicker('val', '__any');
                     }
                     interfaceInitialized = true;
 
