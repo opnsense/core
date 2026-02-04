@@ -30,10 +30,11 @@ namespace OPNsense\Firewall\Api;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
+use OPNsense\Firewall\Alias;
 use OPNsense\Firewall\Category;
+use OPNsense\Firewall\Filter;
 use OPNsense\Firewall\Group;
 use OPNsense\Firewall\Util;
-use OPNsense\Firewall\Alias;
 
 class FilterController extends FilterBaseController
 {
@@ -402,7 +403,7 @@ class FilterController extends FilterBaseController
 
         // Count rules per interface
         $ruleCounts = [];
-        foreach ((new \OPNsense\Firewall\Filter())->rules->rule->iterateItems() as $rule) {
+        foreach ((new Filter())->rules->rule->iterateItems() as $rule) {
             $interfaces = $rule->interface->getValues();
 
             if (!$rule->interfacenot->isEmpty() || count($interfaces) !== 1) {
@@ -427,7 +428,7 @@ class FilterController extends FilterBaseController
         $result['floating']['items'][] = $makeItem('__floating', gettext('Floating'), $ruleCounts['floating'] ?? 0, 'floating');
 
         // Groups
-        foreach ((new \OPNsense\Firewall\Group())->ifgroupentry->iterateItems() as $groupItem) {
+        foreach ((new Group())->ifgroupentry->iterateItems() as $groupItem) {
             $name = $groupItem->ifname->getValue();
             $descr = $groupItem->descr->getValue();
             $descr = empty($descr) ? $name : "{$descr} ($name)";
@@ -437,8 +438,9 @@ class FilterController extends FilterBaseController
 
         // Interfaces
         $groupKeys = array_column($result['groups']['items'], 'value');
-        foreach (\OPNsense\Core\Config::getInstance()->object()->interfaces->children() as $key => $intf) {
-            if (!in_array($key, $groupKeys)) {
+        foreach (Config::getInstance()->object()->interfaces->children() as $key => $intf) {
+            // XXX: Loopback excluded since no rules should be on there
+            if (!in_array($key, array_merge($groupKeys, ['lo0']))) {
                 $descr = !empty($intf->descr) ? (string)$intf->descr : strtoupper($key);
                 $result['interfaces']['items'][] = $makeItem($key, $descr, $ruleCounts[$key] ?? 0, 'interface');
             }
