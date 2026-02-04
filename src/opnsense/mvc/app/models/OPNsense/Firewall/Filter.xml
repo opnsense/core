@@ -328,6 +328,7 @@
                         <cwr>cwr</cwr>
                     </OptionValues>
                 </tcpflags2>
+                <tcpflags_any type="BooleanField"/>
                 <categories type="ModelRelationField">
                     <Model>
                         <rulesets>
