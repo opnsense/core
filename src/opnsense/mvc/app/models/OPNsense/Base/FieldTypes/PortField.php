@@ -39,7 +39,7 @@ class PortField extends BaseListField
     /**
      * @var array list of well known services
      */
-    private static $wellknownservices = [
+    protected static $wellknownservices = [
         'cvsup',
         'domain',
         'ftp',
@@ -106,6 +106,15 @@ class PortField extends BaseListField
      * @var bool enable aliases
      */
     private $enableAlias = false;
+
+    /**
+     * get the list of well known services
+     * @return array service names
+     */
+    public static function getWellKnown()
+    {
+        return self::$wellknownservices;
+    }
 
     /**
      * generate validation data (list of port numbers and well know ports)

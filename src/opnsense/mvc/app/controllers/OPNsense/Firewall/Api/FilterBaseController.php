@@ -225,6 +225,10 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             ],
         ];
 
+	foreach (\OPNsense\Base\FieldTypes\PortField::getWellKnown() as $port) {
+	    $result['ports']['items'][$port] = strtoupper($port);
+	}
+
         foreach ((new Alias())->aliases->alias->iterateItems() as $alias) {
             if ($alias->type == 'internal') {
                 /* currently only used for legacy bindings, align with legacy_list_aliases() usage */
