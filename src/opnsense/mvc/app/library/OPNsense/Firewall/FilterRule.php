@@ -198,7 +198,7 @@ class FilterRule extends Rule
             }
             // restructure flags
             if (isset($rule['protocol']) && $rule['protocol'] == "tcp") {
-                if (isset($rule['tcpflags_any'])) {
+                if (!empty($rule['tcpflags_any'])) {
                     $rule['flags'] = "any";
                 } elseif (!empty($rule['tcpflags2'])) {
                     $rule['flags'] = "";
