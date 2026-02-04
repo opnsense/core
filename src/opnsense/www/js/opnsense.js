@@ -194,7 +194,6 @@ function setFormData(parent,data) {
                         }
                         if (targetNode.parent().hasClass('bootstrap-select')) {
                             /* if our node is a selectpicker type, refresh after re-populating */
-                            console.log(targetNode); /* XXX: remove, for test */
                             targetNode.selectpicker('refresh');
                         }
                     } else if (targetNode.prop("type") === "checkbox") {
