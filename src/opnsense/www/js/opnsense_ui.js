@@ -985,20 +985,21 @@ $.fn.replaceInputWithSelector = function (data, multiple=false) {
         });
         $this_input.attr('id', $(this).attr('id'));
         $this_input.change(function(){
-            let selopt = multiple ? $(this).val().split(',') : [$(this).val()];
+            let selopt = [];
+            /* skim given options for valid ones in our list, so we can safely set them and identify manual input*/
+            let givenopts = multiple ? $(this).val().split(',') : [$(this).val()];
             $this_select.find('option').each(function(){
-                if (selopt.includes($(this).val())) {
-                    selopt.splice(selopt.indexOf($(this).val()), 1)
-                    $(this).attr('selected', 'selected');
-                } else {
-                    $(this).prop('selected', false);
+                if (givenopts.includes($(this).val())) {
+                    selopt.push($(this).val());
                 }
             });
             if (selopt.length == 0) {
-                $this_input.hide(); /* items not in selector, show input */
-            } else {
+                /* none of the options are selected, so we need to feed empty_select_token here and show manual input*/
+                $this_select.val(multiple ? [empty_select_token]: empty_select_token);
                 $this_input.show();
-                $this_select.val(empty_select_token);
+            } else {
+                $this_select.val(multiple ? selopt : selopt[0]);
+                $this_input.hide();
             }
             $this_select.selectpicker('refresh');
         });

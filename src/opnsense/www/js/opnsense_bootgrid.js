@@ -1793,7 +1793,6 @@ class UIBootgrid {
             mapDataToFormUI(urlMap, server_params).done((payload) => {
                 // update selectors
                 formatTokenizersUI();
-                $('.selectpicker').selectpicker('refresh');
                 // clear validation errors (if any)
                 clearFormValidation('frm_' + editDlg);
                 let target = $('#' + editDlg);
