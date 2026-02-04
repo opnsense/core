@@ -733,7 +733,7 @@
                                 floating: 'bg-primary',
                                 group: 'bg-warning',
                                 interface: 'bg-info',
-                                any: 'text-muted'
+                                any: ''
                             };
                             const badgeClass = bgClassMap[item.type] || 'bg-info';
 
@@ -744,7 +744,6 @@
                                     <span>
                                         ${count > 0 ? `<span class="badge badge-sm ${badgeClass}">${count}</span>` : ''}
                                         ${label}
-                                        <small class="text-muted ms-2"><em>${subtext}</em></small>
                                     </span>
                                 `.trim()
                             };

@@ -380,24 +380,24 @@ class FilterController extends FilterBaseController
         $result = [
             'floating' => [
                 'label' => gettext('Floating'),
-                'icon' => 'fa fa-layer-group text-primary',
-                'items' => []
+                'icon' => 'fa fa-layer-group fa-fw text-primary',
+                'items' => [],
             ],
             'groups' => [
                 'label' => gettext('Groups'),
-                'icon' => 'fa fa-sitemap text-warning',
-                'items' => []
+                'icon' => 'fa fa-sitemap fa-fw text-warning',
+                'items' => [],
             ],
             'interfaces' => [
                 'label' => gettext('Interfaces'),
-                'icon' => 'fa fa-ethernet text-info',
-                'items' => []
+                'icon' => 'fa fa-ethernet fa-fw text-info',
+                'items' => [],
             ],
             'any' => [
                 'label' => gettext('Any'),
-                'icon' => 'fa fa-globe-europe text-muted',
-                'items' => []
-            ]
+                'icon' => 'fa fa-globe-europe fa-fw',
+                'items' => [],
+            ],
         ];
 
         // Count rules per interface
@@ -428,8 +428,11 @@ class FilterController extends FilterBaseController
 
         // Groups
         foreach ((new \OPNsense\Firewall\Group())->ifgroupentry->iterateItems() as $groupItem) {
-            $name = (string)$groupItem->ifname;
-            $result['groups']['items'][] = $makeItem($name, $name, $ruleCounts[$name] ?? 0, 'group');
+            $name = $groupItem->ifname->getValue();
+            $descr = $groupItem->descr->getValue();
+            $descr = empty($descr) ? $name : "{$descr} ($name)";
+
+            $result['groups']['items'][] = $makeItem($name, $descr, $ruleCounts[$name] ?? 0, 'group');
         }
 
         // Interfaces
