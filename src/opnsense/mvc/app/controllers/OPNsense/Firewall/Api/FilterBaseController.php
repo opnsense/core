@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2020 Deciso B.V.
+ * Copyright (C) 2020-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,9 +25,11 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 namespace OPNsense\Firewall\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\FieldTypes\PortField;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
@@ -210,20 +212,36 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
     {
         $result = [
             'single' => [
-                'label' => gettext("Single port or range"),
+                'label' => gettext('Single port or range'),
             ],
             'aliases' => [
-                'label' => gettext("Aliases"),
+                'label' => gettext('Aliases'),
                 'items' => [],
             ],
-            // XXX: Well known ports could be gathered from /etc/services but there is a lot of noise
             'ports' => [
-                'label' => gettext("Ports"),
+                'label' => gettext('Ports'),
                 'items' => [
-                    "" => gettext("any"),
+                    '' => gettext('any'),
                 ],
             ],
         ];
+
+        /*
+         * XXX Eventually it might make more sense to instantate the
+         * actual protocol fields of the rules in order to get the full
+         * list of options in one go (modifying the model XML to
+         * automatically get the correct values).
+         *
+         * This works using e.g.
+         *   (new Filter())->rules->rule->getTemplateNode()->source_port
+         * but loads all rules as a side effect if they exist which we
+         * want to avoid and raises the question how we're going to deal
+         * with every field's own setup as we can't simply derive one
+         * field's accepted values for another.
+         */
+        foreach (PortField::getWellKnown() as $port) {
+            $result['ports']['items'][$port] = strtoupper($port);
+        }
 
         foreach ((new Alias())->aliases->alias->iterateItems() as $alias) {
             if ($alias->type == 'internal') {
