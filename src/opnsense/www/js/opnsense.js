@@ -192,6 +192,11 @@ function setFormData(parent,data) {
                                 targetNode.append($("<optgroup/>").attr('label', group).append(items));
                             }
                         }
+                        if (targetNode.parent().hasClass('bootstrap-select')) {
+                            /* if our node is a selectpicker type, refresh after re-populating */
+                            console.log(targetNode); /* XXX: remove, for test */
+                            targetNode.selectpicker('refresh');
+                        }
                     } else if (targetNode.prop("type") === "checkbox") {
                         // checkbox type
                         targetNode.prop("checked", node[keypart] != 0);
