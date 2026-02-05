@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2023 Deciso B.V.
+ * Copyright (C) 2017-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -228,27 +228,28 @@ abstract class Rule
     }
 
     /**
-     * parse data, use replace map
-     * @param string $value field value
+     * parse data, use replace map for CSV values
+     * @param string $values combined field values
      * @param string $map
      * @param string $prefix
      * @param string $suffix
      * @return string
      */
-    protected function parseReplaceSimple($value, $map, $prefix = "", $suffix = "")
+    protected function parseReplaceSimple($values, $map, $prefix = '', $suffix = '')
     {
-        $retval = $value;
+        $retvals = !is_null($values) && strlen($values) ? explode(',', $values) : [];
         foreach (explode('|', $map) as $item) {
             $tmp = explode(':', $item);
-            if ($tmp[0] == $value) {
-                $retval = $tmp[1] . " ";
-                break;
+            if (in_array($tmp[0], $retvals)) {
+                $retvals[array_search($tmp[0], $retvals)] = $tmp[1];
+            } elseif (!count($retvals) && $tmp[0] === '') {
+                $retvals[] = $tmp[1];
             }
         }
-        if (!empty($retval)) {
-            return $prefix . $retval . $suffix . " ";
+        if (count($retvals)) {
+            return $prefix . join(',', $retvals) . $suffix . ' ';
         } else {
-            return "";
+            return '';
         }
     }
 
