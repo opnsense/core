@@ -109,8 +109,8 @@ class ForwardRule extends Rule
                     $tmp['disabled'] = true;
                     $this->log("Missing target");
                 }
-            } elseif (Util::isAlias($tmp['target'])) {
-                $tmp['target'] = "\${$tmp['target']}";
+            } elseif (isset(static::$aliasMap[$tmp['target']])) {
+                $tmp['target'] = static::$aliasMap[$tmp['target']];
             } elseif (!Util::isIpAddress($tmp['target']) && !Util::isSubnet($tmp['target'])) {
                 $tmp['disabled'] = true;
                 $this->log("Invalid target");
