@@ -32,13 +32,12 @@ use OPNsense\Core\Shell;
 
 class ShellTest extends \PHPUnit\Framework\TestCase
 {
-
     /**
      * test construct
      */
     public function testit()
     {
-	$fail = '/usr/bin/true';
+        $fail = '/usr/bin/true';
         $simple = '/this/cmd';
         $normal = '/this/cmd %s %% foo';
         $normal_a = ['/this/cmd', '%s', '%%', 'foo'];
