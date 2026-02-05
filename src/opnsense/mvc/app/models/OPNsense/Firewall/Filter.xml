@@ -116,7 +116,7 @@
                             <ipv6-here>IPv6 i-am-here</ipv6-here>
                             <mobregreq>Mobile registration request</mobregreq>
                             <mobregrep>Mobile registration reply</mobregrep>
-                            <skip>SKIP</skip>
+                            <!-- <skip>SKIP</skip> is valid but pf does not like the name, number would work -->
                         </Deprecated>
                     </OptionValues>
                 </icmptype>
