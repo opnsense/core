@@ -45,7 +45,7 @@ class Group extends BaseModel
             ['nat', 'onetoone'],
             ['nat', 'outbound', 'rule'],
         ];
-        // os-firewall plugin paths
+        // mvc rules
         $sources[] = ['OPNsense', 'Firewall', 'Filter', 'rules', 'rule'];
         $sources[] = ['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'];
         $sources[] = ['OPNsense', 'Firewall', 'Filter', 'npt', 'rule'];
@@ -80,6 +80,7 @@ class Group extends BaseModel
         $has_changed = false;
         foreach ($this->ruleIterator() as $node) {
             $interfaces = explode(",", (string)$node->interface);
+            // interface works the same for legacy and mvc rules
             if (in_array($oldname, $interfaces)) {
                   unset($interfaces[array_search((string)$oldname, $interfaces)]);
                   $interfaces[] = $newname;
@@ -87,10 +88,28 @@ class Group extends BaseModel
                   $has_changed = true;
             }
             foreach (['source', 'destination'] as $net) {
+                // legacy rules
                 if (!empty($node->$net) && !empty($node->$net->network) && (string)$node->$net->network == $oldname) {
                     $node->$net->network = $newname;
                     $has_changed = true;
                 }
+                // mvc rules (source_net...)
+                $field = $net . '_net';
+                $value = (string)$node->$field;
+                if (!empty($value)) {
+                    $nets = explode(',', $value);
+                    if (in_array($oldname, $nets)) {
+                        unset($nets[array_search($oldname, $nets)]);
+                        $nets[] = $newname;
+                        $node->$field = implode(',', $nets);
+                        $has_changed = true;
+                    }
+                }
+            }
+            // SNAT/DNAT target
+            if (!empty($node->target) && (string)$node->target === $oldname) {
+                $node->target = $newname;
+                $has_changed = true;
             }
         }
         return $has_changed;
