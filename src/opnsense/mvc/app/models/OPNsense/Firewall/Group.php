@@ -82,8 +82,7 @@ class Group extends BaseModel
             $interfaces = explode(",", (string)$node->interface);
             // interface works the same for legacy and mvc rules
             if (in_array($oldname, $interfaces)) {
-                  unset($interfaces[array_search((string)$oldname, $interfaces)]);
-                  $interfaces[] = $newname;
+                  $interfaces[array_search((string)$oldname, $interfaces)] = $newname;
                   $node->interface = implode(",", $interfaces);
                   $has_changed = true;
             }
@@ -99,8 +98,7 @@ class Group extends BaseModel
                 if (!empty($value)) {
                     $nets = explode(',', $value);
                     if (in_array($oldname, $nets)) {
-                        unset($nets[array_search($oldname, $nets)]);
-                        $nets[] = $newname;
+                        $nets[array_search($oldname, $nets)] = $newname;
                         $node->$field = implode(',', $nets);
                         $has_changed = true;
                     }
