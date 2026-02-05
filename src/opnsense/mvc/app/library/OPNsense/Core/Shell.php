@@ -35,6 +35,8 @@ namespace OPNsense\Core;
  */
 class Shell
 {
+    public static $exec_log = true;
+
     /**
      * safe shell command formatter
      */
@@ -69,7 +71,9 @@ class Shell
 
             $command = $_command;
         } catch (\Error $e) {
-            error_log($e);
+            if (self::$exec_log) {
+                error_log($e);
+            }
         }
 
         return $command;

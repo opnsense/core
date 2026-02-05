@@ -50,6 +50,8 @@ class ShellTest extends \PHPUnit\Framework\TestCase
         $complex_r2 = "/this/cmd ';rmfall '\'''\'''%'#comment\"' foo '&& echo hello'";
         $unsupported = '/this/cmd %d';
 
+        Shell::$exec_log = false;
+
         $this->assertEquals(Shell::exec_safe([]), '');
         $this->assertEquals(Shell::exec_safe([], []), '');
         $this->assertEquals(Shell::exec_safe(''), '');
