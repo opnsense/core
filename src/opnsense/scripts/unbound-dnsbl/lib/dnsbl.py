@@ -65,6 +65,9 @@ class DNSBL:
             self.dnsbl_update_time = t
             self._load_dnsbl()
 
+    def get_config(self):
+        return self.dnsbl.get('config') if self.dnsbl else {}
+
     def _load_dnsbl(self):
         last_state = (self.dnsbl is not None)
 
