@@ -322,9 +322,8 @@
                         }
 
                         if (
-                            row[column.id] !== '' &&
-                            row[column.id] !== 'any' &&
-                            row[column.id] !== 'None'
+                            row[column.id] !== undefined &&
+                            !['', 'any', 'None'].includes(row[column.id])
                         ) {
                             return row[column.id];
                         } else {
