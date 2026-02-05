@@ -66,6 +66,21 @@ class FilterRuleTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * test icmp
+     */
+    public function testIcmp()
+    {
+        $rules = [];
+
+        $rules[] = new FilterRule(self::$ifmap, self::$gwmap, ['icmp-type' => 'mobregreq,skip,2']);
+        $rules[] = new FilterRule(self::$ifmap, self::$gwmap, ['icmp-type' => 'skip,2']);
+        $rules[] = new FilterRule(self::$ifmap, self::$gwmap, ['icmp-type' => '2']);
+        $rules[] = new FilterRule(self::$ifmap, self::$gwmap, ['icmp-type' => '']);
+
+        $this->assertEquals(join('', $rules), $this->getConf(__FUNCTION__));
+    }
+
+    /**
      * test protocol
      */
     public function testProtocol()
