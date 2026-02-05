@@ -54,14 +54,14 @@ class ShellTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(Shell::exec_safe([]), '');
         $this->assertEquals(Shell::exec_safe([], []), '');
         $this->assertEquals(Shell::exec_safe(''), '');
-        $this->assertEquals(Shell::exec_safe('', ''), '');
+        $this->assertEquals(Shell::exec_safe('', ''), $fail);
 
         $this->assertEquals(Shell::exec_safe($fail), $fail);
 
         $this->assertEquals(Shell::exec_safe($simple), $simple);
         $this->assertEquals(Shell::exec_safe($simple, []), $simple);
-        $this->assertEquals(Shell::exec_safe($simple, ['fail']), $simple);
-        $this->assertEquals(Shell::exec_safe($simple, ['fail', 'too']), $simple);
+        $this->assertEquals(Shell::exec_safe($simple, ['fail']), $fail);
+        $this->assertEquals(Shell::exec_safe($simple, ['fail', 'too']), $fail);
 
         $this->assertEquals(Shell::exec_safe($normal), $fail);
         $this->assertEquals(Shell::exec_safe($normal, 'ok'), $normal_r1);
@@ -69,17 +69,17 @@ class ShellTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals(Shell::exec_safe($normal, [null]), $normal_r2);
         $this->assertEquals(Shell::exec_safe($normal, ['']), $normal_r2);
         $this->assertEquals(Shell::exec_safe($normal, [0]), $normal_r3);
-        $this->assertEquals(Shell::exec_safe($normal, ['ok', 'not']), $normal_r1);
+        $this->assertEquals(Shell::exec_safe($normal, ['ok', 'not']), $fail);
         $this->assertEquals(Shell::exec_safe($normal_a), $fail);
         $this->assertEquals(Shell::exec_safe($normal_a, 'ok'), $normal_r1);
         $this->assertEquals(Shell::exec_safe($normal_a, ['ok']), $normal_r1);
-        $this->assertEquals(Shell::exec_safe($normal_a, ['ok', 'not']), $normal_r1);
+        $this->assertEquals(Shell::exec_safe($normal_a, ['ok', 'not']), $fail);
 
         $this->assertEquals(Shell::exec_safe($complex, ['1', 1, 1.01]), $complex_r1);
         $this->assertEquals(Shell::exec_safe($complex, [';rmfall \'\'', '#comment"', '&& echo hello']), $complex_r2);
 
         $this->assertEquals(Shell::exec_safe($unsupported), $fail);
-        $this->assertEquals(Shell::exec_safe($unsupported, 'foo'), '/this/cmd 0');
-        $this->assertEquals(Shell::exec_safe($unsupported, 1), '/this/cmd 0');
+        $this->assertEquals(Shell::exec_safe($unsupported, 'foo'), $fail);
+        $this->assertEquals(Shell::exec_safe($unsupported, 1), $fail);
     }
 }
