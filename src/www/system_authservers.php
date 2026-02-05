@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2014-2023 Deciso B.V.
+ * Copyright (C) 2014-2026 Deciso B.V.
  * Copyright (C) 2010 Ermal Luçi
  * Copyright (C) 2008 Shrew Soft Inc. <mgrooms@shrew.net>
  * All rights reserved.
@@ -71,7 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['type'] = $a_server[$id]['type'];
         $pconfig['name'] = $a_server[$id]['name'];
 
-        if (in_array($pconfig['type'], array("ldap", "ldap-totp"))) {
+        if (in_array($pconfig['type'], ["ldap", "ldap-totp"])) {
             $pconfig['ldap_host'] = $a_server[$id]['host'];
             $pconfig['ldap_port'] = $a_server[$id]['ldap_port'];
             $pconfig['ldap_urltype'] = $a_server[$id]['ldap_urltype'];
@@ -81,14 +81,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['ldap_authcn'] = $a_server[$id]['ldap_authcn'];
             $pconfig['ldap_extended_query'] = $a_server[$id]['ldap_extended_query'];
             $pconfig['ldap_attr_user'] = $a_server[$id]['ldap_attr_user'];
-            if (!empty($a_server[$id]['ldap_binddn'])) {
-                $pconfig['ldap_binddn'] = $a_server[$id]['ldap_binddn'];
-            }
-            if (!empty($a_server[$id]['ldap_bindpw'])) {
-                $pconfig['ldap_bindpw'] = $a_server[$id]['ldap_bindpw'];
-            }
+            $pconfig['ldap_binddn'] = $a_server[$id]['ldap_binddn'] ?? '';
+            $pconfig['ldap_bindpw'] = $a_server[$id]['ldap_bindpw'] ?? '';
             $pconfig['ldap_read_properties'] = !empty($a_server[$id]['ldap_read_properties']);
             $pconfig['sync_memberof'] = !empty($a_server[$id]['ldap_sync_memberof']);
+            $pconfig['ldap_attr_memberof'] = $a_server[$id]['ldap_attr_memberof'] ?? '';
+
             $pconfig['sync_memberof_constraint'] = !empty($a_server[$id]['ldap_sync_memberof_constraint']);
             $pconfig['sync_create_local_users'] = !empty($a_server[$id]['ldap_sync_create_local_users']);
             if (!empty($a_server[$id]['ldap_sync_memberof_groups'])) {
@@ -116,6 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $pconfig['radius_auth_port'] = 1812;
             }
             $pconfig['sync_memberof'] = !empty($a_server[$id]['sync_memberof']);
+            $pconfig['ldap_attr_memberof'] = $a_server[$id]['ldap_attr_memberof'] ?? '';
             $pconfig['sync_create_local_users'] = !empty($a_server[$id]['sync_create_local_users']);
             if (!empty($a_server[$id]['sync_memberof_groups'])) {
                 $pconfig['sync_memberof_groups'] = explode(",", $a_server[$id]['sync_memberof_groups']);
@@ -262,6 +261,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                   }
               }
               $server['ldap_read_properties'] = !empty($pconfig['ldap_read_properties']);
+              $server['ldap_attr_memberof'] = $pconfig['ldap_attr_memberof'];
               $server['ldap_sync_memberof'] = !empty($pconfig['sync_memberof']);
               $server['ldap_sync_memberof_constraint'] = !empty($pconfig['sync_memberof_constraint']);
               $server['ldap_sync_memberof_groups'] = !empty($pconfig['sync_memberof_groups']) ? implode(",", $pconfig['sync_memberof_groups']) : [];
@@ -333,8 +333,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
         /* Remove server from main list. */
         $serverdeleted = $a_server[$id]['name'];
-        foreach ($config['system']['authserver'] as $k => $as) {
-            if ($config['system']['authserver'][$k]['name'] == $serverdeleted) {
+        foreach (config_read_array('system', 'authserver', false) as $k => $as) {
+            if ($as['name'] == $serverdeleted) {
                 unset($config['system']['authserver'][$k]);
             }
         }
@@ -373,6 +373,7 @@ $all_authfields = [
     'radius_stationid',
     'sync_create_local_users',
     'sync_memberof',
+    'ldap_attr_memberof',
     'sync_memberof_constraint',
     'type',
 ];
@@ -544,12 +545,14 @@ $( document ).ready(function() {
     $("#ldap_read_properties, #type").change(function(){
         if ($(this).is(":checked") || $("#type").val() == 'radius' ) {
             $("#sync_memberof").prop('disabled', false);
+            $("#ldap_attr_memberof").prop('disabled', false);
             if ($("#type").val() !== 'radius') {
                 $("#sync_memberof_constraint").prop('disabled', false);
             }
             $("#sync_memberof_groups").prop('disabled', false);
         } else {
             $("#sync_memberof").prop('disabled', true);
+            $("#ldap_attr_memberof").prop('disabled', true);
             if ($("#type").val() !== 'radius') {
                 $("#sync_memberof_constraint").prop('disabled', true);
             }
@@ -883,6 +886,15 @@ endif; ?>
                                   "Groups will be extracted from the first CN= section and will only be considered when already existing in OPNsense. ".
                                   "Group memberships will be persisted in OPNsense. ".
                                   "Use the server test tool to check if memberOf is returned by your LDAP server before enabling.");?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_ldap auth_ldap-totp auth_options hidden">
+                  <td><a id="help_for_ldap_attr_memberof" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Group member attribute");?></td>
+                  <td>
+                    <input name="ldap_attr_memberof" type="text" id="ldap_attr_memberof" placeholder='memberOf' size="20" value="<?=$pconfig['ldap_attr_memberof'];?>"/>
+                    <div class="hidden" data-for="help_for_ldap_attr_memberof">
+                      <?= gettext('Attribute name to query for group memberhip') ?>
                     </div>
                   </td>
                 </tr>
