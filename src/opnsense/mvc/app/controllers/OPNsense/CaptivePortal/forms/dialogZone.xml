@@ -37,6 +37,16 @@
         </grid_view>
     </field>
     <field>
+        <id>zone.allowVirtualIps</id>
+        <type>checkbox</type>
+        <label>Allow virtual IPs</label>
+        <help>Allow a connecting client to use multiple IPs (bound to the same MAC). In most cases this option is necessary to facilitate IPv6 on the portal.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
+    </field>
+    <field>
         <id>zone.authservers</id>
         <label>Authenticate using</label>
         <type>select_multiple</type>

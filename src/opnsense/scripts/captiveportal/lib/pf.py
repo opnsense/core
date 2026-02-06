@@ -25,26 +25,11 @@
 
 """
 import subprocess
-import tempfile
-import time
 import ipaddress
 
 class PF(object):
     def __init__(self):
         pass
-
-    @staticmethod
-    def list_table(zoneid):
-        pfctl_cmd = ['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'show']
-        for line in subprocess.run(pfctl_cmd, capture_output=True, text=True).stdout.split('\n'):
-            # split('\n') on an empty string will return an empty string, we need to make sure to suppress these
-            tmp = line.strip()
-            if len(tmp) > 0:
-                yield tmp
-
-    @staticmethod
-    def add_to_table(zoneid, address):
-        subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'add', address], capture_output=True)
 
     @staticmethod
     def _is_ipv6(address):
@@ -61,6 +46,19 @@ class PF(object):
             return False
 
     @staticmethod
+    def list_table(zoneid):
+        pfctl_cmd = ['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'show']
+        for line in subprocess.run(pfctl_cmd, capture_output=True, text=True).stdout.split('\n'):
+            # split('\n') on an empty string will return an empty string, we need to make sure to suppress these
+            tmp = line.strip()
+            if len(tmp) > 0:
+                yield tmp
+
+    @staticmethod
+    def add_to_table(zoneid, address):
+        subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'add', address], capture_output=True)
+
+    @staticmethod
     def remove_from_table(zoneid, address):
         subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'del', address], capture_output=True)
         # kill associated states to and from this host
@@ -68,54 +66,3 @@ class PF(object):
         # Use appropriate wildcard based on IP version
         wildcard = '::/0' if PF._is_ipv6(address) else '0.0.0.0/0'
         subprocess.run(['/sbin/pfctl', '-k', wildcard, '-k', f'{address}'], capture_output=True)
-
-    @staticmethod
-    def sync_accounting(zoneid):
-        rules = ''
-        for entry in PF.list_table(zoneid):
-            # Use appropriate protocol number based on IP version
-            # 0x0800 = IPv4, 0x86dd = IPv6
-            proto = '0x86dd' if PF._is_ipv6(entry) else '0x0800'
-            rules += f'ether pass in quick proto {{ {proto} }} l3 from {entry} to any label "{entry}-in"\n'
-            rules += f'ether pass out quick proto {{ {proto} }} l3 from any to {entry} label "{entry}-out"\n'
-
-        with tempfile.NamedTemporaryFile(mode="w", delete=True) as tmp_file:
-            tmp_file.write(rules)
-            tmp_file.flush()
-
-            subprocess.run(
-                ['/sbin/pfctl', '-a', f'captiveportal_zone_{zoneid}', '-f', tmp_file.name],
-                text=True,
-                capture_output=True
-            )
-
-    @staticmethod
-    def list_accounting_info(zoneid):
-        sp = subprocess.run(['/sbin/pfctl', '-a', f'captiveportal_zone_{zoneid}', '-vvse'], capture_output=True, text=True)
-        results = {}
-        stats = {}
-        prev_line = ''
-
-        for line in sp.stdout.split('\n'):
-            line = line.strip()
-            if not line or line[0] != '[':
-                if prev_line.find(' label ') > -1:
-                    lbl = prev_line.split(' label ')[-1]
-                    if '"' in lbl and lbl.count('"') >= 2:
-                        ip, out_flag = lbl.split('"')[1].split('-')
-                        out = (out_flag == 'out')
-                        stats_key = ('out' if out else 'in')
-                        results.setdefault(ip, {'in_pkts': 0, 'in_bytes': 0, 'out_pkts': 0, 'out_bytes': 0, 'last_accessed': None})
-                        results[ip][f'{stats_key}_pkts'] += stats.get('packets', 0)
-                        results[ip][f'{stats_key}_bytes'] += stats.get('bytes', 0)
-                        results[ip]['last_accessed'] = stats.get('last_accessed', 0)
-                prev_line = line
-            elif line[0] == '['  and line.find('Evaluations') > 0:
-                parts = line.strip('[ ]').replace(':', ' ').split()
-                stats.update({parts[i].lower(): int(parts[i+1]) for i in range(0, len(parts)-1, 2) if parts[i+1].isdigit()})
-            elif line[0] == '[' and line.find('Last Active Time') > 0:
-                date_str = line.strip('[ ]').split('Time:')[1].strip()
-                if date_str != 'N/A':
-                    stats.update({'last_accessed': int(time.mktime(time.strptime(date_str, "%a %b %d %H:%M:%S %Y")))})
-
-        return results

@@ -26,8 +26,23 @@
 """
 import os
 import subprocess
+import ipaddress
 
 class IPFW(object):
+    @staticmethod
+    def _is_ipv6(address):
+        """Check if address is IPv6
+        :param address: IP address string
+        :return: True if IPv6, False if IPv4
+        """
+        try:
+            # Remove scope ID if present (e.g., fe80::1%em0 -> fe80::1)
+            addr = address.split('%')[0]
+            ipaddress.IPv6Address(addr)
+            return True
+        except (ValueError, AttributeError):
+            return False
+
     @staticmethod
     def list_accounting_info():
         """ list accounting info per ip address, addresses can't overlap in zone's so we just output all we know here
@@ -87,9 +102,10 @@ class IPFW(object):
 
             # add accounting rule
             if new_rule_id != -1:
-                subprocess.run(['/sbin/ipfw', 'add', str(new_rule_id), 'count', 'ip', 'from', address, 'to', 'any'],
+                proto = 'ip6' if IPFW._is_ipv6(address) else 'ip'
+                subprocess.run(['/sbin/ipfw', 'add', str(new_rule_id), 'count', proto, 'from', address, 'to', 'any'],
                                capture_output=True)
-                subprocess.run(['/sbin/ipfw', 'add', str(new_rule_id), 'count', 'ip', 'from', 'any', 'to', address],
+                subprocess.run(['/sbin/ipfw', 'add', str(new_rule_id), 'count', proto, 'from', 'any', 'to', address],
                                capture_output=True)
 
                 return new_rule_id

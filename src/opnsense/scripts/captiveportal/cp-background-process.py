@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2025 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -65,11 +65,11 @@ class CPBackgroundProcess(object):
 
     def _add_client(self, zoneid, ip):
         PF.add_to_table(zoneid, ip)
-        # Note: We use PF accounting, not IPFW
+        IPFW.add_accounting(ip)
 
     def _remove_client(self, zoneid, ip):
         PF.remove_from_table(zoneid, ip)
-        # Note: We use PF accounting, not IPFW
+        IPFW.del_accounting(ip)
 
     def initialize_fixed(self):
         """ initialize fixed ip / hosts per zone
@@ -118,9 +118,10 @@ class CPBackgroundProcess(object):
         if zoneid in self._conf_zone_info:
             # fetch data for this zone
             cpzone_info = self._conf_zone_info[zoneid]
-            registered_addresses = list(PF.list_table(zoneid))
+            registered_addresses = set(PF.list_table(zoneid))
             expected_clients = self.db.list_clients(zoneid)
             concurrent_users = self.db.find_concurrent_user_sessions(zoneid)
+            allow_virtual_ips = bool(int(cpzone_info['allowvirtualips']))
 
             # handle connected clients, timeouts, address changes, etc.
             for db_client in expected_clients:
@@ -158,8 +159,8 @@ class CPBackgroundProcess(object):
                             drop_session_reason = "remove concurrent session %s" % db_client['sessionId']
                             delete_reason = "User-Request"
 
-                    # if mac address changes, drop session. it's not the same client
-                    current_arp = self.arp.get_by_ipaddress(cpnet)
+                    # if mac address changes, drop session. it's not the same client. Use the "primary IP" to determine this
+                    current_arp = self.arp.get_by_ipaddress(db_client['ipAddress'])
                     if current_arp is not None and current_arp['mac'] != db_client['macAddress']:
                         drop_session_reason = "mac address changed for session %s" % db_client['sessionId']
                         delete_reason = "Admin-Reset"
@@ -171,81 +172,58 @@ class CPBackgroundProcess(object):
                             drop_session_reason = "accounting limit reached for session %s" % db_client['sessionId']
                             delete_reason = "Session-Timeout"
                 elif db_client['authenticated_via'] == '---mac---':
-                    # MAC-based authentication: ensure prioritized addresses (IPv4 + IPv6) are in PF table
-                    # Enhanced to support dual-stack and IPv6 address rotation (privacy extensions, SLAAC changes, DHCPv6 renewals)
-                    # Note: We can only discover addresses that appear in NDP (have been used for neighbor discovery)
-                    # New addresses will be discovered as they appear in NDP and added automatically
-                    all_addresses = self.arp.get_all_addresses_by_mac(db_client['macAddress'])
-
-                    if all_addresses:
-                        # Get the primary address (prefer IPv4, then first IPv6)
-                        current_ip = None
-                        for addr in all_addresses:
-                            if ':' not in addr:  # IPv4
-                                current_ip = addr
-                                break
-                        if current_ip is None:
-                            current_ip = all_addresses[0]  # Use first IPv6 if no IPv4
-
-                        # Update database if primary address changed
-                        if current_ip != db_client['ipAddress']:
-                            old_ip = db_client['ipAddress']
-                            if old_ip != '':
-                                syslog.syslog(syslog.LOG_INFO,
-                                    "MAC-based session %s: primary IP changed from %s to %s (zone %s)" %
-                                    (db_client['sessionId'], old_ip, current_ip, zoneid))
-                            self.db.update_client_ip(zoneid, db_client['sessionId'], current_ip)
-
-                        # Add all addresses to PF table (dual-stack support)
-                        for addr in all_addresses:
-                            if addr not in registered_addresses:
-                                self._add_client(zoneid, addr)
-                                syslog.syslog(syslog.LOG_INFO,
-                                    "MAC-based session %s: added address %s to PF table (zone %s)" %
-                                    (db_client['sessionId'], addr, zoneid))
-                    elif db_client['ipAddress'] != '':
-                        # Handle expired addresses: stored IP no longer exists in ARP/NDP
-                        stored_ip = db_client['ipAddress']
-                        stored_entry = self.arp.get_by_ipaddress(stored_ip)
-                        if stored_entry is None:
-                            # IP expired and MAC has no addresses - remove from PF table
-                            self._remove_client(zoneid, stored_ip)
-                            syslog.syslog(syslog.LOG_INFO,
-                                "MAC-based session %s: expired IP %s removed from PF table (zone %s)" %
-                                (db_client['sessionId'], stored_ip, zoneid))
+                    # detect mac changes, reset primary IP
+                    current_ips = self.arp.get_all_addresses_by_mac(db_client['macAddress'])
+                    if len(current_ips) > 0 and db_client['ipAddress'] != current_ips[0]:
+                        if db_client['ipAddress'] != '':
+                            # remove old ip
+                            self._remove_client(zoneid, db_client['ipAddress'])
+                        self.db.update_client_ip(zoneid, db_client['sessionId'], current_ips[0])
+                        self._add_client(zoneid, current_ips[0])
 
                 # check session, if it should be active, validate its properties
-                if drop_session_reason is None:
-                    # registered client, but not active or missing accounting according to pf (after reboot)
-                    if cpnet not in registered_addresses:
-                        self._add_client(zoneid, cpnet)
-
-                    # Dual-stack awareness: check for additional prioritized addresses (IPv4/IPv6) not in PF table
-                    # This ensures dual-stack clients have all their addresses allowed (that appear in NDP)
-                    # Note: We can only discover addresses that appear in NDP (have been used for neighbor discovery)
-                    if db_client['macAddress'] and db_client['macAddress'] != '':
-                        all_addresses = self.arp.get_all_addresses_by_mac(db_client['macAddress'])
-                        for addr in all_addresses:
-                            if addr not in registered_addresses:
-                                self._add_client(zoneid, addr)
-                                syslog.syslog(syslog.LOG_INFO,
-                                    "Session %s: added missing dual-stack address %s to PF table (zone %s)" %
-                                    (db_client['sessionId'], addr, zoneid))
+                if allow_virtual_ips:
+                    session_ips = set(self.db.list_session_ips(zoneid, db_client['sessionId']))
+                    discovered = set(self.arp.get_all_addresses_by_mac(db_client['macAddress']))
+                    diff = discovered - session_ips
+                    for ip in diff:
+                        self.db.add_virtual_ip(zoneid, db_client['sessionId'], ip)
+                    session_ips.update(diff)
                 else:
-                    # remove session
+                    session_ips = {cpnet} if cpnet else set()
+
+                missing_in_pf = session_ips - registered_addresses
+                missing_in_ipfw = session_ips - set(registered_addr_accounting.keys())
+                needs_sync = bool(missing_in_pf or missing_in_ipfw)
+
+                if drop_session_reason is None:
+                    if cpnet and needs_sync:
+                        # registered client, but not active in pf or missing accounting according to ipfw (after reboot)
+                        for ip in session_ips:
+                            if ip in missing_in_pf or ip in missing_in_ipfw:
+                                self._add_client(zoneid, ip)
+                else:
+                    # remove session: remove all IPs associated with this session
                     syslog.syslog(syslog.LOG_NOTICE, drop_session_reason)
-                    self._remove_client(zoneid, cpnet)
+                    for ip in session_ips:
+                        self._remove_client(zoneid, ip)
                     self.db.del_client(zoneid, db_client['sessionId'], delete_reason)
 
-            # if there are addresses/networks in the underlying pf table which are not in our administration,
-            # remove them from pf.
-            for registered_address in registered_addresses:
-                address_active = False
+            # Build the set of addresses that should be present in pf/ipfw for this zone
+            expected_addresses = set()
+
+            if allow_virtual_ips:
                 for db_client in expected_clients:
-                    if registered_address == db_client['ipAddress']:
-                        address_active = True
-                        break
-                if not address_active:
+                    expected_addresses.update(self.db.list_session_ips(zoneid, db_client['sessionId']))
+            else:
+                for db_client in expected_clients:
+                    ip = db_client.get('ipAddress')
+                    if ip:
+                        expected_addresses.add(ip)
+
+            # Remove anything in pf/ipfw that isn't expected
+            for registered_address in registered_addresses:
+                if registered_address not in expected_addresses:
                     self._remove_client(zoneid, registered_address)
 
 def main():

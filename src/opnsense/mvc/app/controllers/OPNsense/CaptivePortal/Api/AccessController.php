@@ -50,8 +50,7 @@ class AccessController extends ApiControllerBase
     protected function clientSession(string $zoneid)
     {
         $backend = new Backend();
-        $allClientsRaw = $backend->configdpRun("captiveportal list_clients", [$zoneid]);
-        $allClients = json_decode($allClientsRaw, true);
+        $allClients = json_decode($backend->configdpRun("captiveportal list_clients", [$zoneid]), true);
         $clientIp = $this->getClientIp();
 
         if ($allClients != null) {
@@ -113,6 +112,7 @@ class AccessController extends ApiControllerBase
 
         // determine original sender of this request
         // check if client is localhost (IPv4 or IPv6) and X-Forwarded-For is present
+        // XXX probable scope issue for ipv6
         if (
             $forwardedFor != "" &&
             (
@@ -133,31 +133,11 @@ class AccessController extends ApiControllerBase
     protected function getClientMac($ip)
     {
         if (empty($this->arp)) {
-            /* use hostwatch dump for IPv4, fallback to NDP for IPv6 */
             $data = json_decode((new Backend())->configdRun('hostwatch dump'), true) ?? [];
             if (!empty($data['rows'])) {
                 foreach ($data['rows'] as $row) {
-                    $this->arp[$row[2]] = $row[1];
-                }
-            }
-        }
-
-        // Check cached result first
-        if (isset($this->arp[$ip])) {
-            return $this->arp[$ip];
-        }
-
-        // For IPv6, also check NDP (hostwatch may not have IPv6 yet)
-        if (is_ipaddrv6($ip)) {
-            $ndp_data = json_decode((new Backend())->configdRun("interface list ndp json"), true);
-            if ($ndp_data != null) {
-                foreach ($ndp_data as $ndp) {
                     // remove scope from IPv6 address if present (e.g., fe80::1%em0 -> fe80::1)
-                    $ndp_ip = explode('%', $ndp['ip'])[0];
-                    if (!empty($ndp['ip']) && $ndp_ip == $ip) {
-                        $this->arp[$ip] = $ndp['mac'];
-                        return $ndp['mac'];
-                    }
+                    $this->arp[$row[2]] = explode('%', $row[1])[0];
                 }
             }
         }
@@ -362,11 +342,11 @@ class AccessController extends ApiControllerBase
                             if (array_key_exists('session_timeout', $authProps) || $cpZone->alwaysSendAccountingReqs == '1') {
                                 $backend->configdpRun(
                                     "captiveportal set session_restrictions",
-                                    array(
+                                    [
                                         (string)$cpZone->zoneid,
                                         $CPsession['sessionId'],
                                         $authProps['session_timeout'] ?? null,
-                                    )
+                                    ]
                                 );
                             }
                         }

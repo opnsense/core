@@ -115,17 +115,6 @@
             }
         });
 
-        // Initialize tooltips after grid loads (following OPNsense pattern)
-        $("#grid-clients").on("loaded.rs.jquery.bootgrid", function() {
-            // Find and initialize tooltips in IP address cells
-            $("#grid-clients").find('[data-column-id="ipAddress"] [data-toggle="tooltip"]').each(function() {
-                // Destroy existing tooltip if any
-                $(this).tooltip('destroy');
-                // Initialize tooltip
-                $(this).tooltip({container: 'body', html: false});
-            });
-        });
-
         $("#zone-selection-wrapper").detach().insertBefore('#grid-clients-header .search');
     });
 </script>

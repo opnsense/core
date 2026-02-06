@@ -43,7 +43,8 @@ parser.add_argument('--authenticated_via', help='authentication source', type=st
 parser.add_argument('--ip_address', help='source ip address', type=str)
 args = parser.parse_args()
 
-arp_entry = ARP().get_by_ipaddress(args.ip_address)
+arp = ARP()
+arp_entry = arp.get_by_ipaddress(args.ip_address)
 response = DB().add_client(
     zoneid=args.zoneid,
     authenticated_via=args.authenticated_via,
@@ -51,22 +52,10 @@ response = DB().add_client(
     ip_address=args.ip_address,
     mac_address=arp_entry['mac'] if arp_entry is not None else None
 )
+PF.add_to_table(zoneid=args.zoneid, address=args.ip_address)
+IPFW.add_accounting(args.ip_address)
 
-# Get prioritized addresses for this MAC (IPv4 + IPv6) to support dual-stack authentication
-# This fixes the critical bug where IPv4-only authentication leaves IPv6 blocked
-# Note: We can only add addresses that appear in NDP (have been used for neighbor discovery)
-# New addresses will be discovered by the background process as they appear in NDP
-if arp_entry is not None and arp_entry['mac'] is not None:
-    arp_helper = ARP()
-    all_addresses = arp_helper.get_all_addresses_by_mac(arp_entry['mac'])
-    
-    # Add all prioritized addresses found in NDP to PF table
-    # Priority: IPv4 first, then global IPv6, then unique-local IPv6, then link-local IPv6
-    for addr in all_addresses:
-        PF.add_to_table(zoneid=args.zoneid, address=addr)
-else:
-    # Fallback: if MAC lookup fails, at least add the authenticated IP address
-    PF.add_to_table(zoneid=args.zoneid, address=args.ip_address)
+# Note: the sync process will collect and add any client virtual IPs (if allowed)
 
 response['clientState'] = 'AUTHORIZED'
 print(ujson.dumps(response))

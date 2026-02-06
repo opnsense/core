@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015-2025 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,6 @@ import os
 import base64
 import time
 import sqlite3
-from lib.arp import ARP
 
 
 class DB(object):
@@ -101,71 +100,126 @@ class DB(object):
             """)
             self._connection.commit()
 
+        # migration: introduce cp_client_ips table (multiple IPs per (zoneid, sessionid)) for IPv6 support
+        cur.execute("""
+            SELECT count(*)
+            FROM sqlite_master
+            WHERE type='table' AND name='cp_client_ips'
+        """)
+        if cur.fetchall()[0][0] == 0:
+            # create the new table
+            cur.execute("""
+                CREATE TABLE cp_client_ips (
+                      zoneid     INT NOT NULL
+                    , sessionid  VARCHAR NOT NULL
+                    , ip_address VARCHAR NOT NULL
+                    , PRIMARY KEY (zoneid, sessionid, ip_address)
+                    , FOREIGN KEY (zoneid, sessionid)
+                        REFERENCES cp_clients(zoneid, sessionid)
+                        ON DELETE CASCADE
+                )
+            """)
+
+            # indexes used when allow_virtual_ips is turned on for a zone
+            cur.execute("CREATE INDEX IF NOT EXISTS cp_client_ips_ip   ON cp_client_ips(ip_address)")
+            cur.execute("CREATE INDEX IF NOT EXISTS cp_client_ips_zone ON cp_client_ips(zoneid)")
+
+            self._connection.commit()
+        else:
+            # Table exists: ensure indexes are present (idempotent)
+            cur.execute("CREATE INDEX IF NOT EXISTS cp_client_ips_ip   ON cp_client_ips(ip_address)")
+            cur.execute("CREATE INDEX IF NOT EXISTS cp_client_ips_zone ON cp_client_ips(zoneid)")
+            self._connection.commit()
+
         cur.close()
 
     def sessions_per_address(self, zoneid, ip_address=None, mac_address=None):
-        """ fetch session(s) per (mac) address
-        :param zoneid: cp zone number
-        :param ip_address: ip address
-        :return: active status (boolean)
+        """ fetch session(s) per (ip/mac) address
+        Primary IP is stored in cp_clients.ip_address; virtual IPs in cp_client_ips.
         """
+        # Nothing to match on
+        if (ip_address is None or str(ip_address).strip() == '') and (mac_address is None or str(mac_address).strip() == ''):
+            return []
+
         cur = self._connection.cursor()
         request = {
             'zoneid': zoneid,
             'ip_address': ip_address,
             'mac_address': mac_address
         }
-        cur.execute("""select   cc.sessionid         sessionId
-                        ,       cc.authenticated_via authenticated_via
-                        , cc.ip_address
-                       from     cp_clients cc
-                       where    cc.deleted = 0
-                       and      cc.zoneid = :zoneid
-                       and   (
-                                cc.ip_address = :ip_address
-                                or
-                                cc.mac_address = :mac_address
-                             )""", request)
 
-        result = []
-        for row in cur.fetchall():
-            result.append({'sessionId': row[0], 'authenticated_via': row[1]})
-        return result
+        clauses = []
+        if ip_address is not None and str(ip_address).strip() != '':
+            # Match either primary IP or any virtual IP
+            clauses.append("(cc.ip_address = :ip_address OR ci.ip_address = :ip_address)")
+        if mac_address is not None and str(mac_address).strip() != '':
+            clauses.append("cc.mac_address = :mac_address")
+
+        where_or = " OR ".join(clauses)
+
+        cur.execute(f"""
+            SELECT DISTINCT
+                cc.sessionid         AS sessionId,
+                cc.authenticated_via AS authenticated_via
+            FROM cp_clients cc
+            LEFT JOIN cp_client_ips ci
+                ON ci.zoneid = cc.zoneid
+                AND ci.sessionid = cc.sessionid
+            WHERE cc.deleted = 0
+            AND cc.zoneid = :zoneid
+            AND ({where_or})
+        """, request)
+
+        return [{'sessionId': sessionId, 'authenticated_via': authenticated_via}
+                for sessionId, authenticated_via in cur.fetchall()]
 
     def add_client(self, zoneid, authenticated_via, username, ip_address, mac_address):
-        """ add a new client to the captive portal administration
-        :param zoneid: cp zone number
-        :param authenticated_via: name/id of the authenticator or ---ip--- / ---mac--- for authentication by address
-        :param username: username, maybe empty
-        :param ip_address: ip address (to unlock)
-        :param mac_address: physical address of this ip
-        :return: dictionary with session info
-        """
-        response = dict()
-        response['zoneid'] = zoneid
-        response['authenticated_via'] = authenticated_via
-        response['userName'] = username
-        response['ipAddress'] = ip_address
-        response['macAddress'] = mac_address
-        response['startTime'] = time.time()  # record creation = sign-in time
-        response['sessionId'] = base64.b64encode(os.urandom(16)).decode()  # generate a new random session id
+        response = {
+            'zoneid': zoneid,
+            'authenticated_via': authenticated_via,
+            'userName': username,
+            'ipAddress': ip_address,
+            'macAddress': mac_address,
+            'startTime': time.time(),
+            'sessionId': base64.b64encode(os.urandom(16)).decode()
+        }
 
         cur = self._connection.cursor()
-        # set cp_client as deleted in case there's already a user logged-in at this ip address.
-        if ip_address is not None and ip_address != '':
-            cur.execute("""UPDATE cp_clients
-                           SET    deleted = 1
-                           WHERE  zoneid = :zoneid
-                           AND    ip_address = :ipAddress
-                        """, response)
+        try:
+            cur.execute("BEGIN")
 
-        # add new session
-        cur.execute("""INSERT INTO cp_clients(zoneid, authenticated_via, sessionid, username,  ip_address, mac_address, created)
-                       VALUES (:zoneid, :authenticated_via, :sessionId, :userName, :ipAddress, :macAddress, :startTime)
-                    """, response)
+            # set cp_client as deleted in case there's already a user logged-in at this ip address
+            # (match both primary IP and virtual IPs)
+            if ip_address is not None and str(ip_address).strip() != '':
+                cur.execute("""
+                    UPDATE cp_clients
+                    SET    deleted = 1
+                    WHERE  zoneid = :zoneid
+                    AND  deleted = 0
+                    AND (
+                            ip_address = :ipAddress
+                            OR sessionid IN (
+                                SELECT sessionid
+                                FROM   cp_client_ips
+                                WHERE  zoneid = :zoneid
+                                AND  ip_address = :ipAddress
+                            )
+                    )
+                """, response)
 
-        self._connection.commit()
-        return response
+            # add new session (primary IP lives here)
+            cur.execute("""
+                INSERT INTO cp_clients(zoneid, authenticated_via, sessionid, username, ip_address, mac_address, created)
+                VALUES (:zoneid, :authenticated_via, :sessionId, :userName, :ipAddress, :macAddress, :startTime)
+            """, response)
+
+            self._connection.commit()
+            return response
+        except Exception:
+            self._connection.rollback()
+            raise
+        finally:
+            cur.close()
 
     def update_client_ip(self, zoneid, sessionid, ip_address):
         """ change client ip address
@@ -180,6 +234,29 @@ class DB(object):
                        and    sessionid = :sessionid
                     """, {'zoneid': zoneid, 'sessionid': sessionid, 'ip_address': ip_address})
         self._connection.commit()
+
+    def add_virtual_ip(self, zoneid, sessionid, ip_address):
+        """Add a virtual IP address to a session.
+        """
+        if isinstance(sessionid, bytes):
+            sessionid = sessionid.decode()
+
+        if ip_address is None or str(ip_address).strip() == '':
+            return
+
+        cur = self._connection.cursor()
+        try:
+            cur.execute("""
+                INSERT OR IGNORE INTO cp_client_ips(zoneid, sessionid, ip_address)
+                VALUES (:zoneid, :sessionid, :ip_address)
+            """, {
+                'zoneid': zoneid,
+                'sessionid': sessionid,
+                'ip_address': ip_address
+            })
+            self._connection.commit()
+        finally:
+            cur.close()
 
     def del_client(self, zoneid, sessionid, reason=None):
         """ mark (administrative) client for removal
@@ -246,9 +323,6 @@ class DB(object):
                         ,        cc.created desc
                         """, {'zoneid': zoneid})
 
-        # Create ARP instance once to load tables (expensive operation done once)
-        arp_helper = ARP()
-
         while True:
             # fetch field names
             if len(fieldnames) == 0:
@@ -262,42 +336,51 @@ class DB(object):
                 record = dict()
                 for idx in range(len(row)):
                     record[fieldnames[idx]] = row[idx]
-
-                # Enrich record with all IP addresses (IPv4 and IPv6) via MAC lookup
-                mac_address = record.get('macAddress')
-                ipv4_addresses = []
-                ipv6_addresses = []
-
-                if mac_address and mac_address != '':
-                    try:
-                        # Get all addresses for this MAC
-                        all_addresses = arp_helper.get_all_addresses_by_mac(mac_address)
-                        # Separate into IPv4 and IPv6
-                        if all_addresses:
-                            for addr in all_addresses:
-                                if addr and ':' in addr:
-                                    ipv6_addresses.append(addr)
-                                elif addr:
-                                    ipv4_addresses.append(addr)
-                    except Exception:
-                        # If MAC lookup fails, fallback to classifying stored IP
-                        pass
-
-                # If no addresses found via MAC lookup, classify stored IP address
-                if len(ipv4_addresses) == 0 and len(ipv6_addresses) == 0:
-                    stored_ip = record.get('ipAddress', '')
-                    if stored_ip:
-                        if ':' in stored_ip:
-                            ipv6_addresses.append(stored_ip)
-                        else:
-                            ipv4_addresses.append(stored_ip)
-
-                # Always add enriched fields to record (ensure they're lists, not None)
-                record['ipv4Addresses'] = ipv4_addresses if ipv4_addresses else []
-                record['ipv6Addresses'] = ipv6_addresses if ipv6_addresses else []
-
                 result.append(record)
         return result
+    
+    def list_session_ips(self, zoneid, sessionid, include_deleted=False):
+        """
+        Return primary + virtual IPs for a session.
+        - Primary IP is cp_clients.ip_address
+        - virtual IPs are cp_client_ips.ip_address
+        Returns a de-duplicated list[str] (order not guaranteed).
+        """
+        if isinstance(sessionid, bytes):
+            sessionid = sessionid.decode()
+
+        cur = self._connection.cursor()
+        try:
+            params = {'zoneid': zoneid, 'sessionid': sessionid}
+            where_deleted = "" if include_deleted else "AND cc.deleted = 0"
+
+            cur.execute(f"""
+                SELECT cc.ip_address
+                FROM cp_clients cc
+                WHERE cc.zoneid = :zoneid
+                AND cc.sessionid = :sessionid
+                {where_deleted}
+            """, params)
+            row = cur.fetchone()
+            ips = set()
+            if row and row[0] and str(row[0]).strip():
+                ips.add(str(row[0]).strip())
+
+            cur.execute("""
+                SELECT ci.ip_address
+                FROM cp_client_ips ci
+                WHERE ci.zoneid = :zoneid
+                AND ci.sessionid = :sessionid
+                AND ci.ip_address IS NOT NULL
+                AND TRIM(ci.ip_address) <> ''
+            """, params)
+            for (ip,) in cur.fetchall():
+                if ip and str(ip).strip():
+                    ips.add(str(ip).strip())
+
+            return list(ips)
+        finally:
+            cur.close()
 
     def find_concurrent_user_sessions(self, zoneid):
         """ query zone database for concurrent user sessions
@@ -329,167 +412,241 @@ class DB(object):
         return result
 
     def update_accounting_info(self, details):
-        """ update internal accounting database with given pf info (not per zone)
-        Aggregates stats across all IP addresses for each session (dual-stack support)
-        :param details: pf accounting details (keyed by IP address)
+        """ update internal accounting database with given ipfw info (not per zone)
+        :param details: ipfw accounting details dict keyed by ip:
+                        details[ip] = {'in_pkts','out_pkts','in_bytes','out_bytes','last_accessed'}
         """
-        if type(details) == dict:
-            # Create ARP instance to map IPs to MACs for aggregation
-            arp_helper = ARP()
-            
-            # query registered data with MAC addresses and prev_* fields for counter reset detection
-            sql = """ select    cc.ip_address, cc.zoneid, cc.sessionid, cc.mac_address
-                      ,         si.rowid si_rowid, si.prev_packets_in, si.prev_bytes_in
-                      ,         si.prev_packets_out, si.prev_bytes_out, si.last_accessed
-                      from      cp_clients cc
-                      left join session_info si on si.zoneid = cc.zoneid and si.sessionid = cc.sessionid
-                      where     cc.deleted = 0
-                      order by  cc.zoneid, cc.sessionid, cc.ip_address
-                  """
-            cur = self._connection.cursor()
-            cur2 = self._connection.cursor()
-            cur.execute(sql)
-            
-            # Group sessions and aggregate stats across all IPs per session
-            sessions = {}
-            for row in cur.fetchall():
-                # map fieldnumbers to names
-                record = {}
-                for fieldId in range(len(row)):
-                    record[cur.description[fieldId][0]] = row[fieldId]
-                
-                zoneid = record['zoneid']
-                sessionid = record['sessionid']
-                session_key = (zoneid, sessionid)
-                
-                if session_key not in sessions:
-                    sessions[session_key] = {
-                        'zoneid': zoneid,
-                        'sessionid': sessionid,
-                        'si_rowid': record['si_rowid'],
-                        'mac_address': record['mac_address'],
-                        'prev_packets_in': record.get('prev_packets_in') or 0,
-                        'prev_bytes_in': record.get('prev_bytes_in') or 0,
-                        'prev_packets_out': record.get('prev_packets_out') or 0,
-                        'prev_bytes_out': record.get('prev_bytes_out') or 0,
-                        'ip_addresses': [],
-                        'aggregated': {
-                            'packets_in': 0,
-                            'packets_out': 0,
-                            'bytes_in': 0,
-                            'bytes_out': 0,
-                            'last_accessed': 0
-                        }
-                    }
-                
-                # Collect all IPs for this session
-                primary_ip = record['ip_address']
-                sessions[session_key]['ip_addresses'].append(primary_ip)
-                
-                # Get all IPs for this MAC to aggregate stats
-                if record['mac_address']:
-                    try:
-                        all_ips = arp_helper.get_all_addresses_by_mac(record['mac_address'])
-                        sessions[session_key]['ip_addresses'].extend(all_ips)
-                    except Exception:
-                        pass
-                
-                # Remove duplicates
-                sessions[session_key]['ip_addresses'] = list(set(sessions[session_key]['ip_addresses']))
-            
-            # Aggregate stats across all IPs for each session
-            for session_key, session_data in sessions.items():
-                aggregated = session_data['aggregated']
-                
-                # Calculate aggregated current values from all IPs
-                aggregated_prev_packets_in = 0
-                aggregated_prev_packets_out = 0
-                aggregated_prev_bytes_in = 0
-                aggregated_prev_bytes_out = 0
-                
-                for ip in session_data['ip_addresses']:
-                    if ip in details:
-                        ip_stats = details[ip]
-                        aggregated['packets_in'] += ip_stats.get('in_pkts', 0)
-                        aggregated['packets_out'] += ip_stats.get('out_pkts', 0)
-                        aggregated['bytes_in'] += ip_stats.get('in_bytes', 0)
-                        aggregated['bytes_out'] += ip_stats.get('out_bytes', 0)
-                        # For prev_*, use current values (will be updated on next cycle)
-                        aggregated_prev_packets_in += ip_stats.get('in_pkts', 0)
-                        aggregated_prev_packets_out += ip_stats.get('out_pkts', 0)
-                        aggregated_prev_bytes_in += ip_stats.get('in_bytes', 0)
-                        aggregated_prev_bytes_out += ip_stats.get('out_bytes', 0)
-                        # Use most recent last_accessed across all IPs
-                        ip_last_accessed = ip_stats.get('last_accessed', 0) or 0
-                        if ip_last_accessed > aggregated['last_accessed']:
-                            aggregated['last_accessed'] = ip_last_accessed
-                
-                # Only update if we have stats
-                if aggregated['packets_in'] > 0 or aggregated['packets_out'] > 0 or \
-                   aggregated['bytes_in'] > 0 or aggregated['bytes_out'] > 0:
-                    if session_data['si_rowid'] is None:
-                        # new session, add info object
-                        sql_new = """ insert into session_info(zoneid, sessionid, prev_packets_in, prev_bytes_in,
-                                                               prev_packets_out, prev_bytes_out,
-                                                               packets_in, packets_out, bytes_in, bytes_out,
-                                                               last_accessed)
-                                      values (:zoneid, :sessionid, :packets_in, :bytes_in, :packets_out, :bytes_out,
-                                              :packets_in, :packets_out, :bytes_in, :bytes_out, :last_accessed)
-                        """
-                        params = {
-                            'zoneid': session_data['zoneid'],
-                            'sessionid': session_data['sessionid'],
-                            'packets_in': aggregated['packets_in'],
-                            'packets_out': aggregated['packets_out'],
-                            'bytes_in': aggregated['bytes_in'],
-                            'bytes_out': aggregated['bytes_out'],
-                            'last_accessed': aggregated['last_accessed'] if aggregated['last_accessed'] > 0 else None
-                        }
-                        cur2.execute(sql_new, params)
-                    else:
-                        # update session - handle counter resets
-                        sql_update = """ update session_info
-                                         set    last_accessed = :last_accessed
-                                         ,      prev_packets_in = :prev_packets_in
-                                         ,      prev_packets_out = :prev_packets_out
-                                         ,      prev_bytes_in = :prev_bytes_in
-                                         ,      prev_bytes_out = :prev_bytes_out
-                                         ,      packets_in = packets_in + :packets_in
-                                         ,      packets_out = packets_out + :packets_out
-                                         ,      bytes_in = bytes_in + :bytes_in
-                                         ,      bytes_out = bytes_out + :bytes_out
-                                         where  rowid = :si_rowid
-                        """
-                        # Check if counters were reset (similar to upstream logic)
-                        if session_data['prev_packets_in'] <= aggregated_prev_packets_in and \
-                           session_data['prev_packets_out'] <= aggregated_prev_packets_out:
-                            # Counters are still valid, add difference
-                            params = {
-                                'si_rowid': session_data['si_rowid'],
-                                'packets_in': aggregated['packets_in'] - session_data['prev_packets_in'],
-                                'packets_out': aggregated['packets_out'] - session_data['prev_packets_out'],
-                                'bytes_in': aggregated['bytes_in'] - session_data['prev_bytes_in'],
-                                'bytes_out': aggregated['bytes_out'] - session_data['prev_bytes_out'],
-                                'prev_packets_in': aggregated_prev_packets_in,
-                                'prev_packets_out': aggregated_prev_packets_out,
-                                'prev_bytes_in': aggregated_prev_bytes_in,
-                                'prev_bytes_out': aggregated_prev_bytes_out,
-                                'last_accessed': aggregated['last_accessed'] if aggregated['last_accessed'] > 0 else None
-                            }
-                        else:
-                            # Counters were reset, add current values
-                            params = {
-                                'si_rowid': session_data['si_rowid'],
-                                'packets_in': aggregated['packets_in'],
-                                'packets_out': aggregated['packets_out'],
-                                'bytes_in': aggregated['bytes_in'],
-                                'bytes_out': aggregated['bytes_out'],
-                                'prev_packets_in': aggregated_prev_packets_in,
-                                'prev_packets_out': aggregated_prev_packets_out,
-                                'prev_bytes_in': aggregated_prev_bytes_in,
-                                'prev_bytes_out': aggregated_prev_bytes_out,
-                                'last_accessed': aggregated['last_accessed'] if aggregated['last_accessed'] > 0 else None
-                            }
-                        cur2.execute(sql_update, params)
-            
+        if type(details) != dict:
+            return
+
+        cur = self._connection.cursor()
+        cur2 = self._connection.cursor()
+
+        # 1) Load sessions + existing session_info
+        cur.execute("""
+            SELECT  cc.zoneid,
+                    cc.sessionid,
+                    cc.ip_address AS primary_ip,
+                    cc.created    AS created,
+                    si.rowid      AS si_rowid,
+                    COALESCE(si.prev_packets_in, 0)  AS prev_packets_in,
+                    COALESCE(si.prev_bytes_in, 0)    AS prev_bytes_in,
+                    COALESCE(si.prev_packets_out, 0) AS prev_packets_out,
+                    COALESCE(si.prev_bytes_out, 0)   AS prev_bytes_out,
+                    COALESCE(si.last_accessed, 0)    AS last_accessed
+            FROM cp_clients cc
+            LEFT JOIN session_info si
+                ON si.zoneid = cc.zoneid AND si.sessionid = cc.sessionid
+        """)
+
+        sessions = {}  # (zoneid, sessionid) -> record
+        for row in cur.fetchall():
+            rec = {
+                'zoneid': row[0],
+                'sessionid': row[1],
+                'primary_ip': row[2],
+                'created': row[3],
+                'si_rowid': row[4],
+                'prev_packets_in': row[5],
+                'prev_bytes_in': row[6],
+                'prev_packets_out': row[7],
+                'prev_bytes_out': row[8],
+                'last_accessed': row[9],
+                'ips': set()
+            }
+            sessions[(rec['zoneid'], rec['sessionid'])] = rec
+
+        # 2) Add virtual IPs
+        cur.execute("""
+            SELECT zoneid, sessionid, ip_address
+            FROM cp_client_ips
+            WHERE ip_address IS NOT NULL AND TRIM(ip_address) <> ''
+        """)
+        for zoneid, sessionid, ip in cur.fetchall():
+            key = (zoneid, sessionid)
+            if key in sessions:
+                sessions[key]['ips'].add(ip)
+
+        # 3) Ensure primary IP is included for each session
+        for rec in sessions.values():
+            pip = rec.get('primary_ip')
+            if pip is not None and str(pip).strip() != '':
+                rec['ips'].add(pip)
+
+        sql_new = """
+            INSERT INTO session_info(
+                zoneid, sessionid,
+                prev_packets_in, prev_bytes_in,
+                prev_packets_out, prev_bytes_out,
+                packets_in, packets_out,
+                bytes_in, bytes_out,
+                last_accessed
+            )
+            VALUES (
+                :zoneid, :sessionid,
+                :prev_packets_in, :prev_bytes_in,
+                :prev_packets_out, :prev_bytes_out,
+                :packets_in, :packets_out,
+                :bytes_in, :bytes_out,
+                :last_accessed
+            )
+        """
+
+        sql_update = """
+            UPDATE session_info
+            SET    last_accessed    = :last_accessed,
+                prev_packets_in  = :prev_packets_in,
+                prev_packets_out = :prev_packets_out,
+                prev_bytes_in    = :prev_bytes_in,
+                prev_bytes_out   = :prev_bytes_out,
+                packets_in       = packets_in + :packets_in,
+                packets_out      = packets_out + :packets_out,
+                bytes_in         = bytes_in + :bytes_in,
+                bytes_out        = bytes_out + :bytes_out
+            WHERE  rowid = :si_rowid
+        """
+
+        # 4) Update accounting per session by summing over all of its IPs
+        for rec in sessions.values():
+            cur_pkts_in = 0
+            cur_pkts_out = 0
+            cur_bytes_in = 0
+            cur_bytes_out = 0
+            cur_last_accessed = 0
+
+            any_hit = False
+            for ip in rec['ips']:
+                d = details.get(ip)
+                if not d:
+                    continue
+                any_hit = True
+                cur_pkts_in += int(d.get('in_pkts', 0))
+                cur_pkts_out += int(d.get('out_pkts', 0))
+                cur_bytes_in += int(d.get('in_bytes', 0))
+                cur_bytes_out += int(d.get('out_bytes', 0))
+                cur_last_accessed = max(cur_last_accessed, int(d.get('last_accessed', 0)))
+
+            if not any_hit:
+                continue
+
+            last_accessed = cur_last_accessed if cur_last_accessed else int(rec['created'] or 0)
+
+            if rec['si_rowid'] is None:
+                payload = {
+                    'zoneid': rec['zoneid'],
+                    'sessionid': rec['sessionid'],
+                    'prev_packets_in': cur_pkts_in,
+                    'prev_bytes_in': cur_bytes_in,
+                    'prev_packets_out': cur_pkts_out,
+                    'prev_bytes_out': cur_bytes_out,
+                    'packets_in': cur_pkts_in,
+                    'packets_out': cur_pkts_out,
+                    'bytes_in': cur_bytes_in,
+                    'bytes_out': cur_bytes_out,
+                    'last_accessed': last_accessed
+                }
+                cur2.execute(sql_new, payload)
+            else:
+                prev_pi = int(rec['prev_packets_in'])
+                prev_po = int(rec['prev_packets_out'])
+                prev_bi = int(rec['prev_bytes_in'])
+                prev_bo = int(rec['prev_bytes_out'])
+
+                # If totals decreased, treat as reset and add full totals
+                if (cur_pkts_in >= prev_pi and cur_pkts_out >= prev_po and
+                    cur_bytes_in >= prev_bi and cur_bytes_out >= prev_bo):
+                    add_pi = cur_pkts_in - prev_pi
+                    add_po = cur_pkts_out - prev_po
+                    add_bi = cur_bytes_in - prev_bi
+                    add_bo = cur_bytes_out - prev_bo
+                else:
+                    add_pi = cur_pkts_in
+                    add_po = cur_pkts_out
+                    add_bi = cur_bytes_in
+                    add_bo = cur_bytes_out
+
+                payload = {
+                    'si_rowid': rec['si_rowid'],
+                    'last_accessed': last_accessed,
+                    'packets_in': add_pi,
+                    'packets_out': add_po,
+                    'bytes_in': add_bi,
+                    'bytes_out': add_bo,
+                    'prev_packets_in': cur_pkts_in,
+                    'prev_packets_out': cur_pkts_out,
+                    'prev_bytes_in': cur_bytes_in,
+                    'prev_bytes_out': cur_bytes_out
+                }
+                cur2.execute(sql_update, payload)
+
+        self._connection.commit()
+
+    def update_session_restrictions(self, zoneid, sessionid, session_timeout):
+        """ upsert session restrictions
+        :param zoneid: zone id
+        :param sessionid: session id
+        :param session_timeout: timeout in seconds
+        :return: string "add"/"update" to signal the performed action to the client
+        """
+        cur = self._connection.cursor()
+        qry_params = {'zoneid': zoneid, 'sessionid': sessionid, 'session_timeout': session_timeout}
+        sql_update = """update session_restrictions
+                        set session_timeout = :session_timeout
+                        where zoneid = :zoneid and sessionid = :sessionid"""
+
+        cur.execute(sql_update, qry_params)
+        if cur.rowcount == 0:
+            sql_insert = """insert into session_restrictions(zoneid, sessionid, session_timeout)
+                            values (:zoneid, :sessionid, :session_timeout)"""
+            cur.execute(sql_insert, qry_params)
             self._connection.commit()
+            return 'add'
+        else:
+            self._connection.commit()
+            return 'update'
+
+    def cleanup_sessions(self):
+        """ cleanup removed sessions, but wait for accounting to finish when busy
+        """
+        cur = self._connection.cursor()
+        cur.execute(""" delete
+                        from cp_clients
+                        where cp_clients.deleted = 1
+                        and not exists (
+                            select  1
+                            from    accounting_state
+                            where   accounting_state.zoneid = cp_clients.zoneid
+                            and     accounting_state.sessionid = cp_clients.sessionid
+                            and     accounting_state.state <> 'STOPPED'
+                        )
+                        """)
+        cur.execute(""" delete
+                        from    accounting_state
+                        where   not exists (
+                            select  1
+                            from    cp_clients
+                            where   cp_clients.zoneid = accounting_state.zoneid
+                            and     cp_clients.sessionid = accounting_state.sessionid
+                        )
+                    """)
+        cur.execute(""" delete
+                        from    session_info
+                        where   not exists (
+                            select  1
+                            from    cp_clients
+                            where   session_info.zoneid = cp_clients.zoneid
+                            and     session_info.sessionid = cp_clients.sessionid
+                        )
+                    """)
+
+        cur.execute(""" delete
+                        from    session_restrictions
+                        where   not exists (
+                            select  1
+                            from    cp_clients
+                            where   session_restrictions.zoneid = cp_clients.zoneid
+                            and     session_restrictions.sessionid = cp_clients.sessionid
+                        )
+                    """)
+
+        self._connection.commit()
