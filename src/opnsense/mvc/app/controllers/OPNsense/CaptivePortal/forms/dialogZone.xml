@@ -37,10 +37,10 @@
         </grid_view>
     </field>
     <field>
-        <id>zone.allowVirtualIps</id>
+        <id>zone.roaming</id>
         <type>checkbox</type>
-        <label>Allow multiple client IPs</label>
-        <help>Allow a connecting client to use multiple IPs (bound to the same MAC). For IPv4, these can be virtual IPs on the client. For IPv6, this option is needed for maximum compatibility because a client may actively use multiple IPv6 addresses.</help>
+        <label>Client roaming</label>
+        <help>Allow a connecting client to use multiple IPs (bound to the same MAC) over the course of its session. For IPv4, these can be virtual IPs on the client. For IPv6, this option is needed for maximum compatibility because a client may actively use multiple IPv6 addresses.</help>
         <grid_view>
             <type>boolean</type>
             <formatter>boolean</formatter>

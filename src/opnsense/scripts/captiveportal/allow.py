@@ -54,7 +54,7 @@ response = DB().add_client(
 PF.add_to_table(zoneid=args.zoneid, address=args.ip_address)
 IPFW.add_accounting(args.ip_address)
 
-# Note: the sync process will collect and add any client virtual IPs (if allowed)
+# Note: the sync process will collect and add any client roaming IPs (if allowed)
 
 response['clientState'] = 'AUTHORIZED'
 print(ujson.dumps(response))

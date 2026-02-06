@@ -120,7 +120,7 @@ class DB(object):
                 )
             """)
 
-            # indexes used when allow_virtual_ips is turned on for a zone
+            # indexes used when allow_roaming is turned on for a zone
             cur.execute("CREATE INDEX IF NOT EXISTS cp_client_ips_ip   ON cp_client_ips(ip_address)")
             cur.execute("CREATE INDEX IF NOT EXISTS cp_client_ips_zone ON cp_client_ips(zoneid)")
 
@@ -135,7 +135,7 @@ class DB(object):
 
     def sessions_per_address(self, zoneid, ip_address=None, mac_address=None):
         """ fetch session(s) per (ip/mac) address
-        Primary IP is stored in cp_clients.ip_address; virtual IPs in cp_client_ips.
+        Primary IP is stored in cp_clients.ip_address; roaming IPs in cp_client_ips.
         """
         # Nothing to match on
         if (ip_address is None or str(ip_address).strip() == '') and (mac_address is None or str(mac_address).strip() == ''):
@@ -150,7 +150,7 @@ class DB(object):
 
         clauses = []
         if ip_address is not None and str(ip_address).strip() != '':
-            # Match either primary IP or any virtual IP
+            # Match either primary IP or any roaming IP
             clauses.append("(cc.ip_address = :ip_address OR ci.ip_address = :ip_address)")
         if mac_address is not None and str(mac_address).strip() != '':
             clauses.append("cc.mac_address = :mac_address")
@@ -189,7 +189,7 @@ class DB(object):
             cur.execute("BEGIN")
 
             # set cp_client as deleted in case there's already a user logged-in at this ip address
-            # (match both primary IP and virtual IPs)
+            # (match both primary IP and roaming IPs)
             if ip_address is not None and str(ip_address).strip() != '':
                 cur.execute("""
                     UPDATE cp_clients
@@ -235,8 +235,8 @@ class DB(object):
                     """, {'zoneid': zoneid, 'sessionid': sessionid, 'ip_address': ip_address})
         self._connection.commit()
 
-    def add_virtual_ip(self, zoneid, sessionid, ip_address):
-        """Add a virtual IP address to a session.
+    def add_roaming_ip(self, zoneid, sessionid, ip_address):
+        """Add a roaming IP address to a session.
         """
         if isinstance(sessionid, bytes):
             sessionid = sessionid.decode()
@@ -292,7 +292,7 @@ class DB(object):
     def list_clients(self, zoneid=None, include_ips=False):
         """ return list of (administrative) connected clients and usage statistics
         :param zoneid: zone id
-        :param include_ips: if True, include all IPs (primary + virtual) as a list in record['ipAddresses']
+        :param include_ips: if True, include all IPs (primary + roaming) as a list in record['ipAddresses']
         :return: list of clients
         """
         result = []
@@ -371,9 +371,9 @@ class DB(object):
     
     def list_session_ips(self, zoneid, sessionid, include_deleted=False):
         """
-        Return primary + virtual IPs for a session.
+        Return primary + roaming IPs for a session.
         - Primary IP is cp_clients.ip_address
-        - virtual IPs are cp_client_ips.ip_address
+        - roaming IPs are cp_client_ips.ip_address
         Returns a de-duplicated list[str] (order not guaranteed).
         """
         if isinstance(sessionid, bytes):
@@ -486,7 +486,7 @@ class DB(object):
             }
             sessions[(rec['zoneid'], rec['sessionid'])] = rec
 
-        # Add virtual IPs
+        # Add roaming IPs
         cur.execute("""
             SELECT zoneid, sessionid, ip_address
             FROM cp_client_ips

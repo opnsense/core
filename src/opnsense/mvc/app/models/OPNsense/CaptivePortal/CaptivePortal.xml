@@ -33,10 +33,10 @@
                     <Multiple>Y</Multiple>
                     <Service>CaptivePortal</Service>
                 </authservers>
-                <allowVirtualIps type="BooleanField">
+                <roaming type="BooleanField">
                     <Default>1</Default>
                     <Required>Y</Required>
-                </allowVirtualIps>
+                </roaming>
                 <alwaysSendAccountingReqs type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>

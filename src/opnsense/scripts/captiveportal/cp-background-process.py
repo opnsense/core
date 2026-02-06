@@ -121,7 +121,7 @@ class CPBackgroundProcess(object):
             registered_addresses = set(PF.list_table(zoneid))
             expected_clients = self.db.list_clients(zoneid)
             concurrent_users = self.db.find_concurrent_user_sessions(zoneid)
-            allow_virtual_ips = bool(int(cpzone_info['allowvirtualips']))
+            allow_roaming = bool(int(cpzone_info['roaming']))
 
             # handle connected clients, timeouts, address changes, etc.
             for db_client in expected_clients:
@@ -182,12 +182,12 @@ class CPBackgroundProcess(object):
                         self._add_client(zoneid, current_ips[0])
 
                 # check session, if it should be active, validate its properties
-                if allow_virtual_ips:
+                if allow_roaming:
                     session_ips = set(self.db.list_session_ips(zoneid, db_client['sessionId']))
                     discovered = set(self.arp.get_all_addresses_by_mac(db_client['macAddress']))
                     diff = discovered - session_ips
                     for ip in diff:
-                        self.db.add_virtual_ip(zoneid, db_client['sessionId'], ip)
+                        self.db.add_roaming_ip(zoneid, db_client['sessionId'], ip)
                     session_ips.update(diff)
                 else:
                     session_ips = {cpnet} if cpnet else set()
@@ -212,7 +212,7 @@ class CPBackgroundProcess(object):
             # Build the set of addresses that should be present in pf/ipfw for this zone
             expected_addresses = set()
 
-            if allow_virtual_ips:
+            if allow_roaming:
                 for db_client in expected_clients:
                     expected_addresses.update(self.db.list_session_ips(zoneid, db_client['sessionId']))
             else:
