@@ -41,7 +41,7 @@ class FilterRule extends Rule
     private $procorder = array(
         'disabled' => 'parseIsComment',
         'type' => 'parseType',
-        'direction' => 'parseReplaceSimple,any:|:in',
+        'direction' => 'parseReplaceSimple,:in|any:',
         'log' => 'parseBool,log',
         'quick' => 'parseBool,quick',
         'interface' => 'parseInterface',
