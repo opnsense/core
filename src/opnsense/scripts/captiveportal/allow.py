@@ -43,8 +43,7 @@ parser.add_argument('--authenticated_via', help='authentication source', type=st
 parser.add_argument('--ip_address', help='source ip address', type=str)
 args = parser.parse_args()
 
-arp = ARP()
-arp_entry = arp.get_by_ipaddress(args.ip_address)
+arp_entry = ARP().get_by_ipaddress(args.ip_address)
 response = DB().add_client(
     zoneid=args.zoneid,
     authenticated_via=args.authenticated_via,
