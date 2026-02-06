@@ -63,10 +63,16 @@ if __name__ == '__main__':
     if inputargs.discover and is_hostwatch_enabled(inputargs.rc_file):
         # use host discovery data, query readonly
         result['source'] = 'discovery'
+        last_seen_window = 1000
         con = sqlite3.connect("file:%s?mode=ro" % inputargs.db_file, uri=True)
         con.row_factory = sqlite3.Row
         for row in con.execute(
-            'select * from v_hosts where protocol in (?, ?)', (inputargs.proto[0], inputargs.proto[-1])
+            """
+                SELECT *
+                FROM v_hosts
+                WHERE protocol IN (?, ?)
+                AND last_seen >= datetime('now', '-' || ? || ' seconds')
+            """, (inputargs.proto[0], inputargs.proto[-1], last_seen_window)
         ):
             record = [row['interface_name'], row['ether_address'], row['ip_address']]
             if inputargs.verbose:

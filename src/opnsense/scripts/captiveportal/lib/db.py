@@ -126,7 +126,7 @@ class DB(object):
 
             self._connection.commit()
         else:
-            # Table exists: ensure indexes are present (idempotent)
+            # Table exists: ensure indexes are present
             cur.execute("CREATE INDEX IF NOT EXISTS cp_client_ips_ip   ON cp_client_ips(ip_address)")
             cur.execute("CREATE INDEX IF NOT EXISTS cp_client_ips_zone ON cp_client_ips(zoneid)")
             self._connection.commit()
@@ -289,15 +289,16 @@ class DB(object):
         else:
             return None
 
-    def list_clients(self, zoneid=None):
+    def list_clients(self, zoneid=None, include_ips=False):
         """ return list of (administrative) connected clients and usage statistics
         :param zoneid: zone id
+        :param include_ips: if True, include all IPs (primary + virtual) as a list in record['ipAddresses']
         :return: list of clients
         """
-        result = list()
-        fieldnames = list()
+        result = []
+        fieldnames = []
         cur = self._connection.cursor()
-        # rename fields for API
+
         cur.execute(""" select  cc.zoneid
                         ,       cc.sessionid   sessionId
                         ,       cc.authenticated_via authenticated_via
@@ -321,23 +322,52 @@ class DB(object):
                         and     cc.deleted = 0
                         order by case when cc.username is not null then cc.username else cc.ip_address end
                         ,        cc.created desc
-                        """, {'zoneid': zoneid})
+                    """, {'zoneid': zoneid})
+
+        # cache of (zoneid, sessionid) -> [ips]
+        ip_map = {}
+        if include_ips:
+            cur_ips = self._connection.cursor()
+            cur_ips.execute("""
+                SELECT cc.zoneid, cc.sessionid, cc.ip_address
+                FROM cp_clients cc
+                WHERE (cc.zoneid = :zoneid OR :zoneid IS NULL)
+                AND cc.deleted = 0
+                AND cc.ip_address IS NOT NULL
+                AND TRIM(cc.ip_address) <> ''
+                UNION ALL
+                SELECT ci.zoneid, ci.sessionid, ci.ip_address
+                FROM cp_client_ips ci
+                JOIN cp_clients cc
+                ON cc.zoneid = ci.zoneid AND cc.sessionid = ci.sessionid
+                WHERE (ci.zoneid = :zoneid OR :zoneid IS NULL)
+                AND cc.deleted = 0
+                AND ci.ip_address IS NOT NULL
+                AND TRIM(ci.ip_address) <> ''
+            """, {'zoneid': zoneid})
+
+            for z, sid, ip in cur_ips.fetchall():
+                ip_map.setdefault((z, sid), set()).add(ip.strip() if isinstance(ip, str) else ip)
+            ip_map = {k: sorted(v) for k, v in ip_map.items()}
+            cur_ips.close()
 
         while True:
-            # fetch field names
-            if len(fieldnames) == 0:
+            if not fieldnames:
                 for fields in cur.description:
                     fieldnames.append(fields[0])
 
             row = cur.fetchone()
             if row is None:
                 break
-            else:
-                record = dict()
-                for idx in range(len(row)):
-                    record[fieldnames[idx]] = row[idx]
-                result.append(record)
+
+            record = {fieldnames[idx]: row[idx] for idx in range(len(row))}
+            if include_ips:
+                record['ipAddresses'] = ip_map.get((record['zoneid'], record['sessionId']), [])
+            result.append(record)
+
+        cur.close()
         return result
+
     
     def list_session_ips(self, zoneid, sessionid, include_deleted=False):
         """
@@ -422,7 +452,7 @@ class DB(object):
         cur = self._connection.cursor()
         cur2 = self._connection.cursor()
 
-        # 1) Load sessions + existing session_info
+        # Load sessions + existing session_info
         cur.execute("""
             SELECT  cc.zoneid,
                     cc.sessionid,
@@ -456,7 +486,7 @@ class DB(object):
             }
             sessions[(rec['zoneid'], rec['sessionid'])] = rec
 
-        # 2) Add virtual IPs
+        # Add virtual IPs
         cur.execute("""
             SELECT zoneid, sessionid, ip_address
             FROM cp_client_ips
@@ -467,7 +497,7 @@ class DB(object):
             if key in sessions:
                 sessions[key]['ips'].add(ip)
 
-        # 3) Ensure primary IP is included for each session
+        # Ensure primary IP is included for each session
         for rec in sessions.values():
             pip = rec.get('primary_ip')
             if pip is not None and str(pip).strip() != '':
@@ -506,7 +536,7 @@ class DB(object):
             WHERE  rowid = :si_rowid
         """
 
-        # 4) Update accounting per session by summing over all of its IPs
+        # Update accounting per session by summing over all of its IPs
         for rec in sessions.values():
             cur_pkts_in = 0
             cur_pkts_out = 0

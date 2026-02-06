@@ -75,7 +75,7 @@ function captiveportal_syslog()
 function captiveportal_firewall($fw)
 {
     global $config;
-    
+
     $cp = new \OPNsense\CaptivePortal\CaptivePortal();
     if ($cp->isEnabled()) {
         foreach ($cp->zones->zone->iterateItems() as $zone) {
@@ -91,8 +91,6 @@ function captiveportal_firewall($fw)
             }
 
             foreach ($zone->interfaces->getValues() as $intf) {
-                $ifconfig_details = legacy_interfaces_details($intf);
-                $target = interfaces_primary_address6($intf, $ifconfig_details);
                 // allow DNS (IPv4 + IPv6)
                 $fw->registerFilterRule(
                     1,
@@ -149,7 +147,7 @@ function captiveportal_firewall($fw)
                             'to' => "<__captiveportal_zone_{$zoneid}>",
                             'to_not' => true,
                             'to_port' => $to_port,
-                            'target' => $intf . 'ip', // XXX
+                            'target' => $intf . 'ip',
                             'localport' => $rdr_port,
                             'natreflection' => 'disable',
                             'log' => true,

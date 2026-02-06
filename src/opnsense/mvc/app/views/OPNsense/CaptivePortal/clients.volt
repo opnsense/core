@@ -75,22 +75,7 @@
                 },
                 formatters: {
                     ipAddress: function(column, row) {
-                        // Try to get enriched arrays first
-                        let ipv4Addresses = Array.isArray(row.ipv4Addresses) ? row.ipv4Addresses : [];
-                        let ipv6Addresses = Array.isArray(row.ipv6Addresses) ? row.ipv6Addresses : [];
-
-                        // Fallback: if arrays are empty but ipAddress exists, use it
-                        if (ipv4Addresses.length === 0 && ipv6Addresses.length === 0 && row.ipAddress) {
-                            // Classify the stored IP
-                            if (row.ipAddress.indexOf(':') >= 0) {
-                                ipv6Addresses = [row.ipAddress];
-                            } else {
-                                ipv4Addresses = [row.ipAddress];
-                            }
-                        }
-
-                        // Combine all addresses (IPv4 first, then IPv6)
-                        let allAddresses = ipv4Addresses.concat(ipv6Addresses);
+                        let allAddresses = row.ipAddresses;
 
                         if (allAddresses.length === 0) {
                             return '<span class="text-muted">-</span>';
