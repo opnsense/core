@@ -399,7 +399,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
     $rules .= "\n";
-    $rules .= $fw->anchorToText('ether', 'head');
     $rules .= filter_generate_scrubbing($cnfint);
     $rules .= "\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'head');
