@@ -112,14 +112,7 @@ class AccessController extends ApiControllerBase
 
         // determine original sender of this request
         // check if client is localhost (IPv4 or IPv6) and X-Forwarded-For is present
-        // XXX probable scope issue for ipv6
-        if (
-            $forwardedFor != "" &&
-            (
-                (strpos($clientAddress, '127') === 0) ||
-                ($clientAddress === '::1')
-            )
-        ) {
+        if ($forwardedFor != "" && (strpos($clientAddress, '127') === 0)) {
             // use X-Forwarded-For header to determine real client
             // handle multiple IPs (take first one)
             $ips = explode(',', $forwardedFor);
