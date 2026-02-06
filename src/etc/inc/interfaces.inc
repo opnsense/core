@@ -1655,18 +1655,6 @@ function _interfaces_wlan_clone($device, $wlcfg)
         $wlcfg_mode = $wlcfg['mode'] ?? 'bss';
     }
 
-    switch ($wlcfg_mode) {
-        case "hostap":
-            $mode = 'wlanmode hostap';
-            break;
-        case "adhoc":
-            $mode = 'wlanmode adhoc';
-            break;
-        default:
-            $mode = '';
-            break;
-    }
-
     if (does_interface_exist($device)) {
         $ifconfig_str = shell_safe('/sbin/ifconfig %s', $device);
         if (($wlcfg_mode == 'hostap') && !preg_match('/hostap/si', $ifconfig_str)) {
@@ -1690,7 +1678,18 @@ function _interfaces_wlan_clone($device, $wlcfg)
 
         legacy_interface_destroy($device);
 
-        if (mwexecf('/sbin/ifconfig wlan create wlandev %s %s bssid name %s', [$baseif, $mode, $device])) {
+        $wlan_frmt = ['/sbin/ifconfig wlan create wlandev %s'];
+        $wlan_args = [$baseif];
+
+        if (in_array($wlcfg_mode, ['adhoc', 'hostap'])) {
+            $wlan_frmt[] = 'wlanmode %s';
+            $wlan_args[] = $wlcfg_mode;
+        }
+
+        $wlan_frmt[] = 'bssid name %s';
+        $wlan_args[] = $device;
+
+        if (mwexecf($wlan_frmt, $wlan_args)) {
             log_msg("Failed to clone interface {$baseif} to {$device}", LOG_ERR);
             return null;
         }

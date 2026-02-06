@@ -667,13 +667,11 @@ function filter_core_rules_system($fw, $defaults)
 }
 
 /**
- * register user rules, returns kill states for schedules
+ * register user rules
  */
 function filter_core_rules_user($fw)
 {
     global $config;
-
-    $sched_kill_states = [];
 
     foreach ((new \OPNsense\Firewall\Group())->ifgroupentry->iterateItems() as $node) {
         $ifgroups[(string)$node->ifname] = !empty((string)$node->sequence) ? (string)$node->sequence : 0;
@@ -696,9 +694,6 @@ function filter_core_rules_user($fw)
             if (empty($rule['descr'])) {
                 $rule['descr'] = '';
             }
-            if (!empty($rule['sched'])) {
-                $rule['descr'] .= " ({$rule['sched']})";
-            }
 
             if (isset($rule['floating'])) {
                 $prio = 200000;
@@ -707,25 +702,7 @@ function filter_core_rules_user($fw)
             } else {
                 $prio = 400000;
             }
-            /* is a time based rule schedule attached? */
-            if (!empty($rule['sched']) && !empty($config['schedules'])) {
-                foreach ($config['schedules']['schedule'] as $sched) {
-                    if ($sched['name'] == $rule['sched']) {
-                        if (!filter_get_time_based_rule_status($sched)) {
-                            if (!isset($config['system']['schedule_states'])) {
-                                $sched_kill_states[] = $rule['label'];
-                            }
-                            /* disable rule, suffix label to mark end of schedule */
-                            $rule['disabled'] = true;
-                            $rule['descr'] = "[FIN] " . $rule['descr'];
-                        }
-                        break;
-                    }
-                }
-            }
             $fw->registerFilterRule($prio, $rule);
         }
     }
-
-    return $sched_kill_states;
 }

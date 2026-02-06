@@ -187,8 +187,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     filter_core_bootstrap($fw);
     $cnfint = iterator_to_array($fw->getInterfaceMapping());
     plugins_firewall($fw);
-    // register user rules, returns kill states for schedules
-    $sched_kill_states = filter_core_rules_user($fw);
+    // register legacy user rules
+    filter_core_rules_user($fw);
 
     // manual outbound nat rules
     if (
@@ -255,6 +255,33 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     foreach ((new OPNsense\Firewall\DNat())->rule->sortedBy(['sequence']) as $key => $rule) {
         $fw->registerForwardRule(600, $rule->getNodeContent());
+    }
+    /**
+     * XXX: Apply schedules on all installed rules so we can use both legacy and MVC ones.
+     * Eventually this needs to be replaced, but as this requires legacy code, we cannot do that easily now
+     * without increasing impact.
+     */
+    $sched_kill_states = [];
+    foreach ($fw->iterateFilterRules() as $rule) {
+        $rrule = $rule->getRawRule();
+        if (!empty($rrule['sched'])) {
+            $descr = $rrule['descr'] ?? '';
+            $descr .= " ({$rrule['sched']})";
+            $rule->updateDescription($descr);
+            foreach ($config['schedules']['schedule'] as $sched) {
+                if ($sched['name'] == $rrule['sched']) {
+                    if (!filter_get_time_based_rule_status($sched)) {
+                        if (!isset($config['system']['schedule_states'])) {
+                            $sched_kill_states[] = $rrule['label'];
+                        }
+                        /* disable rule, suffix label to mark end of schedule */
+                        $rule->disable();
+                        $rule->updateDescription("[FIN] " . $descr);
+                    }
+                    break;
+                }
+            }
+        }
     }
 
     openlog("firewall", LOG_DAEMON, LOG_LOCAL4);

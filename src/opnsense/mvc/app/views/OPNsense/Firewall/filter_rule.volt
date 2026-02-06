@@ -163,11 +163,15 @@
                     }
                     // Add interface selectpicker, or fall back to hash for the first load
                     let selectedInterface = $('#interface_select').val();
-                    if ((!selectedInterface || selectedInterface.length === 0) && pendingUrlInterface) {
-                        request['interface'] = pendingUrlInterface;
+                    if (selectedInterface == null && pendingUrlInterface != null) {
+                        selectedInterface = pendingUrlInterface;
                         pendingUrlInterface = null; // consume the hash so it is not used again
-                    } else if (selectedInterface && selectedInterface.length > 0) {
-                        request['interface'] = selectedInterface;
+                    }
+                    if (selectedInterface === '__floating') {
+                        request.interface = '';
+                    } else if (selectedInterface !== null && selectedInterface !== '__any') {
+                        request.interface = selectedInterface;
+                        // '__any' omit parameter for all rules
                     }
                     if (inspectEnabled) {
                         // Send as a comma separated string
@@ -268,7 +272,7 @@
                                 title="${row.log == '1'
                                     ? '{{ lang._("Disable Logging") }}'
                                     : '{{ lang._("Enable Logging") }}'}">
-                                <i class="fa fa-exclamation-circle fa-fw ${row.log == '1' ? 'text-info' : 'text-muted'}"></i>
+                                <i class="fa fa-fw ${row.log == '1' ? 'fa-bell' : 'fa-bell-slash'}"></i>
                             </button>
 
                             <button type="button" class="btn btn-xs btn-default command-edit
@@ -318,9 +322,8 @@
                         }
 
                         if (
-                            row[column.id] !== '' &&
-                            row[column.id] !== 'any' &&
-                            row[column.id] !== 'None'
+                            row[column.id] !== undefined &&
+                            !['', 'any', 'None'].includes(row[column.id])
                         ) {
                             return row[column.id];
                         } else {
@@ -523,8 +526,9 @@
                         const states  = row["states"] ?? "";
                         const packets = row["packets"] ?? "";
                         const bytes   = row["bytes"] ?? "";
+                        const uuid    = row["uuid"] ?? "";
 
-                        function render(icon, title, value, is_number = false) {
+                        function render(icon, title, value, is_number = false, link = null) {
                             if (!value || value === "0") {
                                 return "";
                             }
@@ -534,14 +538,18 @@
 
                             return `
                                 <span data-toggle="tooltip" title="${title}: ${numValue.toLocaleString()}">
-                                    <i class="fa fa-fw ${icon} text-muted"></i> ${formatted}
+                                    ${link
+                                        ? `<a href="${link}" target="_blank" rel="noopener noreferrer" id="${uuid}_states">
+                                            <i class="fa fa-fw ${icon}"></i> ${formatted}
+                                        </a>`
+                                        : `<i class="fa fa-fw ${icon}"></i> ${formatted}`}
                                 </span>
                             `;
                         }
 
                         const parts = [
+                            render("fa-chart-line", "{{ lang._('States') }}", states, true, `/ui/diagnostics/firewall/states#${uuid}`),
                             render("fa-bullseye", "{{ lang._('Evaluations') }}", evals, true),
-                            render("fa-chart-line", "{{ lang._('States') }}", states, true),
                             render("fa-box", "{{ lang._('Packets') }}", packets, true),
                             render("fa-database", "{{ lang._('Bytes') }}", bytes)
                         ].filter(Boolean);
@@ -550,15 +558,21 @@
                             return "";
                         }
 
-                        // Split into two vertical rows
-                        const firstGroup  = parts.slice(0, 2).join(" ");
-                        const secondGroup = parts.slice(2).join(" ");
-
                         return `
                             <div class="stats-cell">
-                                <div>${firstGroup}</div>
-                                <div>${secondGroup}</div>
+                                ${parts.join("")}
                             </div>
+                        `;
+                    },
+                    sched: function(column, row) {
+                        if (row.isGroup || typeof row[column.id] !== "string" || row[column.id] === "") {
+                            return "";
+                        }
+                        return `
+                            ${row[column.id]} &nbsp;
+                            <a href="/firewall_schedule_edit.php?name=${row[column.id]}" data-toggle="tooltip" title="{{ lang._('Edit') }}">
+                                <i class="fa fa-calendar text-muted"></i>
+                            </a>
                         `;
                     },
                 },
@@ -717,7 +731,8 @@
                             const bgClassMap = {
                                 floating: 'bg-primary',
                                 group: 'bg-warning',
-                                interface: 'bg-info'
+                                interface: 'bg-info',
+                                any: ''
                             };
                             const badgeClass = bgClassMap[item.type] || 'bg-info';
 
@@ -728,7 +743,6 @@
                                     <span>
                                         ${count > 0 ? `<span class="badge badge-sm ${badgeClass}">${count}</span>` : ''}
                                         ${label}
-                                        <small class="text-muted ms-2"><em>${subtext}</em></small>
                                     </span>
                                 `.trim()
                             };
@@ -746,6 +760,9 @@
                         if (allOptions.includes(ifaceFromHash)) {
                             $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
                         }
+                    } else {
+                        // Default to ALL interfaces
+                        $('#interface_select').selectpicker('val', '__any');
                     }
                     interfaceInitialized = true;
 
@@ -1045,11 +1062,20 @@
 
     .stats-cell {
         display: flex;
-        flex-direction: column;
+        flex-wrap: wrap;
+        gap: 4px 10px;
+        align-items: center;
+        container-type: inline-size;
     }
 
-    .stats-cell div {
-        gap: 6px;
+    .stats-cell > span {
+        white-space: nowrap;
+    }
+
+    @container (max-width: 160px) {
+        .stats-cell > span {
+            flex: 1 1 50%;
+        }
     }
 
 </style>

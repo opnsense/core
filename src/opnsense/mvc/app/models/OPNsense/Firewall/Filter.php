@@ -133,7 +133,7 @@ class Filter extends BaseModel
                     if (!in_array($rule->protocol, ['TCP', 'TCP/UDP'])) {
                         foreach (
                             [
-                            'statetimeout', 'max-src-conn', 'tcpflags1', 'tcpflags2',
+                            'statetimeout', 'max-src-conn', 'tcpflags1', 'tcpflags2', 'tcpflags_any',
                             'max-src-conn-rate', 'max-src-conn-rates', 'overload'
                             ] as $fieldname
                         ) {
@@ -227,6 +227,13 @@ class Filter extends BaseModel
                                 gettext("If you specify TCP flags that should be set " .
                                     "you should specify out of which flags as well."),
                                 $rule->tcpflags2->__reference
+                            ));
+                        }
+
+                        if (!$rule->tcpflags1->isEmpty() && !$rule->tcpflags2->isEmpty() && !$rule->tcpflags_any->isEmpty()) {
+                            $messages->appendMessage(new Message(
+                                gettext("If you select any TCP flags, you cannot also select specific ones."),
+                                $rule->tcpflags_any->__reference
                             ));
                         }
 
@@ -362,6 +369,24 @@ class Filter extends BaseModel
                 $targetdom->parentNode->replaceChild($node, $targetdom);
                 Config::getInstance()->save();
                 return true;
+            }
+        }
+        return false;
+    }
+
+    public function hasSchedule()
+    {
+        foreach ($this->rules->rule->iterateItems() as $rule) {
+            if (!$rule->sched->isEmpty() && !$rule->enabled->isEmpty()) {
+                return true;
+            }
+        }
+        $cfg = (\OPNsense\Core\Config::getInstance())->object();
+        if (isset($cfg->filter->rule)) {
+            foreach ($cfg->filter->children() as $tag => $rule) {
+                if ($tag === 'rule' && !empty($rule->sched) && empty((string)$rule->disabled)) {
+                    return true;
+                }
             }
         }
         return false;

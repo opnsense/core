@@ -73,7 +73,7 @@ if __name__ == '__main__':
     ctx = ModuleContext(None)
 
     dnsbl = DNSBL(ctx, dnsbl_path=inputargs.dnsbl_path, size_file='/dev/null')
-    ctx.set_config(dnsbl.dnsbl['config'])
+    ctx.set_config(dnsbl.get_config())
     match = dnsbl.policy_match(
         Query(
             client=inputargs.src,

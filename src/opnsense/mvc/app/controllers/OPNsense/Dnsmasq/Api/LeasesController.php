@@ -76,22 +76,20 @@ class LeasesController extends ApiControllerBase
         $reservedKeys = [];
 
         foreach ((new Dnsmasq())->hosts->iterateItems() as $host) {
-            if (!empty($host->client_id)) {
-                $reservedKeys[] = (string)$host->client_id;
+            if (!$host->client_id->isEmpty()) {
+                $reservedKeys[] = strtolower($host->client_id->getValue());
             }
 
-            if (!empty($host->hwaddr)) {
-                foreach (explode(',', (string)$host->hwaddr) as $hwaddr) {
-                    if (!empty($hwaddr)) {
-                        $reservedKeys[] = $hwaddr;
-                    }
+            if (!$host->hwaddr->isEmpty()) {
+                foreach ($host->hwaddr->getValues() as $hwaddr) {
+                    $reservedKeys[] = strtolower($hwaddr);
                 }
             }
         }
 
         foreach ($records as &$record) {
             $is_ipv6 = Util::isIpv6Address($record['address'] ?? '');
-            $key = $is_ipv6 ? ($record['client_id'] ?? '') : ($record['hwaddr'] ?? '');
+            $key = strtolower($is_ipv6 ? ($record['client_id'] ?? '') : ($record['hwaddr'] ?? ''));
             $record['is_reserved'] = in_array($key, $reservedKeys, true) ? '1' : '0';
         }
 

@@ -31,10 +31,10 @@ namespace OPNsense\IPsec\Api;
 use OPNsense\Base\ApiMutableModelControllerBase;
 
 /**
- * Class ManualSPD
+ * Class ManualSpd
  * @package OPNsense\IPsec\Api
  */
-class ManualSPDController extends ApiMutableModelControllerBase
+class ManualSpdController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'swanctl';
     protected static $internalModelClass = 'OPNsense\IPsec\Swanctl';

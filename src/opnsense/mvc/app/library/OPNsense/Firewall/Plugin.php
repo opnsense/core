@@ -239,6 +239,8 @@ class Plugin
         foreach (explode(',', $types) as $type) {
             foreach ($this->anchors as $anchorKey => $anchor) {
                 if (strpos($anchorKey, "{$type}.{$placement}") === 0) {
+                    $result .= $type == "fw" ? "" : "{$type}-";
+                    $result .= "anchor \"{$anchor['name']}\"";
                     if ($anchor['quick']) {
                         $result .= " quick";
                     }

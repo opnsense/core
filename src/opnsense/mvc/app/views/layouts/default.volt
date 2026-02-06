@@ -314,6 +314,8 @@
         $.extend(jQuery.fn.UIBootgrid.translations, {
             add: "{{ lang._('Add') }}",
             deleteSelected: "{{ lang._('Delete selected') }}",
+            enableSelected: "{{ lang._('Enable selected') }}",
+            disableSelected: "{{ lang._('Disable selected') }}",
             edit: "{{ lang._('Edit') }}",
             disable: "{{ lang._('Disable') }}",
             enable: "{{ lang._('Enable') }}",
@@ -327,7 +329,8 @@
             refresh: "{{ lang._('Refresh') }}",
             infosTotal: "{{ lang._('Showing %s to %s of %s entries') | format('{{ctx.start}}','{{ctx.end}}','{{ctx.totalRows}}') }}",
             infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}",
-            resetGrid: "{{ lang._('Reset grid layout') }}"
+            resetGrid: "{{ lang._('Reset grid layout') }}",
+            searchColumns: "{{ lang._('Search columns') }}"
         });
     </script>
 
