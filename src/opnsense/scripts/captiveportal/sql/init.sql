@@ -18,7 +18,7 @@ create table cp_clients (
 create index cp_clients_ip ON cp_clients (ip_address);
 create index cp_clients_zone ON cp_clients (zoneid);
 
--- multiple IPs per session (only used when allow_virtual_ips=1 for a zone)
+-- multiple IPs per session
 create table cp_client_ips (
       zoneid     int not null
 ,     sessionid  varchar not null
