@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.13</version>
+    <version>1.0.14</version>
     <items>
         <general>
             <enabled type="BooleanField">
@@ -386,6 +386,10 @@
                     <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
+                <createptr type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </createptr>
                 <host type="ModelRelationField">
                     <Model>
                         <host>
