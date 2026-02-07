@@ -11,6 +11,12 @@
         </grid_view>
     </field>
     <field>
+        <id>alias.createptr</id>
+        <label>Create PTR Record</label>
+        <type>checkbox</type>
+        <help>Enable automatic creation of PTR (reverse DNS) record for this alias. If unchecked, only the forward A/AAAA record will be created.</help>
+    </field>
+    <field>
         <id>alias.host</id>
         <label>Host override</label>
         <type>dropdown</type>
