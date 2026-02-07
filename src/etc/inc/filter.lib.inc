@@ -652,6 +652,9 @@ function filter_core_rules_system($fw, $defaults)
                 'log' => $dnatrule['log'],
                 'descr' => $dnatrule['descr']
             ];
+            if (!empty($dnatrule['local-port'])) {
+                $tmprule['destination']['port'] = $dnatrule['local-port'];
+            }
 
             if (!empty($dnatrule['destination']['port']) && !empty($dnatrule['local-port'])) {
                 $tmprule['destination']['port'] = $dnatrule['local-port'];
