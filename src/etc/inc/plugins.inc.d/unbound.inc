@@ -595,7 +595,8 @@ function unbound_add_host_entries($ifconfig_details)
                 $tmp_aliases = array(array(
                     'domain' => (string)$host->domain,
                     'description' => (string)$host->description,
-                    'hostname' => (string)$host->hostname
+                    'hostname' => (string)$host->hostname,
+                    'addptr' => !$host->addptr->isEmpty()
                 ));
 
                 if (!empty($aliases)) {
@@ -604,15 +605,14 @@ function unbound_add_host_entries($ifconfig_details)
                             $tmp_aliases[] = array(
                                 'domain' => !empty((string)$alias->domain) ? $alias->domain : $tmp_aliases[0]['domain'],
                                 'description' => !empty((string)$alias->description) ? $alias->description : $tmp_aliases[0]['description'],
-                                'hostname' => !empty((string)$alias->hostname) ? $alias->hostname : $tmp_aliases[0]['hostname']
+                                'hostname' => !empty((string)$alias->hostname) ? $alias->hostname : $tmp_aliases[0]['hostname'],
+                                'addptr' => false
                             );
                         }
                     }
                 }
 
                 foreach ($tmp_aliases as $alias) {
-                    $override_is_main = $alias === $tmp_aliases[0];
-
                     if ($alias['hostname'] != '') {
                         $alias['hostname'] .= '.';
                     }
@@ -625,7 +625,7 @@ function unbound_add_host_entries($ifconfig_details)
                                 $unbound_entries .= "local-zone: \"{$alias['domain']}\" redirect\n";
                                 $unbound_entries .= "local-data: \"{$alias['domain']} {$host->ttl} IN {$host->rr} {$host->server}\"\n";
                             } else {
-                                if (($override_is_main || $tmp_aliases[0]['hostname'] === '*') && !in_array($host->server->getValue(), $ptr_records, true)) {
+                                if ($alias['addptr'] && !in_array($host->server->getValue(), $ptr_records, true)) {
                                     /* Only generate a PTR record for the non-alias override and only if the IP is not already associated with a PTR.
                                      * The exception to this is an alias whose parent uses a wildcard and as such does not specify a PTR record.
                                      */
