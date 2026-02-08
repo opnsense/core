@@ -104,15 +104,18 @@ $( document ).ready(function() {
             $('tr[id="row_host.mx"]').addClass('hidden');
             $('tr[id="row_host.mxprio"]').addClass('hidden');
             $('tr[id="row_host.server"]').removeClass('hidden');
+            $('tr[id="row_host.addptr"]').removeClass('hidden');
         } else if (this.value == "MX") {
             $('tr[id="row_host.txtdata"]').addClass('hidden');
             $('tr[id="row_host.server"]').addClass('hidden');
+            $('tr[id="row_host.addptr"]').addClass('hidden');
             $('tr[id="row_host.mx"]').removeClass('hidden');
             $('tr[id="row_host.mxprio"]').removeClass('hidden');
         } else if (this.value == "TXT") {
             $('tr[id="row_host.server"]').addClass('hidden');
             $('tr[id="row_host.mx"]').addClass('hidden');
             $('tr[id="row_host.mxprio"]').addClass('hidden');
+            $('tr[id="row_host.addptr"]').addClass('hidden');
             $('tr[id="row_host.txtdata"]').removeClass('hidden');
         }
     });
