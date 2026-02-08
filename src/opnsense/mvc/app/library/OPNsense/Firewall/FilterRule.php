@@ -135,7 +135,7 @@ class FilterRule extends Rule
                     $rule['reply'] = "reply-to {$if} ";
                 }
             }
-        } elseif (!isset($rule['disablereplyto']) && ($rule['direction'] ?? "") != 'any' && empty($rule['interfacenot'])) {
+        } elseif (empty($rule['disablereplyto']) && ($rule['direction'] ?? "") != 'any' && empty($rule['interfacenot'])) {
             $proto = $rule['ipprotocol'];
             if (!empty($this->interfaceMapping[$rule['interface']]['if']) && empty($rule['gateway'])) {
                 $if = $this->interfaceMapping[$rule['interface']]['if'];
