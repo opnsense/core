@@ -830,13 +830,15 @@ $.fn.SimpleFileUploadDlg = function (params) {
             let fileinp = $("<input type='file'/>");
             let error_output = $("<tbody/>");
             let doinp = $('<button style="display:none" type="button" class="btn btn-xs"/>');
+            let dlval = $('<button style="display:none" type="button" class="btn btn-xs"/>');
             doinp.append($('<span class="fa fa-fw fa-check"></span>'));
+            dlval.append($('<span class="fa fa-fw fa-cloud-download text-warning"></span>'));
 
             content.append(
                 $("<table/>").append(
                     $("<tr/>").append(
                         $("<td style='width:200px;'/>").append(fileinp),
-                        $("<td/>").append(doinp)
+                        $("<td/>").append(doinp, '&nbsp;', dlval)
                     ),
                     $("<tr/>").append($("<td colspan='2' style='height:10px;'/>"))
                 )
@@ -876,6 +878,7 @@ $.fn.SimpleFileUploadDlg = function (params) {
                         params.onAction(data, status);
                     }
                     if (data.validations && data.validations.length > 0) {
+                        let validation_output = data.validations;
                         // When validation errors are returned, write to error_output including original data lines.
                         let records = eparams.payload.split('\n');
                         records.shift();
@@ -890,6 +893,7 @@ $.fn.SimpleFileUploadDlg = function (params) {
                                             $("<td/>").text(records[data.validations[i].sequence]).css('white-space', 'nowrap')
                                         ));
                                         found = true;
+                                        validation_output[i].payload = records[data.validations[i].sequence];
                                     }
                                     error_output.append($("<tr/>").append(
                                         $("<td/>").append($("<i class='fa fa-times'/>")),
@@ -899,10 +903,27 @@ $.fn.SimpleFileUploadDlg = function (params) {
                                 }
                             }
                         }
+                        dlval.data('validations', validation_output).show();
                     } else {
                         dialog.close();
                     }
                 });
+            });
+            dlval.click(function(){
+                let output_data = 'field;message;payload\n';
+                let validations = $(this).data('validations');
+                for (i=0; i < validations.length ; ++i) {
+                    let line = [
+                        validations[i].field,
+                        '"' + validations[i].message.replaceAll('"', '""') + '"',
+                        '"' + validations[i].payload.replaceAll('"', '""') + '"'
+                    ];
+                    output_data += line.join(';') + "\n";
+                }
+                $('<a></a>')
+                    .attr('href', 'data:text/csv;charset=utf8,' + encodeURIComponent(output_data))
+                    .attr('download', 'validation_errrors.csv')
+                    .appendTo('body')[0].click();
             });
         });
     }
