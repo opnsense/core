@@ -41,6 +41,9 @@ class FilterRuleTest extends \PHPUnit\Framework\TestCase
     public function getConf($func)
     {
         $class = str_replace(__NAMESPACE__ . '\\', '', __CLASS__);
+        $file = sprintf('%s/%s/%s.conf', __DIR__, $class, $func);
+
+        $this->assertFileExists($file);
 
         return file_get_contents(sprintf('%s/%s/%s.conf', __DIR__, $class, $func));
     }
@@ -76,4 +79,21 @@ class FilterRuleTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(join('', $rules), $this->getConf(__FUNCTION__));
     }
+
+    /**
+     * test protocol
+     */
+    public function testProtocol()
+    {
+        $rules = [];
+
+        $rules[] = new FilterRule(self::$ifmap, self::$gwmap, ['protocol' => '']);
+        $rules[] = new FilterRule(self::$ifmap, self::$gwmap, ['protocol' => 'tcp']);
+        $rules[] = new FilterRule(self::$ifmap, self::$gwmap, ['protocol' => 'tcp/udp']);
+        $rules[] = new FilterRule(self::$ifmap, self::$gwmap, ['protocol' => 'skip']);
+        $rules[] = new FilterRule(self::$ifmap, self::$gwmap, ['protocol' => 'a/n']);
+
+        $this->assertEquals(join('', $rules), $this->getConf(__FUNCTION__));
+    }
+
 }
