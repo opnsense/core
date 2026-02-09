@@ -38,6 +38,8 @@ if output_cmd opnsense-update -u; then
 		elif output_cmd opnsense-update -K; then
 			output_reboot keep-log
 		fi
+		# kernel is already applied so continue
+		output_reboot keep-log
 	fi
 
 	output_txt "The upgrade was aborted due to an error."

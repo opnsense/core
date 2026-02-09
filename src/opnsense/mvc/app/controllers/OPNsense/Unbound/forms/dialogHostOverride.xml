@@ -70,6 +70,15 @@
         <help>TTL of the host, e.g. 3600</help>
     </field>
     <field>
+        <id>host.addptr</id>
+        <label>Add PTR record</label>
+        <type>checkbox</type>
+        <help>Add PTR record for this host, please note there can only be a single active PTR record per target address</help>
+        <grid_view>
+            <type>ignore</type>
+        </grid_view>
+    </field>
+    <field>
         <id>host.aliascount</id>
         <label>Aliases</label>
         <type>info</type>

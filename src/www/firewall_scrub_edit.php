@@ -291,7 +291,7 @@ include("head.inc");
                   <tr>
                     <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface");?></td>
                     <td>
-                      <select name="interface[]" title="<?=gettext("Select interfaces...");?>" multiple="multiple" class="selectpicker" data-live-search="true" data-size="5" <?=!empty($pconfig['associated-rule-id']) ? "disabled" : "";?>>
+                      <select name="interface[]" title="<?= html_safe(gettext('Select interfaces...')) ?>" multiple="multiple" class="selectpicker" data-live-search="true" data-size="5">
 <?php
                     foreach (legacy_config_get_interfaces(array("enable" => true)) as $iface => $ifaceInfo): ?>
                         <option value="<?=$iface;?>"

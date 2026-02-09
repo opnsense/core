@@ -41,7 +41,7 @@ class FilterRule extends Rule
     private $procorder = array(
         'disabled' => 'parseIsComment',
         'type' => 'parseType',
-        'direction' => 'parseReplaceSimple,any:|:in',
+        'direction' => 'parseReplaceSimple,:in|any:',
         'log' => 'parseBool,log',
         'quick' => 'parseBool,quick',
         'interface' => 'parseInterface',
@@ -54,7 +54,7 @@ class FilterRule extends Rule
         'os' => 'parsePlain, os {","}',
         'to' => 'parsePlainCurly,to ',
         'to_port' => 'parsePlainCurly, port ',
-        'icmp-type' => 'parsePlain,icmp-type {,}',
+        'icmp-type' => 'parseReplaceSimple,skip:"skip",icmp-type {,}',
         'icmp6-type' => 'parsePlain,icmp6-type {,}',
         'flags' => 'parsePlain, flags ',
         'state' => 'parseState',
@@ -135,7 +135,7 @@ class FilterRule extends Rule
                     $rule['reply'] = "reply-to {$if} ";
                 }
             }
-        } elseif (!isset($rule['disablereplyto']) && ($rule['direction'] ?? "") != 'any' && empty($rule['interfacenot'])) {
+        } elseif (empty($rule['disablereplyto']) && ($rule['direction'] ?? "") != 'any' && empty($rule['interfacenot'])) {
             $proto = $rule['ipprotocol'];
             if (!empty($this->interfaceMapping[$rule['interface']]['if']) && empty($rule['gateway'])) {
                 $if = $this->interfaceMapping[$rule['interface']]['if'];
@@ -198,7 +198,7 @@ class FilterRule extends Rule
             }
             // restructure flags
             if (isset($rule['protocol']) && $rule['protocol'] == "tcp") {
-                if (isset($rule['tcpflags_any'])) {
+                if (!empty($rule['tcpflags_any'])) {
                     $rule['flags'] = "any";
                 } elseif (!empty($rule['tcpflags2'])) {
                     $rule['flags'] = "";

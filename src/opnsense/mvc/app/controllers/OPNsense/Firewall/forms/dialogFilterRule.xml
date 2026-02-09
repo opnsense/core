@@ -280,6 +280,16 @@
         </grid_view>
     </field>
     <field>
+        <id>rule.tcpflags_any</id>
+        <label>TCP flags any</label>
+        <type>checkbox</type>
+        <help>Use this to choose TCP flags that must be cleared for this rule to match.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>rule.sched</id>
         <label>Schedule</label>
         <type>dropdown</type>
@@ -653,7 +663,6 @@
         <grid_view>
             <formatter>statistics</formatter>
             <sequence>115</sequence>
-            <min-width>200</min-width>
         </grid_view>
     </field>
     <field>

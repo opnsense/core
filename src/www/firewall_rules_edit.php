@@ -961,7 +961,7 @@ include("head.inc");
                     <td><a id="help_for_interface" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface");?></td>
                     <td>
 <?php if (!empty($pconfig['floating'])): ?>
-                      <select name="interface[]" id="interface" title="Select interfaces..." multiple="multiple" class="selectpicker" data-live-search="true" data-size="5" tabindex="2">
+                      <select name="interface[]" id="interface" title="<?= html_safe(gettext('Select interfaces...')) ?>" multiple="multiple" class="selectpicker" data-live-search="true" data-size="5" tabindex="2">
 <?php else: ?>
                       <select name="interface" id="interface" class="selectpicker" data-live-search="true" data-size="5">
 <?php endif ?>

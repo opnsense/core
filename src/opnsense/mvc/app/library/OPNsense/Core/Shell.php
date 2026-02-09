@@ -2,7 +2,7 @@
 
 /*
  * Copyright (C) 2015 Deciso B.V.
- * Copyright (C) 2015-2025 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2026 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -35,6 +35,8 @@ namespace OPNsense\Core;
  */
 class Shell
 {
+    public static $exec_log = true;
+
     /**
      * safe shell command formatter
      */
@@ -50,15 +52,28 @@ class Shell
             $args = [$args];
         }
 
-        foreach ($args as $id => $arg) {
-            /* XXX casts to string, formatter only really supports %% and %s */
-            $args[$id] = escapeshellarg($arg ?? '');
-        }
-
         try {
-            $command = vsprintf(implode(' ', $format), $args);
+            $_command = preg_replace_callback('/%./', function ($matches) use (&$args) {
+                if ($matches[0] === '%%') {
+                    return '%';
+                } elseif ($matches[0] !== '%s') {
+                    throw new \TypeError('exec_safe(): Unsupported formatter');
+                }
+                if (!count($args)) {
+                    throw new \TypeError('exec_safe(): Missing arguments');
+                }
+                return escapeshellarg(array_shift($args) ?? '');
+            }, implode(' ', $format));
+
+            if (count($args)) {
+                throw new \TypeError('exec_safe(): Excess arguments');
+            }
+
+            $command = $_command;
         } catch (\Error $e) {
-            error_log($e);
+            if (self::$exec_log) {
+                error_log($e);
+            }
         }
 
         return $command;

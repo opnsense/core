@@ -1183,13 +1183,16 @@
                     const filters = template.filters.split(',').map(val => {
                         let interface = null;
                         const parts = val.split(/(!=|!~|=|~)/);
-                        // XXX consolidate with earlier parsing
-                        let field = parts[0];
+                        /* determine if combined filter */
+                        let combinedMatch = parts[0].match(/^\s*(\w+)\s+(or|and)\s+(\w+)\s*$/i);
+                        let field = combinedMatch ? [combinedMatch[1], combinedMatch[3]] : parts[0];
                         switch (field) {
                             case '__addr__':
+                                /* backwards compatibility */
                                 field = ['src', 'dst'];
                                 break;
                             case '__port__':
+                                /* backwards compatibility */
                                 field = ['srcport', 'dstport']
                             case 'interface':
                             case 'interface_name':
@@ -1198,7 +1201,7 @@
                                 break;
                         }
                         return {field: field, operator: parts[1], value: parts[2], format: interface};
-                    })
+                    });
 
                     return {filters, mode}
                 };

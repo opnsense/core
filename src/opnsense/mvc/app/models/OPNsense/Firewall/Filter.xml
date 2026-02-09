@@ -89,22 +89,35 @@
                 <icmptype type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
-                        <echoreq>Echo Request</echoreq>
-                        <echorep>Echo Reply</echorep>
-                        <unreach>Destination Unreachable</unreach>
-                        <squench>Source Quench (Deprecated)</squench>
-                        <redir>Redirect</redir>
-                        <althost>Alternate Host Address (Deprecated)</althost>
-                        <routeradv>Router Advertisement</routeradv>
-                        <routersol>Router Solicitation</routersol>
-                        <timex>Time Exceeded</timex>
-                        <paramprob>Parameter Problem</paramprob>
-                        <timereq>Timestamp</timereq>
-                        <timerep>Timestamp Reply</timerep>
-                        <inforeq>Information Request (Deprecated)</inforeq>
-                        <inforep>Information Reply (Deprecated)</inforep>
-                        <maskreq>Address Mask Request (Deprecated)</maskreq>
-                        <maskrep>Address Mask Reply (Deprecated)</maskrep>
+                        <Common>
+                            <echoreq>Echo Request</echoreq>
+                            <echorep>Echo Reply</echorep>
+                            <unreach>Destination Unreachable</unreach>
+                            <redir>Redirect</redir>
+                            <routeradv>Router Advertisement</routeradv>
+                            <routersol>Router Solicitation</routersol>
+                            <timex>Time Exceeded</timex>
+                            <paramprob>Parameter Problem</paramprob>
+                            <timereq>Timestamp</timereq>
+                            <timerep>Timestamp Reply</timerep>
+                            <photuris>Photuris</photuris>
+                        </Common>
+                        <Deprecated>
+                            <squench>Source Quench</squench>
+                            <althost>Alternate Host Address</althost>
+                            <inforeq>Information Request</inforeq>
+                            <inforep>Information Reply</inforep>
+                            <maskreq>Address Mask Request</maskreq>
+                            <maskrep>Address Mask Reply</maskrep>
+                            <trace>Traceroute</trace>
+                            <dataconv>Data conversion problem</dataconv>
+                            <mobredir>Mobile host redirection</mobredir>
+                            <ipv6-where>IPv6 where-are-you</ipv6-where>
+                            <ipv6-here>IPv6 i-am-here</ipv6-here>
+                            <mobregreq>Mobile registration request</mobregreq>
+                            <mobregrep>Mobile registration reply</mobregrep>
+                            <skip>SKIP</skip>
+                        </Deprecated>
                     </OptionValues>
                 </icmptype>
                 <icmp6type type="OptionField">
@@ -328,6 +341,7 @@
                         <cwr>cwr</cwr>
                     </OptionValues>
                 </tcpflags2>
+                <tcpflags_any type="BooleanField"/>
                 <categories type="ModelRelationField">
                     <Model>
                         <rulesets>

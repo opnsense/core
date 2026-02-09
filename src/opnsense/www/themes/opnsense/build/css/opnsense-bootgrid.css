@@ -239,11 +239,6 @@
   padding-right: 20px;
 }
 
-.bootgrid-footer-commands {
-  width: 90px;
-  padding-left: 8px;
-}
-
 .tabulator-tableholder::after {
   content: "";
   display: block;

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -120,6 +120,11 @@ class LDAP extends Base implements IAuthConnector
      * when set, allow local user creation
      */
     private $ldapSyncCreateLocalUsers = false;
+
+    /**
+     * attributename returning groupnames
+     */
+    private $ldapAttributeMemberof = 'memberOf';
 
     /**
      * limit the groups which will be considered for sync, empty means all
@@ -268,6 +273,7 @@ class LDAP extends Base implements IAuthConnector
             'ldap_sync_memberof' => 'ldapSyncMemberOf',
             'ldap_sync_memberof_constraint' => 'ldapSyncMemberOfConstraint',
             'ldap_sync_memberof_groups' => 'ldapSyncMemberOfLimit',
+            'ldap_attr_memberof' => 'ldapAttributeMemberof',
             'ldap_sync_default_groups' => 'ldapSyncDefaultGroups',
         ];
 
@@ -493,6 +499,8 @@ class LDAP extends Base implements IAuthConnector
     {
         $ldap_is_connected = false;
         $user_dn = null;
+        $memberof = '';
+
         // authenticate user
         if (empty($password)) {
             // prevent anonymous bind
@@ -512,13 +520,11 @@ class LDAP extends Base implements IAuthConnector
 
         if ($ldap_is_connected) {
             $this->lastAuthProperties['dn'] = $user_dn;
-            $this->lastAuthProperties['memberof'] = '';
             if ($this->ldapReadProperties) {
-                $sr = @ldap_read($this->ldapHandle, $user_dn, '(objectclass=*)', ['*', 'memberOf']);
+                $sr = @ldap_read($this->ldapHandle, $user_dn, '(objectclass=*)', ['*', $this->ldapAttributeMemberof]);
                 $info = $sr !== false ? @ldap_get_entries($this->ldapHandle, $sr) : [];
                 if (!empty($info['count'])) {
                     foreach ($info[0] as $ldap_key => $ldap_value) {
-                        $ldap_key = strtolower($ldap_key); /* enforce lowercase, we expect memberof */
                         if (!is_numeric($ldap_key) && $ldap_key !== 'count') {
                             if (isset($ldap_value['count'])) {
                                 unset($ldap_value['count']);
@@ -526,6 +532,9 @@ class LDAP extends Base implements IAuthConnector
                             } elseif ($ldap_value !== "") {
                                 $this->lastAuthProperties[$ldap_key] = $ldap_value;
                             }
+                        }
+                        if (strtolower($ldap_key) == strtolower($this->ldapAttributeMemberof)) {
+                            $memberof = $this->lastAuthProperties[$ldap_key];
                         }
                     }
                 }
@@ -551,7 +560,7 @@ class LDAP extends Base implements IAuthConnector
                     // (e.g. : cn=mygroup,cn=users,dc=opnsense,dc=local matches cn=users,dc=opnsense,dc=local)
                     $membersOf = [];
                     $tmp_containers = explode(";", strtolower($this->ldapAuthcontainers));
-                    foreach (explode("\n", $this->lastAuthProperties['memberof']) as $member) {
+                    foreach (explode("\n", $memberof) as $member) {
                         foreach ($tmp_containers as $tmp_container) {
                             $tmp = explode(",", strtolower($member), 2);
                             if (count($tmp) > 1 && $tmp[1] == $tmp_container) {
@@ -561,7 +570,7 @@ class LDAP extends Base implements IAuthConnector
                     }
                     $membersOf = implode("\n", $membersOf);
                 } else {
-                    $membersOf = $this->lastAuthProperties['memberof'];
+                    $membersOf = $memberof;
                 }
                 $this->setGroupMembership(
                     $username,
