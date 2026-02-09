@@ -95,5 +95,4 @@ class FilterRuleTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(join('', $rules), $this->getConf(__FUNCTION__));
     }
-
 }
