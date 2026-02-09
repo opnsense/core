@@ -594,40 +594,45 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     /**
      * Generic toggle function, assumes our model item has an enabled boolean type field.
      * @param string $path relative model path
-     * @param string $uuid node key
+     * @param string $uuids node key(s). Can be a comma-separated value for batching
      * @param string $enabled desired state enabled(1)/disabled(0), leave empty for toggle
      * @return array
      * @throws \OPNsense\Base\ValidationException on validation issues
      * @throws \ReflectionException when binding to the model class fails
      * @throws UserException when denied write access
      */
-    public function toggleBase($path, $uuid, $enabled = null)
+    public function toggleBase($path, $uuids, $enabled = null)
     {
         $result = ['result' => 'failed'];
         if ($this->request->isPost()) {
             Config::getInstance()->lock();
             $mdl = $this->getModel();
-            if ($uuid != null) {
-                $node = $mdl->getNodeByReference($path . '.' . $uuid);
-                if ($node != null) {
-                    $result['changed'] = true;
-                    if ($enabled == "0" || $enabled == "1") {
-                        $result['result'] = !empty($enabled) ? "Enabled" : "Disabled";
-                        $result['changed'] = (string)$node->enabled !== (string)$enabled;
-                        $node->enabled = (string)$enabled;
-                    } elseif ($enabled !== null) {
-                        // failed
-                        $result['changed'] = false;
-                    } elseif ((string)$node->enabled == "1") {
-                        $result['result'] = "Disabled";
-                        $node->enabled = "0";
-                    } else {
-                        $result['result'] = "Enabled";
-                        $node->enabled = "1";
-                    }
-                    // if item has toggled, serialize to config and save
-                    if ($result['changed']) {
-                        $this->save(false, true);
+            if ($uuids != null) {
+                foreach (explode(",", $uuids) as $uuid) {
+                    $node = $mdl->getNodeByReference($path . '.' . $uuid);
+                    if ($node != null) {
+                        $result[$uuid]['changed'] = true;
+                        if ($enabled == "0" || $enabled == "1") {
+                            $result[$uuid]['result'] = !empty($enabled) ? "Enabled" : "Disabled";
+                            $result[$uuid]['changed'] = (string)$node->enabled !== (string)$enabled;
+                            $node->enabled = (string)$enabled;
+                        } elseif ($enabled !== null) {
+                            // failed
+                            $result[$uuid]['changed'] = false;
+                        } elseif ((string)$node->enabled == "1") {
+                            $result[$uuid]['result'] = "Disabled";
+                            $node->enabled = "0";
+                        } else {
+                            $result[$uuid]['result'] = "Enabled";
+                            $node->enabled = "1";
+                        }
+                        // if item has toggled, serialize to config and save
+                        if ($result[$uuid]['changed']) {
+                            // something changed, function used to be a single-fire action.
+                            // this preserves some notion of API backwards compatibility
+                            $result['result'] = 'changed';
+                            $this->save(false, true);
+                        }
                     }
                 }
             }
