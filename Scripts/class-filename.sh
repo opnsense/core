@@ -27,6 +27,10 @@
 
 RET=0
 
+if [ ! -d src ]; then
+	exit ${RET}
+fi
+
 for FILE in $(find src -name "*.php"); do
 	CLASS=$(grep ^class ${FILE} | awk '{ print $2 }')
 	if [ -z "${CLASS}" ]; then
