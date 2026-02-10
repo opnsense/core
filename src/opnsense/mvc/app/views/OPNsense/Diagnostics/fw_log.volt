@@ -490,21 +490,15 @@
         /**
          * Example: { field: 'src', operator: '=', value: '192.168.1.1', format:'RFC1918' (optional) }
          * The optional 'format' parameter replaces the value for display purposes only
+         * Combined filters are inferred when `field` is an array (e.g. ['src','dst'])
          */
         addFilter(filter) {
             const id = this._hashFilter(filter);
-            this.filterStore.filters[id] = filter;
-            this._filterChange();
-        }
-
-        /**
-         * Example: { field: ['src', 'dst'], operator: '!=', value: '192.168.1.1' }
-         * The meaning of a combined filter is dependent on the operator. In the case of a
-         * positive operator, "OR" is used, otherwise "AND".
-         */
-        addCombinedFilter(filter) {
-            const id = this._hashFilter(filter);
-            this.filterStore.combinedFilters[id] = filter;
+            if (Array.isArray(filter.field)) {
+                this.filterStore.combinedFilters[id] = filter;
+            } else {
+                this.filterStore.filters[id] = filter;
+            }
             this._filterChange();
         }
 
@@ -891,8 +885,11 @@
 
         const raw = getUrlHash('filter');
         if (raw) {
-            const [field, operator, ...rest] = decodeURIComponent(raw).split(',');
-            const value = rest.join(',');
+            const [fieldRaw, operator, value] = decodeURIComponent(raw).split(',');
+            // Hash filter may use ['src', 'dst'] to indicate a combined filter
+            const field = fieldRaw.startsWith('[')
+                ? fieldRaw.slice(1, -1).split(',')
+                : fieldRaw;
 
             pendingHashFilter = { field, operator, value };
         }
@@ -905,10 +902,10 @@
 
             switch (field) {
                 case '__addr__':
-                    filterVM.addCombinedFilter({field: ['src', 'dst'], operator: operator, value: searchString});
+                    filterVM.addFilter({field: ['src', 'dst'], operator: operator, value: searchString});
                     break;
                 case '__port__':
-                    filterVM.addCombinedFilter({field: ['srcport', 'dstport'], operator: operator, value: searchString});
+                    filterVM.addFilter({field: ['srcport', 'dstport'], operator: operator, value: searchString});
                     break;
                 case 'interface':
                     filterVM.addFilter({field: field, operator: operator, value: $interfaceSelect.val(), format: $interfaceSelect.find('option:selected').text()});
@@ -1225,11 +1222,7 @@
                 };
                 const {filters, mode} = parseTemplate(tmpl);
                 for (const filter of filters) {
-                    if (Array.isArray(filter.field)) {
-                        filterVM.addCombinedFilter(filter);
-                    } else {
-                        filterVM.addFilter(filter);
-                    }
+                    filterVM.addFilter(filter);
                 }
                 filterVM.setFilterMode(mode);
                 if (mode === 'OR') {
