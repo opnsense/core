@@ -606,35 +606,40 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         $result = ['result' => 'failed'];
         if ($this->request->isPost()) {
             Config::getInstance()->lock();
-            $mdl = $this->getModel();
-            if ($uuids != null) {
-                foreach (explode(",", $uuids) as $uuid) {
-                    $node = $mdl->getNodeByReference($path . '.' . $uuid);
-                    if ($node != null) {
-                        $result[$uuid]['changed'] = true;
-                        if ($enabled == "0" || $enabled == "1") {
-                            $result[$uuid]['result'] = !empty($enabled) ? "Enabled" : "Disabled";
-                            $result[$uuid]['changed'] = (string)$node->enabled !== (string)$enabled;
-                            $node->enabled = (string)$enabled;
-                        } elseif ($enabled !== null) {
-                            // failed
-                            $result[$uuid]['changed'] = false;
-                        } elseif ((string)$node->enabled == "1") {
-                            $result[$uuid]['result'] = "Disabled";
-                            $node->enabled = "0";
-                        } else {
-                            $result[$uuid]['result'] = "Enabled";
-                            $node->enabled = "1";
-                        }
-                        // if item has toggled, serialize to config and save
-                        if ($result[$uuid]['changed']) {
-                            // something changed, function used to be a single-fire action.
-                            // this preserves some notion of API backwards compatibility
-                            $result['result'] = 'changed';
-                            $this->save(false, true);
-                        }
+            $uuids = !empty($uuids) ? explode(",", $uuids) : [];
+            if (count($uuids) > 1 && $enabled === null) {
+                throw new UserException(
+                    gettext("Toggle with a list of items in only supported for explicit actions [0,1]"),
+                    gettext("Toggle")
+                );
+            }
+            $rootnode = $this->getModel()->getNodeByReference($path);
+            if ($rootnode === null) {
+                return $result;
+            }
+            foreach ($uuids as $uuid) {
+                $node = $rootnode->$uuid;
+                if ($node !== null) {
+                    $result['changed'] = true;
+                    if ($enabled == "0" || $enabled == "1") {
+                        $result['result'] = !empty($enabled) ? "Enabled" : "Disabled";
+                        $result['changed'] = (string)$node->enabled !== (string)$enabled;
+                        $node->enabled = (string)$enabled;
+                    } elseif ($enabled !== null) {
+                        // failed
+                        $result['changed'] = false;
+                        break;
+                    } elseif ((string)$node->enabled == "1") {
+                        $result['result'] = "Disabled";
+                        $node->enabled = "0";
+                    } else {
+                        $result['result'] = "Enabled";
+                        $node->enabled = "1";
                     }
                 }
+            }
+            if ($result['changed']) {
+                $this->save(false, true);
             }
         }
         return $result;
