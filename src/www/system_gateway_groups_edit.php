@@ -189,8 +189,7 @@ $( document ).ready(function() {
                           <td><?= gettext('Tier') ?></td>
                           <td><?= gettext('Description') ?></td>
                         </tr>
-<?php
-                        foreach ($a_gateways as $gwname => $gateway):?>
+<?php foreach ($a_gateways as $gwname => $gateway): ?>
                         <tr>
                           <td><strong><?=$gateway['name'];?></strong></td>
                           <td>
@@ -208,25 +207,17 @@ $( document ).ready(function() {
                                 <option value="<?=$tierId;?>" <?=$is_selected ? "selected=\"selected\"" : "";?>>
                                     <?=$tierId == 0 ? gettext("Never") : sprintf(gettext("Tier %d"), $tierId) ;?>
                                 </option>
-<?php
-                              endfor;?>
+<?php endfor ?>
                             </select>
                           </td>
                           <td><strong><?=$gateway['descr'];?></strong></td>
                         </tr>
-<?php
-                        endforeach;?>
+<?php endforeach ?>
                       </table>
                       <div data-for="help_for_gatewayprio" class="hidden">
-                          <br>
-                          <strong><?=gettext("Link Priority"); ?></strong> <br />
-                          <?=gettext("The priority selected here defines in what order failover and balancing of links will be done. " .
-                                                  "Multiple links of the same priority will balance connections until all links in the priority will be exhausted. " .
-                                                  "If all links in a priority level are exhausted we will use the next available link(s) in the next priority level.") ?>
-
-                          <br />
-                          <strong><?=gettext("Virtual IP"); ?></strong> <br />
-                          <?=gettext("The virtual IP field selects what (virtual) IP should be used when this group applies to a local Dynamic DNS, IPsec or OpenVPN endpoint") ?>
+                          <?= gettext("The tier defines the priority with which failover and balancing of links will be done. " .
+                                  "Multiple links of the same tier will balance connections until the tier's links have been " .
+                                  "exhausted. When this happens, the available links in the next tier will be used.") ?>
                       </div>
                     </td>
                   </tr>
