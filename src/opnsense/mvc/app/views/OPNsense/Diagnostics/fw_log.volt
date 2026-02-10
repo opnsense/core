@@ -1091,6 +1091,7 @@
             fetch_log(null, seedAmount).then((data) => {
                 buffer.reset(data);
                 $(`#livelog-table > .tabulator-tableholder > .bootgrid-overlay`).remove();
+
                 poller(1000);
             });
 
