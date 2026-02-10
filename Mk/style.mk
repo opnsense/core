@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2025-2026 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -24,21 +24,29 @@
 # SUCH DAMAGE.
 
 STYLEDIRS=	${.CURDIR}/src/etc/inc ${.CURDIR}/src/opnsense
+PYCODESTYLEBIN=	/usr/local/bin/pycodestyle-${CORE_PYTHON_DOT}
+PHPCSBIN=	/usr/local/bin/phpcs
 
 style-python:
-	@pycodestyle-${CORE_PYTHON_DOT} --ignore=E501 ${.CURDIR}/src || true
+.if exists(${PHPCSBIN})
+	@${PYCODESTYLEBIN} --ignore=E501 ${.CURDIR}/src || true
+.endif
 
 style-php: clean-mfcdir
+.if exists(${PHPCSBIN})
 .for DIR in ${STYLEDIRS}
 .if exists(${DIR})
-	@(phpcs --standard=${COREREFDIR}/ruleset.xml ${DIR} || true) >> ${MFCDIR}/.style.out
+	@(${PHPCSBIN} --standard=${COREREFDIR}/ruleset.xml ${DIR} || true) >> ${MFCDIR}/.style.out
 .endif
 .endfor
-	@echo -n "Total number of style warnings: "
-	@grep '| WARNING' ${MFCDIR}/.style.out | wc -l
-	@echo -n "Total number of style errors:   "
-	@grep '| ERROR' ${MFCDIR}/.style.out | wc -l
-	@cat ${MFCDIR}/.style.out | ${PAGER}
-	@rm ${MFCDIR}/.style.out
+	@if [ -f ${MFCDIR}/.style.out ]; then \
+		echo -n "Total number of style warnings: "; \
+		grep '| WARNING' ${MFCDIR}/.style.out | wc -l; \
+		echo -n "Total number of style errors:   "; \
+		grep '| ERROR' ${MFCDIR}/.style.out | wc -l; \
+		cat ${MFCDIR}/.style.out | ${PAGER}; \
+		rm ${MFCDIR}/.style.out; \
+	fi
+.endif
 
 style: style-python style-php
