@@ -273,7 +273,6 @@
                         }
 
                         return `
-
                             <button type="button" class="btn btn-xs btn-default command-move_before
                                 bootgrid-tooltip" data-row-id="${rowId}"
                                 title="{{ lang._('Move selected rule before this rule') }}">
