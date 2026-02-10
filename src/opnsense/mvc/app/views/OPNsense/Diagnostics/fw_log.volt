@@ -1085,6 +1085,7 @@
             $interfaceSelect.selectpicker('refresh');
 
             fetch_log(null, seedAmount).then((data) => {
+                buffer.reset(data);
                 $(`#livelog-table > .tabulator-tableholder > .bootgrid-overlay`).remove();
 
                 // Apply initial hash filter once, after first data load
@@ -1095,7 +1096,6 @@
                     history.replaceState(null, '', location.pathname);
                 }
 
-                buffer.reset(data);
                 poller(1000);
             });
 
