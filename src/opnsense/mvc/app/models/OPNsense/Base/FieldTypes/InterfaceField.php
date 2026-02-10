@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2019 Deciso B.V.
+ * Copyright (C) 2015-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,12 +40,12 @@ class InterfaceField extends BaseListField
     /**
      * @var array collected options
      */
-    private static $internalStaticOptionList = array();
+    private static $internalStaticOptionList = [];
 
     /**
      * @var array filters to use on the interface list
      */
-    private $internalFilters = array();
+    private $internalFilters = [];
 
     /**
      * @var string key to use for option selections, to prevent excessive reloading
@@ -68,14 +68,14 @@ class InterfaceField extends BaseListField
      */
     private function getConfigLaggInterfaces()
     {
-        $physicalInterfaces = array();
+        $physicalInterfaces = [];
         $configObj = Config::getInstance()->object();
         if (!empty($configObj->laggs)) {
             foreach ($configObj->laggs->children() as $key => $lagg) {
                 if (!empty($lagg->members)) {
                     foreach (explode(',', $lagg->members) as $interface) {
                         if (!isset($physicalInterfaces[$interface])) {
-                            $physicalInterfaces[$interface] = array();
+                            $physicalInterfaces[$interface] = [];
                         }
                         $physicalInterfaces[$interface][] = (string)$lagg->laggif;
                     }
@@ -91,12 +91,12 @@ class InterfaceField extends BaseListField
      */
     private function getConfigVLANInterfaces()
     {
-        $physicalInterfaces = array();
+        $physicalInterfaces = [];
         $configObj = Config::getInstance()->object();
         if (!empty($configObj->vlans)) {
             foreach ($configObj->vlans->children() as $key => $vlan) {
                 if (!isset($physicalInterfaces[(string)$vlan->if])) {
-                    $physicalInterfaces[(string)$vlan->if] = array();
+                    $physicalInterfaces[(string)$vlan->if] = [];
                 }
                 $physicalInterfaces[(string)$vlan->if][] = (string)$vlan->vlanif;
             }
@@ -110,10 +110,10 @@ class InterfaceField extends BaseListField
     protected function actionPostLoadingEvent()
     {
         if (!isset(self::$internalStaticOptionList[$this->internalCacheKey])) {
-            self::$internalStaticOptionList[$this->internalCacheKey] = array();
+            self::$internalStaticOptionList[$this->internalCacheKey] = [];
 
-            $allInterfaces = array();
-            $allInterfacesDevices = array(); // mapping device -> interface handle (lan/wan/optX)
+            $allInterfaces = [];
+            $allInterfacesDevices = []; // mapping device -> interface handle (lan/wan/optX)
             $configObj = Config::getInstance()->object();
             // Iterate over all interfaces configuration and collect data
             if (isset($configObj->interfaces) && $configObj->interfaces->count() > 0) {
@@ -234,5 +234,13 @@ class InterfaceField extends BaseListField
             $this->internalAllowDynamic = 0;
         }
         $this->updateInternalCacheKey();
+    }
+
+    /**
+     * purging state for testing because caching is too persistent
+     */
+    public function resetStaticOptionList()
+    {
+        self::$internalStaticOptionList = [];
     }
 }
