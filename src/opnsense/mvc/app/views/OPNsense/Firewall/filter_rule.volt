@@ -240,7 +240,6 @@
                         if (row.isGroup) {
                             return "";
                         }
-
                         const rowId = row.uuid || "";
                         const hasUuid = rowId.includes("-");
 
@@ -257,7 +256,7 @@
                             const ref = (row["ref"] || "");
 
                             // optional lookup button if ref exists
-                            const lookupRefCmd = ref ? `
+                            const lookupRefCommand = ref ? `
                                 <a href="/${ref}" target="_blank" rel="noopener noreferrer"
                                 class="btn btn-xs btn-default bootgrid-tooltip"
                                 title="{{ lang._('Lookup rule reference') }}">
@@ -268,7 +267,7 @@
                             // Always show log search, even when ref is empty
                             return `
                                 ${logSearchCommand(rowId)}
-                                ${lookupRefCmd}
+                                ${lookupRefCommand}
                             `;
                         }
 
