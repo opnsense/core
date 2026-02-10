@@ -235,32 +235,45 @@
                     },
                 },
                 formatters:{
-                    // Only show command buttons for rules that have a uuid, internal rules will not have one
                     commands: function (column, row) {
                         // All formatters except category must skip processing bucket rows in tree view
                         if (row.isGroup) {
                             return "";
                         }
-                        let rowId = row.uuid;
+
+                        const rowId = row.uuid || "";
+                        const hasUuid = rowId.includes("-");
+
+                        const logSearchCommand = (rid) => `
+                            <a href="/ui/diagnostics/firewall/log#filter=${encodeURIComponent('rid,=,' + rid)}" target="_blank" rel="noopener noreferrer"
+                            class="btn btn-xs btn-default bootgrid-tooltip"
+                            title="{{ lang._('View log entries for this rule') }}">
+                                <i class="fa fa-fw fa-search"></i>
+                            </a>
+                        `;
 
                         // If UUID is invalid, its an internal rule, use the #ref field to show a lookup button.
-                        if (!rowId || !rowId.includes('-')) {
-                            let ref = row["ref"] || "";
-                            if (ref.trim().length > 0) {
-                                let url = `/${ref}`;
-                                return `
-                                    <a href="${url}"
-                                    class="btn btn-xs btn-default bootgrid-tooltip"
-                                    title="{{ lang._('Lookup Rule') }}">
-                                        <span class="fa fa-fw fa-search"></span>
-                                    </a>
-                                `;
-                            }
-                            // If ref is empty
-                            return "";
+                        if (!hasUuid) {
+                            const ref = (row["ref"] || "");
+
+                            // optional lookup button if ref exists
+                            const lookupRefCmd = ref ? `
+                                <a href="/${ref}" target="_blank" rel="noopener noreferrer"
+                                class="btn btn-xs btn-default bootgrid-tooltip"
+                                title="{{ lang._('Lookup rule reference') }}">
+                                    <i class="fa fa-fw fa-link"></i>
+                                </a>
+                            ` : '';
+
+                            // Always show log search, even when ref is empty
+                            return `
+                                ${logSearchCommand(rowId)}
+                                ${lookupRefCmd}
+                            `;
                         }
 
                         return `
+
                             <button type="button" class="btn btn-xs btn-default command-move_before
                                 bootgrid-tooltip" data-row-id="${rowId}"
                                 title="{{ lang._('Move selected rule before this rule') }}">
@@ -274,6 +287,8 @@
                                     : '{{ lang._("Enable Logging") }}'}">
                                 <i class="fa fa-fw ${row.log == '1' ? 'fa-bell' : 'fa-bell-slash'}"></i>
                             </button>
+
+                            ${logSearchCommand(rowId)}
 
                             <button type="button" class="btn btn-xs btn-default command-edit
                                 bootgrid-tooltip" data-row-id="${rowId}"
@@ -1129,7 +1144,7 @@
         </div>
     </div>
     <!-- grid -->
-    {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '150'}+ {
+    {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '180'}+ {
                 'grid_commands': {
                     'upload_rules': {
                         'title': lang._('Import csv'),

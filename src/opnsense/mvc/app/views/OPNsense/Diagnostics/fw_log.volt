@@ -882,11 +882,20 @@
         let pollTimeout = null;
         let interfaceMap = {};
         let bufferDataUnsubscribe = null;
+        let pendingHashFilter = null;
 
         $reset.on('click', function() {
             tableWrapper.bootgrid('setPersistence', false);
             location.reload();
         });
+
+        const raw = getUrlHash('filter');
+        if (raw) {
+            const [field, operator, ...rest] = decodeURIComponent(raw).split(',');
+            const value = rest.join(',');
+
+            pendingHashFilter = { field, operator, value };
+        }
 
         $apply.on('click', function () {
             const field = $filterField.val();
@@ -1083,6 +1092,14 @@
                 buffer.reset(data);
                 $(`#livelog-table > .tabulator-tableholder > .bootgrid-overlay`).remove();
 
+                // Apply initial hash filter once, after first data load
+                if (pendingHashFilter) {
+                    filterVM.addFilter(pendingHashFilter);
+                    renderFilters();
+                    pendingHashFilter = null;
+                    history.replaceState(null, '', location.pathname);
+                }
+
                 poller(1000);
             });
 
@@ -1170,6 +1187,7 @@
                 $templateSelect.selectpicker('hide');
                 $templateName.show();
             } else if (val === '__none__') {
+                if (pendingHashFilter) return;
                 filterVM.clearFilters(true);
                 renderFilters();
                 $('#tg-exclusive').prop('checked', false);
