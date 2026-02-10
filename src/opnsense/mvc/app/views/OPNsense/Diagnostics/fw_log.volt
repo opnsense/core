@@ -273,8 +273,11 @@
         }
 
         _init() {
-            // pushes this.bufferSize entries to the models' buffer
-            this.bucket.copyTo(this.viewBuffer, this.bufferSize);
+            /**
+             * Rebuild the view buffer from the raw bucket using the current filter state.
+             * Acts as the single pipeline for init, filter updates, and bucket resets.
+             */
+            this._filterChange();
         }
 
         _onBucketEvent(event) {
@@ -437,10 +440,11 @@
          * search string modified). This function is idempotent.
          */
         _filterChange() {
-            const { fn, reset } = this._buildFilterFn();
+            const { fn, isNoop } = this._buildFilterFn();
 
-            if (reset) {
-                this._init();
+            if (isNoop) {
+                // pure init without any filters
+                this.bucket.copyTo(this.viewBuffer, this.bufferSize);
                 return;
             }
 
@@ -876,7 +880,6 @@
         let pollTimeout = null;
         let interfaceMap = {};
         let bufferDataUnsubscribe = null;
-        let pendingHashFilter = null;
 
         $reset.on('click', function() {
             tableWrapper.bootgrid('setPersistence', false);
@@ -887,7 +890,8 @@
         if (rawUrlHash) {
             try {
                 const filter = JSON.parse(decodeURIComponent(rawUrlHash));
-                pendingHashFilter = filter;
+                filterVM.addFilter(filter);
+                history.replaceState(null, '', location.pathname);
             } catch (e) {
                 // ignore malformed hashes
             }
@@ -1087,15 +1091,6 @@
             fetch_log(null, seedAmount).then((data) => {
                 buffer.reset(data);
                 $(`#livelog-table > .tabulator-tableholder > .bootgrid-overlay`).remove();
-
-                // Apply initial hash filter once, after first data load
-                if (pendingHashFilter) {
-                    filterVM.addFilter(pendingHashFilter);
-                    renderFilters();
-                    pendingHashFilter = null;
-                    history.replaceState(null, '', location.pathname);
-                }
-
                 poller(1000);
             });
 
@@ -1183,7 +1178,6 @@
                 $templateSelect.selectpicker('hide');
                 $templateName.show();
             } else if (val === '__none__') {
-                if (pendingHashFilter) return;
                 filterVM.clearFilters(true);
                 renderFilters();
                 $('#tg-exclusive').prop('checked', false);
