@@ -244,7 +244,11 @@
                         const hasUuid = rowId.includes("-");
 
                         const logSearchCommand = (rid) => `
-                            <a href="/ui/diagnostics/firewall/log#filter=${encodeURIComponent('rid,=,' + rid)}" target="_blank" rel="noopener noreferrer"
+                            <a href="/ui/diagnostics/firewall/log#filter=${encodeURIComponent(
+                                JSON.stringify({ field: 'rid', operator: '=', value: rid })
+                            )}"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             class="btn btn-xs btn-default bootgrid-tooltip"
                             title="{{ lang._('View log entries for this rule') }}">
                                 <i class="fa fa-fw fa-search"></i>

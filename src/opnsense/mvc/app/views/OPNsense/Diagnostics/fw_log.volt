@@ -883,15 +883,14 @@
             location.reload();
         });
 
-        const raw = getUrlHash('filter');
-        if (raw) {
-            const [fieldRaw, operator, value] = decodeURIComponent(raw).split(',');
-            // Hash filter may use ['src', 'dst'] to indicate a combined filter
-            const field = fieldRaw.startsWith('[')
-                ? fieldRaw.slice(1, -1).split(',')
-                : fieldRaw;
-
-            pendingHashFilter = { field, operator, value };
+        const rawUrlHash = getUrlHash('filter');
+        if (rawUrlHash) {
+            try {
+                const filter = JSON.parse(decodeURIComponent(rawUrlHash));
+                pendingHashFilter = filter;
+            } catch (e) {
+                // ignore malformed hashes
+            }
         }
 
         $apply.on('click', function () {
