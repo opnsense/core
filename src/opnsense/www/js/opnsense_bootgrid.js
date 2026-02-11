@@ -131,7 +131,6 @@ class UIBootgrid {
         this.options = {
             disableScroll: false,
             sorting: true,
-            selection: true,
             rowCount: [50, 100, 200, 500, 1000, true],
             remoteGridView: false, // parse gridview from <thead> or via ajax?
             formatters: {
@@ -166,6 +165,10 @@ class UIBootgrid {
             virtualDOM: false,
             selection: true,
             multiSelect: true,
+            batchToggle: true,
+            batchToggleSize: 40,
+            batchDelete: true,
+            batchDeleteSize: 40,
             stickySelect: false,
             rowSelect: false,
             triggerEditFor: null,
@@ -262,6 +265,11 @@ class UIBootgrid {
              // remove checkbox select column
             this.compatOptions['rowHeader'] = null;
         }
+
+        this.options.batchToggle = bootGridOptions?.batchToggle ?? true;
+        this.options.batchToggleSize = bootGridOptions?.batchToggleSize ?? 40;
+        this.options.batchDelete = bootGridOptions?.batchDelete ?? true;
+        this.options.batchDeleteSize = bootGridOptions?.batchDeleteSize ?? 40;
 
         if (bootGridOptions?.stickySelect ?? false) {
             this.options.stickySelect = true;
@@ -958,8 +966,7 @@ class UIBootgrid {
         }
     }
 
-    _linkFooterCommands() {
-        const commands = Object.fromEntries(Object.entries(this._getCommands()).filter(([key, value]) => value?.footer));
+    _linkFooterCommands(commands) {
         Object.keys(commands).map((k) => {
             if (!commands[k]?.method && !commands[k]?.onRendered) {
                 return;
@@ -1123,9 +1130,10 @@ class UIBootgrid {
         const $footerSecondary = $(`#${this.id} > .tabulator-footer > .tabulator-footer-contents`);
         let $commandContainer = $('<div class="text-left bootgrid-footer-commands">');
 
-        // select only footer commands that pass the filter and sort by sequence
+        // select only footer commands that pass the filter (and crud uri requirements) and sort by sequence
         const commands = Object.fromEntries(
             Object.entries(this._getCommands())
+                .filter(([_, v]) => !v?.requires || v.requires.every(key => key in this.crud))
                 .filter(([_, v]) => v?.footer && (typeof v.filter !== "function" || v.filter()))
                 .sort(([, a], [, b]) => a.sequence - b.sequence)
         );
@@ -1164,7 +1172,7 @@ class UIBootgrid {
             $(el).tooltip({container: 'body', trigger: 'hover'});
         });
 
-        this._linkFooterCommands();
+        this._linkFooterCommands(commands);
     }
 
     _populateColumnSelection() {
@@ -1646,14 +1654,11 @@ class UIBootgrid {
                 title: this._translate('deleteSelected')
             }
         };
+
         // register additional commands
         $.each(this.options.commands, (k, v) => {
-            if (result[k] === undefined) {
-                result[k] = { requires: [], sequence: 1 };
-            }
-            $.each(v, (ck, cv) => {
-                result[k][ck] = cv;
-            });
+            result[k] ??= { requires: [], sequence: 1 };
+            Object.assign(result[k], v);
         });
         return result;
     }
@@ -1997,19 +2002,16 @@ class UIBootgrid {
     command_delete_selected(event) {
         event.stopPropagation();
         stdDialogRemoveItem(this._translate('removeWarning'), () => {
-            let rows = this.table.getSelectedData();
-            if (rows.length > 0) {
-                const deferreds = [];
-                rows.forEach((row) => {
-                    let uuid = row[this.options.datakey];
-                    deferreds.push(ajaxCall(this.crud['del'] + uuid, {}, null));
-                });
-                // refresh after load
-                $.when.apply(null, deferreds).done(() => {
-                    this._reload(true);
-                    this.showSaveAlert(event);
-                });
-            }
+            const rows = this.table.getSelectedData();
+            if (!rows.length) return;
+
+            const key = this.options.datakey;
+            const ids = rows.map(r => r[key]);
+            const size = this.options.batchDelete ? this.options.batchDeleteSize : 1;
+            const batches = Array.from({ length: Math.ceil(ids.length / size) }, (_, i) => ids.slice(i * size, (i + 1) * size));
+
+            $.when.apply(null, batches.map(b => ajaxCall(`${this.crud.del}${b.join(",")}`, {}, null)))
+                .done(() => (this._reload(true), this.showSaveAlert(event)));
         });
     }
 
@@ -2099,17 +2101,15 @@ class UIBootgrid {
     command_toggle_selected(enable, event) {
         event.stopPropagation();
         const rows = this.table.getSelectedData();
-        if (rows.length > 0) {
-            const deferreds = [];
-            rows.forEach((row) => {
-                const uuid = row[this.options.datakey];
-                deferreds.push(ajaxCall(`${this.crud['toggle']}${uuid}/${enable ? "1" : "0"}`, {}, null));
-            })
-            $.when.apply(null, deferreds).done(() => {
-                this._reload(true);
-                this.showSaveAlert(event);
-            });
-        }
+        if (!rows.length) return;
+
+        const key = this.options.datakey, on = enable ? "1" : "0";
+        const ids = rows.map(r => r[key]);
+        const size = this.options.batchToggle ? this.options.batchToggleSize : 1;
+        const batches = Array.from({ length: Math.ceil(ids.length / size) }, (_, i) => ids.slice(i * size, (i + 1) * size));
+
+        $.when.apply(null, batches.map(b => ajaxCall(`${this.crud.toggle}${b.join(",")}/${on}`, {}, null)))
+            .done(() => (this._reload(true), this.showSaveAlert(event)));
     }
 
     _debounce(f, delay = 50, ensure = true) {
