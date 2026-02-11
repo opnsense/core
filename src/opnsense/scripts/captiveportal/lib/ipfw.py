@@ -36,9 +36,7 @@ class IPFW(object):
         :return: True if IPv6, False if IPv4
         """
         try:
-            # Remove scope ID if present (e.g., fe80::1%em0 -> fe80::1)
-            addr = address.split('%')[0]
-            ipaddress.IPv6Address(addr)
+            ipaddress.IPv6Address(address)
             return True
         except (ValueError, AttributeError):
             return False
