@@ -75,18 +75,17 @@
                 },
                 formatters: {
                     ipAddress: function(column, row) {
-                        let allAddresses = row.ipAddresses;
+                        const ips = row.ipAddresses || [];
 
-                        if (allAddresses.length === 0) {
-                            return '<span class="text-muted">-</span>';
+                        if (!ips.length) {
+                            return $('<span>', { class: 'text-muted', text: '-' })[0].outerHTML;
                         }
 
-                        // Show all addresses with tooltip for full content
-                        // Escape HTML for tooltip title attribute
-                        let tooltip = allAddresses.join('\n').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                        let displayHtml = allAddresses.join('<br>');
-                        // Wrap in span with tooltip - use data-html="false" for plain text tooltip
-                        return '<span data-toggle="tooltip" data-placement="top" title="' + tooltip + '">' + displayHtml + '</span>';
+                        return $('<span>', {
+                            'data-toggle': 'tooltip',
+                            'data-placement': 'top',
+                            title: ips.join('\n')
+                        }).append(ips.map(ip => $('<div>').text(ip).html()).join('<br>'))[0].outerHTML;
                     },
                     userName: function(column, row) {
                         // Extract IP from username@ip format and show just username

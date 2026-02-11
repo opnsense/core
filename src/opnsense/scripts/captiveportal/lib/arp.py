@@ -26,7 +26,6 @@
 
 """
 import subprocess
-import ipaddress
 import ujson
 from datetime import datetime
 
@@ -65,17 +64,7 @@ class ARP(object):
                 'last_seen': datetime.strptime(row[5], "%Y-%m-%d %H:%M:%S"),
             }
 
-    def list_items(self):
-        """ return parsed arp list
-        :return: dict
-        """
-        return self._table
-
     def get_by_ipaddress(self, address):
-        """ search arp or ndp entry by ip address
-        :param address: ip address (IPv4 or IPv6)
-        :return: dict or None (if not found)
-        """
         return self._table.get(address, None)
 
     def get_all_addresses_by_mac(self, mac_address):
