@@ -159,6 +159,8 @@ export default class Firewall extends BaseTableWidget {
         let data = this.chart.data.datasets[0].data;
         let rids = this.chart.data.datasets[0].rids;
 
+        label = $("<textarea/>").html(label).text();
+
         let idx = rids.findIndex(x => x === rid);
         if (idx === -1) {
             labels.push(label);
