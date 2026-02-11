@@ -340,7 +340,7 @@ class DB(object):
         else:
             return None
 
-    def list_clients(self, zoneid=None, include_ips=False):
+    def list_clients(self, zoneid=None):
         """ return list of (administrative) connected clients and usage statistics
         :param zoneid: zone id
         :param include_ips: if True, include all IPs (primary + roaming) as a list in record['ipAddresses']
@@ -375,33 +375,6 @@ class DB(object):
                         ,        cc.created desc
                     """, {'zoneid': zoneid})
 
-        # cache of (zoneid, sessionid) -> [ips]
-        ip_map = {}
-        if include_ips:
-            cur_ips = self._connection.cursor()
-            cur_ips.execute("""
-                SELECT cc.zoneid, cc.sessionid, cc.ip_address
-                FROM cp_clients cc
-                WHERE (cc.zoneid = :zoneid OR :zoneid IS NULL)
-                AND cc.deleted = 0
-                AND cc.ip_address IS NOT NULL
-                AND TRIM(cc.ip_address) <> ''
-                UNION ALL
-                SELECT ci.zoneid, ci.sessionid, ci.ip_address
-                FROM cp_client_ips ci
-                JOIN cp_clients cc
-                ON cc.zoneid = ci.zoneid AND cc.sessionid = ci.sessionid
-                WHERE (ci.zoneid = :zoneid OR :zoneid IS NULL)
-                AND cc.deleted = 0
-                AND ci.ip_address IS NOT NULL
-                AND TRIM(ci.ip_address) <> ''
-            """, {'zoneid': zoneid})
-
-            for z, sid, ip in cur_ips.fetchall():
-                ip_map.setdefault((z, sid), set()).add(ip.strip() if isinstance(ip, str) else ip)
-            ip_map = {k: sorted(v) for k, v in ip_map.items()}
-            cur_ips.close()
-
         while True:
             if not fieldnames:
                 for fields in cur.description:
@@ -412,8 +385,6 @@ class DB(object):
                 break
 
             record = {fieldnames[idx]: row[idx] for idx in range(len(row))}
-            if include_ips:
-                record['ipAddresses'] = ip_map.get((record['zoneid'], record['sessionId']), [])
             result.append(record)
 
         cur.close()
