@@ -243,17 +243,22 @@
                         const rowId = row.uuid || "";
                         const hasUuid = rowId.includes("-");
 
-                        const logSearchCommand = (rid) => `
-                            <a href="/ui/diagnostics/firewall/log#filter=${encodeURIComponent(
-                                JSON.stringify({ field: 'rid', operator: '=', value: rid })
-                            )}"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="btn btn-xs btn-default bootgrid-tooltip"
-                            title="{{ lang._('View log entries for this rule') }}">
-                                <i class="fa fa-fw fa-search"></i>
-                            </a>
-                        `;
+                        const logSearchCommand = (rid, log) => {
+                            const loggingEnabled = log === '1' || log === true;
+                            if (!loggingEnabled) return '';
+
+                            return `
+                                <a href="/ui/diagnostics/firewall/log#filter=${encodeURIComponent(
+                                    JSON.stringify({ field: 'rid', operator: '=', value: rid })
+                                )}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="btn btn-xs btn-default bootgrid-tooltip"
+                                title="{{ lang._('View log entries for this rule') }}">
+                                    <i class="fa fa-fw fa-search"></i>
+                                </a>
+                            `;
+                        };
 
                         // If UUID is invalid, its an internal rule, use the #ref field to show a lookup button.
                         if (!hasUuid) {
@@ -268,9 +273,8 @@
                                 </a>
                             ` : '';
 
-                            // Always show log search, even when ref is empty
                             return `
-                                ${logSearchCommand(rowId)}
+                                ${logSearchCommand(rowId, row.log)}
                                 ${lookupRefCommand}
                             `;
                         }
@@ -290,8 +294,6 @@
                                 <i class="fa fa-fw ${row.log == '1' ? 'fa-bell' : 'fa-bell-slash'}"></i>
                             </button>
 
-                            ${logSearchCommand(rowId)}
-
                             <button type="button" class="btn btn-xs btn-default command-edit
                                 bootgrid-tooltip" data-row-id="${rowId}"
                                 title="{{ lang._('Edit') }}">
@@ -309,6 +311,8 @@
                                 title="{{ lang._('Delete') }}">
                                 <span class="fa fa-fw fa-trash-o"></span>
                             </button>
+
+                            ${logSearchCommand(rowId, row.log)}
                         `;
                     },
                     // Disable rowtoggle for internal rules
