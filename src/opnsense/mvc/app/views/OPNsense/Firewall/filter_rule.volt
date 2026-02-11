@@ -65,7 +65,7 @@
         }
 
         // read interface from URL hash once, for the first grid load
-        let pendingUrlInterface = getUrlHash('interface');
+        let pendingUrlInterface = getUrlHash('interface') || null;
 
         // Lives outside the grid, so the logic of the response handler can be changed after grid initialization
         function dynamicResponseHandler(resp) {
@@ -750,14 +750,12 @@
                 },
                 false,
                 function (data) {  // post_callback, apply the URL hash logic
-                    const iface = getUrlHash('interface');
                     const $select = $('#interface_select');
-
-                    $select.selectpicker('val',
-                        iface && $select.find(`option[value="${iface}"]`).length
-                            ? iface
+                    $select.selectpicker('val', pendingUrlInterface && $select.find(`option[value="${pendingUrlInterface}"]`).length
+                            ? pendingUrlInterface
                             : '__any'  // Default view when having an invalid interface in hash
                     );
+                    interfaceInitialized = true;
                 },
                 true  // render_html to show counts as badges
             );
