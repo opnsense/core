@@ -484,6 +484,7 @@
                     $("#row_alias\\.path_expression").show();
                     /* FALLTHROUGH */
                 case 'urltable':
+                case 'host':
                     $("#row_alias\\.updatefreq").show();
                     /* FALLTHROUGH */
                 case 'url':
@@ -846,7 +847,7 @@
                                         </table>
                                         <div class="hidden" data-for="help_for_alias.frequency">
                                             <small>
-                                                {{lang._('The frequency that the list will be refreshed, in days + hours, so 1 day and 8 hours means the alias will be refreshed after 32 hours. ')}}
+                                                {{lang._('The frequency that the list will be refreshed, in days + hours, so 1 day and 8 hours means the alias will be refreshed after 32 hours. When empty the types defaults will be used, which could also be single shot.')}}
                                             </small>
                                         </div>
                                     </td>
