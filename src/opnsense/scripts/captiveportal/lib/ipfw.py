@@ -31,10 +31,6 @@ import ipaddress
 class IPFW(object):
     @staticmethod
     def _is_ipv6(address):
-        """Check if address is IPv6
-        :param address: IP address string
-        :return: True if IPv6, False if IPv4
-        """
         try:
             ipaddress.IPv6Address(address)
             return True
