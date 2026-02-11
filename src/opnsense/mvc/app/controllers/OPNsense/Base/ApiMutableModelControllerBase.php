@@ -594,22 +594,32 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     /**
      * Generic toggle function, assumes our model item has an enabled boolean type field.
      * @param string $path relative model path
-     * @param string $uuid node key
+     * @param string $uuids node key(s). Can be a comma-separated value for batching
      * @param string $enabled desired state enabled(1)/disabled(0), leave empty for toggle
      * @return array
      * @throws \OPNsense\Base\ValidationException on validation issues
      * @throws \ReflectionException when binding to the model class fails
      * @throws UserException when denied write access
      */
-    public function toggleBase($path, $uuid, $enabled = null)
+    public function toggleBase($path, $uuids, $enabled = null)
     {
         $result = ['result' => 'failed'];
         if ($this->request->isPost()) {
             Config::getInstance()->lock();
-            $mdl = $this->getModel();
-            if ($uuid != null) {
-                $node = $mdl->getNodeByReference($path . '.' . $uuid);
-                if ($node != null) {
+            $uuids = !empty($uuids) ? explode(",", $uuids) : [];
+            if (count($uuids) > 1 && $enabled === null) {
+                throw new UserException(
+                    gettext("Toggle with a list of items in only supported for explicit actions [0,1]"),
+                    gettext("Toggle")
+                );
+            }
+            $rootnode = $this->getModel()->getNodeByReference($path);
+            if ($rootnode === null) {
+                return $result;
+            }
+            foreach ($uuids as $uuid) {
+                $node = $rootnode->$uuid;
+                if ($node !== null) {
                     $result['changed'] = true;
                     if ($enabled == "0" || $enabled == "1") {
                         $result['result'] = !empty($enabled) ? "Enabled" : "Disabled";
@@ -618,6 +628,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                     } elseif ($enabled !== null) {
                         // failed
                         $result['changed'] = false;
+                        break;
                     } elseif ((string)$node->enabled == "1") {
                         $result['result'] = "Disabled";
                         $node->enabled = "0";
@@ -625,11 +636,10 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                         $result['result'] = "Enabled";
                         $node->enabled = "1";
                     }
-                    // if item has toggled, serialize to config and save
-                    if ($result['changed']) {
-                        $this->save(false, true);
-                    }
                 }
+            }
+            if ($result['changed']) {
+                $this->save(false, true);
             }
         }
         return $result;

@@ -163,56 +163,6 @@
             });
         }
 
-
-        /**
-         * toggle selected items
-         * @param gridId: grid id to to use
-         * @param url: ajax action to call
-         * @param state: 0/1/undefined
-         * @param combine: number of keys to combine (separate with ,)
-         *                 try to avoid too much items per call (results in too long url's)
-         */
-        function actionToggleSelected(gridId, url, state, combine) {
-            var defer_toggle = $.Deferred();
-            var rows = $("#"+gridId).bootgrid('getSelectedRows');
-            if (rows != undefined){
-                var deferreds = [];
-                var url_suffix = state ?? '';
-                var base = $.when({});
-                var keyset = [];
-                $.each(rows, function(key, uuid){
-                    keyset.push(uuid);
-                    if ( combine === undefined || keyset.length > combine || rows[rows.length - 1] === uuid) {
-                        var call_url = url + keyset.join(',') +'/'+url_suffix;
-                        base = base.then(function() {
-                            var defer = $.Deferred();
-                            ajaxCall(call_url, {}, function(){
-                                defer.resolve();
-                            });
-                            return defer.promise();
-                        });
-                        keyset = [];
-                    }
-                });
-                // last action in the list, reload grid and release this promise
-                base.then(function(){
-                    $("#"+gridId).bootgrid("reload");
-                    let changemsg = $("#"+gridId).data("editalert");
-                    if (changemsg !== undefined) {
-                        $("#"+changemsg).slideDown(1000, function(){
-                            setTimeout(function(){
-                                $("#"+changemsg).slideUp(2000);
-                            }, 2000);
-                        });
-                    }
-                    defer_toggle.resolve();
-                });
-            } else {
-                defer_toggle.resolve();
-            }
-            return defer_toggle.promise();
-        }
-
         /*************************************************************************************************************
          * UI load grids (on tab change)
          *************************************************************************************************************/
@@ -253,16 +203,6 @@
                                 }
                             }
                         }
-                    }).on('loaded.rs.jquery.bootgrid', function(e) {
-                        /**
-                         * disable/enable selected rulesets
-                         */
-                        $("#disableSelectedRuleSets").unbind('click').click(function(){
-                            actionToggleSelected('grid-rule-files', '/api/ids/settings/toggle_ruleset/', 0, 20);
-                        });
-                        $("#enableSelectedRuleSets").unbind('click').click(function(){
-                            actionToggleSelected('grid-rule-files', '/api/ids/settings/toggle_ruleset/', 1, 20);
-                        });
                     });
                 } else {
                     $('#grid-rule-files').bootgrid('reload');
@@ -298,9 +238,11 @@
                         {   search:'/api/ids/settings/searchinstalledrules',
                             get:'/api/ids/settings/get_rule_info/',
                             set:'/api/ids/settings/set_rule/',
+                            toggle:'/api/ids/settings/toggle_rule/',
                             datakey: 'sid',
                             options:{
                                 virtualDOM: true,
+                                batchToggleSize: 100,
                                 requestHandler:addRuleFilters,
                                 formatters:{
                                     rowtoggle: function (column, row) {
@@ -343,39 +285,8 @@
                                     return (new $.Deferred()).resolve();
                                 }
                             },
-                            toggle:'/api/ids/settings/toggle_rule/'
                         }
-                    ).on('loaded.rs.jquery.bootgrid', function() {
-                        /**
-                         * disable/enable [+action] selected rules
-                         */
-                        $("#disableSelectedRules").unbind('click').click(function(event){
-                            event.preventDefault();
-                            $("#disableSelectedRules > span").removeClass("fa-square-o").addClass("fa-spinner fa-pulse");
-                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggle_rule/', 0, 100).done(function(){
-                                $("#disableSelectedRules > span").removeClass("fa-spinner fa-pulse");
-                                $("#disableSelectedRules > span").addClass("fa-square-o");
-                            });
-                        });
-                        $("#enableSelectedRules").unbind('click').click(function(){
-                            $("#enableSelectedRules > span").removeClass("fa-check-square-o").addClass("fa-spinner fa-pulse");
-                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggle_rule/', 1, 100).done(function(){
-                                $("#enableSelectedRules > span").removeClass("fa-spinner fa-pulse").addClass("fa-check-square-o");
-                            });
-                        });
-                        $("#alertSelectedRules").unbind('click').click(function(){
-                            $("#alertSelectedRules > span").addClass("fa-spinner fa-pulse");
-                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggle_rule/', "alert", 100).done(function(){
-                                $("#alertSelectedRules > span").removeClass("fa-spinner fa-pulse");
-                            });
-                        });
-                        $("#dropSelectedRules").unbind('click').click(function(){
-                            $("#dropSelectedRules > span").addClass("fa-spinner fa-pulse");
-                            actionToggleSelected('grid-installedrules', '/api/ids/settings/toggle_rule/', "drop", 100).done(function(){
-                                $("#dropSelectedRules > span").removeClass("fa-spinner fa-pulse");
-                            });
-                        });
-                    });
+                    );
                 } else {
                     $('#grid-installedrules').bootgrid('reload');
                 }
@@ -722,16 +633,6 @@
                     <tr>
                       <td>
                         <div class="row">
-                          <div class="col-xs-9">
-                            <div>
-                              <button data-toggle="tooltip" id="enableSelectedRuleSets" type="button" class="btn btn-xs btn-default btn-primary">
-                                  {{ lang._('Enable selected') }}
-                              </button>
-                              <button data-toggle="tooltip" id="disableSelectedRuleSets" type="button" class="btn btn-xs btn-default btn-primary">
-                                  {{ lang._('Disable selected') }}
-                              </button>
-                            </div>
-                          </div>
                           <div class="col-xs-3" style="padding-top:0px;">
                             <input type="text" placeholder="{{ lang._('Search') }}" id="grid-rule-files-search" value=""/>
                           </div>
@@ -815,8 +716,6 @@
             <tfoot>
             <tr>
                 <td>
-                    <button title="{{ lang._('Disable selected') }}" id="disableSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa fa-square-o fa-fw"></span></button>
-                    <button title="{{ lang._('Enable selected') }}" id="enableSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa fa-check-square-o fa-fw"></span></button>
                     <button title="{{ lang._('Alert selected') }}" id="alertSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa"></span>{{ lang._('Alert') }}</button>
                     <button title="{{ lang._('Drop selected') }}" id="dropSelectedRules" data-toggle="tooltip" type="button" class="btn btn-xs btn-default"><span class="fa"></span>{{ lang._('Drop') }}</button>
                 </td>
