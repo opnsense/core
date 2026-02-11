@@ -198,7 +198,7 @@ class CPBackgroundProcess(object):
                     session_ips = self.db.update_roaming_ips(zoneid, db_client['sessionId'], self.arp.get_all_addresses_by_mac(db_client['macAddress']))
                 else:
                     # may have been updated if primary IP changed
-                    session_ips = set(db_client['ipAddress'])
+                    session_ips = {db_client['ipAddress']}
 
                 to_add = (session_ips - registered_addresses_pf) | (session_ips - registered_addresses_ipfw)
                 if session_ips and to_add:
