@@ -163,7 +163,6 @@
                     let selectedInterface = $('#interface_select').val();
                     if (selectedInterface == null && pendingUrlInterface != null) {
                         selectedInterface = pendingUrlInterface;
-                        pendingUrlInterface = null; // consume the hash so it is not used again
                     }
                     if (selectedInterface === '__floating') {
                         request.interface = '';
@@ -751,11 +750,13 @@
                 false,
                 function (data) {  // post_callback, apply the URL hash logic
                     const $select = $('#interface_select');
+                    console.log(pendingUrlInterface)
                     $select.selectpicker('val', pendingUrlInterface && $select.find(`option[value="${pendingUrlInterface}"]`).length
                             ? pendingUrlInterface
                             : '__any'  // Default view when having an invalid interface in hash
                     );
                     interfaceInitialized = true;
+                    pendingUrlInterface = null; // consume the hash so it is not used again
                 },
                 true  // render_html to show counts as badges
             );
