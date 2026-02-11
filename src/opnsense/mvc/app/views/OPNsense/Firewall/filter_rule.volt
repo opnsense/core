@@ -65,8 +65,7 @@
         }
 
         // read interface from URL hash once, for the first grid load
-        const hashMatchInterface = window.location.hash.match(/(?:^#|&)interface=([^&]+)/);
-        let pendingUrlInterface = hashMatchInterface ? decodeURIComponent(hashMatchInterface[1]) : null;
+        let pendingUrlInterface = getUrlHash('interface');
 
         // Lives outside the grid, so the logic of the response handler can be changed after grid initialization
         function dynamicResponseHandler(resp) {
@@ -155,7 +154,6 @@
                 responsive: true,
                 sorting: false,
                 initialSearchPhrase: getUrlHash('search'),
-                triggerEditFor: getUrlHash('edit'),
                 requestHandler: function(request){
                     // Add category selectpicker
                     if ( $('#category_filter').val().length > 0) {
@@ -752,20 +750,14 @@
                 },
                 false,
                 function (data) {  // post_callback, apply the URL hash logic
-                    const match = window.location.hash.match(/^#interface=([^&]+)/);
-                    if (match) {
-                        const ifaceFromHash = decodeURIComponent(match[1]);
+                    const iface = getUrlHash('interface');
+                    const $select = $('#interface_select');
 
-                        const allOptions = Object.values(data).flatMap(group => group.items.map(i => i.value));
-                        if (allOptions.includes(ifaceFromHash)) {
-                            $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
-                        }
-                    } else {
-                        // Default to ALL interfaces
-                        $('#interface_select').selectpicker('val', '__any');
-                    }
-                    interfaceInitialized = true;
-
+                    $select.selectpicker('val',
+                        iface && $select.find(`option[value="${iface}"]`).length
+                            ? iface
+                            : '__any'  // Default view when having an invalid interface in hash
+                    );
                 },
                 true  // render_html to show counts as badges
             );
