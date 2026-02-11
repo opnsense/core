@@ -66,10 +66,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         }
                     }
 
-                    if ($interface === '') {
-                        $interface = '__floating';
-                    }
-
                     $base = strtok($rule->getRef(), '#');
                     $hash = url_safe('interface=%s&edit=%s', [$interface, $rid]);
                     header("Location: /{$base}#{$hash}");
