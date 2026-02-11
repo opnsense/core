@@ -43,9 +43,9 @@ class ARP(object):
         """
         self._table.clear()
 
-        # skip NDP output if hostwatch disabled (disabling IPv6 support)
+        # fetch addresses, no IPv6 if hostwatch disabled
         out = ujson.loads(subprocess.run(
-            ['/usr/local/opnsense/scripts/interfaces/list_hosts.py'],
+            ['/usr/local/opnsense/scripts/interfaces/list_hosts.py','--last-seen-window', '1000'],
             capture_output=True,
             text=True
         ).stdout)

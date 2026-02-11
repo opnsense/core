@@ -55,6 +55,12 @@ if __name__ == '__main__':
     parser.add_argument(
         '-v', '--verbose', help='Verbose output (including vendors)', action="store_true", default=False
     )
+    parser.add_argument(
+        "--last-seen-window",
+        type=int,
+        default=None,
+        help="Only return hosts seen in the last N seconds"
+    )
     parser.add_argument('--rc_file', help='hostwatch rc(8) config filename', default='/etc/rc.conf.d/hostwatch')
     parser.add_argument('--db_file', help='hostwatch sqlite3 database', default='/var/db/hostwatch/hosts.db')
     inputargs = parser.parse_args()
@@ -63,20 +69,29 @@ if __name__ == '__main__':
     if inputargs.discover and is_hostwatch_enabled(inputargs.rc_file):
         # use host discovery data, query readonly
         result['source'] = 'discovery'
-        last_seen_window = 1000
         con = sqlite3.connect("file:%s?mode=ro" % inputargs.db_file, uri=True)
         con.row_factory = sqlite3.Row
-        for row in con.execute(
-            """
-                SELECT *
-                FROM v_hosts
-                WHERE protocol IN (?, ?)
+        query = """
+            SELECT *
+            FROM v_hosts
+            WHERE protocol IN (?, ?)
+        """
+        params = [inputargs.proto[0], inputargs.proto[-1]]
+
+        if inputargs.last_seen_window is not None:
+            query += """
                 AND last_seen >= datetime('now', '-' || ? || ' seconds')
-            """, (inputargs.proto[0], inputargs.proto[-1], last_seen_window)
-        ):
+            """
+            params.append(inputargs.last_seen_window)
+
+        for row in con.execute(query, params):
             record = [row['interface_name'], row['ether_address'], row['ip_address']]
             if inputargs.verbose:
-                record = record + [row['organization_name'], row['first_seen'], row['last_seen']]
+                record += [
+                    row['organization_name'],
+                    row['first_seen'],
+                    row['last_seen']
+                ]
             result['rows'].append(record)
     else:
         result['source'] = 'arp-ndp'

@@ -235,26 +235,77 @@ class DB(object):
                     """, {'zoneid': zoneid, 'sessionid': sessionid, 'ip_address': ip_address})
         self._connection.commit()
 
-    def add_roaming_ip(self, zoneid, sessionid, ip_address):
-        """Add a roaming IP address to a session.
+    def update_roaming_ips(self, zoneid, sessionid, ip_addresses):
+        """Update roaming IP addresses for a session to exactly match the provided list.
+        Returns the current set of IP addresses stored in the database.
         """
+
         if isinstance(sessionid, bytes):
             sessionid = sessionid.decode()
 
-        if ip_address is None or str(ip_address).strip() == '':
-            return
+        if not ip_addresses:
+            ip_addresses = []
+
+        # clean + deduplicate + remove empty values
+        new_ips = {
+            str(ip).strip()
+            for ip in ip_addresses
+            if ip is not None and str(ip).strip() != ''
+        }
 
         cur = self._connection.cursor()
         try:
+            # fetch existing IPs
             cur.execute("""
-                INSERT OR IGNORE INTO cp_client_ips(zoneid, sessionid, ip_address)
-                VALUES (:zoneid, :sessionid, :ip_address)
+                SELECT ip_address
+                FROM cp_client_ips
+                WHERE zoneid = :zoneid
+                AND sessionid = :sessionid
             """, {
                 'zoneid': zoneid,
-                'sessionid': sessionid,
-                'ip_address': ip_address
+                'sessionid': sessionid
             })
+
+            current_ips = {row[0] for row in cur.fetchall()}
+
+            # if identical (order-independent), do nothing
+            if current_ips == new_ips:
+                return current_ips
+
+            # remove IPs no longer present
+            ips_to_delete = current_ips - new_ips
+            if ips_to_delete:
+                cur.executemany("""
+                    DELETE FROM cp_client_ips
+                    WHERE zoneid = :zoneid
+                    AND sessionid = :sessionid
+                    AND ip_address = :ip_address
+                """, [
+                    {
+                        'zoneid': zoneid,
+                        'sessionid': sessionid,
+                        'ip_address': ip
+                    }
+                    for ip in ips_to_delete
+                ])
+
+            # add new IPs
+            ips_to_add = new_ips - current_ips
+            if ips_to_add:
+                cur.executemany("""
+                    INSERT INTO cp_client_ips(zoneid, sessionid, ip_address)
+                    VALUES (:zoneid, :sessionid, :ip_address)
+                """, [
+                    {
+                        'zoneid': zoneid,
+                        'sessionid': sessionid,
+                        'ip_address': ip
+                    }
+                    for ip in ips_to_add
+                ])
+
             self._connection.commit()
+            return new_ips
         finally:
             cur.close()
 
@@ -369,12 +420,12 @@ class DB(object):
         return result
 
     
-    def list_session_ips(self, zoneid, sessionid, include_deleted=False):
+    def list_session_ips(self, zoneid, sessionid):
         """
         Return primary + roaming IPs for a session.
         - Primary IP is cp_clients.ip_address
         - roaming IPs are cp_client_ips.ip_address
-        Returns a de-duplicated list[str] (order not guaranteed).
+        Returns a de-duplicated set[str] (order not guaranteed).
         """
         if isinstance(sessionid, bytes):
             sessionid = sessionid.decode()
@@ -382,14 +433,13 @@ class DB(object):
         cur = self._connection.cursor()
         try:
             params = {'zoneid': zoneid, 'sessionid': sessionid}
-            where_deleted = "" if include_deleted else "AND cc.deleted = 0"
 
             cur.execute(f"""
                 SELECT cc.ip_address
                 FROM cp_clients cc
                 WHERE cc.zoneid = :zoneid
                 AND cc.sessionid = :sessionid
-                {where_deleted}
+                AND cc.deleted = 0
             """, params)
             row = cur.fetchone()
             ips = set()
@@ -408,7 +458,7 @@ class DB(object):
                 if ip and str(ip).strip():
                     ips.add(str(ip).strip())
 
-            return list(ips)
+            return ips
         finally:
             cur.close()
 
