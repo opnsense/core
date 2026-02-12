@@ -537,9 +537,11 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 return $result;
             }
             foreach ($uuids as $uuid) {
+                $n = $rootnode?->$uuid;
+                $name = (string)($n?->description ?: $n?->descr ?: $n?->name ?: $uuid);
                 $this->checkAndThrowSafeDelete(
                     $uuid,
-                    sprintf(gettext("Item %s {%s} in use by:"), $path, $uuid)
+                    sprintf(gettext("Item %s {%s} in use by:"), $path, $name)
                 );
                 if ($rootnode->del($uuid)) {
                     $changed = true;
