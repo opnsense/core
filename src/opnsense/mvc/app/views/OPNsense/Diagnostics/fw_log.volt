@@ -273,8 +273,11 @@
         }
 
         _init() {
-            // pushes this.bufferSize entries to the models' buffer
-            this.bucket.copyTo(this.viewBuffer, this.bufferSize);
+            /**
+             * Rebuild the view buffer from the raw bucket using the current filter state.
+             * Acts as the single pipeline for init, filter updates, and bucket resets.
+             */
+            this._filterChange();
         }
 
         _onBucketEvent(event) {
@@ -437,10 +440,11 @@
          * search string modified). This function is idempotent.
          */
         _filterChange() {
-            const { fn, reset } = this._buildFilterFn();
+            const { fn, isNoop } = this._buildFilterFn();
 
-            if (reset) {
-                this._init();
+            if (isNoop) {
+                // pure init without any filters
+                this.bucket.copyTo(this.viewBuffer, this.bufferSize);
                 return;
             }
 
@@ -490,21 +494,15 @@
         /**
          * Example: { field: 'src', operator: '=', value: '192.168.1.1', format:'RFC1918' (optional) }
          * The optional 'format' parameter replaces the value for display purposes only
+         * Combined filters are inferred when `field` is an array (e.g. ['src','dst'])
          */
         addFilter(filter) {
             const id = this._hashFilter(filter);
-            this.filterStore.filters[id] = filter;
-            this._filterChange();
-        }
-
-        /**
-         * Example: { field: ['src', 'dst'], operator: '!=', value: '192.168.1.1' }
-         * The meaning of a combined filter is dependent on the operator. In the case of a
-         * positive operator, "OR" is used, otherwise "AND".
-         */
-        addCombinedFilter(filter) {
-            const id = this._hashFilter(filter);
-            this.filterStore.combinedFilters[id] = filter;
+            if (Array.isArray(filter.field)) {
+                this.filterStore.combinedFilters[id] = filter;
+            } else {
+                this.filterStore.filters[id] = filter;
+            }
             this._filterChange();
         }
 
@@ -888,6 +886,18 @@
             location.reload();
         });
 
+        table.on('tableBuilt', () => {
+            const params = new URLSearchParams(window.location.hash.slice(1));
+            const field = params.get('field');
+            const operator = params.get('operator');
+            const value = params.get('value');
+
+            if (field && operator && value) {
+                filterVM.addFilter({ field, operator, value });
+                history.replaceState(null, '', location.pathname);
+            }
+        });
+
         $apply.on('click', function () {
             const field = $filterField.val();
             const operator = $filterOperator.val();
@@ -896,10 +906,10 @@
 
             switch (field) {
                 case '__addr__':
-                    filterVM.addCombinedFilter({field: ['src', 'dst'], operator: operator, value: searchString});
+                    filterVM.addFilter({field: ['src', 'dst'], operator: operator, value: searchString});
                     break;
                 case '__port__':
-                    filterVM.addCombinedFilter({field: ['srcport', 'dstport'], operator: operator, value: searchString});
+                    filterVM.addFilter({field: ['srcport', 'dstport'], operator: operator, value: searchString});
                     break;
                 case 'interface':
                     filterVM.addFilter({field: field, operator: operator, value: $interfaceSelect.val(), format: $interfaceSelect.find('option:selected').text()});
@@ -1207,11 +1217,7 @@
                 };
                 const {filters, mode} = parseTemplate(tmpl);
                 for (const filter of filters) {
-                    if (Array.isArray(filter.field)) {
-                        filterVM.addCombinedFilter(filter);
-                    } else {
-                        filterVM.addFilter(filter);
-                    }
+                    filterVM.addFilter(filter);
                 }
                 filterVM.setFilterMode(mode);
                 if (mode === 'OR') {

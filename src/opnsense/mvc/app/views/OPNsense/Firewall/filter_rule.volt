@@ -235,29 +235,46 @@
                     },
                 },
                 formatters:{
-                    // Only show command buttons for rules that have a uuid, internal rules will not have one
                     commands: function (column, row) {
                         // All formatters except category must skip processing bucket rows in tree view
                         if (row.isGroup) {
                             return "";
                         }
-                        let rowId = row.uuid;
+                        const rowId = row.uuid || "";
+                        const hasUuid = rowId.includes("-");
+
+                        const logSearchCommand = (rid, log) => {
+                            const loggingEnabled = log === '1' || log === true;
+                            if (!loggingEnabled) return '';
+
+                            return `
+                                <a href="/ui/diagnostics/firewall/log#${new URLSearchParams({field:'rid',operator:'=',value:rid})}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="btn btn-xs btn-default bootgrid-tooltip"
+                                title="{{ lang._('View log entries for this rule') }}">
+                                    <i class="fa fa-fw fa-search"></i>
+                                </a>
+                            `;
+                        };
 
                         // If UUID is invalid, its an internal rule, use the #ref field to show a lookup button.
-                        if (!rowId || !rowId.includes('-')) {
-                            let ref = row["ref"] || "";
-                            if (ref.trim().length > 0) {
-                                let url = `/${ref}`;
-                                return `
-                                    <a href="${url}"
-                                    class="btn btn-xs btn-default bootgrid-tooltip"
-                                    title="{{ lang._('Lookup Rule') }}">
-                                        <span class="fa fa-fw fa-search"></span>
-                                    </a>
-                                `;
-                            }
-                            // If ref is empty
-                            return "";
+                        if (!hasUuid) {
+                            const ref = (row["ref"] || "");
+
+                            // optional lookup button if ref exists
+                            const lookupRefCommand = ref ? `
+                                <a href="/${ref}" target="_blank" rel="noopener noreferrer"
+                                class="btn btn-xs btn-default bootgrid-tooltip"
+                                title="{{ lang._('Lookup rule reference') }}">
+                                    <i class="fa fa-fw fa-link"></i>
+                                </a>
+                            ` : '';
+
+                            return `
+                                ${logSearchCommand(rowId, row.log)}
+                                ${lookupRefCommand}
+                            `;
                         }
 
                         return `
@@ -292,6 +309,8 @@
                                 title="{{ lang._('Delete') }}">
                                 <span class="fa fa-fw fa-trash-o"></span>
                             </button>
+
+                            ${logSearchCommand(rowId, row.log)}
                         `;
                     },
                     // Disable rowtoggle for internal rules
@@ -1129,7 +1148,7 @@
         </div>
     </div>
     <!-- grid -->
-    {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '150'}+ {
+    {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '180'}+ {
                 'grid_commands': {
                     'upload_rules': {
                         'title': lang._('Import csv'),
