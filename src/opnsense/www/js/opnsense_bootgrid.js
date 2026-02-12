@@ -167,6 +167,8 @@ class UIBootgrid {
             multiSelect: true,
             batchToggle: true,
             batchToggleSize: 40,
+            batchDelete: true,
+            batchDeleteSize: 40,
             stickySelect: false,
             rowSelect: false,
             triggerEditFor: null,
@@ -266,6 +268,8 @@ class UIBootgrid {
 
         this.options.batchToggle = bootGridOptions?.batchToggle ?? true;
         this.options.batchToggleSize = bootGridOptions?.batchToggleSize ?? 40;
+        this.options.batchDelete = bootGridOptions?.batchDelete ?? true;
+        this.options.batchDeleteSize = bootGridOptions?.batchDeleteSize ?? 40;
 
         if (bootGridOptions?.stickySelect ?? false) {
             this.options.stickySelect = true;
@@ -1998,19 +2002,16 @@ class UIBootgrid {
     command_delete_selected(event) {
         event.stopPropagation();
         stdDialogRemoveItem(this._translate('removeWarning'), () => {
-            let rows = this.table.getSelectedData();
-            if (rows.length > 0) {
-                const deferreds = [];
-                rows.forEach((row) => {
-                    let uuid = row[this.options.datakey];
-                    deferreds.push(ajaxCall(this.crud['del'] + uuid, {}, null));
-                });
-                // refresh after load
-                $.when.apply(null, deferreds).done(() => {
-                    this._reload(true);
-                    this.showSaveAlert(event);
-                });
-            }
+            const rows = this.table.getSelectedData();
+            if (!rows.length) return;
+
+            const key = this.options.datakey;
+            const ids = rows.map(r => r[key]);
+            const size = this.options.batchDelete ? this.options.batchDeleteSize : 1;
+            const batches = Array.from({ length: Math.ceil(ids.length / size) }, (_, i) => ids.slice(i * size, (i + 1) * size));
+
+            $.when.apply(null, batches.map(b => ajaxCall(`${this.crud.del}${b.join(",")}`, {}, null)))
+                .done(() => (this._reload(true), this.showSaveAlert(event)));
         });
     }
 

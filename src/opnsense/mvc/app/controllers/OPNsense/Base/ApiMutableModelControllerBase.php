@@ -109,10 +109,16 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param bool $contains exact match or in list
      * @param bool $only_mvc only report (versioned) models
      * @param array $exclude_refs exclude topics (for example the tokens original location)
+     * @param ?string $title message title when an exception is thrown
      * @throws UserException containing additional information
      */
-    protected function checkAndThrowValueInUse($token, $contains = true, $only_mvc = true, $exclude_refs = [])
-    {
+    protected function checkAndThrowValueInUse(
+        $token,
+        $contains = true,
+        $only_mvc = true,
+        $exclude_refs = [],
+        $title = null
+    ){
         if ($contains) {
             $xpath = "//text()[contains(.,'{$token}')]";
         } else {
@@ -176,7 +182,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                     $usage['reference']
                 ) . "\n";
             }
-            throw new UserException($message, gettext("Item in use by"));
+            throw new UserException($message, $title ?? gettext("Item in use by"));
         }
     }
 
@@ -184,12 +190,13 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * Check if item can be safely deleted if $internalModelUseSafeDelete is enabled.
      * Throws a user exception when the $uuid seems to be used in some other config section.
      * @param $uuid string uuid to check
+     * @param ?string $title message title when an exception is thrown
      * @throws UserException containing additional information
      */
-    private function checkAndThrowSafeDelete($uuid)
+    private function checkAndThrowSafeDelete($uuid, $title = null)
     {
         if (static::$internalModelUseSafeDelete) {
-            $this->checkAndThrowValueInUse($uuid);
+            $this->checkAndThrowValueInUse($uuid, true, true, [], $title);
         }
     }
 
@@ -510,31 +517,42 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     /**
      * Model delete wrapper, removes an item specified by path and uuid
      * @param string $path relative model path
-     * @param null|string $uuid node key
+     * @param null|string $uuids node key(s), comma-separated
      * @return array
      * @throws \OPNsense\Base\ValidationException on validation issues
      * @throws \ReflectionException when binding to the model class fails
      * @throws UserException when denied write access
      */
-    public function delBase($path, $uuid)
+    public function delBase($path, $uuids)
     {
         $result = ['result' => 'failed'];
 
         if ($this->request->isPost()) {
             Config::getInstance()->lock();
-            $this->checkAndThrowSafeDelete($uuid);
-            $mdl = $this->getModel();
-            if ($uuid != null) {
-                $tmp = $mdl;
-                foreach (explode('.', $path) as $step) {
-                    $tmp = $tmp->{$step};
-                }
-                if ($tmp->del($uuid)) {
-                    $this->save(false, true);
+            $uuids = !empty($uuids) ? explode(",", $uuids) : [];
+            $rootnode = $this->getModel()->getNodeByReference($path);
+            $changed = false;
+
+            if ($rootnode === null) {
+                return $result;
+            }
+            foreach ($uuids as $uuid) {
+                $n = $rootnode?->$uuid;
+                $name = (string)($n?->description ?: $n?->descr ?: $n?->name ?: $uuid);
+                $this->checkAndThrowSafeDelete(
+                    $uuid,
+                    sprintf(gettext("Item %s {%s} in use by:"), $path, $name)
+                );
+                if ($rootnode->del($uuid)) {
+                    $changed = true;
                     $result['result'] = 'deleted';
                 } else {
                     $result['result'] = 'not found';
                 }
+            }
+
+            if ($changed) {
+                $this->save(false, true);
             }
         }
         return $result;
