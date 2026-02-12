@@ -161,7 +161,7 @@ export default class Firewall extends BaseTableWidget {
 
         let idx = rids.findIndex(x => x === rid);
         if (idx === -1) {
-            labels.push(label);
+            labels.push($("<textarea/>").html(label).text());
             data.push(count);
             rids.push(rid);
         } else {
