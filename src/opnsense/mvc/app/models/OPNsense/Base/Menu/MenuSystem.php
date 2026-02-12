@@ -85,15 +85,7 @@ class MenuSystem
      */
     public function appendItem($root, $id, $properties)
     {
-        $node = $this->root;
-        foreach (explode(".", $root) as $key) {
-            $node = $node->findNodeById($key);
-            if ($node == null) {
-                return null;
-            }
-        }
-
-        return $node->append($id, $properties);
+        return $this->root->findNodeByPath($root)?->append($id, $properties);
     }
 
     /**
@@ -338,6 +330,8 @@ class MenuSystem
                     'order' => 0,
             ]);
             $iftargets['fw'] = array_merge(['FloatingRules' => gettext('Floating')], $iftargets['fw']);
+        } elseif ($has_mvc_fw) {
+            $this->root->findNodeByPath('Firewall.Rule')?->setVisibleName(gettext('Rules'));
         }
         $ordid = 1;
         foreach ($iftargets['fw'] as $key => $descr) {
