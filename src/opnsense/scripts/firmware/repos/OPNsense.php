@@ -62,7 +62,3 @@ if (!empty($config->system->firmware->flavour)) {
 
 /* rewrite the config via the defaults and possible arguments */
 shell_safe($frmt, $args);
-
-/* overwrite the aux configuration for consistency */
-$conf = '/usr/local/etc/pkg/repos/OPNsense-aux.conf';
-@copy($conf . '.sample', $conf);
