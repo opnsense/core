@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2015-2025 Franco Fichtner <franco@opnsense.org>
+ # Copyright (c) 2015-2026 Franco Fichtner <franco@opnsense.org>
  # Copyright (c) 2015-2018 Deciso B.V.
  # All rights reserved.
  #
@@ -672,19 +672,20 @@
 
         // handle firmware config options
         function fillOptions() {
-            ajaxGet('/api/core/firmware/get_options', {}, function(firmwareoptions, status) {
+            ajaxGet('/api/core/firmware/get_options', {}, function(fwopts, status) {
                 ajaxGet('/api/core/firmware/get', {}, function(config, status) {
-                    var firmwareconfig = config['firmware'];
+                    var fwconf = config['firmware'];
                     var custom_selected = true;
 
                     $("#firmware_mirror").find('option').remove();
                     $("#firmware_type").find('option').remove();
                     $("#firmware_flavour").find('option').remove();
-                    $("#firmware_reboot").prop('checked', firmwareconfig['reboot'] == '1');
+                    $("#firmware_reboot").prop('checked', fwconf['reboot'] == '1');
+                    $("#firmware_aux").prop('checked', fwconf['aux'] == '1');
 
-                    $.each(firmwareoptions.mirrors, function(key, value) {
+                    $.each(fwopts.mirrors, function(key, value) {
                         var selected = false;
-                        if (key == firmwareconfig['mirror']) {
+                        if (key == fwconf['mirror']) {
                             selected = true;
                             custom_selected = false;
                         }
@@ -694,24 +695,24 @@
                                 .prop('selected', selected)
                         );
                     });
-                    if (firmwareoptions['mirrors_allow_custom']) {
+                    if (fwopts['mirrors_allow_custom']) {
                         $("#firmware_mirror :first-child").after($("<option/>")
-                            .attr("value", firmwareconfig['mirror'])
+                            .attr("value", fwconf['mirror'])
                             .text("(custom)")
                             .data("custom", 1)
                             .prop('selected', custom_selected)
                         );
                     }
 
-                    $("#firmware_subscription").val(firmwareconfig['subscription']);
+                    $("#firmware_subscription").val(fwconf['subscription']);
 
                     $("#firmware_mirror").selectpicker('refresh');
                     $("#firmware_mirror").change();
 
                     custom_selected = true;
-                    $.each(firmwareoptions.flavours, function(key, value) {
+                    $.each(fwopts.flavours, function(key, value) {
                         var selected = false;
-                        if (key == firmwareconfig['flavour']) {
+                        if (key == fwconf['flavour']) {
                             selected = true;
                             custom_selected = false;
                         }
@@ -721,9 +722,9 @@
                                 .prop('selected', selected)
                         );
                     });
-                    if (firmwareoptions['flavours_allow_custom']) {
+                    if (fwopts['flavours_allow_custom']) {
                         $("#firmware_flavour :first-child").after($("<option/>")
-                            .attr("value", firmwareconfig['flavour'])
+                            .attr("value", fwconf['flavour'])
                             .text("(custom)")
                             .data("custom", 1)
                             .prop('selected', custom_selected)
@@ -731,13 +732,13 @@
                     }
                     $("#firmware_flavour").selectpicker('refresh');
                     $("#firmware_flavour").change();
-                    if (firmwareconfig['flavour'] !== '' || firmwareconfig['reboot'] === '1') {
+                    if (fwconf['flavour'] !== '' || fwconf['reboot'] === '1' || fwconf['aux'] === '1') {
                         $("i.fa-toggle-off#show_advanced_firmware").click();
                     }
 
-                    $.each(firmwareoptions.families, function(key, value) {
+                    $.each(fwopts.families, function(key, value) {
                         var selected = false;
-                        if (key == firmwareconfig['type']) {
+                        if (key == fwconf['type']) {
                             selected = true;
                         }
                         $("#firmware_type").append($("<option/>")
@@ -778,6 +779,7 @@
             confopt.flavour = $("#firmware_flavour_value").val();
             confopt.type = $("#firmware_type").val();
             confopt.reboot = $("#firmware_reboot").is(":checked") ? '1' : '0';
+            confopt.aux = $("#firmware_aux").is(":checked") ? '1' : '0';
             confopt.subscription = $("#firmware_subscription").val();
             ajaxCall('/api/core/firmware/set', { 'firmware': confopt }, function (data, status) {
                 $("#settingstab_progress").removeClass("fa fa-spinner fa-pulse");
@@ -1056,6 +1058,14 @@
                                 <td>
                                     <input type="checkbox" id="firmware_reboot">
                                     {{ lang._('Always reboot after a successful update') }}
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr data-advanced="true">
+                                <td style="width: 150px;"><i class="fa fa-info-circle text-muted"></i> {{ lang._('Repository') }}</td>
+                                <td>
+                                    <input type="checkbox" id="firmware_aux">
+                                    {{ lang._('Activate the auxiliary packages repository') }}
                                 </td>
                                 <td></td>
                             </tr>

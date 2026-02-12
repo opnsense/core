@@ -1,7 +1,7 @@
-OPNsense: {
+OPNsense-aux: {
   fingerprints: "/usr/local/etc/pkg/fingerprints/OPNsense",
-  url: "%%CORE_PACKAGESITE%%/${ABI}/%%CORE_ABI%%/latest",
+  url: "%%CORE_PACKAGESITE%%/${ABI}/%%CORE_ABI%%/aux",
   signature_type: "fingerprints",
   priority: 11,
-  enabled: yes
+  enabled: no
 }

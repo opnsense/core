@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2023-2026 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,6 +58,10 @@ if (!empty($config->system->firmware->mirror)) {
 if (!empty($config->system->firmware->flavour)) {
     $frmt[] = '-n %s';
     $args[] = (string)$config->system->firmware->flavour;
+}
+
+if (!empty($config->system->firmware->aux)) {
+    $frmt[] = '-E';
 }
 
 /* rewrite the config via the defaults and possible arguments */
