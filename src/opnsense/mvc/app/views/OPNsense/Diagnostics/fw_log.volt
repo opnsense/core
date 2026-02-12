@@ -886,16 +886,18 @@
             location.reload();
         });
 
-        const rawUrlHash = getUrlHash('filter');
-        if (rawUrlHash) {
-            try {
-                const filter = JSON.parse(decodeURIComponent(rawUrlHash));
-                filterVM.addFilter(filter);
-                history.replaceState(null, '', location.pathname);
-            } catch (e) {
-                // ignore malformed hashes
+        table.on('tableBuilt', () => {
+            const rawUrlHash = getUrlHash('filter');
+            if (rawUrlHash) {
+                try {
+                    const filter = JSON.parse(decodeURIComponent(rawUrlHash));
+                    filterVM.addFilter(filter);
+                    history.replaceState(null, '', location.pathname);
+                } catch (e) {
+                    // ignore malformed hashes
+                }
             }
-        }
+        });
 
         $apply.on('click', function () {
             const field = $filterField.val();
