@@ -2553,4 +2553,5 @@
 @sample /usr/local/etc/bogonsv6.sample
 @sample /usr/local/etc/config.xml.sample
 @shadow /usr/local/etc/pkg/repos/FreeBSD.conf.sample
+@shadow /usr/local/etc/pkg/repos/OPNsense-aux.conf.sample
 @shadow /usr/local/etc/pkg/repos/OPNsense.conf.sample

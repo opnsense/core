@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2025 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2026 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -116,7 +116,7 @@ CORE_MAINTAINER?=	project@opnsense.org
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
 CORE_PACKAGESITE?=	https://pkg.opnsense.org
 CORE_PRODUCT?=		OPNsense
-CORE_REPOSITORY?=	${CORE_ABI}/latest
+CORE_REPOSITORY?=	latest
 CORE_WWW?=		https://opnsense.org/
 CORE_USER?=		wwwonly
 CORE_UID?=		789
