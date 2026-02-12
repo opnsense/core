@@ -48,6 +48,18 @@ class UIModelGrid
         $this->DataField = $DataField;
     }
 
+    public function isValidUUID($uuid)
+    {
+        if (
+            !is_string($uuid) ||
+            preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid) !== 1
+        ) {
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * default model search
      * @param $request request variable
@@ -77,6 +89,13 @@ class UIModelGrid
         }
 
         $searchPhrase = $request->get('searchPhrase', 'string', '');
+        // we want the uuid field added, but not search through partial ones to limit false results
+        if (!empty($fields) && $this->isValidUUID($searchPhrase)) {
+            if (!in_array('uuid', $fields, true)) {
+                $fields[] = 'uuid';
+            }
+        }
+
         return $this->fetch(
             $fields,
             $itemsPerPage,
