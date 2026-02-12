@@ -731,7 +731,7 @@
                     }
                     $("#firmware_flavour").selectpicker('refresh');
                     $("#firmware_flavour").change();
-                    if (firmwareconfig['flavour'] !== '' || firmwareconfig['reboot'] !== '') {
+                    if (firmwareconfig['flavour'] !== '' || firmwareconfig['reboot'] === '1') {
                         $("i.fa-toggle-off#show_advanced_firmware").click();
                     }
 
