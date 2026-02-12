@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2024 Deciso B.V.
+ * Copyright (C) 2024-2026 Deciso B.V.
  * Copyright (C) 2024 Sheridan Computers Limited
  * All rights reserved.
  *
@@ -29,12 +29,58 @@
 namespace OPNsense\Core\Api;
 
 use OPNsense\Base\ApiControllerBase;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Backend;
+use OPNsense\Core\File;
 use OPNsense\Base\UserException;
 
 class SnapshotsController extends ApiControllerBase
 {
     private array $environments = [];
+
+    /**
+     * @param string $uuid generated uuid to search (calculated by timestamp or name)
+     */
+    private function writeNote($uuid, $note, $maxsize=8192)
+    {
+        /* input validation, only update known $uuid */
+        if ($this->findByUuid($uuid)) {
+            $app = (new AppConfig());
+            $target_dir = $app->application->configDir . "/snapshots";
+            @mkdir($target_dir, 0750);
+            $payload = json_encode(['note' => substr($note, 0, $maxsize)]);
+            File::file_put_contents($target_dir . '/' . $uuid . '.json', $payload, 0640, 0, $app->globals->owner);
+        }
+    }
+
+    /**
+     * @param string $uuid generated uuid to search
+     * @return array
+     */
+    private function readNote($uuid)
+    {
+        foreach(glob((new AppConfig())->application->configDir . "/snapshots/*.json") as $filename) {
+            if (explode('.', basename($filename))[0] === $uuid) {
+                return json_decode(file_get_contents($filename), true) ?? ['note' => ''];
+            }
+        }
+        return ['note' => ''];
+    }
+
+    /**
+     * @param string $uuid generated uuid to search
+     * @return bool true when deleted
+     */
+    private function dropNote($uuid)
+    {
+        foreach(glob((new AppConfig())->application->configDir . "/snapshots/*.json") as $filename) {
+            if (explode('.', basename($filename))[0] === $uuid) {
+                unlink($filename);
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * @param string $fieldname property to search
@@ -55,7 +101,7 @@ class SnapshotsController extends ApiControllerBase
     }
 
     /**
-     * @param string $uuid generated uuid to search (calculated by name)
+     * @param string $uuid generated uuid to search (calculated by timestamp or name)
      * @return array|null
      */
     private function findByUuid($uuid)
@@ -110,6 +156,7 @@ class SnapshotsController extends ApiControllerBase
         if (!empty($uuid)) {
             $result = $this->findByUuid($uuid);
             if (!empty($result)) {
+                $result = array_merge($this->readNote($uuid), $result);
                 return $result;
             }
         }
@@ -129,6 +176,8 @@ class SnapshotsController extends ApiControllerBase
 
             $be = $this->findByUuid($uuid);
             $new_be = $this->findByName($name);
+
+            $this->writeNote($uuid, $this->request->getPost('note', 'string', ''));
 
             if (!empty($be) && $be['name'] == $name) {
                 /* skip, unchanged */
@@ -165,6 +214,7 @@ class SnapshotsController extends ApiControllerBase
     public function addAction()
     {
         if ($this->request->isPost()) {
+            $results = [] ;
             $uuid =  $this->request->getPost('uuid', 'string', '');
             $name =  $this->request->getPost('name', 'string', '');
 
@@ -180,13 +230,13 @@ class SnapshotsController extends ApiControllerBase
                 if (empty($be)) {
                     $msg = gettext('Snapshot not found');
                 } else {
-                    return json_decode(
+                    $results = json_decode(
                         (new Backend())->configdpRun('zfs snapshot clone', [$name, $be['name']]),
                         true
                     );
                 }
             } elseif (empty($msg)) {
-                return (new Backend())->configdpRun("zfs snapshot create", [$name]);
+                $results = (new Backend())->configdpRun("zfs snapshot create", [$name]);
             }
 
             if ($msg) {
@@ -196,6 +246,13 @@ class SnapshotsController extends ApiControllerBase
                         'name' => $msg
                     ]
                 ];
+            } else {
+                $this->environments = []; /* force refresh (list has changed) */
+                $new_record = $this->findByName($name) ?? [];
+                if (!empty($new_record['uuid'])) {
+                    $this->writeNote($new_record['uuid'], $this->request->getPost('note', 'string', ''));
+                }
+                return $results;
             }
         }
         return ['status' => 'failed'];
@@ -217,6 +274,7 @@ class SnapshotsController extends ApiControllerBase
             if ($be['active'] != '-') {
                 throw new UserException(gettext("Cannot delete active snapshot"), gettext("Snapshots"));
             }
+            $this->dropNote($uuid);
             return (json_decode((new Backend())->configdpRun("zfs snapshot destroy", [$be['name']]), true));
         }
         return ['status' => 'failed'];
