@@ -90,7 +90,8 @@ class Hostwatch:
         for row in ujson.loads(out).get("rows", []):
             # [ifname, mac, ip]
             if ipaddress.ip_address(row[2]).is_link_local:
-                self._def_local_db[row[1]] = row[2]
+                # link local requires scope ID here, otherwise route add will fail
+                self._def_local_db[row[1]] = f"{row[2]}%{row[0]}"
 
     def get(self, mac):
         if mac not in self._def_local_db:
