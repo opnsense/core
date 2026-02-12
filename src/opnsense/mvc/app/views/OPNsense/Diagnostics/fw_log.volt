@@ -887,15 +887,14 @@
         });
 
         table.on('tableBuilt', () => {
-            const rawUrlHash = getUrlHash('filter');
-            if (rawUrlHash) {
-                try {
-                    const filter = JSON.parse(decodeURIComponent(rawUrlHash));
-                    filterVM.addFilter(filter);
-                    history.replaceState(null, '', location.pathname);
-                } catch (e) {
-                    // ignore malformed hashes
-                }
+            const params = new URLSearchParams(window.location.hash.slice(1));
+            const field = params.get('field');
+            const operator = params.get('operator');
+            const value = params.get('value');
+
+            if (field && operator && value) {
+                filterVM.addFilter({ field, operator, value });
+                history.replaceState(null, '', location.pathname);
             }
         });
 

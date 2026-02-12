@@ -248,9 +248,7 @@
                             if (!loggingEnabled) return '';
 
                             return `
-                                <a href="/ui/diagnostics/firewall/log#filter=${encodeURIComponent(
-                                    JSON.stringify({ field: 'rid', operator: '=', value: rid })
-                                )}"
+                                <a href="/ui/diagnostics/firewall/log#${new URLSearchParams({field:'rid',operator:'=',value:rid})}"
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 class="btn btn-xs btn-default bootgrid-tooltip"
