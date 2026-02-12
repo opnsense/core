@@ -139,10 +139,10 @@
 
                         if (!rowId.includes('-')) {
                             return `
-                                <a href="/system_advanced_firewall.php"
+                                <a href="/system_advanced_firewall.php" target="_blank" rel="noopener noreferrer"
                                 class="btn btn-xs btn-default bootgrid-tooltip"
-                                title="{{ lang._('Lookup Rule') }}">
-                                    <span class="fa fa-fw fa-search"></span>
+                                title="{{ lang._('Lookup rule reference') }}">
+                                    <span class="fa fa-fw fa-link"></span>
                                 </a>
                             `;
                         }
