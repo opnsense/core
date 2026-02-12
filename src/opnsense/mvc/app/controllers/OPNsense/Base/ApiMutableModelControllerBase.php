@@ -109,27 +109,24 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @param bool $contains exact match or in list
      * @param bool $only_mvc only report (versioned) models
      * @param array $exclude_refs exclude topics (for example the tokens original location)
+     * @param ?string $title message title when an exception is thrown
      * @throws UserException containing additional information
      */
-    protected function checkAndThrowValueInUse($token, $contains = true, $only_mvc = true, $exclude_refs = [])
-    {
+    protected function checkAndThrowValueInUse(
+        $token,
+        $contains = true,
+        $only_mvc = true,
+        $exclude_refs = [],
+        $title = null
+    ){
         if ($contains) {
             $xpath = "//text()[contains(.,'{$token}')]";
         } else {
             $xpath = "//*[text() = '{$token}']";
         }
         $usages = [];
-        $cfg = Config::getInstance()->object();
-
-        $used_by = $cfg->xpath("//*[@uuid and @uuid='{$token}']");
-        $used_by_name = isset($used_by[0]) ? $used_by[0]->getName() : gettext("(unknown)");
-        $used_by_descr = (string) array_values(array_filter(
-            array_map(fn($k) => $used_by->$k ?? $used_by_name, ["description", "descr", "name"]),
-            fn($v) => !empty($v)
-        ))[0] ?? '';
-
         // find uuid's in our config.xml
-        foreach ($cfg->xpath($xpath) as $node) {
+        foreach (Config::getInstance()->object()->xpath($xpath) as $node) {
             $referring_node = $node->xpath("..")[0];
             $item_path = [$referring_node->getName()];
             // collect path, when it's a model stop at model root
@@ -179,15 +176,13 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $message = "";
             foreach ($usages as $usage) {
                 $message .= sprintf(
-                    gettext("Item %s {%s} in use by %s - %s {%s}"),
-                    $used_by_descr,
-                    $token,
+                    gettext("%s - %s {%s}"),
                     $usage['module'],
                     $usage['description'],
                     $usage['reference']
                 ) . "\n";
             }
-            throw new UserException($message, gettext("Item in use by"));
+            throw new UserException($message, $title ?? gettext("Item in use by"));
         }
     }
 
@@ -195,12 +190,13 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * Check if item can be safely deleted if $internalModelUseSafeDelete is enabled.
      * Throws a user exception when the $uuid seems to be used in some other config section.
      * @param $uuid string uuid to check
+     * @param ?string $title message title when an exception is thrown
      * @throws UserException containing additional information
      */
-    private function checkAndThrowSafeDelete($uuid)
+    private function checkAndThrowSafeDelete($uuid, $title = null)
     {
         if (static::$internalModelUseSafeDelete) {
-            $this->checkAndThrowValueInUse($uuid);
+            $this->checkAndThrowValueInUse($uuid, true, true, [], $title);
         }
     }
 
@@ -541,7 +537,10 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 return $result;
             }
             foreach ($uuids as $uuid) {
-                $this->checkAndThrowSafeDelete($uuid);
+                $this->checkAndThrowSafeDelete(
+                    $uuid,
+                    sprintf(gettext("Item %s {%s} in use by:"), $path, $uuid)
+                );
                 if ($rootnode->del($uuid)) {
                     $changed = true;
                     $result['result'] = 'deleted';
