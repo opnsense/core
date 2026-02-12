@@ -119,8 +119,17 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $xpath = "//*[text() = '{$token}']";
         }
         $usages = [];
+        $cfg = Config::getInstance()->object();
+
+        $used_by = $cfg->xpath("//*[@uuid and @uuid='{$token}']");
+        $used_by_name = isset($used_by[0]) ? $used_by[0]->getName() : gettext("(unknown)");
+        $used_by_descr = (string) array_values(array_filter(
+            array_map(fn($k) => $used_by->$k ?? $used_by_name, ["description", "descr", "name"]),
+            fn($v) => !empty($v)
+        ))[0] ?? '';
+
         // find uuid's in our config.xml
-        foreach (Config::getInstance()->object()->xpath($xpath) as $node) {
+        foreach ($cfg->xpath($xpath) as $node) {
             $referring_node = $node->xpath("..")[0];
             $item_path = [$referring_node->getName()];
             // collect path, when it's a model stop at model root
@@ -170,7 +179,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $message = "";
             foreach ($usages as $usage) {
                 $message .= sprintf(
-                    gettext("%s - %s {%s}"),
+                    gettext("Item %s {%s} in use by %s - %s {%s}"),
+                    $used_by_descr,
+                    $token,
                     $usage['module'],
                     $usage['description'],
                     $usage['reference']
@@ -510,31 +521,37 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     /**
      * Model delete wrapper, removes an item specified by path and uuid
      * @param string $path relative model path
-     * @param null|string $uuid node key
+     * @param null|string $uuids node key(s), comma-separated
      * @return array
      * @throws \OPNsense\Base\ValidationException on validation issues
      * @throws \ReflectionException when binding to the model class fails
      * @throws UserException when denied write access
      */
-    public function delBase($path, $uuid)
+    public function delBase($path, $uuids)
     {
         $result = ['result' => 'failed'];
 
         if ($this->request->isPost()) {
             Config::getInstance()->lock();
-            $this->checkAndThrowSafeDelete($uuid);
-            $mdl = $this->getModel();
-            if ($uuid != null) {
-                $tmp = $mdl;
-                foreach (explode('.', $path) as $step) {
-                    $tmp = $tmp->{$step};
-                }
-                if ($tmp->del($uuid)) {
-                    $this->save(false, true);
+            $uuids = !empty($uuids) ? explode(",", $uuids) : [];
+            $rootnode = $this->getModel()->getNodeByReference($path);
+            $changed = false;
+
+            if ($rootnode === null) {
+                return $result;
+            }
+            foreach ($uuids as $uuid) {
+                $this->checkAndThrowSafeDelete($uuid);
+                if ($rootnode->del($uuid)) {
+                    $changed = true;
                     $result['result'] = 'deleted';
                 } else {
                     $result['result'] = 'not found';
                 }
+            }
+
+            if ($changed) {
+                $this->save(false, true);
             }
         }
         return $result;
