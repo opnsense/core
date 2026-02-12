@@ -13,6 +13,11 @@
         <type>text</type>
     </field>
     <field>
+        <id>note</id>
+        <label>Note</label>
+        <type>textbox</type>
+    </field>
+    <field>
         <id>active</id>
         <label>Active</label>
         <type>ignore</type>
