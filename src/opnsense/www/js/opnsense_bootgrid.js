@@ -1059,7 +1059,9 @@ class UIBootgrid {
 
         // Rowcount
         this.curRowCount = localStorage.getItem(`${this.persistenceID}-rowCount`) || this.options.rowCount[0];
-        if (this.curRowCount === 'true') {
+        if (/^\+?(0|[1-9]\d*)$/.test(this.curRowCount)) {
+            this.curRowCount = parseInt(this.curRowCount);
+        } else {
             this.curRowCount = true;
         }
         $(`#${this.id}-rowcount-text`).text(this.curRowCount === true ? this._translate('all') : this.curRowCount);
