@@ -3,5 +3,5 @@ OPNsense-aux: {
   url: "%%CORE_PACKAGESITE%%/${ABI}/%%CORE_ABI%%/aux",
   signature_type: "fingerprints",
   priority: 11,
-  enabled: yes
+  enabled: no
 }

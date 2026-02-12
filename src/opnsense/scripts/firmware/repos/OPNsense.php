@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2023-2026 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -62,3 +62,11 @@ if (!empty($config->system->firmware->flavour)) {
 
 /* rewrite the config via the defaults and possible arguments */
 shell_safe($frmt, $args);
+
+/* enable the aux repo if configured now */
+if (!empty($config->system->firmware->aux)) {
+    shell_safe('sed -i "" %s %s', [
+        '/^[[:space:]]*enabled:[[:space:]]*/s/no/yes/',
+        '/usr/local/etc/pkg/repos/OPNsense-aux.conf',
+    ]);
+}
