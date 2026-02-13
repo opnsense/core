@@ -58,7 +58,7 @@ if __name__ == '__main__':
         os.makedirs('/var/db/aliastables')
 
     # make sure we download geoip data if not found. Since aliases only will trigger a download when change requires it
-    if not os.path.isfile('/usr/local/share/GeoIP/alias.stats'):
+    if not is_valid_alias_stats('/usr/local/share/GeoIP/alias.stats'):
         GEOIP().download()
 
     try:
