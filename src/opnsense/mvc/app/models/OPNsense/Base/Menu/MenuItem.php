@@ -432,21 +432,6 @@ class MenuItem
     }
 
     /**
-     * find node by id/tag name, ignore case.
-     * @param $id id / tagname
-     * @return null|MenuItem
-     */
-    public function findNodeById($id)
-    {
-        foreach ($this->children as $key => &$node) {
-            if ($node->isVisible() && strtolower($node->getId()) == strtolower($id)) {
-                return $node;
-            }
-        }
-        return null;
-    }
-
-    /**
      * find node by id/tag path, ignore case.
      * @param $id id / tagname path
      * @return null|MenuItem
@@ -455,11 +440,21 @@ class MenuItem
     {
         $node = $this;
 
-        foreach (explode('.', $path) as $key) {
-            $node = $node->findNodeById($key);
-            if ($node == null) {
+        foreach (explode('.', $path) as $id) {
+            $found = null;
+
+            foreach ($node->children as &$_node) {
+                if ($_node->isVisible() && !strcasecmp($_node->getId(), $id)) {
+                    $found = $_node;
+                    break;
+                }
+            }
+
+            if (is_null($found)) {
                 return null;
             }
+
+            $node = $found;
         }
 
         return $node;
