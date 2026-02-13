@@ -28,6 +28,8 @@
 
 namespace OPNsense\Base;
 
+use OPNsense\Core\Type;
+
 /**
  * Class UIModelGrid Grid control support functions
  * @package OPNsense\Base
@@ -46,18 +48,6 @@ class UIModelGrid
     public function __construct($DataField)
     {
         $this->DataField = $DataField;
-    }
-
-    public function isValidUUID($uuid)
-    {
-        if (
-            !is_string($uuid) ||
-            preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid) !== 1
-        ) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -90,7 +80,7 @@ class UIModelGrid
 
         $searchPhrase = $request->get('searchPhrase', 'string', '');
         // we want the uuid field added, but not search through partial ones to limit false results
-        if (!empty($fields) && $this->isValidUUID($searchPhrase)) {
+        if (!empty($fields) && Type::isValidUUID($searchPhrase)) {
             if (!in_array('uuid', $fields, true)) {
                 $fields[] = 'uuid';
             }

@@ -32,6 +32,7 @@ use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Core\Type;
 use OPNsense\Firewall\Util;
 
 class SettingsController extends ApiMutableModelControllerBase
@@ -156,7 +157,7 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function getGatewayAction($uuid = null)
     {
-        if (!$this->isValidUUID($uuid)) {
+        if (!Type::isValidUUID($uuid)) {
             /* uuid is likely a gateway name (legacy config) */
             $gateway = $this->getModel()->gatewaysIndexedByName(true, false, true)[$uuid] ?? [];
             if (!empty($gateway)) {
@@ -177,7 +178,7 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function setGatewayAction($uuid)
     {
-        if (!$this->isValidUUID($uuid)) {
+        if (!Type::isValidUUID($uuid)) {
             $mdl = $this->getModel();
             $uuid = $mdl->gateway_item->generateUUID();
         }
