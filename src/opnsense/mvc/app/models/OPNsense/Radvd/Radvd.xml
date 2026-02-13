@@ -127,6 +127,11 @@
                 <NetMaskRequired>Y</NetMaskRequired>
                 <AddressFamily>ipv6</AddressFamily>
             </nat64prefix>
+            <AdvCurHopLimit type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>255</MaximumValue>
+                <ValidationMessage>Hop limit must be between 0 and 255.</ValidationMessage>
+            </AdvCurHopLimit>
         </entries>
     </items>
 </model>
