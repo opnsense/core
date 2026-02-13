@@ -31,11 +31,9 @@ namespace OPNsense\Core;
 class Type
 {
     /**
-     * return if a UUID is valid
-     * @param string $uuid
-     * @return boolean
+     * check if a UUID is valid
      */
-    public static function isValidUUID(string $uuid)
+    public static function isValidUUID(string $uuid): bool
     {
         if (
             preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid) !== 1
@@ -43,5 +41,18 @@ class Type
             return false;
         }
         return true;
+    }
+
+    /**
+     * ckeck if an array contains a valid UUID
+     */
+    public static function containsUUID(array $tokens): bool
+    {
+        foreach ($tokens as $token) {
+            if (self::isValidUUID($token)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
