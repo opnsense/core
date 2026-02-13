@@ -216,7 +216,7 @@ class UIBootgrid {
         }
 
         if (this.options.triggerEditFor) {
-            this.command_edit(null, this.options.triggerEditFor);
+            this.command_edit(null, null, this.options.triggerEditFor);
         }
 
         this._parseGridView();
@@ -963,7 +963,7 @@ class UIBootgrid {
                 // to the parent so no handlers on parent containers are executed
                 $selector.unbind('click').on("click", function (event) {
                     event.stopPropagation();
-                    commands[command].method?.bind(this)(event);
+                    commands[command].method?.bind(this)(event, cell);
                 });
             }
 
@@ -1567,7 +1567,8 @@ class UIBootgrid {
     *  register commands
     *
     * The command object can have the following properties:
-    * - method: a function that is executed on command click
+    * - method: a function that is executed on command click. function signature is (event, cell).
+    *           the cell object is apssed in only if footer: false
     * - title: translated title to be shown as a tooltip. Can be a function with the cell object as param
     * - requires: an array of strings marking which this.crud properties are required
     * - sequence: order of commands rendering
@@ -1958,7 +1959,7 @@ class UIBootgrid {
     /**
     * edit event
     */
-    command_edit(event, uuid = null) {
+    command_edit(event, cell = null, uuid = null) {
         if (uuid === null)
             event.stopPropagation();
         let editDlg = this.$compatElement.attr('data-editDialog');
