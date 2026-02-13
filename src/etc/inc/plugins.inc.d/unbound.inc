@@ -235,6 +235,7 @@ function unbound_generate_config()
     }
 
     $bindints = '';
+    $tls_settings = '';
     if (!empty($general['active_interface'])) {
         $active_interfaces = explode(',', $general['active_interface']);
         array_unshift($active_interfaces, 'lo0');
@@ -260,7 +261,79 @@ function unbound_generate_config()
     } else {
         $bindints .= "interface: 0.0.0.0\n";
         $bindints .= "interface: ::\n";
-        $bindints .= "interface-automatic: yes\n";
+        /* $bindints .= "interface-automatic: yes\n"; */
+	/* Changed to no, otherwise DNS over TLS ports will not work */
+        $bindints .= "interface-automatic: no\n";
+
+        $dots = config_read_array('OPNsense', 'unboundplus', 'dots');
+
+        $cert_pem_filename = '/var/unbound/server_dots.pem';
+        $cert_key_filename = '/var/unbound/server_dots.key';
+	if ((isset($dots['cert']) and ($dots['cert'] != '')) and
+           ((isset($dots['client_tls_enabled']) and ($dots['client_tls_enabled'] == '1')) or
+            (isset($dots['client_tls_enabled']) and ($dots['client_tls_enabled'] == '1')) or
+            (isset($dots['client_tls_enabled']) and ($dots['client_tls_enabled'] == '1')))) {
+            $cert_refid = $dots['cert'][0];
+            $certs = $config['cert'];
+            foreach ($certs as $cert) {
+                if ($cert_refid == $cert['refid']) {
+                    $tls_settings .= "# Certificate refid: $cert_refid\n";
+                    /* generate cert pem file */
+                    $pem_content = trim(str_replace("\n\n", "\n", str_replace(
+                        "\r", "", base64_decode($cert['crt'])
+                    )));
+                    $pem_content .= "\n";
+
+                    /* generate key file */
+                    $key_content .= trim(str_replace("\n\n", "\n",
+                        str_replace("\r", "", base64_decode($cert['prv']))
+                    ));
+                    $key_content .= "\n";
+
+                    /* append chain to pem */
+                    $cert_pem_content .= $pem_content;
+                    if (!empty($cert['caref'])) {
+                        $caref = $cert['caref'];
+                        $cas = $config['ca'];
+                        foreach ($cas as $ca) {
+                            if ($caref == $ca['refid']) {
+                                $ca_content = trim(str_replace("\n\n", "\n",
+                                    str_replace("\r", "", base64_decode($ca['crt']))
+                                ));
+                                $cert_pem_content .= $ca_content;
+                            }
+                        }
+                    }
+                    file_put_contents($cert_pem_filename, $cert_pem_content);
+                    chmod($cert_pem_filename, 0600);
+
+                    file_put_contents($cert_key_filename, $key_content);
+                    chmod($cert_key_filename, 0600);
+                }
+            }
+            $tls_settings .= "tls-service-pem: $cert_pem_filename\n";
+            $tls_settings .= "tls-service-key: $cert_key_filename\n";
+        }
+        if (isset($dots['client_tls_enabled']) and $dots['client_tls_enabled'] == '1') {
+            /* $client_tls_enabled = $dots['client_tls_enabled']; */
+            $tls_settings .= "tls-port: 853\n";
+            $bindints .= "interface: 0.0.0.0@853\n";
+            $bindints .= "interface: ::0@853\n";
+	}
+	if ((isset($dots['client_https_enabled']) and $dots['client_https_enabled'] == '1') and
+	    (isset($dots['client_https_port']) and $dots['client_https_port'] != '')) {
+            $client_https_enabled = $dots['client_https_enabled'];
+            $https_port = $dots['client_https_port'];
+	    if (is_numeric($https_port)) {
+                $tls_settings .= "https-port: $https_port\n";
+                $bindints .= "interface: 0.0.0.0@$https_port\n";
+                $bindints .= "interface: ::0@$https_port\n";
+            }
+	}
+        if (isset($dots['client_quic_enabled']) and $dots['client_quic_enabled'] == '1') {
+            $client_quic_enabled = $dots['client_quic_enabled'];
+            $tls_settings .= "quic-port: 853\n";
+	}
     }
 
     $outgoingints = '';
@@ -362,6 +435,9 @@ module-config: "{$module_config}"
 {$anchor_file}
 {$forward_local}
 {$dns64_config}
+
+# TLS Settings
+{$tls_settings}
 
 # Interface IP(s) to bind to
 {$bindints}
