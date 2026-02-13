@@ -118,7 +118,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         $only_mvc = true,
         $exclude_refs = [],
         $title = null
-    ){
+    ) {
         if ($contains) {
             $xpath = "//text()[contains(.,'{$token}')]";
         } else {

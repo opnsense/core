@@ -41,7 +41,7 @@ class SnapshotsController extends ApiControllerBase
     /**
      * @param string $uuid generated uuid to search (calculated by timestamp or name)
      */
-    private function writeNote($uuid, $note, $maxsize=8192)
+    private function writeNote($uuid, $note, $maxsize = 8192)
     {
         /* input validation, only update known $uuid */
         if ($this->findByUuid($uuid)) {
@@ -59,7 +59,7 @@ class SnapshotsController extends ApiControllerBase
      */
     private function readNote($uuid)
     {
-        foreach(glob((new AppConfig())->application->configDir . "/snapshots/*.json") as $filename) {
+        foreach (glob((new AppConfig())->application->configDir . "/snapshots/*.json") as $filename) {
             if (explode('.', basename($filename))[0] === $uuid) {
                 return json_decode(file_get_contents($filename), true) ?? ['note' => ''];
             }
@@ -73,7 +73,7 @@ class SnapshotsController extends ApiControllerBase
      */
     private function dropNote($uuid)
     {
-        foreach(glob((new AppConfig())->application->configDir . "/snapshots/*.json") as $filename) {
+        foreach (glob((new AppConfig())->application->configDir . "/snapshots/*.json") as $filename) {
             if (explode('.', basename($filename))[0] === $uuid) {
                 unlink($filename);
                 return true;
@@ -214,7 +214,7 @@ class SnapshotsController extends ApiControllerBase
     public function addAction()
     {
         if ($this->request->isPost()) {
-            $results = [] ;
+            $results = [];
             $uuid =  $this->request->getPost('uuid', 'string', '');
             $name =  $this->request->getPost('name', 'string', '');
 
