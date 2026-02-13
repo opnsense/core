@@ -831,11 +831,6 @@ class UIBootgrid {
 
         this._renderFooterCommands();
 
-        // if there are custom commands defined, inject them here
-        if (this.customCommands !== null) {
-            this.customCommands.appendTo($(`#${this.id} > .tabulator-footer > .tabulator-footer-contents`));
-        }
-
         // swap page counter and paginator around (old look & feel).
         // we hook in before tableBuilt, but after dataLoading
         // since we know the footer is rendered at this point,
@@ -1168,6 +1163,11 @@ class UIBootgrid {
         }
 
         $footerPrimary.after($commandContainer);
+
+        // if there are custom commands defined, inject them here
+        if (this.customCommands !== null) {
+            this.customCommands.appendTo($footerSecondary);
+        }
 
         // bind tooltips
         $(`#${this.id} > .tabulator-footer`).find('.bootgrid-tooltip').each((i, el) => {
