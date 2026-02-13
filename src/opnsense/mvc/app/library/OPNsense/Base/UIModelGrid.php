@@ -82,7 +82,7 @@ class UIModelGrid
 
         // XXX: backwards compatible for direct callers that do not know about search_tokens
         if ($search_tokens === null) {
-            $search_tokens = array_filter(explode(' ', $this->request->get('searchPhrase', 'string', '')));
+            $search_tokens = array_filter(explode(' ', $request->get('searchPhrase', 'string', '')));
         }
 
         return $this->fetch(
