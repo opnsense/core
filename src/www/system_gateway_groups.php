@@ -40,7 +40,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($a_gateway_groups[$_POST['id']])) {
             if (isset($config['filter']['rule']) && is_array($config['filter']['rule'])) {
                 foreach ($config['filter']['rule'] as $idx => $rule) {
-                    // Controleer of de regel een gateway heeft en of deze matcht
                     if (isset($rule['gateway']) && $rule['gateway'] == $a_gateway_groups[$_POST['id']]['name']) {
                         unset($config['filter']['rule'][$idx]['gateway']);
                     }
