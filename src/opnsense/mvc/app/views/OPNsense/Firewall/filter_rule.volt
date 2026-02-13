@@ -597,6 +597,32 @@
                 },
             },
             commands: {
+                upload_rules: {
+                    onRendered: function () {
+                        const $el = $(this);
+                        $el.data('title', "{{ lang._('Import rules') }}");
+                        $el.data('endpoint', '/api/firewall/filter/upload_rules');
+                        $el.SimpleFileUploadDlg({
+                            onAction: function () {
+                                $("#{{formGridFilterRule['table_id']}}").bootgrid('reload');
+                            }
+                        });
+                    },
+                    footer: true,
+                    classname: 'fa fa-fw fa-upload',
+                    title: "{{ lang._('Import csv') }}",
+                    sequence: 400
+                },
+                download_rules: {
+                    footer: true,
+                    classname: 'fa fa-fw fa-table',
+                    title: "{{ lang._('Export as csv') }}",
+                    method: function (e) {
+                        e.preventDefault();
+                        window.open("/api/firewall/filter/download_rules");
+                    },
+                    sequence: 500
+                },
                 move_before: {
                     method: function(event) {
                         // Ensure exactly one rule is selected to be moved
@@ -1148,29 +1174,7 @@
         </div>
     </div>
     <!-- grid -->
-    {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '180'}+ {
-                'grid_commands': {
-                    'upload_rules': {
-                        'title': lang._('Import csv'),
-                        'class': 'btn btn-xs',
-                        'icon_class': 'fa fa-fw fa-upload',
-                        'data': {
-                            'title': lang._('Import rules'),
-                            'endpoint': '/api/firewall/filter/upload_rules',
-                            'toggle': 'tooltip'
-                        }
-                    },
-                    'download_rules': {
-                        'title': lang._('Export as csv'),
-                        'class': 'btn btn-xs',
-                        'icon_class': 'fa fa-fw fa-table',
-                        'data': {
-                            'toggle': 'tooltip'
-                        }
-                    }
-                }
-        })
-    }}
+    {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '180'}) }}
 </div>
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/filter/apply'}) }}
