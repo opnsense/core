@@ -424,13 +424,21 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             }
         }
 
+        $search_tokens = array_filter(explode(' ', $this->request->get('searchPhrase', 'string', '')));
+
+        // we want the uuid field collected to search for exact matches only
+        if (!empty($search_tokens) && Type::containsUUID($search_tokens)) {
+            $fields = array_unique(array_merge($fields, ['uuid']));
+        }
+
         $grid = new UIModelGrid($element);
         return $grid->fetchBindRequest(
             $this->request,
             $fields,
             $defaultSort,
             $filter_funct,
-            $sort_flags
+            $sort_flags,
+            $search_tokens
         );
     }
 

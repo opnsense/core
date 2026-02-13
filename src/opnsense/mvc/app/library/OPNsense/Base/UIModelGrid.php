@@ -57,6 +57,7 @@ class UIModelGrid
      * @param null|string $defaultSort default sort order
      * @param null|function $filter_funct additional filter callable
      * @param int $sort_flags sorting behavior
+     * @param array $search_tokens search tokens to use instead of raw searchPhrase
      * @return array
      */
     public function fetchBindRequest(
@@ -64,7 +65,8 @@ class UIModelGrid
         $fields,
         $defaultSort = null,
         $filter_funct = null,
-        $sort_flags = SORT_NATURAL | SORT_FLAG_CASE
+        $sort_flags = SORT_NATURAL | SORT_FLAG_CASE,
+        $search_tokens = null
     ) {
         $itemsPerPage = $request->get('rowCount', 'int', -1);
         $currentPage = $request->get('current', 'int', 1);
@@ -78,12 +80,9 @@ class UIModelGrid
             }
         }
 
-        $searchPhrase = $request->get('searchPhrase', 'string', '');
-        // we want the uuid field added, but not search through partial ones to limit false results
-        if (!empty($fields) && Type::isUUID($searchPhrase)) {
-            if (!in_array('uuid', $fields, true)) {
-                $fields[] = 'uuid';
-            }
+        // XXX: backwards compatible for direct callers that do not know about search_tokens
+        if ($search_tokens === null) {
+            $search_tokens = array_filter(explode(' ', $this->request->get('searchPhrase', 'string', '')));
         }
 
         return $this->fetch(
@@ -92,7 +91,7 @@ class UIModelGrid
             $currentPage,
             $sortBy,
             $sortDescending,
-            $searchPhrase,
+            $search_tokens,
             $filter_funct,
             $sort_flags
         );
@@ -108,6 +107,7 @@ class UIModelGrid
      * @param string $searchPhrase search phrase to use
      * @param null|function $filter_funct additional filter callable
      * @param int $sort_flags sorting behavior
+     * @param array $search_tokens tokens to use for search
      * @return array
      */
     public function fetch(
@@ -116,7 +116,7 @@ class UIModelGrid
         $currentPage,
         $sortBy = array(),
         $sortDescending = false,
-        $searchPhrase = '',
+        $search_tokens = [],
         $filter_funct = null,
         $sort_flags = SORT_NATURAL | SORT_FLAG_CASE
     ) {
@@ -134,14 +134,13 @@ class UIModelGrid
                 // before searching we flatten the resulting array in case of nested containers
                 $row = iterator_to_array($this->flatten(array_merge(['uuid' => $record->getAttributes()['uuid']], $record->getNodeContent())));
 
-                // if a search phrase is provided, use it to search in all requested fields
-                $search_clauses = preg_split('/\s+/', $searchPhrase);
-                if (!empty($search_clauses)) {
-                    foreach ($search_clauses as $clause) {
+                // if search tokens are provided, use them to search in all requested fields
+                if (!empty($search_tokens)) {
+                    foreach ($search_tokens as $token) {
                         $searchFound = false;
                         foreach ($fields as $fieldname) {
                             $item = $row['%' . $fieldname] ?? $row[$fieldname] ?? ''; /* prefer search by description */
-                            if (!empty($item) && strpos(strtolower($item), strtolower($clause)) !== false) {
+                            if (!empty($item) && strpos(strtolower($item), strtolower($token)) !== false) {
                                 $searchFound = true;
                             }
                         }
