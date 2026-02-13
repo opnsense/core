@@ -44,7 +44,7 @@ class Type
     }
 
     /**
-     * ckeck if an array contains a valid UUID
+     * check if an array contains a valid UUID
      */
     public static function containsUUID(array $tokens): bool
     {
