@@ -60,13 +60,9 @@ if (!empty($config->system->firmware->flavour)) {
     $args[] = (string)$config->system->firmware->flavour;
 }
 
+if (!empty($config->system->firmware->aux)) {
+    $frmt[] = '-E';
+}
+
 /* rewrite the config via the defaults and possible arguments */
 shell_safe($frmt, $args);
-
-/* enable the aux repo if configured now */
-if (!empty($config->system->firmware->aux)) {
-    shell_safe('sed -i "" %s %s', [
-        '/^[[:space:]]*enabled:[[:space:]]*/s/no/yes/',
-        '/usr/local/etc/pkg/repos/OPNsense-aux.conf',
-    ]);
-}
