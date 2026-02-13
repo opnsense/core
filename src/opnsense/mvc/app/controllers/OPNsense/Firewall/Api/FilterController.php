@@ -198,12 +198,8 @@ class FilterController extends FilterBaseController
         $ORG_REQ = $_REQUEST;
         unset($_REQUEST['rowCount']);
         unset($_REQUEST['current']);
-        $searchPhrase = (string)$this->request->getPost('searchPhrase', null, '');
-        if ($show_all || $this->isValidUUID($searchPhrase)) {
-            /*
-             * searchBase should not filter here since we later search for IP addresses in aliases
-             * additionally UUIDs should always return a result
-             */
+        if ($show_all) {
+            /* searchBase should not filter here since we later search for IP addresses in aliases */
             unset($_REQUEST['searchPhrase']);
         }
         $filterset = $this->searchBase("rules.rule", null, "sort_order", $filter_funct_mvc)['rows'];
