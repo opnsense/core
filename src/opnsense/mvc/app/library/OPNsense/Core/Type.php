@@ -33,7 +33,7 @@ class Type
     /**
      * check if a UUID is valid
      */
-    public static function isValidUUID(string $uuid): bool
+    public static function isUUID(string $uuid): bool
     {
         if (
             preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid) !== 1
@@ -49,7 +49,7 @@ class Type
     public static function containsUUID(array $tokens): bool
     {
         foreach ($tokens as $token) {
-            if (self::isValidUUID($token)) {
+            if (self::isUUID($token)) {
                 return true;
             }
         }

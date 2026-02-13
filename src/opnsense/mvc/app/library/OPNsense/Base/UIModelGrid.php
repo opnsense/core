@@ -80,7 +80,7 @@ class UIModelGrid
 
         $searchPhrase = $request->get('searchPhrase', 'string', '');
         // we want the uuid field added, but not search through partial ones to limit false results
-        if (!empty($fields) && Type::isValidUUID($searchPhrase)) {
+        if (!empty($fields) && Type::isUUID($searchPhrase)) {
             if (!in_array('uuid', $fields, true)) {
                 $fields[] = 'uuid';
             }

@@ -157,7 +157,7 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function getGatewayAction($uuid = null)
     {
-        if (!Type::isValidUUID($uuid)) {
+        if (!Type::isUUID($uuid)) {
             /* uuid is likely a gateway name (legacy config) */
             $gateway = $this->getModel()->gatewaysIndexedByName(true, false, true)[$uuid] ?? [];
             if (!empty($gateway)) {
@@ -178,7 +178,7 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function setGatewayAction($uuid)
     {
-        if (!Type::isValidUUID($uuid)) {
+        if (!Type::isUUID($uuid)) {
             $mdl = $this->getModel();
             $uuid = $mdl->gateway_item->generateUUID();
         }

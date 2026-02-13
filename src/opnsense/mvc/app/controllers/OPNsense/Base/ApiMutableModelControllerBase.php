@@ -565,7 +565,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $mdl = $this->getModel();
             $node = $mdl->getNodeByReference($path . '.' . $uuid);
             if ($node == null) {
-                if (!Type::isValidUUID($uuid)) {
+                if (!Type::isUUID($uuid)) {
                     // invalid uuid, upsert not allowed
                     return ["result" => "failed"];
                 }
