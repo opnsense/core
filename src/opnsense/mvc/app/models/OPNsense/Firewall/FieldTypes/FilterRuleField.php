@@ -55,7 +55,7 @@ class FilterRuleContainerField extends ContainerField
             'label' => $this->getAttribute('uuid')
         ];
         $map_manual = ['source_net', 'source_not', 'source_port', 'destination_net', 'destination_not',
-            'destination_port', 'enabled', 'description', 'sequence', 'action', 'replyto'];
+            'destination_port', 'enabled', 'description', 'sequence', 'action', 'replyto', 'disablereplyto'];
         // 1-on-1 map (with type conversion if needed)
         foreach ($this->iterateItems() as $key => $node) {
             if (!in_array($key, $map_manual)) {
@@ -103,10 +103,15 @@ class FilterRuleContainerField extends ContainerField
         $result['descr'] = (string)$this->description;
         $result['type'] = (string)$this->action;
         $result['reply-to'] = (string)$this->replyto;
+        if (!$this->disablereplyto->isEmpty()) {
+            /* XXX: registerFilterRule() merges disablereplyto, which requires the item to only exist when set  */
+            $result['disablereplyto'] = true;
+        }
         /* XXX this is an approximation of the complex situation and will be removed eventually */
         if (count($this->interface->getValues()) != 1 || !$this->interfacenot->isEmpty()) {
             $result['floating'] = true;
         }
+
         return $result;
     }
 
