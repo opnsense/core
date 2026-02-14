@@ -55,19 +55,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         header(url_safe('Location: /%s?if=%s&id=%s', [$parts['path'], $query['if'], $query['id']]));
                     }
                 } else {
-                    // search model firewall rule
-                    $interface = '';
-                    $node = (new Filter())->getNodeByReference('rules.rule.' . $rid);
-                    if ($node !== null) {
-                        $interfaceValue = $node->interface->getValue();
-                        // multiple interfaces in a rule are skipped as empty string is the default for floating
-                        if ($interfaceValue !== '' && strpos($interfaceValue, ',') === false) {
-                            $interface = $interfaceValue;
-                        }
-                    }
-
                     $base = strtok($rule->getRef(), '#');
-                    $hash = url_safe('interface=%s&edit=%s', [$interface, $rid]);
+                    $hash = url_safe('search=%s', [$rid]);
                     header("Location: /{$base}#{$hash}");
                 }
                 exit;
