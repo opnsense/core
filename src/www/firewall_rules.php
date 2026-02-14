@@ -941,16 +941,11 @@ $( document ).ready(function() {
 <?php
                       if (!empty($filterent['sched'])):?>
 <?php
-                        $schedule_descr = "";
-                        if (isset($config['schedules']['schedule']))
-                        {
-                            foreach ($config['schedules']['schedule'] as $schedule)
-                            {
-                                if ($schedule['name'] == $filterent['sched'])
-                                {
-                                    $schedule_descr = (isset($schedule['descr'])) ? $schedule['descr'] : "";
-                                    break;
-                                }
+                        $schedule_descr = '';
+                        foreach (config_read_array('schedules', 'schedule', false) as $schedule) {
+                            if ($schedule['name'] == $filterent['sched']) {
+                                $schedule_descr = (isset($schedule['descr'])) ? $schedule['descr'] : "";
+                                break;
                             }
                         }
 ?>

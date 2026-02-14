@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2026 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2009 Erik Kristensen <erik@erikkristensen.com>
  * Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -248,11 +248,36 @@ function &config_read_array()
     global $config;
 
     $current = &$config;
+    $insert_mode = true;
 
-    foreach (func_get_args() as $key) {
+    $keys = func_get_args();
+    if (is_bool($keys[array_key_last($keys)])) {
+        /*
+         * Last argument is the insert mode if given:
+         *
+         * If true, vifivy the config key with an array
+         * and return the element for inserts (default).
+         *
+         * If false, do not vivify and return an empty
+         * detached array reference instead. This avoids
+         * clobbering reads which written to config would
+         * make an empty array an empty string node instead
+         * and where insert is not intended but can still
+         * delete by index if the config path exists.
+         */
+        $insert_mode = array_pop($keys);
+    }
+
+    foreach ($keys as $key) {
         if (!isset($current[$key]) || !is_array($current[$key])) {
-            $current[$key] = [];
+            if ($insert_mode) {
+                $current[$key] = [];
+            } else {
+                $detached = [];
+                return $detached;
+            }
         }
+
         $current = &$current[$key];
     }
 

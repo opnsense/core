@@ -35,15 +35,11 @@ require_once("interfaces.inc");
 
 function link_interface_to_group($int)
 {
-    global $config;
-
     $result = [];
 
-    if (isset($config['ifgroups']['ifgroupentry'])) {
-        foreach ($config['ifgroups']['ifgroupentry'] as $group) {
-            if (in_array($int, preg_split('/[ |,]+/', $group['members']))) {
-                $result[$group['ifname']] = $int;
-            }
+    foreach (config_read_array('ifgroups', 'ifgroupentry', false) as $group) {
+        if (in_array($int, preg_split('/[ |,]+/', $group['members']))) {
+            $result[$group['ifname']] = $int;
         }
     }
 
@@ -52,8 +48,6 @@ function link_interface_to_group($int)
 
 function list_devices($devices)
 {
-    global $config;
-
     $interfaces = [];
 
     /* add physical network interfaces */
@@ -169,20 +163,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 plugins_configure('dhcp', false, array('inet6'));
             }
 
-            if (isset($config['filter']['rule'])) {
-                foreach ($config['filter']['rule'] as $x => $rule) {
-                    /* XXX this doesn't match floating rules with multiple values */
-                    if (isset($rule['interface']) && $rule['interface'] == $id) {
-                        unset($config['filter']['rule'][$x]);
-                    }
+            foreach (config_read_array('filter', 'rule') as $x => $rule) {
+                /* XXX this doesn't match floating rules with multiple values */
+                if (isset($rule['interface']) && $rule['interface'] == $id) {
+                    unset($config['filter']['rule'][$x]);
                 }
             }
 
-            if (isset($config['nat']['rule'])) {
-                foreach ($config['nat']['rule'] as $x => $rule) {
-                    if ($rule['interface'] == $id) {
-                        unset($config['nat']['rule'][$x]['interface']);
-                    }
+            foreach (config_read_array('nat', 'rule', false) as $x => $rule) {
+                if ($rule['interface'] == $id) {
+                    unset($config['nat']['rule'][$x]['interface']);
                 }
             }
 
@@ -228,11 +218,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        if (isset($config['vlans']['vlan'])) {
-            foreach ($config['vlans']['vlan'] as $vlan) {
-                if (!does_interface_exist($vlan['if'])) {
-                    $input_errors[] = sprintf(gettext("VLAN parent interface %s does not exist."), $vlan['if']);
-                }
+        foreach (config_read_array('vlans', 'vlan', false) as $vlan) {
+            if (!does_interface_exist($vlan['if'])) {
+                $input_errors[] = sprintf(gettext("VLAN parent interface %s does not exist."), $vlan['if']);
             }
         }
 
