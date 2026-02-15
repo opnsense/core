@@ -385,13 +385,45 @@ class Dnsmasq extends BaseModel
 
             if (
                 !$option->value->isEmpty() &&
-                !$option->option6->isEmpty()
+                in_array($option->option->getValue(), ['3','4','5','6','7','8','9','10','11'])
             ) {
-                $values = array_map('trim', $option->value->getValues());
-                foreach ($values as $value) {
+                $ips = preg_split('/\s*,\s*/', trim($option->value), -1, PREG_SPLIT_NO_EMPTY);
+                foreach ($ips as $ip) {
+                    if (!Util::isIpv4Address($ip)) {
+                        $messages->appendMessage(
+                            new Message(
+                                gettext("Only IPv4 addresses are allowed for the selected DHCP option."),
+                                $key . ".value"
+                            )
+                        );
+                        break;
+                    }
+                }
+            }
+
+            if (
+                !$option->value->isEmpty() &&
+                !$option->option6->isEmpty()   
+            ) {
+                $ips = preg_split('/\s*,\s*/', trim($option->value), -1, PREG_SPLIT_NO_EMPTY);
+                foreach ($ips as $ip) {
+                    $raw_ip = trim($ip, '[]');
                     if (
-                        Util::isIpv6Address(trim($value, '[]')) &&
-                        !(str_starts_with($value, '[') && str_ends_with($value, ']'))
+                        !Util::isIpv6Address($raw_ip) &&
+                        $option->option6->getValue() == '23'
+                    ) {
+                        $messages->appendMessage(
+                            new Message(
+                                gettext("Only IPv6 addresses are allowed for the selected DHCPv6 option."),
+                                $key . ".value"
+                            )
+                        );
+                        break;
+                    }
+
+                    if (
+                        Util::isIpv6Address($raw_ip) &&
+                        !(str_starts_with($ip, '[') && str_ends_with($ip, ']'))
                     ) {
                         $messages->appendMessage(
                             new Message(
@@ -399,6 +431,7 @@ class Dnsmasq extends BaseModel
                                 $key . ".value"
                             )
                         );
+                        break;
                     }
                 }
             }
