@@ -391,7 +391,7 @@ class Dnsmasq extends BaseModel
                 $values = array_map('trim', $option->value->getValues());
 
                 foreach ($values as $value) {
-                    if (!Util::isIpv4Address(trim($value, '[]'))) {
+                    if (!Util::isIpv4Address($value)) {
                         $messages->appendMessage(
                             new Message(
                                 gettext("Only IPv4 addresses are allowed for DHCP option 6."),
