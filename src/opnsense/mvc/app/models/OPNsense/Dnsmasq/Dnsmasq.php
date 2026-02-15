@@ -393,7 +393,7 @@ class Dnsmasq extends BaseModel
                     if (!Util::isIpv4Address($value)) {
                         $messages->appendMessage(
                             new Message(
-                                gettext("Only IPv4 addresses are allowed for DHCP option 6."),
+                                gettext("Only IPv4 addresses are allowed for the selected DHCP option."),
                                 $key . ".value"
                             )
                         );
@@ -411,11 +411,11 @@ class Dnsmasq extends BaseModel
                     $raw = trim($value, '[]');
                     if (
                         !Util::isIpv6Address($raw) &&
-                        (string)$option->option6->getValue() === '23'
+                        $option->option6->getValue() == '23'
                     ) {
                         $messages->appendMessage(
                             new Message(
-                                gettext("Only IPv6 addresses are allowed for DHCPv6 option 23."),
+                                gettext("Only IPv6 addresses are allowed for the selected DHCPv6 option."),
                                 $key . ".value"
                             )
                         );
