@@ -43,8 +43,9 @@ if __name__ == '__main__':
         help="Action to perform"
     )
 
-    # update subcommand
+    # update/list subcommands
     subparsers.add_parser("update", help="Update blocklist")
+    subparsers.add_parser("list", help="List blocklist configuration sorted by priority")
 
     args = parser.parse_args()
 
@@ -54,3 +55,5 @@ if __name__ == '__main__':
         parser_obj.modify_blocklist(args.uuid, args.domain, args.action)
     elif args.command == "update":
         parser_obj.update_blocklist()
+    elif args.command == "list":
+        parser_obj.list_configuration()
