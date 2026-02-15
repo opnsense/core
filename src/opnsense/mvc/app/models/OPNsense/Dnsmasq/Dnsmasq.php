@@ -385,7 +385,6 @@ class Dnsmasq extends BaseModel
 
             if (
                 !$option->value->isEmpty() &&
-                !$option->option->isEmpty() &&
                 $option->option->getValue() == '6'
             ) {
                 $values = array_map('trim', $option->value->getValues());
