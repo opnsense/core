@@ -38,9 +38,11 @@ $a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['act']) && $_POST['act'] == "del" ) {
         if (!empty($a_gateway_groups[$_POST['id']])) {
-            foreach ($config['filter']['rule'] as $idx => $rule) {
-                if ($rule['gateway'] == $a_gateway_groups[$_POST['id']]['name']) {
-                    unset($config['filter']['rule'][$idx]['gateway']);
+            if (isset($config['filter']['rule']) && is_array($config['filter']['rule'])) {
+                foreach ($config['filter']['rule'] as $idx => $rule) {
+                    if (isset($rule['gateway']) && $rule['gateway'] == $a_gateway_groups[$_POST['id']]['name']) {
+                        unset($config['filter']['rule'][$idx]['gateway']);
+                    }
                 }
             }
             unset($a_gateway_groups[$_POST['id']]);
