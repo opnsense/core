@@ -385,12 +385,46 @@ class Dnsmasq extends BaseModel
 
             if (
                 !$option->value->isEmpty() &&
-                !$option->option6->isEmpty()
+                !$option->option->isEmpty() &&
+                (string)$option->option->getValue() === '6'
             ) {
                 $values = array_map('trim', $option->value->getValues());
+
                 foreach ($values as $value) {
+                    if (!Util::isIpv4Address(trim($value, '[]'))) {
+                        $messages->appendMessage(
+                            new Message(
+                                gettext("Only IPv4 addresses are allowed for DHCP option 6."),
+                                $key . ".value"
+                            )
+                        );
+                    }
+                }
+            }
+
+            if (
+                !$option->value->isEmpty() &&
+                !$option->option6->isEmpty()   
+            ) {
+                $values = array_map('trim', $option->value->getValues());
+
+                foreach ($values as $value) {
+                    $raw = trim($value, '[]');
                     if (
-                        Util::isIpv6Address(trim($value, '[]')) &&
+                        !Util::isIpv6Address($raw) &&
+                        (string)$option->option6->getValue() === '23'
+                    ) {
+                        $messages->appendMessage(
+                            new Message(
+                                gettext("Only IPv6 addresses are allowed for DHCPv6 option 23."),
+                                $key . ".value"
+                            )
+                        );
+                        continue;
+                    }
+
+                    if (
+                        Util::isIpv6Address($raw) &&
                         !(str_starts_with($value, '[') && str_ends_with($value, ']'))
                     ) {
                         $messages->appendMessage(
