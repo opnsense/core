@@ -40,6 +40,7 @@ function formTranslateAddresses() {
 
     // add this hosts ips
     foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $intf => $intfdata) {
+        $retval[$intf] = (!empty($intfdata['descr']) ? $intfdata['descr'] : $intf ) . " " . gettext("net");
         $retval[$intf."ip"] = (!empty($intfdata['descr']) ? $intfdata['descr'] : $intf ) . " " . gettext("address");
     }
 
