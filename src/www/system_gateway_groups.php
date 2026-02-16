@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['act']) && $_POST['act'] == "del" ) {
         if (!empty($a_gateway_groups[$_POST['id']])) {
             foreach (config_read_array('filter', 'rule', false) as $idx => $rule) {
-                if ($rule['gateway'] == $a_gateway_groups[$_POST['id']]['name']) {
+                if (!empty($rule['gateway']) && $rule['gateway'] == $a_gateway_groups[$_POST['id']]['name']) {
                     unset($config['filter']['rule'][$idx]['gateway']);
                 }
             }
