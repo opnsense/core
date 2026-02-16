@@ -314,7 +314,7 @@
         <type>dropdown</type>
         <help>
             Add an additional layer of HMAC authentication on top of the TLS control channel to mitigate DoS attacks and attacks on the TLS stack.
-            The prefixed mode determines if this measurement is only used for authentication (--tls-auth) or includes encryption (--tls-crypt).
+            The prefixed mode determines if this measurement is only used for authentication (--tls-auth) or includes encryption (--tls-crypt) and (--tls-crypt-v2).
         </help>
         <grid_view>
             <visible>false</visible>

@@ -399,7 +399,7 @@
                     <OptionValues>
                         <auth>auth (Authenticate control channel packets)</auth>
                         <crypt>crypt (Encrypt and authenticate all control channel packets)</crypt>
-                        <crypt-v2>crypt-v2(Encrypt and authenticate all control channel packets)</crypt-v2>
+                        <crypt-v2>crypt-v2 (Encrypt and authenticate all control channel packets)</crypt-v2>
                     </OptionValues>
                 </mode>
                 <key type="TextField">
