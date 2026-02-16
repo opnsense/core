@@ -403,15 +403,12 @@ class Dnsmasq extends BaseModel
 
             if (
                 !$option->value->isEmpty() &&
-                !$option->option6->isEmpty()   
+                in_array($option->option6->getValue(), ['21','23','31','34','56'])
             ) {
                 $ips = preg_split('/\s*,\s*/', trim($option->value), -1, PREG_SPLIT_NO_EMPTY);
                 foreach ($ips as $ip) {
                     $raw_ip = trim($ip, '[]');
-                    if (
-                        !Util::isIpv6Address($raw_ip) &&
-                        $option->option6->getValue() == '23'
-                    ) {
+                    if (!Util::isIpv6Address($raw_ip)) {
                         $messages->appendMessage(
                             new Message(
                                 gettext("Only IPv6 addresses are allowed for the selected DHCPv6 option."),
@@ -419,12 +416,7 @@ class Dnsmasq extends BaseModel
                             )
                         );
                         break;
-                    }
-
-                    if (
-                        Util::isIpv6Address($raw_ip) &&
-                        !(str_starts_with($ip, '[') && str_ends_with($ip, ']'))
-                    ) {
+                    } elseif (!(str_starts_with($ip, '[') && str_ends_with($ip, ']'))) {
                         $messages->appendMessage(
                             new Message(
                                 gettext("Each IPv6 address must be wrapped inside square brackets '[fe80::]'."),
