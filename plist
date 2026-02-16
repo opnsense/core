@@ -191,6 +191,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/Api/SessionController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/Api/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/Api/TemplateController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/Api/VoucherController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/CaptivePortal/SessionController.php
