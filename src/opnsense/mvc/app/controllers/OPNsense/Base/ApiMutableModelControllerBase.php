@@ -32,6 +32,7 @@ namespace OPNsense\Base;
 
 use OPNsense\Core\ACL;
 use OPNsense\Core\Config;
+use OPNsense\Core\Type;
 
 /**
  * Class ApiMutableModelControllerBase, inherit this class to implement
@@ -89,18 +90,6 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         if (empty(static::$internalModelName)) {
             throw new \Exception('cannot instantiate without internalModelName defined.');
         }
-    }
-
-    public function isValidUUID($uuid)
-    {
-        if (
-            !is_string($uuid) ||
-            preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid) !== 1
-        ) {
-            return false;
-        }
-
-        return true;
     }
 
     /**
@@ -435,13 +424,21 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             }
         }
 
+        $search_tokens = array_filter(explode(' ', $this->request->get('searchPhrase', 'string', '')));
+
+        // we want the uuid field collected to search for exact matches only
+        if (!empty($search_tokens) && Type::containsUUID($search_tokens)) {
+            $fields = array_unique(array_merge($fields, ['uuid']));
+        }
+
         $grid = new UIModelGrid($element);
         return $grid->fetchBindRequest(
             $this->request,
             $fields,
             $defaultSort,
             $filter_funct,
-            $sort_flags
+            $sort_flags,
+            $search_tokens
         );
     }
 
@@ -576,7 +573,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $mdl = $this->getModel();
             $node = $mdl->getNodeByReference($path . '.' . $uuid);
             if ($node == null) {
-                if (!$this->isValidUUID($uuid)) {
+                if (!Type::isUUID($uuid)) {
                     // invalid uuid, upsert not allowed
                     return ["result" => "failed"];
                 }
