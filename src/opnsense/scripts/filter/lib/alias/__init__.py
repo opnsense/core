@@ -396,3 +396,23 @@ class AliasParser(object):
         """
         for alias in self._aliases:
             yield self._aliases[alias]
+
+    def get_affected_aliases(self, alias_names):
+        """ quick impact analysis on aliases to update given a certain list of names (recursive dig)
+            :param alias_names: list of names
+            :return: list Alias objects
+        """
+        dep_lists = {}
+        names = set(alias_names)
+        retval = []
+        has_changed = True
+        while has_changed:
+            has_changed = False
+            for alias in self._aliases.values():
+                if alias.get_name() not in dep_lists:
+                    dep_lists = set(alias.get_deps())
+                if (alias.get_name() in names or len(names.intersection(dep_lists)) > 0) and alias not in retval:
+                    retval.append(alias)
+                    names.add(alias.get_name())
+                    has_changed = True
+        return retval
