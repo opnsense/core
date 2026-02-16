@@ -387,9 +387,9 @@ class Dnsmasq extends BaseModel
                 !$option->value->isEmpty() &&
                 in_array($option->option->getValue(), ['3','4','5','6','7','8','9','10','11'])
             ) {
-                $ips = preg_split('/\s*,\s*/', trim($option->value), -1, PREG_SPLIT_NO_EMPTY);
-                foreach ($ips as $ip) {
-                    if (!Util::isIpv4Address($ip)) {
+                $values = preg_split('/\s*,\s*/', trim($option->value->getValue()), -1, PREG_SPLIT_NO_EMPTY);
+                foreach ($values as $value) {
+                    if (!Util::isIpv4Address($value)) {
                         $messages->appendMessage(
                             new Message(
                                 gettext("Only IPv4 addresses are allowed for the selected DHCP option."),
@@ -405,10 +405,9 @@ class Dnsmasq extends BaseModel
                 !$option->value->isEmpty() &&
                 in_array($option->option6->getValue(), ['21','23','31','34'])
             ) {
-                $ips = preg_split('/\s*,\s*/', trim($option->value), -1, PREG_SPLIT_NO_EMPTY);
-                foreach ($ips as $ip) {
-                    $raw_ip = trim($ip, '[]');
-                    if (!Util::isIpv6Address($raw_ip)) {
+                $values = preg_split('/\s*,\s*/', trim($option->value->getValue()), -1, PREG_SPLIT_NO_EMPTY);
+                foreach ($values as $value) {
+                    if (!Util::isIpv6Address(trim($value, '[]'))) {
                         $messages->appendMessage(
                             new Message(
                                 gettext("Only IPv6 addresses are allowed for the selected DHCPv6 option."),
@@ -416,7 +415,7 @@ class Dnsmasq extends BaseModel
                             )
                         );
                         break;
-                    } elseif (!(str_starts_with($ip, '[') && str_ends_with($ip, ']'))) {
+                    } elseif (!(str_starts_with($value, '[') && str_ends_with($value, ']'))) {
                         $messages->appendMessage(
                             new Message(
                                 gettext("Each IPv6 address must be wrapped inside square brackets '[fe80::]'."),
