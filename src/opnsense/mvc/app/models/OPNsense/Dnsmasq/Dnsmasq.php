@@ -403,7 +403,7 @@ class Dnsmasq extends BaseModel
 
             if (
                 !$option->value->isEmpty() &&
-                in_array($option->option6->getValue(), ['21','23','31','34'])
+                in_array($option->option6->getValue(), ['22','23','31','34'])
             ) {
                 $values = preg_split('/\s*,\s*/', trim($option->value->getValue()), -1, PREG_SPLIT_NO_EMPTY);
                 foreach ($values as $value) {
