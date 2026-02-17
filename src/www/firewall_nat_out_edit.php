@@ -34,36 +34,33 @@ require_once("filter.inc");
 /**
  * return option array for valid translation networks
  */
-function formTranslateAddresses() {
-    global $config;
-    $retval = array();
+function formTranslateAddresses()
+{
+    $retval = [];
 
-    // add this hosts ips
-    foreach (legacy_config_get_interfaces(array('virtual' => false, "enable" => true)) as $intf => $intfdata) {
+    foreach (legacy_config_get_interfaces(['virtual' => false, 'enable' => true]) as $intf => $intfdata) {
         $retval[$intf."ip"] = (!empty($intfdata['descr']) ? $intfdata['descr'] : $intf ) . " " . gettext("address");
     }
 
-    // add VIPs's
-    if (isset($config['virtualip']['vip'])) {
-        foreach ($config['virtualip']['vip'] as $sn) {
-            if (empty($sn['noexpand'])) {
-                if ($sn['mode'] == "proxyarp") {
-                    $start = ip2long32(gen_subnet($sn['subnet'], $sn['subnet_bits']));
-                    $end = ip2long32(gen_subnet_max($sn['subnet'], $sn['subnet_bits']));
-                    $len = $end - $start;
-                    $retval[$sn['subnet'].'/'.$sn['subnet_bits']] = htmlspecialchars("Subnet: {$sn['subnet']}/{$sn['subnet_bits']} ({$sn['descr']})");
-                    for ($i = 0; $i <= $len; $i++) {
-                        $snip = long2ip32($start+$i);
-                        $retval[$snip] = htmlspecialchars("{$snip} ({$sn['descr']})");
-                    }
-                } else {
-                    $retval[$sn['subnet']] = htmlspecialchars("{$sn['subnet']} ({$sn['descr']})");
-                }
+    foreach (config_read_array('virtualip', 'vip', false) as $sn) {
+        if (!empty($sn['noexpand'])) {
+            continue;
+        }
+
+        if ($sn['mode'] == "proxyarp") {
+            $start = ip2long32(gen_subnet($sn['subnet'], $sn['subnet_bits']));
+            $end = ip2long32(gen_subnet_max($sn['subnet'], $sn['subnet_bits']));
+            $len = $end - $start;
+            $retval[$sn['subnet'].'/'.$sn['subnet_bits']] = htmlspecialchars("Subnet: {$sn['subnet']}/{$sn['subnet_bits']} ({$sn['descr']})");
+            for ($i = 0; $i <= $len; $i++) {
+                $snip = long2ip32($start+$i);
+                $retval[$snip] = htmlspecialchars("{$snip} ({$sn['descr']})");
             }
+        } else {
+            $retval[$sn['subnet']] = htmlspecialchars("{$sn['subnet']} ({$sn['descr']})");
         }
     }
 
-    // add Aliases
     foreach (legacy_list_aliases("network") as $alias) {
         if ($alias['type'] == "host") {
             $retval[$alias['name']] = $alias['name'];
