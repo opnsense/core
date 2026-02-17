@@ -904,7 +904,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $input_errors[] = gettext("MTU of a VLAN should not be bigger than parent interface.");
                 }
             } else {
-                foreach ($config['interfaces'] as $idx => $ifdata) {
+                foreach (config_read_array('interfaces', false) as $idx => $ifdata) {
                     if ($idx == $if || !strstr($ifdata['if'], 'vlan') || !strstr($ifdata['if'], 'qinq')) {
                         continue;
                     }
@@ -943,11 +943,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if ($a_interfaces[$if]['wireless']['mode'] != $pconfig['mode']) {
                 $wlanbaseif = interface_get_wireless_base($a_interfaces[$if]['if']);
                 $clone_count = does_interface_exist("{$wlanbaseif}_wlan0") ? 1 : 0;
-                if (!empty($config['wireless']['clone'])) {
-                    foreach ($config['wireless']['clone'] as $clone) {
-                        if ($clone['if'] == $wlanbaseif) {
-                            $clone_count++;
-                        }
+                foreach (config_read_array('wireless', 'clone', false) as $clone) {
+                    if ($clone['if'] == $wlanbaseif) {
+                        $clone_count++;
                     }
                 }
                 if ($clone_count > 1) {
