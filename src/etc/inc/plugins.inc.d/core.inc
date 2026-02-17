@@ -28,8 +28,6 @@
 
 function core_services()
 {
-    global $config;
-
     $services = array();
 
     $services[] = array(
