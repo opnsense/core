@@ -50,6 +50,4 @@ class ServiceController extends ApiMutableServiceControllerBase
         return true;
     }
 
-    // XXX: Breaking API change, template actions moved to TemplateController
-
 }

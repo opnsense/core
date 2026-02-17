@@ -125,16 +125,22 @@ class TemplateController extends ApiMutableModelControllerBase
         }
 
         $template->name = $templateName;
-
-        $validation = $this->validate();
-
-        if (!empty($validation['validations'])) {
-            return $validation;
+        $errorMsg = [];
+        foreach ($this->getModel()->performValidation() as $validation_message) {
+            $errorMsg[] = (string)$validation_message;
         }
 
-        $this->save(false, true);
+        if (!empty($errorMsg)) {
+            return [
+                "name" => (string)$template->name,
+                "error" => implode("\n", $errorMsg)
+            ];
+        }
 
-        return ["result" => "saved"];
+        $this->getModel()->serializeToConfig();
+        Config::getInstance()->save();
+
+        return ["name" => (string)$template->name];
     }
 
 }
