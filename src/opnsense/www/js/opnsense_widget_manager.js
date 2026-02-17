@@ -290,6 +290,20 @@ class WidgetManager  {
                 this.curColCount = curCount;
 
                 if (this.layouts != null && this.curColCount in this.layouts) {
+                    // sync configurations and layouts, making sure the content
+                    // of each widget isn't reset.
+                    Object.values(this.widgetConfigurations).forEach(cfg => {
+                        delete cfg.content
+                    })
+
+                    Object.values(this.layouts).forEach(layout => {
+                        Object.keys(layout).forEach(id => {
+                            if (!(id in this.widgetConfigurations)) {
+                                delete layout[id]
+                            }
+                        })
+                    })
+
                     // load a known layout based on the current column count
                     this.grid.load(Object.values({...this.widgetConfigurations, ...this.layouts[this.curColCount]}));
                 }
@@ -691,7 +705,7 @@ class WidgetManager  {
         let items = this.grid.save(false);
         const colCount = this.grid.getColumn();
         this.layouts ??= {};
-        this.layouts[colCount] ??= {};
+        this.layouts[colCount] = {};
         items = await Promise.all(items.map(async (item) => {
             let widgetConfig = await this.widgetClasses[item.id].getWidgetConfig();
             if (widgetConfig) {
@@ -855,5 +869,6 @@ class WidgetManager  {
         if (id in this.widgetClasses) this.widgetClasses[id].onWidgetClose();
         this.grid.removeWidget(this.widgetHTMLElements[id]);
         if (id in this.loadedModules) this.moduleDiff.push(id);
+        delete this.widgetConfigurations[id];
     }
 }
