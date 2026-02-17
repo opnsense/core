@@ -116,7 +116,6 @@ CORE_MAINTAINER?=	project@opnsense.org
 CORE_ORIGIN?=		opnsense/${CORE_NAME}
 CORE_PACKAGESITE?=	https://pkg.opnsense.org
 CORE_PRODUCT?=		OPNsense
-CORE_REPOSITORY?=	latest
 CORE_WWW?=		https://opnsense.org/
 CORE_USER?=		wwwonly
 CORE_UID?=		789
