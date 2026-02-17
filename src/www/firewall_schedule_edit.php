@@ -34,19 +34,15 @@ require_once("filter.inc");
 
 function is_schedule_inuse($schedule)
 {
-    global $config;
-
     if ($schedule == '') {
         return false;
     }
 
-    // XXX: legacy and mvc rule logic coexist here
-    $rules = array_merge(
-        $config['filter']['rule'] ?? [],
-        $config['OPNsense']['Firewall']['Filter']['rules']['rule'] ?? []
-    );
+    /* loop through firewall rules looking for schedule in use */
+    $legacy_rules = config_read_array('filter', 'rule', false);
+    $mvc_rules  = config_read_array('OPNsense', 'Firewall', 'Filter', 'rules', 'rule', false);
 
-    foreach ($rules as $rule) {
+    foreach (array_merge($legacy_rules, $mvc_rules) as $rule) {
         if (!empty($rule['sched']) && $rule['sched'] == $schedule) {
             return true;
         }
