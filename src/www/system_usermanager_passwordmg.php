@@ -36,7 +36,7 @@ $username = $_SESSION['Username'];
 
 /* determine if user is not local to system */
 $userFound = false;
-foreach ($config['system']['user'] as $user) {
+foreach (config_read_array('system', 'user', false) as $user) {
     if ($user['name'] == $username) {
         $userFound = true;
         break;
