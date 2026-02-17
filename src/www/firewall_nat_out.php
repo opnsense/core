@@ -110,7 +110,6 @@ $mode = $config['nat']['outbound']['mode'];
 $interface_names = [];
 foreach (config_read_array('interfaces', false) as $intf => $intfdata) {
     if (is_ipaddrv4($intfdata['ipaddr'] ?? 'none')) {
-        /* add IP address of the host */
         $interface_names[$intfdata['ipaddr']] = sprintf(gettext('%s address'), !empty($intfdata['descr']) ? $intfdata['descr'] : $intf );
     }
 }
