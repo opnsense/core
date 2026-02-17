@@ -1327,6 +1327,7 @@
 /usr/local/opnsense/scripts/openssh/ssh_query.py
 /usr/local/opnsense/scripts/openvpn/client_connect.php
 /usr/local/opnsense/scripts/openvpn/client_disconnect.sh
+/usr/local/opnsense/scripts/openvpn/genkey.py
 /usr/local/opnsense/scripts/openvpn/kill_session.py
 /usr/local/opnsense/scripts/openvpn/ovpn_event.py
 /usr/local/opnsense/scripts/openvpn/ovpn_service_control.php

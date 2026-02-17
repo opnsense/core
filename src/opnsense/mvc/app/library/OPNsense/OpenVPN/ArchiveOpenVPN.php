@@ -28,6 +28,7 @@
 
 namespace OPNsense\OpenVPN;
 
+use OPNsense\Base\UserException;
 use OPNsense\Core\AppConfig;
 use OPNsense\Core\Shell;
 
@@ -99,12 +100,21 @@ class ArchiveOpenVPN extends PlainOpenVPN
             }
         }
         if (!empty($this->config['tls'])) {
-            if ($this->config['tlsmode'] === 'crypt') {
-                $conf[] = "tls-crypt {$base_filename}-tls.key";
+            $keyfile = "{$base_filename}-tls.key";
+            if ($this->config['tlsmode'] === 'crypt-v2') {
+                $clientKey = $this->export_crypt_v2_client_key($this->config['tls']);
+                if (empty($clientKey)) {
+                    throw new UserException(gettext('Failed to generate tls-crypt-v2 client key'));
+                }
+                file_put_contents("{$content_dir}/{$keyfile}", $clientKey);
+                $conf[] = "tls-crypt-v2 {$keyfile}";
+            } elseif ($this->config['tlsmode'] === 'crypt') {
+                file_put_contents("{$content_dir}/{$keyfile}", trim(base64_decode($this->config['tls'])));
+                $conf[] = "tls-crypt {$keyfile}";
             } else {
-                $conf[] = "tls-auth {$base_filename}-tls.key 1";
+                file_put_contents("{$content_dir}/{$keyfile}", trim(base64_decode($this->config['tls'])));
+                $conf[] = "tls-auth {$keyfile} 1";
             }
-            file_put_contents("{$content_dir}/{$base_filename}-tls.key", trim(base64_decode($this->config['tls'])));
         }
         file_put_contents("{$content_dir}/{$base_filename}.ovpn", implode("\n", $conf));
 
