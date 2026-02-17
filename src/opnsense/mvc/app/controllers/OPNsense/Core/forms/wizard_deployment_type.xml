@@ -16,7 +16,7 @@
         <help>Use this option to automatically forward local dns requests for our domain
               (as configured in the general information domain) to DNSMasq which is
               used as our default dhcp service. In order for this to work, we will
-              configure DNSMasq to listen on port 53053 and install forwards to it from Unboud
+              configure DNSMasq to listen on port 53053 and install forwards to it from Unbound
               (which is used as our resolver)</help>
     </field>
     <field>
