@@ -385,20 +385,44 @@ class Dnsmasq extends BaseModel
 
             if (
                 !$option->value->isEmpty() &&
-                !$option->option6->isEmpty()
+                in_array($option->option->getValue(), ['3','4','5','6','7','8','9','10','11'])
             ) {
-                $values = array_map('trim', $option->value->getValues());
+                $values = preg_split('/\s*,\s*/', trim($option->value->getValue()), -1, PREG_SPLIT_NO_EMPTY);
                 foreach ($values as $value) {
-                    if (
-                        Util::isIpv6Address(trim($value, '[]')) &&
-                        !(str_starts_with($value, '[') && str_ends_with($value, ']'))
-                    ) {
+                    if (!Util::isIpv4Address($value)) {
+                        $messages->appendMessage(
+                            new Message(
+                                gettext("Only IPv4 addresses are allowed for the selected DHCP option."),
+                                $key . ".value"
+                            )
+                        );
+                        break;
+                    }
+                }
+            }
+
+            if (
+                !$option->value->isEmpty() &&
+                in_array($option->option6->getValue(), ['22','23','31','34'])
+            ) {
+                $values = preg_split('/\s*,\s*/', trim($option->value->getValue()), -1, PREG_SPLIT_NO_EMPTY);
+                foreach ($values as $value) {
+                    if (!Util::isIpv6Address(trim($value, '[]'))) {
+                        $messages->appendMessage(
+                            new Message(
+                                gettext("Only IPv6 addresses are allowed for the selected DHCPv6 option."),
+                                $key . ".value"
+                            )
+                        );
+                        break;
+                    } elseif (!(str_starts_with($value, '[') && str_ends_with($value, ']'))) {
                         $messages->appendMessage(
                             new Message(
                                 gettext("Each IPv6 address must be wrapped inside square brackets '[fe80::]'."),
                                 $key . ".value"
                             )
                         );
+                        break;
                     }
                 }
             }

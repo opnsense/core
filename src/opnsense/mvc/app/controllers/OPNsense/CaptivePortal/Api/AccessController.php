@@ -173,8 +173,8 @@ class AccessController extends ApiControllerBase
                 $secondsPassed = time() - $startTime;
                 $remainingTimes = [];
 
-                if (!empty((string)$zone->hardtimeout)) {
-                    $timeout = (int)$zone->hardtimeout * 60;
+                if (!$zone->hardtimeout->isEmpty()) {
+                    $timeout = $zone->hardtimeout->asInt() * 60;
                     if ($secondsPassed < $timeout) {
                         $remainingTimes[] = $timeout - $secondsPassed;
                     }

@@ -79,8 +79,15 @@ if __name__ == '__main__':
                 if alias.get_type() in inputargs.types:
                     to_update.append(alias.get_name())
 
+        query_aliases = aliases.get_affected_aliases(to_update)
+        if len(query_aliases) == 0:
+            # no selected target
+            sys.exit(0)
+    else:
+        query_aliases = list(aliases)
+
     use_cached = lambda x: to_update is not None and x not in to_update
-    for alias in aliases:
+    for alias in query_aliases:
         # determine if an alias has expired or updated and collect full chain of dependencies (so we can resolve them).
         alias_changed_or_expired = max(alias.changed(), alias.expired())
         alias_resolve_list = [alias]
