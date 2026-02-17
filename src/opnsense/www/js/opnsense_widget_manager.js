@@ -99,6 +99,8 @@ class WidgetManager  {
         this.errorStates = {} // id -> error state
         this.grid = null; // gridstack instance
         this.moduleDiff = []; // list of module ids that are allowed, but not currently rendered
+        this.layouts = null;
+        this.curColCount = null;
         this.resizeObserver = new ResizeObserverWrapper();
     }
 
@@ -109,8 +111,6 @@ class WidgetManager  {
         try {
             // import allowed modules and current persisted configuration
             await this._loadWidgets();
-            // prepare widget markup
-            this._initializeWidgets();
             // render grid and append widget markup
             this._initializeGridStack();
             // load all dynamic content and start tick routines
@@ -128,6 +128,7 @@ class WidgetManager  {
         }).then(async (data) => {
             try {
                 let configuration = data.dashboard;
+                this.layouts = configuration.layouts ?? null;
                 configuration.widgets.forEach(item => {
                     this.widgetConfigurations[item.id] = item;
                 });
@@ -227,13 +228,28 @@ class WidgetManager  {
             options.sizeToContent = persistedConfig.h;
         }
 
-        const gridElement = {
+        let gridElement = {
             content: $panel.prop('outerHTML'),
             id: id,
             minW: 2, // force a minimum width of 2 unless specified otherwise
             ...config,
             ...options
         };
+
+        // override dimensions from layout if available
+        if (this.layouts != null) {
+            const colCount = this.grid.getColumn();
+
+            this.grid.opts.columnOpts.breakpoints.forEach((bp) => {
+                if (bp.c in this.layouts && colCount === bp.c) {
+                    const layout = this.layouts[bp.c];
+
+                    if (id in layout) {
+                        gridElement = {...gridElement, ...layout[id]};
+                    }
+                }
+            });
+        }
 
         this.widgetConfigurations[id] = gridElement;
     }
@@ -246,6 +262,11 @@ class WidgetManager  {
         // structure to accomodate for persisted (gridstack) configuration options in the future.
 
         this.grid = GridStack.init({...this.gridStackOptions, ...runtimeConfig});
+        this.curColCount = this.grid.getColumn();
+
+        // prepare widget markup
+        this._initializeWidgets();
+
         // before we render the grid, register the added event so we can store the Element type objects
         this.grid.on('added', (event, items) => {
             // store Elements for later use, such as update() and resizeToContent()
@@ -262,6 +283,18 @@ class WidgetManager  {
 
         // render to the DOM
         this.grid.load(Object.values(this.widgetConfigurations));
+
+        this.grid.on('change', (event, items) => {
+            const curCount = this.grid.getColumn();
+            if (this.curColCount != curCount) {
+                this.curColCount = curCount;
+
+                if (this.layouts != null && this.curColCount in this.layouts) {
+                    // load a known layout based on the current column count
+                    this.grid.load(Object.values({...this.widgetConfigurations, ...this.layouts[this.curColCount]}));
+                }
+            }
+        })
 
         // force the cell height of each widget to the lowest value. The grid will adjust the height
         // according to the content of the widget.
@@ -656,6 +689,9 @@ class WidgetManager  {
         $('#save-grid').prop('disabled', true);
 
         let items = this.grid.save(false);
+        const colCount = this.grid.getColumn();
+        this.layouts ??= {};
+        this.layouts[colCount] ??= {};
         items = await Promise.all(items.map(async (item) => {
             let widgetConfig = await this.widgetClasses[item.id].getWidgetConfig();
             if (widgetConfig) {
@@ -665,16 +701,13 @@ class WidgetManager  {
             // XXX the gridstack save() behavior is inconsistent with the responsive columnWidth option,
             // as the calculation will return impossible values for the x, y, w and h attributes.
             // For now, the gs-{x,y,w,h} attributes are a better representation of the grid for layout persistence
-            if (this.grid.getColumn() >= 12) {
-                let elem = $(this.widgetHTMLElements[item.id]);
-                item.x = parseInt(elem.attr('gs-x')) ?? 1;
-                item.y = parseInt(elem.attr('gs-y')) ?? 1;
-                item.w = parseInt(elem.attr('gs-w')) ?? 1;
-                item.h = parseInt(elem.attr('gs-h')) ?? 1;
-            } else {
-                // prevent restricting the grid to a few columns when saving on a smaller screen
-                item.x = this.widgetConfigurations[item.id].x;
-                item.y = this.widgetConfigurations[item.id].y;
+            let elem = $(this.widgetHTMLElements[item.id]);
+            this.layouts[colCount][item.id] = {
+                'id': item.id,
+                'x': parseInt(elem.attr('gs-x')) ?? 1,
+                'y': parseInt(elem.attr('gs-y')) ?? 1,
+                'w': parseInt(elem.attr('gs-w')) ?? 1,
+                'h': parseInt(elem.attr('gs-h')) ?? 1
             }
 
             delete item['callbacks'];
@@ -683,7 +716,8 @@ class WidgetManager  {
 
         const payload = {
             options: {...this.persistedOptions},
-            widgets: items
+            widgets: items,
+            layouts: this.layouts
         };
 
         $.ajax({
