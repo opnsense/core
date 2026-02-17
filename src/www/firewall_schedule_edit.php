@@ -39,8 +39,11 @@ function is_schedule_inuse($schedule)
     }
 
     /* loop through firewall rules looking for schedule in use */
-    foreach (config_read_array('filter', 'rule', false) as $rule) {
-        if ($rule['sched'] == $schedule) {
+    $legacy_rules = config_read_array('filter', 'rule', false);
+    $mvc_rules  = config_read_array('OPNsense', 'Firewall', 'Filter', 'rules', 'rule', false);
+
+    foreach (array_merge($legacy_rules, $mvc_rules) as $rule) {
+        if (!empty($rule['sched']) && $rule['sched'] == $schedule) {
             return true;
         }
     }
