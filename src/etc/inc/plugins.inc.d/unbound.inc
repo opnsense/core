@@ -592,22 +592,22 @@ function unbound_add_host_entries($ifconfig_details)
     if (!empty($hosts)) {
         foreach ($hosts as $host) {
             if ($host->enabled == '1') {
-                $tmp_aliases = array(array(
+                $tmp_aliases = [[
                     'domain' => (string)$host->domain,
                     'description' => (string)$host->description,
                     'hostname' => (string)$host->hostname,
-                    'addptr' => !$host->addptr->isEmpty()
-                ));
+                    'addptr' => !$host->addptr->isEmpty(),
+                ]];
 
                 if (!empty($aliases)) {
                     foreach ($aliases as $alias) {
                         if ($alias->enabled == '1' && $alias->host == $host->getAttribute('uuid')) {
-                            $tmp_aliases[] = array(
+                            $tmp_aliases[] = [
                                 'domain' => !empty((string)$alias->domain) ? $alias->domain : $tmp_aliases[0]['domain'],
                                 'description' => !empty((string)$alias->description) ? $alias->description : $tmp_aliases[0]['description'],
                                 'hostname' => !empty((string)$alias->hostname) ? $alias->hostname : $tmp_aliases[0]['hostname'],
-                                'addptr' => false
-                            );
+                                'addptr' => false,
+                            ];
                         }
                     }
                 }
