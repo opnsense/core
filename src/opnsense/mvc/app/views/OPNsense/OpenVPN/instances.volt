@@ -102,6 +102,7 @@
             });
         });
 
+
         $("#reconfigureAct").SimpleActionButton();
     });
 
