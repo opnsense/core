@@ -228,7 +228,7 @@ abstract class Rule
     }
 
     /**
-     * parse data, use replace map for CSV values
+     * parse data, use replace map for comma-separated values
      * @param string $values combined field values
      * @param string $map
      * @param string $prefix
