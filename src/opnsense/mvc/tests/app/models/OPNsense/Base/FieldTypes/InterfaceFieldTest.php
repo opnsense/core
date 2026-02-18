@@ -46,8 +46,9 @@ class InterfaceFieldTest extends Field_Framework_TestCase
     public function testCanBeCreated()
     {
         $field = new InterfaceField();
-        $field->resetStaticOptionList();
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\InterfaceField', $field);
+        $field->resetStaticOptionList();
+
         // switch config to test set for this type
         (new AppConfig())->update('application.configDir', __DIR__ . '/InterfaceFieldTest');
         Config::getInstance()->forceReload();
