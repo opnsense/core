@@ -838,7 +838,7 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
     }
 
     if (!$suspend) {
-        foreach (config_read_array('virtualip', 'vip') as $vip) {
+        foreach (config_read_array('virtualip', 'vip', false) as $vip) {
             if ($vip['interface'] == $interface) {
                 interface_vip_bring_down($vip);
             }
@@ -1432,7 +1432,7 @@ function interfaces_pfsync_configure()
 
 function interface_proxyarp_configure($interface = '')
 {
-    global $config;
+    $paa = [];
 
     /* kill any running choparp, on restart "all" */
     if (empty($interface)) {
@@ -1441,17 +1441,14 @@ function interface_proxyarp_configure($interface = '')
         }
     }
 
-    $paa = [];
-    if (isset($config['virtualip']['vip'])) {
-        /* group by interface */
-        foreach ($config['virtualip']['vip'] as $vipent) {
-            if ($vipent['mode'] === "proxyarp") {
-                if (empty($interface) || $interface == $vipent['interface']) {
-                    if (empty($paa[$vipent['interface']])) {
-                        $paa[$vipent['interface']] = [];
-                    }
-                    $paa[$vipent['interface']][] = $vipent;
+    /* group by interface */
+    foreach (config_read_array('virtualip', 'vip', false) as $vipent) {
+        if ($vipent['mode'] === 'proxyarp') {
+            if (empty($interface) || $interface == $vipent['interface']) {
+                if (empty($paa[$vipent['interface']])) {
+                    $paa[$vipent['interface']] = [];
                 }
+                $paa[$vipent['interface']][] = $vipent;
             }
         }
     }
@@ -1478,17 +1475,11 @@ function interface_proxyarp_configure($interface = '')
 
 function interfaces_vips_configure($interface, $family = null)
 {
-    global $config;
-
-    if (!isset($config['virtualip']['vip'])) {
-        return;
-    }
-
     $proxyarp = false;
     $pfsync = false;
     $dad = false;
 
-    foreach ($config['virtualip']['vip'] as $vip) {
+    foreach (config_read_array('virtualip', 'vip', false) as $vip) {
         if ($vip['interface'] != $interface) {
             continue;
         }
@@ -3553,12 +3544,10 @@ function convert_friendly_interface_to_friendly_descr($interface)
                 return !empty($config['interfaces'][$interface]['descr']) ?
                     $config['interfaces'][$interface]['descr'] : strtoupper($interface);
             } elseif (strstr($interface, '_vip')) {
-                if (isset($config['virtualip']['vip'])) {
-                    foreach ($config['virtualip']['vip'] as $counter => $vip) {
-                        if ($vip['mode'] == 'carp') {
-                            if ($interface == "{$vip['interface']}_vip{$vip['vhid']}") {
-                                return "{$vip['descr']} ({$vip['subnet']})";
-                            }
+                foreach (config_read_array('virtualip', 'vip', false) as $vip) {
+                    if ($vip['mode'] == 'carp') {
+                        if ($interface == "{$vip['interface']}_vip{$vip['vhid']}") {
+                            return "{$vip['descr']} ({$vip['subnet']})";
                         }
                     }
                 }
@@ -3739,7 +3728,7 @@ function link_interface_to_gre($interface, $update = false, $family = null)
     foreach (config_read_array('gres', 'gre') as $gre) {
         $parent = explode('_vip', $gre['if'])[0];
         if (is_ipaddr($parent)) {
-            foreach (config_read_array('virtualip', 'vip') as $vip) {
+            foreach (config_read_array('virtualip', 'vip', false) as $vip) {
                 if ($vip['mode'] == 'ipalias' && $vip['subnet'] == $parent) {
                     $parent = $vip['interface'];
                     break;
@@ -3799,7 +3788,7 @@ function get_interface_ip($interface, $ifconfig_details = null)
     }
 
     if (strstr($interface, '_vip')) {
-        foreach (config_read_array('virtualip', 'vip') as $vip) {
+        foreach (config_read_array('virtualip', 'vip', false) as $vip) {
             if ($vip['mode'] == 'carp') {
                 if ($interface == "{$vip['interface']}_vip{$vip['vhid']}" && is_ipaddrv4($vip['subnet'])) {
                     return $vip['subnet'];
@@ -3820,7 +3809,7 @@ function get_interface_ipv6($interface, $ifconfig_details = null, $mode = 'prima
     }
 
     if (strstr($interface, '_vip')) {
-        foreach (config_read_array('virtualip', 'vip') as $vip) {
+        foreach (config_read_array('virtualip', 'vip', false) as $vip) {
             if ($vip['mode'] == 'carp') {
                 if ($interface == "{$vip['interface']}_vip{$vip['vhid']}" && is_ipaddrv6($vip['subnet'])) {
                     return $vip['subnet'];
@@ -4032,7 +4021,7 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
     }
 
     foreach ($result as &$info) {
-        foreach (config_read_array('virtualip', 'vip') as $vip) {
+        foreach (config_read_array('virtualip', 'vip', false) as $vip) {
             if (empty($info['interface']) || $info['interface'] != $vip['interface']) {
                 continue;
             }
