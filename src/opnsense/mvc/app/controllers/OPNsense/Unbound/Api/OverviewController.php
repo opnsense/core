@@ -125,12 +125,6 @@ class OverviewController extends ApiControllerBase
 
     public function getPoliciesAction()
     {
-        $response = [];
-
-        foreach ($this->mdl->dnsbl->blocklist->iterateItems() as $policy_uuid => $policy) {
-            $response[$policy_uuid] = $policy->getNodeContent();
-        }
-
-        return $response;
+        return $this->mdl->dnsbl->blocklist->getNodeContent();
     }
 }
