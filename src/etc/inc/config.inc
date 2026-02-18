@@ -284,7 +284,7 @@ function &config_read_array()
     return $current;
 }
 
-function config_write_array()
+function config_push_array()
 {
     $keys = func_get_args();
     $new = array_pop($keys);
