@@ -284,6 +284,15 @@ function &config_read_array()
     return $current;
 }
 
+function config_write_array()
+{
+    $keys = func_get_args();
+    $new = array_pop($keys);
+
+    /* array_push() will require a reference so the insert succeeds */
+    array_push(call_user_func_array('config_read_array', $keys), $new);
+}
+
 function make_config_revision_entry($desc = '')
 {
     if (!empty($_SESSION['Username'])) {
