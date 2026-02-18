@@ -89,4 +89,12 @@ class CertificateField extends BaseListField
         }
         $this->internalOptionList = self::$internalStaticOptionList[$this->certificateType];
     }
+
+    /**
+     * purging state for testing because caching is too persistent
+     */
+    public function resetStaticOptionList()
+    {
+        self::$internalStaticOptionList = [];
+    }
 }
