@@ -903,7 +903,7 @@ function system_trust_configure($verbose = false)
         @unlink($ca_unlink);
     }
 
-    foreach (config_read_array('ca') as $i => $entry) {
+    foreach (config_read_array('ca', false) as $i => $entry) {
         if (!empty($entry['crt'])) {
             // Split and cleans ca certificates, one entry could contain multiple certs if a user imported a bundle
             // avoid expired ca's from being considered as valid alternatives.
@@ -963,7 +963,7 @@ function system_trust_configure($verbose = false)
 
     if (!empty((string)$trust->install_crls)) {
         /* deploy all collected CRL's into the trust store, they will be hashed into /etc/ssl/certs by certctl eventually */
-        foreach (config_read_array('crl') as $i => $entry) {
+        foreach (config_read_array('crl', false) as $i => $entry) {
             if (!empty($entry) && !empty($entry['text'])) {
                 $crl_file = sprintf($ca_files, $i . '.crl');
                 $payload = base64_decode($entry['text']) ?? '';

@@ -34,8 +34,6 @@ require_once("auth.inc");
 $authFactory = new \OPNsense\Auth\AuthenticationFactory();
 $authCNFOptions = $authFactory->listConfigOptions();
 
-config_read_array('ca');
-
 $a_server = config_read_array('system', 'authserver');
 $a_server[] = ['name' => gettext('Local Database'),'type' => 'local'];
 

@@ -406,9 +406,6 @@ $hwifs = array_keys(get_interface_list());
 $a_interfaces = &config_read_array('interfaces');
 $a_ppps = &config_read_array('ppps', 'ppp');
 
-$a_cert = isset($config['cert']) ? $config['cert'] : array();
-$a_ca = isset($config['ca']) ? $config['ca'] : array();
-
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['if']) && !empty($a_interfaces[$_GET['if']])) {
         $if = $_GET['if'];
@@ -3163,11 +3160,11 @@ include("head.inc");
                           <td>
                             <select name="wpa_eap_cacertref" class="selectpicker" data-style="btn-default">
                               <option value="" <?=empty($pconfig['wpa_eap_cacertref']) ? "selected=\"selected\"" : "";?>><?=gettext("Do not verify server"); ?></option>
-          <?php foreach ($a_ca as $ca): ?>
+<?php foreach (config_read_array('ca', false) as $ca): ?>
                               <option value="<?=$ca['refid'];?>" <?=$pconfig['wpa_eap_cacertref'] == $ca['refid'] ? "selected=\"selected\"" : "";?>>
                                 <?=$ca['descr'];?>
                               </option>
-          <?php endforeach ?>
+<?php endforeach ?>
                             </select>
                             <div class='hidden' data-for="help_for_cacertref">
                               <?=gettext('Certificate authority used to verify the access point\'s TLS certificate. Only relevant for infrastructure mode (BSS) if Extensible Authentication Protocol (EAP) is used for key management.');?><br />
@@ -3184,13 +3181,13 @@ include("head.inc");
                           <td>
                             <select name="wpa_eap_cltcertref" class="selectpicker" data-style="btn-default">
                               <option value="" <?=empty($pconfig['wpa_eap_cltcertref']) ? "selected=\"selected\"" : "";?>><?=gettext("none"); ?></option>
-          <?php foreach ($a_cert as $cert): ?>
-          <?php if (isset($cert['prv'])): ?>
+<?php foreach (config_read_array('cert', false) as $cert): ?>
+<?php if (isset($cert['prv'])): ?>
                               <option value="<?=$cert['refid'];?>" <?=$pconfig['wpa_eap_cltcertref'] == $cert['refid'] ? "selected=\"selected\"" : "";?>>
                                 <?=$cert['descr'];?>
                               </option>
-          <?php endif ?>
-          <?php endforeach ?>
+<?php endif ?>
+<?php endforeach ?>
                             </select>
                             <div class='hidden' data-for="help_for_clientcertref">
                               <?=gettext('Certificate used for authentication towards the access point. Only relevant for infrastructure mode (BSS) if EAP with TLS is used for key management.');?><br />
