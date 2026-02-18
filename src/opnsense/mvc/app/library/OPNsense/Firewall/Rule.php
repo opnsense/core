@@ -204,7 +204,7 @@ abstract class Rule
      */
     protected function parsePlain($value, $prefix = "", $suffix = "", $maxsize = null)
     {
-        if (!empty($maxsize) && strlen($value) > $maxsize) {
+        if (!empty($maxsize) && strlen($value ?? '') > $maxsize) {
             $value = substr($value, 0, $maxsize);
         }
         return $value == null || $value === '' ? '' : $prefix . $value . $suffix . ' ';
