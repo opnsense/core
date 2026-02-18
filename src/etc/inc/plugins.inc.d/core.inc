@@ -101,7 +101,7 @@ function core_devices()
 
     $bridge_names = [];
 
-    foreach (config_read_array('bridges', 'bridged') as $dev) {
+    foreach (config_read_array('bridges', 'bridged', false) as $dev) {
         $bridge_names[$dev['bridgeif']] = [
             'descr' => sprintf('%s (%s)', $dev['bridgeif'], $dev['descr']),
             'ifdescr' => sprintf('%s', $dev['descr']),
@@ -119,7 +119,7 @@ function core_devices()
 
     $gif_names = [];
 
-    foreach (config_read_array('gifs', 'gif') as $dev) {
+    foreach (config_read_array('gifs', 'gif', false) as $dev) {
         $gif_names[$dev['gifif']] = [
             'descr' => sprintf('%s %s (%s)', $dev['gifif'], $dev['remote-addr'], $dev['descr']),
             'ifdescr' => sprintf('%s', $dev['descr']),
@@ -138,7 +138,7 @@ function core_devices()
 
     $gre_names = [];
 
-    foreach (config_read_array('gres', 'gre') as $dev) {
+    foreach (config_read_array('gres', 'gre', false) as $dev) {
         $gre_names[$dev['greif']] = [
             'descr' => sprintf('%s %s (%s)', $dev['greif'], $dev['remote-addr'], $dev['descr']),
             'ifdescr' => sprintf('%s', $dev['descr']),
@@ -157,7 +157,7 @@ function core_devices()
 
     $lagg_names = [];
 
-    foreach (config_read_array('laggs', 'lagg') as $dev) {
+    foreach (config_read_array('laggs', 'lagg', false) as $dev) {
         $lagg_names[$dev['laggif']] = [
             'descr' => sprintf('%s (%s)', $dev['laggif'], $dev['descr']),
             'ifdescr' => sprintf('%s', $dev['descr']),
@@ -175,7 +175,7 @@ function core_devices()
 
     $ppp_names = [];
 
-    foreach (config_read_array('ppps', 'ppp') as $dev) {
+    foreach (config_read_array('ppps', 'ppp', false) as $dev) {
         $ppp_names[$dev['if']] = [
             'descr' => sprintf('%s (%s) - %s %s', $dev['if'], $dev['ports'], $dev['descr'] ?? '', $dev['username']),
             'ifdescr' => sprintf('%s', $dev['descr'] ?? ''),
@@ -193,7 +193,7 @@ function core_devices()
 
     $vlan_names = [];
 
-    foreach (config_read_array('vlans', 'vlan') as $dev) {
+    foreach (config_read_array('vlans', 'vlan', false) as $dev) {
         $vlan_names[$dev['vlanif']] = [
             'descr' => sprintf(gettext('%s %s (Parent: %s, Tag: %s)'), $dev['vlanif'], $dev['descr'], $dev['if'], $dev['tag']),
             'ifdescr' => sprintf('%s', $dev['descr']),
@@ -210,7 +210,7 @@ function core_devices()
 
     $wlan_names = [];
 
-    foreach (config_read_array('wireless', 'clone') as $dev) {
+    foreach (config_read_array('wireless', 'clone', false) as $dev) {
         $wlan_names[$dev['cloneif']] = [
             'descr' => sprintf('%s (%s)', $dev['cloneif'], $dev['descr']),
             'ifdescr' => sprintf('%s', $dev['descr']),
