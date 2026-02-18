@@ -65,10 +65,9 @@ if (isset($argv[2]) && isset($argv[3]) && $argv[2] === '-h' && $argv[3] === '0')
 } elseif (isset($argv[2]) && isset($argv[3]) && $argv[2] === '-x' && $argv[3] === '0') {
     $admin_user = &getUserEntryByUID(0);
     if (!$admin_user) {
-        $admin_user = array();
+        $admin_user = [];
         $admin_user['uid'] = 0;
-        $a_users = &config_read_array('system', 'user');
-        $a_users[] = $admin_user;
+        config_write_array('system', 'user', $admin_user);
     }
 
     $admin_user['scope'] = 'system';
@@ -118,11 +117,9 @@ if (isset($config['system']['webgui']['authmode']) && $config['system']['webgui'
 
 $admin_user = &getUserEntryByUID(0);
 if (!$admin_user) {
-    $admin_user = array();
+    $admin_user = [];
     $admin_user['uid'] = 0;
-    $a_users = &config_read_array('system', 'user');
-    $a_users[] = $admin_user;
-    echo "\nRestored missing root user.\n";
+    config_write_array('system', 'user', $admin_user);
 }
 
 $admin_user['scope'] = 'system';

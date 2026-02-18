@@ -39,7 +39,6 @@ if (isset($opts['h']) || empty($opts['g'])) {
     exit(-1);
 } else {
     $groupname = $opts['g'];
-    $a_group = &config_read_array('system', 'group');
 
     $localgroups = [];
     foreach (shell_safe('/usr/sbin/pw %s -a', 'groupshow', true) as $record) {
@@ -53,7 +52,8 @@ if (isset($opts['h']) || empty($opts['g'])) {
 
     $update_group = null;
     $groupdb = [];
-    foreach ($a_group as $groupent) {
+
+    foreach (config_read_array('system', 'group', false) as $groupent) {
         $groupdb[] = $groupent['name'];
         if ($groupent['name'] == $groupname) {
             $update_group = $groupent;

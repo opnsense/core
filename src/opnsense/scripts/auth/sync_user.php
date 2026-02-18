@@ -39,7 +39,6 @@ if (isset($opts['h']) || empty($opts['u'])) {
     exit(-1);
 } else {
     $username = $opts['u'];
-    $a_user = &config_read_array('system', 'user');
 
     /**
      * XXX: If performance will be challenging at some point in time, we can cut some of the local user handling,
@@ -57,7 +56,8 @@ if (isset($opts['h']) || empty($opts['u'])) {
 
     $update_user = null;
     $userdb = [];
-    foreach ($a_user as $userent) {
+
+    foreach (config_read_array('system', 'user', false) as $userent) {
         if (!empty($userent['shell']) || $userent['uid'] == 0) {
             /* only users with a shell account are allowed to have a local entry */
             $userdb[] = $userent['name'];

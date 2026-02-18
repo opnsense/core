@@ -34,7 +34,7 @@ require_once("util.inc");
 $subsystem = !empty($argv[1]) ? $argv[1] : '';
 $type = !empty($argv[2]) ? $argv[2] : '';
 
-$a_hasync = &config_read_array('hasync');
+$a_hasync = config_read_array('hasync', false);
 if (!empty($a_hasync['disconnectppps'])) {
     if ($type != 'MASTER' && $type != 'BACKUP' && $type != 'INIT') {
        log_msg("Carp '$type' event unknown from source '{$subsystem}'");
@@ -45,8 +45,8 @@ if (!empty($a_hasync['disconnectppps'])) {
     }
 
     list ($vhid, $iface) = explode('@', $subsystem);
-    $a_ppps = &config_read_array('ppps', 'ppp');
-    foreach ($a_ppps as $ppp) {
+
+    foreach ($config_read_array('ppps', 'ppp', false) as $ppp) {
         if ($ppp['ports'] == $iface) {
             foreach($config['interfaces'] as $ifkey => $interface) {
                 if ($ppp['if'] == $interface['if']) {
