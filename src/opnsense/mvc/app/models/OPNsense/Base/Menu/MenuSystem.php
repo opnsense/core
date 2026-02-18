@@ -77,6 +77,16 @@ class MenuSystem
     }
 
     /**
+     * get menu item from existing root
+     * @param string $root xpath expression
+     * @return null|MenuItem
+     */
+    public function getItem($root)
+    {
+        return $this->root->findNodeByPath($root);
+    }
+
+    /**
      * append menu item to existing root
      * @param string $root xpath expression
      * @param string $id item if (tag name)
@@ -85,15 +95,7 @@ class MenuSystem
      */
     public function appendItem($root, $id, $properties)
     {
-        $node = $this->root;
-        foreach (explode(".", $root) as $key) {
-            $node = $node->findNodeById($key);
-            if ($node == null) {
-                return null;
-            }
-        }
-
-        return $node->append($id, $properties);
+        return $this->getItem($root)?->append($id, $properties);
     }
 
     /**

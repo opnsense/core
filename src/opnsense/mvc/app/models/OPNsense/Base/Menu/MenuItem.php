@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2025 Deciso B.V.
+ * Copyright (C) 2015-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -432,17 +432,31 @@ class MenuItem
     }
 
     /**
-     * find node by id/tag name, ignore case.
-     * @param $id id / tagname
+     * find node by id/tag path, ignore case.
+     * @param $id id / tagname path
      * @return null|MenuItem
      */
-    public function findNodeById($id)
+    public function findNodeByPath($path)
     {
-        foreach ($this->children as $key => &$node) {
-            if ($node->isVisible() && strtolower($node->getId()) == strtolower($id)) {
-                return $node;
+        $node = $this;
+
+        foreach (explode('.', $path) as $id) {
+            $found = null;
+
+            foreach ($node->children as &$_node) {
+                if ($_node->isVisible() && !strcasecmp($_node->getId(), $id)) {
+                    $found = $_node;
+                    break;
+                }
             }
+
+            if (is_null($found)) {
+                return null;
+            }
+
+            $node = $found;
         }
-        return null;
+
+        return $node;
     }
 }
