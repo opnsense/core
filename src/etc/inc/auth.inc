@@ -49,7 +49,7 @@ $userindex = index_users();
  */
 function isAuthLocalIP($http_host)
 {
-    foreach (config_read_array('virtualip', 'vip') as $vip) {
+    foreach (config_read_array('virtualip', 'vip', false) as $vip) {
         if ($vip['subnet'] == $http_host) {
             return true;
         }
