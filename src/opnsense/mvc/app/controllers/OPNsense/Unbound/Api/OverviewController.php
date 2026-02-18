@@ -36,23 +36,10 @@ use OPNsense\Firewall\Util;
 class OverviewController extends ApiControllerBase
 {
     private $mdl = null;
-    private $types = [];
-    private $nodes = [];
 
     public function __construct()
     {
         $this->mdl = new \OPNsense\Unbound\Unbound();
-        $this->types = $this->mdl->dnsbl->blocklist->getTemplateNode()->type->getNodeData();
-        $this->nodes = $this->mdl->dnsbl->blocklist->getNodes();
-    }
-
-    private function getBlocklistDescription($shortcode)
-    {
-        if (array_key_exists($shortcode, $this->types)) {
-            return $this->types[$shortcode]['value'];
-        }
-
-        return null;
     }
 
     public function isEnabledAction()
@@ -65,7 +52,8 @@ class OverviewController extends ApiControllerBase
     /* XXX deprecated and to be removed for 26.7 */
     public function isBlockListEnabledAction()
     {
-        return ['enabled' => (bool)array_filter($this->nodes, fn($v) => $v['enabled'])];
+        $nodes = $this->mdl->dnsbl->blocklist->getNodes();
+        return ['enabled' => (bool)array_filter($nodes, fn($v) => $v['enabled'])];
     }
 
     public function RollingAction($timeperiod, $clients = '0')
@@ -108,10 +96,12 @@ class OverviewController extends ApiControllerBase
         }
 
         $parsed = json_decode($response, true) ?? [];
+        $policies = $this->getPoliciesAction();
+        $types = $this->mdl->dnsbl->blocklist->getTemplateNode()->type->getNodeData();
 
         foreach ($parsed as $idx => $query) {
-            $parsed[$idx]['blocklist'] ??= $this->getBlocklistDescription($query['blocklist']);
-
+            $parsed[$idx]['blocklist'] = $types[$query['blocklist']]['value'] ?? $query['blocklist'];
+            $parsed[$idx]['policy'] = $policies[$query['uuid']]['description'] ?? '';
             /* Handle front-end color status mapping, start off with OK */
             $parsed[$idx]['status'] = 0;
 
@@ -133,21 +123,14 @@ class OverviewController extends ApiControllerBase
         return $response;
     }
 
-    public function getPoliciesAction($uuid = null)
+    public function getPoliciesAction()
     {
-        $response = ['policies' => []];
+        $response = [];
 
         foreach ($this->mdl->dnsbl->blocklist->iterateItems() as $policy_uuid => $policy) {
-            if ($uuid !== null && $uuid == $policy_uuid) {
-                $response = $policy->getNodeContent();
-                $response['uuid'] = $policy_uuid;
-                break;
-            }
-
-            $response['policies'][$policy_uuid] = $policy->getNodeContent();
+            $response[$policy_uuid] = $policy->getNodeContent();
         }
 
-        $response['blocklistDescriptions'] = $this->types;
         return $response;
     }
 }

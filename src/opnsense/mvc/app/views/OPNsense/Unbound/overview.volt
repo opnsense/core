@@ -381,7 +381,7 @@
 
         function createTopList(id, data, type, maxDomains = 10) {
             ajaxGet('/api/unbound/overview/get_policies', {}, function(policies, status) {
-                const enabled = Object.values(policies.policies).some(v => v.enabled === "1");
+                const enabled = Object.values(policies).some(v => v.enabled === "1");
                 for (let i = 0; i < maxDomains; i++) {
                     let category = type === 'block' ? data.top_blocked : data.top;
                     let domain = Object.keys(category)[i];
@@ -411,7 +411,7 @@
                         openPoliciesDialog(domain, uuid, action, statObj?.blocklist ?? "");
                     });
 
-                    let bl = (uuid && uuid in policies.policies) ? `(${policies.policies[uuid].description})` : '';
+                    let bl = (uuid && uuid in policies) ? `(${policies[uuid].description})` : '';
 
                     let $li = $(`
                         <li class="list-group-item list-group-item-border list-item-domain top-item">
@@ -564,20 +564,29 @@
             const cleanDomain = domain.replace(/\.$/, "");
 
             ajaxGet('/api/unbound/overview/get_policies', {}, function (data, status) {
+                let $container = $('<div>');
+                const enabled = Object.values(data).some(v => v.enabled === "1");
+
+                if (!enabled) {
+                    $container.html(`
+                        {{ lang._('There are no blocklist policies defined. You can create them %shere%s') | format('<a href="/ui/unbound/dnsbl/index#blocklists">', '</a>') }}
+                    `);
+                    dialogRef.setMessage($container);
+                    return;
+                }
+
                 const $table = $('<table class="table table-striped table-sm mb-0">');
                 const $tbody = $('<tbody>');
                 const $thead = $('<thead>').append(
                     $('<tr>').append(
-                        $('<th>').text("{{ lang._('Blocklist') }}"),
+                        $('<th>').text("{{ lang._('Policy') }}"),
                         $('<th>').text("{{ lang._('Source net(s)') }}"),
                         $('<th>').text("{{ lang._('Action') }}")
                     )
                 );
                 $table.append($thead, $tbody);
 
-                const descriptions = data['blocklistDescriptions'];
-
-                for (const [policy_uuid, policy] of Object.entries(data.policies)) {
+                for (const [policy_uuid, policy] of Object.entries(data)) {
                     if (policy.enabled == '0') continue;
 
                     const description =
@@ -618,12 +627,14 @@
                     $tbody.append($tr);
                 }
 
-                const blocklistMatch = descriptions[blocklist]?.value ?? blocklist;
-                $container = $(`
-                    <div>
-                        {{ lang._('Blocklist match:')}} ${blocklistMatch}
-                    </div>
-                `);
+                if (blocklist != "") {
+                    $container = $(`
+                        <div>
+                            {{ lang._('Blocklist match:')}} ${blocklist}
+                        </div>
+                    `);
+                }
+
                 $container.append($table);
                 dialogRef.setMessage($container);
 
@@ -663,108 +674,92 @@
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             if (e.target.id == 'query_details_tab') {
                 $("#grid-queries").bootgrid('destroy');
-                ajaxGet('/api/unbound/overview/get_policies', {}, function(policies, status) {
-                    const enabled = Object.values(policies.policies).some(v => v.enabled === "1");
-                    let grid_queries = $("#grid-queries").UIBootgrid({
-                        search:'/api/unbound/overview/search_queries/',
-                        commands: {
-                            action: {
-                                title: "{{ lang._('Quick action') }}",
-                                classname: 'fa fa-cogs',
-                                sequence: 100,
-                                filter: function(cell) {
-                                    const data = cell.getData();
-                                    return enabled && (data.action == 'Pass' || data.action == 'Block');
-                                },
-                                onRendered: function(cell) {
-                                    const $el = $(this);
-                                    const data = cell.getData();
-                                    const uuid = data.uuid;
-                                    const domain = data.domain;
-                                    const appliedAction = data.action;
-                                    const blocklist = data.blocklist;
+                let grid_queries = $("#grid-queries").UIBootgrid({
+                    search:'/api/unbound/overview/search_queries/',
+                    commands: {
+                        action: {
+                            title: "{{ lang._('Quick action') }}",
+                            classname: 'fa fa-cogs',
+                            sequence: 100,
+                            filter: function(cell) {
+                                const data = cell.getData();
+                                return data.action == 'Pass' || data.action == 'Block';
+                            },
+                            onRendered: function(cell) {
+                                const $el = $(this);
+                                const data = cell.getData();
+                                const uuid = data.uuid;
+                                const domain = data.domain;
+                                const appliedAction = data.action;
+                                const blocklist = data.blocklist;
 
-                                    $el.click(function() {
-                                        openPoliciesDialog(domain, uuid, appliedAction, blocklist);
-                                    });
-                                }
+                                $el.click(function() {
+                                    openPoliciesDialog(domain, uuid, appliedAction, blocklist);
+                                });
+                            }
+                        }
+                    },
+                    options: {
+                        virtualDOM: true,
+                        rowSelect: false,
+                        multiSelect: false,
+                        selection: false,
+                        useRequestHandlerOnGet: true,
+                        requestHandler: function(request) {
+                            if (g_clientFilter != null && g_timeFilter != null) {
+                                let timestamp = g_timeFilter / 1000;
+                                let interval = $("#timeperiod-clients").val() == 1 ? 60 : 600;
+
+                                request['client'] = g_clientFilter;
+                                request['timeStart'] = timestamp;
+                                request['timeEnd'] = timestamp + interval;
+                            }
+
+                            return request;
+                        },
+                        formatters: {
+                            "timeformatter": function (column, row) {
+                                return moment.unix(row.time).local().format('YYYY-MM-DD HH:mm:ss');
+                            },
+                            "resolveformatter": function (column, row) {
+                                return row.resolve_time_ms + 'ms';
+                            },
+                            "domain": function (column, row) {
+                                return row.domain;
                             }
                         },
-                        options: {
-                            virtualDOM: true,
-                            rowSelect: false,
-                            multiSelect: false,
-                            selection: false,
-                            useRequestHandlerOnGet: true,
-                            requestHandler: function(request) {
-                                if (g_clientFilter != null && g_timeFilter != null) {
-                                    let timestamp = g_timeFilter / 1000;
-                                    let interval = $("#timeperiod-clients").val() == 1 ? 60 : 600;
-
-                                    request['client'] = g_clientFilter;
-                                    request['timeStart'] = timestamp;
-                                    request['timeEnd'] = timestamp + interval;
-                                }
-
-                                return request;
-                            },
-                            formatters: {
-                                "timeformatter": function (column, row) {
-                                    return moment.unix(row.time).local().format('YYYY-MM-DD HH:mm:ss');
-                                },
-                                "resolveformatter": function (column, row) {
-                                    return row.resolve_time_ms + 'ms';
-                                },
-                                "domain": function (column, row) {
-                                    return row.domain;
-                                },
-                                "blocklist": function (column, row) {
-                                    if (row.uuid && policies.policies[row.uuid]) {
-                                        return policies.policies[row.uuid].description;
-                                    }
-
-                                    return '';
-                                }
-                            },
-                            statusMapping: {
-                                0: "query-success",
-                                1: "query-info",
-                                2: "query-warning",
-                                3: "query-danger",
-                                4: "query-error"
-                            }
+                        statusMapping: {
+                            0: "query-success",
+                            1: "query-info",
+                            2: "query-warning",
+                            3: "query-danger",
+                            4: "query-error"
                         }
-                    }).on("loaded.rs.jquery.bootgrid", function (e) {
-                        if (g_clientFilter != null && g_timeFilter != null && !$('#searchFilter').length) {
-                            // Add a badge to signify we're in a drill-down
-                            let label = (typeof g_labelFilter != 'undefined') ? g_labelFilter : g_clientFilter;
-                            $('div.actionBar').prepend($('<div id="searchFilter"></div>'));
-                            let timeStart = moment.unix(g_timeFilter / 1000).local().format('MM-DD HH:mm');
-                            let interval = $("#timeperiod-clients").val() == 1 ? 60 : 600;
-                            let timeEnd = moment.unix((g_timeFilter / 1000) + interval).local().format('MM-DD HH:mm');
-                            $('#searchFilter').append('<span class="tag badge badge-pill badge-secondary">' +
-                                label + ' (' + timeStart + ' - ' + timeEnd + ')' +
-                                '<a id="removeFilter"><i class="fa fa-times" aria-hidden="true"></i></span></a>');
+                    }
+                }).on("loaded.rs.jquery.bootgrid", function (e) {
+                    if (g_clientFilter != null && g_timeFilter != null && !$('#searchFilter').length) {
+                        // Add a badge to signify we're in a drill-down
+                        let label = (typeof g_labelFilter != 'undefined') ? g_labelFilter : g_clientFilter;
+                        $('div.actionBar').prepend($('<div id="searchFilter"></div>'));
+                        let timeStart = moment.unix(g_timeFilter / 1000).local().format('MM-DD HH:mm');
+                        let interval = $("#timeperiod-clients").val() == 1 ? 60 : 600;
+                        let timeEnd = moment.unix((g_timeFilter / 1000) + interval).local().format('MM-DD HH:mm');
+                        $('#searchFilter').append('<span class="tag badge badge-pill badge-secondary">' +
+                            label + ' (' + timeStart + ' - ' + timeEnd + ')' +
+                            '<a id="removeFilter"><i class="fa fa-times" aria-hidden="true"></i></span></a>');
 
-                            $('#removeFilter').click(function(e) {
-                                // Reset filters set by a client drill-down
-                                g_clientFilter = null;
-                                g_timeFilter = null;
-                                g_labelFilter = null;
-                                $('#searchFilter').remove();
-                                $('#grid-queries').bootgrid('reload');
-                            })
-                        }
+                        $('#removeFilter').click(function(e) {
+                            // Reset filters set by a client drill-down
+                            g_clientFilter = null;
+                            g_timeFilter = null;
+                            g_labelFilter = null;
+                            $('#searchFilter').remove();
+                            $('#grid-queries').bootgrid('reload');
+                        })
+                    }
 
-                        if (!enabled) {
-                            $(".hide-col").css("display", "none");
-                        } else {
-                            $(".hide-col").css('display', '');
-                        }
-                        $(".domain-content").tooltip({placement: "auto left"});
-                    });
-                })
-
+                    $(".domain-content").tooltip({placement: "auto left"});
+                });
             }
             if (e.target.id == 'query_overview_tab') {
                 // Reset filters set by a client drill-down
@@ -963,6 +958,7 @@
                     <th data-column-id="resolve_time_ms" data-type="string" data-formatter="resolveformatter">{{ lang._('Resolve time') }}</th>
                     <th data-column-id="ttl" data-width="6em" data-type="string">{{ lang._('TTL') }}</th>
                     <th data-column-id="blocklist" data-type="string" data-formatter="blocklist">{{ lang._('Blocklist') }}</th>
+                    <th data-column-id="policy" data-type="string">{{ lang._('Policy') }}</th>
                     <th data-column-id="" data-width="100" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                 </tr>
                 </thead>
