@@ -1048,6 +1048,9 @@
 /usr/local/opnsense/mvc/tests/app/library/OPNsense/Core/ConfigConfig/backup/object.xml
 /usr/local/opnsense/mvc/tests/app/library/OPNsense/Core/ConfigTest.php
 /usr/local/opnsense/mvc/tests/app/library/OPNsense/Core/ShellTest.php
+/usr/local/opnsense/mvc/tests/app/library/OPNsense/Firewall/FilterRuleTest.php
+/usr/local/opnsense/mvc/tests/app/library/OPNsense/Firewall/FilterRuleTest/testDirection.conf
+/usr/local/opnsense/mvc/tests/app/library/OPNsense/Firewall/FilterRuleTest/testProtocol.conf
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/ACL/AclConfig/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/ACL/AclTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModel/Migrations/M0_0_1.php
