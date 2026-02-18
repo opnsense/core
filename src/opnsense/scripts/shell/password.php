@@ -67,7 +67,7 @@ if (isset($argv[2]) && isset($argv[3]) && $argv[2] === '-h' && $argv[3] === '0')
     if (!$admin_user) {
         $admin_user = [];
         $admin_user['uid'] = 0;
-        config_write_array('system', 'user', $admin_user);
+        config_push_array('system', 'user', $admin_user);
     }
 
     $admin_user['scope'] = 'system';
@@ -119,7 +119,7 @@ $admin_user = &getUserEntryByUID(0);
 if (!$admin_user) {
     $admin_user = [];
     $admin_user['uid'] = 0;
-    config_write_array('system', 'user', $admin_user);
+    config_push_array('system', 'user', $admin_user);
 }
 
 $admin_user['scope'] = 'system';

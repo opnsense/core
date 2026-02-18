@@ -201,7 +201,7 @@ function webgui_create_selfsigned($verbose = false)
 
     cert_import($cert, $crt, $key);
 
-    config_write_array('cert', $cert);
+    config_push_array('cert', $cert);
 
     $config['system']['webgui']['ssl-certref'] = $cert['refid'];
 
