@@ -49,9 +49,7 @@ function rrd_export()
 
 function rrd_import()
 {
-    global $config;
-
-    foreach ($config['rrddata']['rrddatafile'] as $rrd) {
+    foreach (config_read_array('rrddata', 'rrddatafile', false) as $rrd) {
         $rrd_file = "/var/db/rrd/" . basename($rrd['filename']);
         if (!empty($rrd['xmldata'])) {
             $xml_file = preg_replace('/\.rrd$/', ".xml", $rrd_file);
