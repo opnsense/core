@@ -46,9 +46,9 @@ if (!empty($a_hasync['disconnectppps'])) {
 
     list ($vhid, $iface) = explode('@', $subsystem);
 
-    foreach ($config_read_array('ppps', 'ppp', false) as $ppp) {
+    foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
         if ($ppp['ports'] == $iface) {
-            foreach($config['interfaces'] as $ifkey => $interface) {
+            foreach (config_read_array('interfaces', false) as $ifkey => $interface) {
                 if ($ppp['if'] == $interface['if']) {
                     log_msg("{$iface} is connected to ppp interface {$ifkey} set new status {$type}");
                     if ($type == 'BACKUP' || $type == 'INIT') {
