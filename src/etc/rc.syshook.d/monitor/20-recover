@@ -32,13 +32,122 @@ require_once 'util.inc';
 require_once 'system.inc';
 require_once 'interfaces.inc';
 
+/**
+ * Check if a down gateway has a viable failover target using the same logic
+ * as Gateways::getGroups(). Without a viable target, killing states only
+ * causes a self-inflicted outage with no benefit.
+ *
+ * Checks two failover paths:
+ *   1. Gateway groups: another member of the same group is UP (per trigger settings)
+ *   2. Default gateway switching: another gateway of the same protocol family is UP
+ *
+ * @param string $gwname         Name of the gateway that is down
+ * @param array  $all_statuses   Full return_gateways_status() keyed by name
+ * @return bool  true if a viable failover target exists
+ */
+function has_viable_failover_target($gwname, $all_statuses)
+{
+    global $config;
+
+    $down_gw = $all_statuses[$gwname] ?? null;
+    if ($down_gw === null) {
+        return false;
+    }
+
+    /* Check gateway groups: use same logic as Gateways::getGroups() */
+    foreach (config_read_array('gateways', 'gateway_group') as $group) {
+        if (empty($group['item'])) {
+            continue;
+        }
+
+        /* is this down gateway a member of this group? */
+        $is_member = false;
+        foreach ($group['item'] as $item) {
+            $itemsplit = explode('|', $item);
+            if ($itemsplit[0] == $gwname) {
+                $is_member = true;
+                break;
+            }
+        }
+
+        if (!$is_member) {
+            continue;
+        }
+
+        $trigger = isset($group['trigger']) ? (string)$group['trigger'] : '';
+
+        /* check all other members of this group for viability */
+        foreach ($group['item'] as $item) {
+            $itemsplit = explode('|', $item);
+            $member_name = $itemsplit[0];
+
+            if ($member_name == $gwname) {
+                continue;
+            }
+
+            if (empty($all_statuses[$member_name])) {
+                continue;
+            }
+
+            $member_status = $all_statuses[$member_name]['status'];
+
+            /*
+             * Mirror the status evaluation from Gateways::getGroups()
+             * to determine if this member is considered UP for this group.
+             */
+            switch ($member_status) {
+                case 'down':
+                case 'force_down':
+                    $is_up = false;
+                    break;
+                case 'delay+loss':
+                    $is_up = stristr($trigger, 'latency') === false &&
+                             stristr($trigger, 'loss') === false;
+                    break;
+                case 'delay':
+                    $is_up = stristr($trigger, 'latency') === false;
+                    break;
+                case 'loss':
+                    $is_up = stristr($trigger, 'loss') === false;
+                    break;
+                default:
+                    $is_up = true;
+            }
+
+            if ($is_up) {
+                return true;
+            }
+        }
+    }
+
+    /* Check default gateway switching: another gateway of the same family is UP */
+    if (isset($config['system']['gw_switch_default'])) {
+        foreach ($all_statuses as $name => $candidate) {
+            if ($name == $gwname) {
+                continue;
+            }
+            if (($candidate['ipprotocol'] ?? '') != ($down_gw['ipprotocol'] ?? '')) {
+                continue;
+            }
+            if (strpos($candidate['status'], 'down') === false) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
 $gwnames = [];
 $affected_gateways = !empty($argv[1]) ? explode(',', $argv[1]) : [];
 
 $metered_found_prios = ['inet' => 256, 'inet6' => 256];
 $metered_gws = ['inet' => [], 'inet6' => []];
 
-foreach (return_gateways_status() as $status) {
+/* collect all statuses first so we can check for viable failover targets */
+$all_statuses = return_gateways_status();
+
+foreach ($all_statuses as $status) {
     if (strpos($status['status'], 'down') !== false) {
         /* recover monitors stuck in down state ignoring "force_down" */
         if ($status['status'] == 'down') {
@@ -46,8 +155,12 @@ foreach (return_gateways_status() as $status) {
         }
         /* kill states for all down transitions including "force_down" */
         if (!empty($status['monitor_killstates']) && in_array($status['name'], $affected_gateways)) {
-            $uuid = trim(configdp_run('filter kill gateway_states', [$status['gateway']], true));
-            log_msg("ROUTING: killing states for unreachable gateway {$status['name']} [$uuid]", LOG_NOTICE);
+            if (has_viable_failover_target($status['name'], $all_statuses)) {
+                $uuid = trim(configdp_run('filter kill gateway_states', [$status['gateway']], true));
+                log_msg("ROUTING: killing states for unreachable gateway {$status['name']} [$uuid]", LOG_NOTICE);
+            } else {
+                log_msg("ROUTING: skipping state kill for gateway {$status['name']}, no viable failover target", LOG_NOTICE);
+            }
         }
     } else {
         /* collect "metered" gateways for all non-down status reports */
