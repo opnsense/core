@@ -172,7 +172,7 @@
                         if (row.isGroup || !rowId.includes('-')) {
                             return '';
                         }
-                        const isEnabled = row[column.id] === "0";
+                        const isEnabled = row[column.id] === "1";
                         return `
                             <span class="fa fa-fw ${isEnabled ? 'fa-check-square-o' : 'fa-square-o text-muted'} bootgrid-tooltip command-toggle"
                                 style="cursor: pointer;"
