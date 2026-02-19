@@ -1080,6 +1080,7 @@ class UIBootgrid {
                         this.table.curRowCount = this.curRowCount;
                     }
                     localStorage.setItem(`${this.persistenceID}-rowCount`, this.curRowCount);
+                    this._setPersistence(true);
                     this.table.setPageSize(newRowCount);
 
                     $(`#${this.id}-rowcount-text`).text(newRowCount === true ? this._translate('all') : newRowCount);
@@ -1521,7 +1522,7 @@ class UIBootgrid {
      * @param {*} id dataIdentifier option value
      */
     setPageByRowId(id) {
-        let page = parseInt((id / this.curRowCount) + 1);
+        let page = typeof(this.curRowCount !== "boolean") ? parseInt((id / this.curRowCount) + 1) : 1;
 
         this.searchPhrase = "";
         $(`#${this.id}-search-field`).val("");
