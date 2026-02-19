@@ -116,6 +116,46 @@
         </grid_view>
     </field>
     <field>
+        <id>server.preup</id>
+        <label>Pre-up commands</label>
+        <type>textbox</type>
+        <advanced>true</advanced>
+        <help>Commands to execute before setting up the interface. Specify each command on a new line. The special string %i is expanded to the interface name. Use with care.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>server.postup</id>
+        <label>Post-up commands</label>
+        <type>textbox</type>
+        <advanced>true</advanced>
+        <help>Commands to execute after setting up the interface. Specify each command on a new line. The special string %i is expanded to the interface name. Use with care.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>server.predown</id>
+        <label>Pre-down commands</label>
+        <type>textbox</type>
+        <advanced>true</advanced>
+        <help>Commands to execute before tearing down the interface. Specify each command on a new line. The special string %i is expanded to the interface name. Use with care.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>server.postdown</id>
+        <label>Post-down commands</label>
+        <type>textbox</type>
+        <advanced>true</advanced>
+        <help>Commands to execute after tearing down the interface. Specify each command on a new line. The special string %i is expanded to the interface name. Use with care.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>server.debug</id>
         <label>Debug Log</label>
         <type>checkbox</type>

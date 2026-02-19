@@ -66,6 +66,10 @@
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Choose a peer.</ValidationMessage>
                 </peers>
+                <preup type="TextField"/>
+                <postup type="TextField"/>
+                <predown type="TextField"/>
+                <postdown type="TextField"/>
                 <debug type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>

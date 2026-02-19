@@ -58,12 +58,40 @@ function get_vhid_status()
     return $vhids;
 }
 
+/**
+ * run hooks for a given server and hook type (pre-up, post-up, pre-down, post-down)
+ */
+function wg_execute_hooks($server, string $hookText, string $hookName): void
+{
+    foreach (explode("\n", $hookText) as $line) {
+        $line = str_replace('%i', $server->interface->getValue(), trim($line));
+
+        if ($line === '' || str_starts_with($line, '#')) {
+            continue;
+        }
+
+        $cmd = '/bin/sh -c ' . escapeshellarg($line);
+        $output = [];
+        $rc = 0;
+
+        mwexec($cmd, $output, $rc);
+
+        if ($rc !== 0) {
+            syslog(LOG_ERR, sprintf("wireguard instance %s (%s) %s hook failed (rc=%d): %s", $server->name->getValue(), $server->interface->getValue(), $hookName, $rc, $line));
+        }
+    }
+}
 
 /**
  * mimic wg-quick behaviour, but bound to our config
  */
 function wg_start($server, $fhandle, $ifcfgflag = 'up', $reload = false)
 {
+    /* Execute any pre-up hooks */
+    if (($preUp = trim($server->preup->getValue())) !== '') {
+        wg_execute_hooks($server, $preUp, 'pre-up');
+    }
+    
     if (!does_interface_exist($server->interface)) {
         mwexecf('/sbin/ifconfig wg create name %s', [$server->interface]);
         mwexecf('/sbin/ifconfig %s group wireguard', [$server->interface]);
@@ -142,6 +170,11 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up', $reload = false)
 
     mwexecf('/sbin/ifconfig %s %s', [$server->interface, $ifcfgflag]);
 
+    /* Execute any post-up hooks */
+    if (($postUp = trim($server->postup->getValue())) !== '') {
+        wg_execute_hooks($server, $postUp, 'post-up');
+    }
+    
     // flush checksum to ease change detection
     fseek($fhandle, 0);
     ftruncate($fhandle, 0);
@@ -156,7 +189,17 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up', $reload = false)
 function wg_stop($server)
 {
     if (does_interface_exist($server->interface)) {
+        /* Execute any pre-down hooks */
+        if (($preDown = trim($server->predown->getValue())) !== '') {
+            wg_execute_hooks($server, $preDown, 'pre-down');
+        }
+
         legacy_interface_destroy($server->interface);
+
+        /* Execute any post-down hooks */
+        if (($postDown = trim($server->postdown->getValue())) !== '') {
+            wg_execute_hooks($server, $postDown, 'post-down');
+        }
     }
     syslog(LOG_NOTICE, "wireguard instance {$server->name} ({$server->interface}) stopped");
 }
