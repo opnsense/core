@@ -215,11 +215,11 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         $stanzas = [];
 
         if (!$entry->Base6Interface->isEmpty()) {
-            $stanzas[] = 'base6';
+            $stanzas['base6'] = true;
         } else {
             list (, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
             if (is_subnetv6($networkv6)) {
-                $stanzas[] = $networkv6;
+                $stanzas[$networkv6] = true;
             }
         }
 
@@ -242,7 +242,11 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
 
             /* force subnet to 64 as per radvd complaint "prefix length should be 64 for xzy" */
             $subnetv6 = gen_subnetv6($vip['subnet'], 64);
-            $stanzas[] = "{$subnetv6}/64";
+
+            /* add if not found (deduplication and no overriding of primary subnet) */
+            if (!isset($stanzas["{$subnetv6}/64"])) {
+                $stanzas["{$subnetv6}/64"] = false;
+            }
         }
 
         if ($src_addr) {
@@ -260,10 +264,7 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         /* to avoid final advertisement with zero router lifetime */
         $radvdconf .= "    RemoveAdvOnExit " . (!$entry->RemoveAdvOnExit->isEmpty() ? $entry->RemoveAdvOnExit->getValue() : ($carp_mode ? 'off' : 'on')) . ";\n";
 
-        /* VIPs may duplicate readings from system */
-        $stanzas = array_unique($stanzas);
-
-        foreach ($stanzas as $stanza) {
+        foreach ($stanzas as $stanza => $primary) {
             if ($stanza === 'base6') {
                 $radvdconf .= "    prefix ::/64 {\n";
                 $baseif = get_real_interface($entry->Base6Interface->getValue(), 'inet6');
@@ -272,7 +273,7 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
                 $radvdconf .= "    prefix {$stanza} {\n";
             }
             $radvdconf .= "        DeprecatePrefix " . (!$entry->DeprecatePrefix->isEmpty() ? $entry->DeprecatePrefix->getValue() : ($carp_mode ? 'off' : 'on')) . ";\n";
-            switch ($entry->mode->getValue()) {
+            switch ($primary ? $entry->mode->getValue() : $entry->mode->getValue() /* XXX VIP mode */) {
                 case 'assist':
                 case 'stateless':
                 case 'unmanaged':
