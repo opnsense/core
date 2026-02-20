@@ -371,6 +371,12 @@ include("head.inc");
         }
     });
 
+    $("#new_entry_descr").keypress(function (e) {
+        if (e.which == 13) {
+            $('#add_x')[0].click();
+            return false;
+        }
+    });
   });
   </script>
 <?php include("fbegin.inc"); ?>
@@ -473,7 +479,7 @@ include("head.inc");
                       <tr>
                         <td></td>
                         <td>
-                          <button name="add_x" type="submit" class="btn btn-primary"><?= gettext('Add') ?></button>
+                          <button id="add_x" name="add_x" type="submit" class="btn btn-primary"><?= gettext('Add') ?></button>
                         </td>
                       </tr>
                   </tfoot>
