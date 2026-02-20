@@ -174,6 +174,21 @@ class KeaDhcpv6 extends BaseModel
                 'pd-pools' => [],
                 'reservations' => []
             ];
+
+            // Conditionally include DDNS settings only when send-updates is enabled,
+            // and only include fields that have meaningful values.
+            if ($subnet->ddns_options->send_updates->isEqual('1')) {
+                $record['ddns-send-updates'] = true;
+                if (!($subnet->ddns_options->qualifying_suffix->isEmpty())) {
+                    $record['ddns-qualifying-suffix'] = $subnet->ddns_options->qualifying_suffix->getValue();
+                }
+                if ($subnet->ddns_options->update_on_renew->isEqual('1')) {
+                    $record['ddns-update-on-renew'] = true;
+                }
+                if (!($subnet->ddns_options->conflict_resolution_mode->isEmpty())) {
+                    $record['ddns-conflict-resolution-mode'] = $subnet->ddns_options->conflict_resolution_mode->getValue();
+                }
+            }
             $if = $subnet->interface->getValue();
             if (isset($cfg->interfaces->$if) && !empty($cfg->interfaces->$if->if)) {
                 $record['interface'] = (string)$cfg->interfaces->$if->if;
@@ -268,6 +283,11 @@ class KeaDhcpv6 extends BaseModel
                     'socket-type' => 'unix',
                     'socket-name' => '/var/run/kea/kea6-ctrl-socket'
                 ],
+                'dhcp-ddns' => [
+                    'enable-updates' => false,
+                    'server-ip' => '127.0.0.1',
+                    'server-port' => 53001,
+                ],
                 'loggers' => [
                     [
                         'name' => 'kea-dhcp6',
@@ -286,6 +306,14 @@ class KeaDhcpv6 extends BaseModel
         if ($expiredLeasesConfig !== null) {
             $cnf['Dhcp6']['expired-leases-processing'] = $expiredLeasesConfig;
         }
+
+        foreach ($this->subnets->subnet6->iterateItems() as $subnet) {
+            if ($subnet->ddns_options->send_updates->isEqual('1')) {
+                $cnf['Dhcp6']['dhcp-ddns']['enable-updates'] = true;
+                break;
+            }
+        }
+
         if (!(new KeaCtrlAgent())->general->enabled->isEmpty()) {
             $cnf['Dhcp6']['hooks-libraries'] = [];
             $cnf['Dhcp6']['hooks-libraries'][] = [
