@@ -130,51 +130,10 @@ $netbios_nodetypes = array(
     '5' => "h-node");
 
 /* some well knows ports */
-$wkports = array(
-    5999 => "CVSup",
-    53 => "DNS",
-    21 => "FTP",
-    3000 => "HBCI",
-    80 => "HTTP",
-    443 => "HTTPS",
-    5190 => "ICQ",
-    113 => "IDENT/AUTH",
-    143 => "IMAP",
-    993 => "IMAP/S",
-    4500 => "IPsec NAT-T",
-    500 => "ISAKMP",
-    1701 => "L2TP",
-    389 => "LDAP",
-    1755 => "MMS/TCP",
-    7000 => "MMS/UDP",
-    445 => "MS DS",
-    3389 => "MS RDP",
-    1512 => "MS WINS",
-    1863 => "MSN",
-    119 => "NNTP",
-    123 => "NTP",
-    138 => "NetBIOS-DGM",
-    137 => "NetBIOS-NS",
-    139 => "NetBIOS-SSN",
-    1194 => "OpenVPN",
-    110 => "POP3",
-    995 => "POP3/S",
-    1723 => "PPTP",
-    1812 => "RADIUS",
-    1813 => "RADIUS accounting",
-    5004 => "RTP",
-    5060 => "SIP",
-    25 => "SMTP",
-    465 => "SMTP/S",
-    161 => "SNMP",
-    162 => "SNMP-Trap",
-    22 => "SSH",
-    3478 => "STUN",
-    587 => "SUBMISSION",
-    3544 => "Teredo",
-    23 => "Telnet",
-    69 => "TFTP",
-    5900 => "VNC");
+$wkports = [];
+foreach (OPNsense\Base\FieldTypes\PortField::getWellKnown() as $service => $port) {
+    $wkports[$port] = sprintf('%s (%s)', strtoupper($service), $port);
+}
 
 $wlan_modes = array(
     'bss' => 'Infrastructure (BSS)',
@@ -331,7 +290,8 @@ function get_specialnets($only_enabled = false)
     return $specialnets;
 }
 
-function pprint_port($port) {
+function pprint_port($port)
+{
     global $wkports;
 
     $pport = "";
@@ -341,10 +301,7 @@ function pprint_port($port) {
     } else {
         $srcport = explode("-", $port);
         if ((empty($srcport[1])) || ($srcport[0] == $srcport[1])) {
-            $pport = $srcport[0];
-            if (!empty($wkports[$srcport[0]])) {
-                $pport .= " (" . $wkports[$srcport[0]] . ")";
-            }
+            $pport = $wkports[$srcport[0]] ?? $srcport[0];
         } else {
             $pport .= $srcport[0] . " - " . $srcport[1];
         }

@@ -239,8 +239,8 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
          * with every field's own setup as we can't simply derive one
          * field's accepted values for another.
          */
-        foreach (PortField::getWellKnown() as $port) {
-            $result['ports']['items'][$port] = strtoupper($port);
+        foreach (PortField::getWellKnown() as $service => $port) {
+            $result['ports']['items'][$service] = sprintf('%s (%s)', strtoupper($service), $port);
         }
 
         foreach ((new Alias())->aliases->alias->iterateItems() as $alias) {
