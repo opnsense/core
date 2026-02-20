@@ -48,7 +48,7 @@
             if (e.target.id == 'templates_tab') {
                 if (!$("#grid-templates").hasClass('tabulator')) {
                     var grid_templates  = $("#grid-templates").UIBootgrid({
-                        search: '/api/captiveportal/service/search_templates',
+                        search: '/api/captiveportal/template/search_templates',
                         options: {
                             formatters: {
                                 "commands": function (column, row) {
@@ -71,14 +71,14 @@
                             stdDialogConfirm('{{ lang._('Confirm removal') }}',
                                 '{{ lang._('Do you want to remove the selected item?') }}',
                                 '{{ lang._('Yes') }}', '{{ lang._('Cancel') }}', function () {
-                                ajaxCall("/api/captiveportal/service/del_template/" + uuid, {},function(data,status){
+                                ajaxCall("/api/captiveportal/template/del_template/" + uuid, {},function(data,status){
                                     // reload grid after delete
                                     $("#grid-templates").bootgrid("reload");
                                 });
                             });
                         });
                         grid_templates.find(".command-download").on("click", function(e) {
-                            window.open('/api/captiveportal/service/get_template/'+$(this).data("row-id")+'/','downloadTemplate');
+                            window.open('/api/captiveportal/template/get_template/'+$(this).data("row-id")+'/','downloadTemplate');
                         });
 
                         /**
@@ -95,7 +95,7 @@
                          * download default template
                          */
                         $("#downloadTemplateAct").off("click").on("click", function() {
-                            window.open('/api/captiveportal/service/get_template/', 'downloadTemplate');
+                            window.open('/api/captiveportal/template/get_template/', 'downloadTemplate');
                         });
                     });
                 }
@@ -131,7 +131,7 @@
                 requestData['uuid'] = $("#templateUUID").val();
             }
             // save file content to server
-            ajaxCall("/api/captiveportal/service/save_template", requestData, function(data,status) {
+            ajaxCall("/api/captiveportal/template/save_template", requestData, function(data,status) {
                 if (data['error'] == undefined) {
                     // saved, flush form data and hide modal
                     $("#grid-templates").bootgrid("reload");
