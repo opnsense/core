@@ -118,7 +118,7 @@ abstract class Rule
                         $rule['disabled'] = true;
                         $this->log("Unable to map port {$port}, empty?");
                     }
-                } elseif (!empty($port)) {
+                } elseif (!empty($port) && !Util::getservbyname($rule[$pfield])) {
                     $rule['disabled'] = true;
                     $this->log("Unable to map port {$port}, config error?");
                 }
