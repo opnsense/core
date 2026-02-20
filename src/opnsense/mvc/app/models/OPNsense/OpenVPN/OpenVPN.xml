@@ -242,18 +242,56 @@
                 <data-ciphers type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
-                        <AES-256-CBC>AES-256-CBC</AES-256-CBC>
-                        <AES-128-GCM>AES-128-GCM</AES-128-GCM>
-                        <AES-256-GCM>AES-256-GCM</AES-256-GCM>
-                        <CHACHA20-POLY1305>CHACHA20-POLY1305</CHACHA20-POLY1305>
+                        <Recommended>
+                            <AES-128-GCM>AES-128-GCM</AES-128-GCM>
+                            <AES-192-GCM>AES-192-GCM</AES-192-GCM>
+                            <AES-256-GCM>AES-256-GCM</AES-256-GCM>
+                            <CHACHA20-POLY1305>CHACHA20-POLY1305</CHACHA20-POLY1305>
+                        </Recommended>
+                        <Legacy>
+                            <AES-128-CBC>AES-128-CBC</AES-128-CBC>
+                            <AES-192-CBC>AES-192-CBC</AES-192-CBC>
+                            <AES-256-CBC>AES-256-CBC</AES-256-CBC>
+                            <AES-128-CFB>AES-128-CFB</AES-128-CFB>
+                            <AES-192-CFB>AES-192-CFB</AES-192-CFB>
+                            <AES-256-CFB>AES-256-CFB</AES-256-CFB>
+                            <AES-128-CFB1>AES-128-CFB1</AES-128-CFB1>
+                            <AES-192-CFB1>AES-192-CFB1</AES-192-CFB1>
+                            <AES-256-CFB1>AES-256-CFB1</AES-256-CFB1>
+                            <AES-128-CFB8>AES-128-CFB8</AES-128-CFB8>
+                            <AES-192-CFB8>AES-192-CFB8</AES-192-CFB8>
+                            <AES-256-CFB8>AES-256-CFB8</AES-256-CFB8>
+                            <AES-128-OFB>AES-128-OFB</AES-128-OFB>
+                            <AES-192-OFB>AES-192-OFB</AES-192-OFB>
+                            <AES-256-OFB>AES-256-OFB</AES-256-OFB>
+                        </Legacy>
                     </OptionValues>
                 </data-ciphers>
                 <data-ciphers-fallback type="OptionField">
                     <OptionValues>
-                        <AES-256-CBC>AES-256-CBC</AES-256-CBC>
-                        <AES-128-GCM>AES-128-GCM</AES-128-GCM>
-                        <AES-256-GCM>AES-256-GCM</AES-256-GCM>
-                        <CHACHA20-POLY1305>CHACHA20-POLY1305</CHACHA20-POLY1305>
+                        <Recommended>
+                            <AES-128-GCM>AES-128-GCM</AES-128-GCM>
+                            <AES-192-GCM>AES-192-GCM</AES-192-GCM>
+                            <AES-256-GCM>AES-256-GCM</AES-256-GCM>
+                            <CHACHA20-POLY1305>CHACHA20-POLY1305</CHACHA20-POLY1305>
+                        </Recommended>
+                        <Legacy>
+                            <AES-128-CBC>AES-128-CBC</AES-128-CBC>
+                            <AES-192-CBC>AES-192-CBC</AES-192-CBC>
+                            <AES-256-CBC>AES-256-CBC</AES-256-CBC>
+                            <AES-128-CFB>AES-128-CFB</AES-128-CFB>
+                            <AES-192-CFB>AES-192-CFB</AES-192-CFB>
+                            <AES-256-CFB>AES-256-CFB</AES-256-CFB>
+                            <AES-128-CFB1>AES-128-CFB1</AES-128-CFB1>
+                            <AES-192-CFB1>AES-192-CFB1</AES-192-CFB1>
+                            <AES-256-CFB1>AES-256-CFB1</AES-256-CFB1>
+                            <AES-128-CFB8>AES-128-CFB8</AES-128-CFB8>
+                            <AES-192-CFB8>AES-192-CFB8</AES-192-CFB8>
+                            <AES-256-CFB8>AES-256-CFB8</AES-256-CFB8>
+                            <AES-128-OFB>AES-128-OFB</AES-128-OFB>
+                            <AES-192-OFB>AES-192-OFB</AES-192-OFB>
+                            <AES-256-OFB>AES-256-OFB</AES-256-OFB>
+                        </Legacy>
                     </OptionValues>
                 </data-ciphers-fallback>
                 <tls_key type="ModelRelationField">
