@@ -1,0 +1,146 @@
+{
+    "Dhcp6": {
+        "valid-lifetime": 4000,
+        "interfaces-config": {
+            "interfaces": [
+                "igc0",
+                "igc2"
+            ]
+        },
+        "lease-database": {
+            "type": "memfile",
+            "persist": true
+        },
+        "control-socket": {
+            "socket-type": "unix",
+            "socket-name": "\/var\/run\/kea\/kea6-ctrl-socket"
+        },
+        "loggers": [
+            {
+                "name": "kea-dhcp6",
+                "output_options": [
+                    {
+                        "output": "syslog"
+                    }
+                ],
+                "severity": "INFO"
+            }
+        ],
+        "subnet6": [
+            {
+                "id": 1,
+                "subnet": "fd80::\/48",
+                "option-data": [],
+                "pools": [
+                    {
+                        "pool": "fd80::100-fd80::199"
+                    }
+                ],
+                "pd-pools": [
+                    {
+                        "prefix": "fd80:0:0:1000::",
+                        "prefix-len": 52,
+                        "delegated-len": 56
+                    },
+                    {
+                        "prefix": "fd80:0:0:2000::",
+                        "prefix-len": 52,
+                        "delegated-len": 56
+                    }
+                ],
+                "reservations": [
+                    {
+                        "option-data": [],
+                        "duid": "fe:fe:fe",
+                        "ip-addresses": [
+                            "fd80::1"
+                        ]
+                    },
+                    {
+                        "option-data": [
+                            {
+                                "name": "domain-search",
+                                "data": "test1.local,test2.local"
+                            }
+                        ],
+                        "duid": "fe:fe:fb",
+                        "hostname": "testhost",
+                        "ip-addresses": [
+                            "fd80::2"
+                        ]
+                    }
+                ],
+                "interface": "igc0"
+            },
+            {
+                "id": 2,
+                "subnet": "fd81::\/48",
+                "option-data": [
+                    {
+                        "name": "dns-servers",
+                        "data": "fe80::1,fe80::2"
+                    },
+                    {
+                        "name": "domain-search",
+                        "data": "test2.local,test3.local"
+                    },
+                    {
+                        "name": "v6-dnr",
+                        "data": "1 ,fe80::3"
+                    }
+                ],
+                "pools": [
+                    {
+                        "pool": "fd81::100-fd81::199"
+                    }
+                ],
+                "pd-pools": [],
+                "reservations": [],
+                "interface": "igc2",
+                "pd-allocator": "random",
+                "allocator": "iterative"
+            }
+        ],
+        "expired-leases-processing": {
+            "hold-reclaimed-time": 20,
+            "reclaim-timer-wait-time": 10,
+            "flush-reclaimed-timer-wait-time": 25,
+            "max-reclaim-time": 10,
+            "max-reclaim-leases": 100,
+            "unwarned-reclaim-cycles": 5
+        },
+        "hooks-libraries": [
+            {
+                "library": "\/usr\/local\/lib\/kea\/hooks\/libdhcp_lease_cmds.so"
+            },
+            {
+                "library": "\/usr\/local\/lib\/kea\/hooks\/libdhcp_ha.so",
+                "parameters": {
+                    "high-availability": [
+                        {
+                            "this-server-name": "opn-dev-02",
+                            "mode": "hot-standby",
+                            "heartbeat-delay": 10000,
+                            "max-response-delay": 60000,
+                            "max-ack-delay": 5000,
+                            "max-unacked-clients": 10,
+                            "sync-timeout": 60000,
+                            "peers": [
+                                {
+                                    "name": "opn-dev-02",
+                                    "role": "primary",
+                                    "url": "http:\/\/172.16.1.127:8001\/"
+                                },
+                                {
+                                    "name": "opn04",
+                                    "role": "standby",
+                                    "url": "http:\/\/172.16.1.130:8001\/"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

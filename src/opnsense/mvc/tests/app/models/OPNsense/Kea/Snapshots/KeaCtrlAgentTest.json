@@ -1,0 +1,32 @@
+{
+    "Control-agent": {
+        "http-host": "127.0.0.1",
+        "http-port": 8000,
+        "control-sockets": {
+            "dhcp4": {
+                "socket-type": "unix",
+                "socket-name": "\/var\/run\/kea\/kea4-ctrl-socket"
+            },
+            "dhcp6": {
+                "socket-type": "unix",
+                "socket-name": "\/var\/run\/kea\/kea6-ctrl-socket"
+            },
+            "d2": {
+                "socket-type": "unix",
+                "socket-name": "\/var\/run\/kea\/kea-ddns-ctrl-socket"
+            }
+        },
+        "loggers": [
+            {
+                "name": "kea-ctrl-agent",
+                "output_options": [
+                    {
+                        "output": "syslog"
+                    }
+                ],
+                "severity": "INFO",
+                "debuglevel": 0
+            }
+        ]
+    }
+}
