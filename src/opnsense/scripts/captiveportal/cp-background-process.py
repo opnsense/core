@@ -118,14 +118,16 @@ class CPBackgroundProcess(object):
         if zoneid in self._conf_zone_info:
             # fetch data for this zone
             cpzone_info = self._conf_zone_info[zoneid]
-            registered_addresses = list(PF.list_table(zoneid))
+            registered_addresses_pf = set(PF.list_table(zoneid))
+            registered_addresses_ipfw = set(registered_addr_accounting.keys())
             expected_clients = self.db.list_clients(zoneid)
             concurrent_users = self.db.find_concurrent_user_sessions(zoneid)
+            allow_roaming = bool(int(cpzone_info['roaming']))
 
             # handle connected clients, timeouts, address changes, etc.
             for db_client in expected_clients:
                 # fetch ip address (or network) from database
-                cpnet = db_client['ipAddress'].strip()
+                session_ips = self.db.list_session_ips(zoneid, db_client['sessionId'])
 
                 # there are different reasons why a session should be removed, check for all reasons and
                 # use the same method for the actual removal
@@ -158,8 +160,8 @@ class CPBackgroundProcess(object):
                             drop_session_reason = "remove concurrent session %s" % db_client['sessionId']
                             delete_reason = "User-Request"
 
-                    # if mac address changes, drop session. it's not the same client
-                    current_arp = self.arp.get_by_ipaddress(cpnet)
+                    # if mac address changes, drop session. it's not the same client. Use the "primary IP" to determine this
+                    current_arp = self.arp.get_by_ipaddress(db_client['ipAddress'])
                     if current_arp is not None and current_arp['mac'] != db_client['macAddress']:
                         drop_session_reason = "mac address changed for session %s" % db_client['sessionId']
                         delete_reason = "Admin-Reset"
@@ -170,39 +172,47 @@ class CPBackgroundProcess(object):
                             and time.time() - float(db_client['startTime']) > db_client['acc_session_timeout']:
                             drop_session_reason = "accounting limit reached for session %s" % db_client['sessionId']
                             delete_reason = "Session-Timeout"
-                elif db_client['authenticated_via'] == '---mac---':
-                    # detect mac changes
-                    current_ip = self.arp.get_address_by_mac(db_client['macAddress'])
-                    if current_ip is not None and db_client['ipAddress'] != current_ip:
+
+                if drop_session_reason is not None:
+                    # remove session
+                    syslog.syslog(syslog.LOG_NOTICE, drop_session_reason)
+                    for ip in session_ips:
+                        self._remove_client(zoneid, ip)
+                    self.db.del_client(zoneid, db_client['sessionId'], delete_reason)
+                    continue
+
+                # if primary IP changed, update db accordingly. Not relevant for static IP-authenticated clients
+                if db_client['authenticated_via'] != '---ip---':
+                    current_ips = self.arp.get_all_addresses_by_mac(db_client['macAddress'])
+                    if len(current_ips) > 0 and db_client['ipAddress'] != current_ips[0]:
                         if db_client['ipAddress'] != '':
                             # remove old ip
                             self._remove_client(zoneid, db_client['ipAddress'])
-                        self.db.update_client_ip(zoneid, db_client['sessionId'], current_ip)
-                        self._add_client(zoneid, current_ip)
+                        self.db.update_client_ip(zoneid, db_client['sessionId'], current_ips[0])
+                        self._add_client(zoneid, current_ips[0])
+                        db_client['ipAddress'] = current_ips[0]
 
-                # check session, if it should be active, validate its properties
-                if drop_session_reason is None:
-                    # registered client, but not active in pf or missing accounting according to ipfw (after reboot)
-                    if cpnet and (
-                        cpnet not in registered_addresses or
-                        cpnet not in registered_addr_accounting
-                    ):
-                        self._add_client(zoneid, cpnet)
+                # session should be active, validate its properties
+                if allow_roaming:
+                    # this will add the "primary" IP as well, but both list_session_ips and update_roaming_ips will return a deduplicated set
+                    session_ips = self.db.update_roaming_ips(zoneid, db_client['sessionId'], self.arp.get_all_addresses_by_mac(db_client['macAddress']))
                 else:
-                    # remove session
-                    syslog.syslog(syslog.LOG_NOTICE, drop_session_reason)
-                    self._remove_client(zoneid, cpnet)
-                    self.db.del_client(zoneid, db_client['sessionId'], delete_reason)
+                    # may have been updated if primary IP changed
+                    session_ips = {db_client['ipAddress']}
 
-            # if there are addresses/networks in the underlying pf table which are not in our administration,
-            # remove them from pf.
-            for registered_address in registered_addresses:
-                address_active = False
-                for db_client in expected_clients:
-                    if registered_address == db_client['ipAddress']:
-                        address_active = True
-                        break
-                if not address_active:
+                to_add = (session_ips - registered_addresses_pf) | (session_ips - registered_addresses_ipfw)
+                if session_ips and to_add:
+                    for ip in to_add:
+                        self._add_client(zoneid, ip)
+
+            # remove any address from pf/ipfw that isn't expected
+            expected_addresses = set()
+            # need to query again as clients may have been updated
+            for db_client in self.db.list_clients(zoneid):
+                expected_addresses.update(self.db.list_session_ips(zoneid, db_client['sessionId']))
+
+            for registered_address in (registered_addresses_pf | registered_addresses_ipfw):
+                if registered_address not in expected_addresses:
                     self._remove_client(zoneid, registered_address)
 
 def main():

@@ -1,5 +1,6 @@
 """
     Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2026 Deciso B.V.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -25,77 +26,49 @@
 
 """
 import subprocess
-
+import ujson
+from datetime import datetime
 
 class ARP(object):
     def __init__(self):
         """ construct new arp helper
         :return: None
         """
-        self._arp_table = dict()
-        self._fetch_arp_table()
+        self._table = {}
+        self.reload()
 
     def reload(self):
-        """ reload / parse arp table
+        """ reload / parse arp and ndp tables
         """
-        self._fetch_arp_table()
+        self._table.clear()
 
-    def _fetch_arp_table(self):
-        """ parse system arp table and store result in this object
-        :return: None
-        """
-        # parse arp table
-        self._arp_table = dict()
-        sp = subprocess.run(['/usr/sbin/arp', '-an'], capture_output=True, text=True)
-        for line in sp.stdout.split("\n"):
-            line_parts = line.split()
+        # fetch addresses, no IPv6 if hostwatch disabled
+        out = ujson.loads(subprocess.run(
+            ['/usr/local/opnsense/scripts/interfaces/list_hosts.py','--last-seen-window', '1000', '-v'],
+            capture_output=True,
+            text=True
+        ).stdout)
 
-            if len(line_parts) < 6 or line_parts[2] != 'at' or line_parts[4] != 'on':
-                continue
-            elif len(line_parts[1]) < 2 or line_parts[1][0] != '(' or line_parts[1][-1] != ')':
-                continue
+        sorted_rows = sorted(
+            out.get("rows", []),
+            key=lambda row: datetime.strptime(row[5], "%Y-%m-%d %H:%M:%S"),
+            reverse=True
+        )
 
-            address = line_parts[1][1:-1]
-            physical_intf = line_parts[5]
-            mac = line_parts[3]
-            expires = -1
-
-            for index in range(len(line_parts) - 3):
-                if line_parts[index] == 'expires' and line_parts[index + 1] == 'in':
-                    if line_parts[index + 2].isdigit():
-                        expires = int(line_parts[index + 2])
-
-            if address in self._arp_table:
-                self._arp_table[address]['intf'].append(physical_intf)
-            elif mac.find('incomplete') == -1:
-                self._arp_table[address] = {'mac': mac, 'intf': [physical_intf], 'expires': expires}
-
-    def list_items(self):
-        """ return parsed arp list
-        :return: dict
-        """
-        return self._arp_table
+        for row in sorted_rows:
+            ip = row[2]
+            self._table[ip] = {
+                'intf': row[0],
+                'mac': row[1],
+                'first_seen': datetime.strptime(row[4], "%Y-%m-%d %H:%M:%S"),
+                'last_seen': datetime.strptime(row[5], "%Y-%m-%d %H:%M:%S"),
+            }
 
     def get_by_ipaddress(self, address):
-        """ search arp entry by ip address
-        :param address: ip address
-        :return: dict or None (if not found)
-        """
-        if address in self._arp_table:
-            return self._arp_table[address]
-        else:
-            return None
+        return self._table.get(address, None)
 
-    def get_address_by_mac(self, address):
-        """ search arp entry by mac address, most recent arp entry
-        :param address: ip address
-        :return: dict or None (if not found)
-        """
-        result = None
-        for item in self._arp_table:
-            if self._arp_table[item]['mac'] == address:
-                if result is None:
-                    result = item
-                elif self._arp_table[result]['expires'] < self._arp_table[item]['expires']:
-                    result = item
-        return result
+    def get_all_addresses_by_mac(self, mac_address):
+        return [
+            ip for ip, data in self._table.items()
+            if data['mac'] == mac_address
+        ]
