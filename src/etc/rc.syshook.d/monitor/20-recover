@@ -37,8 +37,10 @@ $affected_gateways = !empty($argv[1]) ? explode(',', $argv[1]) : [];
 
 $metered_found_prios = ['inet' => 256, 'inet6' => 256];
 $metered_gws = ['inet' => [], 'inet6' => []];
+$all_statuses = return_gateways_status();
+$has_viable_target = !empty(array_filter($all_statuses, function ($s) { return strpos($s['status'], 'down') === false; }));
 
-foreach (return_gateways_status() as $status) {
+foreach ($all_statuses as $status) {
     if (strpos($status['status'], 'down') !== false) {
         /* recover monitors stuck in down state ignoring "force_down" */
         if ($status['status'] == 'down') {
@@ -46,8 +48,12 @@ foreach (return_gateways_status() as $status) {
         }
         /* kill states for all down transitions including "force_down" */
         if (!empty($status['monitor_killstates']) && in_array($status['name'], $affected_gateways)) {
-            $uuid = trim(configdp_run('filter kill gateway_states', [$status['gateway']], true));
-            log_msg("ROUTING: killing states for unreachable gateway {$status['name']} [$uuid]", LOG_NOTICE);
+            if ($has_viable_target) {
+                $uuid = trim(configdp_run('filter kill gateway_states', [$status['gateway']], true));
+                log_msg("ROUTING: killing states for unreachable gateway {$status['name']} [$uuid]", LOG_NOTICE);
+            } else {
+                log_msg("ROUTING: preserving states for {$status['name']} (no viable failover target)", LOG_NOTICE);
+            }
         }
     } else {
         /* collect "metered" gateways for all non-down status reports */
