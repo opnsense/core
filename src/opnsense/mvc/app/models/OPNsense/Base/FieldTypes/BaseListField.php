@@ -57,6 +57,32 @@ abstract class BaseListField extends BaseField
     protected $internalMultiSelect = false;
 
     /**
+     * statically cached options per inherited classtype
+     */
+    protected static $internalStaticOptList = [];
+
+    protected function hasStaticOptions(): bool
+    {
+        return !empty(self::$internalStaticOptList[static::class]);
+    }
+
+    protected function getStaticOptions(): array
+    {
+        return self::$internalStaticOptList[static::class] ?? [];
+    }
+
+    protected function setStaticOptions(array $data)
+    {
+        return self::$internalStaticOptList[static::class] = $data;
+    }
+
+    protected function resetStaticOptions()
+    {
+        return self::$internalStaticOptList[static::class] = [];
+    }
+
+
+    /**
      * {@inheritdoc}
      */
     protected function defaultValidationMessage()

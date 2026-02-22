@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2019 Deciso B.V.
+ * Copyright (C) 2015-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,25 +32,19 @@ use OPNsense\Core\Config;
 
 class AuthGroupField extends BaseListField
 {
-    /**
-     * @var array collected options
-     */
-    private static $internalStaticOptionList = array();
-
-    /**
-     * generate validation data (list of certificates)
-     */
     protected function actionPostLoadingEvent()
     {
-        if (empty(self::$internalStaticOptionList)) {
+        if (!$this->hasStaticOptions()) {
             $cnf = Config::getInstance()->object();
+            $data = [];
             if (isset($cnf->system->group)) {
                 foreach ($cnf->system->group as $group) {
-                    self::$internalStaticOptionList[(string)$group->gid] = (string)$group->name;
+                    $data[(string)$group->gid] = (string)$group->name;
                 }
-                natcasesort(self::$internalStaticOptionList);
+                natcasesort($data);
             }
+            $this->setStaticOptions($data);
         }
-        $this->internalOptionList = self::$internalStaticOptionList;
+        $this->internalOptionList = $this->getStaticOptions();
     }
 }
