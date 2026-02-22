@@ -31,9 +31,11 @@ import argparse
 import sys
 import os
 import subprocess
+import syslog
 
 
 def main(params):
+    syslog.openlog('openvpn', facility=syslog.LOG_AUTH)
     if params.common_name:
         os.environ['common_name'] = params.common_name
     if params.auth_control_file:
@@ -67,6 +69,10 @@ def main(params):
     elif params.script_type == 'client-disconnect':
         sys.exit(subprocess.run("%s/client_disconnect.sh" % cmd_path).returncode)
     elif params.script_type == 'learn-address':
+        syslog.syslog(syslog.LOG_NOTICE, "learn-address called with %s" % ','.join(params.args))
+        import json
+        syslog.syslog(syslog.LOG_NOTICE, "learn-address env %s" % json.dumps(dict(os.environ)))
+
         if os.fork() == 0:
             sys.exit(subprocess.run(
                 ['/usr/local/opnsense/scripts/filter/update_tables.py', '--types', 'authgroup']
