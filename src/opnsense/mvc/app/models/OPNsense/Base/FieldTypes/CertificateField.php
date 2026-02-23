@@ -70,24 +70,24 @@ class CertificateField extends BaseListField
      */
     protected function actionPostLoadingEvent()
     {
-        $data = $this->getStaticOptions();
-
-        if (!isset($data[$this->certificateType])) {
-            $data[$this->certificateType] = [];
-            $configObj = Config::getInstance()->object();
-
-            foreach ($configObj->{$this->certificateType} as $cert) {
-                if ($this->certificateType == 'ca' && (string)$cert->x509_extensions == 'ocsp') {
-                    // skip ocsp signing certs
-                    continue;
-                }
-                $data[$this->certificateType][(string)$cert->refid] = (string)$cert->descr;
-            }
-
-            natcasesort($data[$this->certificateType]);
-            $this->setStaticOptions($data);
+        if ($this->hasStaticOptions($this->certificateType)) {
+            $this->internalOptionList = $this->getStaticOptions($this->certificateType);
+            return;
         }
 
-        $this->internalOptionList = $this->getStaticOptions()[$this->certificateType];
+        $configObj = Config::getInstance()->object();
+        $data = [];
+
+        foreach ($configObj->{$this->certificateType} as $cert) {
+            if ($this->certificateType == 'ca' && (string)$cert->x509_extensions == 'ocsp') {
+                // skip ocsp signing certs
+                continue;
+            }
+            $data[(string)$cert->refid] = (string)$cert->descr;
+        }
+
+        natcasesort($data);
+
+        $this->internalOptionList = $this->setStaticOptions($data, $this->certificateType);
     }
 }
