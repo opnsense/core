@@ -45,7 +45,7 @@ class CertificateFieldTest extends Field_Framework_TestCase
     {
         $field = new CertificateField();
         $this->assertInstanceOf('\OPNsense\Base\FieldTypes\CertificateField', $field);
-        $field->resetStaticOptionList();
+        $field->resetStaticOptions();
 
         // switch config to test set for this type
         (new AppConfig())->update('application.configDir', __DIR__ . '/CertificateFieldTest');
