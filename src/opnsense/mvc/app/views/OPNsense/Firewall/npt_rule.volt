@@ -192,7 +192,7 @@
                                 ? `<span class="category-icon category-cell">
                                     <i class="fa fa-fw fa-tag"></i>
                                     <strong>{{ lang._('Uncategorized') }}</strong>
-                                    <span class="badge badge-sm bg-info"
+                                    <span class="badge chip"
                                             style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
                                 </span>`
                                 : '';
@@ -201,16 +201,20 @@
                         const category = (row["%categories"] || row.categories).split(',');
                         const colors     = row.category_colors;
 
-                        const icons = category.map((cat, idx) => `
-                            <span class="category-icon" data-toggle="tooltip" title="${cat}">
-                                <i class="fa fa-fw fa-tag" style="color:${colors[idx]};"></i>
-                            </span>`).join(' ');
+                        const icons = category.map((cat, idx) => {
+                            const bgColor = colors?.[idx] ? ` style="color:${colors[idx]};"` : '';
+
+                            return `
+                                <span class="category-icon" data-toggle="tooltip" title="${cat}">
+                                    <i class="fa fa-fw fa-tag"${bgColor}></i>
+                                </span>`;
+                        }).join(' ');
 
                         return isGroup
                             ? `<span class="category-cell">
                                     <span class="category-cell-content">
                                         <strong>${icons} ${category.join(', ')}</strong>
-                                        <span class="badge badge-sm bg-info"
+                                        <span class="badge chip"
                                                 style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
                                     </span>
                             </span>`
@@ -318,14 +322,14 @@
 
                     return data.rows.map(row => {
                         const optVal = $('<div/>').text(row.name).html();
-                        const bgColor = row.color || '31708f';
+                        const bgColor = row.color ? ` style="background:#${row.color};"` : '';
 
                         return {
                             value: row.uuid,
                             label: row.name,
                             id: row.used > 0 ? row.uuid : undefined,
                             'data-content': row.used > 0
-                                ? `<span><span class="badge badge-sm" style="background:#${bgColor};">${row.used}</span> ${optVal}</span>`
+                                ? `<span><span class="label label-sm"${bgColor}>${row.used}</span> ${optVal}</span>`
                                 : undefined
                         };
                     });
@@ -414,12 +418,13 @@
         float: left;
         margin-left: 5px;
     }
-    .badge.bg-info {
-        background-color: #31708f !important;
-    }
-    .badge-sm {
-        font-size: 12px;
-        padding: 2px 5px;
+    .label.label-sm {
+        display: inline-flex;
+        align-items: center;
+        height: 18px;
+        padding: 0 6px;
+        border-radius: 50%;
+        font-size: 11px;
     }
     .bucket-row {
         pointer-events: none;
