@@ -31,8 +31,10 @@ class NptController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
-        $this->view->pick('OPNsense/Firewall/npt_rule');
-        $this->view->formDialogNptRule = $this->getForm('dialogNptRule');
-        $this->view->formGridNptRule = $this->getFormGrid('dialogNptRule');
+        $this->view->entrypoint = 'npt';
+        $this->view->categoryName = 'categories';
+        $this->view->pick('OPNsense/Firewall/nat_rule');
+        $this->view->formDialogRule = $this->getForm('dialogNptRule');
+        $this->view->formGridRule = $this->getFormGrid('dialogNptRule');
     }
 }
