@@ -734,14 +734,14 @@
 
                     return data.rows.map(row => {
                         const optVal = $('<div/>').text(row.name).html();
-                        const bgColor = row.color || '31708f';
+                        const bgColor = row.color ? ` style="background:#${row.color};"` : '';
 
                         return {
                             value: row.uuid,
                             label: row.name,
                             id: row.used > 0 ? row.uuid : undefined,
                             'data-content': row.used > 0
-                                ? `<span><span class="label label-sm" style="background:#${bgColor};">${row.used}</span> ${optVal}</span>`
+                                ? `<span><span class="label label-sm"${bgColor}>${row.used}</span> ${optVal}</span>`
                                 : undefined
                         };
                     });
