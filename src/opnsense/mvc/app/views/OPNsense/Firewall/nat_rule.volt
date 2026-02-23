@@ -138,6 +138,16 @@
                         }
                         let rowId = row.uuid;
 
+                        if (!rowId.includes('-')) {
+                            return `
+                                <a href="/system_advanced_firewall.php" target="_blank" rel="noopener noreferrer"
+                                class="btn btn-xs btn-default bootgrid-tooltip"
+                                title="{{ lang._('Lookup rule reference') }}">
+                                    <span class="fa fa-fw fa-link"></span>
+                                </a>
+                            `;
+                        }
+
                         return `
                             <button type="button" class="btn btn-xs btn-default command-move_before
                                 bootgrid-tooltip" data-row-id="${rowId}"
