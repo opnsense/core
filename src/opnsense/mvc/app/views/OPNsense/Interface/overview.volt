@@ -70,31 +70,19 @@
         }
 
         function iterate_ips(obj) {
-            let $elements = $('<div>').css({
-                'whiteSpace': 'normal',
-                'lineHeight': '1.2'
-            });
+            let $elements = $('<div></div>');
             obj.forEach(function (ip) {
                 $span = $('<span></span><br/>').text(ip['ipaddr'] + ' ');
                 if ('vhid' in ip) {
-                    const titleLines = [
-                        `${ip.status} (freq. ${ip.advbase}/${ip.advskew})`
-                    ];
-
-                    if (ip.peer) {
-                        titleLines.push(ip.peer, ip.peer6);
+                    $carp = $('<span style="cursor: pointer;"></span>').text('vhid ' + ip['vhid']);
+                    $carp.attr('class', 'badge badge-pill');
+                    $carp.css('background-color', ip['status'] == 'MASTER' ? 'green' : 'primary');
+                    $carp.attr('data-toggle', 'tooltip');
+                    let title_text = ip['status'] + ' (freq. ' + ip['advbase'] + '/' + ip['advskew'] + ')';
+                    if (ip['peer']) {
+                        title_text = title_text + ' <br/> ' + ip['peer'] + ' <br/> ' + ip['peer6'];
                     }
-
-                    const $carp = $('<span>', {
-                        text: `vhid ${ip.vhid}`,
-                        css: { cursor: 'pointer' },
-                        'data-toggle': 'tooltip',
-                        'data-html': true
-                    })
-                        .addClass('badge badge-pill')
-                        .css('background-color', ip.status === 'MASTER' ? 'green' : 'primary')
-                        .prop('title', titleLines.join('<br/>'));
-
+                    $carp.attr('title', title_text);
                     $span.append($carp);
                 }
                 $elements.append($span);
@@ -105,115 +93,6 @@
         $("#grid-overview").UIBootgrid(
             {
                 search: '/api/interfaces/overview/interfaces_info',
-                commands: {
-                    interface_reload: {
-                        filter: (cell) => {
-                            const data = cell.getData();
-                            return 'link_type' in data && ["dhcp", "pppoe", "pptp", "l2tp", "ppp"].includes(data.link_type);
-                        },
-                        method: (event, cell) => {
-                            const data = cell.getData();
-                            const $element = $(cell.getElement()).find('.command-interface_reload');
-                            $element.remove('i').html('<i class="fa fa-spinner fa-spin"></i>');
-                            ajaxCall('/api/interfaces/overview/reload_interface/' + data.identifier, {}, function (data, status) {
-                                /* delay slightly to allow the interface to come up */
-                                setTimeout(function() {
-                                    $element.remove('i').html('<i class="fa fa-fw fa-refresh"></i>');
-                                    $("#grid-overview").bootgrid('reload');
-                                }, 1000);
-                            });
-                        },
-                        classname: 'fa fa-fw fa-refresh',
-                        title: "{{ lang._('Reload') }}"
-                    },
-                    settings: {
-                        filter: (cell) => {
-                            const data = cell.getData();
-                            return 'identifier' in data && data.identifier && 'config' in data && data.config && !data.config.internal_dynamic;
-                        },
-                        method: (event, cell) => {
-                            window.location.href = `/interfaces.php?if=${cell.getData().identifier}`;
-                        },
-                        classname: 'fa fa-fw fa-cog',
-                        title: "{{ lang._('Settings') }}"
-                    },
-                    firewall_rules: {
-                        filter: (cell) => {
-                            const data = cell.getData();
-                            return 'identifier' in data && data.identifier && data.enabled;
-                        },
-                        method: (event, cell) => {
-                            window.location.href = `/ui/firewall/filter/#interface=${cell.getData().identifier}`;
-                        },
-                        classname: 'fa fa-fw fa-fire',
-                        title: "{{ lang._('Firewall Rules') }}"
-                    },
-                    interface_info: {
-                        method: (event, cell) => {
-                            ajaxGet('/api/interfaces/overview/get_interface/' + cell.getData().device, {}, function(data, status) {
-                                data = data['message'];
-                                let $table = $('<table class="table table-bordered table-condensed table-hover table-striped"></table>');
-                                let $table_body = $('<tbody/>');
-
-                                for (let key in data) {
-                                    let $row = $('<tr/>');
-                                    let value = data[key]['value'];
-                                    if (key === 'line rate') {
-                                        value = format_linerate(value.split(" ")[0]);
-                                    }
-                                    if (key === 'ipv4' || key === 'ipv6') {
-                                        value = iterate_ips(value);
-                                    }
-
-                                    if (!'translation' in data[key]) {
-                                        continue;
-                                    }
-                                    key = data[key]['translation'];
-                                    $row.append($('<td/>').text(key));
-                                    if (typeof value === 'string' || Array.isArray(value)) {
-                                        value = value.toString().split(",").join("<br/>");
-                                    } else if (typeof value === 'object' && value !== null) {
-                                        // skip any deeper nested structures
-                                        let skip = false;
-                                        for (let key in value) {
-                                            if (typeof value[key] === 'object' && value !== null && !Array.isArray(value[key])) {
-                                                skip = true;
-                                                break;
-                                            }
-                                        }
-
-                                        if (skip) {
-                                            continue;
-                                        }
-
-                                        $table_sub = createTable(value);
-                                        value = $table_sub.prop('outerHTML');
-                                    }
-                                    $row.append($('<td/>').html(value));
-                                    $table_body.append($row);
-                                }
-
-                                $table.append($table_body);
-                                $('[data-toggle="tooltip"]').tooltip({container: 'body', html:true});
-                                BootstrapDialog.show({
-                                    title: data['description']['value'],
-                                    message: $table.prop('outerHTML'),
-                                    type: BootstrapDialog.TYPE_INFO,
-                                    draggable: true,
-                                    cssClass: 'details-dialog',
-                                    buttons: [{
-                                        label: "{{ lang._('Close') }}",
-                                        action: function (dialogRef) {
-                                            dialogRef.close();
-                                        }
-                                    }]
-                                });
-                            });
-                        },
-                        classname: 'fa fa-fw fa-search',
-                        title: "{{ lang._('Details') }}"
-                    }
-                },
                 options: {
                     selection: false,
                     formatters: {
@@ -290,10 +169,134 @@
                             }
                             return $elements.prop('outerHTML');
                         },
+                        "commands": function (column, row) {
+                            let $commands = $('<div class="commands-td"></div>');
+                            let $btn = $('<button type="button" class="btn btn-xs btn-default command" data-toggle="tooltip"">\
+                                            <i></i></button>');
+
+                            /* reload action for dynamic configurations */
+                            if ('link_type' in row) {
+                                if (["dhcp", "pppoe", "pptp", "l2tp", "ppp"].includes(row.link_type)) {
+                                    let $command = $btn.clone();
+                                    $command.addClass('interface-reload').attr('title', 'Reload').attr('data-device-id', row.identifier);
+                                    $command.find('i').addClass('fa fa-fw fa-refresh');
+                                    $commands.append($command);
+                                }
+                            }
+
+                            $anchor = $('<a class="btn btn-xs btn-default command" data-toggle="tooltip"><i></i></a>');
+                            if ('identifier' in row && row.identifier && 'config' in row && row.config) {
+                                if (!row.config.internal_dynamic) {
+                                    $a_interfaces = $anchor.clone().attr('href', '/interfaces.php?if=' + row.identifier);
+                                    $a_interfaces.attr('title', 'Settings');
+                                    $a_interfaces.find('i').addClass('fa fa-fw fa-cog');
+                                    $commands.append($a_interfaces);
+                                }
+
+                                if (row.enabled) {
+                                    $a_fw = $anchor.clone().attr('href', '/firewall_rules.php?if=' + row.identifier);
+                                    $a_fw.attr('title', 'Firewall Rules');
+                                    $a_fw.find('i').addClass('fa fa-fw fa-fire');
+                                    $commands.append($a_fw);
+                                }
+                            }
+
+                            $btn.addClass('interface-info').attr('title', 'Details').attr('data-row-id', row.device);
+                            $btn.find('i').addClass('fa fa-fw fa-search');
+
+                            $commands.append($btn);
+                            return $commands.prop('outerHTML');
+                        }
                     }
                 }
             }
         ).on("loaded.rs.jquery.bootgrid", function (e) {
+            $('[data-toggle="tooltip"]').tooltip({container: 'body', html:true});
+
+            /* attach event handler to reload buttons */
+            $('.interface-reload').each(function () {
+                $(this).unbind('click').click(function () {
+                    let $element = $(this);
+                    let device = $(this).data("device-id");
+                    $element.remove('i').html('<i class="fa fa-spinner fa-spin"></i>');
+                    ajaxCall('/api/interfaces/overview/reload_interface/' + device, {}, function (data, status) {
+                        /* delay slightly to allow the interface to come up */
+                        setTimeout(function() {
+                            $element.remove('i').html('<i class="fa fa-fw fa-refresh"></i>');
+                            $("#grid-overview").bootgrid('reload');
+                        }, 1000);
+                    });
+                });
+            });
+
+            /* attach event handler to the command-info button */
+            $(".interface-info").each(function () {
+                $(this).unbind('click').click(function () {
+                    let $element = $(this);
+                    let device = $(this).data("row-id");
+
+                    ajaxGet('/api/interfaces/overview/get_interface/' + device, {}, function(data, status) {
+                        data = data['message'];
+                        let $table = $('<table class="table table-bordered table-condensed table-hover table-striped"></table>');
+                        let $table_body = $('<tbody/>');
+
+                        for (let key in data) {
+                            let $row = $('<tr/>');
+                            let value = data[key]['value'];
+                            if (key === 'line rate') {
+                                value = format_linerate(value.split(" ")[0]);
+                            }
+                            if (key === 'ipv4' || key === 'ipv6') {
+                                value = iterate_ips(value);
+                            }
+
+                            if (!'translation' in data[key]) {
+                                continue;
+                            }
+                            key = data[key]['translation'];
+                            $row.append($('<td/>').text(key));
+                            if (typeof value === 'string' || Array.isArray(value)) {
+                                value = value.toString().split(",").join("<br/>");
+                            } else if (typeof value === 'object' && value !== null) {
+                                // skip any deeper nested structures
+                                let skip = false;
+                                for (let key in value) {
+                                    if (typeof value[key] === 'object' && value !== null && !Array.isArray(value[key])) {
+                                        skip = true;
+                                        break;
+                                    }
+                                }
+
+                                if (skip) {
+                                    continue;
+                                }
+
+                                $table_sub = createTable(value);
+                                value = $table_sub.prop('outerHTML');
+                            }
+                            $row.append($('<td/>').html(value));
+                            $table_body.append($row);
+                        }
+
+                        $table.append($table_body);
+                        $('[data-toggle="tooltip"]').tooltip({container: 'body', html:true});
+                        BootstrapDialog.show({
+                            title: data['description']['value'],
+                            message: $table.prop('outerHTML'),
+                            type: BootstrapDialog.TYPE_INFO,
+                            draggable: true,
+                            cssClass: 'details-dialog',
+                            buttons: [{
+                                label: "{{ lang._('Close') }}",
+                                action: function (dialogRef) {
+                                    dialogRef.close();
+                                }
+                            }]
+                        });
+                    });
+                });
+            });
+
             $(".route-container").each(function () {
                 let $route_container = $(this);
                 let count = $(this).children('.route-content').length;
