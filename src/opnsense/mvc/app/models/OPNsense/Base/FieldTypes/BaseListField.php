@@ -76,11 +76,10 @@ abstract class BaseListField extends BaseField
         return self::$internalStaticOptList[static::class] = $data;
     }
 
-    protected function resetStaticOptions()
+    public function resetStaticOptions()
     {
         return self::$internalStaticOptList[static::class] = [];
     }
-
 
     /**
      * {@inheritdoc}

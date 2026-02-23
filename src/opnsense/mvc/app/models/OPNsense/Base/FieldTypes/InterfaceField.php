@@ -31,17 +31,13 @@ namespace OPNsense\Base\FieldTypes;
 use OPNsense\Core\Config;
 
 /**
- * Class InterfaceField field type to select usable interfaces, currently this is kind of a backward compatibility
+ * Class InterfaceField field type to select usable interfaces,
+ * currently this is kind of a backward compatibility
  * package to glue legacy interfaces into the model.
  * @package OPNsense\Base\FieldTypes
  */
 class InterfaceField extends BaseListField
 {
-    /**
-     * @var array collected options
-     */
-    private static $internalStaticOptionList = [];
-
     /**
      * @var array filters to use on the interface list
      */
@@ -109,8 +105,10 @@ class InterfaceField extends BaseListField
      */
     protected function actionPostLoadingEvent()
     {
-        if (!isset(self::$internalStaticOptionList[$this->internalCacheKey])) {
-            self::$internalStaticOptionList[$this->internalCacheKey] = [];
+        $data = $this->getStaticOptions();
+
+        if (!isset($data[$this->internalCacheKey])) {
+            $data[$this->internalCacheKey] = [];
 
             $allInterfaces = [];
             $allInterfacesDevices = []; // mapping device -> interface handle (lan/wan/optX)
@@ -177,13 +175,16 @@ class InterfaceField extends BaseListField
                     }
                 }
                 if ($isMatched) {
-                    self::$internalStaticOptionList[$this->internalCacheKey][$key] =
-                        !empty($value->descr) ? (string)$value->descr : strtoupper($key);
+                    $data[$this->internalCacheKey][$key] = !empty($value->descr) ?
+                        (string)$value->descr : strtoupper($key);
                 }
             }
-            natcasesort(self::$internalStaticOptionList[$this->internalCacheKey]);
+
+            natcasesort($data[$this->internalCacheKey]);
+            $this->setStaticOptions($data);
         }
-        $this->internalOptionList = self::$internalStaticOptionList[$this->internalCacheKey];
+
+        $this->internalOptionList = $this->getStaticOptions()[$this->internalCacheKey];
     }
 
     private function updateInternalCacheKey()
@@ -234,13 +235,5 @@ class InterfaceField extends BaseListField
             $this->internalAllowDynamic = 0;
         }
         $this->updateInternalCacheKey();
-    }
-
-    /**
-     * purging state for testing because caching is too persistent
-     */
-    public function resetStaticOptionList()
-    {
-        self::$internalStaticOptionList = [];
     }
 }
