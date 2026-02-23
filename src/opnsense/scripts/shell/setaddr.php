@@ -477,8 +477,7 @@ function console_configure_dhcpd($version = 4)
     $label_IPvX = ($version === 6) ? "IPv6"    : "IPv4";
     $restart_dhcpd = true;
 
-    config_read_array('dnsmasq', 'dhcp_ranges');
-    foreach ($config['dnsmasq']['dhcp_ranges'] as $idx => $range) {
+    foreach (config_read_array('dnsmasq', 'dhcp_ranges', false) as $idx => $range) {
         if ($range['interface'] != $interface) {
             continue;
         } elseif ($version === 4 && !is_ipaddrv4($range['start_addr'])) {
@@ -534,13 +533,12 @@ function console_configure_dhcpd($version = 4)
         if ($version === 6) {
             $new_range['ra_mode'] = 'slaac';
         }
-        $config['dnsmasq']['dhcp_ranges'][] = $new_range;
+        config_push_array('dnsmasq', 'dhcp_ranges', $new_range);
         echo "\n";
     }
 
     if ($version === 6) {
-        config_read_array('dnsmasq', 'dhcp');
-        $config['dnsmasq']['dhcp']['enable_ra'] = '1';
+        config_merge_array('dnsmasq', 'dhcp', ['enable_ra' => '1']);
     }
 }
 
