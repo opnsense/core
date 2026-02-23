@@ -357,7 +357,7 @@
                                 ? `<span class="category-icon category-cell">
                                     <i class="fa fa-fw fa-tag"></i>
                                     <strong>{{ lang._('Uncategorized') }}</strong>
-                                    <span class="badge badge-sm bg-info"
+                                    <span class="badge chip"
                                             style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
                                 </span>`
                                 : '';
@@ -375,7 +375,7 @@
                             ? `<span class="category-cell">
                                     <span class="category-cell-content">
                                         <strong>${icons} ${categories.join(', ')}</strong>
-                                        <span class="badge badge-sm bg-info"
+                                        <span class="badge chip"
                                                 style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
                                     </span>
                             </span>`
@@ -741,7 +741,7 @@
                             label: row.name,
                             id: row.used > 0 ? row.uuid : undefined,
                             'data-content': row.used > 0
-                                ? `<span><span class="badge badge-sm" style="background:#${bgColor};">${row.used}</span> ${optVal}</span>`
+                                ? `<span><span class="label label-sm" style="background:#${bgColor};">${row.used}</span> ${optVal}</span>`
                                 : undefined
                         };
                     });
@@ -771,19 +771,19 @@
                             const subtext = group.label;
 
                             const bgClassMap = {
-                                floating: 'bg-primary',
-                                group: 'bg-warning',
-                                interface: 'bg-info',
+                                floating: 'label-primary',
+                                group: 'label-warning',
+                                interface: 'label-info',
                                 any: ''
                             };
-                            const badgeClass = bgClassMap[item.type] || 'bg-info';
+                            const badgeClass = bgClassMap[item.type] || 'label-info';
 
                             return {
                                 value: item.value,
                                 label: label,
                                 'data-content': `
                                     <span>
-                                        ${count > 0 ? `<span class="badge badge-sm ${badgeClass}">${count}</span>` : ''}
+                                        ${count > 0 ? `<span class="label label-sm ${badgeClass}">${count}</span>` : ''}
                                         ${label}
                                     </span>
                                 `.trim()
@@ -993,23 +993,15 @@
         float: left;
         margin-left: 5px;
     }
-    /*
-     * XXX: Since the badge class uses its own default background-color, we must override it explicitly.
-     *      Essentially we would like to use the main style sheet for this.
-     *      bg-info is slightly different from text-info, so we use the text-info color for consistency.
-     */
-    .badge.bg-primary {
-        background-color: #C03E14 !important;
-    }
-    .badge.bg-warning {
-        background-color: #f0ad4e !important;
-    }
-    .badge.bg-info {
-        background-color: #31708f !important;
-    }
-    .badge-sm {
-        font-size: 12px;
-        padding: 2px 5px;
+
+    /* labels are rectengular by default, we want them circle shaped */
+    .label.label-sm {
+        display: inline-flex;
+        align-items: center;
+        height: 18px;
+        padding: 0 6px;
+        border-radius: 50%;
+        font-size: 11px;
     }
 
     /* bucket row style */
