@@ -181,7 +181,7 @@ class FilterController extends FilterBaseController
                 // Tag legacy rules as "Automatic generated rules" if they have an empty category
                 if (!empty($record['is_automatic'])) {
                     $record['categories'] = gettext('Automatically generated rules');
-                    $record['category_colors'] = ['#000'];
+                    $record['category_colors'] = [''];
                 }
 
                 return true;

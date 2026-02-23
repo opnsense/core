@@ -366,10 +366,14 @@
                         const categories = (row["%categories"] || row.categories).split(',');
                         const colors     = row.category_colors;
 
-                        const icons = categories.map((cat, idx) => `
-                            <span class="category-icon" data-toggle="tooltip" title="${cat}">
-                                <i class="fa fa-fw fa-tag" style="color:${colors[idx]};"></i>
-                            </span>`).join(' ');
+                        const icons = categories.map((cat, idx) => {
+                            const bgColor = colors?.[idx] ? ` style="color:${colors[idx]};"` : '';
+
+                            return `
+                                <span class="category-icon" data-toggle="tooltip" title="${cat}">
+                                    <i class="fa fa-fw fa-tag"${bgColor}></i>
+                                </span>`;
+                        }).join(' ');
 
                         return isGroup
                             ? `<span class="category-cell">
