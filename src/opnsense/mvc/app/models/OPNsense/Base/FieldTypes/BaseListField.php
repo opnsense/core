@@ -59,25 +59,41 @@ abstract class BaseListField extends BaseField
     /**
      * statically cached options per inherited classtype
      */
-    protected static $internalStaticOptList = [];
+    private static $internalStaticOptList = [];
 
-    protected function hasStaticOptions(): bool
+    protected function hasStaticOptions(?string $hash = null): bool
     {
+        if (!is_null($hash)) {
+            return !empty(self::$internalStaticOptList[static::class][$hash]);
+        }
+
         return !empty(self::$internalStaticOptList[static::class]);
     }
 
-    protected function getStaticOptions(): array
+    protected function getStaticOptions(?string $hash = null): array
     {
+        if (!is_null($hash)) {
+            return self::$internalStaticOptList[static::class][$hash] ?? [];
+        }
+
         return self::$internalStaticOptList[static::class] ?? [];
     }
 
-    protected function setStaticOptions(array $data)
+    protected function setStaticOptions(array $data, ?string $hash = null)
     {
+        if (!is_null($hash)) {
+            return self::$internalStaticOptList[static::class][$hash] = $data;
+        }
+
         return self::$internalStaticOptList[static::class] = $data;
     }
 
-    public function resetStaticOptions()
+    public function resetStaticOptions(?string $hash = null)
     {
+        if (!is_null($hash)) {
+            return self::$internalStaticOptList[static::class][$hash] = [];
+        }
+
         return self::$internalStaticOptList[static::class] = [];
     }
 

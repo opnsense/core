@@ -34,17 +34,22 @@ class AuthGroupField extends BaseListField
 {
     protected function actionPostLoadingEvent()
     {
-        if (!$this->hasStaticOptions()) {
-            $cnf = Config::getInstance()->object();
-            $data = [];
-            if (isset($cnf->system->group)) {
-                foreach ($cnf->system->group as $group) {
-                    $data[(string)$group->gid] = (string)$group->name;
-                }
-                natcasesort($data);
-            }
-            $this->setStaticOptions($data);
+        if ($this->hasStaticOptions()) {
+            $this->internalOptionList = $this->getStaticOptions();
+            return;
         }
-        $this->internalOptionList = $this->getStaticOptions();
+
+        $cnf = Config::getInstance()->object();
+        $data = [];
+
+        if (isset($cnf->system->group)) {
+            foreach ($cnf->system->group as $group) {
+                $data[(string)$group->gid] = (string)$group->name;
+            }
+
+            natcasesort($data);
+        }
+
+        $this->internalOptionList = $this->setStaticOptions($data);
     }
 }
