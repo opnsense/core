@@ -84,7 +84,7 @@ class PortFieldTest extends Field_Framework_TestCase
             $field->setValue($value);
             $this->assertEmpty($this->validate($field));
         }
-        foreach(PortField::getWellKnown() as $wk) {
+        foreach (PortField::getWellKnown() as $wk) {
             $this->assertTrue(Util::getservbyname($wk));
         }
     }
