@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $is_ppp = false;
-        foreach (config_read_array('ppps', 'ppp') as $ppp) {
+        foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
             if ($ppp['if'] == $_POST['if_add']) {
                 $is_ppp = true;
                 break;
@@ -117,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $newifname = 'opt' . $i;
             $descr = !empty($_POST['new_entry_descr']) ? $_POST['new_entry_descr'] : 'OPT' . $i;
-            $config['interfaces'][$newifname] = array();
+            $config['interfaces'][$newifname] = [];
             $config['interfaces'][$newifname]['descr'] = preg_replace('/[^a-z_0-9]/i', '', $descr);
             $config['interfaces'][$newifname]['if'] = $_POST['if_add'];
             switch ($interfaces[$_POST['if_add']]['type']) {
@@ -155,15 +155,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (isset($config['dhcpd'][$id])) {
                 unset($config['dhcpd'][$id]);
-                plugins_configure('dhcp', false, array('inet'));
+                plugins_configure('dhcp', false, ['inet']);
             }
 
             if (isset($config['dhcpdv6'][$id])) {
                 unset($config['dhcpdv6'][$id]);
-                plugins_configure('dhcp', false, array('inet6'));
+                plugins_configure('dhcp', false, ['inet6']);
             }
 
-            foreach (config_read_array('filter', 'rule') as $x => $rule) {
+            foreach (config_read_array('filter', 'rule', false) as $x => $rule) {
                 /* XXX this doesn't match floating rules with multiple values */
                 if (isset($rule['interface']) && $rule['interface'] == $id) {
                     unset($config['filter']['rule'][$x]);
