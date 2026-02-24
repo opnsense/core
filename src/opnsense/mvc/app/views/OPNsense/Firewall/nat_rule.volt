@@ -621,7 +621,6 @@
             margin: 0;
         }
 
-        #dialogRule-header #inspect_toggle_container,
         #dialogRule-header #tree_toggle_container,
         #dialogRule-header #tree_expand_container {
             flex: 1 1 0;
