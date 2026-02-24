@@ -75,7 +75,6 @@ foreach ($fw->iterateFilterRules() as $prio => $item) {
             }
         }
         $rule['action'] = $rule['action'] ?? 'pass';
-        $rule['ipprotocol'] = $rule['ipprotocol'] ?? 'inet';
         if (!empty($rule['from_not'])) {
             unset($rule['from_not']);
             $rule['source_not'] = true;

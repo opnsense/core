@@ -82,8 +82,7 @@ class DNatController extends FilterBaseController
             foreach ($ports as $idx => $port) {
                 array_unshift($results['rows'], [
                     'uuid' => 'lockout_' . $idx,
-                    'ipprotocol' => 'inet46',
-                    '%ipprotocol' => gettext('IPv4+IPv6'),
+                    'ipprotocol' => '', /* renders as asterisk */
                     'protocol' => 'tcp',
                     '%protocol' => 'TCP',
                     'disabled' => '0',
