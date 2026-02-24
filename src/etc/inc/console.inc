@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2025 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2026 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -385,28 +385,26 @@ EOD;
                 unset($config['dhcpd']['lan']);
             }
 
-            config_read_array('dnsmasq', 'dhcp_ranges');
-            foreach ($config['dnsmasq']['dhcp_ranges'] as $idx => $range) {
+            foreach (config_read_array('dnsmasq', 'dhcp_ranges', false) as $idx => $range) {
                 if ($range['interface'] == 'lan') {
                     unset($config['dnsmasq']['dhcp_ranges'][$idx]);
                 }
             }
-            $config['dnsmasq']['enable'] = '1';
-            config_read_array('dnsmasq', 'dhcp');
-            $config['dnsmasq']['dhcp']['enable_ra'] = '1';
-            $config['dnsmasq']['dhcp_ranges'][] = [
+            config_merge_array('dnsmasq', ['enable' => '1']);
+            config_merge_array('dnsmasq', 'dhcp', ['enable_ra' => '1']);
+            config_push_array('dnsmasq', 'dhcp_ranges', [
                 '@attributes' => ['uuid' => generate_uuid()],
                 'start_addr' => '192.168.1.100',
                 'end_addr' => '192.168.1.199',
                 'interface' => 'lan',
-            ];
-            $config['dnsmasq']['dhcp_ranges'][] = [
+            ]);
+            config_push_array('dnsmasq', 'dhcp_ranges', [
                 '@attributes' => ['uuid' => generate_uuid()],
                 'start_addr' => '::1000',
                 'end_addr' => '::2000',
                 'ra_mode' => 'slaac',
                 'interface' => 'lan',
-            ];
+            ]);
 
             config_read_array('nat', 'outbound');
             $config['nat']['outbound']['mode'] = 'automatic';

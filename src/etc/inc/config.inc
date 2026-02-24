@@ -293,6 +293,16 @@ function config_push_array()
     array_push(call_user_func_array('config_read_array', $keys), $new);
 }
 
+function config_merge_array()
+{
+    $keys = func_get_args();
+    $new = array_pop($keys);
+
+    /* auto-vivify for upcoming write */
+    $current = &call_user_func_array('config_read_array', $keys);
+    $current = array_merge($current, $new);
+}
+
 function make_config_revision_entry($desc = '')
 {
     if (!empty($_SESSION['Username'])) {

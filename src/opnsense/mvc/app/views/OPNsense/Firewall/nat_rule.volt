@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2025 Deciso B.V.
+ # Copyright (c) 2025-2026 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -27,6 +27,11 @@
  <script>
     $(document).ready(function() {
 
+        // Each NAT controller sets the entrypoint so they can all use this template
+        const entrypoint = '{{ entrypoint }}';
+        // XXX: Category keys differ in the individual models
+        const category_key = '{{ categoryKey }}';
+
         function showDialogAlert(type, title, message) {
             BootstrapDialog.show({
                 type: type,
@@ -41,7 +46,8 @@
             });
         }
 
-        let treeViewEnabled = localStorage.getItem("snat_tree") === "1";
+        const storageKey = entrypoint + "_tree";
+        let treeViewEnabled = localStorage.getItem(storageKey) === "1";
         $('#toggle_tree_button').toggleClass('active btn-primary', treeViewEnabled);
 
         function dynamicResponseHandler(resp) {
@@ -53,7 +59,7 @@
             let current = null;
 
             resp.rows.forEach(r => {
-                const label = (r["%categories"] || r.categories || "");
+                const label = r[`%${category_key}`] || r[category_key] || "";
 
                 if (!current || current._label !== label) {
                     current = {
@@ -63,7 +69,7 @@
                         children       : []
                     };
 
-                    current.categories      = label;
+                    current[category_key] = label;
                     current.category_colors = r.category_colors || [];
 
                     buckets.push(current);
@@ -75,22 +81,26 @@
             return Object.assign({}, resp, { rows: buckets });
         }
 
-        const grid = $("#{{ formGridSNatRule['table_id'] }}").UIBootgrid({
-            search : '/api/firewall/source_nat/search_rule/',
-            get    : '/api/firewall/source_nat/get_rule/',
-            set    : '/api/firewall/source_nat/set_rule/',
-            add    : '/api/firewall/source_nat/add_rule/',
-            del    : '/api/firewall/source_nat/del_rule/',
-            toggle : '/api/firewall/source_nat/toggle_rule/',
+        const grid = $("#{{ formGridRule['table_id'] }}").UIBootgrid({
+            search : '/api/firewall/' + entrypoint + '/search_rule/',
+            get    : '/api/firewall/' + entrypoint + '/get_rule/',
+            set    : '/api/firewall/' + entrypoint + '/set_rule/',
+            add    : '/api/firewall/' + entrypoint + '/add_rule/',
+            del    : '/api/firewall/' + entrypoint + '/del_rule/',
+            toggle : '/api/firewall/' + entrypoint + '/toggle_rule/',
             tabulatorOptions : {
                 dataTree              : true,
                 dataTreeChildField    : "children",
-                dataTreeElementColumn : "categories",
+                dataTreeElementColumn : category_key,
                 rowFormatter: function(row) {
                     const data = row.getData();
                     const $element = $(row.getElement());
 
-                    if ('enabled' in data && data.enabled == "0") {
+                    // XXX: d_nat model provides a disabled key
+                    if (
+                        ('enabled' in data && data.enabled == "0") ||
+                        ('disabled' in data && data.disabled == "1")
+                    ) {
                         $element.addClass('row-disabled');
                     }
 
@@ -107,7 +117,6 @@
                 responsive: true,
                 sorting: false,
                 initialSearchPhrase: getUrlHash('search'),
-                triggerEditFor: getUrlHash('edit'),
                 requestHandler: function(request){
                     if ( $('#category_filter').val().length > 0) {
                         request['category'] = $('#category_filter').val();
@@ -116,14 +125,21 @@
                 },
                 responseHandler: dynamicResponseHandler,
                 headerFormatters: {
+                    // XXX: This cannot be (easily) dynamically decided, so some keys are duplicate for simplicity
                     enabled: function (column) {
+                        return '<i class="fa-solid fa-fw fa-check-square" data-toggle="tooltip" title="{{ lang._('Enabled') }}"></i>';;
+                    },
+                    disabled: function (column) {
                         return '<i class="fa-solid fa-fw fa-check-square" data-toggle="tooltip" title="{{ lang._('Enabled') }}"></i>';;
                     },
                     interface: function (column) {
                         return '<i class="fa-solid fa-fw fa-network-wired" data-toggle="tooltip" title="{{ lang._('Network interface') }}"></i>';
                     },
                     categories: function (column) {
-                        return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Categories") }}"></i>';
+                        return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Category") }}"></i>';
+                    },
+                    category: function (column) {
+                        return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Category") }}"></i>';
                     },
                 },
                 formatters:{
@@ -132,6 +148,16 @@
                             return "";
                         }
                         let rowId = row.uuid;
+
+                        if (!rowId.includes('-')) {
+                            return `
+                                <a href="/system_advanced_firewall.php" target="_blank" rel="noopener noreferrer"
+                                class="btn btn-xs btn-default bootgrid-tooltip"
+                                title="{{ lang._('Lookup rule reference') }}">
+                                    <span class="fa fa-fw fa-link"></span>
+                                </a>
+                            `;
+                        }
 
                         return `
                             <button type="button" class="btn btn-xs btn-default command-move_before
@@ -172,7 +198,10 @@
                         if (row.isGroup || !rowId.includes('-')) {
                             return '';
                         }
-                        const isEnabled = row[column.id] === "1";
+                        const isEnabled =
+                            entrypoint === 'd_nat'  /* flag is inverted in model */
+                                ? row[column.id] === "0"
+                                : row[column.id] === "1";
                         return `
                             <span class="fa fa-fw ${isEnabled ? 'fa-check-square-o' : 'fa-square-o text-muted'} bootgrid-tooltip command-toggle"
                                 style="cursor: pointer;"
@@ -199,7 +228,7 @@
                     },
                     category: function (column, row) {
                         const isGroup = row.isGroup;
-                        const hasCategories = row.categories && Array.isArray(row.category_colors);
+                        const hasCategories = row[category_key] && Array.isArray(row.category_colors);
 
                         if (!hasCategories) {
 
@@ -213,7 +242,7 @@
                                 : '';
                         }
 
-                        const category = (row["%categories"] || row.categories).split(',');
+                        const category   = (row[`%${category_key}`] || row[category_key]).split(',');
                         const colors     = row.category_colors;
 
                         const icons = category.map((cat, idx) => {
@@ -298,7 +327,7 @@
             commands: {
                 move_before: {
                     method: function(event) {
-                        const selected = $("#{{ formGridSNatRule['table_id'] }}").bootgrid("getSelectedRows");
+                        const selected = $("#{{ formGridRule['table_id'] }}").bootgrid("getSelectedRows");
                         if (selected.length !== 1) {
                             showDialogAlert(
                                 BootstrapDialog.TYPE_WARNING,
@@ -321,11 +350,11 @@
                         }
 
                         ajaxCall(
-                            "/api/firewall/source_nat/move_rule_before/" + selectedUuid + "/" + targetUuid,
+                            "/api/firewall/" + entrypoint + "/move_rule_before/" + selectedUuid + "/" + targetUuid,
                             {},
                             function(data, status) {
                                 if (data.status === "ok") {
-                                    $("#{{ formGridSNatRule['table_id'] }}").bootgrid("reload");
+                                    $("#{{ formGridRule['table_id'] }}").bootgrid("reload");
                                     $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
                                 }
                             },
@@ -348,11 +377,11 @@
                         const uuid = $(this).data("row-id");
                         const log = String(+$(this).data("value") ^ 1);
                         ajaxCall(
-                            `/api/firewall/source_nat/toggle_rule_log/${uuid}/${log}`,
+                            `/api/firewall/${entrypoint}/toggle_rule_log/${uuid}/${log}`,
                             {},
                             function(data) {
                                 if (data.status === "ok") {
-                                    $("#{{ formGridSNatRule['table_id'] }}").bootgrid("reload");
+                                    $("#{{ formGridRule['table_id'] }}").bootgrid("reload");
                                     $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
                                 }
                             },
@@ -380,7 +409,7 @@
             const currentSelection = $("#category_filter").val();
 
             return $("#category_filter").fetch_options(
-                '/api/firewall/source_nat/list_categories',
+                '/api/firewall/' + entrypoint + '/list_categories',
                 {},
                 function (data) {
                     if (!data.rows) return [];
@@ -418,7 +447,7 @@
             );
         }
 
-        $("#category_filter_container").detach().insertBefore('#{{ formGridSNatRule["table_id"] }}-header .search');
+        $("#category_filter_container").detach().insertBefore('#{{ formGridRule["table_id"] }}-header .search');
         $("#category_filter").on('changed.bs.select', function(){
             if (!categoryInitialized || reconfigureActInProgress) return;
             grid.bootgrid('reload');
@@ -427,9 +456,9 @@
         $("#tree_toggle_container").detach().insertAfter("#category_filter_container");
         $('#toggle_tree_button').click(function() {
             treeViewEnabled = !treeViewEnabled;
-            localStorage.setItem("snat_tree", treeViewEnabled ? "1" : "0");
+            localStorage.setItem(storageKey, treeViewEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', treeViewEnabled);
-            $("#{{ formGridSNatRule['table_id'] }}").toggleClass("tree-enabled", treeViewEnabled);
+            $("#{{ formGridRule['table_id'] }}").toggleClass("tree-enabled", treeViewEnabled);
             $("#tree_expand_container").toggle(treeViewEnabled);
             grid.bootgrid("reload");
         });
@@ -437,7 +466,7 @@
         $("#tree_expand_container").detach().insertAfter("#tree_toggle_container");
         $("#tree_expand_container").toggle(treeViewEnabled);
         $('#expand_tree_button').on('click', function () {
-            const $table = $('#{{ formGridSNatRule["table_id"] }}');
+            const $table = $('#{{ formGridRule["table_id"] }}');
 
             if ($table.find('.tabulator-data-tree-control-expand').length) {
                 $table.find('.tabulator-data-tree-control-expand').trigger('click');
@@ -446,45 +475,52 @@
             }
         });
 
-        ajaxGet('/api/firewall/source_nat/list_network_select_options', [], function(data, status){
-            if (data.single) {
-                $(".net_selector").each(function(){
-                    $(this).replaceInputWithSelector(data, $(this).hasClass('net_selector_multi'));
-                    /* enforce single selection when "single host or network" or "any" are selected */
-                    if ($(this).hasClass('net_selector_multi')) {
-                        $("select[for='" + $(this).attr('id') + "']").on('shown.bs.select', function(){
-                            $(this).data('previousValue', $(this).val());
-                        }).change(function(){
-                            const prev = Array.isArray($(this).data('previousValue')) ? $(this).data('previousValue') : [];
-                            const is_single = $(this).val().includes('') || $(this).val().includes('any');
-                            const was_single = prev.includes('') || prev.includes('any');
-                            let refresh = false;
-                            if (was_single && is_single && $(this).val().length > 1) {
-                                $(this).val($(this).val().filter(value => !prev.includes(value)));
-                                refresh = true;
-                            } else if (is_single && $(this).val().length > 1) {
-                                if ($(this).val().includes('any') && !prev.includes('any')) {
-                                    $(this).val('any');
-                                } else{
-                                    $(this).val('');
-                                }
-                                refresh = true;
+        ajaxGet('/api/firewall/' + entrypoint + '/list_network_select_options', [], function(data, status){
+            if (!data || !data.single) return;
+            $(".net_selector").each(function(){
+                $(this).replaceInputWithSelector(data, $(this).hasClass('net_selector_multi'));
+                /* enforce single selection when "single host or network" or "any" are selected */
+                if ($(this).hasClass('net_selector_multi')) {
+                    $("select[for='" + $(this).attr('id') + "']").on('shown.bs.select', function(){
+                        $(this).data('previousValue', $(this).val());
+                    }).change(function(){
+                        const prev = Array.isArray($(this).data('previousValue')) ? $(this).data('previousValue') : [];
+                        const is_single = $(this).val().includes('') || $(this).val().includes('any');
+                        const was_single = prev.includes('') || prev.includes('any');
+                        let refresh = false;
+                        if (was_single && is_single && $(this).val().length > 1) {
+                            $(this).val($(this).val().filter(value => !prev.includes(value)));
+                            refresh = true;
+                        } else if (is_single && $(this).val().length > 1) {
+                            if ($(this).val().includes('any') && !prev.includes('any')) {
+                                $(this).val('any');
+                            } else{
+                                $(this).val('');
                             }
-                            if (refresh) {
-                                $(this).selectpicker('refresh');
-                                $(this).trigger('change');
-                            }
-                            $(this).data('previousValue', $(this).val());
-                        });
-                    }
-                });
-            }
+                            refresh = true;
+                        }
+                        if (refresh) {
+                            $(this).selectpicker('refresh');
+                            $(this).trigger('change');
+                        }
+                        $(this).data('previousValue', $(this).val());
+                    });
+                }
+            });
         });
 
-        ajaxGet('/api/firewall/source_nat/list_port_select_options', [], function (data) {
+        ajaxGet('/api/firewall/' + entrypoint + '/list_port_select_options', [], function (data) {
             if (!data || !data.single) return;
+            // local-port in DNAT does not support port ranges, so we replace the label for clarity
+            const singlePortOnly = $.extend(true, {}, data);
+            singlePortOnly.single.label = "{{ lang._('Single port') }}";
+
             $(".port_selector").each(function () {
-                $(this).replaceInputWithSelector(data, false);
+                const opts = $(this).is('#row_rule\\.local-port .port_selector')
+                    ? singlePortOnly
+                    : data;
+
+                $(this).replaceInputWithSelector(opts, false);
             });
         });
 
@@ -549,7 +585,7 @@
         box-shadow: none !important;
         background: transparent !important;
     }
-    .bucket-row .tabulator-cell[tabulator-field="categories"] {
+    .bucket-row .tabulator-cell {
         overflow: visible !important;
         white-space: nowrap !important;
         text-overflow: clip !important;
@@ -589,9 +625,8 @@
             margin: 0;
         }
 
-        #dialogFilterRule-header #inspect_toggle_container,
-        #dialogFilterRule-header #tree_toggle_container,
-        #dialogFilterRule-header #tree_expand_container {
+        #dialogRule-header #tree_toggle_container,
+        #dialogRule-header #tree_expand_container {
             flex: 1 1 0;
             margin: 0;
         }
@@ -621,8 +656,8 @@
         </div>
     </div>
 
-    {{ partial('layout_partials/base_bootgrid_table', formGridSNatRule + {'command_width':'150'}) }}
+    {{ partial('layout_partials/base_bootgrid_table', formGridRule + {'command_width':'150'}) }}
 </div>
 
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/source_nat/apply'}) }}
-{{ partial("layout_partials/base_dialog",{'fields':formDialogSNatRule,'id':formGridSNatRule['edit_dialog_id'],'label':lang._('Edit Source Nat')}) }}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/' ~ entrypoint ~ '/apply'}) }}
+{{ partial("layout_partials/base_dialog",{'fields':formDialogRule,'id':formGridRule['edit_dialog_id'],'label':lang._('Edit Rule')}) }}

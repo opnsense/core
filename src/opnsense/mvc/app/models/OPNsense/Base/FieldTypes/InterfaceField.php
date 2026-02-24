@@ -105,86 +105,86 @@ class InterfaceField extends BaseListField
      */
     protected function actionPostLoadingEvent()
     {
-        $data = $this->getStaticOptions();
-
-        if (!isset($data[$this->internalCacheKey])) {
-            $data[$this->internalCacheKey] = [];
-
-            $allInterfaces = [];
-            $allInterfacesDevices = []; // mapping device -> interface handle (lan/wan/optX)
-            $configObj = Config::getInstance()->object();
-            // Iterate over all interfaces configuration and collect data
-            if (isset($configObj->interfaces) && $configObj->interfaces->count() > 0) {
-                foreach ($configObj->interfaces->children() as $key => $value) {
-                    if (!$this->internalAllowDynamic && !empty($value->internal_dynamic)) {
-                        continue;
-                    } elseif ($this->internalAllowDynamic == 2 && !empty($value->internal_dynamic)) {
-                        if (empty($value->ipaddr) && empty($value->ipaddrv6)) {
-                            continue;
-                        }
-                    }
-                    $allInterfaces[$key] = $value;
-                    if (!empty($value->if)) {
-                        $allInterfacesDevices[(string)$value->if] = $key;
-                    }
-                }
-            }
-
-            if ($this->internalAddParentDevices) {
-                // collect parents for lagg/vlan interfaces
-                $physicalInterfaces = $this->getConfigLaggInterfaces();
-                $physicalInterfaces = array_merge($physicalInterfaces, $this->getConfigVLANInterfaces());
-
-                // add unique devices
-                foreach ($physicalInterfaces as $interface => $devices) {
-                    // construct interface node
-                    $interfaceNode = new \stdClass();
-                    $interfaceNode->enable = 0;
-                    $interfaceNode->descr = "[{$interface}]";
-                    $interfaceNode->if = $interface;
-                    foreach ($devices as $device) {
-                        if (!empty($allInterfacesDevices[$device])) {
-                            $configuredInterface = $allInterfaces[$allInterfacesDevices[$device]];
-                            if (!empty($configuredInterface->enable)) {
-                                // set device enabled if any member is
-                                $interfaceNode->enable = (string)$configuredInterface->enable;
-                            }
-                        }
-                    }
-                    // only add unconfigured devices
-                    if (empty($allInterfacesDevices[$interface])) {
-                        $allInterfaces[$interface] = $interfaceNode;
-                    }
-                }
-            }
-
-            // collect this items options
-            foreach ($allInterfaces as $key => $value) {
-                // use filters to determine relevance
-                $isMatched = true;
-                foreach ($this->internalFilters as $filterKey => $filterData) {
-                    if (isset($value->$filterKey)) {
-                        $fieldData = $value->$filterKey;
-                    } else {
-                        // not found, might be a boolean.
-                        $fieldData = "0";
-                    }
-
-                    if (!preg_match($filterData, $fieldData)) {
-                        $isMatched = false;
-                    }
-                }
-                if ($isMatched) {
-                    $data[$this->internalCacheKey][$key] = !empty($value->descr) ?
-                        (string)$value->descr : strtoupper($key);
-                }
-            }
-
-            natcasesort($data[$this->internalCacheKey]);
-            $this->setStaticOptions($data);
+        if ($this->hasStaticOptions($this->internalCacheKey)) {
+            $this->internalOptionList = $this->getStaticOptions($this->internalCacheKey);
+            return;
         }
 
-        $this->internalOptionList = $this->getStaticOptions()[$this->internalCacheKey];
+        $configObj = Config::getInstance()->object();
+
+        $allInterfacesDevices = []; // mapping device -> interface handle (lan/wan/optX)
+        $allInterfaces = [];
+        $data = [];
+
+        // Iterate over all interfaces configuration and collect data
+        if (isset($configObj->interfaces) && $configObj->interfaces->count() > 0) {
+            foreach ($configObj->interfaces->children() as $key => $value) {
+                if (!$this->internalAllowDynamic && !empty($value->internal_dynamic)) {
+                    continue;
+                } elseif ($this->internalAllowDynamic == 2 && !empty($value->internal_dynamic)) {
+                    if (empty($value->ipaddr) && empty($value->ipaddrv6)) {
+                        continue;
+                    }
+                }
+                $allInterfaces[$key] = $value;
+                if (!empty($value->if)) {
+                    $allInterfacesDevices[(string)$value->if] = $key;
+                }
+            }
+        }
+
+        if ($this->internalAddParentDevices) {
+            // collect parents for lagg/vlan interfaces
+            $physicalInterfaces = $this->getConfigLaggInterfaces();
+            $physicalInterfaces = array_merge($physicalInterfaces, $this->getConfigVLANInterfaces());
+
+            // add unique devices
+            foreach ($physicalInterfaces as $interface => $devices) {
+                // construct interface node
+                $interfaceNode = new \stdClass();
+                $interfaceNode->enable = 0;
+                $interfaceNode->descr = "[{$interface}]";
+                $interfaceNode->if = $interface;
+                foreach ($devices as $device) {
+                    if (!empty($allInterfacesDevices[$device])) {
+                        $configuredInterface = $allInterfaces[$allInterfacesDevices[$device]];
+                        if (!empty($configuredInterface->enable)) {
+                            // set device enabled if any member is
+                            $interfaceNode->enable = (string)$configuredInterface->enable;
+                        }
+                    }
+                }
+                // only add unconfigured devices
+                if (empty($allInterfacesDevices[$interface])) {
+                    $allInterfaces[$interface] = $interfaceNode;
+                }
+            }
+        }
+
+        // collect this items options
+        foreach ($allInterfaces as $key => $value) {
+            // use filters to determine relevance
+            $isMatched = true;
+            foreach ($this->internalFilters as $filterKey => $filterData) {
+                if (isset($value->$filterKey)) {
+                    $fieldData = $value->$filterKey;
+                } else {
+                    // not found, might be a boolean.
+                    $fieldData = "0";
+                }
+
+                if (!preg_match($filterData, $fieldData)) {
+                    $isMatched = false;
+                }
+            }
+            if ($isMatched) {
+                $data[$key] = !empty($value->descr) ? (string)$value->descr : strtoupper($key);
+            }
+        }
+
+        natcasesort($data);
+
+        $this->internalOptionList = $this->setStaticOptions($data, $this->internalCacheKey);
     }
 
     private function updateInternalCacheKey()
