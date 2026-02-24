@@ -31,8 +31,10 @@ class SourceNatController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
-        $this->view->pick('OPNsense/Firewall/snat_rule');
-        $this->view->formDialogSNatRule = $this->getForm('dialogSNatRule');
-        $this->view->formGridSNatRule = $this->getFormGrid('dialogSNatRule');
+        $this->view->entrypoint = 'source_nat';
+        $this->view->categoryKey = 'categories';
+        $this->view->pick('OPNsense/Firewall/nat_rule');
+        $this->view->formDialogRule = $this->getForm('dialogSNatRule');
+        $this->view->formGridRule = $this->getFormGrid('dialogSNatRule');
     }
 }
