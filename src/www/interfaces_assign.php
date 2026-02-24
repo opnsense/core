@@ -35,15 +35,11 @@ require_once("interfaces.inc");
 
 function link_interface_to_group($int)
 {
-    global $config;
-
     $result = [];
 
-    if (isset($config['ifgroups']['ifgroupentry'])) {
-        foreach ($config['ifgroups']['ifgroupentry'] as $group) {
-            if (in_array($int, preg_split('/[ |,]+/', $group['members']))) {
-                $result[$group['ifname']] = $int;
-            }
+    foreach (config_read_array('ifgroups', 'ifgroupentry', false) as $group) {
+        if (in_array($int, preg_split('/[ |,]+/', $group['members']))) {
+            $result[$group['ifname']] = $int;
         }
     }
 
@@ -52,8 +48,6 @@ function link_interface_to_group($int)
 
 function list_devices($devices)
 {
-    global $config;
-
     $interfaces = [];
 
     /* add physical network interfaces */
@@ -102,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $is_ppp = false;
-        foreach (config_read_array('ppps', 'ppp') as $ppp) {
+        foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
             if ($ppp['if'] == $_POST['if_add']) {
                 $is_ppp = true;
                 break;
@@ -123,7 +117,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $newifname = 'opt' . $i;
             $descr = !empty($_POST['new_entry_descr']) ? $_POST['new_entry_descr'] : 'OPT' . $i;
-            $config['interfaces'][$newifname] = array();
+            $config['interfaces'][$newifname] = [];
             $config['interfaces'][$newifname]['descr'] = preg_replace('/[^a-z_0-9]/i', '', $descr);
             $config['interfaces'][$newifname]['if'] = $_POST['if_add'];
             switch ($interfaces[$_POST['if_add']]['type']) {
@@ -161,28 +155,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (isset($config['dhcpd'][$id])) {
                 unset($config['dhcpd'][$id]);
-                plugins_configure('dhcp', false, array('inet'));
+                plugins_configure('dhcp', false, ['inet']);
             }
 
             if (isset($config['dhcpdv6'][$id])) {
                 unset($config['dhcpdv6'][$id]);
-                plugins_configure('dhcp', false, array('inet6'));
+                plugins_configure('dhcp', false, ['inet6']);
             }
 
-            if (isset($config['filter']['rule'])) {
-                foreach ($config['filter']['rule'] as $x => $rule) {
-                    /* XXX this doesn't match floating rules with multiple values */
-                    if (isset($rule['interface']) && $rule['interface'] == $id) {
-                        unset($config['filter']['rule'][$x]);
-                    }
+            foreach (config_read_array('filter', 'rule', false) as $x => $rule) {
+                /* XXX this doesn't match floating rules with multiple values */
+                if (isset($rule['interface']) && $rule['interface'] == $id) {
+                    unset($config['filter']['rule'][$x]);
                 }
             }
 
-            if (isset($config['nat']['rule'])) {
-                foreach ($config['nat']['rule'] as $x => $rule) {
-                    if ($rule['interface'] == $id) {
-                        unset($config['nat']['rule'][$x]['interface']);
-                    }
+            foreach (config_read_array('nat', 'rule', false) as $x => $rule) {
+                if ($rule['interface'] == $id) {
+                    unset($config['nat']['rule'][$x]['interface']);
                 }
             }
 
@@ -228,82 +218,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        if (isset($config['vlans']['vlan'])) {
-            foreach ($config['vlans']['vlan'] as $vlan) {
-                if (!does_interface_exist($vlan['if'])) {
-                    $input_errors[] = sprintf(gettext("VLAN parent interface %s does not exist."), $vlan['if']);
+        if (count($input_errors) == 0) {
+            $changes = 0;
+
+            foreach ($_POST as $ifname => $ifdev) {
+                if (!is_array($ifdev) && ($ifname == 'lan' || $ifname == 'wan' || substr($ifname, 0, 3) == 'opt')) {
+                    $reloadif = false;
+                    if (!empty($config['interfaces'][$ifname]['if']) && $config['interfaces'][$ifname]['if'] != $ifdev) {
+                        interface_reset($ifname);
+                        $reloadif = true;
+                    }
+                    $config['interfaces'][$ifname]['if'] = $ifdev;
+
+                    switch ($interfaces[$ifdev]['type']) {
+                        case 'ppp':
+                            $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifdev]['ipaddr'];
+                            break;
+                        case 'wlan':
+                            if (strpos($config['interfaces'][$ifname]['if'], '_wlan') === false) {
+                                /* change from implied clone to explicit */
+                                $config['interfaces'][$ifname]['if'] .= '_wlan0';
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+
+                    foreach ($a_devices as $device) {
+                        if ($device['configurable']) {
+                            continue;
+                        }
+                        if (preg_match('/' . $device['pattern'] . '/', $ifdev)) {
+                            unset($config['interfaces'][$ifname]['ipaddr']);
+                            unset($config['interfaces'][$ifname]['subnet']);
+                            unset($config['interfaces'][$ifname]['ipaddrv6']);
+                            unset($config['interfaces'][$ifname]['subnetv6']);
+                        }
+                    }
+
+                    /* set or clear wireless configuration */
+                    if ($interfaces[$ifdev]['type'] == 'wlan') {
+                        config_read_array('interfaces', $ifname, 'wireless');
+                    } elseif (isset($config['interfaces'][$ifname]['wireless'])) {
+                        unset($config['interfaces'][$ifname]['wireless']);
+                    }
+
+                    /* make sure there is a descr for all interfaces */
+                    if (!isset($config['interfaces'][$ifname]['descr'])) {
+                        $config['interfaces'][$ifname]['descr'] = strtoupper($ifname);
+                    }
+
+                    if ($reloadif) {
+                        if (isset($config['interfaces'][$ifname]['wireless'])) {
+                          interface_sync_wireless_clones($config['interfaces'][$ifname], false);
+                        }
+                        /* Reload all for the interface. */
+                        interface_configure(false, $ifname, true);
+                        // count changes
+                        $changes++;
+                    }
                 }
             }
-        }
 
-        if (count($input_errors) == 0) {
-          $changes = 0;
+            /* XXX huh? */
+            write_config();
+            if ($changes > 0) {
+                filter_configure();
+            }
 
-          foreach ($_POST as $ifname => $ifdev) {
-              if (!is_array($ifdev) && ($ifname == 'lan' || $ifname == 'wan' || substr($ifname, 0, 3) == 'opt')) {
-                  $reloadif = false;
-                  if (!empty($config['interfaces'][$ifname]['if']) && $config['interfaces'][$ifname]['if'] != $ifdev) {
-                      interface_reset($ifname);
-                      $reloadif = true;
-                  }
-                  $config['interfaces'][$ifname]['if'] = $ifdev;
-
-                  switch ($interfaces[$ifdev]['type']) {
-                      case 'ppp':
-                          $config['interfaces'][$ifname]['ipaddr'] = $interfaces[$ifdev]['ipaddr'];
-                          break;
-                      case 'wlan':
-                          if (strpos($config['interfaces'][$ifname]['if'], '_wlan') === false) {
-                              /* change from implied clone to explicit */
-                              $config['interfaces'][$ifname]['if'] .= '_wlan0';
-                          }
-                          break;
-                      default:
-                          break;
-                  }
-
-                  foreach ($a_devices as $device) {
-                      if ($device['configurable']) {
-                          continue;
-                      }
-                      if (preg_match('/' . $device['pattern'] . '/', $ifdev)) {
-                          unset($config['interfaces'][$ifname]['ipaddr']);
-                          unset($config['interfaces'][$ifname]['subnet']);
-                          unset($config['interfaces'][$ifname]['ipaddrv6']);
-                          unset($config['interfaces'][$ifname]['subnetv6']);
-                      }
-                  }
-
-                  /* set or clear wireless configuration */
-                  if ($interfaces[$ifdev]['type'] == 'wlan') {
-                      config_read_array('interfaces', $ifname, 'wireless');
-                  } elseif (isset($config['interfaces'][$ifname]['wireless'])) {
-                      unset($config['interfaces'][$ifname]['wireless']);
-                  }
-
-                  /* make sure there is a descr for all interfaces */
-                  if (!isset($config['interfaces'][$ifname]['descr'])) {
-                      $config['interfaces'][$ifname]['descr'] = strtoupper($ifname);
-                  }
-
-                  if ($reloadif) {
-                      if (isset($config['interfaces'][$ifname]['wireless'])) {
-                          interface_sync_wireless_clones($config['interfaces'][$ifname], false);
-                      }
-                      /* Reload all for the interface. */
-                      interface_configure(false, $ifname, true);
-                      // count changes
-                      $changes++;
-                  }
-              }
-          }
-          /* XXX huh? */
-          write_config();
-          if ($changes > 0) {
-              filter_configure();
-          }
-          header(url_safe('Location: /interfaces_assign.php'));
-          exit;
+            header(url_safe('Location: /interfaces_assign.php'));
+            exit;
         }
     }
 }
@@ -383,6 +367,12 @@ include("head.inc");
         }
     });
 
+    $("#new_entry_descr").keypress(function (e) {
+        if (e.which == 13) {
+            $('#add_x')[0].click();
+            return false;
+        }
+    });
   });
   </script>
 <?php include("fbegin.inc"); ?>
@@ -485,7 +475,7 @@ include("head.inc");
                       <tr>
                         <td></td>
                         <td>
-                          <button name="add_x" type="submit" class="btn btn-primary"><?= gettext('Add') ?></button>
+                          <button id="add_x" name="add_x" type="submit" class="btn btn-primary"><?= gettext('Add') ?></button>
                         </td>
                       </tr>
                   </tfoot>
