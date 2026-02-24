@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2023 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2023-2026 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -31,9 +31,13 @@ import argparse
 import sys
 import os
 import subprocess
+import syslog
+import time
+import pathlib
 
 
 def main(params):
+    syslog.openlog('openvpn', facility=syslog.LOG_AUTH)
     if params.common_name:
         os.environ['common_name'] = params.common_name
     if params.auth_control_file:
@@ -68,9 +72,19 @@ def main(params):
         sys.exit(subprocess.run("%s/client_disconnect.sh" % cmd_path).returncode)
     elif params.script_type == 'learn-address':
         if os.fork() == 0:
-            sys.exit(subprocess.run(
-                ['/usr/local/opnsense/scripts/filter/update_tables.py', '--types', 'authgroup']
-            ).returncode)
+            # Highly simplified debouncer.
+            # Gathers events for 2 seconds, if more are triggered in the same slot, execute the last one.
+            # This moves events until we have at least 2 seconds of "silence" to process them
+            debounce_ref = pathlib.Path('/tmp/tmp_ovpn_update_tables.tmp')
+            debounce_ref.touch()
+            dbounce_start = debounce_ref.stat().st_mtime
+            time.sleep(2)
+            if debounce_ref.stat().st_mtime == dbounce_start:
+                sys.exit(subprocess.run(
+                    ['/usr/local/opnsense/scripts/filter/update_tables.py', '--types', 'authgroup']
+                ).returncode)
+            else:
+                syslog.syslog(syslog.LOG_NOTICE, "learn-address ignored, newer event triggered making this obsolete")
 
 
 if __name__ == '__main__':
@@ -84,7 +98,7 @@ if __name__ == '__main__':
         '--script_type',
         help='script_type (event), defaults to "script_type" in environment',
         default=os.environ.get('script_type', None),
-        choices=['user-pass-verify', 'tls-verify', 'client-connect', 'client-disconnect']
+        choices=['user-pass-verify', 'tls-verify', 'client-connect', 'client-disconnect', 'learn-address']
     )
     parser.add_argument(
         '--auth_control_file',
