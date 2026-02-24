@@ -474,7 +474,7 @@ function console_configure_dhcpd($version = 4)
 {
     global $config, $restart_dhcpd, $fp, $interface, $intip, $intbits, $intip6, $intbits6;
 
-    $label_IPvX = ($version === 6) ? "IPv6"    : "IPv4";
+    $label_IPvX = ($version === 6) ? 'IPv6' : 'IPv4';
     $restart_dhcpd = true;
 
     foreach (config_read_array('dnsmasq', 'dhcp_ranges', false) as $idx => $range) {
@@ -491,6 +491,7 @@ function console_configure_dhcpd($version = 4)
     if (prompt_for_enable_dhcp_server($version)) {
         $subnet_start = ($version === 6) ? gen_subnetv6($intip6, $intbits6) : gen_subnet($intip, $intbits);
         $subnet_end = ($version === 6) ? gen_subnetv6_max($intip6, $intbits6) : gen_subnet_max($intip, $intbits);
+
         do {
             do {
                 echo sprintf('Enter the start address of the %s client address range:', $label_IPvX) . " ";
@@ -524,21 +525,22 @@ function console_configure_dhcpd($version = 4)
                 }
             } while (!$is_ipaddr || !$is_inrange);
         } while ($not_inorder);
+
         $new_range = [
             '@attributes' => ['uuid' => generate_uuid()],
             'interface' => $interface,
             'start_addr' => $dhcpstartip,
             'end_addr' => $dhcpendip,
         ];
+
+        echo "\n";
+
         if ($version === 6) {
+            config_merge_array('dnsmasq', 'dhcp', ['enable_ra' => '1']);
             $new_range['ra_mode'] = 'slaac';
         }
-        config_push_array('dnsmasq', 'dhcp_ranges', $new_range);
-        echo "\n";
-    }
 
-    if ($version === 6) {
-        config_merge_array('dnsmasq', 'dhcp', ['enable_ra' => '1']);
+        config_push_array('dnsmasq', 'dhcp_ranges', $new_range);
     }
 }
 
