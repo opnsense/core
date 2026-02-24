@@ -778,7 +778,7 @@
                                 floating: 'label-primary',
                                 group: 'label-warning',
                                 interface: 'label-info',
-                                any: ''
+                                any: 'label-primary',
                             };
                             const badgeClass = bgClassMap[item.type] || 'label-info';
 
@@ -1005,7 +1005,6 @@
         height: 18px;
         padding: 0 6px;
         border-radius: 50%;
-        font-size: 11px;
     }
 
     /* bucket row style */

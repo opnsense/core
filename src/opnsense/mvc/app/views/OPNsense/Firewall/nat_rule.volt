@@ -575,7 +575,6 @@
         height: 18px;
         padding: 0 6px;
         border-radius: 50%;
-        font-size: 11px;
     }
     .bucket-row {
         pointer-events: none;
