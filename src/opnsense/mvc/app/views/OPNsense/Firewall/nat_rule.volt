@@ -127,8 +127,12 @@
                     interface: function (column) {
                         return '<i class="fa-solid fa-fw fa-network-wired" data-toggle="tooltip" title="{{ lang._('Network interface') }}"></i>';
                     },
-                    [category_key]: function (column) {
-                        return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Categories") }}"></i>';
+                    // XXX: This cannot be (easily) dynamically decided, so both category keys exist here
+                    categories: function (column) {
+                        return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Category") }}"></i>';
+                    },
+                    category: function (column) {
+                        return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Category") }}"></i>';
                     },
                 },
                 formatters:{
