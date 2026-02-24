@@ -142,5 +142,4 @@ class TemplateController extends ApiMutableModelControllerBase
 
         return ["name" => (string)$template->name];
     }
-
 }

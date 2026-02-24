@@ -49,5 +49,4 @@ class ServiceController extends ApiMutableServiceControllerBase
     {
         return true;
     }
-
 }
