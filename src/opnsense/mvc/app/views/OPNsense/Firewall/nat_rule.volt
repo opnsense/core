@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2026 Deciso B.V.
+ # Copyright (c) 2025-2026 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -570,7 +570,7 @@
         box-shadow: none !important;
         background: transparent !important;
     }
-    .bucket-row .tabulator-cell[tabulator-field="{{ categoryKey }}"] {
+    .bucket-row .tabulator-cell {
         overflow: visible !important;
         white-space: nowrap !important;
         text-overflow: clip !important;
