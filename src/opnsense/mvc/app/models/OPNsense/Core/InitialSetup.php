@@ -28,12 +28,12 @@
 
 namespace OPNsense\Core;
 
+use OPNsense\Auth\User;
 use OPNsense\Base\BaseModel;
 use OPNsense\Base\Messages\Message;
 use OPNsense\Core\Config;
-use OPNsense\Auth\User;
-use OPNsense\Firewall\Util;
 use OPNsense\Dnsmasq\Dnsmasq;
+use OPNsense\Firewall\Util;
 use OPNsense\Routing\Gateways;
 
 /**
@@ -378,10 +378,11 @@ class InitialSetup extends BaseModel
         $target->interfaces->lan->enable = $this->interfaces->lan->disable->isEmpty() ? '1' : '0';
         $target->interfaces->lan->blockpriv = '0';
         $target->interfaces->lan->blockbogons = '0';
+
         $dnsmasq = new Dnsmasq();
         foreach ($dnsmasq->dhcp_ranges->iterateItems() as $uuid => $node) {
-            if ($node->interface == 'lan') {
-                /* always remove lan dhcp ranges */
+            /* always remove LAN DHCPv4 ranges */
+            if ($node->interface->isEqual('lan') && Util::isIpv4Address($node->start_addr->getValue())) {
                 $dnsmasq->dhcp_ranges->del($uuid);
             }
         }
