@@ -125,13 +125,16 @@
                 },
                 responseHandler: dynamicResponseHandler,
                 headerFormatters: {
+                    // XXX: This cannot be (easily) dynamically decided, so some keys are duplicate for simplicity
                     enabled: function (column) {
+                        return '<i class="fa-solid fa-fw fa-check-square" data-toggle="tooltip" title="{{ lang._('Enabled') }}"></i>';;
+                    },
+                    disabled: function (column) {
                         return '<i class="fa-solid fa-fw fa-check-square" data-toggle="tooltip" title="{{ lang._('Enabled') }}"></i>';;
                     },
                     interface: function (column) {
                         return '<i class="fa-solid fa-fw fa-network-wired" data-toggle="tooltip" title="{{ lang._('Network interface') }}"></i>';
                     },
-                    // XXX: This cannot be (easily) dynamically decided, so both category keys exist here
                     categories: function (column) {
                         return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Category") }}"></i>';
                     },
