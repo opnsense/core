@@ -32,7 +32,7 @@ class OneToOneController extends \OPNsense\Base\IndexController
     public function indexAction()
     {
         $this->view->entrypoint = 'one_to_one';
-        $this->view->categoryName = 'categories';
+        $this->view->categoryKey = 'categories';
         $this->view->pick('OPNsense/Firewall/nat_rule');
         $this->view->formDialogRule = $this->getForm('dialogOneToOneRule');
         $this->view->formGridRule = $this->getFormGrid('dialogOneToOneRule');
