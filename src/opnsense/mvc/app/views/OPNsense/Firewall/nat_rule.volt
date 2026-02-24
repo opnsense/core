@@ -96,7 +96,11 @@
                     const data = row.getData();
                     const $element = $(row.getElement());
 
-                    if ('enabled' in data && data.enabled == "0") {
+                    // XXX: d_nat model provides a disabled key
+                    if (
+                        ('enabled' in data && data.enabled == "0") ||
+                        ('disabled' in data && data.disabled == "1")
+                    ) {
                         $element.addClass('row-disabled');
                     }
 
