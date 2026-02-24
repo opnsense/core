@@ -62,7 +62,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
                 $uuid = (string)$category->getAttributes()['uuid'];
                 $color = trim((string)$category->color->getValue(true));
-                $this->catcolors[$uuid] = !empty($color) ? "#{$color}" : '#000';
+                $this->catcolors[$uuid] = !empty($color) ? "#{$color}" : '';
             }
         }
         /* extract catcolors by index */
