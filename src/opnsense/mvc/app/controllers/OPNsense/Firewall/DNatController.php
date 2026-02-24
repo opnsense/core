@@ -31,8 +31,10 @@ class DNatController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
-        $this->view->pick('OPNsense/Firewall/dnat_rule');
-        $this->view->formDialogDNatRule = $this->getForm("dialogDNatRule");
-        $this->view->formGridDNatRule = $this->getFormGrid('dialogDNatRule');
+        $this->view->entrypoint = 'd_nat';
+        $this->view->categoryKey = 'category';
+        $this->view->pick('OPNsense/Firewall/nat_rule');
+        $this->view->formDialogRule = $this->getForm('dialogDNatRule');
+        $this->view->formGridRule = $this->getFormGrid('dialogDNatRule');
     }
 }
