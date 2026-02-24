@@ -49,15 +49,25 @@ class Gateways extends BaseModel
     public function performValidation($validateFullModel = false)
     {
         $messages = parent::performValidation($validateFullModel);
+        $monitors = [];
+
+        foreach ($this->gateway_item->iterateItems() as $gateway) {
+            if (!$gateway->monitor->isEmpty()) {
+                $monitors[$gateway->getAttributes()['uuid']] =
+                    ($gateway->monitor_noroute->isEmpty() ? 'unique:' : '') . "{$gateway->monitor}";
+            }
+        }
 
         foreach ($this->gateway_item->iterateItems() as $gateway) {
             if (!$validateFullModel && !$gateway->isFieldChanged()) {
                 continue;
             }
+
             $this->gateway_item->calculateCurrent($gateway);
             $ref = $gateway->__reference;
             $this->validateNameChange($gateway, $messages, $ref);
             $this->validateDynamicMatch($gateway, $messages, $ref);
+
             foreach (['gateway', 'monitor'] as $key) {
                 if (empty((string)$gateway->$key) || (string)$gateway->$key == 'dynamic') {
                     continue;
@@ -65,16 +75,31 @@ class Gateways extends BaseModel
                     $messages->appendMessage(new Message(gettext('Invalid IPv4 address'), $ref . '.' . $key));
                 } elseif ((string)$gateway->ipprotocol === 'inet6' && !Util::isIpv6Address((string)$gateway->$key)) {
                     $messages->appendMessage(new Message(gettext('Invalid IPv6 address'), $ref . '.' . $key));
+                } elseif ($key == 'monitor') {
+                    $others = $monitors;
+                    unset($others[$gateway->getAttributes()['uuid']]);
+                    if (
+                        in_array("unique:{$gateway->$key}", $others) || ($gateway->monitor_noroute->isEmpty() &&
+                        in_array("{$gateway->$key}", $others))
+                    ) {
+                        $messages->appendMessage(new Message(
+                            gettext('This monitor IP address already exists.'),
+                            $ref . '.' . $key
+                        ));
+                    }
                 }
             }
+
             if (intval((string)$gateway->current_latencylow) > intval((string)$gateway->current_latencyhigh)) {
                 $msg = gettext("The high latency threshold needs to be higher than the low latency threshold.");
                 $messages->appendMessage(new Message($msg, $ref . ".latencyhigh"));
             }
+
             if (intval((string)$gateway->current_losslow) > intval((string)$gateway->current_losshigh)) {
                 $msg = gettext("The high Packet Loss threshold needs to be higher than the low Packet Loss threshold.");
                 $messages->appendMessage(new Message($msg, $ref . ".losshigh"));
             }
+
             if (
                 intval((string)$gateway->current_time_period) < (
                     2 * (intval((string)$gateway->current_interval) + intval((string)$gateway->current_loss_interval))
@@ -86,6 +111,7 @@ class Gateways extends BaseModel
                 $messages->appendMessage(new Message($msg, $ref . ".time_period"));
             }
         }
+
         return $messages;
     }
 
