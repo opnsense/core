@@ -49,7 +49,7 @@ $userindex = index_users();
  */
 function isAuthLocalIP($http_host)
 {
-    foreach (config_read_array('virtualip', 'vip') as $vip) {
+    foreach (config_read_array('virtualip', 'vip', false) as $vip) {
         if ($vip['subnet'] == $http_host) {
             return true;
         }
@@ -454,6 +454,7 @@ function local_user_set_password(&$user, $password = null)
 
     if ($hash !== false && strpos($hash, '$') === 0) {
         $user['password'] = $hash;
+        $user['pwd_changed_at'] = microtime(true);
     } else {
         auth_log("Failed to hash password for user {$user['name']}");
     }
