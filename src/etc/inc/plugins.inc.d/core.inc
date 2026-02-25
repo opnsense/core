@@ -314,7 +314,7 @@ function core_syslog()
     $logfacilities['pkg'] = ['facility' => ['pkg', 'pkg-static']];
     $logfacilities['ppps'] = ['facility' => ['ppp']];
     $logfacilities['resolver'] = ['facility' => ['unbound']];
-    $logfacilities['routing'] = ['facility' => ['routed', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd']];
+    $logfacilities['routing'] = ['facility' => ['routed', 'olsrd', 'zebra', 'ospfd', 'bgpd']];
     $logfacilities['wireless'] = ['facility' => ['hostapd']];
 
     return $logfacilities;
