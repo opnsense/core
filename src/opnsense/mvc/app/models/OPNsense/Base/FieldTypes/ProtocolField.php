@@ -39,11 +39,6 @@ class ProtocolField extends BaseListField
     private $additionalOptions = [];
 
     /**
-     * @var array cached collected protocols
-     */
-    private static $internalStaticOptionList = [];
-
-    /**
      * setter for maximum value
      * @param integer $value
      */
@@ -67,48 +62,49 @@ class ProtocolField extends BaseListField
         $opt_hash .= $this->internalIsRequired ? 'R' : 'O';
         $opt_hash .= $this->internalChangeCase;
 
-        if (empty(self::$internalStaticOptionList[$opt_hash])) {
-            $any_label = gettext('any');
-            $new_list = [];
-
-            /* populate generic protocol options */
-            foreach (explode("\n", file_get_contents('/etc/protocols')) as $line) {
-                if (substr($line, 0, 1) != "#") {
-                    $parts = preg_split('/\s+/', $line);
-                    if (count($parts) >= 4 && $parts[1] > 0) {
-                        $protocol = $this->applyChangeCase($parts[0]);
-                        if (in_array(strtoupper($protocol), $ipv6_ext)) {
-                            continue;
-                        }
-                        $new_list[$protocol] = strtoupper($protocol);
-                    }
-                }
-            }
-
-            /* append additional options */
-            foreach ($this->additionalOptions as $prop => $value) {
-                /* allow overwriting all values, but make sure 'any' is lowercase and prepended last */
-                if (strtolower($prop) == 'any') {
-                    $any_label = $value;
-                    continue;
-                }
-
-                $new_list[$this->applyChangeCase($prop)] = $value;
-            }
-
-            /* sort backwards to append 'any' last if needed */
-            arsort($new_list, SORT_NATURAL | SORT_FLAG_CASE);
-
-            if ($this->internalIsRequired) {
-                /* 'any' is not treated with ChangeCase for backwards compatibility  */
-                $new_list['any'] = $any_label;
-            }
-
-            /* reverse and store the result */
-            self::$internalStaticOptionList[$opt_hash] = array_reverse($new_list, true);
+        if ($this->hasStaticOptions($opt_hash)) {
+            $this->internalOptionList = $this->getStaticOptions($opt_hash);
+            return;
         }
 
-        $this->internalOptionList = self::$internalStaticOptionList[$opt_hash];
+        $any_label = gettext('any');
+        $new_list = [];
+
+        /* populate generic protocol options */
+        foreach (explode("\n", file_get_contents('/etc/protocols')) as $line) {
+            if (substr($line, 0, 1) != "#") {
+                $parts = preg_split('/\s+/', $line);
+                if (count($parts) >= 4 && $parts[1] > 0) {
+                    $protocol = $this->applyChangeCase($parts[0]);
+                    if (in_array(strtoupper($protocol), $ipv6_ext)) {
+                        continue;
+                    }
+                    $new_list[$protocol] = strtoupper($protocol);
+                }
+            }
+        }
+
+        /* append additional options */
+        foreach ($this->additionalOptions as $prop => $value) {
+            /* allow overwriting all values, but make sure 'any' is lowercase and prepended last */
+            if (strtolower($prop) == 'any') {
+                $any_label = $value;
+                continue;
+            }
+
+            $new_list[$this->applyChangeCase($prop)] = $value;
+        }
+
+        /* sort backwards to append 'any' last if needed */
+        arsort($new_list, SORT_NATURAL | SORT_FLAG_CASE);
+
+        if ($this->internalIsRequired) {
+            /* 'any' is not treated with ChangeCase for backwards compatibility  */
+            $new_list['any'] = $any_label;
+        }
+
+        /* reverse and store the result */
+        $this->internalOptionList = $this->setStaticOptions(array_reverse($new_list, true), $opt_hash);
     }
 
     /**
