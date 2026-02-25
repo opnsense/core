@@ -122,6 +122,9 @@
                     <boot_file_name type="TextField">
                         <Mask>/^([^\n"])*$/u</Mask>
                     </boot_file_name>
+                    <vendor_encapsulated_options type="TextField">
+                        <Mask>/^[0-9a-f]*$/u </Mask>
+                    </vendor_encapsulated_options>
                     <v6_only_preferred type="IntegerField">
                         <MinimumValue>300</MinimumValue>
                     </v6_only_preferred>

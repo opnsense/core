@@ -147,10 +147,18 @@ class KeaDhcpv4 extends BaseModel
                 if ($key == 'static_routes') {
                     $value = implode(',', array_map('trim', explode(',', $value->getValue())));
                 }
-                $result[] = [
-                    'name' => $target_fieldname,
-                    'data' => (string)$value
-                ];
+                if ($key == 'vendor_encapsulated_options'){
+                    $result[] = [
+                        'name' => $target_fieldname,
+                        'data' => (string)$value,
+                        'csv-format' => false
+                    ];
+                } else {
+                    $result[] = [
+                        'name' => $target_fieldname,
+                        'data' => (string)$value
+                    ];
+                }
             } elseif ($key == 'domain_name' && $defaults) {
                 $result[] = [
                     'name' => $target_fieldname,
