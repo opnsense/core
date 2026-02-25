@@ -454,6 +454,7 @@ function local_user_set_password(&$user, $password = null)
 
     if ($hash !== false && strpos($hash, '$') === 0) {
         $user['password'] = $hash;
+        $user['pwd_changed_at'] = microtime(true);
     } else {
         auth_log("Failed to hash password for user {$user['name']}");
     }
