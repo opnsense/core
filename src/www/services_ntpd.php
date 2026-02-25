@@ -312,7 +312,7 @@ include("head.inc");
                         <br />
                         <?= gettext('The "prefer" option indicates that NTP should favor the use of this server more than all others.') ?>
                         <br />
-                        <?= gettext('The "pool" option marks this entry as a pool hostname, allowing NTP to resolve and use multiple servers from it.') ?>
+                        <?= gettext('The "pool" option marks this entry as a pool hostname, allowing NTP to resolve and use multiple servers from it. Entries with ".pool.ntp.org" syntax, are automatically resolved as pools') ?>
                         <br />
                         <?= gettext('The "iburst" option enables faster clock synchronisation on startup at the expense of the peer.') ?>
                         <br />
