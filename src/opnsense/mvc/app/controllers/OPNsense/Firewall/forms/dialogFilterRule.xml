@@ -152,6 +152,7 @@
         <label>Version</label>
         <type>dropdown</type>
         <grid_view>
+            <formatter>any</formatter>
             <sequence>35</sequence>
         </grid_view>
     </field>

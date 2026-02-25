@@ -66,7 +66,7 @@ class FilterController extends FilterBaseController
             $this->legacy_fieldmap['ipprotocol'] = [
                 'inet' => gettext('IPv4'),
                 'inet6' => gettext('IPv6'),
-                'inet46' => gettext('IPv4+IPv6')
+                'inet46' => '',
             ];
         }
 
