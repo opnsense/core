@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2020 Deciso B.V.
+ * Copyright (C) 2020-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -40,11 +40,6 @@ use OPNsense\Base\Validators\CallbackValidator;
 class NetworkAliasField extends BaseListField
 {
     /**
-     * @var array cached collected protocols
-     */
-    private static $internalStaticOptionList = array();
-
-    /**
      * @return string|null
      */
     protected function getNodeOptions()
@@ -66,31 +61,30 @@ class NetworkAliasField extends BaseListField
      */
     protected function actionPostLoadingEvent()
     {
-        if (!isset(self::$internalStaticOptionList)) {
-            self::$internalStaticOptionList = [];
+        if ($this->hasStaticOptions()) {
+            $this->internalOptionList = $this->getStaticOptions();
+            return;
         }
-        if (empty(self::$internalStaticOptionList)) {
-            self::$internalStaticOptionList = [];
-            // static nets
-            self::$internalStaticOptionList['any'] = gettext('any');
-            self::$internalStaticOptionList['(self)'] = gettext("This Firewall");
-            // interface nets and addresses
-            $configObj = Config::getInstance()->object();
-            foreach ($configObj->interfaces->children() as $ifname => $ifdetail) {
-                $descr = htmlspecialchars(!empty($ifdetail->descr) ? $ifdetail->descr : strtoupper($ifname));
-                self::$internalStaticOptionList[$ifname] = $descr . " " . gettext("net");
-                if (!isset($ifdetail->virtual)) {
-                    self::$internalStaticOptionList[$ifname . "ip"] = $descr . " " . gettext("address");
-                }
-            }
-            // aliases
-            foreach (self::getArrayReference(Alias::getCachedData(), 'aliases.alias') as $uuid => $alias) {
-                if ($alias['type'] != 'port') {
-                    self::$internalStaticOptionList[$alias['name']] = $alias['name'];
-                }
+        // static nets
+        $data = [
+            'any' => gettext('any'),
+            '(self)' => gettext("This Firewall")
+        ];
+        // interface nets and addresses
+        foreach (Config::getInstance()->object()->interfaces->children() as $ifname => $ifdetail) {
+            $descr = htmlspecialchars(!empty($ifdetail->descr) ? $ifdetail->descr : strtoupper($ifname));
+            $data[$ifname] = $descr . " " . gettext("net");
+            if (!isset($ifdetail->virtual)) {
+                $data[$ifname . "ip"] = $descr . " " . gettext("address");
             }
         }
-        $this->internalOptionList = self::$internalStaticOptionList;
+        // aliases
+        foreach (self::getArrayReference(Alias::getCachedData(), 'aliases.alias') as $uuid => $alias) {
+            if ($alias['type'] != 'port') {
+                $data[$alias['name']] = $alias['name'];
+            }
+        }
+        $this->internalOptionList = $this->setStaticOptions($data);
     }
 
     /**

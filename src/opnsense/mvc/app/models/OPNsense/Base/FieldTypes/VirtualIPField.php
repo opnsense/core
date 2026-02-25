@@ -47,11 +47,6 @@ class VirtualIPField extends BaseListField
     private $isLegacyKey = true;
 
     /**
-     * @var array cached collected certs
-     */
-    private static $internalStaticOptionList = array();
-
-    /**
      * set virtual ip type (carp, proxyarp, ..)
      * @param $value string vip type
      */
@@ -77,40 +72,43 @@ class VirtualIPField extends BaseListField
      */
     protected function actionPostLoadingEvent()
     {
-        if (!isset(self::$internalStaticOptionList[$this->vipType])) {
-            self::$internalStaticOptionList[$this->vipType] = array();
-            $configObj = Config::getInstance()->object();
-            if (!empty($configObj->virtualip) && !empty($configObj->virtualip->vip)) {
-                $filter_types = explode(',', $this->vipType);
-                foreach ($configObj->virtualip->vip as $vip) {
-                    if ($this->vipType == '*' || in_array($vip->mode, $filter_types)) {
-                        if (isset($configObj->{$vip->interface}->descr)) {
-                            $intf_name = $configObj->{$vip->interface}->descr;
-                        } else {
-                            $intf_name = $vip->interface;
-                        }
-                        if (!empty($vip->vhid)) {
-                            $caption = sprintf(
-                                gettext("[%s] %s on %s (vhid %s)"),
-                                $vip->subnet,
-                                $vip->descr,
-                                $intf_name,
-                                $vip->vhid
-                            );
-                        } else {
-                            $caption = sprintf(gettext("[%s] %s on %s"), $vip->subnet, $vip->descr, $intf_name);
-                        }
-                        if ($this->isLegacyKey) {
-                            $key = (string)$vip->subnet;
-                        } else {
-                            $key = (string)$vip->attributes()['uuid'];
-                        }
-                        self::$internalStaticOptionList[$this->vipType][$key] = $caption;
-                    }
-                }
-                natcasesort(self::$internalStaticOptionList[$this->vipType]);
-            }
+        if ($this->hasStaticOptions($this->vipType)) {
+            $this->internalOptionList = $this->getStaticOptions($this->vipType);
+            return;
         }
-        $this->internalOptionList = self::$internalStaticOptionList[$this->vipType];
+
+        $data = [];
+        $configObj = Config::getInstance()->object();
+        if (!empty($configObj->virtualip) && !empty($configObj->virtualip->vip)) {
+            $filter_types = explode(',', $this->vipType);
+            foreach ($configObj->virtualip->vip as $vip) {
+                if ($this->vipType == '*' || in_array($vip->mode, $filter_types)) {
+                    if (isset($configObj->{$vip->interface}->descr)) {
+                        $intf_name = $configObj->{$vip->interface}->descr;
+                    } else {
+                        $intf_name = $vip->interface;
+                    }
+                    if (!empty($vip->vhid)) {
+                        $caption = sprintf(
+                            gettext("[%s] %s on %s (vhid %s)"),
+                            $vip->subnet,
+                            $vip->descr,
+                            $intf_name,
+                            $vip->vhid
+                        );
+                    } else {
+                        $caption = sprintf(gettext("[%s] %s on %s"), $vip->subnet, $vip->descr, $intf_name);
+                    }
+                    if ($this->isLegacyKey) {
+                        $key = (string)$vip->subnet;
+                    } else {
+                        $key = (string)$vip->attributes()['uuid'];
+                    }
+                    $data[$key] = $caption;
+                }
+            }
+            natcasesort($data);
+        }
+        $this->internalOptionList = $this->setStaticOptions($data, $this->vipType);
     }
 }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2025 Deciso B.V.
+ * Copyright (C) 2015-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,11 +37,6 @@ namespace OPNsense\Base\FieldTypes;
 class AuthenticationServerField extends BaseListField
 {
     /**
-     * @var array collected options
-     */
-    private static $internalStaticOptionList = [];
-
-    /**
      * @var array filters to use on the authservers list
      */
     private array $internalFilters = [];
@@ -61,34 +56,34 @@ class AuthenticationServerField extends BaseListField
      */
     protected function actionPostLoadingEvent()
     {
-        if (!isset(self::$internalStaticOptionList[$this->internalCacheKey])) {
-            self::$internalStaticOptionList[$this->internalCacheKey] = [];
-
-            $authFactory = new \OPNsense\Auth\AuthenticationFactory();
-            $allAuthServers = $authFactory->listServers($this->internalService);
-
-            foreach ($allAuthServers as $key => $value) {
-                // use filters to determine relevance
-                $isMatched = true;
-                foreach ($this->internalFilters as $filterKey => $filterData) {
-                    if (isset($value[$filterKey])) {
-                        $fieldData = $value[$filterKey];
-                    } else {
-                        // not found, might be a boolean.
-                        $fieldData = "0";
-                    }
-
-                    if (!preg_match($filterData, $fieldData)) {
-                        $isMatched = false;
-                    }
+        if ($this->hasStaticOptions($this->internalCacheKey)) {
+            $this->internalOptionList = $this->getStaticOptions($this->internalCacheKey);
+            return;
+        }
+        $data = [];
+        $authFactory = new \OPNsense\Auth\AuthenticationFactory();
+        $allAuthServers = $authFactory->listServers($this->internalService);
+        foreach ($allAuthServers as $key => $value) {
+            // use filters to determine relevance
+            $isMatched = true;
+            foreach ($this->internalFilters as $filterKey => $filterData) {
+                if (isset($value[$filterKey])) {
+                    $fieldData = $value[$filterKey];
+                } else {
+                    // not found, might be a boolean.
+                    $fieldData = "0";
                 }
-                if ($isMatched) {
-                    self::$internalStaticOptionList[$this->internalCacheKey][$key] = $value['name'];
+
+                if (!preg_match($filterData, $fieldData)) {
+                    $isMatched = false;
                 }
             }
-            natcasesort(self::$internalStaticOptionList[$this->internalCacheKey]);
+            if ($isMatched) {
+                $data[$key] = $value['name'];
+            }
         }
-        $this->internalOptionList = self::$internalStaticOptionList[$this->internalCacheKey];
+        natcasesort($data);
+        $this->internalOptionList = $this->setStaticOptions($data, $this->internalCacheKey);
     }
 
     /**
