@@ -128,7 +128,7 @@
         <id>dnsmasq.strip_subnet</id>
         <label>Strip subnet</label>
         <type>checkbox</type>
-        <help>Strip the subnet received by a downstream DNS server. If "Add subnet" is used and the downstream DNS server already added a subnet, DNSMasq will not replace it without setting "Strip subnet".</help>
+        <help>Strip the subnet received by a downstream DNS server. If "Add subnet" is used and the downstream DNS server already added a subnet, Dnsmasq will not replace it without setting "Strip subnet".</help>
         <advanced>true</advanced>
     </field>
     <field>
