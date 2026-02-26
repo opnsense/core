@@ -40,43 +40,52 @@ class PortField extends BaseListField
      * @var array list of well known services
      */
     protected static $wellknownservices = [
-        'afs3-fileserver',
-        'auth',
-        'cvsup',
-        'domain',
-        'ftp',
-        'http',
-        'https',
-        'igmpv3lite',
-        'imap',
-        'imaps',
-        'isakmp',
-        'l2f',
-        'ldap',
-        'microsoft-ds',
-        'ms-wbt-server',
-        'nameserver',
-        'netbios-dgm',
-        'netbios-ns',
-        'netbios-ssn',
-        'nntp',
-        'ntp',
-        'openvpn',
-        'pop3',
-        'pop3s',
-        'pptp',
-        'radius',
-        'radacct',
-        'vnc-server',
-        'sip',
-        'smtp',
-        'snmp',
-        'snmptrap',
-        'ssh',
-        'submission',
-        'telnet',
-        'tftp',
-        'urd',
+        'afs3-fileserver' => 7000,
+        'aol' => 5190,
+        'auth' => 113,
+        'avt-profile-1' => 5004,
+        'cvsup' => 5999,
+        'domain' => 53,
+        'ftp' => 21,
+        'hbci' => 3000,
+        'http' => 80,
+        'https' => 443,
+        'igmpv3lite' => 465,
+        'imap' => 143,
+        'imaps' => 993,
+        'ipsec-msft' => 10000,
+        'ipsec-nat-t' => 4500,
+        'isakmp' => 500,
+        'l2f' => 1701,
+        'ldap' => 389,
+        'microsoft-ds' => 445,
+        'ms-streaming' => 1755,
+        'ms-wbt-server' => 3389,
+        'msnp' => 1863,
+        'nat-stun-port' => 3478,
+        'netbios-dgm' => 138,
+        'netbios-ns' => 137,
+        'netbios-ssn' => 139,
+        'nntp' => 119,
+        'ntp' => 123,
+        'openvpn' => 1194,
+        'pop3' => 110,
+        'pop3s' => 995,
+        'pptp' => 1723,
+        'radius' => 1812,
+        'radius-acct' => 1813,
+        'rfb' => 5900,
+        'sip' => 5060,
+        'smtp' => 25,
+        'snmp' => 161,
+        'snmptrap' => 162,
+        'ssh' => 22,
+        'submission' => 587,
+        'telnet' => 23,
+        'teredo' => 3544,
+        'tftp' => 69,
+        'urd' => 465,
+        'wins' => 1512,
     ];
 
     /**
@@ -101,10 +110,16 @@ class PortField extends BaseListField
 
     /**
      * get the list of well known services
+     * @var ?string ask for specific service
      * @return array service names
      */
-    public static function getWellKnown()
+    public static function getWellKnown(?string $search = null)
     {
+        if (!is_null($search)) {
+            return isset(self::$wellknownservices[$search]) ?
+                [$search => self::$wellknownservices[$search]] : [];
+        }
+
         return self::$wellknownservices;
     }
 
@@ -118,7 +133,7 @@ class PortField extends BaseListField
         if (empty(self::$internalCacheOptionList[$setid])) {
             self::$internalCacheOptionList[$setid] = [];
             if ($this->enableWellKnown) {
-                foreach (["any"] + self::$wellknownservices as $wellknown) {
+                foreach (['any'] + array_keys(self::$wellknownservices) as $wellknown) {
                     self::$internalCacheOptionList[$setid][(string)$wellknown] = $wellknown;
                 }
             }
@@ -170,7 +185,7 @@ class PortField extends BaseListField
     public function setValue($value)
     {
         $tmp = trim(strtolower($value));
-        if ($this->enableWellKnown && in_array($tmp, ["any"] + self::$wellknownservices)) {
+        if ($this->enableWellKnown && in_array($tmp, ['any'] + array_keys(self::$wellknownservices))) {
             return parent::setValue($tmp);
         } else {
             return parent::setValue($value);
@@ -184,7 +199,7 @@ class PortField extends BaseListField
     {
         $msg = gettext('Please specify a valid port number (1-65535).');
         if ($this->enableWellKnown) {
-            $msg .= ' ' . sprintf(gettext('A service name is also possible (%s).'), implode(', ', self::$wellknownservices));
+            $msg .= ' ' . sprintf(gettext('A service name is also possible (%s).'), implode(', ', array_keys(self::$wellknownservices)));
         }
         return $msg;
     }

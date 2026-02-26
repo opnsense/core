@@ -28,6 +28,7 @@
 
 namespace OPNsense\Firewall;
 
+use OPNsense\Base\FieldTypes\PortField;
 use OPNsense\Firewall\Alias;
 
 /**
@@ -118,9 +119,14 @@ abstract class Rule
                         $rule['disabled'] = true;
                         $this->log("Unable to map port {$port}, empty?");
                     }
-                } elseif (!empty($port) && !Util::getservbyname($rule[$pfield])) {
-                    $rule['disabled'] = true;
-                    $this->log("Unable to map port {$port}, config error?");
+                } elseif (!empty($port)) {
+                    $known = PortField::getWellKnown($rule[$pfield]);
+                    if (!empty($known)) {
+                        $rule[$pfield] = array_shift($known);
+                    } else {
+                        $rule['disabled'] = true;
+                        $this->log("Unable to map port {$port}, config error?");
+                    }
                 }
             }
         }
