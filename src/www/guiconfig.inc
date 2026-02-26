@@ -114,14 +114,6 @@ function get_themed_filename($url, $exists = false)
 
 require_once("authgui.inc");
 
-/* Reserved table names to avoid collision */
-$reserved_table_names = [
-    'bogons',
-    'bogonsv6',
-    'sshlockout',
-    'virusprot',
-];
-
 /* some well knows ports */
 $wkports = array(
     5999 => "CVSup",
