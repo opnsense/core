@@ -122,13 +122,6 @@ $reserved_table_names = [
     'virusprot',
 ];
 
-$netbios_nodetypes = array(
-    '0' => "none",
-    '1' => "b-node",
-    '2' => "p-node",
-    '4' => "m-node",
-    '5' => "h-node");
-
 /* some well knows ports */
 $wkports = [];
 foreach (OPNsense\Base\FieldTypes\PortField::getWellKnown() as $service => $port) {
