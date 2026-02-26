@@ -157,7 +157,7 @@
         <id>subnet4.option_data.vendor_encapsulated_options</id>
         <label>Raw Option 43 data</label>
         <type>text</type>
-        <help>Raw TLV-Data for option 43. This will be delivered to the clients as is. Specify as hex value without leading 0x</help>
+        <help>Raw TLV-Data for option 43. This will be delivered to the clients as is. Specify as hex value without leading "0x". Sub-codes must be specified in order or Kea will not serve all of them.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
