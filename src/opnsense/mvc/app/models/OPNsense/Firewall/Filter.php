@@ -267,10 +267,10 @@ class Filter extends BaseModel
                                 $rule->{'divert-to'}->__reference
                             ));
                         }
-                        if (!$rule->{'gateway'}->isEmpty() && !$rule->{'replyto'}->isEmpty()) {
+                        if (!$rule->gateway->isEmpty() && !$rule->replyto->isEmpty()) {
                             $messages->appendMessage(new Message(
                                 gettext('You can not assign a reply-to destination to a rule that uses a gateway.'),
-                                $rule->{'replyto'}->__reference
+                                $rule->replyto->__reference
                             ));
                         }
                     }
