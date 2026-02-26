@@ -221,6 +221,7 @@ function filter_core_rules_system($fw, $defaults)
     // default Deny rule (when no other rules match)
     $fw->registerFilterRule(
         1,
+        /* XXX get rid of inet46 it should pertain to all */
         ['ipprotocol' => 'inet46', 'descr' => 'Default deny / state violation rule', 'quick' => false],
         $defaults['block']
     );
@@ -274,6 +275,7 @@ function filter_core_rules_system($fw, $defaults)
         foreach (['from_port', 'to_port'] as $target) {
             $fw->registerFilterRule(
                 1,
+                /* XXX get rid of inet46 it should pertain to all */
                 ['ipprotocol' => 'inet46', 'protocol' => 'tcp/udp', $target => '0',
                     'descr' => 'block all targeting port 0',
                     '#ref' => 'system_advanced_firewall.php#no_port0_block'],
@@ -281,6 +283,7 @@ function filter_core_rules_system($fw, $defaults)
             );
         }
     }
+
     // CARP defaults
     if ((new OPNsense\Interfaces\Vip())->isCarpEnabled()) {
         foreach ($ipv6_disabled ? ['224.0.0.18'] : ['ff02::12', '224.0.0.18'] as $to) {

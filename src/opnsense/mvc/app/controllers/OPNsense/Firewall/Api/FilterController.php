@@ -58,15 +58,15 @@ class FilterController extends FilterBaseController
                 $this->legacy_fieldmap['interface'][$key] = $descr;
             }
             $this->legacy_fieldmap['action'] = [
-                'pass' => 'Pass',
-                'block' => 'Block',
-                'reject' => 'Reject'
+                'block' => gettext('Block'),
+                'pass' => gettext('Pass'),
+                'reject' => gettext('Reject'),
             ];
 
             $this->legacy_fieldmap['ipprotocol'] = [
                 'inet' => gettext('IPv4'),
                 'inet6' => gettext('IPv6'),
-                'inet46' => '',
+                'inet46' => '', /* XXX remove when filter.lib.inc use is removed */
             ];
         }
 
