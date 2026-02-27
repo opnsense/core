@@ -27,6 +27,7 @@
 
 set -e
 
+XMLLINT="$(which xmllint 2> /dev/null || echo true)"
 DIFF="$(which colordiff 2> /dev/null || echo cat)"
 LESS="less -R"
 
@@ -49,9 +50,10 @@ for BACKUP in ${BACKUPS}; do
 	DATETIME=${DATETIME%.xml}
 	SUBSEC=${DATETIME#*.}
 	DATETIME=${DATETIME%.*}
+	NOTES=$(${XMLLINT} ${BACKUP} --xpath '/opnsense/revision/description' | cut -c1-48)
 	# write a line with all required info that is prefixed
 	# with a sortable time stamp for our next step...
-	DATED="${DATED}$(date -r ${DATETIME} '+%Y-%m-%dT%H:%M:%S').${SUBSEC} ${DATETIME} ${BACKUP}
+	DATED="${DATED}$(date -r ${DATETIME} '+%Y-%m-%dT%H:%M:%S').${SUBSEC} ${DATETIME} ${BACKUP} ${NOTES}
 "
 done
 
@@ -60,7 +62,7 @@ INDEX=0
 RESTORE=
 
 while [ -z "${RESTORE}" ]; do
-	echo "${SORTED}" | while read SORT DATETIME BACKUP; do
+	echo "${SORTED}" | while read SORT DATETIME BACKUP NOTES; do
 		if [ ${INDEX} -ne 0 ]; then
 			# carefully crafted whitespace pattern with
 			# embedded alignment tab, edit carefully
@@ -88,7 +90,7 @@ while [ -z "${RESTORE}" ]; do
 
 	if [ -n "${RESTORE}" ]; then
 		if cmp -s /conf/config.xml /conf/backup/${RESTORE}; then
-			echo "Files do not differ"
+			echo "This configuration backup has no changes."
 			RESTORE=
 		fi
 	fi
