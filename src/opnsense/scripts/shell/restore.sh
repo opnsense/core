@@ -58,7 +58,7 @@ for BACKUP in ${BACKUPS}; do
 	LEN=$(echo "${NOTES}" | awk '{ print length }')
 	NOTES=$(echo "${NOTES}" | cut -c1-44)
 	if [ "${LEN}" -gt 44 ]; then
-		NOTES="${MOTES}..."
+		NOTES="${NOTES}..."
 	fi
 
 	# write a line with all required info that is prefixed
