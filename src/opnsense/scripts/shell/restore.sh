@@ -50,7 +50,7 @@ for BACKUP in ${BACKUPS}; do
 	DATETIME=${DATETIME%.xml}
 	SUBSEC=${DATETIME#*.}
 	DATETIME=${DATETIME%.*}
-	NOTES=$(${XMLLINT} ${BACKUP} --xpath '/opnsense/revision/description' | cut -c1-48)
+	NOTES=$(${XMLLINT} /conf/backup/${BACKUP} --xpath '/opnsense/revision/description' | cut -c1-48)
 	# write a line with all required info that is prefixed
 	# with a sortable time stamp for our next step...
 	DATED="${DATED}$(date -r ${DATETIME} '+%Y-%m-%dT%H:%M:%S').${SUBSEC} ${DATETIME} ${BACKUP} ${NOTES}
