@@ -164,7 +164,7 @@ function convert_config($verbose = false)
 
     if (!isset($config['revision'])) {
         /* force a revision tag for proper handling in config history */
-        write_config('Factory configuration', false);
+        write_config('Factory configuration');
     }
 
     $function = $verbose ? 'pass_safe' : 'mwexecf';
