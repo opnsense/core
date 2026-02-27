@@ -223,6 +223,9 @@
                     <boot_file_name type="TextField">
                         <Mask>/^([^\n"])*$/u</Mask>
                     </boot_file_name>
+                    <vendor_encapsulated_options type="TextField">
+                        <Mask>/^[0-9a-f]*$/u </Mask>
+                    </vendor_encapsulated_options>
                 </option_data>
             </reservation>
         </reservations>
