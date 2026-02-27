@@ -825,7 +825,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Migrations/SET1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor/dhcpd.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor/README
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Settings.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Settings.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vip.php
