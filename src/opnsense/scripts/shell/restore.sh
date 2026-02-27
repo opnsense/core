@@ -50,7 +50,12 @@ for BACKUP in ${BACKUPS}; do
 	DATETIME=${DATETIME%.xml}
 	SUBSEC=${DATETIME#*.}
 	DATETIME=${DATETIME%.*}
-	NOTES=$(${XMLLINT} /conf/backup/${BACKUP} --xpath '/opnsense/revision/description' | cut -c1-48)
+	USER=$(${XMLLINT} /conf/backup/${BACKUP} --xpath 'string(/opnsense/revision/username)')
+	NOTES=$(${XMLLINT} /conf/backup/${BACKUP} --xpath 'string(/opnsense/revision/description)')
+        if [ -n "${USER}" ]; then
+		NOTES="${USER}: ${NOTES}"
+	fi
+	NOTES=$(echo "${NOTES}" | cut -c1-40)
 	# write a line with all required info that is prefixed
 	# with a sortable time stamp for our next step...
 	DATED="${DATED}$(date -r ${DATETIME} '+%Y-%m-%dT%H:%M:%S').${SUBSEC} ${DATETIME} ${BACKUP} ${NOTES}
@@ -66,7 +71,7 @@ while [ -z "${RESTORE}" ]; do
 		if [ ${INDEX} -ne 0 ]; then
 			# carefully crafted whitespace pattern with
 			# embedded alignment tab, edit carefully
-			echo "    ${INDEX}.	$(date -r ${DATETIME})"
+			echo "    ${INDEX}.	$(date -r ${DATETIME}) ${NOTES}"
 		fi
 		INDEX=$((INDEX+1))
 	done
