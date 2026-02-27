@@ -55,7 +55,12 @@ for BACKUP in ${BACKUPS}; do
         if [ -n "${USER}" ]; then
 		NOTES="${USER}: ${NOTES}"
 	fi
-	NOTES=$(echo "${NOTES}" | cut -c1-40)
+	LEN=$(echo "${NOTES}" | awk '{ print length }')
+	NOTES=$(echo "${NOTES}" | cut -c1-44)
+	if [ "${LEN}" -gt 44 ]; then
+		NOTES="${MOTES}..."
+	fi
+
 	# write a line with all required info that is prefixed
 	# with a sortable time stamp for our next step...
 	DATED="${DATED}$(date -r ${DATETIME} '+%Y-%m-%dT%H:%M:%S').${SUBSEC} ${DATETIME} ${BACKUP} ${NOTES}
