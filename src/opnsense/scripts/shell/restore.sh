@@ -84,11 +84,20 @@ while [ -z "${RESTORE}" ]; do
 		INDEX=$((INDEX+1))
 	done)"
 
+	echo
+
 	if [ -n "${RESTORE}" ]; then
-		diff -u /conf/backup/${RESTORE} /conf/config.xml | \
+		if cmp -s /conf/config.xml /conf/backup/${RESTORE}; then
+			echo "Files do not differ"
+			RESTORE=
+		fi
+	fi
+
+	if [ -n "${RESTORE}" ]; then
+		diff -u /conf/config.xml /conf/backup/${RESTORE} | \
 		    ${DIFF} | ${LESS}
 
-		echo
+		clear
 		read -p "Do you want to proceed restoring this backup? [y/N] " YN
 
 		case ${YN} in
