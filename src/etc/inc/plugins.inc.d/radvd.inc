@@ -223,7 +223,7 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
             }
         }
 
-        foreach (config_read_array('virtualip', 'vip') as $vip) {
+        foreach (config_read_array('virtualip', 'vip', false) as $vip) {
             if ($vip['interface'] != $dhcpv6if || !is_ipaddrv6($vip['subnet'])) {
                 continue;
             }
@@ -453,7 +453,7 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
             $radvdconf .= "    };\n";
         }
 
-        foreach (config_read_array('virtualip', 'vip') as $vip) {
+        foreach (config_read_array('virtualip', 'vip', false) as $vip) {
             if ($vip['interface'] != $if || !is_ipaddrv6($vip['subnet']) || $vip['subnet_bits'] == '128') {
                 continue;
             }
