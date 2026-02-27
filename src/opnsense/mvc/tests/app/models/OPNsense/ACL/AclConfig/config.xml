@@ -232,7 +232,7 @@
     </OPNsense>
   </tests>
   <revision>
-    <username>(system)</username>
+    <username>(root)</username>
     <description>/usr/local/bin/phpunit made changes</description>
     <time>1728827548.8245</time>
   </revision>

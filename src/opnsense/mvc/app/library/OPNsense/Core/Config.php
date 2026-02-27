@@ -29,6 +29,7 @@
 namespace OPNsense\Core;
 
 use OPNsense\Core\AppConfig;
+use OPNsense\Core\Shell;
 use OPNsense\Core\Syslog;
 
 /**
@@ -468,7 +469,7 @@ class Config extends Singleton
         if (!empty($_SESSION["Username"])) {
             $revision['username'] = $_SESSION["Username"];
         } elseif (!isset($revision['username'])) {
-            $revision['username'] = '(system)';
+            $revision['username'] = '(' . Shell::shell_safe('/usr/bin/whoami') . ')';
         }
         if (!empty($_SERVER['REMOTE_ADDR']) && strpos($revision['username'], '@') === false) {
             $revision['username'] .= "@" . $_SERVER['REMOTE_ADDR'];
