@@ -106,6 +106,8 @@ while [ -z "${RESTORE}" ]; do
 	fi
 
 	if [ -n "${RESTORE}" ]; then
+		# XXX unsure about the direction of diff here:
+		# what changed since r how the restore will change it
 		diff -u /conf/config.xml /conf/backup/${RESTORE} | \
 		    ${DIFF} | ${LESS}
 
