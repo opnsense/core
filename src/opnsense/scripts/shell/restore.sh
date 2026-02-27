@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2017-2021 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2017-2026 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -26,6 +26,9 @@
 # SUCH DAMAGE.
 
 set -e
+
+DIFF="$(which colordiff 2> /dev/null || echo cat)"
+LESS="less -R"
 
 if [ ! -d /conf/backup ]; then
 	echo "No backups available."
@@ -67,7 +70,7 @@ while [ -z "${RESTORE}" ]; do
 	done
 
 	echo
-	read -p "Select backup to restore or leave blank to exit: " SELECT
+	read -p "Select backup to review or leave blank to exit: " SELECT
 
 	if [ -z "${SELECT}" ]; then
 		exit 0
@@ -80,6 +83,24 @@ while [ -z "${RESTORE}" ]; do
 		fi
 		INDEX=$((INDEX+1))
 	done)"
+
+	echo
+
+	if [ -n "${RESTORE}" ]; then
+		diff -u /conf/backup/${RESTORE} /conf/config.xml | \
+		    ${DIFF} | ${LESS}
+
+		read -p "Do you want to proceed restring this backup? [yN] " YN
+
+		case ${YN} in
+		[yY])
+			echo
+			;;
+		*)
+			RESTORE=
+			;;
+		esac
+	fi
 
 	echo
 done
