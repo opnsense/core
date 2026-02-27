@@ -84,17 +84,15 @@ while [ -z "${RESTORE}" ]; do
 		INDEX=$((INDEX+1))
 	done)"
 
-	echo
-
 	if [ -n "${RESTORE}" ]; then
 		diff -u /conf/backup/${RESTORE} /conf/config.xml | \
 		    ${DIFF} | ${LESS}
 
-		read -p "Do you want to proceed restring this backup? [yN] " YN
+		echo
+		read -p "Do you want to proceed restoring this backup? [y/N] " YN
 
 		case ${YN} in
 		[yY])
-			echo
 			;;
 		*)
 			RESTORE=
