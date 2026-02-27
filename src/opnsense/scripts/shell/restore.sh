@@ -88,7 +88,7 @@ while [ -z "${RESTORE}" ]; do
 		exit 0
 	fi
 
-	RESTORE="$(echo "${SORTED}" | while read SORT DATETIME BACKUP; do
+	RESTORE="$(echo "${SORTED}" | while read SORT DATETIME BACKUP NOTES; do
 		if [ ${INDEX} -ne 0 -a ${INDEX} = "${SELECT}" ]; then
 			echo "${BACKUP}"
 			break
