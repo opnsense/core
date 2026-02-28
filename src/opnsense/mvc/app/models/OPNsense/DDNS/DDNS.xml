@@ -1,0 +1,49 @@
+<model>
+    <mount>//OPNsense/DDNS</mount>
+    <version>1.0.0</version>
+    <description>DDNS settings</description>
+    <items>
+        <general>
+            <enabled type="BooleanField">
+                <Default>1</Default>
+            </enabled>
+            <autoUpdate type="BooleanField">
+                <Default>0</Default>
+            </autoUpdate>
+            <intervalMinutes type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>60</MaximumValue>
+                <Default>5</Default>
+            </intervalMinutes>
+            <queryUrl type="TextField">
+                <Required>Y</Required>
+                <Mask>/^https?:\/\/.+/</Mask>
+                <Default>https://api.ipify.org</Default>
+            </queryUrl>
+            <tokenUpdateUrl type="TextField">
+                <Required>Y</Required>
+                <Mask>/^https?:\/\/.+/</Mask>
+                <Default>https://ddns.afraid.org/dynamic/update.php?{token}</Default>
+            </tokenUpdateUrl>
+            <ownIp type="TextField">
+                <Mask>/^$|^((25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(25[0-5]|2[0-4]\d|1?\d?\d)$/</Mask>
+            </ownIp>
+            <token type="TextField"/>
+            <lastStatus type="TextField">
+                <Default>unknown</Default>
+            </lastStatus>
+            <lastMessage type="TextField"/>
+            <lastProviderMessage type="TextField"/>
+            <currentState type="TextField">
+                <Default>unknown</Default>
+            </currentState>
+            <lastCheckEpoch type="TextField">
+                <Default>0</Default>
+            </lastCheckEpoch>
+            <nextRunEpoch type="TextField">
+                <Default>0</Default>
+            </nextRunEpoch>
+            <logEntries type="TextField"/>
+        </general>
+    </items>
+</model>

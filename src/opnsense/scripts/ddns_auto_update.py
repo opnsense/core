@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import base64
+import fcntl
 import hashlib
 import json
 import os
@@ -15,9 +16,9 @@ from datetime import datetime
 
 CONFIG_PATH = "/conf/config.xml"
 STATE_PATH = "/var/db/ddns_state.json"
+LOCK_PATH = "/var/run/ddns_auto.lock"
 DEFAULT_QUERY_URL = "https://api.ipify.org"
 DEFAULT_TEMPLATE = "https://ddns.afraid.org/dynamic/update.php?{token}"
-DAILY_FALLBACK_SECONDS = 24 * 60 * 60
 TIMEOUT = 15
 FALLBACK_RESOLVERS = [
     "https://api.ipify.org",
@@ -45,7 +46,9 @@ def read_config():
     root = tree.getroot()
     general = root.find("./OPNsense/DDNS/general")
     if general is None:
-        general = root.find("./OPNsense/DDNS/general")
+        general = root.find("./OPNsense/FreeDNS/general")
+    if general is None:
+        general = root.find("./OPNsense/Freedns/general")
     if general is None:
         return {
             "enabled": "0",
@@ -206,54 +209,75 @@ def should_update(current_ip, state, config):
     interval_seconds = interval * 60
     if now - last_success >= interval_seconds:
         return True, "interval_elapsed"
-    if now - last_success >= DAILY_FALLBACK_SECONDS:
-        return True, "daily_fallback"
     return False, "interval_not_elapsed"
 
 
+def acquire_lock():
+    os.makedirs(os.path.dirname(LOCK_PATH), exist_ok=True)
+    handle = open(LOCK_PATH, "w", encoding="utf-8")
+    try:
+        fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except OSError:
+        handle.close()
+        return None
+    return handle
+
+
 def main():
+    lock_handle = acquire_lock()
+    if lock_handle is None:
+        log_line("ddns-auto: another instance is already running, skipping")
+        return 0
+
     force = "--force" in sys.argv
-    config = read_config()
-    if config["enabled"] != "1":
-        log_line("ddns-auto: disabled")
-        return 0
-
-    state = load_state()
-
     try:
-        ip = resolve_ip(config)
-    except Exception as err:
-        log_line(f"ddns-auto: resolve ip failed: {err}")
-        return 1
+        config = read_config()
+        if config["enabled"] != "1":
+            log_line("ddns-auto: disabled")
+            return 0
 
-    do_update, reason = should_update(ip, state, config)
-    if force:
-        do_update = True
-        reason = "forced"
-    if not do_update:
-        log_line(f"ddns-auto: no update needed ({reason})")
+        state = load_state()
+
+        try:
+            ip = resolve_ip(config)
+        except Exception as err:
+            log_line(f"ddns-auto: resolve ip failed: {err}")
+            return 1
+
+        do_update, reason = should_update(ip, state, config)
+        if force:
+            do_update = True
+            reason = "forced"
+        if not do_update:
+            log_line(f"ddns-auto: no update needed ({reason})")
+            return 0
+
+        try:
+            url = build_update_url(config["token"], ip, config["tokenUpdateUrl"])
+            code, body = http_get(url)
+        except Exception as err:
+            log_line(f"ddns-auto: update failed: {err}")
+            return 1
+
+        normalized = body.strip().lower()
+        no_change = ("has not changed" in normalized) or ("is current" in normalized) or ("no update needed" in normalized)
+        bad = ("badauth" in normalized) or ("911" in normalized) or (("error" in normalized) and not no_change)
+        if code >= 400 or bad:
+            log_line(f"ddns-auto: provider rejected update (reason={reason}, http={code}, body={body[:200]})")
+            return 1
+
+        state["last_ip"] = ip
+        state["last_success_ts"] = int(time.time())
+        state["last_reason"] = reason
+        save_state(state)
+        log_line(f"ddns-auto: updated (reason={reason}, ip={ip}, http={code})")
         return 0
-
-    try:
-        url = build_update_url(config["token"], ip, config["tokenUpdateUrl"])
-        code, body = http_get(url)
-    except Exception as err:
-        log_line(f"ddns-auto: update failed: {err}")
-        return 1
-
-    normalized = body.strip().lower()
-    no_change = ("has not changed" in normalized) or ("is current" in normalized) or ("no update needed" in normalized)
-    bad = ("badauth" in normalized) or ("911" in normalized) or (("error" in normalized) and not no_change)
-    if code >= 400 or bad:
-        log_line(f"ddns-auto: provider rejected update (reason={reason}, http={code}, body={body[:200]})")
-        return 1
-
-    state["last_ip"] = ip
-    state["last_success_ts"] = int(time.time())
-    state["last_reason"] = reason
-    save_state(state)
-    log_line(f"ddns-auto: updated (reason={reason}, ip={ip}, http={code})")
-    return 0
+    finally:
+        try:
+            fcntl.flock(lock_handle.fileno(), fcntl.LOCK_UN)
+        except OSError:
+            pass
+        lock_handle.close()
 
 
 if __name__ == "__main__":

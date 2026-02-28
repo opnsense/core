@@ -1,13 +1,43 @@
 <?php
 
+/*
+ * Copyright (C) 2026 Deciso B.V.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
 namespace OPNsense\DDNS\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\UserException;
+use OPNsense\Core\ACL;
 
 class SettingsController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'DDNS';
-    protected static $internalModelClass = 'OPNsense\\DDNS\\DDNS';
+    protected static $internalModelClass = '\\OPNsense\\DDNS\\DDNS';
+
+    private array $traceBuffer = [];
 
     public function getAction()
     {
@@ -23,7 +53,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $result = ['result' => 'failed'];
         if ($this->request->isPost()) {
             $model = $this->getModel();
-            $storedSettings = $this->loadStoredSettings();
+            $storedSettings = $this->loadStoredSettings(false);
             $postedSettings = $this->request->getPost('general');
             if (!is_array($postedSettings)) {
                 $postedSettings = [];
@@ -73,10 +103,9 @@ class SettingsController extends ApiMutableModelControllerBase
                     $firstMsg,
                     ''
                 );
-                $model->serializeToConfig();
-                try {
-                    \OPNsense\Core\Config::getInstance()->save();
-                } catch (\Throwable $e) {
+                $saveError = $this->saveModel();
+                if ($saveError !== null) {
+                    $result['message'] = $saveError;
                 }
             }
 
@@ -87,35 +116,21 @@ class SettingsController extends ApiMutableModelControllerBase
                 if (!$autoEnabled) {
                     $model->general->currentState = 'unknown';
                 }
-                $model->serializeToConfig();
-                try {
-                    \OPNsense\Core\Config::getInstance()->save();
-                    $this->applyAutoUpdateSchedule($this->loadStoredSettings());
-                    $model->general->logEntries = $this->appendLogEntry(
-                        (string)$model->general->logEntries,
-                        true,
-                        'Einstellungen gespeichert',
-                        'autoUpdate=' . (((string)$model->general->autoUpdate === '1') ? 'on' : 'off') . ', interval=' . (string)$model->general->intervalMinutes . 'm',
-                        ''
-                    );
-                    $model->serializeToConfig();
-                    \OPNsense\Core\Config::getInstance()->save();
+                $model->general->logEntries = $this->appendLogEntry(
+                    (string)$model->general->logEntries,
+                    true,
+                    'Einstellungen gespeichert',
+                    'autoUpdate=' . (((string)$model->general->autoUpdate === '1') ? 'on' : 'off') . ', interval=' . (string)$model->general->intervalMinutes . 'm',
+                    ''
+                );
+                $saveError = $this->saveModel();
+                if ($saveError === null) {
+                    $this->applyAutoUpdateSchedule($this->loadStoredSettings(false));
                     $result['result'] = 'saved';
                     $result['general'] = $this->loadStoredSettings();
-                } catch (\Throwable $e) {
-                    $model->general->logEntries = $this->appendLogEntry(
-                        (string)$model->general->logEntries,
-                        false,
-                        'Speichern fehlgeschlagen',
-                        'Exception beim Persistieren',
-                        ''
-                    );
-                    $model->serializeToConfig();
-                    try {
-                        \OPNsense\Core\Config::getInstance()->save();
-                    } catch (\Throwable $ignore) {
-                    }
+                } else {
                     $result['result'] = 'failed';
+                    $result['message'] = $saveError;
                 }
             }
         }
@@ -172,20 +187,19 @@ class SettingsController extends ApiMutableModelControllerBase
             ''
         );
 
-        $model->serializeToConfig();
-        try {
-            \OPNsense\Core\Config::getInstance()->save();
-            $current = $this->loadStoredSettings();
-            $this->applyAutoUpdateSchedule($current);
-            if ((!$previousEnabled || !$previousAutoUpdate) && $isSchedulerActive) {
-                $this->traceLog('Auto-Prüfung aktiviert: starte ersten Lauf sofort');
-                $this->runUpdate($current);
-                $current = $this->loadStoredSettings();
-            }
-            return ['result' => 'saved', 'general' => $current];
-        } catch (\Throwable $e) {
-            return ['result' => 'failed', 'message' => 'schedule save failed'];
+        $saveError = $this->saveModel();
+        if ($saveError !== null) {
+            return ['result' => 'failed', 'message' => $saveError];
         }
+
+        $current = $this->loadStoredSettings(false);
+        $this->applyAutoUpdateSchedule($current);
+        if ((!$previousEnabled || !$previousAutoUpdate) && $isSchedulerActive) {
+            $this->traceLog('Auto-Prüfung aktiviert: starte ersten Lauf sofort');
+            $this->runUpdate($current);
+            $current = $this->loadStoredSettings(false);
+        }
+        return ['result' => 'saved', 'general' => $this->loadStoredSettings()];
     }
 
     public function runAction()
@@ -208,15 +222,15 @@ class SettingsController extends ApiMutableModelControllerBase
 
         $model = $this->getModel();
         $model->general->logEntries = '';
-        $model->serializeToConfig();
-        @file_put_contents('/var/log/ddns_auto.log', '');
-
-        try {
-            \OPNsense\Core\Config::getInstance()->save();
-            return ['result' => 'saved', 'general' => $this->loadStoredSettings()];
-        } catch (\Throwable $e) {
-            return ['result' => 'failed', 'message' => 'clear log failed'];
+        $saveError = $this->saveModel();
+        if ($saveError !== null) {
+            return ['result' => 'failed', 'message' => $saveError];
         }
+
+        if (@file_put_contents('/var/log/ddns_auto.log', '') === false) {
+            error_log('DDNS: failed to clear /var/log/ddns_auto.log');
+        }
+        return ['result' => 'saved', 'general' => $this->loadStoredSettings()];
     }
 
     private function runUpdate(array $settings): array
@@ -247,6 +261,10 @@ class SettingsController extends ApiMutableModelControllerBase
         }
 
         $url = $this->buildTokenUpdateUrl($token, $ip, (string)($settings['tokenUpdateUrl'] ?? ''));
+        if (!$this->isAllowedProviderUrl($url)) {
+            $this->traceLog('Abbruch: Anbieter-URL ist nicht erlaubt', false);
+            return $this->statusResponse(false, 'Update URL target is not allowed', '', '', $settings);
+        }
         $this->traceLog('Update-URL: ' . $this->sanitizeUrlForLog($url));
         [$ok, $body, $error] = $this->httpRequest($url);
 
@@ -276,13 +294,13 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->statusResponse(true, 'Aktualisierung erfolgreich (' . $ipSource . ')', $ip, $providerMessage, $settings);
     }
 
-    private function loadStoredSettings(): array
+    private function loadStoredSettings(bool $mergeCronTail = true): array
     {
         $cfg = $this->getModel();
         $cronActive = file_exists('/etc/cron.d/ddns_auto') ? '1' : '0';
         $storedLogEntries = (string)$cfg->general->logEntries;
         $cronLogTail = $this->readCronLogTail();
-        if ($cronLogTail !== '') {
+        if ($mergeCronTail && $cronLogTail !== '') {
             $merged = trim($storedLogEntries);
             $storedLogEntries = ($merged !== '' ? ($merged . "\n") : '') . "--- Cron Log ---\n" . $cronLogTail;
         }
@@ -367,7 +385,7 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         $model = $this->getModel();
         $now = time();
-        $baseSettings = $this->loadStoredSettings();
+        $baseSettings = $this->loadStoredSettings(false);
         $effectiveSettings = array_merge($baseSettings, $settingsContext);
         $interval = $this->getIntervalMinutes($effectiveSettings);
         $autoEnabled = ((string)($effectiveSettings['autoUpdate'] ?? '0')) === '1';
@@ -379,11 +397,16 @@ class SettingsController extends ApiMutableModelControllerBase
         $model->general->currentState = $isCurrent ? 'current' : ($connected ? 'updated' : 'error');
         $model->general->lastCheckEpoch = (string)$now;
         $model->general->nextRunEpoch = $autoEnabled ? (string)$this->computeNextCronEpoch($interval) : '0';
-        $model->general->logEntries = $this->appendLogEntry((string)$model->general->logEntries, $connected, $message, $providerMessage, $ip);
-        $model->serializeToConfig();
-        try {
-            \OPNsense\Core\Config::getInstance()->save();
-        } catch (\Throwable $e) {
+        $logEntries = (string)$model->general->logEntries;
+        foreach ($this->traceBuffer as $entry) {
+            $logEntries = $this->appendLogEntry($logEntries, (bool)$entry['ok'], (string)$entry['message'], '', '');
+        }
+        $this->traceBuffer = [];
+        $model->general->logEntries = $this->appendLogEntry($logEntries, $connected, $message, $providerMessage, $ip);
+
+        $saveError = $this->saveModel();
+        if ($saveError !== null) {
+            error_log('DDNS statusResponse: ' . $saveError);
         }
 
         return [
@@ -457,19 +480,10 @@ class SettingsController extends ApiMutableModelControllerBase
 
     private function traceLog(string $message, bool $ok = true): void
     {
-        $model = $this->getModel();
-        $model->general->logEntries = $this->appendLogEntry(
-            (string)$model->general->logEntries,
-            $ok,
-            $message,
-            '',
-            ''
-        );
-        $model->serializeToConfig();
-        try {
-            \OPNsense\Core\Config::getInstance()->save();
-        } catch (\Throwable $e) {
-        }
+        $this->traceBuffer[] = [
+            'ok' => $ok,
+            'message' => $message,
+        ];
     }
 
     private function sanitizeUrlForLog(string $url): string
@@ -505,15 +519,82 @@ class SettingsController extends ApiMutableModelControllerBase
         $cronPath = '/etc/cron.d/ddns_auto';
 
         if (!$schedulerActive) {
-            @unlink($cronPath);
-            @exec('service cron restart >/dev/null 2>&1');
+            if (file_exists($cronPath) && !@unlink($cronPath)) {
+                error_log('DDNS: failed to remove cron file at ' . $cronPath);
+            }
+            $this->restartCronService();
             return;
         }
 
         $line = '*/' . $interval . ' * * * * root /usr/local/bin/python3 /usr/local/opnsense/scripts/ddns_auto_update.py >> /var/log/ddns_auto.log 2>&1';
-        @file_put_contents($cronPath, $line . "\n");
-        @chmod($cronPath, 0644);
-        @exec('service cron restart >/dev/null 2>&1');
+        $written = @file_put_contents($cronPath, $line . "\n");
+        if ($written === false) {
+            error_log('DDNS: failed to write cron file at ' . $cronPath);
+            return;
+        }
+
+        if (!@chmod($cronPath, 0644)) {
+            error_log('DDNS: failed to chmod cron file at ' . $cronPath);
+        }
+        $this->restartCronService();
+    }
+
+    private function restartCronService(): void
+    {
+        $output = [];
+        $exitCode = 0;
+        @exec('service cron restart 2>&1', $output, $exitCode);
+        if ($exitCode !== 0) {
+            error_log('DDNS: failed to restart cron (exit=' . $exitCode . '): ' . implode("\n", $output));
+        }
+    }
+
+    private function throwReadOnly(): void
+    {
+        if ((new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
+            throw new UserException(
+                sprintf('User %s denied for write access (user-config-readonly set)', $this->getUserName())
+            );
+        }
+    }
+
+    private function saveModel(): ?string
+    {
+        try {
+            $this->throwReadOnly();
+            $this->save();
+            return null;
+        } catch (\Throwable $e) {
+            error_log('DDNS SettingsController save failed: ' . get_class($e) . ': ' . $e->getMessage());
+            return 'internal error while saving configuration';
+        }
+    }
+
+    private function isAllowedProviderUrl(string $url): bool
+    {
+        $parsed = parse_url($url);
+        if (!is_array($parsed)) {
+            return false;
+        }
+
+        $scheme = strtolower((string)($parsed['scheme'] ?? ''));
+        if ($scheme !== 'https' && $scheme !== 'http') {
+            return false;
+        }
+
+        $host = strtolower((string)($parsed['host'] ?? ''));
+        if ($host === '') {
+            return false;
+        }
+
+        $allowed = [
+            'ddns.afraid.org',
+            'sync.afraid.org',
+            'dynv6.com',
+            'ipv64.net',
+            'www.duckdns.org',
+        ];
+        return in_array($host, $allowed, true);
     }
 
     private function buildTokenUpdateUrl(string $tokenOrUrl, string $ip, string $customTemplate = ''): string

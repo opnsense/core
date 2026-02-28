@@ -25,66 +25,9 @@
                         <div class="col-sm-9">
                             <label style="margin-right:12px;"><input id="autoUpdate" type="checkbox"> Aktiv</label>
                             <select id="intervalMinutes" class="form-control" style="display:inline-block; width:auto; min-width:120px; margin-left:8px;">
-                                <option value="1">1 Minute</option>
-                                <option value="2">2 Minuten</option>
-                                <option value="3">3 Minuten</option>
-                                <option value="4">4 Minuten</option>
-                                <option value="5">5 Minuten</option>
-                                <option value="6">6 Minuten</option>
-                                <option value="7">7 Minuten</option>
-                                <option value="8">8 Minuten</option>
-                                <option value="9">9 Minuten</option>
-                                <option value="10">10 Minuten</option>
-                                <option value="11">11 Minuten</option>
-                                <option value="12">12 Minuten</option>
-                                <option value="13">13 Minuten</option>
-                                <option value="14">14 Minuten</option>
-                                <option value="15">15 Minuten</option>
-                                <option value="16">16 Minuten</option>
-                                <option value="17">17 Minuten</option>
-                                <option value="18">18 Minuten</option>
-                                <option value="19">19 Minuten</option>
-                                <option value="20">20 Minuten</option>
-                                <option value="21">21 Minuten</option>
-                                <option value="22">22 Minuten</option>
-                                <option value="23">23 Minuten</option>
-                                <option value="24">24 Minuten</option>
-                                <option value="25">25 Minuten</option>
-                                <option value="26">26 Minuten</option>
-                                <option value="27">27 Minuten</option>
-                                <option value="28">28 Minuten</option>
-                                <option value="29">29 Minuten</option>
-                                <option value="30">30 Minuten</option>
-                                <option value="31">31 Minuten</option>
-                                <option value="32">32 Minuten</option>
-                                <option value="33">33 Minuten</option>
-                                <option value="34">34 Minuten</option>
-                                <option value="35">35 Minuten</option>
-                                <option value="36">36 Minuten</option>
-                                <option value="37">37 Minuten</option>
-                                <option value="38">38 Minuten</option>
-                                <option value="39">39 Minuten</option>
-                                <option value="40">40 Minuten</option>
-                                <option value="41">41 Minuten</option>
-                                <option value="42">42 Minuten</option>
-                                <option value="43">43 Minuten</option>
-                                <option value="44">44 Minuten</option>
-                                <option value="45">45 Minuten</option>
-                                <option value="46">46 Minuten</option>
-                                <option value="47">47 Minuten</option>
-                                <option value="48">48 Minuten</option>
-                                <option value="49">49 Minuten</option>
-                                <option value="50">50 Minuten</option>
-                                <option value="51">51 Minuten</option>
-                                <option value="52">52 Minuten</option>
-                                <option value="53">53 Minuten</option>
-                                <option value="54">54 Minuten</option>
-                                <option value="55">55 Minuten</option>
-                                <option value="56">56 Minuten</option>
-                                <option value="57">57 Minuten</option>
-                                <option value="58">58 Minuten</option>
-                                <option value="59">59 Minuten</option>
-                                <option value="60">60 Minuten</option>
+                                {% for minute in 1..60 %}
+                                <option value="{{ minute }}">{{ minute }} {% if minute == 1 %}Minute{% else %}Minuten{% endif %}</option>
+                                {% endfor %}
                             </select>
                             <small class="help-block" style="margin-top:6px;">Nächste Prüfung in: <span id="nextRunCountdown">-</span></small>
                         </div>
@@ -568,12 +511,7 @@
                 }
             }
             setCurrentState(currentStateValue || 'unknown');
-            var mergedLog = (logEntriesValue || '').trim();
-            var cronTail = (cronLogTailValue || '').trim();
-            if (cronTail !== '') {
-                mergedLog = (mergedLog !== '' ? (mergedLog + "\n") : '') + "--- Cron Log ---\n" + cronTail;
-            }
-            setLogEntries(mergedLog);
+            setLogEntries((logEntriesValue || '').trim());
             setProviderMessage(providerMessageValue || '');
             startNextRunCountdown(nextRunEpochValue || '0', toBool(enabledValue), toBool(autoUpdateValue), toBool(cronActiveValue));
 
@@ -736,12 +674,6 @@
     }
 
     $(function() {
-        $('#toggleTokenVisibility').on('click', function() {
-            var tokenInput = $('#token');
-            var isHidden = tokenInput.attr('type') === 'password';
-            tokenInput.attr('type', isHidden ? 'text' : 'password');
-            $('#toggleTokenVisibility').text(isHidden ? 'Verbergen' : 'Anzeigen');
-        });
         $('#queryUrlPreset').on('change', updateQueryUrlMode);
         $('#queryUrl').on('blur', function() {
             syncQueryUrlPresetFromValue($('#queryUrl').val());
