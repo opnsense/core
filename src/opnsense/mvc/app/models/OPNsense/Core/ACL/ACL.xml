@@ -211,7 +211,7 @@
     <page-firewall-nat-portforward-edit>
         <name>Firewall: NAT: Destination NAT</name>
         <patterns>
-            <pattern>ui/firewall/d_nat</pattern>
+            <pattern>ui/firewall/d_nat/*</pattern>
             <pattern>api/firewall/d_nat/*</pattern>
             <pattern>api/firewall/category/search_item*</pattern>
         </patterns>
