@@ -1,43 +1,43 @@
 <section class="page-content-main">
     <div class="container-fluid">
-        <h1>DDNS</h1>
+        <h1>{{ lang._('DDNS') }}</h1>
 
         <div class="panel panel-default">
-            <div class="panel-heading">Einstellungen</div>
+            <div class="panel-heading">{{ lang._('Settings') }}</div>
             <div class="panel-body">
                 <form id="ddns-form" class="form-horizontal">
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">Aktiviert</label>
+                        <label class="col-sm-3 control-label">{{ lang._('Enabled') }}</label>
                         <div class="col-sm-9">
                             <input id="enabled" type="checkbox" checked>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">Eigene IP (optional)</label>
+                        <label class="col-sm-3 control-label">{{ lang._('Own IP (optional)') }}</label>
                         <div class="col-sm-9">
-                            <input id="ownIp" class="form-control" placeholder="z. B. 203.0.113.10">
+                            <input id="ownIp" class="form-control" placeholder="{{ lang._('e.g. 203.0.113.10') }}">
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">Auto-Prüfung (Cron)</label>
+                        <label class="col-sm-3 control-label">{{ lang._('Automatic check (Cron)') }}</label>
                         <div class="col-sm-9">
-                            <label style="margin-right:12px;"><input id="autoUpdate" type="checkbox"> Aktiv</label>
+                            <label style="margin-right:12px;"><input id="autoUpdate" type="checkbox"> {{ lang._('Active') }}</label>
                             <select id="intervalMinutes" class="form-control" style="display:inline-block; width:auto; min-width:120px; margin-left:8px;">
                                 {% for minute in 1..60 %}
-                                <option value="{{ minute }}">{{ minute }} {% if minute == 1 %}Minute{% else %}Minuten{% endif %}</option>
+                                <option value="{{ minute }}">{{ minute }} {% if minute == 1 %}{{ lang._('Minute') }}{% else %}{{ lang._('Minutes') }}{% endif %}</option>
                                 {% endfor %}
                             </select>
-                            <small class="help-block" style="margin-top:6px;">Nächste Prüfung in: <span id="nextRunCountdown">-</span></small>
+                            <small class="help-block" style="margin-top:6px;">{{ lang._('Next check in:') }} <span id="nextRunCountdown">-</span></small>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">IP-Abfrage URL (Homepage)</label>
+                        <label class="col-sm-3 control-label">{{ lang._('IP query URL') }}</label>
                         <div class="col-sm-9">
                             <select id="queryUrlPreset" class="form-control" style="margin-bottom:8px;">
-                                <option value="https://api.ipify.org">api.ipify.org (HTTPS)</option>
+                                <option value="https://api.ipify.org">{{ lang._('api.ipify.org (HTTPS)') }}</option>
                                 <option value="http://checkip.amazonaws.com">checkip.amazonaws.com</option>
                                 <option value="http://ipinfo.io/ip">ipinfo.io/ip</option>
                                 <option value="http://icanhazip.com/">icanhazip.com</option>
@@ -49,56 +49,56 @@
                                 <option value="http://domains.google.com/checkip">domains.google.com/checkip</option>
                                 <option value="http://ipecho.net/plain">ipecho.net/plain</option>
                                 <option value="http://ddns.afraid.org/dynamic/check.php">ddns.afraid.org/dynamic/check.php</option>
-                                <option value="custom">Eigene URL (Custom)</option>
+                                <option value="custom">{{ lang._('Custom URL') }}</option>
                             </select>
                             <input id="queryUrl" class="form-control" value="https://api.ipify.org">
-                            <small id="queryPresetHint" class="help-block" style="margin-top:4px;color:#666;">Provider für IP-Erkennung auswählen oder eigene URL verwenden.</small>
+                            <small id="queryPresetHint" class="help-block" style="margin-top:4px;color:#666;">{{ lang._('Select an IP detection provider or use a custom URL.') }}</small>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">Update URL Template</label>
+                        <label class="col-sm-3 control-label">{{ lang._('Update URL template') }}</label>
                         <div class="col-sm-9">
                             <select id="tokenUpdatePreset" class="form-control" style="margin-bottom:8px;">
-                                <option value="https://ddns.afraid.org/dynamic/update.php?{token}">DDNS Standard (dynamic/update.php?TOKEN)</option>
-                                <option value="https://ddns.afraid.org:8080/dynamic/update.php?{token}">DDNS Standard Port 8080</option>
-                                <option value="https://dynv6.com/api/update?token={token}&amp;ipv4={ip}">dynv6 Token (dynv6.com/api/update)</option>
-                                <option value="https://ipv64.net/nic/update?key={token}&amp;ip={ip}">IPv64 Key/Token (ipv64.net/nic/update)</option>
-                                <option value="https://www.duckdns.org/update?domains=YOURDOMAIN&amp;token={token}&amp;ip={ip}">DuckDNS Token (Domain im Template setzen)</option>
-                                <option value="custom">Eigene URL (Custom)</option>
+                                <option value="https://ddns.afraid.org/dynamic/update.php?{token}">{{ lang._('DDNS default (dynamic/update.php?TOKEN)') }}</option>
+                                <option value="https://ddns.afraid.org:8080/dynamic/update.php?{token}">{{ lang._('DDNS default port 8080') }}</option>
+                                <option value="https://dynv6.com/api/update?token={token}&amp;ipv4={ip}">{{ lang._('dynv6 token (dynv6.com/api/update)') }}</option>
+                                <option value="https://ipv64.net/nic/update?key={token}&amp;ip={ip}">{{ lang._('IPv64 key/token (ipv64.net/nic/update)') }}</option>
+                                <option value="https://www.duckdns.org/update?domains=YOURDOMAIN&amp;token={token}&amp;ip={ip}">{{ lang._('DuckDNS token (set domain in template)') }}</option>
+                                <option value="custom">{{ lang._('Custom URL') }}</option>
                             </select>
                             <input id="tokenUpdateUrl" class="form-control" value="https://ddns.afraid.org/dynamic/update.php?{token}">
-                            <small class="help-block">Platzhalter: {token} und optional {ip} (je nach Provider)</small>
+                            <small class="help-block">{{ lang._('Placeholders: {token} and optionally {ip} (depends on provider)') }}</small>
                             <small id="presetHint" class="help-block" style="margin-top:4px;color:#666;"></small>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">Erkannte öffentliche IP</label>
+                        <label class="col-sm-3 control-label">{{ lang._('Detected public IP') }}</label>
                         <div class="col-sm-9">
-                            <input id="detectedIp" class="form-control" readonly placeholder="wird automatisch ermittelt...">
-                            <small id="detectedIpInfo" class="help-block">Quelle: automatisch über Abfrage-URL</small>
+                            <input id="detectedIp" class="form-control" readonly placeholder="{{ lang._('detected automatically...') }}">
+                            <small id="detectedIpInfo" class="help-block">{{ lang._('Source: automatic via query URL') }}</small>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">DDNS Token</label>
+                        <label class="col-sm-3 control-label">{{ lang._('DDNS token') }}</label>
                         <div class="col-sm-9">
-                            <div style="margin-bottom:6px;color:#c62828;font-weight:600;">TOKEN-FELD (sichtbar)</div>
+                            <div style="margin-bottom:6px;color:#c62828;font-weight:600;">{{ lang._('TOKEN FIELD (visible)') }}</div>
                                 <div style="display:flex;gap:8px;align-items:center;">
-                                    <input id="token" type="password" class="form-control" placeholder="Token oder komplette v2 URL (sync.afraid.org/u/.../)">
-                                    <button type="button" id="toggleTokenVisibilityBtn" class="btn btn-default btn-sm">Anzeigen</button>
+                                    <input id="token" type="password" class="form-control" placeholder="{{ lang._('Token or full v2 URL (sync.afraid.org/u/.../)') }}">
+                                    <button type="button" id="toggleTokenVisibilityBtn" class="btn btn-default btn-sm">{{ lang._('Show') }}</button>
                                 </div>
-                                <small class="help-block" style="margin-top:6px;">Token standardmäßig verborgen. Mit „Anzeigen“ entsperren.</small>
+                                <small class="help-block" style="margin-top:6px;">{{ lang._('Token is hidden by default. Use "Show" to reveal it.') }}</small>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">Update-URL Vorschau</label>
+                        <label class="col-sm-3 control-label">{{ lang._('Update URL preview') }}</label>
                         <div class="col-sm-9">
                             <div id="updateUrlPreview" style="padding:8px 10px;border:1px solid #ddd;border-radius:4px;background:#fafafa;word-break:break-all;">-</div>
                             <div style="margin-top:8px;">
-                                <button type="button" id="copyPreviewBtn" class="btn btn-default btn-xs">Vorschau kopieren</button>
+                                <button type="button" id="copyPreviewBtn" class="btn btn-default btn-xs">{{ lang._('Copy preview') }}</button>
                                 <span id="copyPreviewInfo" style="margin-left:8px;color:#666;"></span>
                             </div>
                         </div>
@@ -106,27 +106,27 @@
 
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-9">
-                            <button type="button" id="runBtn" class="btn btn-default">Jetzt aktualisieren</button>
-                            <button type="button" id="saveBtn" class="btn btn-primary">Speichern</button>
+                            <button type="button" id="runBtn" class="btn btn-default">{{ lang._('Update now') }}</button>
+                            <button type="button" id="saveBtn" class="btn btn-primary">{{ lang._('Save') }}</button>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">Status</label>
+                        <label class="col-sm-3 control-label">{{ lang._('Status') }}</label>
                         <div class="col-sm-9">
-                            <span id="statusBadge" style="display:inline-block;padding:6px 12px;border-radius:4px;background:#999;color:#fff;">Unbekannt</span>
-                            <span id="currentStateBadge" style="display:inline-block;padding:6px 12px;border-radius:4px;background:#666;color:#fff;margin-left:8px;">Nicht geprüft</span>
+                            <span id="statusBadge" style="display:inline-block;padding:6px 12px;border-radius:4px;background:#999;color:#fff;">{{ lang._('Unknown') }}</span>
+                            <span id="currentStateBadge" style="display:inline-block;padding:6px 12px;border-radius:4px;background:#666;color:#fff;margin-left:8px;">{{ lang._('Not checked') }}</span>
                             <span id="statusText" style="margin-left:8px;"></span>
                             <div id="providerMessage" style="margin-top:8px;color:#555;"></div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">Protokoll</label>
+                        <label class="col-sm-3 control-label">{{ lang._('Log') }}</label>
                         <div class="col-sm-9">
                             <textarea id="logEntries" class="form-control" rows="12" readonly style="font-family:monospace;font-size:12px;line-height:1.35;"></textarea>
                             <div style="margin-top:8px;">
-                                <button type="button" id="clearLogBtn" class="btn btn-default btn-xs">Protokoll leeren</button>
+                                <button type="button" id="clearLogBtn" class="btn btn-default btn-xs">{{ lang._('Clear log') }}</button>
                                 <span id="clearLogInfo" style="margin-left:8px;color:#666;"></span>
                             </div>
                         </div>
@@ -138,6 +138,44 @@
 </section>
 
 <script>
+    const I18N = {
+        unknown: "{{ lang._('Unknown') }}",
+        connected: "{{ lang._('Connected') }}",
+        error: "{{ lang._('Error') }}",
+        notCurrent: "{{ lang._('Not current') }}",
+        current: "{{ lang._('Current') }}",
+        copied: "{{ lang._('Copied to clipboard') }}",
+        copyFailed: "{{ lang._('Copy failed') }}",
+        noPreview: "{{ lang._('No preview to copy') }}",
+        presetSelected: "{{ lang._('Preset selected.') }}",
+        customQueryHint: "{{ lang._('Custom: use your own IP query URL.') }}",
+        customTemplateHint: "{{ lang._('Custom: use your own provider URL, {token} required, {ip} optional.') }}",
+        providerSelectHint: "{{ lang._('Select an IP detection provider or use a custom URL.') }}",
+        saveOk: "{{ lang._('Settings saved') }}",
+        saveFailed: "{{ lang._('Save failed') }}",
+        scheduleSaved: "{{ lang._('Schedule saved') }}",
+        scheduleSaveFailed: "{{ lang._('Failed to save schedule') }}",
+        updateOk: "{{ lang._('Update successful') }}",
+        updateFailed: "{{ lang._('Update failed') }}",
+        testFailed: "{{ lang._('Test failed') }}",
+        noConnection: "{{ lang._('No connection') }}",
+        ipDetecting: "{{ lang._('IP is being detected ...') }}",
+        ipDetectFailed: "{{ lang._('Could not detect IP') }}",
+        sourceManual: "{{ lang._('Source: manual') }}",
+        sourceAuto: "{{ lang._('Source: automatic via query URL') }}",
+        sourceStored: "{{ lang._('Source: stored/automatic') }}",
+        tokenShow: "{{ lang._('Show') }}",
+        tokenHide: "{{ lang._('Hide') }}",
+        logCleared: "{{ lang._('Log cleared') }}",
+        logClearFailed: "{{ lang._('Failed to clear log') }}",
+        noConfirmedRun: "{{ lang._('No confirmed run yet') }}",
+        lastAutoRunOk: "{{ lang._('Last automatic run successful') }}",
+        lastAutoRunFailed: "{{ lang._('Last automatic run failed') }}",
+        connectionOk: "{{ lang._('Connection successful') }}",
+        connectionFailed: "{{ lang._('Connection failed') }}",
+        providerDocsHint: "{{ lang._('Preset selected. Please verify the API documentation of your provider.') }}"
+    };
+
     function collectPayload() {
         return {
             general: {
@@ -154,13 +192,13 @@
 
     function setStatus(color, text) {
         var bg = '#999';
-        var label = 'Unbekannt';
+        var label = I18N.unknown;
         if (color === 'green') {
             bg = '#2e7d32';
-            label = 'Verbunden';
+            label = I18N.connected;
         } else if (color === 'red') {
             bg = '#c62828';
-            label = 'Fehler';
+            label = I18N.error;
         }
         $('#statusBadge').css('background', bg).text(label);
         $('#statusText').text(text || '');
@@ -209,19 +247,19 @@
         }
         var last = lines[lines.length - 1].toLowerCase();
         if (last.indexOf('updated (') >= 0 || last.indexOf('no update needed') >= 0) {
-            return { color: 'green', text: 'Letzter Auto-Lauf erfolgreich' };
+            return { color: 'green', text: I18N.lastAutoRunOk };
         }
         if (last.indexOf('failed') >= 0 || last.indexOf('rejected') >= 0 || last.indexOf('token missing') >= 0 || last.indexOf('resolve ip failed') >= 0) {
-            return { color: 'red', text: 'Letzter Auto-Lauf fehlgeschlagen' };
+            return { color: 'red', text: I18N.lastAutoRunFailed };
         }
         return null;
     }
 
     function setCurrentState(state) {
-        var label = 'Nicht aktuell';
+        var label = I18N.notCurrent;
         var color = '#c62828';
         if (state === 'current') {
-            label = 'Aktuell';
+            label = I18N.current;
             color = '#2e7d32';
         }
         $('#currentStateBadge').css('background', color).text(label);
@@ -301,11 +339,11 @@
         if (known.indexOf(normalized) >= 0) {
             $('#queryUrlPreset').val(normalized);
             $('#queryUrl').prop('readonly', true);
-            $('#queryPresetHint').text('Preset gewählt.');
+            $('#queryPresetHint').text(I18N.presetSelected);
         } else {
             $('#queryUrlPreset').val('custom');
             $('#queryUrl').prop('readonly', false);
-            $('#queryPresetHint').text('Custom: eigene IP-Abfrage-URL verwenden.');
+            $('#queryPresetHint').text(I18N.customQueryHint);
         }
     }
 
@@ -313,12 +351,12 @@
         var preset = $('#queryUrlPreset').val();
         if (preset === 'custom') {
             $('#queryUrl').prop('readonly', false);
-            $('#queryPresetHint').text('Custom: eigene IP-Abfrage-URL verwenden.');
+            $('#queryPresetHint').text(I18N.customQueryHint);
             return;
         }
         $('#queryUrl').val(preset);
         $('#queryUrl').prop('readonly', true);
-        $('#queryPresetHint').text('Preset gewählt.');
+        $('#queryPresetHint').text(I18N.presetSelected);
         refreshDetectedIp();
     }
 
@@ -326,7 +364,7 @@
         var preset = $('#tokenUpdatePreset').val();
         if (preset === 'custom') {
             $('#tokenUpdateUrl').prop('readonly', false);
-            setPresetHint('Custom: eigene Anbieter-URL, {token} muss enthalten sein, {ip} optional.');
+            setPresetHint(I18N.customTemplateHint);
             renderUpdateUrlPreview();
             return;
         }
@@ -343,13 +381,13 @@
 
     function setPresetHintByValue(value) {
         var hints = {
-            'https://ddns.afraid.org/dynamic/update.php?{token}': 'DDNS Standard: Link-Format dynamic/update.php?TOKEN.',
-            'https://ddns.afraid.org:8080/dynamic/update.php?{token}': 'DDNS über Port 8080, falls Standard-Port geblockt ist.',
-            'https://dynv6.com/api/update?token={token}&ipv4={ip}': 'dynv6: API-Token aus Account nutzen; IPv4 wird über ipv4={ip} gesetzt.',
-            'https://ipv64.net/nic/update?key={token}&ip={ip}': 'IPv64: Key/Token aus IPv64 verwenden; IP wird als ip={ip} übergeben.'
-            , 'https://www.duckdns.org/update?domains=YOURDOMAIN&token={token}&ip={ip}': 'DuckDNS: YOURDOMAIN im Template ersetzen, Token bleibt im Token-Feld.'
+            'https://ddns.afraid.org/dynamic/update.php?{token}': "{{ lang._('DDNS default: dynamic/update.php?TOKEN')|e('js') }}",
+            'https://ddns.afraid.org:8080/dynamic/update.php?{token}': "{{ lang._('DDNS via port 8080 if standard port is blocked.')|e('js') }}",
+            'https://dynv6.com/api/update?token={token}&ipv4={ip}': "{{ lang._('dynv6: use your API token from account; IPv4 is passed as ipv4={ip}.')|e('js') }}",
+            'https://ipv64.net/nic/update?key={token}&ip={ip}': "{{ lang._('IPv64: use your key/token from IPv64; IP is passed as ip={ip}.')|e('js') }}",
+            'https://www.duckdns.org/update?domains=YOURDOMAIN&token={token}&ip={ip}': "{{ lang._('DuckDNS: replace YOURDOMAIN in template; token remains in token field.')|e('js') }}"
         };
-        setPresetHint(hints[value] || 'Preset gewählt. Prüfe bitte die API-Dokumentation deines Providers.');
+        setPresetHint(hints[value] || I18N.providerDocsHint);
     }
 
     function syncTemplatePresetFromValue(value) {
@@ -369,7 +407,7 @@
         } else {
             $('#tokenUpdatePreset').val('custom');
             $('#tokenUpdateUrl').prop('readonly', false);
-            setPresetHint('Custom: eigene Anbieter-URL, {token} muss enthalten sein, {ip} optional.');
+            setPresetHint(I18N.customTemplateHint);
         }
         renderUpdateUrlPreview();
     }
@@ -439,15 +477,15 @@
     function copyPreviewUrl() {
             var text = buildDisplayPreviewUrl();
         if (!text || text === '-') {
-            $('#copyPreviewInfo').text('Keine Vorschau zum Kopieren');
+            $('#copyPreviewInfo').text(I18N.noPreview);
             return;
         }
 
         if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(text).then(function() {
-                $('#copyPreviewInfo').text('In Zwischenablage kopiert');
+                $('#copyPreviewInfo').text(I18N.copied);
             }).catch(function() {
-                $('#copyPreviewInfo').text('Kopieren fehlgeschlagen');
+                $('#copyPreviewInfo').text(I18N.copyFailed);
             });
             return;
         }
@@ -455,9 +493,9 @@
         var temp = $('<textarea>').val(text).appendTo('body').select();
         try {
             document.execCommand('copy');
-            $('#copyPreviewInfo').text('In Zwischenablage kopiert');
+            $('#copyPreviewInfo').text(I18N.copied);
         } catch (e) {
-            $('#copyPreviewInfo').text('Kopieren fehlgeschlagen');
+            $('#copyPreviewInfo').text(I18N.copyFailed);
         }
         temp.remove();
     }
@@ -499,15 +537,15 @@
             $('#token').val(normalizeTokenValue(tokenValue));
 
             if (lastStatusValue === 'ok') {
-                setStatus('green', lastMessageValue || 'Verbindung erfolgreich');
+                setStatus('green', lastMessageValue || I18N.connectionOk);
             } else if (lastStatusValue === 'failed') {
-                setStatus('red', lastMessageValue || 'Verbindung fehlgeschlagen');
+                setStatus('red', lastMessageValue || I18N.connectionFailed);
             } else {
                 var inferred = inferStatusFromCronTail(cronLogTailValue);
                 if (inferred) {
                     setStatus(inferred.color, inferred.text);
                 } else {
-                    setStatus('red', 'Noch kein bestätigter Lauf');
+                    setStatus('red', I18N.noConfirmedRun);
                 }
             }
             setCurrentState(currentStateValue || 'unknown');
@@ -523,7 +561,7 @@
 
     function refreshDetectedIp() {
         $('#detectedIp').val('');
-        $('#detectedIpInfo').text('IP wird ermittelt ...');
+        $('#detectedIpInfo').text(I18N.ipDetecting);
 
         $.ajax({
             url: '/api/ddns/settings/detectip',
@@ -532,16 +570,16 @@
             success: function(resp) {
                 if (resp && resp.ip) {
                     $('#detectedIp').val(resp.ip);
-                    $('#detectedIpInfo').text((resp.source === 'manual') ? 'Quelle: manuell' : 'Quelle: automatisch über Abfrage-URL');
+                    $('#detectedIpInfo').text((resp.source === 'manual') ? I18N.sourceManual : I18N.sourceAuto);
                 } else {
                     $('#detectedIp').val('');
-                    $('#detectedIpInfo').text((resp && resp.message) ? resp.message : 'IP konnte nicht ermittelt werden');
+                    $('#detectedIpInfo').text((resp && resp.message) ? resp.message : I18N.ipDetectFailed);
                 }
                 renderUpdateUrlPreview();
             },
             error: function() {
                 $('#detectedIp').val('');
-                $('#detectedIpInfo').text('IP konnte nicht ermittelt werden');
+                $('#detectedIpInfo').text(I18N.ipDetectFailed);
                 renderUpdateUrlPreview();
             }
         });
@@ -554,7 +592,7 @@
             data: collectPayload(),
             success: function(resp) {
                 if (resp && resp.result === 'saved') {
-                    setStatus('green', 'Einstellungen gespeichert');
+                    setStatus('green', I18N.saveOk);
                     loadSettings();
                 } else {
                     var validationMessage = '';
@@ -564,12 +602,12 @@
                             validationMessage = resp.validations[keys[0]];
                         }
                     }
-                    setStatus('red', validationMessage ? ('Speichern fehlgeschlagen: ' + validationMessage) : 'Speichern fehlgeschlagen');
+                    setStatus('red', validationMessage ? (I18N.saveFailed + ': ' + validationMessage) : I18N.saveFailed);
                 }
                 setProviderMessage('');
             },
             error: function() {
-                setStatus('red', 'Speichern fehlgeschlagen');
+                setStatus('red', I18N.saveFailed);
                 setProviderMessage('');
             }
         });
@@ -582,7 +620,7 @@
             data: collectPayload(),
             success: function(resp) {
                 if (resp && resp.result === 'saved') {
-                    setStatus('green', 'Zeitplan gespeichert');
+                    setStatus('green', I18N.scheduleSaved);
                     if (resp.general) {
                         var enabledVal = nodeValue(resp.general.enabled, '1');
                         var autoVal = nodeValue(resp.general.autoUpdate, '0');
@@ -596,11 +634,11 @@
                         setLogEntries(nodeValue(resp.general.logEntries, ''));
                     }
                 } else {
-                    setStatus('red', 'Zeitplan speichern fehlgeschlagen');
+                    setStatus('red', I18N.scheduleSaveFailed);
                 }
             },
             error: function() {
-                setStatus('red', 'Zeitplan speichern fehlgeschlagen');
+                setStatus('red', I18N.scheduleSaveFailed);
             }
         });
     }
@@ -612,14 +650,14 @@
             data: collectPayload(),
             success: function(resp) {
                 if (resp && resp.connected) {
-                    setStatus('green', resp.message || 'Verbindung erfolgreich');
+                    setStatus('green', resp.message || I18N.connectionOk);
                 } else {
-                    setStatus('red', (resp && resp.message) ? resp.message : 'Keine Verbindung');
+                    setStatus('red', (resp && resp.message) ? resp.message : I18N.noConnection);
                 }
                 setProviderMessage((resp && resp.providerMessage) ? resp.providerMessage : '');
             },
             error: function() {
-                setStatus('red', 'Test fehlgeschlagen');
+                setStatus('red', I18N.testFailed);
                 setProviderMessage('');
             }
         });
@@ -632,22 +670,22 @@
             data: collectPayload(),
             success: function(resp) {
                 if (resp && resp.connected) {
-                    setStatus('green', resp.message || 'Aktualisierung erfolgreich');
+                    setStatus('green', resp.message || I18N.updateOk);
                 } else {
-                    setStatus('red', (resp && resp.message) ? resp.message : 'Aktualisierung fehlgeschlagen');
+                    setStatus('red', (resp && resp.message) ? resp.message : I18N.updateFailed);
                 }
                 setProviderMessage((resp && resp.providerMessage) ? resp.providerMessage : '');
                 setCurrentState((resp && resp.currentState) ? resp.currentState : ((resp && resp.connected) ? 'updated' : 'error'));
                 startNextRunCountdown((resp && resp.nextRunEpoch) ? resp.nextRunEpoch : '0', $('#enabled').is(':checked'), $('#autoUpdate').is(':checked'), true);
                 if (resp && resp.ip) {
                     $('#detectedIp').val(resp.ip);
-                    $('#detectedIpInfo').text('Quelle: gespeichert/automatisch');
+                    $('#detectedIpInfo').text(I18N.sourceStored);
                     renderUpdateUrlPreview();
                 }
                 loadSettings();
             },
             error: function() {
-                setStatus('red', 'Aktualisierung fehlgeschlagen');
+                setStatus('red', I18N.updateFailed);
                 setProviderMessage('');
                 setCurrentState('error');
             }
@@ -662,13 +700,13 @@
             success: function(resp) {
                 if (resp && resp.result === 'saved') {
                     setLogEntries('');
-                    $('#clearLogInfo').text('Protokoll geleert');
+                    $('#clearLogInfo').text(I18N.logCleared);
                 } else {
-                    $('#clearLogInfo').text('Löschen fehlgeschlagen');
+                    $('#clearLogInfo').text(I18N.logClearFailed);
                 }
             },
             error: function() {
-                $('#clearLogInfo').text('Löschen fehlgeschlagen');
+                $('#clearLogInfo').text(I18N.logClearFailed);
             }
         });
     }
@@ -688,10 +726,10 @@
                 var tokenInput = $('#token');
                 if (tokenInput.attr('type') === 'password') {
                     tokenInput.attr('type', 'text');
-                    $('#toggleTokenVisibilityBtn').text('Verbergen');
+                    $('#toggleTokenVisibilityBtn').text(I18N.tokenHide);
                 } else {
                     tokenInput.attr('type', 'password');
-                    $('#toggleTokenVisibilityBtn').text('Anzeigen');
+                    $('#toggleTokenVisibilityBtn').text(I18N.tokenShow);
                 }
                 renderUpdateUrlPreview();
             });
