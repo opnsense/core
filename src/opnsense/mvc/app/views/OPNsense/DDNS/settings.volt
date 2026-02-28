@@ -493,7 +493,7 @@
     }
 
     function copyPreviewUrl() {
-            var text = buildDisplayPreviewUrl();
+            var text = buildPreviewUrl();
         if (!text || text === '-') {
             $('#copyPreviewInfo').text(I18N.noPreview);
             return;
