@@ -399,11 +399,11 @@
 
     function setPresetHintByValue(value) {
         var hints = {
-            'https://ddns.afraid.org/dynamic/update.php?{token}': "{{ lang._('DDNS default: dynamic/update.php?TOKEN')|e('js') }}",
-            'https://ddns.afraid.org:8080/dynamic/update.php?{token}': "{{ lang._('DDNS via port 8080 if standard port is blocked.')|e('js') }}",
-            'https://dynv6.com/api/update?token={token}&ipv4={ip}': "{{ lang._('dynv6: use your API token from account; IPv4 is passed as ipv4={ip}.')|e('js') }}",
-            'https://ipv64.net/nic/update?key={token}&ip={ip}': "{{ lang._('IPv64: use your key/token from IPv64; IP is passed as ip={ip}.')|e('js') }}",
-            'https://www.duckdns.org/update?domains=YOURDOMAIN&token={token}&ip={ip}': "{{ lang._('DuckDNS: replace YOURDOMAIN in template; token remains in token field.')|e('js') }}"
+            'https://ddns.afraid.org/dynamic/update.php?{token}': {{ lang._('DDNS default: dynamic/update.php?TOKEN')|json_encode }},
+            'https://ddns.afraid.org:8080/dynamic/update.php?{token}': {{ lang._('DDNS via port 8080 if standard port is blocked.')|json_encode }},
+            'https://dynv6.com/api/update?token={token}&ipv4={ip}': {{ lang._('dynv6: use your API token from account; IPv4 is passed as ipv4={ip}.')|json_encode }},
+            'https://ipv64.net/nic/update?key={token}&ip={ip}': {{ lang._('IPv64: use your key/token from IPv64; IP is passed as ip={ip}.')|json_encode }},
+            'https://www.duckdns.org/update?domains=YOURDOMAIN&token={token}&ip={ip}': {{ lang._('DuckDNS: replace YOURDOMAIN in template; token remains in token field.')|json_encode }}
         };
         setPresetHint(hints[value] || I18N.providerDocsHint);
     }
