@@ -65,8 +65,11 @@
                             <select id="tokenUpdatePreset" class="form-control" style="margin-bottom:8px;">
                                 <option value="https://ddns.afraid.org/dynamic/update.php?{token}">{{ lang._('DDNS default (dynamic/update.php?TOKEN)') }}</option>
                                 <option value="https://ddns.afraid.org:8080/dynamic/update.php?{token}">{{ lang._('DDNS default port 8080') }}</option>
+                                <option value="https://sync.afraid.org/u/{token}/">{{ lang._('DDNS v2 token (sync.afraid.org/u/{token}/)') }}</option>
+                                <option value="https://sync.afraid.org/u/{token}/?address={ip}">{{ lang._('DDNS v2 token + IP (sync.afraid.org/u/{token}/?address={ip})') }}</option>
                                 <option value="https://dynv6.com/api/update?token={token}&amp;ipv4={ip}">{{ lang._('dynv6 token (dynv6.com/api/update)') }}</option>
                                 <option value="https://ipv64.net/nic/update?key={token}&amp;ip={ip}">{{ lang._('IPv64 key/token (ipv64.net/nic/update)') }}</option>
+                                <option value="https://www.duckdns.org/update?domains=YOURDOMAIN&amp;token={token}">{{ lang._('DuckDNS token only (provider detects IP)') }}</option>
                                 <option value="https://www.duckdns.org/update?domains=YOURDOMAIN&amp;token={token}&amp;ip={ip}">{{ lang._('DuckDNS token (set domain in template)') }}</option>
                                 <option value="custom">{{ lang._('Custom URL') }}</option>
                             </select>
@@ -401,8 +404,11 @@
         var hints = {
             'https://ddns.afraid.org/dynamic/update.php?{token}': {{ lang._('DDNS default: dynamic/update.php?TOKEN')|json_encode }},
             'https://ddns.afraid.org:8080/dynamic/update.php?{token}': {{ lang._('DDNS via port 8080 if standard port is blocked.')|json_encode }},
+            'https://sync.afraid.org/u/{token}/': {{ lang._('DDNS v2 token URL; provider resolves IP automatically.')|json_encode }},
+            'https://sync.afraid.org/u/{token}/?address={ip}': {{ lang._('DDNS v2 token URL with explicit IP via address={ip}.')|json_encode }},
             'https://dynv6.com/api/update?token={token}&ipv4={ip}': {{ lang._('dynv6: use your API token from account; IPv4 is passed as ipv4={ip}.')|json_encode }},
             'https://ipv64.net/nic/update?key={token}&ip={ip}': {{ lang._('IPv64: use your key/token from IPv64; IP is passed as ip={ip}.')|json_encode }},
+            'https://www.duckdns.org/update?domains=YOURDOMAIN&token={token}': {{ lang._('DuckDNS: token-based update; provider can detect source IP.')|json_encode }},
             'https://www.duckdns.org/update?domains=YOURDOMAIN&token={token}&ip={ip}': {{ lang._('DuckDNS: replace YOURDOMAIN in template; token remains in token field.')|json_encode }}
         };
         setPresetHint(hints[value] || I18N.providerDocsHint);
@@ -413,8 +419,11 @@
         var knownPresets = [
             'https://ddns.afraid.org/dynamic/update.php?{token}',
             'https://ddns.afraid.org:8080/dynamic/update.php?{token}',
+            'https://sync.afraid.org/u/{token}/',
+            'https://sync.afraid.org/u/{token}/?address={ip}',
             'https://dynv6.com/api/update?token={token}&ipv4={ip}',
             'https://ipv64.net/nic/update?key={token}&ip={ip}',
+            'https://www.duckdns.org/update?domains=YOURDOMAIN&token={token}',
             'https://www.duckdns.org/update?domains=YOURDOMAIN&token={token}&ip={ip}'
         ];
 
