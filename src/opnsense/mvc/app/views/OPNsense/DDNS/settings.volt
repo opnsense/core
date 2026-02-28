@@ -5,6 +5,9 @@
         <div class="panel panel-default">
             <div class="panel-heading">{{ lang._('Settings') }}</div>
             <div class="panel-body">
+                <div class="alert alert-info" role="alert" style="margin-bottom:16px;">
+                    {{ lang._('Configure provider endpoints and token once, then use automatic checks for periodic updates.') }}
+                </div>
                 <form id="ddns-form" class="form-horizontal">
                     <div class="form-group">
                         <label class="col-sm-3 control-label">{{ lang._('Enabled') }}</label>
@@ -84,12 +87,11 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">{{ lang._('DDNS token') }}</label>
                         <div class="col-sm-9">
-                            <div style="margin-bottom:6px;color:#c62828;font-weight:600;">{{ lang._('TOKEN FIELD (visible)') }}</div>
-                                <div style="display:flex;gap:8px;align-items:center;">
-                                    <input id="token" type="password" class="form-control" placeholder="{{ lang._('Token or full v2 URL (sync.afraid.org/u/.../)') }}">
-                                    <button type="button" id="toggleTokenVisibilityBtn" class="btn btn-default btn-sm">{{ lang._('Show') }}</button>
-                                </div>
-                                <small class="help-block" style="margin-top:6px;">{{ lang._('Token is hidden by default. Use "Show" to reveal it.') }}</small>
+                            <div style="display:flex;gap:8px;align-items:center;">
+                                <input id="token" type="password" class="form-control" placeholder="{{ lang._('Token or full v2 URL (sync.afraid.org/u/.../)') }}">
+                                <button type="button" id="toggleTokenVisibilityBtn" class="btn btn-default btn-sm">{{ lang._('Show') }}</button>
+                            </div>
+                            <small class="help-block" style="margin-top:6px;">{{ lang._('Token is hidden by default. Use "Show" to reveal it.') }}</small>
                         </div>
                     </div>
 
@@ -106,6 +108,7 @@
 
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-9">
+                            <button type="button" id="testBtn" class="btn btn-default">{{ lang._('Test connection') }}</button>
                             <button type="button" id="runBtn" class="btn btn-default">{{ lang._('Update now') }}</button>
                             <button type="button" id="saveBtn" class="btn btn-primary">{{ lang._('Save') }}</button>
                         </div>
@@ -166,6 +169,7 @@
         sourceStored: "{{ lang._('Source: stored/automatic') }}",
         tokenShow: "{{ lang._('Show') }}",
         tokenHide: "{{ lang._('Hide') }}",
+        disabledStateHint: "{{ lang._('Enable DDNS to run tests and updates.') }}",
         logCleared: "{{ lang._('Log cleared') }}",
         logClearFailed: "{{ lang._('Failed to clear log') }}",
         noConfirmedRun: "{{ lang._('No confirmed run yet') }}",
@@ -206,6 +210,20 @@
 
     function setProviderMessage(message) {
         $('#providerMessage').text(message || '');
+    }
+
+    function syncControlState() {
+        var enabled = $('#enabled').is(':checked');
+        var autoUpdate = $('#autoUpdate').is(':checked');
+
+        $('#autoUpdate').prop('disabled', !enabled);
+        $('#intervalMinutes').prop('disabled', !enabled || !autoUpdate);
+        $('#runBtn').prop('disabled', !enabled);
+        $('#testBtn').prop('disabled', !enabled);
+
+        if (!enabled) {
+            setProviderMessage(I18N.disabledStateHint);
+        }
     }
 
     function setLogEntries(text) {
@@ -551,6 +569,7 @@
             setCurrentState(currentStateValue || 'unknown');
             setLogEntries((logEntriesValue || '').trim());
             setProviderMessage(providerMessageValue || '');
+            syncControlState();
             startNextRunCountdown(nextRunEpochValue || '0', toBool(enabledValue), toBool(autoUpdateValue), toBool(cronActiveValue));
 
             if (!skipDetectIp) {
@@ -738,8 +757,10 @@
         $('#copyPreviewBtn').on('click', copyPreviewUrl);
         $('#clearLogBtn').on('click', clearLogEntries);
         $('#saveBtn').on('click', saveSettings);
+        $('#testBtn').on('click', testConnection);
         $('#runBtn').on('click', runUpdateNow);
         $('#enabled').on('change', function() {
+            syncControlState();
             if (!$('#enabled').is(':checked')) {
                 if (window.__ddnsCountdownTimer) {
                     clearInterval(window.__ddnsCountdownTimer);
@@ -750,6 +771,7 @@
             saveSchedule();
         });
         $('#autoUpdate').on('change', function() {
+            syncControlState();
             if (!$('#autoUpdate').is(':checked')) {
                 if (window.__ddnsCountdownTimer) {
                     clearInterval(window.__ddnsCountdownTimer);
@@ -776,6 +798,7 @@
             saveSchedule();
         });
         renderUpdateUrlPreview();
+        syncControlState();
         loadSettings(false);
         if (window.__ddnsAutoRefreshTimer) {
             clearInterval(window.__ddnsAutoRefreshTimer);
