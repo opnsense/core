@@ -1,0 +1,7 @@
+<menu>
+    <Services>
+        <DDNS VisibleName="DDNS" cssClass="fa fa-globe fa-fw">
+            <Settings order="10" url="/ui/ddns/settings"/>
+        </DDNS>
+    </Services>
+</menu>

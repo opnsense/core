@@ -1,0 +1,9 @@
+<acl>
+    <page-services-ddns>
+        <name>Services: DDNS: Settings</name>
+        <patterns>
+            <pattern>ui/ddns/*</pattern>
+            <pattern>api/ddns/*</pattern>
+        </patterns>
+    </page-services-ddns>
+</acl>
