@@ -58,21 +58,17 @@ class Action(BaseAction):
             return str(e)
 
         if Action.cached_results is None:
-            # cache cleanup on startup (first executed script_output action)
+            # Cache cleanup on startup (first executed script_output action)
+            # Although in theory we should lock this operation, the end only risk is leaving some
+            # temp files which will eventually be cleaned-up on a successive restart
             for filename in glob.glob("%s/%s*"% (tempfile.gettempdir(), Action.temp_prefix)):
                 os.remove(filename)
             Action.cached_results = {}
-        elif self.cache_ttl is not None and len(Action.cached_results) > 0:
-            # cache expire
-            now = time.time()
-            for key in list(Action.cached_results.keys()):
-                if Action.cached_results[key]['expire'] < now:
-                    if os.path.isfile(Action.cached_results[key]['filename']):
-                        os.remove(Action.cached_results[key]['filename'])
-                    del Action.cached_results[key]
 
         try:
-            if script_hash in Action.cached_results and os.path.isfile(Action.cached_results[script_hash]['filename']):
+            # use cache for requested script when not yet expired
+            if script_hash in Action.cached_results and Action.cached_results[script_hash]['expire'] > time.time() \
+                    and os.path.isfile(Action.cached_results[script_hash]['filename']):
                 with open(Action.cached_results[script_hash]['filename']) as output_stream:
                     fcntl.flock(output_stream, fcntl.LOCK_EX)
                     output_stream.seek(0)
