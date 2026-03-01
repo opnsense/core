@@ -598,7 +598,14 @@ class Config extends Singleton
     {
         $target_dir = dirname($this->config_file) . "/backup/";
         if (file_exists($target_dir)) {
-            $backups = glob($target_dir . "config*.xml");
+            $now = microtime(true);
+            $backups = [];
+            foreach (glob($target_dir . "config-*.xml") as $filename) {
+                $bck_timestamp = (float)substr(explode('config-', $filename)[1], 0, -4);
+                if ($bck_timestamp <= $now) {
+                    $backups[] = $filename;
+                }
+            }
             // sort by date (descending)
             rsort($backups);
             if (!$fetchRevisionInfo) {
