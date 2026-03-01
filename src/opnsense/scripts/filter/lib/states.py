@@ -182,7 +182,8 @@ def query_states(rule_label, filter_str):
                 # label
                 continue
             elif parts[0] == "id:" and (filter_clauses or filter_net_clauses):
-                match = False
+                # enfore network when specified, otherwise only use filter clause
+                match = len(filter_net_clauses) == 0
                 for filter_net in filter_net_clauses:
                     try:
                         match = False
@@ -195,6 +196,7 @@ def query_states(rule_label, filter_str):
                             break
                     except:
                         continue
+
                 if not match:
                     continue
 
