@@ -514,6 +514,7 @@
             // local-port in DNAT does not support port ranges, so we replace the label for clarity
             const singlePortOnly = $.extend(true, {}, data);
             singlePortOnly.single.label = "{{ lang._('Single port') }}";
+            delete singlePortOnly.ports;
 
             $(".port_selector").each(function () {
                 const opts = $(this).is('#row_rule\\.local-port .port_selector')
