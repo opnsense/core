@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2024 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -52,5 +52,9 @@ response = DB().add_client(
     mac_address=arp_entry['mac'] if arp_entry is not None else None
 )
 PF.add_to_table(zoneid=args.zoneid, address=args.ip_address)
+IPFW.add_accounting(args.ip_address)
+
+# Note: the sync process will collect and add any client roaming IPs (if allowed)
+
 response['clientState'] = 'AUTHORIZED'
 print(ujson.dumps(response))

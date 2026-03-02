@@ -50,21 +50,41 @@ class AccessController extends ApiControllerBase
     protected function clientSession(string $zoneid)
     {
         $backend = new Backend();
-        $allClientsRaw = $backend->configdpRun("captiveportal list_clients", [$zoneid]);
-        $allClients = json_decode($allClientsRaw, true);
+        $allClients = json_decode($backend->configdpRun("captiveportal list_clients", [$zoneid]), true);
+        $clientIp = $this->getClientIp();
+
         if ($allClients != null) {
             // search for client by ip address
             foreach ($allClients as $connectedClient) {
-                if ($connectedClient['ipAddress'] == $this->getClientIp()) {
+                if ($connectedClient['ipAddress'] == $clientIp) {
                     // client is authorized in this zone according to our administration
                     $connectedClient['clientState'] = 'AUTHORIZED';
                     return $connectedClient;
                 }
             }
+
+            // IP-based lookup failed - try MAC-based lookup for MAC-authenticated sessions
+            // This handles IPv6 address rotation (privacy extensions, SLAAC changes, DHCPv6 renewals)
+            $clientMac = $this->getClientMac($clientIp);
+            if (!empty($clientMac)) {
+                foreach ($allClients as $connectedClient) {
+                    // Only match MAC-based authentication sessions (---mac---)
+                    if (
+                        $connectedClient['authenticated_via'] == '---mac---'
+                        && !empty($connectedClient['macAddress'])
+                        && $connectedClient['macAddress'] == $clientMac
+                    ) {
+                        // MAC matches - this is the same client with a rotated IP address
+                        // Return authorized session (background process will update IP)
+                        $connectedClient['clientState'] = 'AUTHORIZED';
+                        return $connectedClient;
+                    }
+                }
+            }
         }
 
         // return Unauthorized including authentication requirements
-        $result = ['clientState' => "NOT_AUTHORIZED", "ipAddress" => $this->getClientIp()];
+        $result = ['clientState' => "NOT_AUTHORIZED", "ipAddress" => $clientIp];
         $mdlCP = new CaptivePortal();
         $cpZone = $mdlCP->getByZoneID($zoneid);
         if ($cpZone != null && (string)$cpZone->extendedPreAuthData == '1') {
@@ -87,30 +107,34 @@ class AccessController extends ApiControllerBase
      */
     protected function getClientIp()
     {
+        $clientAddress = $this->request->getClientAddress();
+        $forwardedFor = $this->request->getHeader('X-Forwarded-For');
+
         // determine original sender of this request
-        if (
-            $this->request->getHeader('X-Forwarded-For') != "" &&
-            explode('.', $this->request->getClientAddress())[0] == '127'
-        ) {
+        // check if client is localhost (IPv4 or IPv6) and X-Forwarded-For is present
+        if ($forwardedFor != "" && (strpos($clientAddress, '127') === 0)) {
             // use X-Forwarded-For header to determine real client
-            return $this->request->getHeader('X-Forwarded-For');
+            // handle multiple IPs (take first one)
+            $ips = explode(',', $forwardedFor);
+            return trim($ips[0]);
         } else {
             // client accesses the Api directly
-            return $this->request->getClientAddress();
+            return $clientAddress;
         }
     }
 
     protected function getClientMac($ip)
     {
         if (empty($this->arp)) {
-            /* currently this only matches ipv4 properly, for ipv6 we need to unpack both rows and offered parameter */
             $data = json_decode((new Backend())->configdRun('hostwatch dump'), true) ?? [];
             if (!empty($data['rows'])) {
                 foreach ($data['rows'] as $row) {
-                    $this->arp[$row[2]] = $row[1];
+                    // remove scope from IPv6 address if present (e.g., fe80::1%em0 -> fe80::1)
+                    $this->arp[$row[2]] = explode('%', $row[1])[0];
                 }
             }
         }
+
         return $this->arp[$ip] ?? null;
     }
 
@@ -263,7 +287,12 @@ class AccessController extends ApiControllerBase
 
                             // check group when group enforcement is set
                             if ($isAuthenticated && (string)$cpZone->authEnforceGroup != "") {
-                                $isAuthenticated = $authServer->groupAllowed($userName, $cpZone->authEnforceGroup);
+                                /** @var \OPNsense\Auth\Base $authServer */
+                                if ($authServer instanceof \OPNsense\Auth\Base) {
+                                    $isAuthenticated = $authServer->groupAllowed($userName, $cpZone->authEnforceGroup);
+                                } else {
+                                    $isAuthenticated = false;
+                                }
                             }
 
                             if ($isAuthenticated) {
@@ -306,10 +335,11 @@ class AccessController extends ApiControllerBase
                             if (array_key_exists('session_timeout', $authProps) || $cpZone->alwaysSendAccountingReqs == '1') {
                                 $backend->configdpRun(
                                     "captiveportal set session_restrictions",
-                                    array((string)$cpZone->zoneid,
+                                    [
+                                        (string)$cpZone->zoneid,
                                         $CPsession['sessionId'],
                                         $authProps['session_timeout'] ?? null,
-                                        )
+                                    ]
                                 );
                             }
                         }

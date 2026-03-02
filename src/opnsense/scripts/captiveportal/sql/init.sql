@@ -18,6 +18,20 @@ create table cp_clients (
 create index cp_clients_ip ON cp_clients (ip_address);
 create index cp_clients_zone ON cp_clients (zoneid);
 
+-- multiple IPs per session
+create table cp_client_ips (
+      zoneid     int not null
+,     sessionid  varchar not null
+,     ip_address varchar not null
+,     primary key (zoneid, sessionid, ip_address)
+,     foreign key (zoneid, sessionid)
+        references cp_clients(zoneid, sessionid)
+        on delete cascade
+);
+
+create index cp_client_ips_ip   on cp_client_ips (ip_address);
+create index cp_client_ips_zone on cp_client_ips (zoneid);
+
 -- session (accounting) info
 create table session_info (
       zoneid int
