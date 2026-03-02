@@ -133,6 +133,12 @@ class OpenVPN extends BaseModel
                         $key . ".verify_client_cert"
                     ));
                 }
+                if (!$instance->username_as_common_name->isEmpty() && $instance->authmode->isEmpty()) {
+                    $messages->appendMessage(new Message(
+                        gettext('Username as CN requires an authentication mode.'),
+                        $key . ".authmode"
+                    ));
+                }
                 if (!$instance->{'auth-gen-token'}->isEmpty() && (string)$instance->{'reneg-sec'} == '0') {
                     $messages->appendMessage(new Message(
                         gettext('A token lifetime requires a non zero Renegotiate time.'),
