@@ -67,6 +67,7 @@
             </destination>
             <target type="NetworkAliasField"/>
             <local-port type="PortField">
+                <EnableWellKnown>Y</EnableWellKnown>
                 <EnableAlias>Y</EnableAlias>
                 <ValidationMessage>Please specify a valid port number or alias.</ValidationMessage>
             </local-port>
