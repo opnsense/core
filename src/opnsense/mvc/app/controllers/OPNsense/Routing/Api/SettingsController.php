@@ -54,8 +54,8 @@ class SettingsController extends ApiMutableModelControllerBase
     public function searchGatewayAction()
     {
         $cfg = Config::getInstance()->object();
-        $ifconfig = json_decode((new Backend())->configdRun('interface list ifconfig'), true);
-        $gateways_status = json_decode((new Backend())->configdRun('interface gateways status'), true);
+        $ifconfig = json_decode((new Backend())->configdRun('interface list ifconfig'), true) ?? [];
+        $gateways_status = json_decode((new Backend())->configdRun('interface gateways status'), true) ?? [];
         $gateways = array_values($this->getModel()->gatewaysIndexedByName(true, false, true));
         $down_gateways = !empty((string)$cfg->system->gw_switch_default) ? array_map(function ($gw) {
             if (str_contains($gw['status'], 'down')) {
