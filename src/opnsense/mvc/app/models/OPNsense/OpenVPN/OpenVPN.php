@@ -135,7 +135,7 @@ class OpenVPN extends BaseModel
                 }
                 if (!$instance->username_as_common_name->isEmpty() && $instance->authmode->isEmpty()) {
                     $messages->appendMessage(new Message(
-                        gettext('Username as CN requires an authentication mode.'),
+                        gettext('Username as CN requires one or more authentication modes.'),
                         $key . ".authmode"
                     ));
                 }
