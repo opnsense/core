@@ -28,56 +28,56 @@
 
 function core_services()
 {
-    $services = array();
+    $services = [];
 
-    $services[] = array(
+    $services[] = [
         'description' => gettext('System Configuration Daemon'),
         'pidfile' => '/var/run/configd.pid',
-        'mwexec' => array(
-            'restart' => array('/usr/local/etc/rc.d/configd restart'),
-            'start' => array('/usr/local/etc/rc.d/configd start'),
-            'stop' => array('/usr/local/etc/rc.d/configd stop'),
-        ),
+        'mwexec' => [
+            'restart' => ['/usr/local/etc/rc.d/configd restart'],
+            'start' => ['/usr/local/etc/rc.d/configd start'],
+            'stop' => ['/usr/local/etc/rc.d/configd stop'],
+        ],
         'name' => 'configd',
         'locked' => true,
-    );
+    ];
 
-    $services[] = array(
+    $services[] = [
         'description' => gettext('Users and Groups'),
-        'php' => array(
-            "restart" => array('system_login_configure')
-        ),
+        'php' => [
+            'restart' => ['system_login_configure'],
+        ],
         'nocheck' => true,
         'name' => 'login',
-    );
+    ];
 
-    $services[] = array(
+    $services[] = [
         'description' => gettext('System routing'),
-        'php' => array(
-            "restart" => array('system_routing_configure')
-        ),
+        'php' => [
+            'restart' => ['system_routing_configure'],
+        ],
         'nocheck' => true,
         'name' => 'routing',
-    );
+    ];
 
-    $services[] = array(
+    $services[] = [
         'description' => gettext('System tunables'),
-        'php' => array(
-            "restart" => array('system_sysctl_configure')
-        ),
+        'php' => [
+            'restart' => ['system_sysctl_configure'],
+        ],
         'nocheck' => true,
         'name' => 'sysctl',
-    );
+    ];
 
-    $services[] = array(
+    $services[] = [
         'description' => gettext('Cron'),
-        'php' => array(
+        'php' => [
             'start' => ['system_cron_configure'],
             'restart' => ['system_cron_configure'],
-        ),
+        ],
         'pidfile' => '/var/run/cron.pid',
         'name' => 'cron',
-    );
+    ];
 
     $services[] = [
         'description' => gettext('Syslog-ng Daemon'),
@@ -247,11 +247,11 @@ function core_cron()
 {
     global $config;
 
-    $jobs = array();
+    $jobs = [];
 
-    $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d syslog archive', '1');
-    $jobs[]['autocron'] = array('/usr/local/sbin/ping_hosts.sh', '*/4');
-    $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d firmware changelog cron', '0', '22');
+    $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d syslog archive', '1'];
+    $jobs[]['autocron'] = ['/usr/local/sbin/ping_hosts.sh', '*/4'];
+    $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d firmware changelog cron', '0', '22'];
 
     foreach ((new \OPNsense\Firewall\Alias(true))->aliases->alias->iterateItems() as $alias) {
         if ($alias->type->isEqual('external') && !$alias->expire->isEmpty()) {
@@ -274,30 +274,22 @@ function core_cron()
     }
 
     if (!empty($config['system']['rrdbackup']) && $config['system']['rrdbackup'] > 0) {
-        $jobs[]['autocron'] = array(
-            '/usr/local/etc/rc.syshook.d/backup/20-rrd',
-            '0',
-            '*/' . $config['system']['rrdbackup']
-        );
+        $jobs[]['autocron'] = ['/usr/local/etc/rc.syshook.d/backup/20-rrd', '0', '*/' . $config['system']['rrdbackup']];
     }
 
     if (!empty($config['system']['netflowbackup']) && $config['system']['netflowbackup'] > 0) {
-        $jobs[]['autocron'] = array(
-            '/usr/local/etc/rc.syshook.d/backup/20-netflow',
-            '0',
-            '*/' . $config['system']['netflowbackup']
-        );
+        $jobs[]['autocron'] = ['/usr/local/etc/rc.syshook.d/backup/20-netflow', '0', '*/' . $config['system']['netflowbackup']];
     }
 
     foreach ((new OPNsense\Backup\BackupFactory())->listProviders() as $classname => $provider) {
         if ($provider['handle']->isEnabled()) {
-            $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system remote backup 3600', 0, 1);
+            $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d system remote backup 3600', 0, 1];
             break;
         }
     }
 
     if (!(new OPNsense\Trust\General())->fetch_crls->isEmpty()) {
-        $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system trust download_crls', '1');
+        $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d system trust download_crls', '1'];
     }
 
     return $jobs;
