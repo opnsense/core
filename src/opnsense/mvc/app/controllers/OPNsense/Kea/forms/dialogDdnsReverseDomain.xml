@@ -1,0 +1,26 @@
+<form>
+    <field>
+        <id>ddns_domains.name</id>
+        <label>Reverse domain</label>
+        <type>text</type>
+        <help>Reverse DDNS domain (e.g. 0.168.192.in-addr.arpa. or ip6.arpa. variant)</help>
+    </field>
+    <field>
+        <id>ddns_domains.ip_address</id>
+        <label>IP address</label>
+        <type>text</type>
+        <help>The IP address of the DNS server to update.</help>
+    </field>
+    <field>
+        <id>ddns_domains.port</id>
+        <label>Port</label>
+        <type>text</type>
+        <help>The port on which the DNS server listens. (Default: 53)</help>
+    </field>
+    <field>
+        <id>ddns_domains.key_name</id>
+        <label>TSIG key</label>
+        <type>dropdown</type>
+        <help>Select an optional TSIG key to authenticate updates for this server.</help>
+    </field>
+</form>
