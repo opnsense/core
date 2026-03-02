@@ -142,6 +142,7 @@
                     // hide the row selection checkbox for internal and dataTree group rules
                     if (data.isGroup || !data.uuid || !data.uuid.includes("-")) {
                         $element.addClass('row-no-select');
+                        $element.removeClass('tabulator-selectable');
                     }
 
                     // bucket row (dataTree) styling
@@ -149,6 +150,10 @@
                         $element.addClass('bucket-row');
                     }
                 },
+                selectableRowsCheck: function(row) {
+                    const data = row.getData();
+                    return !(data.isGroup || !data.uuid || !data.uuid.includes("-"));
+                }
             },
             options: {
                 responsive: true,
