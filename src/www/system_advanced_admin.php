@@ -481,7 +481,7 @@ $(document).ready(function() {
     if (isset($restart_webgui) && $restart_webgui): ?>
         BootstrapDialog.show({
             type:BootstrapDialog.TYPE_INFO,
-            title: <?= json_encode($savemsg) ?>,
+            title: <?= json_encode(get_std_save_message()) ?>,
             closable: false,
             message: '<?= html_safe(gettext('The web GUI is reloading at the moment, please wait...')) ?>' +
                 ' <i class="fa fa-cog fa-spin"></i><br /><br />' +
