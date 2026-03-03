@@ -52,9 +52,6 @@ class ServiceController extends ApiMutableServiceControllerBase
 
     protected function invokeFirewallReload()
     {
-        $backend = new Backend();
-        $backend->configdRun('template reload OPNsense/IPFW');
-        $backend->configdRun("ipfw reload");
         return true;
     }
 
