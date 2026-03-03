@@ -64,6 +64,8 @@ _CORE_PYTHON!=	${PYTHONLINK} -V
 CORE_PYTHON?=	${_CORE_PYTHON:[2]:S/./ /g:[1..2]:tW:S/ //}
 .endif
 
+CORE_PYTHON_DOT=${CORE_PYTHON:C/./&./1}
+
 .if exists(${PKG})
 _CORE_SYSLOGNG!=${PKG} query %v syslog-ng
 CORE_SYSLOGNG?=	${_CORE_SYSLOGNG:S/./ /g:[1..2]:tW:S/ /./g}
