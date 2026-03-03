@@ -42,8 +42,9 @@ $(document).ready(function () {
     const divLayers   = [layer_div, layer2_div];
 
     // --- Layout measurements ---
+    const itemWidth = document.querySelector('#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item')?.offsetWidth ?? 70;
     const navHeight =
-        (layer_a.length * 70) +
+        (layer_a.length * itemWidth) +
         ($('.navbar').height() + $('.page-foot').height() - $('a.list-group-item').height());
 
     // --- Helpers ---
