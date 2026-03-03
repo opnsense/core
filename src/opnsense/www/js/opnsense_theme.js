@@ -199,9 +199,24 @@ $(document).ready(function () {
         }
     });
 
-    // --- Init ---
-    toggle_btn.show();
-    if (storage && storage.getItem('toggle_sidebar_preset') == 1) {
-        opnsense_sidebar_toggle(false);
+    // --- Init: check viewport on page load before showing sidebar ---
+    const initHeight = $(window).height();
+    const initWidth  = $(window).width();
+    const tooSmallOnLoad = initHeight < navHeight || initWidth < 760;
+
+    if (tooSmallOnLoad) {
+        navigation.addClass('col-sidebar-hidden');
+        offMouseEvents();
+        toggle_btn.hide();
+        if (isSidebarLeft()) {
+            opnsense_sidebar_toggle(false);
+            offMouseEvents();
+            setTransitionDuration(350);
+        }
+    } else {
+        toggle_btn.show();
+        if (storage && storage.getItem('toggle_sidebar_preset') == 1) {
+            opnsense_sidebar_toggle(false);
+        }
     }
 });
