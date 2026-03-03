@@ -100,12 +100,17 @@
 
                     if (data.isGroup || !data.uuid || !data.uuid.includes("-")) {
                         $element.addClass('row-no-select');
+                        $element.removeClass('tabulator-selectable');
                     }
 
                     if (data.isGroup) {
                         $element.addClass('bucket-row');
                     }
                 },
+                selectableRowsCheck: function(row) {
+                    const data = row.getData();
+                    return !(data.isGroup || !data.uuid || !data.uuid.includes("-"));
+                }
             },
             options: {
                 responsive: true,
