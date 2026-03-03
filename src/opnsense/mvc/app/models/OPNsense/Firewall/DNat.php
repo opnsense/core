@@ -48,21 +48,21 @@ class DNat extends BaseModel
 
                 if (!empty($rule->source->port->getValue()) && !in_array($rule->protocol->getValue(), $port_protos)) {
                     $messages->appendMessage(new Message(
-                        gettext("Source ports are only valid for tcp or udp type rules."),
+                        gettext("Ports are only valid for TCP or UDP type rules."),
                         $rule->source->port->__reference
                     ));
                 }
 
                 if (!empty($rule->destination->port->getValue()) && !in_array($rule->protocol->getValue(), $port_protos)) {
                     $messages->appendMessage(new Message(
-                        gettext("Destination ports are only valid for tcp or udp type rules."),
+                        gettext("Ports are only valid for TCP or UDP type rules."),
                         $rule->destination->port->__reference
                     ));
                 }
 
                 if (!empty($rule->{'local-port'}->getValue()) && !in_array($rule->protocol->getValue(), $port_protos)) {
                     $messages->appendMessage(new Message(
-                        gettext("Target ports are only valid for tcp or udp type rules."),
+                        gettext("Ports are only valid for TCP or UDP type rules."),
                         $rule->{'local-port'}->__reference
                     ));
                 }
@@ -72,7 +72,7 @@ class DNat extends BaseModel
 
                 if ($src_is_addr && in_array($rule->ipprotocol->getValue(), ['inet', 'inet6']) && !$rule->ipprotocol->isEqual($src_proto)) {
                     $messages->appendMessage(new Message(
-                        gettext("Source address type should match selected TCP/IP protocol version."),
+                        gettext("Address type should match selected TCP/IP protocol version."),
                         $rule->source->network->__reference
                     ));
                 }
@@ -82,7 +82,7 @@ class DNat extends BaseModel
 
                 if ($dest_is_addr && in_array($rule->ipprotocol->getValue(), ['inet', 'inet6']) && !$rule->ipprotocol->isEqual($dest_proto)) {
                     $messages->appendMessage(new Message(
-                        gettext("Destination address type should match selected TCP/IP protocol version."),
+                        gettext("Address type should match selected TCP/IP protocol version."),
                         $rule->destination->network->__reference
                     ));
                 }
@@ -92,7 +92,7 @@ class DNat extends BaseModel
 
                 if ($target_is_addr && in_array($rule->ipprotocol->getValue(), ['inet', 'inet6']) && !$rule->ipprotocol->isEqual($target_proto)) {
                     $messages->appendMessage(new Message(
-                        gettext("Target address type should match selected TCP/IP protocol version."),
+                        gettext("Address type should match selected TCP/IP protocol version."),
                         $rule->target->__reference
                     ));
                 }
