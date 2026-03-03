@@ -56,29 +56,10 @@ class AccessController extends ApiControllerBase
         if ($allClients != null) {
             // search for client by ip address
             foreach ($allClients as $connectedClient) {
-                if ($connectedClient['ipAddress'] == $clientIp) {
+                if (in_array($clientIp, $connectedClient['ipAddresses'])) {
                     // client is authorized in this zone according to our administration
                     $connectedClient['clientState'] = 'AUTHORIZED';
                     return $connectedClient;
-                }
-            }
-
-            // IP-based lookup failed - try MAC-based lookup for MAC-authenticated sessions
-            // This handles IPv6 address rotation (privacy extensions, SLAAC changes, DHCPv6 renewals)
-            $clientMac = $this->getClientMac($clientIp);
-            if (!empty($clientMac)) {
-                foreach ($allClients as $connectedClient) {
-                    // Only match MAC-based authentication sessions (---mac---)
-                    if (
-                        $connectedClient['authenticated_via'] == '---mac---'
-                        && !empty($connectedClient['macAddress'])
-                        && $connectedClient['macAddress'] == $clientMac
-                    ) {
-                        // MAC matches - this is the same client with a rotated IP address
-                        // Return authorized session (background process will update IP)
-                        $connectedClient['clientState'] = 'AUTHORIZED';
-                        return $connectedClient;
-                    }
                 }
             }
         }
@@ -107,19 +88,16 @@ class AccessController extends ApiControllerBase
      */
     protected function getClientIp()
     {
-        $clientAddress = $this->request->getClientAddress();
-        $forwardedFor = $this->request->getHeader('X-Forwarded-For');
-
         // determine original sender of this request
-        // check if client is localhost (IPv4 or IPv6) and X-Forwarded-For is present
-        if ($forwardedFor != "" && (strpos($clientAddress, '127') === 0)) {
+        if (
+            $this->request->getHeader('X-Forwarded-For') != "" &&
+            explode('.', $this->request->getClientAddress())[0] == '127'
+        ) {
             // use X-Forwarded-For header to determine real client
-            // handle multiple IPs (take first one)
-            $ips = explode(',', $forwardedFor);
-            return trim($ips[0]);
+            return $this->request->getHeader('X-Forwarded-For');
         } else {
             // client accesses the Api directly
-            return $clientAddress;
+            return $this->request->getClientAddress();
         }
     }
 
@@ -287,12 +265,7 @@ class AccessController extends ApiControllerBase
 
                             // check group when group enforcement is set
                             if ($isAuthenticated && (string)$cpZone->authEnforceGroup != "") {
-                                /** @var \OPNsense\Auth\Base $authServer */
-                                if ($authServer instanceof \OPNsense\Auth\Base) {
-                                    $isAuthenticated = $authServer->groupAllowed($userName, $cpZone->authEnforceGroup);
-                                } else {
-                                    $isAuthenticated = false;
-                                }
+                                $isAuthenticated = $authServer->groupAllowed($userName, $cpZone->authEnforceGroup);
                             }
 
                             if ($isAuthenticated) {

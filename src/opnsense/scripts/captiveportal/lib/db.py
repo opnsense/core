@@ -120,25 +120,20 @@ class DB(object):
                 )
             """)
 
-            # indexes used when allow_roaming is turned on for a zone
-            cur.execute("CREATE INDEX IF NOT EXISTS cp_client_ips_ip   ON cp_client_ips(ip_address)")
-            cur.execute("CREATE INDEX IF NOT EXISTS cp_client_ips_zone ON cp_client_ips(zoneid)")
+        # indexes used when allow_roaming is turned on for a zone
+        cur.execute("CREATE INDEX IF NOT EXISTS cp_client_ips_ip   ON cp_client_ips(ip_address)")
+        cur.execute("CREATE INDEX IF NOT EXISTS cp_client_ips_zone ON cp_client_ips(zoneid)")
 
-            self._connection.commit()
-        else:
-            # Table exists: ensure indexes are present
-            cur.execute("CREATE INDEX IF NOT EXISTS cp_client_ips_ip   ON cp_client_ips(ip_address)")
-            cur.execute("CREATE INDEX IF NOT EXISTS cp_client_ips_zone ON cp_client_ips(zoneid)")
-            self._connection.commit()
+        self._connection.commit()
 
         cur.close()
 
-    def sessions_per_address(self, zoneid, ip_address=None, mac_address=None):
+    def sessions_per_address(self, zoneid, ip_address='', mac_address=''):
         """ fetch session(s) per (ip/mac) address
         Primary IP is stored in cp_clients.ip_address; roaming IPs in cp_client_ips.
         """
         # Nothing to match on
-        if (ip_address is None or str(ip_address).strip() == '') and (mac_address is None or str(mac_address).strip() == ''):
+        if ip_address == '' and mac_address == '':
             return []
 
         cur = self._connection.cursor()
@@ -149,10 +144,10 @@ class DB(object):
         }
 
         clauses = []
-        if ip_address is not None and str(ip_address).strip() != '':
+        if ip_address != '':
             # Match either primary IP or any roaming IP
             clauses.append("(cc.ip_address = :ip_address OR ci.ip_address = :ip_address)")
-        if mac_address is not None and str(mac_address).strip() != '':
+        if mac_address != '':
             clauses.append("cc.mac_address = :mac_address")
 
         where_or = " OR ".join(clauses)
@@ -190,7 +185,7 @@ class DB(object):
 
             # set cp_client as deleted in case there's already a user logged-in at this ip address
             # (match both primary IP and roaming IPs)
-            if ip_address is not None and str(ip_address).strip() != '':
+            if ip_address != '':
                 cur.execute("""
                     UPDATE cp_clients
                     SET    deleted = 1
@@ -235,23 +230,13 @@ class DB(object):
                     """, {'zoneid': zoneid, 'sessionid': sessionid, 'ip_address': ip_address})
         self._connection.commit()
 
-    def update_roaming_ips(self, zoneid, sessionid, ip_addresses):
+    def update_roaming_ips(self, zoneid, sessionid, ip_addresses=[]):
         """Update roaming IP addresses for a session to exactly match the provided list.
         Returns the current set of IP addresses stored in the database.
         """
 
-        if isinstance(sessionid, bytes):
-            sessionid = sessionid.decode()
-
-        if not ip_addresses:
-            ip_addresses = []
-
         # clean + deduplicate + remove empty values
-        new_ips = {
-            str(ip).strip()
-            for ip in ip_addresses
-            if ip is not None and str(ip).strip() != ''
-        }
+        new_ips = {ip for ip in ip_addresses if ip != ''}
 
         cur = self._connection.cursor()
         try:
@@ -340,7 +325,7 @@ class DB(object):
         else:
             return None
 
-    def list_clients(self, zoneid=None):
+    def list_clients(self, zoneid=None, include_ips=False):
         """ return list of (administrative) connected clients and usage statistics
         :param zoneid: zone id
         :param include_ips: if True, include all IPs (primary + roaming) as a list in record['ipAddresses']
@@ -374,6 +359,32 @@ class DB(object):
                         order by case when cc.username is not null then cc.username else cc.ip_address end
                         ,        cc.created desc
                     """, {'zoneid': zoneid})
+        
+        ip_map = {}
+        if include_ips:
+            cur_ips = self._connection.cursor()
+            cur_ips.execute("""
+                SELECT cc.zoneid, cc.sessionid, cc.ip_address
+                FROM cp_clients cc
+                WHERE (cc.zoneid = :zoneid OR :zoneid IS NULL)
+                AND cc.deleted = 0
+                AND cc.ip_address IS NOT NULL
+                AND TRIM(cc.ip_address) <> ''
+                UNION ALL
+                SELECT ci.zoneid, ci.sessionid, ci.ip_address
+                FROM cp_client_ips ci
+                JOIN cp_clients cc
+                ON cc.zoneid = ci.zoneid AND cc.sessionid = ci.sessionid
+                WHERE (ci.zoneid = :zoneid OR :zoneid IS NULL)
+                AND cc.deleted = 0
+                AND ci.ip_address IS NOT NULL
+                AND TRIM(ci.ip_address) <> ''
+            """, {'zoneid': zoneid})
+
+            for z, sid, ip in cur_ips.fetchall():
+                ip_map.setdefault((z, sid), set()).add(ip)
+            ip_map = {k: sorted(v) for k, v in ip_map.items()}
+            cur_ips.close()
 
         while True:
             if not fieldnames:
@@ -385,6 +396,8 @@ class DB(object):
                 break
 
             record = {fieldnames[idx]: row[idx] for idx in range(len(row))}
+            if include_ips:
+                record['ipAddresses'] = ip_map.get((record['zoneid'], record['sessionId']), [])
             result.append(record)
 
         cur.close()
@@ -398,9 +411,6 @@ class DB(object):
         - roaming IPs are cp_client_ips.ip_address
         Returns a de-duplicated set[str] (order not guaranteed).
         """
-        if isinstance(sessionid, bytes):
-            sessionid = sessionid.decode()
-
         cur = self._connection.cursor()
         try:
             params = {'zoneid': zoneid, 'sessionid': sessionid}
@@ -414,8 +424,8 @@ class DB(object):
             """, params)
             row = cur.fetchone()
             ips = set()
-            if row and row[0] and str(row[0]).strip():
-                ips.add(str(row[0]).strip())
+            if row and row[0] and str(row[0]):
+                ips.add(str(row[0]))
 
             cur.execute("""
                 SELECT ci.ip_address
@@ -426,8 +436,8 @@ class DB(object):
                 AND TRIM(ci.ip_address) <> ''
             """, params)
             for (ip,) in cur.fetchall():
-                if ip and str(ip).strip():
-                    ips.add(str(ip).strip())
+                if ip and str(ip):
+                    ips.add(str(ip))
 
             return ips
         finally:
@@ -521,7 +531,7 @@ class DB(object):
         # Ensure primary IP is included for each session
         for rec in sessions.values():
             pip = rec.get('primary_ip')
-            if pip is not None and str(pip).strip() != '':
+            if pip is not None and pip != '':
                 rec['ips'].add(pip)
 
         sql_new = """

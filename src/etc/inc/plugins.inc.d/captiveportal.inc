@@ -91,7 +91,6 @@ function captiveportal_firewall($fw)
             }
 
             foreach ($zone->interfaces->getValues() as $intf) {
-                // allow DNS (IPv4 + IPv6)
                 $fw->registerFilterRule(
                     1,
                     [
@@ -156,7 +155,6 @@ function captiveportal_firewall($fw)
                         ]
                     );
 
-                    // Allow access to the captive portal (IPv4 + IPv6)
                     $proto = $to_port === '443' ? 'https' : 'http';
                     $fw->registerFilterRule(
                         2,
@@ -175,7 +173,6 @@ function captiveportal_firewall($fw)
                     );
                 }
 
-                // block all non-authenticated users (IPv4 + IPv6)
                 $fw->registerFilterRule(
                     3,
                     [
