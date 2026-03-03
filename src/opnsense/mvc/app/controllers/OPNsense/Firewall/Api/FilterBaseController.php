@@ -97,14 +97,12 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
                     'description' => ''
                 ];
             }
-            $aliasmdl = new Alias(true);
-            Util::attachAliasObject($aliasmdl);
-            foreach ($aliasmdl->aliasIterator() as $alias) {
+            foreach (Alias::getCachedData()['aliases']['alias'] ?? [] as $alias) {
                 $this->networks[$alias['name']] = [
                     'value' => $alias['name'],
                     '%value' => $alias['name'],
                     'isAlias' => true,
-                    'description' => Util::aliasDescription($alias['name'])
+                    'description' => $alias['description'],
                 ];
             }
         }
