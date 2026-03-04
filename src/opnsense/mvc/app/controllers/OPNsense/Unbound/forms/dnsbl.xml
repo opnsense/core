@@ -35,6 +35,9 @@
         <style>tokenize</style>
         <allownew>true</allownew>
         <help>List of domains to allow. You can use regular expressions. This allow list only applies to blocklist matches on items in this policy.</help>
+        <grid_view>
+            <formatter>expand</formatter>
+        </grid_view>
     </field>
     <field>
         <id>blocklist.blocklists</id>
@@ -43,6 +46,9 @@
         <style>tokenize</style>
         <allownew>true</allownew>
         <help>List of domains to blocklist. Only exact matches are supported.</help>
+        <grid_view>
+            <formatter>expand</formatter>
+        </grid_view>
     </field>
     <field>
         <id>blocklist.wildcards</id>
@@ -54,6 +60,9 @@
             List of wildcard domains to blocklist. All subdomains of the given domain will
             be blocked. Blocking first-level domains is not supported.
         </help>
+        <grid_view>
+            <formatter>expand</formatter>
+        </grid_view>
     </field>
     <field>
         <id>blocklist.source_nets</id>
