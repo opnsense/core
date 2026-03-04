@@ -1802,6 +1802,53 @@ class UIBootgrid {
 
                 return cell.getValue() ? moment(parseInt(cell.getValue())*1000).format("lll") : "";
             },
+            expand: (cell, formatterParams, onRendered) => {
+                const val = cell.getValue();
+
+                if (!val) return "";
+
+                const isValid =
+                    typeof val === "string" ||
+                    (Array.isArray(val) && val.every(v => typeof v === "string"));
+
+                if (!isValid) {
+                    console.warn(`"expand" formatter encountered invalid data for column '${cell.getField()}'`);
+                    return "";
+                }
+
+                const maxLines = 10;
+                const lines = typeof val === "string" ? val.split(",").map(s => s.trim()).filter(Boolean) : val;
+
+                if (lines.length <= maxLines) {
+                    return $('<div/>')
+                        .css("white-space", "pre-wrap")
+                        .text(lines.join("\n"))[0];
+                }
+
+                const preview = lines.slice(0, maxLines).join("\n") + "\n…";
+                const stateKey = "_expandCollapsed";
+                if (cell[stateKey] == null) cell[stateKey] = true;
+
+                const $wrap = $('<div/>').css("white-space", "pre-wrap");
+                $wrap.attr('title', this._translate('expand')).tooltip({container: 'body', trigger: 'hover'});
+                const $content = $('<div/>').text(cell[stateKey] ? preview : lines.join("\n"));
+                $wrap.append($content);
+
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                    const $td = $(cell.getElement());
+
+                    $td.off("click.expandCollapse").on("click.expandCollapse", (e) => {
+                        e.stopPropagation(); // if rowSelect is set, this will prevent the row from being selected
+
+                        cell[stateKey] = !cell[stateKey];
+                        $content.text(cell[stateKey] ? preview : lines.join("\n"));
+                        this.normalizeRowHeight();
+                    });
+                });
+
+                return $wrap[0];
+            }
         }
     }
 

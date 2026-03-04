@@ -235,28 +235,6 @@
                             }
                             return '';
                         },
-                        "routes": function (column, row) {
-                            let $elements = $('<div></div>').attr('class', 'route-container');
-                            if (row.routes) {
-                                let i = 0;
-                                row.routes.forEach(function (route) {
-                                    let $route = $('<span></span>').attr('class', 'route-content').text(route);
-                                    if (route == 'default') {
-                                        $route.css('color', 'green');
-                                    }
-                                    if (i > 1) {
-                                        $route.css("display", "none");
-                                    }
-                                    $elements.append($route.append($('<br/>')));
-                                    i++;
-                                });
-                                $elements.append($('<button></button>')
-                                    .attr('class', 'route-expand btn btn-primary btn-xs')
-                                    .text("{{ lang._('Expand') }}"));
-                            }
-                            return $elements.prop('outerHTML');
-
-                        },
                         "status": function (column, row) {
                             let connected = row.status == 'up' ? 'text-success' : 'text-danger';
                             let status = row.status;
@@ -293,34 +271,7 @@
                     }
                 }
             }
-        ).on("loaded.rs.jquery.bootgrid", function (e) {
-            $(".route-container").each(function () {
-                let $route_container = $(this);
-                let count = $(this).children('.route-content').length;
-                let $expand = $(this).find(".route-expand");
-
-                if (count > 2) {
-                    $expand.show();
-                    $("#grid-overview").bootgrid("normalizeRowHeight");
-                }
-
-                $expand.click(function (even) {
-                    let $collapsed = $route_container.children('.route-content').filter(function() {
-                        return $(this).css('display').toLowerCase().indexOf('none') > -1;
-                    });
-                    if ($collapsed.length > 0) {
-                        $collapsed.show();
-                        $expand.html("{{ lang._('Collapse') }}");
-                    } else {
-                        $collapse = $route_container.children('.route-content').slice(2);
-                        $collapse.hide();
-                        $expand.html("{{ lang._('Expand') }}");
-                    }
-
-                    $("#grid-overview").bootgrid("normalizeRowHeight");
-                });
-            });
-        });
+        );
 
         $("#export-wrapper").detach().appendTo('#grid-overview-header > .row > .actionBar > .btn-group');
 
@@ -396,7 +347,7 @@
                 <th data-column-id="ipv4" data-formatter="ipv4" data-type="string">{{ lang._('IPv4') }}</th>
                 <th data-column-id="ipv6" data-formatter="ipv6" data-type="string">{{ lang._('IPv6') }}</th>
                 <th data-column-id="gateways" data-formatter="gateways" data-type="string">{{ lang._('Gateway') }}</th>
-                <th data-column-id="routes" data-formatter="routes" data-type="string">{{ lang._('Routes') }}</th>
+                <th data-column-id="routes" data-formatter="expand" data-type="string">{{ lang._('Routes') }}</th>
                 <th data-column-id="commands" data-width="125" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
             </tr>
         </thead>
