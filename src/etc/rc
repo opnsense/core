@@ -183,7 +183,7 @@ if _tmpdir=$(mktemp -d -q /.diskless.XXXXXX); then
 	rmdir ${_tmpdir}
 else
 	# fake a writeable environment in some subdirs
-	for i in boot conf etc home usr var; do
+	for i in boot conf etc home root usr var; do
 		mkdir -p /tmp/.media/${i}
 		mount_unionfs /tmp/.media/${i} /${i}
 	done
