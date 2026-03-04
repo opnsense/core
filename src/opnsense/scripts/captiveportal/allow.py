@@ -53,7 +53,7 @@ response = db.add_client(
     authenticated_via=args.authenticated_via,
     username=args.username,
     ip_address=args.ip_address,
-    mac_address=arp_entry['mac']
+    mac_address=arp_entry['mac'] if arp_entry is not None else None
 )
 
 session_ips = {args.ip_address}

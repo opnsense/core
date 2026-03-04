@@ -49,23 +49,34 @@ class ARP(object):
             text=True
         ).stdout)
 
-        sorted_rows = sorted(
-            out.get("rows", []),
-            key=lambda row: datetime.strptime(row[5], "%Y-%m-%d %H:%M:%S"),
-            reverse=True
-        )
+        source = out.get("source")
+        rows = out.get("rows", [])
 
-        for row in sorted_rows:
+        if source == "discovery":
+            rows_iter = sorted(
+                rows,
+                key=lambda row: datetime.strptime(row[5], "%Y-%m-%d %H:%M:%S"),
+                reverse=True
+            )
+        else:
+            rows_iter = rows
+
+        for row in rows_iter:
             ip = row[2]
-            self._table[ip] = {
-                'intf': row[0],
-                'mac': row[1],
-                'first_seen': datetime.strptime(row[4], "%Y-%m-%d %H:%M:%S"),
-                'last_seen': datetime.strptime(row[5], "%Y-%m-%d %H:%M:%S"),
+
+            entry = {
+                "intf": row[0],
+                "mac": row[1],
             }
 
+            if source == "discovery":
+                entry["first_seen"] = datetime.strptime(row[4], "%Y-%m-%d %H:%M:%S")
+                entry["last_seen"]  = datetime.strptime(row[5], "%Y-%m-%d %H:%M:%S")
+
+            self._table[ip] = entry
+
     def get_by_ipaddress(self, address):
-        return self._table.get(address, '')
+        return self._table.get(address, None)
 
     def get_all_addresses_by_mac(self, mac_address):
         return [

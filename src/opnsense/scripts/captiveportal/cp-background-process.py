@@ -163,7 +163,7 @@ class CPBackgroundProcess(object):
 
                     # if mac address changes, drop session. it's not the same client. Use the "primary IP" to determine this
                     current_arp = self.arp.get_by_ipaddress(db_client['ipAddress'])
-                    if current_arp['mac'] != db_client['macAddress']:
+                    if current_arp is not None and current_arp['mac'] != db_client['macAddress']:
                         drop_session_reason = "mac address changed for session %s" % db_client['sessionId']
                         delete_reason = "Admin-Reset"
 
