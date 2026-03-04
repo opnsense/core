@@ -250,15 +250,16 @@ class UIBootgrid {
         }
 
         if (bootGridOptions?.selection ?? true) {
-            this.compatOptions['selectableRows'] = 1;
-            if (bootGridOptions?.multiSelect ?? true) {
-                this.compatOptions['selectableRows'] = true;
-            } else {
+            this.compatOptions['selectableRows'] = "highlight";
+            if (!(bootGridOptions?.multiSelect ?? true)) {
                 this.options.multiSelect = false;
             }
-            // TODO rowSelect toggle (currently not support by tabulator)
 
-            this.options.rowSelect = bootGridOptions?.rowSelect ?? false;
+            if (bootGridOptions?.rowSelect ?? false) {
+                this.options.rowSelect = true;
+                this.compatOptions['selectableRows'] = 1;
+                if (this.options.multiSelect) this.compatOptions['selectableRows'] = true;
+            }
         } else {
             this.options.selection = false;
             this.options.multiSelect = false;
@@ -725,6 +726,15 @@ class UIBootgrid {
         this.table.on('cellMouseEnter', onMouseEnter);
 
         this.table.on('rowSelected', (row) => {
+            if (!this.options.rowSelect) {
+                const selected = this.getSelectedRows();
+                if (!this.options.multiSelect && selected.length > 1) {
+                    const curRowId = row.getData()[this.options.datakey];
+                    selected.forEach((r) => {
+                        if (r !== curRowId) this.table.deselectRow(r);
+                    });
+                }
+            }
             this.$element.trigger("selected.rs.jquery.bootgrid", [[row.getData()]]);
         });
 
