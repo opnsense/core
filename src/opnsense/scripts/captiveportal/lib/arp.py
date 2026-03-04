@@ -65,7 +65,7 @@ class ARP(object):
             }
 
     def get_by_ipaddress(self, address):
-        return self._table.get(address, None)
+        return self._table.get(address, '')
 
     def get_all_addresses_by_mac(self, mac_address):
         return [

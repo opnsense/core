@@ -41,20 +41,28 @@ parser.add_argument('--username', help='username', type=str, required=True)
 parser.add_argument('--zoneid', help='zone number to allow this user in', type=str, required=True)
 parser.add_argument('--authenticated_via', help='authentication source', type=str)
 parser.add_argument('--ip_address', help='source ip address', type=str)
+parser.add_argument('--roaming', help='roaming allowed for this client', type=str)
 args = parser.parse_args()
 
-arp_entry = ARP().get_by_ipaddress(args.ip_address)
-response = DB().add_client(
+arp = ARP()
+db = DB()
+
+arp_entry = arp.get_by_ipaddress(args.ip_address)
+response = db.add_client(
     zoneid=args.zoneid,
     authenticated_via=args.authenticated_via,
     username=args.username,
     ip_address=args.ip_address,
-    mac_address=arp_entry['mac'] if arp_entry is not None else None
+    mac_address=arp_entry['mac']
 )
-PF.add_to_table(zoneid=args.zoneid, address=args.ip_address)
-IPFW.add_accounting(args.ip_address)
 
-# Note: the sync process will collect and add any client roaming IPs (if allowed)
+session_ips = {args.ip_address}
+if args.roaming:
+    session_ips = db.update_roaming_ips(args.zoneid, response.sessionId, arp.get_all_addresses_by_mac(arp_entry['mac']))
+
+for ip in session_ips:
+    PF.add_to_table(zoneid=args.zoneid, address=args.ip_address)
+    IPFW.add_accounting(args.ip_address)
 
 response['clientState'] = 'AUTHORIZED'
 print(ujson.dumps(response))
