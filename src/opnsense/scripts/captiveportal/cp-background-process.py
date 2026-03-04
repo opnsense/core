@@ -56,6 +56,7 @@ class CPBackgroundProcess(object):
         self.arp = ARP()
         self.cnf = Config()
         self.db = DB()
+        self.db.create()
         self._conf_zone_info = self.cnf.get_zones()
 
     def list_zone_ids(self):

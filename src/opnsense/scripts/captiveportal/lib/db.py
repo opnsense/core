@@ -39,7 +39,6 @@ class DB(object):
         """
         self._connection = None
         self.open()
-        self.create()
 
     def __del__(self):
         """ destruct, close database handle
@@ -70,11 +69,10 @@ class DB(object):
             self._connection = sqlite3.connect(self.database_filename)
 
         cur = self._connection.cursor()
-        cur.execute("SELECT count(*) FROM sqlite_master where tbl_name = 'cp_clients'")
-        if cur.fetchall()[0][0] == 0:
-            # empty database, initialize database
-            init_script_filename = '%s/../sql/init.sql' % os.path.dirname(os.path.abspath(__file__))
-            cur.executescript(open(init_script_filename, 'r').read())
+
+        # initialize database
+        init_script_filename = '%s/../sql/init.sql' % os.path.dirname(os.path.abspath(__file__))
+        cur.executescript(open(init_script_filename, 'r').read())
 
         # migration: add "delete_reason" column to cp_clients
         cur.execute("PRAGMA table_info(cp_clients)")
@@ -99,32 +97,6 @@ class DB(object):
                     OR prev_bytes_out   IS NULL
             """)
             self._connection.commit()
-
-        # migration: introduce cp_client_ips table (multiple IPs per (zoneid, sessionid)) for IPv6 support
-        cur.execute("""
-            SELECT count(*)
-            FROM sqlite_master
-            WHERE type='table' AND name='cp_client_ips'
-        """)
-        if cur.fetchall()[0][0] == 0:
-            # create the new table
-            cur.execute("""
-                CREATE TABLE cp_client_ips (
-                      zoneid     INT NOT NULL
-                    , sessionid  VARCHAR NOT NULL
-                    , ip_address VARCHAR NOT NULL
-                    , PRIMARY KEY (zoneid, sessionid, ip_address)
-                    , FOREIGN KEY (zoneid, sessionid)
-                        REFERENCES cp_clients(zoneid, sessionid)
-                        ON DELETE CASCADE
-                )
-            """)
-
-        # indexes used when allow_roaming is turned on for a zone
-        cur.execute("CREATE INDEX IF NOT EXISTS cp_client_ips_ip   ON cp_client_ips(ip_address)")
-        cur.execute("CREATE INDEX IF NOT EXISTS cp_client_ips_zone ON cp_client_ips(zoneid)")
-
-        self._connection.commit()
 
         cur.close()
 
