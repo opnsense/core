@@ -49,7 +49,16 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
 
     /* store data for cached getters */
     private array $networks = [];
-    private ?array $catcolors = null;
+    private array $catcolors = [];
+    private ?Category $categoryModel = null;
+
+    private function getCategoryModel() {
+        if ($this->categoryModel === null) {
+            $this->categoryModel = new Category();
+        }
+
+        return $this->categoryModel;
+    }
 
     /**
      * @param array $cats list of category ids
@@ -57,24 +66,27 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
      */
     protected function getCategoryColors(array $cats)
     {
-        if ($this->catcolors === null) {
-            $this->catcolors = []; /* init to prevent empty categories initiating models constantly */
-            foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
-                $uuid = $category->getAttributes()['uuid'];
-                $color = !$category->color->isEmpty() ? "#{$category->color->getValue()}" : '';
-                $this->catcolors[$uuid] = [
-                    'uuid' => $uuid,
-                    'name' => $category->name->getValue(),
-                    'color' => $color
-                ];
-            }
-        }
         $result = [];
+        $mdl = $this->getCategoryModel();
+
         foreach ($cats as $uuid) {
             if (isset($this->catcolors[$uuid])) {
                 $result[] = $this->catcolors[$uuid];
+                continue;
+            }
+
+            $node = $mdl->getNodeByReference('categories.category.' . $uuid);
+            if ($node != null) {
+                $this->catcolors[$uuid] = [
+                    'uuid'  => $uuid,
+                    'name'  => (string) $node->name->getValue(),
+                    'color' => !$node->color->isEmpty() ? "#{$node->color->getValue()}" : ''
+                ];
+
+                $result[] = $this->catcolors[$uuid];
             }
         }
+
         return $result;
     }
 
