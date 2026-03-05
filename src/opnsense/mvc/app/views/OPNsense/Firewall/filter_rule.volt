@@ -768,6 +768,7 @@
 
         // Populate interface selectpicker
         function populateInterfaceSelectpicker() {
+            const currentSelection = $("#interface_select").val();
             return $('#interface_select').fetch_options(
                 '/api/firewall/filter/get_interface_list',
                 {},
@@ -804,10 +805,16 @@
                 false,
                 function (data) {  // post_callback, apply the URL hash logic
                     const $select = $('#interface_select');
-                    $select.selectpicker('val', pendingUrlInterface && $select.find(`option[value="${pendingUrlInterface}"]`).length
-                            ? pendingUrlInterface
-                            : '__any'  // Default view when having an invalid interface in hash
-                    );
+                    const interfaceCandidate = (!interfaceInitialized && pendingUrlInterface)
+                        ? pendingUrlInterface
+                        : currentSelection;
+
+                    $select.selectpicker('val', interfaceCandidate);
+
+                    if (!$select.val()) {
+                        $select.selectpicker('val', '__any');
+                    }
+
                     interfaceInitialized = true;
                     pendingUrlInterface = null; // consume the hash so it is not used again
                 },
