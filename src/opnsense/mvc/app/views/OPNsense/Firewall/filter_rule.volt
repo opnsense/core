@@ -805,13 +805,13 @@
                 false,
                 function (data) {  // post_callback, apply the URL hash logic
                     const $select = $('#interface_select');
-                    const interface = (!interfaceInitialized && pendingUrlInterface)
+                    const interfaceCandidate = (!interfaceInitialized && pendingUrlInterface)
                         ? pendingUrlInterface
                         : currentSelection;
 
-                    $select.selectpicker('val', interface);
+                    $select.selectpicker('val', interfaceCandidate);
 
-                    if (!$select.val()) {
+                    if ($select.val() !== interfaceCandidate) {
                         $select.selectpicker('val', '__any');
                     }
 
