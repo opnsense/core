@@ -45,56 +45,27 @@ class DNat extends BaseModel
 
         foreach ($this->rule->iterateItems() as $rule) {
             if ($validateFullModel || $rule->isFieldChanged()) {
-
-                if (!empty($rule->source->port->getValue()) && !in_array($rule->protocol->getValue(), $port_protos)) {
-                    $messages->appendMessage(new Message(
-                        gettext("Ports are only valid for TCP or UDP type rules."),
-                        $rule->source->port->__reference
-                    ));
+                $ports = [$rule->source->port, $rule->destination->port, $rule->{'local-port'}];
+                foreach ($ports as $port) {
+                    if (!empty($port->getValue()) && !in_array($rule->protocol->getValue(), $port_protos)) {
+                        $messages->appendMessage(new Message(
+                            gettext("Ports are only valid for TCP or UDP type rules."),
+                            $port->__reference
+                        ));
+                    }
                 }
 
-                if (!empty($rule->destination->port->getValue()) && !in_array($rule->protocol->getValue(), $port_protos)) {
-                    $messages->appendMessage(new Message(
-                        gettext("Ports are only valid for TCP or UDP type rules."),
-                        $rule->destination->port->__reference
-                    ));
-                }
+                $addresses = [$rule->source->network, $rule->destination->network, $rule->target];
+                foreach ($addresses as $address) {
+                    $is_addr = Util::isSubnet($address->getValue()) || Util::isIpAddress($address->getValue());
+                    $proto = strpos($address->getValue(), ':') === false ? "inet" : "inet6";
 
-                if (!empty($rule->{'local-port'}->getValue()) && !in_array($rule->protocol->getValue(), $port_protos)) {
-                    $messages->appendMessage(new Message(
-                        gettext("Ports are only valid for TCP or UDP type rules."),
-                        $rule->{'local-port'}->__reference
-                    ));
-                }
-
-                $src_is_addr = Util::isSubnet($rule->source->network->getValue()) || Util::isIpAddress($rule->source->network->getValue());
-                $src_proto = strpos($rule->source->network->getValue(), ':') === false ? "inet" : "inet6";
-
-                if ($src_is_addr && in_array($rule->ipprotocol->getValue(), ['inet', 'inet6']) && !$rule->ipprotocol->isEqual($src_proto)) {
-                    $messages->appendMessage(new Message(
-                        gettext("Address type should match selected TCP/IP protocol version."),
-                        $rule->source->network->__reference
-                    ));
-                }
-
-                $dest_is_addr = Util::isSubnet($rule->destination->network->getValue()) || Util::isIpAddress($rule->destination->network->getValue());
-                $dest_proto = strpos($rule->destination->network->getValue(), ':') === false ? "inet" : "inet6";
-
-                if ($dest_is_addr && in_array($rule->ipprotocol->getValue(), ['inet', 'inet6']) && !$rule->ipprotocol->isEqual($dest_proto)) {
-                    $messages->appendMessage(new Message(
-                        gettext("Address type should match selected TCP/IP protocol version."),
-                        $rule->destination->network->__reference
-                    ));
-                }
-
-                $target_is_addr = Util::isSubnet($rule->target->getValue()) || Util::isIpAddress($rule->target->getValue());
-                $target_proto = strpos($rule->target->getValue(), ':') === false ? "inet" : "inet6";
-
-                if ($target_is_addr && in_array($rule->ipprotocol->getValue(), ['inet', 'inet6']) && !$rule->ipprotocol->isEqual($target_proto)) {
-                    $messages->appendMessage(new Message(
-                        gettext("Address type should match selected TCP/IP protocol version."),
-                        $rule->target->__reference
-                    ));
+                    if ($is_addr && in_array($rule->ipprotocol->getValue(), ['inet', 'inet6']) && !$rule->ipprotocol->isEqual($proto)) {
+                        $messages->appendMessage(new Message(
+                            gettext("Address type should match selected TCP/IP protocol version."),
+                            $address->__reference
+                        ));
+                    }
                 }
             }
         }
