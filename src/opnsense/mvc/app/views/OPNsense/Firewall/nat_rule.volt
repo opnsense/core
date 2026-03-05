@@ -247,14 +247,13 @@
                                 : '';
                         }
 
-                        const category   = (row[`%${category_key}`] || row[category_key]).split(',');
-                        const colors     = row.category_colors;
+                        const category = row.category_colors || [];
 
-                        const icons = category.map((cat, idx) => {
-                            const bgColor = colors?.[idx] ? ` style="color:${colors[idx]};"` : '';
+                        const icons = category.map(cat => {
+                            const bgColor = cat.color ? ` style="color:${cat.color};"` : '';
 
                             return `
-                                <span class="category-icon" data-toggle="tooltip" title="${cat}">
+                                <span class="category-icon" data-toggle="tooltip" title="${cat.name}">
                                     <i class="fa fa-fw fa-tag"${bgColor}></i>
                                 </span>`;
                         }).join(' ');
@@ -262,7 +261,7 @@
                         return isGroup
                             ? `<span class="category-cell">
                                     <span class="category-cell-content">
-                                        <strong>${icons} ${category.join(', ')}</strong>
+                                        <strong>${icons} ${category.map(c => c.name).join(', ')}</strong>
                                         <span class="badge chip"
                                                 style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
                                     </span>

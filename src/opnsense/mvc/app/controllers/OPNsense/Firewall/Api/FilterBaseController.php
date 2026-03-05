@@ -53,20 +53,29 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
 
     /**
      * @param array $cats list of category ids
-     * @return array colors
+     * @return array list of meta arrays
      */
     protected function getCategoryColors(array $cats)
     {
         if ($this->catcolors === null) {
             $this->catcolors = []; /* init to prevent empty categories initiating models constantly */
             foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
-                $uuid = (string)$category->getAttributes()['uuid'];
-                $color = trim((string)$category->color->getValue(true));
-                $this->catcolors[$uuid] = !empty($color) ? "#{$color}" : '';
+                $uuid = $category->getAttributes()['uuid'];
+                $color = !$category->color->isEmpty() ? "#{$category->color->getValue()}" : '';
+                $this->catcolors[$uuid] = [
+                    'uuid' => $uuid,
+                    'name' => $category->name->getValue(),
+                    'color' => $color
+                ];
             }
         }
-        /* extract catcolors by index */
-        return array_values(array_intersect_key($this->catcolors, array_flip($cats)));
+        $result = [];
+        foreach ($cats as $uuid) {
+            if (isset($this->catcolors[$uuid])) {
+                $result[] = $this->catcolors[$uuid];
+            }
+        }
+        return $result;
     }
 
     /**
