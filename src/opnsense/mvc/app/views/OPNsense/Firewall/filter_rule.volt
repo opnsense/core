@@ -811,7 +811,7 @@
 
                     $select.selectpicker('val', interfaceCandidate);
 
-                    if ($select.val() !== interfaceCandidate) {
+                    if (!$select.val()) {
                         $select.selectpicker('val', '__any');
                     }
 
