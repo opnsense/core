@@ -16,7 +16,7 @@
         <type>select_multiple</type>
         <help>Select which kind of DNSBL you want to use.</help>
         <grid_view>
-            <formatter>listDisplay</formatter>
+            <formatter>expand</formatter>
         </grid_view>
     </field>
     <field>
@@ -27,6 +27,9 @@
         <allownew>true</allownew>
         <advanced>true</advanced>
         <help>List of domains from where blocklist will be downloaded.</help>
+        <grid_view>
+            <formatter>expand</formatter>
+        </grid_view>
     </field>
     <field>
         <id>blocklist.allowlists</id>
@@ -72,7 +75,7 @@
         <allownew>true</allownew>
         <help>Source networks to apply policy on. Examples are 192.168.1.0/24 or 192.168.1.1. Leave empty to apply on everything. All specified networks should use the same protocol family and have equal sizes to avoid priority issues. </help>
         <grid_view>
-            <formatter>listDisplay</formatter>
+            <formatter>expand</formatter>
         </grid_view>
     </field>
     <field>
