@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2025 Deciso B.V.
+ * Copyright (C) 2025-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -52,12 +52,15 @@ class ConfigMaintenance
      */
     private function loadModels()
     {
-        $modelfiles = [];
         $model_dir = dirname((new \ReflectionClass("OPNsense\\Base\\BaseModel"))->getFileName()) . "/../../";
+        $modelfiles = [];
+        $map = [];
+
         foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($model_dir)) as $x) {
             $pinfo = pathinfo(realpath($x->getPathname()));
             $xmlname = sprintf("%s/%s.xml", $pinfo['dirname'], $pinfo['filename']);
-            $classname = str_replace('/', '\\', explode('.', str_replace($model_dir, '', $x->getPathname()))[0]);
+            $classname = str_replace('/', '\\', str_replace($model_dir, '', $x->getPathname()));
+            $classname = preg_replace('/\.php$/', '', $classname);
             if (file_exists($xmlname) && isset($pinfo['extension']) && $pinfo['extension'] == 'php') {
                 $parent = (new \ReflectionClass($classname))->getParentClass();
                 if ($parent && $parent->name == 'OPNsense\Base\BaseModel') {
@@ -65,18 +68,19 @@ class ConfigMaintenance
                 }
             }
         }
-        $map = [];
+
         foreach ($modelfiles as $filename => $classname) {
             $model_xml = simplexml_load_file($filename);
             if ($model_xml !== false && str_starts_with($model_xml->mount, '/')) {
                 $mount = str_replace('/', '.', ltrim(rtrim($model_xml->mount, '+'), '/'));
                 $map[$mount] = [
+                    'description' => trim((string)$model_xml->description ?? ''),
                     'filename' => $filename,
                     'class' => $classname,
-                    'description' => trim((string)$model_xml->description ?? '')
                 ];
             }
         }
+
         return $map;
     }
 
