@@ -38,14 +38,6 @@
                     add:'/api/unbound/settings/addDnsbl/',
                     del:'/api/unbound/settings/delDnsbl/',
                     toggle:'/api/unbound/settings/toggleDnsbl/',
-                    options: {
-                        formatters: {
-                            'listDisplay': function(column, row) {
-                                let id = `%${column.id}` in row ? `%${column.id}` : column.id;
-                                return row[id].split(',').join("<br/>");
-                            }
-                        }
-                    }
                 });
                 gridLoaded = true;
             } else if (e.target.id === 'blocklist_tester_tab') {

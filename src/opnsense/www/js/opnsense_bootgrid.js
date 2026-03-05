@@ -1800,7 +1800,9 @@ class UIBootgrid {
                 return cell.getValue() ? moment(parseInt(cell.getValue())*1000).format("lll") : "";
             },
             expand: (cell, formatterParams, onRendered) => {
-                const val = cell.getValue();
+                const key = `%${cell.getColumn().getDefinition().field}`;
+                const data = cell.getData();
+                const val = data[key] ?? cell.getValue();
 
                 if (!val) return "";
 
