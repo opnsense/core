@@ -16,6 +16,9 @@
         <id>note</id>
         <label>Note</label>
         <type>textbox</type>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
     </field>
     <field>
         <id>active</id>
