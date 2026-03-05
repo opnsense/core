@@ -385,6 +385,23 @@ class ControllerBase extends ControllerRoot
             $this->view->ui_theme = $cnf->object()->theme;
         }
 
+        // read theme configuration (theme.conf) for layout customization
+        $theme_name = isset($this->view->ui_theme) ? (string)$this->view->ui_theme : 'opnsense';
+        $theme_conf_file = '/usr/local/opnsense/www/themes/' . $theme_name . '/theme.conf';
+        $theme_defaults = [
+            'menu_system' => 'sidebar',
+            'content_class' => 'col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2',
+        ];
+        $theme_config = $theme_defaults;
+        if (is_file($theme_conf_file)) {
+            $conf = @json_decode(file_get_contents($theme_conf_file), true);
+            if (is_array($conf)) {
+                $theme_config = array_merge($theme_defaults, $conf);
+            }
+        }
+        $theme_config['menu_system'] = preg_replace('/[^a-z0-9_]/', '', $theme_config['menu_system']);
+        $this->view->theme_config = $theme_config;
+
         // parse product properties, use template (.in) when not found
         $firmware_product_fn = __DIR__ . '/../../../../../version/core';
         $firmware_product_fn = !is_file($firmware_product_fn) ? $firmware_product_fn . ".in" : $firmware_product_fn;

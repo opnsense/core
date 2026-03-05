@@ -156,7 +156,7 @@ $(document).ready(function () {
         }
     }
 
-    if (toggle_sidebar_loaded) {
+    if (toggle_sidebar_loaded && navigation.length) {
         var toggle_btn = $('.toggle-sidebar');
         /* navigation toggle */
         toggle_btn.click(function () {
