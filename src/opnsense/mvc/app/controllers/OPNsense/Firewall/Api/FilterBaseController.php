@@ -79,7 +79,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             if ($node != null) {
                 $this->catcolors[$uuid] = [
                     'uuid'  => $uuid,
-                    'name'  => (string) $node->name->getValue(),
+                    'name'  => $node->name->getValue(),
                     'color' => !$node->color->isEmpty() ? "#{$node->color->getValue()}" : ''
                 ];
 
