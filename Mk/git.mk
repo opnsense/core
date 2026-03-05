@@ -24,7 +24,7 @@
 # SUCH DAMAGE.
 
 ARGS=	diff feed mfc mlog slog tag vim
-VIM!=	which vim || echo false
+VIM!=	which vim || which vi || echo false
 
 # handle argument expansion for required targets
 .for TARGET in ${.TARGETS}
@@ -146,10 +146,18 @@ checkout:
 vim:
 .for DIR in ${.CURDIR}/src
 .if exists(${DIR})
-	@FOUND="$$(find ${.CURDIR}/src -type f -name "${vim_ARG}" | head -n 1)"; \
-	    if [ -n "$${FOUND}" ]; then \
-		${VIM} "$${FOUND}"; \
-		${PHPBIN} -l "$${FOUND}" > /dev/null; \
-	    else exit 1; fi
+	@FOUND="$$(find ${.CURDIR}/src -type f -name "$$(basename '${vim_ARG}')*" | \
+	    grep -F '${vim_ARG}')"; \
+	if [ -n "$${FOUND}" ]; then \
+		if [ "$$(echo "$${FOUND}" | wc -l | awk '{ print $$1 }')" = "1" ]; then \
+			${VIM} "$${FOUND}"; \
+			${PHPBIN} -l "$${FOUND}" > /dev/null; \
+		else \
+			echo "Found multiple files to open:"; \
+			echo "$${FOUND}"; \
+		fi; \
+	else \
+		echo "Could not find file to open: ${vim_ARG}"; \
+	fi
 .endif
 .endfor
