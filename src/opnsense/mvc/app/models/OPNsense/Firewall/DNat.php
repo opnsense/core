@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2025 Deciso B.V.
+ * Copyright (C) 2025-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,8 @@
 namespace OPNsense\Firewall;
 
 use OPNsense\Base\BaseModel;
+use OPNsense\Base\Messages\Message;
+use OPNsense\Firewall\Util;
 
 /**
  * Class DNat
@@ -36,4 +38,38 @@ use OPNsense\Base\BaseModel;
  */
 class DNat extends BaseModel
 {
+    public function performValidation($validateFullModel = false)
+    {
+        $messages = parent::performValidation($validateFullModel);
+        $port_protos = ['tcp', 'udp', 'tcp/udp'];
+
+        foreach ($this->rule->iterateItems() as $rule) {
+            if ($validateFullModel || $rule->isFieldChanged()) {
+                $ports = [$rule->source->port, $rule->destination->port, $rule->{'local-port'}];
+                foreach ($ports as $port) {
+                    if (!empty($port->getValue()) && !in_array($rule->protocol->getValue(), $port_protos)) {
+                        $messages->appendMessage(new Message(
+                            gettext("Ports are only valid for TCP or UDP type rules."),
+                            $port->__reference
+                        ));
+                    }
+                }
+
+                $addresses = [$rule->source->network, $rule->destination->network, $rule->target];
+                foreach ($addresses as $address) {
+                    $is_addr = Util::isSubnet($address->getValue()) || Util::isIpAddress($address->getValue());
+                    $proto = strpos($address->getValue(), ':') === false ? "inet" : "inet6";
+
+                    if ($is_addr && in_array($rule->ipprotocol->getValue(), ['inet', 'inet6']) && !$rule->ipprotocol->isEqual($proto)) {
+                        $messages->appendMessage(new Message(
+                            gettext("Address type should match selected TCP/IP protocol version."),
+                            $address->__reference
+                        ));
+                    }
+                }
+            }
+        }
+
+        return $messages;
+    }
 }
