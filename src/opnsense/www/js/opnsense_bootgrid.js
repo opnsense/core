@@ -2247,6 +2247,7 @@ class UIBootgrid {
                 delete col._silentToggle;
             }
         });
+        this.table.redraw();
     }
 
     unsetColumns(columns) {
@@ -2258,6 +2259,7 @@ class UIBootgrid {
                 delete col._silentToggle;
             }
         });
+        this.table.redraw();
     }
 
     search(value, event) {
