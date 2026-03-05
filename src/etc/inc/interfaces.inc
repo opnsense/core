@@ -1339,36 +1339,36 @@ EOD;
     }
 
     /*
-     * HA/CARP safety for PPP links:
-     * If "Disconnect dialup interfaces" is enabled, only allow PPP startup
-     * when at least one underlying parent interface is currently CARP MASTER.
+     * In HA mode with disconnectppps enabled, only start PPP when at least
+     * one underlying parent interface is currently CARP MASTER.
      *
-     * This prevents a rebooted BACKUP node from starting PPPoE later in boot
-     * after the CARP hook has already tried (too early) to suspend it.
+     * During boot, the CARP hook may already have processed a BACKUP event
+     * before the PPP pseudo-interface exists. Without this guard, the later
+     * normal startup path can still start PPP on a BACKUP node.
      */
     if (!empty($config['hasync']['disconnectppps'])) {
-      $carp_master = false;
+        $carp_master = false;
 
-      foreach ($ports as $port) {
-        $ifconfig_out = shell_exec('/sbin/ifconfig ' . escapeshellarg($port) . ' 2>/dev/null');
-        if (!is_string($ifconfig_out)) {
-          continue;
+        foreach ($ports as $port) {
+            $ifconfig_out = shell_exec('/sbin/ifconfig ' . escapeshellarg($port) . ' 2>/dev/null');
+            if (!is_string($ifconfig_out)) {
+                continue;
+            }
+
+            if (preg_match('/\bcarp:\s+MASTER\b/m', $ifconfig_out)) {
+                $carp_master = true;
+                break;
+            }
         }
 
-        if (preg_match('/\bcarp:\s+MASTER\b/m', $ifconfig_out)) {
-          $carp_master = true;
-          break;
+        if (!$carp_master) {
+            log_msg(
+                "interface_ppps_configure() skipped for {$interface} " .
+                "(disconnectppps enabled, no parent interface is CARP MASTER)",
+                LOG_NOTICE
+            );
+            return;
         }
-      }
-
-      if (!$carp_master) {
-        log_msg(
-          "interface_ppps_configure() skipped for {$interface} " .
-          "(disconnectppps enabled, no parent interface is CARP MASTER)",
-          LOG_NOTICE
-        );
-        return;
-      }
     }
 
     /* precaution for post-start 'up' check */
