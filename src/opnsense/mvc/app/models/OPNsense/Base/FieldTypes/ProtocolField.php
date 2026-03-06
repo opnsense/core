@@ -57,6 +57,9 @@ class ProtocolField extends BaseListField
         /* IPv6 extension headers are skipped by the packet filter, we cannot police them */
         $ipv6_ext = ['IPV6-ROUTE', 'IPV6-FRAG', 'IPV6-OPTS', 'IPV6-NONXT', 'MOBILITY-HEADER'];
 
+        /* protocols that should be listed as priority if in the final list */
+        $prio_set = ['TCP', 'UDP', 'TCP/UDP', 'ICMP', 'ESP', 'AH', 'GRE', 'IGMP', 'PIM', 'OSPF'];
+
         /* construct option hash to avoid repopulating options multiple times */
         $opt_hash = empty($this->additionalOptions) ? hash('sha256', json_encode($this->additionalOptions)) : '-';
         $opt_hash .= $this->internalIsRequired ? 'R' : 'O';
@@ -97,6 +100,15 @@ class ProtocolField extends BaseListField
 
         /* sort backwards to append 'any' last if needed */
         arsort($new_list, SORT_NATURAL | SORT_FLAG_CASE);
+
+        foreach (array_reverse($prio_set) as $prio) {
+            $prio = $this->applyChangeCase($prio);
+            if (isset($new_list[$prio])) {
+                $temp = $new_list[$prio];
+                unset($new_list[$prio]);
+                $new_list[$prio] = $temp;
+            }
+        }
 
         if ($this->internalIsRequired) {
             /* 'any' is not treated with ChangeCase for backwards compatibility  */
