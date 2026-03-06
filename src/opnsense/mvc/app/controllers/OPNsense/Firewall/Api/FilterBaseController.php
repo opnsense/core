@@ -78,9 +78,9 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             $node = $mdl->getNodeByReference('categories.category.' . $uuid);
             if ($node != null) {
                 $this->catcolors[$uuid] = [
-                    'uuid'  => $uuid,
+                    'color' => !$node->color->isEmpty() ? "#{$node->color->getValue()}" : '',
                     'name'  => $node->name->getValue(),
-                    'color' => !$node->color->isEmpty() ? "#{$node->color->getValue()}" : ''
+                    'uuid'  => $uuid,
                 ];
 
                 $result[] = $this->catcolors[$uuid];
