@@ -52,7 +52,8 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
     private array $catcolors = [];
     private ?Category $categoryModel = null;
 
-    private function getCategoryModel() {
+    private function getCategoryModel()
+    {
         return $this->categoryModel ??= new Category();
     }
 
