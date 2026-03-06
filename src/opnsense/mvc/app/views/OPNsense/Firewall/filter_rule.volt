@@ -382,7 +382,7 @@
                         return isGroup
                             ? `<span class="category-cell">
                                     <span class="category-cell-content">
-                                        <strong>${icons} ${categories.map(c => c.name).join(', ')}</strong>
+                                        <strong>${icons} ${categories.map(cat => cat.name).join(', ')}</strong>
                                         <span class="badge chip"
                                                 style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
                                     </span>
