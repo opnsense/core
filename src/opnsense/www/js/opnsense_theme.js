@@ -203,7 +203,7 @@ $(document).ready(function () {
     // --- Init: check viewport on page load before showing sidebar ---
     const initHeight = $(window).height();
     const initWidth  = $(window).width();
-    const tooSmallOnLoad = initHeight < navHeight || initWidth < 760;
+    const tooSmallOnLoad = initHeight < navHeight || initWidth < 1000;
 
     if (tooSmallOnLoad) {
         navigation.addClass('col-sidebar-hidden');
