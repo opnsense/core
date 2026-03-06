@@ -53,11 +53,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
     private ?Category $categoryModel = null;
 
     private function getCategoryModel() {
-        if ($this->categoryModel === null) {
-            $this->categoryModel = new Category();
-        }
-
-        return $this->categoryModel;
+        return $this->categoryModel ??= new Category();
     }
 
     /**
