@@ -240,7 +240,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['maximumtableentries'] = $pconfig['maximumtableentries'];
 
         if (!empty($pconfig['bypassstaticroutes'])) {
-            $config['filter']['bypassstaticroutes'] = $pconfig['bypassstaticroutes'];
+            /* XXX likely stored as 'yes' */
+            config_merge_array('filter', ['bypassstaticroutes' => $pconfig['bypassstaticroutes']]);
         } elseif (isset($config['filter']['bypassstaticroutes'])) {
             unset($config['filter']['bypassstaticroutes']);
         }
