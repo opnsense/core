@@ -179,7 +179,7 @@ $(document).ready(function () {
     $(window).on('resize', function () {
         const winHeight = $(window).height();
         const winWidth  = $(window).width();
-        const tooSmall  = winHeight < navHeight || winWidth < 760;
+        const tooSmall  = winHeight < navHeight || winWidth < 1000;
 
         if (tooSmall && !isSidebarHidden()) {
             navigation.addClass('col-sidebar-hidden');
