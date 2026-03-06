@@ -124,6 +124,12 @@ if __name__ == '__main__':
                     and record.get('expire', 0) > time.time():
                 prefixes[prefix] = record
                 ll_addr = hostwatch.get(record.get('hwaddr'))
+                if not ll_addr:
+                    syslog.syslog(
+                        syslog.LOG_WARNING,
+                        "no LLA found for %s, skipping route %s" % (record.get('hwaddr'), prefix)
+                    )
+                    continue
                 # lazy drop
                 subprocess.run(['/sbin/route', 'delete', '-inet6', prefix], capture_output=True)
                 if record.get('valid_lifetime', 0) > 0:
