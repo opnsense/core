@@ -164,8 +164,10 @@ function kea_configure_do($verbose = false)
             mwexecfb(
                 '/usr/local/opnsense/scripts/kea/kea_prefix_watcher.py %s',
                 ['/var/db/kea/kea-leases6.csv'],
-                '/var/run/kea_prefix_watcher.pid',
-                '/var/log/kea/kea_prefix_watcher.log'
+                [
+                    'pidfile' => '/var/run/kea_prefix_watcher.pid',
+                    'logfile' => '/var/log/kea/kea_prefix_watcher.log',
+                ]
             );
         }
         service_log("done.\n", $verbose);

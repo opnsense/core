@@ -953,7 +953,7 @@ function mwexecfm($format, $args = [])
 }
 
 /* run commands safely in the background */
-function mwexecfb($format, $args = [], ?string $pidfile = null, ?string $logfile = null)
+function mwexecfb($format, $args = [], $opts = [])
 {
     if (!is_array($format)) {
         $format = [$format];
@@ -963,14 +963,21 @@ function mwexecfb($format, $args = [], ?string $pidfile = null, ?string $logfile
         $args = [$args];
     }
 
-    if (!is_null($pidfile)) {
-        array_unshift($format, '-p %s');
-        array_unshift($args, $pidfile);
+    if (array_key_exists('logfile', $opts)) {
+        array_unshift($format, '-o %s');
+        array_unshift($args, $opts['logfile']);
     }
 
-    if (!is_null($logfile)) {
-        array_unshift($format, '-o %s');
-        array_unshift($args, $logfile);
+    if (array_key_exists('pidfile', $opts)) {
+        array_unshift($format, '-%s %s');
+        array_unshift($args, $opts['pidfile']);
+        /* process PID or supervisor PID if we use persistent restarts */
+        array_unshift($args, array_key_exists('restart', $opts) ? 'P' : 'p');
+    }
+
+    if (array_key_exists('restart', $opts)) {
+        array_unshift($format, '-rR %s');
+        array_unshift($args, $opts['restart']);
     }
 
     array_unshift($format, '/usr/sbin/daemon -f');

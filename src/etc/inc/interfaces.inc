@@ -3283,9 +3283,9 @@ function interface_dhcp_configure($interface = 'wan')
 
     killbypid("/var/run/dhclient.{$device}.pid");
 
-    $fd = fopen("/var/etc/dhclient_{$interface}.conf", "w");
+    $fd = fopen("/var/etc/dhclient.{$device}.conf", 'w');
     if (!$fd) {
-        log_msg("Error: cannot open dhclient_{$interface}.conf in interface_dhcp_configure() for writing.", LOG_ERR);
+        log_msg("Error: cannot open dhclient.{$device}.conf in interface_dhcp_configure() for writing.", LOG_ERR);
         return;
     }
 
@@ -3354,11 +3354,18 @@ EOD;
 
     legacy_interface_flags($device, 'up');
 
-    mwexecf('/sbin/dhclient -c %s -p %s %s', [
-        "/var/etc/dhclient_{$interface}.conf",
-        "/var/run/dhclient.{$device}.pid",
-        $device
-    ]);
+    mwexecfb(
+        '/sbin/dhclient -d -c %s -p %s %s',
+        [
+            "/var/etc/dhclient.{$device}.conf",
+            "/var/run/dhclient-.{$device}.pid",
+            $device,
+        ],
+        [
+            'pidfile' => "/var/run/dhclient.{$device}.pid",
+            'restart' => '10',
+        ]
+    );
 }
 
 function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)

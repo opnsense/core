@@ -288,8 +288,8 @@ function dpinger_configure_do($verbose = false, $gwname_map = null)
             /* use a separate script to produce the monitor alerts which runs forever */
             mwexecfb(
                 '/usr/local/opnsense/scripts/routes/gateway_watcher.php %s',
-                'interface routes alarm',
-                '/var/run/gateway_watcher.pid'
+                ['interface routes alarm'],
+                ['pidfile' => '/var/run/gateway_watcher.pid'],
             );
         }
     } else {
