@@ -3785,32 +3785,6 @@ function link_interface_to_gif($interface, $update = false, $family = null)
     return $result;
 }
 
-function ip_in_interface_alias_subnet($interface, $ipalias)
-{
-    global $config;
-
-    if (empty($interface) || !is_ipaddr($ipalias)) {
-        return false;
-    }
-    if (isset($config['virtualip']['vip'])) {
-        foreach ($config['virtualip']['vip'] as $vip) {
-            switch ($vip['mode']) {
-                case "ipalias":
-                    if ($vip['interface'] != $interface) {
-                        break;
-                    }
-                    $subnet = is_ipaddrv6($ipalias) ? gen_subnetv6($vip['subnet'], $vip['subnet_bits']) : gen_subnet($vip['subnet'], $vip['subnet_bits']);
-                    if (ip_in_subnet($ipalias, $subnet . "/" . $vip['subnet_bits'])) {
-                        return true;
-                    }
-                    break;
-            }
-        }
-    }
-
-    return false;
-}
-
 function get_interface_ip($interface, $ifconfig_details = null)
 {
     if (is_ipaddrv4($interface)) {
