@@ -493,4 +493,16 @@ class AliasController extends ApiMutableModelControllerBase
         }
         return $result;
     }
+
+    /**
+     * force geoip download
+     */
+    public function updateGeoIPAction()
+    {
+        if ($this->request->isPost()) {
+            (new Backend())->configdRun('filter geoip update');
+            return ['status' => 'ok', 'message' => gettext('GeoIP update completed')];
+        }
+        return ['status' => 'failed', 'message' => gettext('GeoIP update failed')];
+    }
 }

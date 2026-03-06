@@ -594,6 +594,24 @@
         }
         loadSettings();
 
+        // update geoip data
+        const geoIPTitle = "{{ lang._('Update GeoIP') }}";
+        $('#geoip_update_btn').on('click', function () {
+            ajaxCall('/api/firewall/alias/update_geo_ip', {}, function (data, status) {
+                if (data && status === 'success' && data.status === 'ok') {
+                    BootstrapDialog.alert({type: BootstrapDialog.TYPE_SUCCESS, title: geoIPTitle, message: data.message});
+                    return;
+                }
+                BootstrapDialog.alert({type: BootstrapDialog.TYPE_WARNING, title: geoIPTitle, message: data.message});
+            }).fail(function (xhr, status, error) {
+                BootstrapDialog.alert({type: BootstrapDialog.TYPE_DANGER, title: geoIPTitle, message: error});
+            });
+        });
+        // move update button next to url field
+        $("#geoip_update_btn").parent()
+            .css({'display': 'inline-block', 'margin-left': '10px'})
+            .insertAfter("#alias\\.geoip\\.url");
+
 
         /**
          * reconfigure
@@ -721,6 +739,9 @@
     </div>
     <div id="geoip" class="tab-pane fade in">
       {{ partial("layout_partials/base_form",['fields':formGeoIPSettings,'id':'frm_GeopIPSettings'])}}
+        <div>
+            <button id="geoip_update_btn" type="button" class="btn btn-default">{{ lang._('Update GeoIP') }}</button>
+        </div>
     </div>
 </div>
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/alias/reconfigure'}) }}
