@@ -31,6 +31,39 @@ export default class Firewall extends BaseTableWidget {
         this.counters = {};
         this.chart = null;
         this.rotation = 5;
+        this.palettes = {
+            block:    ['#e15759', '#c44e52', '#a83a3d', '#ff6b6b', '#d94f4f', '#b33636', '#e87272', '#cf5c5c', '#a04040', '#ff8585'],
+            pass:     ['#59a14f', '#4c8c43', '#3d7a36', '#6fbf65', '#52a347', '#448c3a', '#7acc70', '#5db352', '#4a9c42', '#88d680'],
+            redirect: ['#4e79a7', '#3f6a98', '#335b85', '#6090b8', '#5080a8', '#436f95', '#729fc5', '#5a8ab5', '#4878a2', '#82afd0']
+        };
+    }
+
+    _hashRid(rid) {
+        let hash = 0;
+        for (let i = 0; i < rid.length; i++) {
+            hash = ((hash << 5) - hash) + rid.charCodeAt(i);
+            hash |= 0;
+        }
+        return Math.abs(hash);
+    }
+
+    _getColor(action, label, rid) {
+        let group;
+        if (/crowdsec|deny|reject|block/i.test(label)) {
+            group = 'block';
+        } else if (/let out|let anything|allow|permit/i.test(label)) {
+            group = 'pass';
+        } else if (/haproxy|rdr rule|nat rule/i.test(label)) {
+            group = 'redirect';
+        } else if (action === 'block') {
+            group = 'block';
+        } else if (action === 'pass') {
+            group = 'pass';
+        } else {
+            group = 'redirect';
+        }
+        let palette = this.palettes[group];
+        return palette[this._hashRid(rid) % palette.length];
     }
 
     getMarkup() {
@@ -147,25 +180,37 @@ export default class Firewall extends BaseTableWidget {
             $(this).data("bs.popover").tip().css("max-width", "100%")
         });
 
-        this._updateChart(data.rid, this.counters[data.rid].label, this.counters[data.rid].count);
+        this._updateChart(data.rid, this.counters[data.rid].label, this.counters[data.rid].count, data.action);
 
         if (Object.keys(this.counters).length < this.rotation) {
             this.config.callbacks.updateGrid();
         }
     }
 
-    _updateChart(rid, label, count) {
+    _updateChart(rid, label, count, action) {
+        let dataset = this.chart.data.datasets[0];
         let labels = this.chart.data.labels;
-        let data = this.chart.data.datasets[0].data;
-        let rids = this.chart.data.datasets[0].rids;
+        let decodedLabel = $("<textarea/>").html(label).text();
 
-        let idx = rids.findIndex(x => x === rid);
+        // track which rids belong to which chart label
+        if (!this.ridToLabel) this.ridToLabel = {};
+        this.ridToLabel[rid] = decodedLabel;
+
+        // find existing label in chart
+        let idx = labels.indexOf(decodedLabel);
         if (idx === -1) {
-            labels.push($("<textarea/>").html(label).text());
-            data.push(count);
-            rids.push(rid);
+            labels.push(decodedLabel);
+            dataset.data.push(count);
+            dataset.backgroundColor.push(this._getColor(action, label, rid));
         } else {
-            data[idx] = count;
+            // sum counts for all rids that share this label
+            let total = 0;
+            for (let r in this.ridToLabel) {
+                if (this.ridToLabel[r] === decodedLabel && this.counters[r]) {
+                    total += this.counters[r].count;
+                }
+            }
+            dataset.data[idx] = total;
         }
 
         this.chart.update();
@@ -185,7 +230,7 @@ export default class Firewall extends BaseTableWidget {
                 datasets: [
                     {
                         data: [],
-                        rids: [],
+                        backgroundColor: [],
                     }
                 ]
             },
@@ -201,16 +246,17 @@ export default class Firewall extends BaseTableWidget {
                 parsing: false,
                 onClick: (event, elements, chart) => {
                     const i = elements[0].index;
-                    const rid = chart.data.datasets[0].rids[i];
-                    window.open(`/ui/diagnostics/firewall/log?rid=${rid}`);
+                    const clickedLabel = chart.data.labels[i];
+                    const rid = Object.keys(this.ridToLabel).find(r => this.ridToLabel[r] === clickedLabel);
+                    if (rid) {
+                        window.open(`/ui/diagnostics/firewall/log?rid=${rid}`);
+                    }
                 },
                 onHover: (event, elements) => {
                     event.native.target.style.cursor = elements[0] ? 'pointer' : 'grab';
                 },
                 plugins: {
-                    colorschemes: {
-                        scheme: 'tableau.Classic10'
-                    },
+                    colorschemes: false,
                     legend: {
                         display: true,
                         position: 'left',
