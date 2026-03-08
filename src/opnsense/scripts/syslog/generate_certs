@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2021 Deciso B.V.
+ * Copyright (C) 2021-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,31 +27,30 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* XXX use legacy code to generate certs and CAs */
+require_once("script/load_phalcon.php");
 
-require_once("config.inc");
-require_once("certs.inc");
+use OPNsense\Core\File;
+use OPNsense\Syslog\Syslog;
+use OPNsense\Trust\Store;
 
-$store = new OPNsense\Trust\Store();
-$instances = [];
-@mkdir("/usr/local/etc/syslog-ng/cert.d", 0700, true);
-foreach ((new OPNsense\Syslog\Syslog())->destinations->destination->iterateItems() as $id => $item) {
-    if (in_array($item->transport, ['tls4', 'tls6']) && (string)$item->enabled == "1"){
-        $dest_key = str_replace("-", "", $id);
-        $instances[] = $dest_key;
-        $cert = $store->getCertificate((string)$item->certificate);
-        if ($cert && isset($cert['prv'])) {
-            file_put_contents("/usr/local/etc/syslog-ng/cert.d/{$dest_key}.key", $cert['prv']);
-            file_put_contents("/usr/local/etc/syslog-ng/cert.d/{$dest_key}.crt", $cert['crt']);
+$store = new Store();
+$filenames = [];
+$targetdir = "/usr/local/etc/syslog-ng/cert.d";
+@mkdir($targetdir, 0700, true);
+foreach ((new Syslog())->destinations->destination->iterateItems() as $id => $item) {
+    if (in_array($item->transport, ['tls4', 'tls6']) && !$item->enabled->isEmpty()){
+        if (($cert = $store->getCertificate((string)$item->certificate)) && isset($cert['prv'])) {
+            $basename = $targetdir . "/" . str_replace("-", "", $id);
+            foreach (['prv' => "{$basename}.key", 'crt' => "{$basename}.crt"] as $key => $filename) {
+                File::file_update_contents($filename, $cert[$key], 0640);
+                $filenames[] = $filename;
+            }
         }
     }
 }
-
 // cleanup old/unused certs
-foreach (glob("/usr/local/etc/syslog-ng/cert.d/*") as $filename) {
-    $instance = explode(".", basename($filename))[0];
-    $ext = pathinfo($filename)['extension'];
-    if (!in_array($instance, $instances) && in_array($ext, ['crt', 'key'])) {
+foreach (glob("/usr/local/etc/syslog-ng/cert.d/*.{crt,key}", GLOB_BRACE) as $filename) {
+    if (!in_array($filename, $filenames)) {
         unlink($filename);
     }
 }
