@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,33 +27,32 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* XXX use legacy code to generate certs and CAs */
+require_once("script/load_phalcon.php");
 
-require_once("config.inc");
-require_once("certs.inc");
+use OPNsense\CaptivePortal\CaptivePortal;
+use OPNsense\Core\File;
+use OPNsense\Trust\Store;
 
-use OPNsense\Core\Config;
-
+$filenames = [];
 $store = new OPNsense\Trust\Store();
-// traverse captive portal zones
-$configObj = Config::getInstance()->object();
-if (isset($configObj->OPNsense->captiveportal->zones)) {
-    foreach ($configObj->OPNsense->captiveportal->zones->children() as $zone) {
-        $cert = $store->getCertificate((string)$zone->certificate);
-        // if the zone has a certificate attached, search for its contents
-        if ($cert && !empty($cert['prv'])) {
-            $output_pem_filename = "/var/etc/cert-cp-zone{$zone->zoneid}.pem";
-            touch($output_pem_filename);
-            chmod($output_pem_filename, 0600);
-            file_put_contents($output_pem_filename, $cert['crt'] . $cert['prv']);
-            echo "certificate generated " . $output_pem_filename . "\n";
-            if (!empty($cert['ca'])) {
-                $output_pem_filename = "/var/etc/ca-cp-zone{$zone->zoneid}.pem";
-                touch($output_pem_filename);
-                chmod($output_pem_filename, 0600);
-                file_put_contents($output_pem_filename, $cert['ca']['crt']);
-                echo "certificate generated " . $output_pem_filename  . "\n";
-            }
+foreach ((new CaptivePortal())->zones->zone->iterateItems() as $zone) {
+    if (($cert = $store->getCertificate($zone->certificate->getValue())) && isset($cert['prv'])) {
+        $filename = "/var/etc/cert-cp-zone{$zone->zoneid}.pem";
+        File::file_update_contents($filename, $cert['crt'] . $cert['prv'], 0600);
+        $filenames[] = $filename;
+        echo "certificate generated " . $filename . "\n";
+        if (!empty($cert['ca'])) {
+            $filename = "/var/etc/ca-cp-zone{$zone->zoneid}.pem";
+            File::file_update_contents($filename, $cert['ca']['crt'], 0600);
+            $filenames[] = $filename;
+            echo "certificate generated " . $filename . "\n";
         }
+    }
+}
+
+// cleanup old/unused certs
+foreach (glob("/var/etc/*-cp-zone*.pem", GLOB_BRACE) as $filename) {
+    if (!in_array($filename, $filenames)) {
+        unlink($filename);
     }
 }
