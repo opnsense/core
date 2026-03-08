@@ -33,13 +33,12 @@ use OPNsense\Core\File;
 use OPNsense\Syslog\Syslog;
 use OPNsense\Trust\Store;
 
-$store = new Store();
 $filenames = [];
 $targetdir = "/usr/local/etc/syslog-ng/cert.d";
 @mkdir($targetdir, 0700, true);
 foreach ((new Syslog())->destinations->destination->iterateItems() as $id => $item) {
     if (in_array($item->transport, ['tls4', 'tls6']) && !$item->enabled->isEmpty()){
-        if (($cert = $store->getCertificate((string)$item->certificate)) && isset($cert['prv'])) {
+        if (($cert = Store::getCertificate((string)$item->certificate)) && isset($cert['prv'])) {
             $basename = $targetdir . "/" . str_replace("-", "", $id);
             foreach (['prv' => "{$basename}.key", 'crt' => "{$basename}.crt"] as $key => $filename) {
                 File::file_update_contents($filename, $cert[$key], 0640);

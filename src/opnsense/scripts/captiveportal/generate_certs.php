@@ -34,9 +34,8 @@ use OPNsense\Core\File;
 use OPNsense\Trust\Store;
 
 $filenames = [];
-$store = new OPNsense\Trust\Store();
 foreach ((new CaptivePortal())->zones->zone->iterateItems() as $zone) {
-    if (($cert = $store->getCertificate($zone->certificate->getValue())) && isset($cert['prv'])) {
+    if (($cert = Store::getCertificate($zone->certificate->getValue())) && isset($cert['prv'])) {
         $filename = "/var/etc/cert-cp-zone{$zone->zoneid}.pem";
         File::file_update_contents($filename, $cert['crt'] . $cert['prv'], 0600);
         $filenames[] = $filename;
