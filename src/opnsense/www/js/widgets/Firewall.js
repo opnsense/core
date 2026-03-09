@@ -134,8 +134,9 @@ export default class Firewall extends BaseTableWidget {
                 <sub>${this.translations.click}</sub>
             </p>
         `).prop('outerHTML');
+        let logHash = new URLSearchParams({field: 'rid', operator: '=', value: data.rid});
         let popover = $(`
-            <a target="_blank" href="/ui/diagnostics/firewall/log?rid=${data.rid}" type="button"
+            <a target="_blank" href="/ui/diagnostics/firewall/log#${logHash}" type="button"
                 data-toggle="popover" data-trigger="hover" data-html="true" data-title="${this.translations.matchedrule}"
                 data-content="${popContent}">
                 ${actIcons[data.action]}
@@ -230,7 +231,8 @@ export default class Firewall extends BaseTableWidget {
                 onClick: (event, elements, chart) => {
                     const i = elements[0].index;
                     const rid = chart.data.datasets[0].rids[i];
-                    window.open(`/ui/diagnostics/firewall/log?rid=${rid}`);
+                    let logHash = new URLSearchParams({field: 'rid', operator: '=', value: rid});
+                    window.open(`/ui/diagnostics/firewall/log#${logHash}`);
                 },
                 onHover: (event, elements) => {
                     event.native.target.style.cursor = elements[0] ? 'pointer' : 'grab';
