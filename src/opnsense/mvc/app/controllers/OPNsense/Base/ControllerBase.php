@@ -378,6 +378,7 @@ class ControllerBase extends ControllerRoot
         if (
             $cnf->object()->theme->count() > 0 && !empty($cnf->object()->theme) &&
             (
+                (string)$cnf->object()->theme === 'opnsense-auto' ||
                 is_dir('/usr/local/opnsense/www/themes/' . (string)$cnf->object()->theme) ||
                 !is_dir('/usr/local/opnsense/www/themes')
             )
