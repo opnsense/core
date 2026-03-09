@@ -31,6 +31,7 @@ export default class Firewall extends BaseTableWidget {
         this.counters = {};
         this.chart = null;
         this.rotation = 5;
+        // Tableau 10 base hues with deterministic shade variants per semantic group
         this.palettes = {
             block:    ['#e15759', '#c44e52', '#a83a3d', '#ff6b6b', '#d94f4f', '#b33636', '#e87272', '#cf5c5c', '#a04040', '#ff8585'],
             pass:     ['#59a14f', '#4c8c43', '#3d7a36', '#6fbf65', '#52a347', '#448c3a', '#7acc70', '#5db352', '#4a9c42', '#88d680'],
@@ -38,24 +39,9 @@ export default class Firewall extends BaseTableWidget {
         };
     }
 
-    _hashRid(rid) {
-        let hash = 0;
-        for (let i = 0; i < rid.length; i++) {
-            hash = ((hash << 5) - hash) + rid.charCodeAt(i);
-            hash |= 0;
-        }
-        return Math.abs(hash);
-    }
-
-    _getColor(action, label, rid) {
+    _getColor(action, rid) {
         let group;
-        if (/crowdsec|deny|reject|block/i.test(label)) {
-            group = 'block';
-        } else if (/let out|let anything|allow|permit/i.test(label)) {
-            group = 'pass';
-        } else if (/haproxy|rdr rule|nat rule/i.test(label)) {
-            group = 'redirect';
-        } else if (action === 'block') {
+        if (action === 'block' || action === 'reject') {
             group = 'block';
         } else if (action === 'pass') {
             group = 'pass';
@@ -63,7 +49,7 @@ export default class Firewall extends BaseTableWidget {
             group = 'redirect';
         }
         let palette = this.palettes[group];
-        return palette[this._hashRid(rid) % palette.length];
+        return palette[parseInt(rid.slice(0, 8), 16) % palette.length];
     }
 
     getMarkup() {
@@ -201,7 +187,7 @@ export default class Firewall extends BaseTableWidget {
         if (idx === -1) {
             labels.push(decodedLabel);
             dataset.data.push(count);
-            dataset.backgroundColor.push(this._getColor(action, label, rid));
+            dataset.backgroundColor.push(this._getColor(action, rid));
         } else {
             // sum counts for all rids that share this label
             let total = 0;
