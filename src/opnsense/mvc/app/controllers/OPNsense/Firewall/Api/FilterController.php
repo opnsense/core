@@ -430,8 +430,7 @@ class FilterController extends FilterBaseController
         foreach ((new Group())->ifgroupentry->iterateItems() as $groupItem) {
             $name = $groupItem->ifname->getValue();
             $descr = $groupItem->descr->getValue();
-            $descr = empty($descr) ? $name : "{$descr} ($name)";
-
+            $descr = empty($descr) ? $name : "{$name} ({$descr})";
             $result['groups']['items'][] = $makeItem($name, $descr, $ruleCounts[$name] ?? 0, 'group');
         }
 
