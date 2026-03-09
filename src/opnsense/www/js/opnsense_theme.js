@@ -179,7 +179,7 @@ $(document).ready(function () {
     $(window).on('resize', function () {
         const winHeight = $(window).height();
         const winWidth  = $(window).width();
-        const tooSmall  = winHeight < navHeight || winWidth < 1000;
+        const tooSmall  = winHeight < navHeight || winWidth < 760;
 
         if (tooSmall && !isSidebarHidden()) {
             navigation.addClass('col-sidebar-hidden');
@@ -203,7 +203,7 @@ $(document).ready(function () {
     // --- Init: check viewport on page load before showing sidebar ---
     const initHeight = $(window).height();
     const initWidth  = $(window).width();
-    const tooSmallOnLoad = initHeight < navHeight || initWidth < 1000;
+    const tooSmallOnLoad = initHeight < navHeight || initWidth < 760;
 
     if (tooSmallOnLoad) {
         navigation.addClass('col-sidebar-hidden');
