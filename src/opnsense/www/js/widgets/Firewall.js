@@ -31,24 +31,19 @@ export default class Firewall extends BaseTableWidget {
         this.counters = {};
         this.chart = null;
         this.rotation = 5;
-        // Tableau 10 base hues with deterministic shade variants per semantic group
+        // Tableau 10 base hues with deterministic shade variants per action
         this.palettes = {
-            block:    ['#e15759', '#c44e52', '#a83a3d', '#ff6b6b', '#d94f4f', '#b33636', '#e87272', '#cf5c5c', '#a04040', '#ff8585'],
-            pass:     ['#59a14f', '#4c8c43', '#3d7a36', '#6fbf65', '#52a347', '#448c3a', '#7acc70', '#5db352', '#4a9c42', '#88d680'],
-            redirect: ['#4e79a7', '#3f6a98', '#335b85', '#6090b8', '#5080a8', '#436f95', '#729fc5', '#5a8ab5', '#4878a2', '#82afd0']
+            block:  ['#e15759', '#c44e52', '#a83a3d', '#ff6b6b', '#d94f4f', '#b33636', '#e87272', '#cf5c5c', '#a04040', '#ff8585'],
+            pass:   ['#59a14f', '#4c8c43', '#3d7a36', '#6fbf65', '#52a347', '#448c3a', '#7acc70', '#5db352', '#4a9c42', '#88d680'],
+            rdr:    ['#4e79a7', '#3f6a98', '#335b85', '#6090b8', '#5080a8', '#436f95', '#729fc5', '#5a8ab5', '#4878a2', '#82afd0'],
+            nat:    ['#4e79a7', '#3f6a98', '#335b85', '#6090b8', '#5080a8', '#436f95', '#729fc5', '#5a8ab5', '#4878a2', '#82afd0'],
+            binat:    ['#4e79a7', '#3f6a98', '#335b85', '#6090b8', '#5080a8', '#436f95', '#729fc5', '#5a8ab5', '#4878a2', '#82afd0'],
+            _default: ['#999999', '#888888', '#777777', '#aaaaaa', '#b0b0b0', '#969696', '#a3a3a3', '#8c8c8c', '#7a7a7a', '#b5b5b5']
         };
     }
 
     _getColor(action, rid) {
-        let group;
-        if (action === 'block' || action === 'reject') {
-            group = 'block';
-        } else if (action === 'pass') {
-            group = 'pass';
-        } else {
-            group = 'redirect';
-        }
-        let palette = this.palettes[group];
+        let palette = this.palettes[action] ?? this.palettes['_default'];
         return palette[parseInt(rid.slice(0, 8), 16) % palette.length];
     }
 
@@ -166,37 +161,29 @@ export default class Firewall extends BaseTableWidget {
             $(this).data("bs.popover").tip().css("max-width", "100%")
         });
 
-        this._updateChart(data.rid, this.counters[data.rid].label, this.counters[data.rid].count, data.action);
+        let iface = this.ifMap[data.interface] ?? data.interface;
+        this._updateChart(data.rid, this.counters[data.rid].label, this.counters[data.rid].count, data.action, iface);
 
         if (Object.keys(this.counters).length < this.rotation) {
             this.config.callbacks.updateGrid();
         }
     }
 
-    _updateChart(rid, label, count, action) {
-        let dataset = this.chart.data.datasets[0];
+    _updateChart(rid, label, count, action, iface) {
         let labels = this.chart.data.labels;
-        let decodedLabel = $("<textarea/>").html(label).text();
+        let data = this.chart.data.datasets[0].data;
+        let rids = this.chart.data.datasets[0].rids;
+        let colors = this.chart.data.datasets[0].backgroundColor;
 
-        // track which rids belong to which chart label
-        if (!this.ridToLabel) this.ridToLabel = {};
-        this.ridToLabel[rid] = decodedLabel;
-
-        // find existing label in chart
-        let idx = labels.indexOf(decodedLabel);
+        let idx = rids.findIndex(x => x === rid);
         if (idx === -1) {
-            labels.push(decodedLabel);
-            dataset.data.push(count);
-            dataset.backgroundColor.push(this._getColor(action, rid));
+            let decodedLabel = $("<textarea/>").html(label).text();
+            labels.push(iface ? `${decodedLabel} (${iface})` : decodedLabel);
+            data.push(count);
+            rids.push(rid);
+            colors.push(this._getColor(action, rid));
         } else {
-            // sum counts for all rids that share this label
-            let total = 0;
-            for (let r in this.ridToLabel) {
-                if (this.ridToLabel[r] === decodedLabel && this.counters[r]) {
-                    total += this.counters[r].count;
-                }
-            }
-            dataset.data[idx] = total;
+            data[idx] = count;
         }
 
         this.chart.update();
@@ -216,6 +203,7 @@ export default class Firewall extends BaseTableWidget {
                 datasets: [
                     {
                         data: [],
+                        rids: [],
                         backgroundColor: [],
                     }
                 ]
@@ -232,11 +220,8 @@ export default class Firewall extends BaseTableWidget {
                 parsing: false,
                 onClick: (event, elements, chart) => {
                     const i = elements[0].index;
-                    const clickedLabel = chart.data.labels[i];
-                    const rid = Object.keys(this.ridToLabel).find(r => this.ridToLabel[r] === clickedLabel);
-                    if (rid) {
-                        window.open(`/ui/diagnostics/firewall/log?rid=${rid}`);
-                    }
+                    const rid = chart.data.datasets[0].rids[i];
+                    window.open(`/ui/diagnostics/firewall/log?rid=${rid}`);
                 },
                 onHover: (event, elements) => {
                     event.native.target.style.cursor = elements[0] ? 'pointer' : 'grab';
