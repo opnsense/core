@@ -180,7 +180,9 @@ class FilterController extends FilterBaseController
                 }
                 // Tag legacy rules as "Automatic generated rules" if they have an empty category
                 if (!empty($record['is_automatic'])) {
-                    $record['categories'] = gettext('Automatically generated rules');
+                    $label = gettext('Automatically generated rules');
+                    $record['categories'] = $label;  // Grouping key for tree view
+                    $record['category_colors'] = [['name'  => $label]];  // Category formatter metadata
                 }
 
                 return true;
