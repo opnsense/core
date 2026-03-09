@@ -147,10 +147,18 @@ class KeaDhcpv4 extends BaseModel
                 if ($key == 'static_routes') {
                     $value = implode(',', array_map('trim', explode(',', $value->getValue())));
                 }
-                $result[] = [
-                    'name' => $target_fieldname,
-                    'data' => (string)$value
-                ];
+                if (substr($key, 0, 15) == 'boot_file_name_') {
+                    $result[] = [
+                        'name'           => 'boot-file-name',
+                        'data'           => (string)$value,
+                        'client-classes' => [ substr($key, 15) ]
+                    ];
+                } else {
+                    $result[] = [
+                        'name' => $target_fieldname,
+                        'data' => (string)$value
+                    ];
+                }
             } elseif ($key == 'domain_name' && $defaults) {
                 $result[] = [
                     'name' => $target_fieldname,
@@ -246,6 +254,28 @@ class KeaDhcpv4 extends BaseModel
                             ]
                         ],
                         'severity' => 'INFO',
+                    ]
+                ],
+                'client-classes' => [
+                    [
+                        'name' => 'bios',
+                        'test' => 'option[93].hex == 0x0000',
+                    ],
+                    [
+                        'name' => 'uefi32',
+                        'test' => 'option[93].hex == 0x0002'
+                    ],
+                    [
+                        'name' => 'uefi64',
+                        'test' => 'option[93].hex == 0x0007 or option[93].hex == 0x0009'
+                    ],
+                    [
+                        'name' => 'uefi32arm',
+                        'test' => 'option[93].hex == 0x000a'
+                    ],
+                    [
+                        'name' => 'uefi64arm',
+                        'test' => 'option[93].hex == 0x000b'
                     ]
                 ],
                 'subnet4' => $this->getConfigSubnets(),
