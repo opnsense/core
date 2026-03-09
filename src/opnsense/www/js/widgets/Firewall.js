@@ -31,20 +31,29 @@ export default class Firewall extends BaseTableWidget {
         this.counters = {};
         this.chart = null;
         this.rotation = 5;
-        // Tableau 10 base hues with deterministic shade variants per action
-        this.palettes = {
-            block:  ['#e15759', '#c44e52', '#a83a3d', '#ff6b6b', '#d94f4f', '#b33636', '#e87272', '#cf5c5c', '#a04040', '#ff8585'],
-            pass:   ['#59a14f', '#4c8c43', '#3d7a36', '#6fbf65', '#52a347', '#448c3a', '#7acc70', '#5db352', '#4a9c42', '#88d680'],
-            rdr:    ['#4e79a7', '#3f6a98', '#335b85', '#6090b8', '#5080a8', '#436f95', '#729fc5', '#5a8ab5', '#4878a2', '#82afd0'],
-            nat:    ['#4e79a7', '#3f6a98', '#335b85', '#6090b8', '#5080a8', '#436f95', '#729fc5', '#5a8ab5', '#4878a2', '#82afd0'],
-            binat:    ['#4e79a7', '#3f6a98', '#335b85', '#6090b8', '#5080a8', '#436f95', '#729fc5', '#5a8ab5', '#4878a2', '#82afd0'],
-            _default: ['#999999', '#888888', '#777777', '#aaaaaa', '#b0b0b0', '#969696', '#a3a3a3', '#8c8c8c', '#7a7a7a', '#b5b5b5']
-        };
+        // Map actions to Classic10 color indices: red=block, green=pass, blue=rdr/nat/binat, gray=unknown
+        this.actionColorIndex = { block: 3, pass: 2, rdr: 0, nat: 0, binat: 0 };
+        this.defaultColorIndex = 7;
+    }
+
+    _shadeColor(hex, factor) {
+        // Lighten (factor > 0) or darken (factor < 0) a hex color
+        let r = parseInt(hex.slice(1, 3), 16);
+        let g = parseInt(hex.slice(3, 5), 16);
+        let b = parseInt(hex.slice(5, 7), 16);
+        r = Math.min(255, Math.max(0, Math.round(r + (factor > 0 ? (255 - r) : r) * factor)));
+        g = Math.min(255, Math.max(0, Math.round(g + (factor > 0 ? (255 - g) : g) * factor)));
+        b = Math.min(255, Math.max(0, Math.round(b + (factor > 0 ? (255 - b) : b) * factor)));
+        return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
     }
 
     _getColor(action, rid) {
-        let palette = this.palettes[action] ?? this.palettes['_default'];
-        return palette[parseInt(rid.slice(0, 8), 16) % palette.length];
+        let colors = Chart.colorschemes.tableau.Classic10;
+        let idx = this.actionColorIndex[action] ?? this.defaultColorIndex;
+        let base = colors[idx];
+        let hash = parseInt(rid.slice(0, 8), 16);
+        let factor = ((hash % 10) - 5) * 0.08;
+        return this._shadeColor(base, factor);
     }
 
     getMarkup() {
