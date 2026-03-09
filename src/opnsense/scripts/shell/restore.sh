@@ -36,7 +36,7 @@ if [ ! -d /conf/backup ]; then
 	exit 0
 fi
 
-BACKUPS="$(cd /conf/backup; find . -name "config-*.xml")"
+BACKUPS="$(cd /conf/backup; find -s . -name "config-*.xml" | tail -n 19)"
 
 if [ -z "${BACKUPS}" ]; then
 	echo "No backups available."
@@ -67,7 +67,7 @@ for BACKUP in ${BACKUPS}; do
 "
 done
 
-SORTED="$(echo -n "${DATED}" | sort -r | head -n 19)"
+SORTED="$(echo -n "${DATED}" | sort -r)"
 INDEX=0
 RESTORE=
 
