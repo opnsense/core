@@ -54,6 +54,7 @@ CORE_DEPENDS_amd64?=	beep \
 
 CORE_DEPENDS?=		ca_root_nss \
 			choparp \
+			colordiff \
 			cpustats \
 			dhcp6c \
 			dhcrelay \
