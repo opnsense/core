@@ -124,7 +124,7 @@ class SnapshotsController extends ApiControllerBase
      */
     private function isValidName($name)
     {
-        return !preg_match('/\s/', $name);
+        return !preg_match('/^[a-zA-Z0-9_.][a-zA-Z0-9_.-]*$/', $name);
     }
 
     /**
