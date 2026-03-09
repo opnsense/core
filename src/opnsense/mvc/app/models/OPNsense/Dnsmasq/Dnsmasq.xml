@@ -1,7 +1,7 @@
 <model>
     <mount>/dnsmasq</mount>
     <description>Dnsmasq DNS and DHCP</description>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
     <items>
         <enable type="BooleanField"/>
         <regdhcp type="BooleanField"/>
@@ -73,6 +73,7 @@
                 <MaximumValue>60</MaximumValue>
             </reply_delay>
             <enable_ra type="BooleanField"/>
+            <no_ping type="BooleanField"/>
             <nosync type="BooleanField"/>
             <log_dhcp type="BooleanField">
                 <Constraints>
