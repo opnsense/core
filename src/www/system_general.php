@@ -389,8 +389,8 @@ $( document ).ready(function() {
               <td>
                 <select name="theme" class="selectpicker">
 <?php
-                $themes = []
-                foreach (glob('/usr/local/opnsense/www/themes/*', GLOB_ONLYDIR) as $file){
+                $themes = [];
+                foreach (glob('/usr/local/opnsense/www/themes/*', GLOB_ONLYDIR) as $file) {
                   $themes = basename($file);
                 }
                 if (!in_array('opnsense-auto', $themes)) {
