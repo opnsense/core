@@ -119,9 +119,21 @@
                     <tftp_server_name type="TextField">
                         <Mask>/^([^\n"])*$/u</Mask>
                     </tftp_server_name>
-                    <boot_file_name type="TextField">
+                    <boot_file_name_bios type="TextField">
                         <Mask>/^([^\n"])*$/u</Mask>
-                    </boot_file_name>
+                    </boot_file_name_bios>
+                    <boot_file_name_uefi32 type="TextField">
+                        <Mask>/^([^\n"])*$/u</Mask>
+                    </boot_file_name_uefi32>
+                    <boot_file_name_uefi64 type="TextField">
+                        <Mask>/^([^\n"])*$/u</Mask>
+                    </boot_file_name_uefi64>
+                    <boot_file_name_uefi32arm type="TextField">
+                        <Mask>/^([^\n"])*$/u</Mask>
+                    </boot_file_name_uefi32arm>
+                    <boot_file_name_uefi64arm type="TextField">
+                        <Mask>/^([^\n"])*$/u</Mask>
+                    </boot_file_name_uefi64arm>
                     <v6_only_preferred type="IntegerField">
                         <MinimumValue>300</MinimumValue>
                     </v6_only_preferred>
