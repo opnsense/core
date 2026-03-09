@@ -428,23 +428,15 @@ class FilterController extends FilterBaseController
         // Floating
         $result['floating']['items'][] = $makeItem('__floating', gettext('Floating'), $ruleCounts['floating'] ?? 0, 'floating');
 
-        // Groups
-        foreach ((new Group())->ifgroupentry->iterateItems() as $groupItem) {
-            $name = $groupItem->ifname->getValue();
-            $descr = $groupItem->descr->getValue();
-            $descr = empty($descr) ? $name : "{$descr} ($name)";
-
-            $result['groups']['items'][] = $makeItem($name, $descr, $ruleCounts[$name] ?? 0, 'group');
-        }
-
-        // Interfaces
-        $groupKeys = array_column($result['groups']['items'], 'value');
+        // Groups + Interfaces
         foreach (Config::getInstance()->object()->interfaces->children() as $key => $intf) {
             // XXX: Loopback excluded since no rules should be on there
-            if (!in_array($key, array_merge($groupKeys, ['lo0']))) {
-                $descr = !empty($intf->descr) ? (string)$intf->descr : strtoupper($key);
-                $result['interfaces']['items'][] = $makeItem($key, $descr, $ruleCounts[$key] ?? 0, 'interface');
+            if ($key == 'lo0') {
+                continue;
             }
+            $descr = !empty($intf->descr) ? (string)$intf->descr : strtoupper($key);
+            $type = (string)$intf->type == 'group' ? 'group' : 'interface';
+            $result["{$type}s"]['items'][] = $makeItem($key, $descr, $ruleCounts[$key] ?? 0, $type);
         }
 
         // ALL rules
