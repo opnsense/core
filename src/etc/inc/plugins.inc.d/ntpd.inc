@@ -330,12 +330,13 @@ function ntpd_configure_do($verbose = false)
     $noselect = isset($config['ntpd']['noselect']) ? explode(' ', $config['ntpd']['noselect']) : [];
     $prefer = isset($config['ntpd']['prefer']) ? explode(' ', $config['ntpd']['prefer']) : [];
     $iburst = isset($config['ntpd']['iburst']) ? explode(' ', $config['ntpd']['iburst']) : [];
+    $ispool = isset($config['ntpd']['ispool']) ? explode(' ', $config['ntpd']['ispool']) : [];
 
     $ntpcfg .= "\n\n# Upstream Servers\n";
     /* foreach through ntp servers and write out to ntpd.conf */
     foreach (explode(' ', $config['system']['timeservers']) as $ts) {
-        /* Determine if Network Time Server is from the NTP Pool or not */
-        if (preg_match("/\.pool\.ntp\.org$/", $ts)) {
+        /* Determine if Network Time Server is a pool or not */
+        if (in_array($ts, $ispool) || preg_match("/\.pool\.ntp\.org$/", $ts)) {
             $ntpcfg .= "pool {$ts}";
         } else {
             $ntpcfg .= "server {$ts}";
