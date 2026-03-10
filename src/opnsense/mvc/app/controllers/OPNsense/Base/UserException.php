@@ -34,7 +34,7 @@ class UserException extends \Exception
 {
     private $title = null;
 
-    public function __construct($message = "", $title = "", $code = 0, Exception $previous = null)
+    public function __construct($message = "", $title = "", $code = 0, ?Exception $previous = null)
     {
         $this->title = $title;
         parent::__construct($message, $code, $previous);
