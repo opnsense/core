@@ -341,18 +341,27 @@
         _buildPredicate(field, operator, value) {
             const needle = String(value ?? '').toLowerCase().trim();
 
+            let regex = null;
+            if (operator === '~' || operator === '!~') {
+                try {
+                    regex = new RegExp(needle, 'i');
+                } catch {
+                    regex = null;
+                }
+            }
+
             return (item) => {
-                const haystack = String(item?.[field] ?? '').toLowerCase();
+                const haystack = String(item?.[field] ?? '');
 
                 switch (operator) {
                 case '~':
-                    return haystack.includes(needle);
+                    return regex ? regex.test(haystack) : false;
                 case '!~':
-                    return !haystack.includes(needle);
+                    return regex ? !regex.test(haystack) : true;
                 case '=':
-                    return haystack === needle;
+                    return haystack.toLowerCase() === needle;
                 case '!=':
-                    return haystack !== needle;
+                    return haystack.toLowerCase() !== needle;
                 default:
                     return true; // unknown operator -> pass everything
                 }
