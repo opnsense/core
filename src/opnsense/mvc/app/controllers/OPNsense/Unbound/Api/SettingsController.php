@@ -186,7 +186,27 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function searchHostOverrideAction()
     {
-        return $this->searchBase('hosts.host', null);
+        $result = $this->searchBase('hosts.host', null);
+        $mdl = $this->getModel();
+
+        foreach ($result['rows'] as &$host) {
+            $child = $host;
+            $host['_children'] = [];
+            $host['isAlias'] = false;
+            $uuid = $host['uuid'];
+            foreach ($mdl->getHostAliases($uuid) as $node) {
+                $child['uuid'] = $node->getAttribute('uuid');
+                $child['isAlias'] = true;
+                foreach (['enabled', 'hostname', 'domain', 'description'] as $key) {
+                    $child[$key] = $node->$key->getValue();
+                }
+                unset($child['aliases']);
+                unset($child['aliascount']);
+                $host['_children'][] = $child;
+            }
+        }
+        
+        return $result;
     }
 
     public function getHostOverrideAction($uuid = null)
