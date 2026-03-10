@@ -31,6 +31,8 @@ export default class Firewall extends BaseTableWidget {
         this.counters = {};
         this.chart = null;
         this.rotation = 5;
+        this.configurable = true;
+        this.colorScheme = 'contrast';
         // Map actions to Classic10 color indices: red=block, green=pass, blue=rdr/nat/binat, gray=unknown
         this.actionColorIndex = { block: 3, pass: 2, rdr: 0, nat: 0, binat: 0 };
         this.defaultColorIndex = 7;
@@ -49,11 +51,45 @@ export default class Firewall extends BaseTableWidget {
 
     _getColor(action, rid) {
         let colors = Chart.colorschemes.tableau.Classic10;
-        let idx = this.actionColorIndex[action] ?? this.defaultColorIndex;
-        let base = colors[idx];
         let hash = parseInt(rid.slice(0, 8), 16);
+        let base;
+        if (this.colorScheme === 'semantic') {
+            let idx = this.actionColorIndex[action] ?? this.defaultColorIndex;
+            base = colors[idx];
+        } else {
+            base = colors[hash % colors.length];
+        }
         let factor = ((hash % 10) - 5) * 0.08;
         return this._shadeColor(base, factor);
+    }
+
+    async getWidgetOptions() {
+        return {
+            colorscheme: {
+                title: this.translations.colorscheme,
+                type: 'select_multiple',
+                options: [
+                    { value: 'contrast', label: this.translations.contrast },
+                    { value: 'semantic', label: this.translations.semantic }
+                ],
+                default: ['contrast']
+            }
+        }
+    }
+
+    async onWidgetOptionsChanged(options) {
+        const config = await this.getWidgetConfig();
+        this.colorScheme = config.colorscheme.includes('semantic') ? 'semantic' : 'contrast';
+
+        if (this.chart) {
+            let rids = this.chart.data.datasets[0].rids;
+            let colors = this.chart.data.datasets[0].backgroundColor;
+            let actions = this.chart.data.datasets[0].actions;
+            rids.forEach((rid, i) => {
+                colors[i] = this._getColor(actions[i], rid);
+            });
+            this.chart.update();
+        }
     }
 
     getMarkup() {
@@ -181,9 +217,11 @@ export default class Firewall extends BaseTableWidget {
 
     _updateChart(rid, label, count, action, iface) {
         let labels = this.chart.data.labels;
-        let data = this.chart.data.datasets[0].data;
-        let rids = this.chart.data.datasets[0].rids;
-        let colors = this.chart.data.datasets[0].backgroundColor;
+        let dataset = this.chart.data.datasets[0];
+        let data = dataset.data;
+        let rids = dataset.rids;
+        let actions = dataset.actions;
+        let colors = dataset.backgroundColor;
 
         let idx = rids.findIndex(x => x === rid);
         if (idx === -1) {
@@ -191,6 +229,7 @@ export default class Firewall extends BaseTableWidget {
             labels.push(iface ? `${decodedLabel} (${iface})` : decodedLabel);
             data.push(count);
             rids.push(rid);
+            actions.push(action);
             colors.push(this._getColor(action, rid));
         } else {
             data[idx] = count;
@@ -203,10 +242,13 @@ export default class Firewall extends BaseTableWidget {
         const data = await this.ajaxCall('/api/diagnostics/interface/get_interface_names');
         this.ifMap = data;
 
+        const config = await this.getWidgetConfig();
+        this.colorScheme = config.colorscheme.includes('semantic') ? 'semantic' : 'contrast';
+
         super.openEventSource('/api/diagnostics/firewall/stream_log', this._onMessage.bind(this));
 
         let context = document.getElementById('fw-chart').getContext('2d');
-        let config = {
+        let chartConfig = {
             type: 'doughnut',
             data: {
                 labels: [],
@@ -214,6 +256,7 @@ export default class Firewall extends BaseTableWidget {
                     {
                         data: [],
                         rids: [],
+                        actions: [],
                         backgroundColor: [],
                     }
                 ]
@@ -296,7 +339,7 @@ export default class Firewall extends BaseTableWidget {
             ]
         }
 
-        this.chart = new Chart(context, config);
+        this.chart = new Chart(context, chartConfig);
     }
 
     onWidgetClose() {
