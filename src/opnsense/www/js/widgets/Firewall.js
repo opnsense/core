@@ -51,35 +51,34 @@ export default class Firewall extends BaseTableWidget {
 
     _getColor(action, rid) {
         let colors = Chart.colorschemes.tableau.Classic10;
-        let hash = parseInt(rid.slice(0, 8), 16);
-        let base;
         if (this.colorScheme === 'semantic') {
             let idx = this.actionColorIndex[action] ?? this.defaultColorIndex;
-            base = colors[idx];
-        } else {
-            base = colors[hash % colors.length];
+            let base = colors[idx];
+            let hash = parseInt(rid.slice(0, 8), 16);
+            let factor = ((hash % 10) - 5) * 0.08;
+            return this._shadeColor(base, factor);
         }
-        let factor = ((hash % 10) - 5) * 0.08;
-        return this._shadeColor(base, factor);
+        let rids = this.chart.data.datasets[0].rids;
+        return colors[rids.length % colors.length];
     }
 
     async getWidgetOptions() {
         return {
             colorscheme: {
                 title: this.translations.colorscheme,
-                type: 'select_multiple',
+                type: 'select',
                 options: [
                     { value: 'contrast', label: this.translations.contrast },
                     { value: 'semantic', label: this.translations.semantic }
                 ],
-                default: ['contrast']
+                default: 'contrast'
             }
         }
     }
 
     async onWidgetOptionsChanged(options) {
         const config = await this.getWidgetConfig();
-        this.colorScheme = config.colorscheme.includes('semantic') ? 'semantic' : 'contrast';
+        this.colorScheme = config.colorscheme;
 
         if (this.chart) {
             let rids = this.chart.data.datasets[0].rids;
@@ -243,7 +242,7 @@ export default class Firewall extends BaseTableWidget {
         this.ifMap = data;
 
         const config = await this.getWidgetConfig();
-        this.colorScheme = config.colorscheme.includes('semantic') ? 'semantic' : 'contrast';
+        this.colorScheme = config.colorscheme;
 
         super.openEventSource('/api/diagnostics/firewall/stream_log', this._onMessage.bind(this));
 
