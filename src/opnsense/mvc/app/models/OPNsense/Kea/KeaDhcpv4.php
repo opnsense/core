@@ -292,6 +292,14 @@ class KeaDhcpv4 extends BaseModel
                 $cnf['Dhcp4']['hooks-libraries'][] = $record;
             }
         }
+        $ddns = new KeaDdns();
+        if (!$ddns->general->enabled->isEmpty()) {
+            $cnf['Dhcp4']['dhcp-ddns'] = [
+                'enable-updates' => true,
+                'server-ip' => $ddns->general->http_host->getValue(),
+                'server-port' => $ddns->general->http_port->asInt()
+            ];
+        }
         File::file_put_contents($target, json_encode($cnf, JSON_PRETTY_PRINT), 0600);
     }
 }

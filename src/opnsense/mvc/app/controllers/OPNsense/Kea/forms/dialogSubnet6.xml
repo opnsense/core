@@ -74,4 +74,57 @@
         </grid_view>
         <advanced>true</advanced>
     </field>
+    <field>
+        <type>header</type>
+        <label>Dynamic DNS</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>subnet6.ddns_forward_zone</id>
+        <label>DNS forward zone</label>
+        <type>text</type>
+        <help>DNS zone where DHCP clients should be registered (e.g. home.arpa).</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet6.ddns_dns_server</id>
+        <label>DNS server</label>
+        <type>text</type>
+        <help>Authoritative DNS server receiving dynamic updates.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet6.ddns_domain_key</id>
+        <label>TSIG secret</label>
+        <type>text</type>
+        <help>Base64 encoded TSIG key secret.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>subnet6.ddns_domain_key_name</id>
+        <label>TSIG key name</label>
+        <type>text</type>
+        <help>Optional TSIG key name used for secure DNS updates.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet6.ddns_domain_algorithm</id>
+        <label>TSIG algorithm</label>
+        <type>dropdown</type>
+        <help>Algorithm used for TSIG authentication with the DNS server.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
 </form>

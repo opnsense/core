@@ -30,6 +30,15 @@
             <pattern>api/kea/service/*</pattern>
         </patterns>
     </page-dhcp-kea-ctrl-agent>
+    <page-dhcp-kea-ddns>
+        <name>Services: DHCP: Kea DDNS</name>
+        <description>Allow access to the KEA DDNS server</description>
+        <patterns>
+            <pattern>ui/kea/dhcp/ddns</pattern>
+            <pattern>api/kea/ddns/*</pattern>
+            <pattern>api/kea/service/*</pattern>
+        </patterns>
+    </page-dhcp-kea-ddns>
     <page-diagnostics-logs-kea>
         <name>Services: DHCP: Kea Log File</name>
         <description>Allow access to the KEA Log File</description>

@@ -104,6 +104,23 @@
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                 </interface>
+                <!-- XXX: Needs some validations (trailing dot) -->
+                <ddns_forward_zone type="HostnameField">
+                    <IpAllowed>N</IpAllowed>
+                </ddns_forward_zone>
+                <ddns_dns_server type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                </ddns_dns_server>
+                <ddns_domain_key type="Base64Field"/>
+                <ddns_domain_key_name type="TextField"/>
+                <!-- XXX: Needs Default -->
+                <ddns_domain_algorithm type="OptionField">
+                    <OptionValues>
+                        <hmac-md5>hmac-md5</hmac-md5>
+                        <hmac-sha256>hmac-sha256</hmac-sha256>
+                        <hmac-sha512>hmac-sha512</hmac-sha512>
+                    </OptionValues>
+                </ddns_domain_algorithm>
                 <description type="DescriptionField"/>
             </subnet6>
         </subnets>

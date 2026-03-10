@@ -323,6 +323,14 @@ class KeaDhcpv6 extends BaseModel
                 $cnf['Dhcp6']['hooks-libraries'][] = $record;
             }
         }
+        $ddns = new KeaDdns();
+        if (!$ddns->general->enabled->isEmpty()) {
+            $cnf['Dhcp6']['dhcp-ddns'] = [
+                'enable-updates' => true,
+                'server-ip' => $ddns->general->http_host->asValue(),
+                'server-port' => $ddns->general->http_port->asInt()
+            ];
+        }
         File::file_put_contents($target, json_encode($cnf, JSON_PRETTY_PRINT), 0600);
     }
 }
