@@ -44,10 +44,14 @@
                     imgs[j].src = imgs[j].src.replace(/\/ui\/themes\/[^\/]+\//, '/ui/themes/' + activeTheme + '/');
                 }
             }
+            if (typeof d3 !== 'undefined' && typeof nv !== 'undefined') {
+                window.dispatchEvent(new Event('resize'));
+            }
         }
 
         updateTheme();
-
+        document.addEventListener('DOMContentLoaded', updateTheme);
+        
         if (window.matchMedia) {
             window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateTheme);
         }
