@@ -31,11 +31,6 @@ require_once("config.inc");
 require_once("interfaces.inc");
 require_once("util.inc");
 
-$a_hasync = config_read_array('hasync', false);
-if (empty($a_hasync['disconnectppps'])) {
-    exit(0);
-}
-
 $subsystem = !empty($argv[1]) ? $argv[1] : '';
 $type = !empty($argv[2]) ? $argv[2] : '';
 
@@ -47,22 +42,27 @@ if (!in_array($type, ['BACKUP', 'INIT', 'MASTER'])) {
    exit(1);
 }
 
-list ($vhid, $iface) = explode('@', $subsystem);
+list ($vhid, $device) = explode('@', $subsystem);
 
 foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
     /* XXX this ignores MLPPP but also reduces complexity */
-    if ($ppp['ports'] != $iface) {
+    if ($ppp['ports'] != $device) {
         continue;
     }
 
-    foreach (config_read_array('interfaces', false) as $ifkey => $interface) {
-        if ($ppp['if'] == $interface['if']) {
-            log_msg("{$iface} is connected to ppp interface {$ifkey} set new status {$type}");
-            if (in_array($type, ['BACKUP', 'INIT'])) {
+    foreach (config_read_array('interfaces', false) as $ifkey => $ifcfg) {
+        if ($ppp['if'] == $ifcfg['if']) {
+            log_msg("{$device} connected to PPP interface {$ifkey} set new status {$type}");
+
+            if (interface_ppps_passive($ifkey, [[$ifcfg['if'] => ['carp' => $type]]])) {
                 interface_suspend($ifkey);
             } else {
                 interface_ppps_configure($ifkey);
             }
+
+            break;
         }
     }
+
+    break;
 }

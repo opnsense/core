@@ -1035,6 +1035,29 @@ function interface_ppps_reset($interface, $suspend, $ifcfg, $ppps)
     }
 }
 
+function interface_ppps_passive($interface, $port_stats = null)
+{
+    $ifcfg = config_read_array('interfaces', $interface, false);
+    if (empty($ifcfg)) {
+        return false;
+    }
+
+    $hasync = config_read_array('hasync', false);
+    if (empty($hasync['disconnectppps'])) {
+        return false;
+    }
+
+    $port_stats ??= legacy_interface_details($ifcfg['if']);
+
+    foreach ($port_stats['carp'] ?? [] as $carp) {
+        if (in_array($carp['status'], ['BACKUP', 'INIT'])) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 function interface_ppps_configure($interface)
 {
     global $config;
@@ -1336,30 +1359,6 @@ EOD;
     /* clean up old lock files */
     foreach ($ports as $port) {
         @unlink('/var/spool/lock/LCK..' . basename($port));
-    }
-
-    /*
-     * In HA mode with disconnectppps enabled, only start PPP when at least
-     * one underlying parent interface is currently CARP MASTER.
-     *
-     * During boot, the CARP hook may already have processed a BACKUP event
-     * before the PPP pseudo-interface exists. Without this guard, the later
-     * normal startup path can still start PPP on a BACKUP node.
-     */
-    if (!empty($config['hasync']['disconnectppps'])) {
-        /* XXX this ignores MLPPP but also reduces complexity */
-        $port_stats = legacy_interface_details($ppp['ports']);
-        foreach ($port_stats['carp'] ?? [] as $carp) {
-            if (in_array($carp['status'], ['BACKUP', 'INIT'])) {
-                log_msg(
-                    "interface_ppps_configure() skipped for {$interface} " .
-                    "(disconnectppps enabled, no parent interface is CARP MASTER)",
-                    LOG_NOTICE
-                );
-
-                return;
-            }
-        }
     }
 
     /* precaution for post-start 'up' check */
@@ -2516,7 +2515,9 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /* since the connectivity can include IPv4 and/or IPv6 let the function decide */
-    interface_ppps_configure($interface);
+    if (!interface_ppps_passive($interface)) {
+        interface_ppps_configure($interface);
+    }
 
     switch ($wancfg['ipaddr'] ?? 'none') {
         case 'dhcp':

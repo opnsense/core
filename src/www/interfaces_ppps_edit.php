@@ -290,10 +290,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         write_config();
 
-        $iflist = get_configured_interface_with_descr();
-        foreach ($iflist as $pppif => $ifdescr) {
-            if ($config['interfaces'][$pppif]['if'] == $ppp['if']) {
-                interface_ppps_configure($pppif);
+        foreach (config_read_array('interfaces', false) as $ifkey => $ifcfg) {
+            if ($ifcfg['if'] != $ppp['if']) {
+                if (!interface_ppps_passive($ifkey)) {
+                    interface_ppps_configure($ifkey);
+                }
+
+                break;
             }
         }
 
