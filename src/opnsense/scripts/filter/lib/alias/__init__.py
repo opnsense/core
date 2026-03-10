@@ -140,13 +140,14 @@ class Alias(object):
             :return: boolean
         """
         if self._has_expired is None:
+            now = time.time()
             # XXX: At some point we probably want to refactor the Alias class to different types as implementations
             # of a common base. Our current approach using BaseContentParser() has the disadvantage that we can't
             # overwrite expired() implementation based on its type, which requires specific code here when
             # expiry depends on external anchors.
             if self._type == 'geoip':
                 geoip_anchor = '/usr/local/share/GeoIP/alias/NL-IPv4'
-                geoip_anchor_time = os.stat(geoip_anchor).st_mtime if os.path.isfile(geoip_anchor) else time.time()
+                geoip_anchor_time = os.stat(geoip_anchor).st_mtime if os.path.isfile(geoip_anchor) else now
                 if os.path.isfile(self._filename_alias_hash):
                     self._has_expired = geoip_anchor_time > os.stat(self._filename_alias_hash).st_mtime
                     if self._has_expired:
@@ -155,7 +156,7 @@ class Alias(object):
 
             if self._ttl > 0 and os.path.isfile(self._filename_alias_hash):
                 fstat = os.stat(self._filename_alias_hash)
-                self._has_expired = time.time() - fstat.st_mtime > self._ttl
+                self._has_expired = fstat.st_mtime > now or now - fstat.st_mtime > self._ttl
             else:
                 self._has_expired = False
         return self._has_expired
