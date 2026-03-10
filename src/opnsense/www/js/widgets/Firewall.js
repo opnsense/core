@@ -77,15 +77,23 @@ export default class Firewall extends BaseTableWidget {
     }
 
     async onWidgetOptionsChanged(options) {
-        const config = await this.getWidgetConfig();
-        this.colorScheme = config.colorscheme;
+        this.colorScheme = options.colorscheme;
 
         if (this.chart) {
+            let palette = Chart.colorschemes.tableau.Classic10;
             let rids = this.chart.data.datasets[0].rids;
             let colors = this.chart.data.datasets[0].backgroundColor;
             let actions = this.chart.data.datasets[0].actions;
             rids.forEach((rid, i) => {
-                colors[i] = this._getColor(actions[i], rid);
+                if (this.colorScheme === 'semantic') {
+                    let idx = this.actionColorIndex[actions[i]] ?? this.defaultColorIndex;
+                    let base = palette[idx];
+                    let hash = parseInt(rid.slice(0, 8), 16);
+                    let factor = ((hash % 10) - 5) * 0.08;
+                    colors[i] = this._shadeColor(base, factor);
+                } else {
+                    colors[i] = palette[i % palette.length];
+                }
             });
             this.chart.update();
         }
