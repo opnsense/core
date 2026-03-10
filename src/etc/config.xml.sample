@@ -136,5 +136,6 @@
   </rrd>
   <ntpd>
     <prefer>0.opnsense.pool.ntp.org</prefer>
+    <ispool>0.opnsense.pool.ntp.org</ispool>
   </ntpd>
 </opnsense>
