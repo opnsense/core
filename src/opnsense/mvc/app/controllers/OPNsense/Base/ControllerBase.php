@@ -375,15 +375,19 @@ class ControllerBase extends ControllerRoot
         $this->view->menuBreadcrumbs = $menu->getBreadcrumbs();
 
         // set theme in ui_theme template var, let template handle its defaults (if there is no theme).
-        if (
-            $cnf->object()->theme->count() > 0 && !empty($cnf->object()->theme) &&
+        $theme_config = (string)$cnf->object()->theme;
+
+        if ($theme_config === 'opnsense-auto') {
+            $this->view->ui_theme = 'opnsense';
+            $this->view->theme_auto = true;
+        } elseif (
+            $cnf->object()->theme->count() > 0 && !empty($theme_config) &&
             (
-                (string)$cnf->object()->theme === 'opnsense-auto' ||
-                is_dir('/usr/local/opnsense/www/themes/' . (string)$cnf->object()->theme) ||
+                is_dir('/usr/local/opnsense/www/themes/' . $theme_config) ||
                 !is_dir('/usr/local/opnsense/www/themes')
             )
         ) {
-            $this->view->ui_theme = $cnf->object()->theme;
+            $this->view->ui_theme = $theme_config;
         }
 
         // parse product properties, use template (.in) when not found

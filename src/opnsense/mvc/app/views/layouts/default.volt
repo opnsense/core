@@ -208,7 +208,7 @@
         <!-- theme JS -->
         <script src="{{ cache_safe(theme_file_or_default('/js/theme.js', theme_name)) }}"></script>
         <!-- Auto Theme Switcher -->
-        {% if theme_name == 'opnsense-auto' %}
+        {% if theme_auto is defined and theme_auto %}
         <script>window.opnsenseAutoThemeEnabled = true;</script>
         {% endif %}
         <script src="{{ cache_safe('/ui/js/opnsense_theme_auto.js') }}"></script>
