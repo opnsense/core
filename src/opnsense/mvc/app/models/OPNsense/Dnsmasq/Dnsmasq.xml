@@ -73,7 +73,10 @@
                 <MaximumValue>60</MaximumValue>
             </reply_delay>
             <enable_ra type="BooleanField"/>
-            <no_ping type="BooleanField"/>
+            <no_ping type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </no_ping>
             <nosync type="BooleanField"/>
             <log_dhcp type="BooleanField">
                 <Constraints>

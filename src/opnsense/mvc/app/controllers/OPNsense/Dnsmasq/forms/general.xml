@@ -194,10 +194,10 @@
     </field>
     <field>
         <id>dnsmasq.dhcp.no_ping</id>
-        <label>Disable ICMP ping</label>
+        <label>ICMP ping</label>
         <type>checkbox</type>
         <advanced>true</advanced>
-        <help>By default, the DHCP server will use a ping to ensure that an address is not in use before allocating it to a host. This checkbox disables that check.</help>
+        <help>By default, the DHCP server will use a ping to ensure that an address is not in use before allocating it to a host.</help>
     </field>
     <field>
         <id>dnsmasq.dhcp.nosync</id>
