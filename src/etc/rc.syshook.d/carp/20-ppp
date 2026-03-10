@@ -54,7 +54,7 @@ foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
         if ($ppp['if'] == $ifcfg['if']) {
             log_msg("{$device} connected to PPP interface {$ifkey} set new status {$type}");
 
-            if (interface_ppps_passive($ifkey, [[$ifcfg['if'] => ['carp' => $type]]])) {
+            if (interface_ppps_passive($ifkey, [$ifcfg['if'] => ['carp' => [['status' => $type]]]])) {
                 interface_suspend($ifkey);
             } else {
                 interface_ppps_configure($ifkey);
