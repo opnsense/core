@@ -193,7 +193,7 @@
         <help>Setting this will enable Router Advertisements for all configured DHCPv6 ranges with the managed address bits set, and the use SLAAC bit reset. To change this default, select a combination of the possible options in the individual DHCPv6 ranges. Keep in mind that this is a global option; if there are configured DHCPv6 ranges, RAs will be sent unconditionally and cannot be deactivated selectively. Setting Router Advertisement modes in DHCPv6 ranges will have no effect without this global option enabled.</help>
     </field>
     <field>
-        <id>dnsmasq.dhcp.no_ping</id>
+        <id>dnsmasq.dhcp.host_ping</id>
         <label>ICMP ping</label>
         <type>checkbox</type>
         <advanced>true</advanced>
