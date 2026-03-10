@@ -124,7 +124,7 @@ class SnapshotsController extends ApiControllerBase
      */
     private function isValidName($name)
     {
-        return !preg_match('/^[a-zA-Z0-9_.][a-zA-Z0-9_.-]*$/', $name);
+        return !!preg_match('/^[A-Za-z0-9-_.]+$/', $name);
     }
 
     /**
@@ -231,7 +231,7 @@ class SnapshotsController extends ApiControllerBase
                     $msg = gettext('Snapshot not found');
                 } else {
                     $results = json_decode(
-                        (new Backend())->configdpRun('zfs snapshot clone', [$name, $be['name']]),
+                        (new Backend())->configdpRun('zfs snapshot clone', [$be['name'], $name]),
                         true
                     );
                 }
