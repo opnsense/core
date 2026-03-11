@@ -135,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     if (!empty($pconfig['ssl-certref'])) {
-        foreach ($config['cert'] as $cert) {
+        foreach (config_read_array('cert', false) as $cert) {
             if ($cert['refid'] == $pconfig['ssl-certref']) {
                 if (cert_get_purpose($cert['crt'])['server'] == 'No') {
                     $input_errors[] = gettext(
@@ -399,7 +399,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
-$a_cert = isset($config['cert']) ? $config['cert'] : [];
+$a_cert = config_read_array('cert', false);
 $interfaces = get_configured_interface_with_descr();
 
 $certs_available = false;
