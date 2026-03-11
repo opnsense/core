@@ -51,7 +51,7 @@ class KeaDdns extends BaseModel
                 if ($keyname && !$subnet->ddns_domain_key_secret->isEmpty() && !isset($keys[$keyname])) {
                     $keys[$keyname] = [
                         'name' => $keyname,
-                        'algorithm' => $subnet->ddns_domain_key_algorithm->getValue() ?: 'hmac-sha256',
+                        'algorithm' => $subnet->ddns_domain_key_algorithm->getValue(),
                         'secret' => $subnet->ddns_domain_key_secret->getValue()
                     ];
                 }

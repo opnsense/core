@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp6</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>Kea DHCPv6 configuration</description>
     <items>
         <general>
@@ -113,7 +113,7 @@
                 <ddns_domain_key_name type="TextField">
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Key and name must either both be set or left empty.</ValidationMessage>
+                            <ValidationMessage>TSIG name and secret must either both be set or left empty.</ValidationMessage>
                             <type>DependConstraint</type>
                             <addFields>
                                 <field1>ddns_domain_key_secret</field1>
@@ -124,7 +124,7 @@
                 <ddns_domain_key_secret type="Base64Field">
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Key and name must either both be set or left empty.</ValidationMessage>
+                            <ValidationMessage>TSIG name and secret must either both be set or left empty.</ValidationMessage>
                             <type>DependConstraint</type>
                             <addFields>
                                 <field1>ddns_domain_key_name</field1>
@@ -133,11 +133,12 @@
                     </Constraints>
                 </ddns_domain_key_secret>
                 <ddns_domain_key_algorithm type="OptionField">
-                    <BlankDesc>hmac-sha256</BlankDesc>
+                    <Default>hmac-sha256</Default>
                     <OptionValues>
                         <hmac-md5>hmac-md5</hmac-md5>
                         <hmac-sha1>hmac-sha1</hmac-sha1>
                         <hmac-sha224>hmac-sha224</hmac-sha224>
+                        <hmac-sha256>hmac-sha256</hmac-sha256>
                         <hmac-sha384>hmac-sha384</hmac-sha384>
                         <hmac-sha512>hmac-sha512</hmac-sha512>
                     </OptionValues>
