@@ -113,8 +113,8 @@
                 </ddns_dns_server>
                 <ddns_domain_key type="Base64Field"/>
                 <ddns_domain_key_name type="TextField"/>
-                <!-- XXX: Needs Default -->
                 <ddns_domain_algorithm type="OptionField">
+                    <BlankDesc>hmac-sha256</BlankDesc>
                     <OptionValues>
                         <hmac-md5>hmac-md5</hmac-md5>
                         <hmac-sha256>hmac-sha256</hmac-sha256>

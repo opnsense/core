@@ -45,19 +45,19 @@ class KeaDdns extends BaseModel
                 if ($subnet->ddns_forward_zone->isEmpty() || $subnet->ddns_dns_server->isEmpty()) {
                     continue;
                 }
-                $zone = $subnet->ddns_forward_zone->getValue();
+                $forward_zone = $subnet->ddns_forward_zone->getValue();
                 $server = $subnet->ddns_dns_server->getValue();
                 $keyname = $subnet->ddns_domain_key_name->getValue();
                 if ($keyname && !$subnet->ddns_domain_key->isEmpty() && !isset($keys[$keyname])) {
                     $keys[$keyname] = [
                         'name' => $keyname,
-                        'algorithm' => $subnet->ddns_domain_algorithm->getValue(),
+                        'algorithm' => $subnet->ddns_domain_algorithm->getValue() ?: 'hmac-sha256',
                         'secret' => $subnet->ddns_domain_key->getValue()
                     ];
                 }
-                // Deduplicate zones
-                $domains[$zone] ??= [
-                    'name' => $zone,
+                // Deduplicate forward zones
+                $domains[$forward_zone] ??= [
+                    'name' => $forward_zone,
                     'dns-servers' => [[
                         'ip-address' => $server,
                         'port' => 53
