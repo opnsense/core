@@ -3317,7 +3317,7 @@ EOD;
             $device,
         ],
         [
-            'spidfile' => "/var/run/dhclient.{$device}.pid",
+            'pidfile' => "/var/run/dhclient.{$device}.pid",
             'restart' => '10',
         ]
     );

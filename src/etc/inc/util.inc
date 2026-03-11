@@ -963,19 +963,16 @@ function mwexecfb($format, $args = [], $opts = [])
         $args = [$args];
     }
 
-    if (array_key_exists('pidfile', $opts)) {
-        array_unshift($format, '-p %s');
-        array_unshift($args, $opts['pidfile']);
-    }
-
     if (array_key_exists('logfile', $opts)) {
         array_unshift($format, '-o %s');
         array_unshift($args, $opts['logfile']);
     }
 
-    if (array_key_exists('spidfile', $opts)) {
-        array_unshift($format, '-P %s');
-        array_unshift($args, $opts['spidfile']);
+    if (array_key_exists('pidfile', $opts)) {
+        array_unshift($format, '-%s %s');
+        array_unshift($args, $opts['pidfile']);
+        /* process PID or supervisor PID if we use persistent restarts */
+        array_unshift($args, array_key_exists('restart', $opts) ? 'P' : 'p');
     }
 
     if (array_key_exists('restart', $opts)) {
