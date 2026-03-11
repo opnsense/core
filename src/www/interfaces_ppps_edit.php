@@ -33,13 +33,9 @@ require_once("interfaces.inc");
 
 function interfaces_ptpid_used($ptpid)
 {
-    global $config;
-
-    if (isset($config['ppps']['ppp'])) {
-        foreach ($config['ppps']['ppp'] as & $settings) {
-            if ($ptpid == $settings['ptpid']) {
-                return true;
-            }
+    foreach (config_read_array('ppps', 'ppp', false) as $settings) {
+        if ($ptpid == $settings['ptpid']) {
+            return true;
         }
     }
 
@@ -501,10 +497,8 @@ include("head.inc");
                           $iflist = get_configured_interface_with_descr();
                           $portlist = array_merge($portlist, $iflist);
 
-                          if (isset($config['vlans']['vlan'])) {
-                              foreach ($config['vlans']['vlan'] as $vlan) {
-                                  $portlist[$vlan['vlanif']] = $vlan;
-                              }
+                          foreach (config_read_array('vlans', 'vlan', false) as $vlan) {
+                              $portlist[$vlan['vlanif']] = $vlan;
                           }
                           foreach ($portlist as $intf_key => $intf_value):?>
                           <option data-type="interface" value="<?=$intf_key;?>" <?=in_array($intf_key, $pconfig['ports']) ? "selected=\"selected\"" : "";?> >
