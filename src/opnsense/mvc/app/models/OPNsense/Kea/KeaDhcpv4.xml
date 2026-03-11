@@ -165,6 +165,7 @@
                 </ddns_domain_key_secret>
                 <ddns_domain_key_algorithm type="OptionField">
                     <Default>hmac-sha256</Default>
+                    <Required>Y</Required>
                     <OptionValues>
                         <hmac-md5>hmac-md5</hmac-md5>
                         <hmac-sha1>hmac-sha1</hmac-sha1>
