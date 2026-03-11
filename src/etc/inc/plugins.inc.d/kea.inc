@@ -169,10 +169,8 @@ function kea_configure_do($verbose = false)
             $keaDhcpv6->generateConfig();
         }
         (new \OPNsense\Kea\KeaCtrlAgent())->generateConfig();
-        // XXX: No manual config yet
-        if (!$keaDdns->general->enabled->isEmpty()) {
-            $keaDdns->generateConfig();
-        }
+        // XXX: No manual DDNS config yet, can be added later
+        (new \OPNsense\Kea\KeaDdns())->generateConfig();
         if ($keaDhcpv6->isEnabled()) {
             mwexecfb(
                 '/usr/local/opnsense/scripts/kea/kea_prefix_watcher.py %s',
