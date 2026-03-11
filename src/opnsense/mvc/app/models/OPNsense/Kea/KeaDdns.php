@@ -48,14 +48,13 @@ class KeaDdns extends BaseModel
                 $forward_zone = $subnet->ddns_forward_zone->getValue();
                 $server = $subnet->ddns_dns_server->getValue();
                 $keyname = $subnet->ddns_domain_key_name->getValue();
-                if ($keyname && !$subnet->ddns_domain_key_secret->isEmpty() && !isset($keys[$keyname])) {
+                if ($keyname && !isset($keys[$keyname])) {
                     $keys[$keyname] = [
                         'name' => $keyname,
                         'algorithm' => $subnet->ddns_domain_key_algorithm->getValue(),
                         'secret' => $subnet->ddns_domain_key_secret->getValue()
                     ];
                 }
-                // Deduplicate forward zones
                 $domains[$forward_zone] ??= [
                     'name' => $forward_zone,
                     'dns-servers' => [[
@@ -72,7 +71,7 @@ class KeaDdns extends BaseModel
             'DhcpDdns' => [
                 'ip-address' => $this->general->server_ip->getValue(),
                 'port' => $this->general->server_port->asInt(),
-                'tsig-keys' => array_values($keys ?: []),
+                'tsig-keys' => array_values($keys),
                 'forward-ddns' => [
                     'ddns-domains' => array_values($domains)
                 ],
@@ -85,6 +84,7 @@ class KeaDdns extends BaseModel
                 ]]
             ]
         ];
+
         File::file_put_contents($target, json_encode($cnf, JSON_PRETTY_PRINT), 0600);
     }
 }
