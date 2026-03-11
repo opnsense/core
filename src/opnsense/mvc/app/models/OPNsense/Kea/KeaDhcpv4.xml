@@ -141,15 +141,38 @@
                 <ddns_dns_server type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
                 </ddns_dns_server>
-                <ddns_domain_key type="Base64Field"/>
-                <ddns_domain_key_name type="TextField"/>
-                <ddns_domain_algorithm type="OptionField">
+                <ddns_domain_key_name type="TextField">
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>TSIG key name must be set when a TSIG key is provided.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>ddns_domain_key_secret</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </ddns_domain_key_name>
+                <ddns_domain_key_secret type="Base64Field">
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>TSIG key must be set when a key name is provided.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>ddns_domain_key_name</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </ddns_domain_key_secret>
+                <ddns_domain_key_algorithm type="OptionField">
                     <BlankDesc>hmac-sha256</BlankDesc>
                     <OptionValues>
                         <hmac-md5>hmac-md5</hmac-md5>
+                        <hmac-sha1>hmac-sha1</hmac-sha1>
+                        <hmac-sha224>hmac-sha224</hmac-sha224>
+                        <hmac-sha384>hmac-sha384</hmac-sha384>
                         <hmac-sha512>hmac-sha512</hmac-sha512>
                     </OptionValues>
-                </ddns_domain_algorithm>
+                </ddns_domain_key_algorithm>
                 <description type="DescriptionField"/>
             </subnet4>
         </subnets>

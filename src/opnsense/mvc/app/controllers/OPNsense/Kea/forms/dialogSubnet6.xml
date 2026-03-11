@@ -107,7 +107,7 @@
         </grid_view>
     </field>
     <field>
-        <id>subnet6.ddns_domain_key</id>
+        <id>subnet6.ddns_domain_key_secret</id>
         <label>TSIG secret</label>
         <type>text</type>
         <help>Base64 encoded TSIG key secret.</help>
@@ -116,7 +116,7 @@
         </grid_view>
     </field>
     <field>
-        <id>subnet6.ddns_domain_algorithm</id>
+        <id>subnet6.ddns_domain_key_algorithm</id>
         <label>TSIG algorithm</label>
         <type>dropdown</type>
         <help>Algorithm used for TSIG authentication with the DNS server.</help>
