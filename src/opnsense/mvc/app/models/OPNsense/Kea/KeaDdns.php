@@ -52,7 +52,7 @@ class KeaDdns extends BaseModel
                     $keys[$keyname] = [
                         'name' => $keyname,
                         'algorithm' => $subnet->ddns_domain_key_algorithm->getValue(),
-                        'secret' => $subnet->ddns_domain_key_secret->getValue()
+                        'secret' => $subnet->ddns_domain_key_secret->getValue(),
                     ];
                 }
                 if (!isset($domains[$forward_zone])) {
