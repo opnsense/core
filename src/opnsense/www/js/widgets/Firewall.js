@@ -58,8 +58,8 @@ export default class Firewall extends BaseTableWidget {
             let factor = ((hash % 10) - 5) * 0.08;
             return this._shadeColor(base, factor);
         }
-        let rids = this.chart.data.datasets[0].rids;
-        return colors[rids.length % colors.length];
+        const i = index ?? this.chart.data.datasets[0].rids.length;
+        return colors[i % colors.length];
     }
 
     async getWidgetOptions() {
