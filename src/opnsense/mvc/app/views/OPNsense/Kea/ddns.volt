@@ -38,9 +38,6 @@
                 const dfObj = new $.Deferred();
                 saveFormToEndpoint("/api/kea/ddns/set", 'frm_generalsettings', function () { dfObj.resolve(); }, true, function () { dfObj.reject(); });
                 return dfObj;
-            },
-            onAction: function(data, status) {
-                updateServiceControlUI('kea');
             }
         });
     });
@@ -48,4 +45,4 @@
 <div class="content-box">
     {{ partial("layout_partials/base_form",['fields':formGeneralSettings,'id':'frm_generalsettings'])}}
 </div>
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/kea/service/reconfigure'}) }}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/kea/service/reconfigure', 'data_service_widget': 'kea'}) }}
