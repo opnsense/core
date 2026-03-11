@@ -71,7 +71,7 @@ RUNDIRS="
 # persist.   We also clear PHP-related subsystems for consistency.
 for RUNDIR in ${RUNDIRS}; do
 	if [ -d ${RUNDIR} ]; then
-		find ${RUNDIR} ! -type d -exec rm {} \;
+		find ${RUNDIR} ! -type d -delete
 	fi
 done
 
