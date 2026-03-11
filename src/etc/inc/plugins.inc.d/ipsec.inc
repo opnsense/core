@@ -854,7 +854,7 @@ function ipsec_setup_pinghosts()
                 }
                 /* if no valid src IP was found in configured interfaces, try the vips */
                 if (is_null($srcip)) {
-                    foreach (config_read_array('virtualip', 'vip') as $vip) {
+                    foreach (config_read_array('virtualip', 'vip', false) as $vip) {
                         if (ip_in_subnet($vip['subnet'], $local_subnet)) {
                             $srcip = $vip['subnet'];
                             break;
