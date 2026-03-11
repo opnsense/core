@@ -56,8 +56,8 @@ for BACKUP in ${BACKUPS}; do
 		NOTES="${USER}: ${NOTES}"
 	fi
 	LEN=$(echo "${NOTES}" | awk '{ print length }')
-	NOTES=$(echo "${NOTES}" | cut -c1-44)
-	if [ "${LEN}" -gt 44 ]; then
+	NOTES=$(echo "${NOTES}" | cut -c1-39)
+	if [ "${LEN}" -gt 39 ]; then
 		NOTES="${NOTES}..."
 	fi
 
@@ -76,7 +76,7 @@ while [ -z "${RESTORE}" ]; do
 		if [ ${INDEX} -ne 0 ]; then
 			# carefully crafted whitespace pattern with
 			# embedded alignment tab, edit carefully
-			echo "    ${INDEX}.	$(date -r ${DATETIME}) ${NOTES}"
+			echo "${INDEX}.	$(date -r ${DATETIME}) ${NOTES}"
 		fi
 		INDEX=$((INDEX+1))
 	done
