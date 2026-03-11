@@ -99,7 +99,7 @@ ${CORE_MAINS}:
 
 rebase:
 	@${GIT} checkout ${CORE_STABLE}
-	@${GIT} rebase -i
+	@${GIT} rebase -i || ${GIT} rebase --abort
 	@${GIT} checkout ${CORE_MAIN}
 
 reset:
