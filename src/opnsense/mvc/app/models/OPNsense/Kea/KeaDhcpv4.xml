@@ -137,9 +137,27 @@
                 </pools>
                 <ddns_forward_zone type="HostnameField">
                     <IpAllowed>N</IpAllowed>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Forward zone and DNS server must either both be set or left empty.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>ddns_dns_server</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
                 </ddns_forward_zone>
                 <ddns_dns_server type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Forward zone and DNS server must either both be set or left empty.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>ddns_forward_zone</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
                 </ddns_dns_server>
                 <ddns_domain_key_name type="TextField">
                     <Constraints>
