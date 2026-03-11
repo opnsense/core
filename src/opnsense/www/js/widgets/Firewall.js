@@ -49,7 +49,7 @@ export default class Firewall extends BaseTableWidget {
         return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
     }
 
-    _getColor(action, rid) {
+    _getColor(action, rid, index = null) {
         let colors = Chart.colorschemes.tableau.Classic10;
         if (this.colorScheme === 'semantic') {
             let idx = this.actionColorIndex[action] ?? this.defaultColorIndex;
