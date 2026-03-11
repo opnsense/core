@@ -299,7 +299,11 @@ class OverviewController extends ApiControllerBase
 
     public function reloadInterfaceAction($identifier = null)
     {
-        $result = ["message" => "failed"];
+        $result = ['message' => 'failed'];
+
+        if (!$this->request->isPost()) {
+            return $result;
+        }
 
         if ($identifier != null) {
             $backend = new Backend();
