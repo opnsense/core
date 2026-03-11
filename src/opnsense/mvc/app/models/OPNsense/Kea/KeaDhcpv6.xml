@@ -113,7 +113,7 @@
                 <ddns_domain_key_name type="TextField">
                     <Constraints>
                         <check001>
-                            <ValidationMessage>TSIG key name must be set when a TSIG key is provided.</ValidationMessage>
+                            <ValidationMessage>Key and name must either both be set or left empty.</ValidationMessage>
                             <type>DependConstraint</type>
                             <addFields>
                                 <field1>ddns_domain_key_secret</field1>
@@ -124,7 +124,7 @@
                 <ddns_domain_key_secret type="Base64Field">
                     <Constraints>
                         <check001>
-                            <ValidationMessage>TSIG key must be set when a key name is provided.</ValidationMessage>
+                            <ValidationMessage>Key and name must either both be set or left empty.</ValidationMessage>
                             <type>DependConstraint</type>
                             <addFields>
                                 <field1>ddns_domain_key_name</field1>
@@ -137,7 +137,7 @@
                     <OptionValues>
                         <hmac-md5>hmac-md5</hmac-md5>
                         <hmac-sha1>hmac-sha1</hmac-sha1>
-                        <hmac-sha224>hmac-sha224</hmac-sha1>
+                        <hmac-sha224>hmac-sha224</hmac-sha224>
                         <hmac-sha384>hmac-sha384</hmac-sha384>
                         <hmac-sha512>hmac-sha512</hmac-sha512>
                     </OptionValues>
