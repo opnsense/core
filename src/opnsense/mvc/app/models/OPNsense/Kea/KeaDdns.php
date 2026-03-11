@@ -55,13 +55,20 @@ class KeaDdns extends BaseModel
                         'secret' => $subnet->ddns_domain_key_secret->getValue()
                     ];
                 }
-                $domains[$forward_zone] ??= [
-                    'name' => $forward_zone,
-                    'dns-servers' => [[
-                        'ip-address' => $server,
-                        'port' => 53
-                    ] + ($keyname ? ['key-name' => $keyname] : [])]
+                if (!isset($domains[$forward_zone])) {
+                    $domains[$forward_zone] = ['name' => $forward_zone];
+                    if ($keyname) {
+                        $domains[$forward_zone]['key-name'] = $keyname;
+                    }
+                    $domains[$forward_zone]['dns-servers'] = [];
+                }
+                $server_entry = [
+                    'ip-address' => $server,
+                    'port' => 53
                 ];
+                if (!in_array($server_entry, $domains[$forward_zone]['dns-servers'], true)) {
+                    $domains[$forward_zone]['dns-servers'][] = $server_entry;
+                }
             }
         }
         if (!$domains) {
