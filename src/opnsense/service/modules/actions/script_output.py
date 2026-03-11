@@ -74,14 +74,22 @@ class Action(BaseAction):
                     output_stream.seek(0)
                     return output_stream.read()
             with tempfile.NamedTemporaryFile() as error_stream:
-                tparm = {'prefix': Action.temp_prefix, 'delete': script_hash is None}
-                with tempfile.NamedTemporaryFile(**tparm) as output_stream:
+                if script_hash is None or script_hash not in Action.cached_results:
+                    fd, output_filename = tempfile.mkstemp(prefix=Action.temp_prefix)
+                    os.close(fd)
+                else:
+                    output_filename = Action.cached_results[script_hash]['filename']
+
+                with open(output_filename, 'a+') as output_stream:
                     fcntl.flock(output_stream, fcntl.LOCK_EX)
                     if script_hash:
                         Action.cached_results[script_hash] = {
-                            'filename': output_stream.name,
+                            'filename': output_filename,
                             'expire': time.time() + self.cache_ttl
                         }
+                    # explicit flush, file may be reused
+                    output_stream.seek(0)
+                    output_stream.truncate()
                     subprocess.run(script_command, env=self.config_environment, shell=True,
                                    check=not self.disable_errors, stdout=output_stream, stderr=error_stream)
                     output_stream.seek(0)
@@ -92,6 +100,10 @@ class Action(BaseAction):
                         syslog_error('[%s] Script action stderr returned "%s"' % (
                             message_uuid, script_error_output.strip()[:255]
                         ))
+                    if script_hash is None:
+                        # temp file not for re-use
+                        output_stream.close()
+                        os.remove(output_filename)
                     return script_output
         except Exception as script_exception:
             syslog_error('[%s] Script action failed with %s at %s' % (
