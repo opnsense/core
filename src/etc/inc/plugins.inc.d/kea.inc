@@ -154,7 +154,6 @@ function kea_configure_do($verbose = false)
 {
     $keaDhcpv4 = new \OPNsense\Kea\KeaDhcpv4();
     $keaDhcpv6 = new \OPNsense\Kea\KeaDhcpv6();
-    $keaDdns = new \OPNsense\Kea\KeaDdns();
 
     killbypid('/var/run/kea_prefix_watcher.pid');
 
