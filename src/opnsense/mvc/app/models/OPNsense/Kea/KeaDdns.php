@@ -70,8 +70,8 @@ class KeaDdns extends BaseModel
         }
         $cnf = [
             'DhcpDdns' => [
-                'ip-address' => $this->general->http_host->getValue(),
-                'port' => $this->general->http_port->asInt(),
+                'ip-address' => $this->general->server_ip->getValue(),
+                'port' => $this->general->server_port->asInt(),
                 'tsig-keys' => array_values($keys ?: []),
                 'forward-ddns' => [
                     'ddns-domains' => array_values($domains)

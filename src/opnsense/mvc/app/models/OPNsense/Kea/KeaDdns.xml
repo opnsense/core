@@ -8,12 +8,12 @@
                 <Default>0</Default>
                 <Required>Y</Required>
             </enabled>
-            <server_host type="NetworkField">
+            <server_ip type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <AddressFamily>ipv4</AddressFamily>
                 <Default>127.0.0.1</Default>
                 <Required>Y</Required>
-            </server_host>
+            </server_ip>
             <server_port type="PortField">
                 <Required>Y</Required>
                 <Default>53001</Default>
