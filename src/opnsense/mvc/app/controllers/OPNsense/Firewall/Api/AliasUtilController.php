@@ -101,6 +101,10 @@ class AliasUtilController extends ApiControllerBase
      */
     public function updateBogonsAction()
     {
+        if (!$this->request->isPost()) {
+            return ['status' => 'failed'];
+        }
+
         $backend = new Backend();
         $backend->configdRun('filter update bogons');
         return array('status' => 'done');
