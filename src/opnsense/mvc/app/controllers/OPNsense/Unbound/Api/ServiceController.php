@@ -43,14 +43,15 @@ class ServiceController extends ApiMutableServiceControllerBase
     public function dnsblAction()
     {
         if (!$this->request->isPost()) {
-            return array('status' => 'failed');
+            return ['status' => 'failed'];
         }
 
         $backend = new Backend();
         /* XXX currently hardcoded to not cause side effect of $internalServiceTemplate use */
         $backend->configdRun('template reload OPNsense/Unbound/*');
         $response = $backend->configdRun(static::$internalServiceName . ' dnsbl');
-        return array('status' => $response);
+
+        return ['status' => $response];
     }
 
     /**
@@ -60,13 +61,14 @@ class ServiceController extends ApiMutableServiceControllerBase
     public function reconfigureGeneralAction()
     {
         if (!$this->request->isPost()) {
-            return array('status' => 'failed');
+            return ['status' => 'failed'];
         }
 
         $backend = new Backend();
         $backend->configdRun('dns reload');
         $result = $this->reconfigureAction();
         $backend->configdRun('dhcpd restart');
+
         return $result;
     }
 }
