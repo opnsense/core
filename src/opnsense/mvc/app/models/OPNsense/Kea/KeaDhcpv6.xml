@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp6</mount>
-    <version>1.0.1</version>
+    <version>1.0.0</version>
     <description>Kea DHCPv6 configuration</description>
     <items>
         <general>
@@ -151,8 +151,6 @@
                     </Constraints>
                 </ddns_domain_key_secret>
                 <ddns_domain_key_algorithm type="OptionField">
-                    <Default>hmac-sha256</Default>
-                    <Required>Y</Required>
                     <OptionValues>
                         <hmac-md5>hmac-md5</hmac-md5>
                         <hmac-sha1>hmac-sha1</hmac-sha1>
@@ -161,6 +159,15 @@
                         <hmac-sha384>hmac-sha384</hmac-sha384>
                         <hmac-sha512>hmac-sha512</hmac-sha512>
                     </OptionValues>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>An algorithm is required if a TSIG secret is set.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>ddns_domain_key_secret</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
                 </ddns_domain_key_algorithm>
                 <description type="DescriptionField"/>
             </subnet6>
