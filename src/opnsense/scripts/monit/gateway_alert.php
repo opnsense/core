@@ -54,28 +54,26 @@ function get_gateway_error(string $status, string $gwname, array $group)
 $gateways_status = dpinger_status();
 $clean = true;
 
-if (isset($config['gateways']['gateway_group'])) {
-    foreach ($config['gateways']['gateway_group'] as $group) {
-        $tiers_online = 0;
-        foreach ($group['item'] as $item) {
-            $gwname = explode("|", $item)[0];
+foreach (config_read_array('gateways', 'gateway_group', false) as $group) {
+    $tiers_online = 0;
+    foreach ($group['item'] as $item) {
+        $gwname = explode("|", $item)[0];
 
-            if (!empty($gateways_status[$gwname])) {
-                $msg = get_gateway_error($gateways_status[$gwname]['status'], $gwname, $group);
-                if (!empty($msg)) {
-                    echo $msg . PHP_EOL;
-                    $clean = false;
-                } else {
-                    $tiers_online++;
-                }
+        if (!empty($gateways_status[$gwname])) {
+            $msg = get_gateway_error($gateways_status[$gwname]['status'], $gwname, $group);
+            if (!empty($msg)) {
+                echo $msg . PHP_EOL;
+                $clean = false;
+            } else {
+                $tiers_online++;
             }
         }
-        if ($tiers_online == 0) {
-            /* Oh dear, we have no members!*/
-            $msg = sprintf(gettext('Gateways status could not be determined, considering all as up/active. (Group: %s)'), $group['name']);
-            echo $msg . PHP_EOL;
-            $clean = false;
-        }
+    }
+    if ($tiers_online == 0) {
+        /* Oh dear, we have no members!*/
+        $msg = sprintf(gettext('Gateways status could not be determined, considering all as up/active. (Group: %s)'), $group['name']);
+        echo $msg . PHP_EOL;
+        $clean = false;
     }
 }
 
