@@ -64,14 +64,14 @@ class KeaDdns extends BaseModel
                 }
                 $server_entry = [
                     'ip-address' => $server,
-                    'port' => 53
+                    'port' => 53,
                 ];
                 if (!in_array($server_entry, $domains[$forward_zone]['dns-servers'], true)) {
                     $domains[$forward_zone]['dns-servers'][] = $server_entry;
                 }
             }
         }
-        if (!$domains) {
+        if (!count($domains)) {
             return;
         }
         $cnf = [
@@ -87,7 +87,7 @@ class KeaDdns extends BaseModel
                     'output_options' => [
                         ['output' => 'syslog']
                     ],
-                    'severity' => 'INFO'
+                    'severity' => 'INFO',
                 ]]
             ]
         ];

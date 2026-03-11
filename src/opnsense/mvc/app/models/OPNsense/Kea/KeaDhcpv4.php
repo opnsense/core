@@ -297,7 +297,7 @@ class KeaDhcpv4 extends BaseModel
             $cnf['Dhcp4']['dhcp-ddns'] = [
                 'enable-updates' => true,
                 'server-ip' => $ddns->general->server_ip->getValue(),
-                'server-port' => $ddns->general->server_port->asInt()
+                'server-port' => $ddns->general->server_port->asInt(),
             ];
         }
         File::file_put_contents($target, json_encode($cnf, JSON_PRETTY_PRINT), 0600);
