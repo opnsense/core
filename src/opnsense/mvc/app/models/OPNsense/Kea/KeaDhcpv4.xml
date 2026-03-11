@@ -135,7 +135,6 @@
                 </match-client-id>
                 <pools type=".\KeaPoolsField">
                 </pools>
-                <!-- XXX: Needs some validations (trailing dot) -->
                 <ddns_forward_zone type="HostnameField">
                     <IpAllowed>N</IpAllowed>
                 </ddns_forward_zone>
