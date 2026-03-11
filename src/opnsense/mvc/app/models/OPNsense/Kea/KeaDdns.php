@@ -76,11 +76,6 @@ class KeaDdns extends BaseModel
                 'forward-ddns' => [
                     'ddns-domains' => array_values($domains)
                 ],
-                // XXX: Unsure if needed
-                'control-socket' => [
-                    'socket-type' => 'unix',
-                    'socket-name' => '/var/run/kea/kea-ddns-ctrl-socket'
-                ],
                 'loggers' => [[
                     'name' => 'kea-dhcp-ddns',
                     'output_options' => [
