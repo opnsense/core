@@ -43,9 +43,9 @@ class Util
     private static $aliasObject = null;
 
     /**
-     * @var null|array cached alias descriptions
+     * @var null|array cached alias content
      */
-    private static $aliasDescriptions = [];
+    private static $aliasSummaries = [];
 
     /**
      * @var array cached getservbyname results
@@ -266,20 +266,20 @@ class Util
     }
 
     /**
-     * return alias descriptions
+     * return alias summary (description and content as found)
      * @param string $name name
      * @return string
      */
-    public static function aliasDescription($name)
+    public static function aliasSummary($name)
     {
-        if (empty(self::$aliasDescriptions)) {
+        if (empty(self::$aliasSummaries)) {
             // read all aliases at once, and cache descriptions.
             foreach ((new Alias(true))->aliasIterator() as $alias) {
-                if (empty(self::$aliasDescriptions[$alias['name']])) {
+                if (empty(self::$aliasSummaries[$alias['name']])) {
                     if (!empty($alias['description'])) {
-                        self::$aliasDescriptions[$alias['name']] = '<strong>' . $alias['description'] . '</strong><br/>';
+                        self::$aliasSummaries[$alias['name']] = '<strong>' . $alias['description'] . '</strong><br/>';
                     } else {
-                        self::$aliasDescriptions[$alias['name']] = "";
+                        self::$aliasSummaries[$alias['name']] = '';
                     }
 
                     if (!empty($alias['content'])) {
@@ -288,16 +288,13 @@ class Util
                         if (count($alias['content']) > 10) {
                             $tmp[] = '[...]';
                         }
-                        self::$aliasDescriptions[$alias['name']] .= implode("<br/>", $tmp);
+                        self::$aliasSummaries[$alias['name']] .= implode('<br/>', $tmp);
                     }
                 }
             }
         }
-        if (!empty(self::$aliasDescriptions[$name])) {
-            return self::$aliasDescriptions[$name];
-        } else {
-            return null;
-        }
+
+        return self::$aliasSummaries[$name] ?? null;
     }
 
     /**
