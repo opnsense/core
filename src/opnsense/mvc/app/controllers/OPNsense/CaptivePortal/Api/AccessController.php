@@ -305,7 +305,8 @@ class AccessController extends ApiControllerBase
                                 (string)$cpZone->zoneid,
                                 $userName,
                                 $clientIp,
-                                $authServerName
+                                $authServerName,
+                                $cpZone->roaming->getValue()
                             ]
                         );
                         $CPsession = json_decode($CPsession, true);

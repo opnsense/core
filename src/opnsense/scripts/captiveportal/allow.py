@@ -41,6 +41,7 @@ parser.add_argument('--username', help='username', type=str, required=True)
 parser.add_argument('--zoneid', help='zone number to allow this user in', type=str, required=True)
 parser.add_argument('--authenticated_via', help='authentication source', type=str)
 parser.add_argument('--ip_address', help='source ip address', type=str)
+parser.add_argument('--roaming', help='roaming allowed for this client', type=str)
 args = parser.parse_args()
 
 arp = ARP()
@@ -55,8 +56,15 @@ response = db.add_client(
     mac_address=arp_entry['mac'] if arp_entry is not None else None
 )
 
-PF.add_to_table(zoneid=args.zoneid, address=args.ip_address)
-IPFW.add_accounting(args.ip_address)
+session_ips = {args.ip_address}
+if args.roaming and arp_entry is not None:
+    known_ips = set(arp.get_all_addresses_by_mac(arp_entry['mac']))
+    known_ips.add(args.ip_address)
+    session_ips = db.update_roaming_ips(args.zoneid, response['sessionId'], list(known_ips))
+
+for ip_address in session_ips:
+    PF.add_to_table(zoneid=args.zoneid, address=ip_address)
+    IPFW.add_accounting(ip_address)
 
 response['clientState'] = 'AUTHORIZED'
 print(ujson.dumps(response))
