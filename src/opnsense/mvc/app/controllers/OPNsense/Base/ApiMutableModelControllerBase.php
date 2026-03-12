@@ -694,7 +694,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                     fclose($stream);
                     Config::getInstance()->unlock();
                     throw new \OPNsense\Base\UserException(
-                        sprintf(gettext("Missing mandatory fields: %s"), implode(", ", $missing_keys))
+                        sprintf(gettext("Missing mandatory fields: %s"), implode(", ", $missing_keys)), gettext("CSV Import Failed")
                     );
                 }
 
