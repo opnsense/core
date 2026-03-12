@@ -71,9 +71,6 @@ class KeaDdns extends BaseModel
                 }
             }
         }
-        if (!count($domains)) {
-            return;
-        }
         $cnf = [
             'DhcpDdns' => [
                 'ip-address' => $this->general->server_ip->getValue(),
