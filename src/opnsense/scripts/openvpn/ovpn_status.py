@@ -77,7 +77,7 @@ def ovpn_status(filename):
         if line[0] == 'HEADER':
             header_def = []
             for item in line[1:]:
-                header_def.append(re.sub('[\ \(\)]', '_', item.lower().strip()))
+                header_def.append(re.sub(r'[\ \(\)]', '_', item.lower().strip()))
             target_struct = header_def.pop(0).lower() if len(header_def) > 0 else None
             response['status'] = 'ok'
         elif target_struct is not None and line[0] in ['CLIENT_LIST', 'ROUTING_TABLE']:

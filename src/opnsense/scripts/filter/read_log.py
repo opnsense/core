@@ -98,7 +98,7 @@ def parse_record(record, running_conf_descr):
     rule = dict()
     metadata = dict()
     # rule metadata (unique hash, hostname, timestamp)
-    if re.search('filterlog\\[\\d*\\]:', record['line']):
+    if re.search(r'filterlog\[\d*\]:', record['line']):
         # rfc3164 format
         log_ident = re.split('filterlog[^:]*:', record['line'])
         tmp = log_ident[0].split()
