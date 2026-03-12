@@ -38,21 +38,11 @@
                 const dfObj = new $.Deferred();
                 saveFormToEndpoint("/api/kea/ctrl_agent/set", 'frm_generalsettings', function () { dfObj.resolve(); }, true, function () { dfObj.reject(); });
                 return dfObj;
-            },
-            onAction: function(data, status) {
-                updateServiceControlUI('kea');
             }
         });
     });
 </script>
-
-<ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
-    <li class="active"><a data-toggle="tab" href="#settings" id="settings_tab">{{ lang._('Settings') }}</a></li>
-</ul>
-<div class="tab-content content-box">
-    <div id="settings"  class="tab-pane fade in active">
-        {{ partial("layout_partials/base_form",['fields':formGeneralSettings,'id':'frm_generalsettings'])}}
-    </div>
+<div class="content-box">
+    {{ partial("layout_partials/base_form",['fields':formGeneralSettings,'id':'frm_generalsettings'])}}
 </div>
-
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/kea/service/reconfigure'}) }}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/kea/service/reconfigure', 'data_service_widget': 'kea'}) }}
