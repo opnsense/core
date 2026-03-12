@@ -56,5 +56,5 @@
 <div class="tab-content content-box">
     {{ partial('layout_partials/base_bootgrid_table', formGridNeighbor)}}
 </div>
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/interfaces/loopback_settings/reconfigure'}) }}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/interfaces/neighbor_settings/reconfigure'}) }}
 {{ partial('layout_partials/base_dialog',['fields':formDialogEdit,'id':formGridNeighbor['edit_dialog_id'],'label':lang._('Edit Neighbor')])}}
