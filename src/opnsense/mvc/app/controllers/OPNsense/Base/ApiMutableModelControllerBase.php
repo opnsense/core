@@ -689,6 +689,16 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         while (($line = fgetcsv($stream, null, $separator)) !== false) {
             if (empty($heading)) {
                 $heading = $line;
+                $missing_keys = array_diff($keyfields, $heading);
+                if (!empty($keyfields) && count($missing_keys) > 0) {
+                    fclose($stream);
+                    Config::getInstance()->unlock();
+                    return [
+                        "status" => "failed",
+                        "message" => sprintf(gettext("Missing mandatory fields: %s"), implode(", ", $missing_keys))
+                    ];
+                }
+
             } elseif (count($line) >= 1 && !is_null($line[array_key_first($line)])) {
                 $record = [];
                 foreach ($line as $idx => $content) {
