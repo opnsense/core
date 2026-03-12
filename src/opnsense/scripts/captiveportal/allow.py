@@ -53,6 +53,7 @@ response = DB().add_client(
     mac_address=arp_entry['mac'] if arp_entry is not None else None
 )
 PF.add_to_table(zoneid=args.zoneid, address=args.ip_address)
+IPFW.add_accounting(args.ip_address)
 
 response['clientState'] = 'AUTHORIZED'
 print(ujson.dumps(response))
