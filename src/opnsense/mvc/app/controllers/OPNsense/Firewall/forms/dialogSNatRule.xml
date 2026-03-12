@@ -192,6 +192,15 @@
         </grid_view>
     </field>
     <field>
+        <id>rule.staticnatport</id>
+        <label>Static-port</label>
+        <type>checkbox</type>
+        <help>prevents the firewall from modifying the source port on TCP and UDP packets</help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
         <type>header</type>
         <label>Options</label>
     </field>
