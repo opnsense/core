@@ -385,4 +385,16 @@
             <notavailable>N/A</notavailable>
         </translations>
     </dnsmasqleases>
+    <notepad>
+        <filename>Notepad.js</filename>
+        <endpoints>
+            <endpoint>/api/core/dashboard/getNote</endpoint>
+            <endpoint>/api/core/dashboard/saveNote</endpoint>
+        </endpoints>
+        <translations>
+            <title>Notepad</title>
+            <save>Save</save>
+            <saved>Saved</saved>
+        </translations>
+    </notepad>
 </metadata>
