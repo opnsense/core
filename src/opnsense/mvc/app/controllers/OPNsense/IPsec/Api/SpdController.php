@@ -105,7 +105,7 @@ class SpdController extends ApiControllerBase
     public function deleteAction($id)
     {
         if ($this->request->isPost()) {
-            $data = json_decode((new Backend())-> configdpRun('ipsec spddelete', [$id]), true);
+            $data = json_decode((new Backend())->configdpRun('ipsec spddelete', [$id]), true);
             if ($data) {
                 $data['result'] = "ok";
                 return $data;

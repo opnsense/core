@@ -39,21 +39,27 @@ if __name__ == '__main__':
     result  = {'status': 'not_found'}
     sp = subprocess.run(['/sbin/setkey', '-DP'], capture_output=True, text=True)
     spec_line = None
+    spds = cmd_args.id.split(',')
+    deleted_entries = []
     for line in sp.stdout.split("\n"):
         if not line.startswith("\t") and len(line.split()) > 2:
             spec_line = line.strip()
         elif spec_line:
             ident = "%s %s" % (spec_line, line.strip().split()[0])
-            if hashlib.md5(ident.encode()).hexdigest() == cmd_args.id:
+            if hashlib.md5(ident.encode()).hexdigest() in spds:
                 result['status'] = 'found'
                 parts = ident.split()
-                result['src_range'] = parts[0]
-                result['dst_range'] = parts[1]
-                result['upperspec'] = parts[2]
-                result['direction'] = parts[3]
-                policy = "spddelete -n %(src_range)s %(dst_range)s %(upperspec)s -P %(direction)s;" % result
+                item = {
+                    'src_range': parts[0],
+                    'dst_range': parts[1],
+                    'upperspec': parts[2],
+                    'direction': parts[3],
+                }
+                deleted_entries.append(item)
+                policy = "spddelete -n %(src_range)s %(dst_range)s %(upperspec)s -P %(direction)s;" % item
                 p = subprocess.run(['/sbin/setkey', '-c'], capture_output=True, text=True, input=policy)
 
             spec_line = None
 
+    result['items'] = deleted_entries
     print(ujson.dumps(result))
