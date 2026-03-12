@@ -1,0 +1,23 @@
+<model>
+    <mount>//OPNsense/Kea/ddns</mount>
+    <version>1.0.0</version>
+    <description>Kea Dynamic DNS configuration</description>
+    <items>
+        <general>
+            <enabled type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </enabled>
+            <server_ip type="NetworkField">
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <AddressFamily>ipv4</AddressFamily>
+                <Default>127.0.0.1</Default>
+                <Required>Y</Required>
+            </server_ip>
+            <server_port type="PortField">
+                <Required>Y</Required>
+                <Default>53001</Default>
+            </server_port>
+        </general>
+    </items>
+</model>

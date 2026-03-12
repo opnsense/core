@@ -46,6 +46,12 @@ class DhcpController extends \OPNsense\Base\IndexController
         $this->view->formGeneralSettings = $this->getForm("agentSettings");
     }
 
+    public function ddnsAction()
+    {
+        $this->view->pick('OPNsense/Kea/ddns');
+        $this->view->formGeneralSettings = $this->getForm("ddnsSettings");
+    }
+
     public function v4Action()
     {
         $this->view->pick('OPNsense/Kea/dhcpv4');
