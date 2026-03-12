@@ -689,6 +689,14 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         while (($line = fgetcsv($stream, null, $separator)) !== false) {
             if (empty($heading)) {
                 $heading = $line;
+                $missing_keys = array_diff($keyfields, $heading);
+                if (!empty($keyfields) && count($missing_keys) > 0) {
+                    fclose($stream);
+                    Config::getInstance()->unlock();
+                    throw new \OPNsense\Base\UserException(
+                        sprintf(gettext("Missing mandatory fields: %s"), implode(", ", $missing_keys)), gettext("CSV Import Failed")
+                    );
+                }
             } elseif (count($line) >= 1 && !is_null($line[array_key_first($line)])) {
                 $record = [];
                 foreach ($line as $idx => $content) {
