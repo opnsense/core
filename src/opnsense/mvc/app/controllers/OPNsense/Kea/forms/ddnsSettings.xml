@@ -3,18 +3,18 @@
         <id>ddns.general.enabled</id>
         <label>Enabled</label>
         <type>checkbox</type>
-        <help>Enable DDNS server.</help>
+        <help>Enable DDNS server. To send updates to an authoritative nameserver, configure Dynamic DNS inside the DHCPv4 and DHCPv6 subnets.</help>
     </field>
     <field>
         <id>ddns.general.server_ip</id>
         <label>Bind address</label>
         <type>text</type>
-        <help>Address on which the DHCP DDNS server interface should be available</help>
+        <help>Address on which the DHCP DDNS server interface should be available.</help>
     </field>
     <field>
         <id>ddns.general.server_port</id>
         <label>Bind port</label>
         <type>text</type>
-        <help>Portnumber to use for the DHCP DDNS server interface</help>
+        <help>Portnumber to use for the DHCP DDNS server interface.</help>
     </field>
 </form>

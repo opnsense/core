@@ -32,7 +32,7 @@
     </page-dhcp-kea-ctrl-agent>
     <page-dhcp-kea-ddns>
         <name>Services: DHCP: Kea DDNS</name>
-        <description>Allow access to the KEA DDNS server</description>
+        <description>Allow access to the KEA DDNS Agent</description>
         <patterns>
             <pattern>ui/kea/dhcp/ddns</pattern>
             <pattern>api/kea/ddns/*</pattern>

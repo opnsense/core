@@ -176,6 +176,7 @@
     <field>
         <type>header</type>
         <label>Dynamic DNS</label>
+        <collapse>true</collapse>
     </field>
     <field>
         <id>subnet4.ddns_forward_zone</id>
