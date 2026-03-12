@@ -693,10 +693,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 if (!empty($keyfields) && count($missing_keys) > 0) {
                     fclose($stream);
                     Config::getInstance()->unlock();
-                    return [
-                        "status" => "failed",
-                        "message" => sprintf(gettext("Missing mandatory fields: %s"), implode(", ", $missing_keys))
-                    ];
+                    throw new \OPNsense\Base\UserException(
+                        sprintf(gettext("Missing mandatory fields: %s"), implode(", ", $missing_keys))
+                    );
                 }
 
             } elseif (count($line) >= 1 && !is_null($line[array_key_first($line)])) {
