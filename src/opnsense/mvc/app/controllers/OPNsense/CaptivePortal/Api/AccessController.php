@@ -88,17 +88,26 @@ class AccessController extends ApiControllerBase
      */
     protected function getClientIp()
     {
+        $clientAddress = $this->request->getClientAddress();
+        $forwardedFor = $this->request->getHeader('X-Forwarded-For');
+        $realIp = $this->request->getHeader('X-Real-Ip');
+
         // determine original sender of this request
         if (
-            $this->request->getHeader('X-Forwarded-For') != "" &&
-            explode('.', $this->request->getClientAddress())[0] == '127'
+            $forwardedFor != "" &&
+            (explode('.', $clientAddress)[0] == '127' || $clientAddress === '::1')
         ) {
             // use X-Forwarded-For header to determine real client
-            return $this->request->getHeader('X-Forwarded-For');
-        } else {
-            // client accesses the Api directly
-            return $this->request->getClientAddress();
+            return $forwardedFor;
         }
+
+        if ($realIp != "" && $clientAddress === '::1') {
+            // API dispatcher may proxy via IPv6 loopback while preserving the client in X-Real-Ip
+            return $realIp;
+        }
+
+        // client accesses the Api directly
+        return $clientAddress;
     }
 
     protected function getClientMac($ip)
