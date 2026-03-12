@@ -697,7 +697,6 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                         sprintf(gettext("Missing mandatory fields: %s"), implode(", ", $missing_keys)), gettext("CSV Import Failed")
                     );
                 }
-
             } elseif (count($line) >= 1 && !is_null($line[array_key_first($line)])) {
                 $record = [];
                 foreach ($line as $idx => $content) {
