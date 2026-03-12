@@ -476,6 +476,7 @@
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                 </target_port>
+                <staticnatport type="BooleanField"/>
                 <log type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
