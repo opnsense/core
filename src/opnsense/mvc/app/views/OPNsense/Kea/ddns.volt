@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2023 Deciso B.V.
+ # Copyright (c) 2026 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -26,7 +26,7 @@
 
 <script>
     $( document ).ready(function() {
-        let data_get_map = {'frm_generalsettings':"/api/kea/ctrl_agent/get"};
+        let data_get_map = {'frm_generalsettings':"/api/kea/ddns/get"};
         mapDataToFormUI(data_get_map).done(function(){
             formatTokenizersUI();
             $('.selectpicker').selectpicker('refresh');
@@ -36,7 +36,7 @@
         $("#reconfigureAct").SimpleActionButton({
             onPreAction: function() {
                 const dfObj = new $.Deferred();
-                saveFormToEndpoint("/api/kea/ctrl_agent/set", 'frm_generalsettings', function () { dfObj.resolve(); }, true, function () { dfObj.reject(); });
+                saveFormToEndpoint("/api/kea/ddns/set", 'frm_generalsettings', function () { dfObj.resolve(); }, true, function () { dfObj.reject(); });
                 return dfObj;
             }
         });

@@ -399,6 +399,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVxlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/CtrlAgentController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/DdnsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Dhcpv4Controller.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Dhcpv6Controller.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Leases4Controller.php
@@ -407,6 +408,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/DhcpController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/agentSettings.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/ddnsSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogPDPool6.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogPeer4.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogPeer6.xml
@@ -840,6 +842,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaStaticRoutesField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaCtrlAgent.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaCtrlAgent.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDdns.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDdns.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDhcpv4.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDhcpv4.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDhcpv6.php
@@ -998,6 +1002,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vxlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/ctrl_agent.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Kea/ddns.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/dhcpv4.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/dhcpv6.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/leases4.volt
