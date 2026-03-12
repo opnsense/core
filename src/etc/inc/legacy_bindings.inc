@@ -175,7 +175,7 @@ function legacy_move_config_list_items($source, $id, $items)
  */
 function get_alias_description($name)
 {
-    return OPNsense\Firewall\Util::aliasDescription($name);
+    return OPNsense\Firewall\Util::aliasSummary($name);
 }
 
 /* XXX deprecated */

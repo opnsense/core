@@ -312,7 +312,7 @@
 
                         const renderedItems = aliasMetadataList.map(aliasInfo => {
                             if (aliasInfo.isAlias) {
-                                const tooltipHtml = aliasInfo.description || aliasInfo.value || "";
+                                const tooltipHtml = aliasInfo.summary || aliasInfo.description || aliasInfo.value || "";
                                 return `
                                     <span data-toggle="tooltip" data-html="true" title="${tooltipHtml}">${aliasInfo.value}&nbsp;</span>
                                     <a href="/ui/firewall/alias/index/${encodeURIComponent(aliasInfo.value)}"
