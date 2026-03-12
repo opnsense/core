@@ -44,7 +44,7 @@ class ARP(object):
 
         # fetch addresses, no IPv6 if hostwatch disabled
         out = ujson.loads(subprocess.run(
-            ['/usr/local/opnsense/scripts/interfaces/list_hosts.py', '--ndp', '--last-seen-window', '86400', '-v'],
+            ['/usr/local/opnsense/scripts/interfaces/list_hosts.py', '--last-seen-window', '86400', '-v'],
             capture_output=True,
             text=True
         ).stdout)
