@@ -39,10 +39,14 @@ if __name__ == '__main__':
     result  = {'status': 'not_found'}
     sp = subprocess.run(['/usr/local/opnsense/scripts/ipsec/list_sad.py'], capture_output=True, text=True)
     payload = ujson.loads(sp.stdout)
+    sads = cmd_args.id.split(',')
+    deleted_entries = []
     for record in payload['records']:
-        if record['id'] == cmd_args.id:
+        if record['id'] in sads:
             result['status'] = 'found'
+            deleted_entries.append(record)
             policy = "delete %(src)s %(dst)s %(satype)s 0x%(spi)s;" % record
             sp = subprocess.run(['/sbin/setkey', '-c'], capture_output=True, text=True, input=policy)
 
+    result['items'] = deleted_entries
     print(ujson.dumps(result))
