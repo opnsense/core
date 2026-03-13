@@ -389,10 +389,17 @@ $( document ).ready(function() {
               <td>
                 <select name="theme" class="selectpicker">
 <?php
-                foreach (glob('/usr/local/opnsense/www/themes/*', GLOB_ONLYDIR) as $file):
-                  $file = basename($file);?>
-                  <option <?= $file == $pconfig['theme'] ? 'selected="selected"' : '' ?>>
-                    <?=$file;?>
+                $themes = [];
+                foreach (glob('/usr/local/opnsense/www/themes/*', GLOB_ONLYDIR) as $file) {
+                  $themes[] = basename($file);
+                }
+                if (!in_array('opnsense-auto', $themes)) {
+                  $themes[] = 'opnsense-auto';
+                }
+                sort($themes);
+                foreach ($themes as $theme_opt): ?>
+                  <option <?= $theme_opt == $pconfig['theme'] ? 'selected="selected"' : '' ?>>
+                    <?=$theme_opt;?>
                   </option>
 <?php
                 endforeach; ?>
