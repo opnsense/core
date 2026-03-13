@@ -28,11 +28,11 @@
 
 namespace OPNsense\Unbound\FieldTypes;
 
-use OPNsense\Base\FieldTypes\CSVListField;
+use OPNsense\Base\FieldTypes\BaseSetField;
 
-class AliasReflector extends CSVListField
+class AliasReflector extends BaseSetField
 {
-    protected $internalIsContainer = false;
+    protected $internalAsList = true;
 
     public function actionPostLoadingEvent()
     {
