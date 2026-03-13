@@ -40,24 +40,18 @@ class SettingsController extends ApiMutableModelControllerBase
 
     private $type = 'forward';
 
-    private function splitHostDomain(string $s)
+    private function splitHostDomain(string $s): array
     {
         $s = rtrim(trim($s), '.');
-
         if ($s === '') {
             return ['host' => '', 'domain' => ''];
         }
 
         $pos = strpos($s, '.');
 
-        if ($pos === false) {
-            return ['host' => $s, 'domain' => ''];
-        }
-
-        return [
-            'host'   => substr($s, 0, $pos),
-            'domain' => substr($s, $pos + 1),
-        ];
+        return $pos === false
+            ? ['host' => $s, 'domain' => '']
+            : ['host' => substr($s, 0, $pos), 'domain' => substr($s, $pos + 1)];
     }
 
     private function updateHostAliases($hostUUID)
