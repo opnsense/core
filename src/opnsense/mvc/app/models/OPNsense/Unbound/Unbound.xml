@@ -247,6 +247,26 @@
             <enabled type="BooleanField"/>
         </forwarding>
         <dots>
+            <client_tls_enabled type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </client_tls_enabled>
+            <client_https_enabled type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </client_https_enabled>
+            <client_https_port type="PortField">
+                <Required>N</Required>
+                <Default>11443</Default>
+            </client_https_port>
+            <client_quic_enabled type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </client_quic_enabled>
+            <cert type="CertificateField">
+                <Type>cert</Type>
+                <Required>N</Required>
+            </cert>
             <dot type="ArrayField">
                 <enabled type="BooleanField">
                     <Required>Y</Required>
