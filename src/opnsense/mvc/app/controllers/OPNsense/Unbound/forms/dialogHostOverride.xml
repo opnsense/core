@@ -99,11 +99,6 @@
         </grid_view>
     </field>
     <field>
-        <id>host.aliascount</id>
-        <label>Alias count</label>
-        <type>info</type>
-    </field>
-    <field>
         <id>host.description</id>
         <label>Description</label>
         <type>text</type>

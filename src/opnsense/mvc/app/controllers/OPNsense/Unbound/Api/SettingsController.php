@@ -299,7 +299,6 @@ class SettingsController extends ApiMutableModelControllerBase
                     $child[$key] = $node->$key->getValue();
                 }
                 unset($child['aliases']);
-                unset($child['aliascount']);
                 $host['_children'] ??= [];
                 $host['_children'][] = $child;
             }
