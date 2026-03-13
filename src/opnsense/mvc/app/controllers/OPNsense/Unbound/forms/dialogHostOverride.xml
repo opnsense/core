@@ -93,7 +93,7 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>Quickly add aliases</help>
+        <help>Quickly add or remove aliases</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>

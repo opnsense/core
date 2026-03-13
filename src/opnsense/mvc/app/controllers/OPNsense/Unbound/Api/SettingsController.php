@@ -64,6 +64,10 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         $result = ['status' => 'failed'];
 
+        if (!$this->request->isPost()) {
+            return $result;
+        }
+
         $mdl = $this->getModel();
         $host = $this->request->getPost('host') ?? [];
         $host['uuid'] ??= $hostUUID;
