@@ -31,6 +31,17 @@
             <pattern>api/diagnostics/interface/get_routes*</pattern>
         </patterns>
     </page-diagnostics-routingtables>
+    <page-diagnostics-showstates>
+        <name>Diagnostics: Show States</name>
+        <patterns>
+             <pattern>ui/diagnostics/firewall/states*</pattern>
+             <pattern>api/diagnostics/firewall/queryStates*</pattern>
+             <pattern>api/diagnostics/firewall/delState*</pattern>
+             <pattern>api/diagnostics/firewall/killStates*</pattern>
+             <pattern>api/diagnostics/firewall/flush_sources*</pattern>
+             <pattern>api/diagnostics/firewall/flush_states*</pattern>
+        </patterns>
+    </page-diagnostics-showstates>
     <page-diagnostics-system-activity>
         <name>Diagnostics: System Activity</name>
         <patterns>
