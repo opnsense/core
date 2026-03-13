@@ -1,0 +1,31 @@
+<form>
+    <field>
+        <id>option.code</id>
+        <label>Code</label>
+        <type>dropdown</type>
+        <help>DHCPv4 option to offer to the client.</help>
+    </field>
+    <field>
+        <id>option.data</id>
+        <label>Data</label>
+        <type>text</type>
+        <help>Raw byte code value that should be sent, represented in hexadecimal format. This is for advanced usecases, you have to construct the RFC conform DHCP byte code yourself. Consider using the option fields in subnets and reservations when possible.</help>
+    </field>
+    <field>
+        <id>option.force</id>
+        <label>Force</label>
+        <type>checkbox</type>
+        <help>Always send the option, also when the client does not ask for it in the parameter request list.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>option.description</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>You may enter a description here for your reference.</help>
+    </field>
+</form>

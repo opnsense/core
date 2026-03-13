@@ -202,6 +202,22 @@ class KeaDhcpv4 extends BaseModel
 
                 $record['reservations'][] = $res;
             }
+            /* append raw hex options */
+            foreach ($subnet->option->getValues() as $uuid) {
+                $option = $this->getNodeByReference("options.option.$uuid");
+                if ($option === null) {
+                    continue;
+                }
+
+                $entry = [
+                    'code' => $option->code->asInt(),
+                    'csv-format' => false,
+                    'data' => $option->data->getValue(),
+                    'always-send' => !$option->force->isEmpty(),
+                ];
+
+                $record['option-data'][] = $entry;
+            }
             $result[] = $record;
         }
         return $result;
