@@ -37,24 +37,13 @@ class AliasReflector extends BaseSetField
     public function actionPostLoadingEvent()
     {
         $uuid = $this->getParentNode()->getAttribute('uuid') ?? '';
-        $this->setValue(implode(',', array_map(function ($node) {
+        $this->setValues(array_map(function ($node) {
             $hostname = $node->hostname->getValue();
             $domain = $node->domain->getValue();
-            $concat = '';
-            if (!empty($hostname)) {
-                $concat .= $hostname . '.';
-            }
-
-            if (empty($domain)) {
-                $hostDomain = $this->getParentNode()->domain->getValue();
-                if (!empty($hostDomain)) {
-                    $concat .= $hostDomain;
-                }
-            } else {
-                $concat .= $domain;
-            }
+            $concat = !empty($hostname) ? $hostname . '.' : '';
+            $concat .= !empty($domain) ? $domain : $this->getParentNode()->domain->getValue();
 
             return $concat;
-        }, $this->getParentModel()->getHostAliases($uuid))));
+        }, $this->getParentModel()->getHostAliases($uuid)));
     }
 }
