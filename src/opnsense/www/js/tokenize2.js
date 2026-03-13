@@ -282,6 +282,8 @@
      */
     Tokenize2.prototype.tokenAdd = function(value, text, force){
 
+        text = text.trim();
+        value = value.trim();
         text = text || value;
         selector_value = $.escapeSelector(value);
         force = force || false;
