@@ -220,6 +220,7 @@ include("head.inc");
         $('#timeservers_table > tbody > tr:last > td > input').each(function(){
             $(this).val("");
             $(this).prop('checked', false);
+            $(this).prop('readonly', false);
         });
         $(".act-removerow").click(removeRow);
     });
@@ -291,7 +292,7 @@ include("head.inc");
                               <input name="timeservers_prefer[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_prefer']) && in_array($timeserver, $pconfig['timeservers_prefer']) ? 'checked="checked"' : '' ?>/>
                             </td>
                             <td>
-                              <input name="timeservers_ispool[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_ispool']) && in_array($timeserver, $pconfig['timeservers_ispool']) ? 'checked="checked"' : '' ?> <?= preg_match("/\.pool\.ntp\.org$/", $timeserver) ? 'disabled="disabled"' : '' ?>/>
+                              <input name="timeservers_ispool[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_ispool']) && in_array($timeserver, $pconfig['timeservers_ispool']) ? 'checked="checked"' : '' ?> <?= !!preg_match("/\.pool\.ntp\.org$/", $timeserver) ? 'readonly="readonly"' : '' ?>/>
                             </td>
                             <td>
                               <input name="timeservers_iburst[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_iburst']) && in_array($timeserver, $pconfig['timeservers_iburst']) ? 'checked="checked"' : '' ?>/>
