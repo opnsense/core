@@ -10,7 +10,7 @@
         <label>Mode</label>
         <width>220px</width>
         <type>dropdown</type>
-        <help>Define the use of this key, authentication (--tls-auth) or authentication and encryption (--tls-crypt)</help>
+        <help>Define the use of this key, authentication (--tls-auth) or authentication and encryption (--tls-crypt) or (--tls-crypt-v2)</help>
     </field>
     <field>
         <id>statickey.key</id>
