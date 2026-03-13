@@ -87,6 +87,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['timeservers_iburst'] = !empty($a_ntpd['iburst']) ? explode(' ', $a_ntpd['iburst']) : array();
         $pconfig['timeservers_ispool'] = !empty($a_ntpd['ispool']) ? explode(' ', $a_ntpd['ispool']) : array();
         $pconfig['timeservers_host'] = explode(' ', $config['system']['timeservers']);
+        foreach ($pconfig['timeservers_host'] as $host) {
+            if (preg_match("/\.pool\.ntp\.org$/", $host) && !in_array($host, $pconfig['timeservers_ispool'])) {
+                $pconfig['timeservers_ispool'][] = $host;
+            }
+        }
     }
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
@@ -286,7 +291,7 @@ include("head.inc");
                               <input name="timeservers_prefer[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_prefer']) && in_array($timeserver, $pconfig['timeservers_prefer']) ? 'checked="checked"' : '' ?>/>
                             </td>
                             <td>
-                              <input name="timeservers_ispool[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_ispool']) && in_array($timeserver, $pconfig['timeservers_ispool']) ? 'checked="checked"' : '' ?>/>
+                              <input name="timeservers_ispool[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_ispool']) && in_array($timeserver, $pconfig['timeservers_ispool']) ? 'checked="checked"' : '' ?> <?= preg_match("/\.pool\.ntp\.org$/", $timeserver) ? 'disabled="disabled"' : '' ?>/>
                             </td>
                             <td>
                               <input name="timeservers_iburst[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_iburst']) && in_array($timeserver, $pconfig['timeservers_iburst']) ? 'checked="checked"' : '' ?>/>
