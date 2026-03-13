@@ -380,7 +380,7 @@
                     <Default>1</Default>
                     <Required>Y</Required>
                 </addptr>
-                <aliascount type=".\AliasRefCount" volatile="true"/>
+                <aliases type=".\AliasReflector" volatile="true"/>
                 <description type="DescriptionField"/>
             </host>
         </hosts>

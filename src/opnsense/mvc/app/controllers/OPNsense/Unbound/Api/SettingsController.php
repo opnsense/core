@@ -40,6 +40,103 @@ class SettingsController extends ApiMutableModelControllerBase
 
     private $type = 'forward';
 
+    private function splitHostDomain(string $s): array
+    {
+        $s = rtrim(trim($s), '.');
+        if ($s === '') {
+            return ['host' => '', 'domain' => ''];
+        }
+
+        $pos = strpos($s, '.');
+
+        return $pos === false
+            ? ['host' => $s, 'domain' => '']
+            : ['host' => substr($s, 0, $pos), 'domain' => substr($s, $pos + 1)];
+    }
+
+    private function updateHostAliases($hostUUID)
+    {
+        $result = ['status' => 'failed'];
+
+        if (!$this->request->isPost()) {
+            return $result;
+        }
+
+        $mdl = $this->getModel();
+        $host = $this->request->getPost('host') ?? [];
+        $host['uuid'] ??= $hostUUID;
+        $requestAliases = $host['aliases'] ?? '';
+
+        if (empty($host['uuid'])) {
+            return $result;
+        }
+
+        $hostNode = $mdl->getNodeByReference('hosts.host.' . $host['uuid']);
+        if ($hostNode == null) {
+            return $result;
+        }
+
+        $a = array_filter(array_map('trim', explode(',', $requestAliases)));
+        $b = array_filter(array_map('trim', explode(',', $hostNode->aliases->getValue())));
+        $toDelete = array_values(array_diff($b, $a));
+        $toAdd = array_values(array_diff($a, $b));
+
+        if (empty($toDelete) && empty($toAdd)) {
+            $result['status'] = 'unchanged';
+            return $result;
+        }
+
+        Config::getInstance()->lock();
+
+        $delUUIDs = [];
+        foreach ($toDelete as $delAlias) {
+            $split = $this->splitHostDomain($delAlias);
+            if ($split['domain'] === $host['domain']) {
+                $split['domain'] = '';
+            }
+            foreach ($mdl->getHostAliases($host['uuid']) as $aliasNode) {
+                /* XXX not deleted by UUID */
+                if ($aliasNode->hostname->getValue() === $split['host'] && $aliasNode->domain->getValue() === $split['domain']) {
+                    $delUUIDs[] = $aliasNode->getAttribute('uuid');
+                }
+            }
+        }
+
+        if (!empty($delUUIDs)) {
+            $tmpResult = $this->delBase('aliases.alias', implode(',', $delUUIDs));
+            if ($tmpResult['result'] == 'deleted') {
+                $result['delete_count'] = count($delUUIDs);
+            }
+        }
+
+        foreach ($toAdd as $addAlias) {
+            $split = $this->splitHostDomain($addAlias);
+            if ($split['domain'] === $host['domain']) {
+                $split['domain'] = '';
+            }
+            $node = $mdl->aliases->alias->Add();
+            $node->setNodes([
+                'enabled' => 1,
+                'host' => $host['uuid'],
+                'hostname' => $split['host'],
+                'domain' => $split['domain'],
+                'description' => ''
+            ]);
+            $validations = $this->validate($node, 'alias');
+
+            if (!empty($validations['validations'])) {
+                return $result;
+            }
+        }
+
+        $result['add_count'] = count($toAdd);
+        $result['status'] = 'OK';
+
+        $this->save(false, true);
+
+        return $result;
+    }
+
     public function updateBlocklistAction()
     {
         $result = ["status" => "failed"];
@@ -186,7 +283,26 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function searchHostOverrideAction()
     {
-        return $this->searchBase('hosts.host', null);
+        $result = $this->searchBase('hosts.host', null);
+        $mdl = $this->getModel();
+
+        foreach ($result['rows'] as &$host) {
+            $child = $host;
+            $host['isAlias'] = false;
+            $uuid = $host['uuid'];
+            foreach ($mdl->getHostAliases($uuid) as $node) {
+                $child['uuid'] = $node->getAttribute('uuid');
+                $child['isAlias'] = true;
+                foreach (['enabled', 'hostname', 'domain', 'description'] as $key) {
+                    $child[$key] = $node->$key->getValue();
+                }
+                unset($child['aliases']);
+                $host['_children'] ??= [];
+                $host['_children'][] = $child;
+            }
+        }
+
+        return $result;
     }
 
     public function getHostOverrideAction($uuid = null)
@@ -196,7 +312,16 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function addHostOverrideAction()
     {
-        return $this->addBase('host', 'hosts.host');
+        /* overlay empty aliases here so they're not reflected back in the volatile 'aliases' field */
+        $result = $this->addBase('host', 'hosts.host', ['aliases' => '']);
+        if ($result['result'] === 'saved' && !empty($result['uuid'])) {
+            $aliasUpdate = $this->updateHostAliases($result['uuid']);
+            if ($aliasUpdate['status'] === 'failed') {
+                return $aliasUpdate;
+            }
+        }
+
+        return $result;
     }
 
     public function delHostOverrideAction($uuid)
@@ -215,6 +340,11 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function setHostOverrideAction($uuid)
     {
+        $result = $this->updateHostAliases($uuid);
+        if ($result['status'] === 'failed') {
+            return $result;
+        }
+
         return $this->setBase('host', 'hosts.host', $uuid);
     }
 

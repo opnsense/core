@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2025 Deciso B.V.
+ * Copyright (C) 2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,26 +28,22 @@
 
 namespace OPNsense\Unbound\FieldTypes;
 
-use OPNsense\Base\FieldTypes\BaseField;
+use OPNsense\Base\FieldTypes\BaseSetField;
 
-class AliasRefCount extends BaseField
+class AliasReflector extends BaseSetField
 {
-    protected $internalIsContainer = false;
-    private $refcountcache = null;
+    protected $internalAsList = true;
 
     public function actionPostLoadingEvent()
     {
-        if ($this->refcountcache === null) {
-            $this->refcountcache = [];
-            foreach ($this->getParentModel()->aliases->alias->iterateItems() as $node) {
-                $uuid = $node->host->getValue();
-                if (!isset($this->refcountcache[$uuid])) {
-                    $this->refcountcache[$uuid] = 0;
-                }
-                $this->refcountcache[$uuid]++;
-            }
-        }
         $uuid = $this->getParentNode()->getAttribute('uuid') ?? '';
-        $this->setValue($this->refcountcache[$uuid] ?? '0');
+        $this->setValues(array_map(function ($node) {
+            $hostname = $node->hostname->getValue();
+            $domain = $node->domain->getValue();
+            $concat = !empty($hostname) ? $hostname . '.' : '';
+            $concat .= !empty($domain) ? $domain : $this->getParentNode()->domain->getValue();
+
+            return $concat;
+        }, $this->getParentModel()->getHostAliases($uuid)));
     }
 }
