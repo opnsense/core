@@ -1663,6 +1663,9 @@ class UIBootgrid {
                 requires: ['del'],
                 classname: 'fa fa-trash-o fa-fw',
                 sequence: 400,
+                filter: () => {
+                    return this.options.selection;
+                },
                 footer: true,
                 primary: true,
                 title: this._translate('deleteSelected')
