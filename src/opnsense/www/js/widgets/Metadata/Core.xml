@@ -126,6 +126,9 @@
             <livelog>Live Log</livelog>
             <events>Events</events>
             <nodata>Waiting for data</nodata>
+            <colorscheme>Color scheme</colorscheme>
+            <contrast>High contrast</contrast>
+            <semantic>Semantic groups</semantic>
         </translations>
     </firewall>
     <firewallstates>
