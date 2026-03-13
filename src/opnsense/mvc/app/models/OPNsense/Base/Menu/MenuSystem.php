@@ -316,8 +316,6 @@ class MenuSystem
                     'order' => 0,
             ]);
             $iftargets['fw'] = array_merge(['FloatingRules' => gettext('Floating')], $iftargets['fw']);
-        } elseif ($has_mvc_fw) {
-            $this->getItem('Firewall.Rule')?->setVisibleName(gettext('Rules'));
         }
         $ordid = 1;
         foreach ($iftargets['fw'] as $key => $descr) {

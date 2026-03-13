@@ -1,6 +1,6 @@
 <menu>
     <Firewall>
-        <Rule VisibleName="Rules [new]" url="/ui/firewall/filter/" cssClass="fa fa-check fa-fw">
+        <Rule VisibleName="Rules" url="/ui/firewall/filter/" cssClass="fa fa-check fa-fw">
             <FilterRef url="/ui/firewall/filter#*" visibility="hidden"/>
         </Rule>
         <NAT>
