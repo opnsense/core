@@ -2,7 +2,7 @@
     <field>
         <label></label>
         <type>hidden</type>
-        <id>tree</id>
+        <id>host.tree</id>
         <grid_view>
             <sequence>1</sequence>
             <width>10</width>
