@@ -154,6 +154,16 @@
         </grid_view>
     </field>
     <field>
+        <id>subnet4.option_data.vendor_encapsulated_options</id>
+        <label>Raw Option 43 data</label>
+        <type>text</type>
+        <help>Raw TLV-Data for option 43. This will be delivered to the clients as is. Specify as hex value without leading "0x"</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <id>subnet4.option_data.v6_only_preferred</id>
         <label>IPv6-only Preferred (Option 108)</label>
         <type>text</type>
