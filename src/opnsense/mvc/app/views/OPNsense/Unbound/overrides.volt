@@ -183,7 +183,6 @@ $( document ).ready(function() {
         border: 0 !important;
         box-shadow: none !important;
         padding-left: 2rem;
-        border-left: 2px solid color-mix(in srgb, currentColor 20%, transparent);
     }
 
     .theading-text {
