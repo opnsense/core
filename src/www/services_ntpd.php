@@ -220,7 +220,7 @@ include("head.inc");
         $('#timeservers_table > tbody > tr:last > td > input').each(function(){
             $(this).val("");
             $(this).prop('checked', false);
-            $(this).prop('readonly', false);
+            $(this).prop('disabled', false);
         });
         $(".act-removerow").click(removeRow);
     });
@@ -280,7 +280,8 @@ include("head.inc");
                         if (count($pconfig['timeservers_host']) == 0 ) {
                             $pconfig['timeservers_host'][] = "";
                         }
-                        foreach($pconfig['timeservers_host'] as $item_idx => $timeserver):?>
+                        foreach($pconfig['timeservers_host'] as $item_idx => $timeserver):
+                          $staticpool = !!preg_match("/\.pool\.ntp\.org$/", $timeserver); ?>
                           <tr>
                             <td>
                               <div style="cursor:pointer;" class="act-removerow btn btn-default btn-xs"><i class="fa fa-minus fa-fw"></i></div>
@@ -292,7 +293,10 @@ include("head.inc");
                               <input name="timeservers_prefer[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_prefer']) && in_array($timeserver, $pconfig['timeservers_prefer']) ? 'checked="checked"' : '' ?>/>
                             </td>
                             <td>
-                              <input name="timeservers_ispool[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_ispool']) && in_array($timeserver, $pconfig['timeservers_ispool']) ? 'checked="checked"' : '' ?> <?= !!preg_match("/\.pool\.ntp\.org$/", $timeserver) ? 'readonly="readonly"' : '' ?>/>
+                              <input name="timeservers_ispool[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_ispool']) && in_array($timeserver, $pconfig['timeservers_ispool']) ? 'checked="checked"' : '' ?> <?= $staticpool ? 'disabled="disabled"' : '' ?>/>
+<?php if ($staticpool): ?>
+                              <input name="timeservers_ispool[]" type="hidden" value="<?=$timeserver;?>"/>
+<?php endif ?>
                             </td>
                             <td>
                               <input name="timeservers_iburst[]" class="ts_checkbox" type="checkbox" value="<?=$timeserver;?>" <?= !empty($pconfig['timeservers_iburst']) && in_array($timeserver, $pconfig['timeservers_iburst']) ? 'checked="checked"' : '' ?>/>
