@@ -726,12 +726,35 @@ class UIBootgrid {
         this.table.on('cellMouseEnter', onMouseEnter);
 
         this.table.on('rowSelected', (row) => {
+            let findTreeRowByIndex = (targetIndex) => {
+                let walk = (rows) => {
+                    for (const row of rows) {
+                        if (row.getIndex() === targetIndex) return row;
+                        const children = row.getTreeChildren?.() || [];
+                        const found = walk(children);
+                        if (found) return found;
+                    }
+                    return false;
+                }
+
+                return walk(this.table.getRows());
+            }
+
             if (!this.options.rowSelect) {
+                /**
+                 * Tabulator cannot find nested rows by index through getRow().
+                 * Since "selected" only contains indices as strings, we
+                 * define our own tree walk above to fetch the row component objects
+                 * in order to deselect them.
+                 */
                 const selected = this.getSelectedRows();
                 if (!this.options.multiSelect && selected.length > 1) {
                     const curRowId = row.getData()[this.options.datakey];
                     selected.forEach((r) => {
-                        if (r !== curRowId) this.table.deselectRow(r);
+                        if (r !== curRowId) {
+                            const potentiallyNestedRow = findTreeRowByIndex(r);
+                            if (potentiallyNestedRow) potentiallyNestedRow.deselect();
+                        }
                     });
                 }
             }
@@ -1851,9 +1874,8 @@ class UIBootgrid {
         }
     }
 
-    show_edit_dialog(event, endpoint) {
+    show_edit_dialog(event, endpoint, editDlg) {
         return new Promise((resolve, rejects) => {
-            let editDlg = this.$compatElement.attr('data-editDialog');
             let urlMap = {};
             let server_params = this.options.requestHandler({});
 
@@ -1948,8 +1970,7 @@ class UIBootgrid {
     /**
     * init / clear save button
     */
-    init_save_btn() {
-        let editDlg = this.$compatElement.attr('data-editDialog');
+    init_save_btn(editDlg) {
         let saveDlg = $("#btn_" + editDlg + "_save").unbind('click');
         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
         return saveDlg;
@@ -1958,19 +1979,21 @@ class UIBootgrid {
     /**
     * add event
     */
-    command_add(event) {
+    command_add(event, cell = null, override = null) {
         event.stopPropagation();
-        let editDlg = this.$compatElement.attr('data-editDialog');
+        let editDlg = override?.dialog ?? this.$compatElement.attr('data-editDialog');
         if (editDlg !== undefined) {
-            let saveDlg = this.init_save_btn();
-            this.show_edit_dialog(event, this.crud.get).then(() => {
+            let saveDlg = this.init_save_btn(editDlg);
+            const getEndpoint = override?.get ?? this.crud.get;
+            const addEndpoint = override?.add ?? this.crud.add;
+            this.show_edit_dialog(event, getEndpoint, editDlg).then(() => {
                 $('#' + editDlg).trigger('opnsense_bootgrid_mapped', ['add']);
                 saveDlg.click(() => {
                     if (saveDlg.find('i').hasClass('fa-spinner')) {
                         return;
                     }
                     saveDlg.find('i').addClass("fa fa-spinner fa-pulse");
-                    saveFormToEndpoint(this.crud.add, 'frm_' + editDlg, () => {
+                    saveFormToEndpoint(addEndpoint, 'frm_' + editDlg, () => {
                         if ($('#' + editDlg).hasClass('modal')) {
                             $("#" + editDlg).modal('hide');
                         } else {
@@ -2008,21 +2031,23 @@ class UIBootgrid {
     /**
     * edit event
     */
-    command_edit(event, cell = null, uuid = null) {
+    command_edit(event, cell = null, uuid = null, override = null) {
         if (uuid === null)
             event.stopPropagation();
-        let editDlg = this.$compatElement.attr('data-editDialog');
+        let editDlg = override?.dialog ?? this.$compatElement.attr('data-editDialog');
         if (editDlg !== undefined) {
             if (uuid === null)
                 uuid = $(event.currentTarget).data('row-id') ?? '';
-            let saveDlg = this.init_save_btn();
-            this.show_edit_dialog(event, this.crud.get + uuid).then(() => {
+            let saveDlg = this.init_save_btn(editDlg);
+            const getEndpoint = override?.get ?? this.crud.get;
+            const setEndpoint = override?.set ?? this.crud.set;
+            this.show_edit_dialog(event, getEndpoint + uuid, editDlg).then(() => {
                 saveDlg.unbind('click').click(() => {
                     if (saveDlg.find('i').hasClass('fa-spinner')) {
                         return;
                     }
                     saveDlg.find('i').addClass("fa fa-spinner fa-pulse");
-                    saveFormToEndpoint(this.crud.set + uuid, 'frm_' + editDlg, () => {
+                    saveFormToEndpoint(setEndpoint + uuid, 'frm_' + editDlg, () => {
                         if ($('#' + editDlg).hasClass('modal')) {
                             $("#" + editDlg).modal('hide');
                         } else {
@@ -2047,11 +2072,12 @@ class UIBootgrid {
     /**
     * delete event
     */
-    command_delete(event) {
+    command_delete(event, cell = null, uuid = null, override = null) {
         event.stopPropagation();
-        let uuid = $(event.currentTarget).data('row-id');
+        uuid = uuid ?? $(event.currentTarget).data('row-id');
         stdDialogRemoveItem(this._translate('removeWarning'), () => {
-            ajaxCall(this.crud.del + uuid, {}, (data, status) => {
+            const endpoint = override?.del ?? this.crud.del;
+            ajaxCall(endpoint + uuid, {}, (data, status) => {
                 // reload grid after delete
                 this._reload(true);
                 this.showSaveAlert(event);
@@ -2081,13 +2107,15 @@ class UIBootgrid {
     /**
     * copy event
     */
-    command_copy(event) {
+    command_copy(event, cell = null, uuid = null, override = null) {
         event.stopPropagation();
-        const editDlg = this.$compatElement.attr('data-editDialog');
+        const editDlg = override?.dialog ?? this.$compatElement.attr('data-editDialog');
         if (editDlg !== undefined) {
-            const uuid = $(event.currentTarget).data('row-id');
+            uuid = uuid ?? $(event.currentTarget).data('row-id');
             const urlMap = {};
-            urlMap['frm_' + editDlg] = this.crud.get + uuid + "?fetchmode=copy";
+            const getEndpoint = override?.get ?? this.crud.get;
+            const addEndpoint = override?.add ?? this.crud.add;
+            urlMap['frm_' + editDlg] = getEndpoint + uuid + "?fetchmode=copy";
             mapDataToFormUI(urlMap).done(() => {
                 // update selectors
                 formatTokenizersUI();
@@ -2103,13 +2131,13 @@ class UIBootgrid {
                     $('#' + editDlg).click();
                 }
                 // define save action
-                let saveDlg = this.init_save_btn();
+                let saveDlg = this.init_save_btn(editDlg);
                 saveDlg.click(() => {
                     if (saveDlg.find('i').hasClass('fa-spinner')) {
                         return;
                     }
                     saveDlg.find('i').addClass("fa fa-spinner fa-pulse");
-                    saveFormToEndpoint(this.crud['add'], 'frm_' + editDlg, () => {
+                    saveFormToEndpoint(addEndpoint, 'frm_' + editDlg, () => {
                         if ($('#' + editDlg).hasClass('modal')) {
                             $("#" + editDlg).modal('hide');
                         } else {
@@ -2150,11 +2178,12 @@ class UIBootgrid {
     /**
     * toggle event
     */
-    command_toggle(event) {
+    command_toggle(event, cell = null, uuid = null, override = null) {
         event.stopPropagation();
-        const uuid = $(event.currentTarget).data('row-id');
+        uuid = uuid ?? $(event.currentTarget).data('row-id');
         $(event.currentTarget).removeClass('fa-check-square-o fa-square-o').addClass("fa-spinner fa-pulse");
-        ajaxCall(this.crud['toggle'] + uuid, {}, (data, status) => {
+        const endpoint = override?.toggle ?? this.crud.toggle;
+        ajaxCall(endpoint + uuid, {}, (data, status) => {
             // reload grid after delete
             this._reload(true);
             this.showSaveAlert(event);
