@@ -27,200 +27,195 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/* hook-in additional theme functionality */
-
 $(document).ready(function () {
-    // traverse loaded css files
-    var toggle_sidebar_loaded = false,
-    mouse = 'mouseenter mouseleave',
-    layer_a = $('#mainmenu > div > a'),
-    layer_div = $('#mainmenu > div > div'),
-    layer2_a = $('#mainmenu > div > div > a'),
-    layer2_div = $('#mainmenu > div > div > div'),
-    navigation = $('#navigation'),
-    mainmenu = $('#mainmenu'),
-    countA = layer_a.length,
-    footH = $('.page-foot').height(),
-    headerH = $('.navbar').height(),
-    li_itemH = $('a.list-group-item').height(),
-    navHeight = (countA * 70) + (headerH + footH - li_itemH),
-    events = {
-        mouseenter: function () {
-            var navigation = $('#navigation.col-sidebar-left');
-            var that = $(this);
-            var nextDiv = that.next('div');
+    // --- Cached selectors ---
+    const navigation  = $('#navigation');
+    const mainmenu    = $('#mainmenu');
+    const layer_a     = $('#mainmenu > div > a');
+    const layer_div   = $('#mainmenu > div > div');
+    const layer2_a    = $('#mainmenu > div > div > a');
+    const layer2_div  = $('#mainmenu > div > div > div');
+    const toggle_btn  = $('.toggle-sidebar');
 
-            navigation.css('width', '415px');
-            if (!nextDiv.hasClass('in')) {
-                /* calculate coordinates for submenu */
-                var winHeight = $(window).height(),
-                    offsetTop = that.offset().top,
-                    winscrTop = $(window).scrollTop(),
-                    divHeight = nextDiv.height(),
-                    divTop = offsetTop - winscrTop,
-                    currentHeight = divTop + divHeight;
+    const allLayers   = [layer_a, layer2_a, layer_div, layer2_div];
+    const aLayers     = [layer_a, layer2_a];
+    const divLayers   = [layer_div, layer2_div];
 
-                that.trigger('click');
-                close_submenu(this);
+    // --- Layout measurements ---
+    const itemWidth = document.querySelector('#navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item')?.offsetWidth ?? 70;
+    const navHeight =
+        (layer_a.length * itemWidth) +
+        ($('.navbar').height() + $('.page-foot').height() - $('a.list-group-item').height());
 
-                /* check if submenu has enough space expanding down  - if not expand submenu up */
-                if (currentHeight > (winHeight - li_itemH)) {
-                    var divPos = (divHeight > divTop) ? -((divHeight - divTop) - li_itemH) : 3;
-                    nextDiv.css('margin-top', -divHeight - divPos);
+    // --- Helpers ---
+    const isSidebarLeft  = () => navigation.hasClass('col-sidebar-left');
+    const isSidebarHidden = () => navigation.hasClass('col-sidebar-hidden');
+    const storage        = window.localStorage;
+
+    function setTransitionDuration(ms) {
+        $.fn.collapse.Constructor.TRANSITION_DURATION = ms;
+    }
+
+    function offMouseEvents() {
+        allLayers.forEach(l => l.off('mouseenter mouseleave'));
+    }
+
+    function triggerSidebar() {
+        layer_a.first().trigger('mouseenter').trigger('mouseleave');
+        divLayers.forEach(l => l.removeClass('in'));
+    }
+
+    function closeSubmenu(el) {
+        ['nextAll', 'prevAll'].forEach(dir => {
+            $(el)[dir]('a').addClass('collapsed').attr('aria-expanded', 'false');
+            $(el)[dir]('div').removeClass('in').attr('aria-expanded', 'false');
+        });
+    }
+
+    // --- Event maps ---
+    const events = {
+        mouseenter() {
+            const $nav    = $('#navigation.col-sidebar-left');
+            const $this   = $(this);
+            const $next   = $this.next('div');
+
+            $nav.css('width', '415px');
+
+            if (!$next.hasClass('in')) {
+                const winHeight    = $(window).height();
+                const divHeight    = $next.height();
+                const divTop       = $this.offset().top - $(window).scrollTop();
+                const currentBottom = divTop + divHeight;
+
+                $this.trigger('click');
+                closeSubmenu(this);
+
+                if (currentBottom > winHeight - $('a.list-group-item').height()) {
+                    const divPos = divHeight > divTop
+                        ? -((divHeight - divTop) - $('a.list-group-item').height())
+                        : 3;
+                    $next.css('margin-top', -divHeight - divPos);
                 }
             }
         },
-
-        mouseleave: function () {
+        mouseleave() {
             $('#navigation.col-sidebar-left').css('width', '70px');
             layer_a.off(events).on(events);
         },
-        mousedown: function () {
-            $(this).trigger('click');
-        },
-        mouseup: function () {
-            $(this).blur();
-        }
-    },
+        mousedown() { $(this).trigger('click'); },
+        mouseup()   { $(this).blur(); }
+    };
 
-    events2 = {
-        mouseenter: function () {
+    const events2 = {
+        mouseenter() {
             $('#navigation.col-sidebar-left').css('width', '415px');
             $(this).trigger('click');
         },
-        mouseleave: function () {
+        mouseleave() {
             $('#navigation.col-sidebar-left').css('width', '70px');
         }
     };
 
-    $.each(document.styleSheets, function (sheetIndex, sheet) {
-        if (sheet.href !== null && sheet.href.match(/main\.css(\?v=\w+$)?/gm)) {
-            $.each(sheet.cssRules || sheet.rules, function (ruleIndex, rule) {
-                if (rule.cssText.indexOf('toggle-sidebar') >= 0) {
-                    toggle_sidebar_loaded = true;
-                }
-            });
-        }
+    // --- Check if toggle-sidebar CSS is loaded ---
+    const toggle_sidebar_loaded = Array.from(document.styleSheets).some(sheet => {
+        if (!sheet.href?.match(/main\.css(\?v=\w+$)?/)) return false;
+        return Array.from(sheet.cssRules || sheet.rules || [])
+            .some(rule => rule.cssText.includes('toggle-sidebar'));
     });
 
-    /* disable mouseevents on toggle and resize */
-    function mouse_events_off() {
-        const layers = [layer_a, layer2_a, layer_div, layer2_div];
-        layers.forEach(layer => layer.off(mouse));
-    }
-
-    /* trigger mouseevents and remove opened submenus on startup */
-    function trigger_sidebar() {
-        layer_a.first().trigger('mouseenter').trigger('mouseleave');
-        const layers = [layer_div, layer2_div];
-        layers.forEach(layer => layer.removeClass('in'));
-    }
-
-    /* menu delay - transition duration - time */
-    function transition_duration(time) {
-        $.fn.collapse.Constructor.TRANSITION_DURATION = time;
-    }
-
-    /* close all non-focused submenus */
-    function close_submenu(r) {
-        ['nextAll', 'prevAll'].forEach(direction => {
-            $(r)[direction]('a').addClass('collapsed').attr('aria-expanded', 'false');
-            $(r)[direction]('div').removeClass('in').attr('aria-expanded', 'false');
-        });
-    }
-
+    // --- Sidebar toggle ---
     function opnsense_sidebar_toggle(store) {
         navigation.toggleClass('col-sidebar-left');
         $('main').toggleClass('col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2 col-lg-12');
         $('.toggle-sidebar > i').toggleClass('fa-chevron-right fa-chevron-left');
 
-        if (navigation.hasClass('col-sidebar-left')) {
+        if (isSidebarLeft()) {
             $('.brand-logo').css('display', 'none');
             $('.brand-icon').css('display', 'inline-block');
-            trigger_sidebar();
-
-            if (store && window.localStorage) {
-                localStorage.setItem('toggle_sidebar_preset', 1);
-                transition_duration(0);
+            triggerSidebar();
+            if (store && storage) {
+                storage.setItem('toggle_sidebar_preset', 1);
+                setTransitionDuration(0);
             }
         } else {
             $('.brand-icon').css('display', 'none');
             $('.brand-logo').css('display', 'inline-block');
             $('#navigation.page-side.col-xs-12.col-sm-3.col-lg-2.hidden-xs').css('width', '');
-
-            if (store && window.localStorage) {
-                localStorage.setItem('toggle_sidebar_preset', 0);
-                mouse_events_off();
-                transition_duration(350);
+            if (store && storage) {
+                storage.setItem('toggle_sidebar_preset', 0);
+                offMouseEvents();
+                setTransitionDuration(350);
             }
         }
     }
 
-    if (toggle_sidebar_loaded) {
-        var toggle_btn = $('.toggle-sidebar');
-        /* navigation toggle */
-        toggle_btn.click(function () {
-            opnsense_sidebar_toggle(true);
-            $(this).blur();
-        });
+    if (!toggle_sidebar_loaded && !navigation.length) return;
 
-        /* main function - sidebar mouseenter */
-        mainmenu.mouseenter(function () {
-            if (navigation.hasClass('col-sidebar-left')) {
-                transition_duration(0);
-                const layersWithEvents = [layer_a, layer2_a];
-                const layersWithEvents2 = [layer_div, layer2_div];
+    // --- Toggle button click ---
+    toggle_btn.click(function () {
+        opnsense_sidebar_toggle(true);
+        $(this).blur();
+    });
 
-                layersWithEvents.forEach(layer => layer.on(events));
-                layersWithEvents2.forEach(layer => layer.on(events2));
+    // --- Sidebar mouseenter ---
+    mainmenu.mouseenter(function () {
+        if (!isSidebarLeft()) return;
+        setTransitionDuration(0);
+        aLayers.forEach(l => l.on(events));
+        divLayers.forEach(l => l.on(events2));
+    });
+
+    // --- Sidebar mouseleave ---
+    mainmenu.mouseleave(function () {
+        if (!isSidebarLeft()) return;
+        aLayers.forEach(l => l.attr('aria-expanded', 'false').next('div').removeClass('in'));
+        divLayers.forEach(l => l.removeAttr('style'));
+        layer2_a.off(events);
+        layer_div.off(events2);
+        layer2_div.off(events2);
+    });
+
+    // --- Window resize ---
+    // iOS FIX: window.innerHeight instead of $(window).height() for correct
+    // Viewport on Safari/iPad (correctly considers tab and address bars)
+    $(window).on('resize', function () {
+        const winHeight = window.innerHeight;
+        const winWidth  = window.innerWidth;
+        const tooSmall  = winHeight < navHeight || winWidth < 760;
+        if (tooSmall && !isSidebarHidden()) {
+            navigation.addClass('col-sidebar-hidden');
+            offMouseEvents();
+            toggle_btn.hide();
+            if (isSidebarLeft()) {
+                opnsense_sidebar_toggle(false);
+                offMouseEvents();
+                setTransitionDuration(350);
             }
-        });
-
-        /* main function - sidebar mouseleave */
-        mainmenu.mouseleave(function () {
-            if (navigation.hasClass('col-sidebar-left')) {
-                const layersWithAria = [layer_a, layer2_a];
-                const layersToRemoveStyle = [layer_div, layer2_div];
-                const layersToOffEvents = [{ layer: layer2_a, events: events }, { layer: layer_div, events: events2 }, { layer: layer2_div, events: events2 }];
-
-                layersWithAria.forEach(layer => layer.attr('aria-expanded', 'false').next('div').removeClass('in'));
-                layersToRemoveStyle.forEach(layer => layer.removeAttr('style'));
-                layersToOffEvents.forEach(({ layer, events }) => layer.off(events));
-           }
-        });
-
-        /* on resize - toggle sidebar/main navigation */
-        $(window).on('resize', function () {
-            var win = $(window),
-                winHeight = win.height(),
-                winWidth = win.width();
-
-            if ((winHeight < navHeight || winWidth < 760) && navigation.not('col-sidebar-hidden')) {
-                navigation.addClass('col-sidebar-hidden');
-                mouse_events_off();
-                toggle_btn.hide();
-
-                if (navigation.hasClass('col-sidebar-left')) {
-                    opnsense_sidebar_toggle(false);
-                    mouse_events_off();
-                    transition_duration(350);
-                }
-            } else if ((winHeight >= navHeight && winWidth >= 760) && navigation.hasClass('col-sidebar-hidden')) {
-                navigation.removeClass('col-sidebar-hidden');
-                transition_duration(0);
-                toggle_btn.show();
-
-                if (window.localStorage && localStorage.getItem('toggle_sidebar_preset') == 1) {
-                    opnsense_sidebar_toggle(false);
-                }
+        } else if (!tooSmall && isSidebarHidden()) {
+            navigation.removeClass('col-sidebar-hidden');
+            setTransitionDuration(0);
+            toggle_btn.show();
+            if (storage && storage.getItem('toggle_sidebar_preset') == 1) {
+                opnsense_sidebar_toggle(false);
             }
-        });
+        }
+    });
 
-        /* only show toggle button when style is loaded */
+    // --- Init: check viewport on page load before showing sidebar ---
+    // iOS FIX: window.innerHeight instead of $(window).height()
+    const tooSmallOnLoad = window.innerHeight < navHeight || window.innerWidth < 760;
+    if (tooSmallOnLoad) {
+        navigation.addClass('col-sidebar-hidden');
+        offMouseEvents();
+        toggle_btn.hide();
+        if (isSidebarLeft()) {
+            opnsense_sidebar_toggle(false);
+            offMouseEvents();
+            setTransitionDuration(350);
+        }
+    } else {
         toggle_btn.show();
-
-        /* auto-collapse if previously requested */
-        if (window.localStorage && localStorage.getItem('toggle_sidebar_preset') == 1) {
+        if (storage && storage.getItem('toggle_sidebar_preset') == 1) {
             opnsense_sidebar_toggle(false);
         }
     }
