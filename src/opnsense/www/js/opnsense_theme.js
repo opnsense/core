@@ -175,48 +175,49 @@ $(document).ready(function () {
         layer2_div.off(events2);
     });
 
-    // --- Window resize ---
-    // iOS FIX: window.innerHeight instead of $(window).height() for correct
-    // Viewport on Safari/iPad (correctly considers tab and address bars)
-    $(window).on('resize', function () {
-        const winHeight = window.innerHeight;
-        const winWidth  = window.innerWidth;
-        const tooSmall  = winHeight < navHeight || winWidth < 760;
-        if (tooSmall && !isSidebarHidden()) {
+    // --- Init: check viewport on page load before showing sidebar ---
+    // iOS FIX: window.innerHeight instead of $(window).height()
+
+    let resizeTimer = null;
+    let lastTooSmall = null;
+
+    function handleSidebarResize() {
+        const winH = window.innerHeight;
+        const winW = window.innerWidth;
+        const tooSmall = winH < navHeight || winW < 760;
+
+        if (tooSmall === lastTooSmall) {
+            return;
+        }
+        lastTooSmall = tooSmall;
+
+        if (tooSmall) {
             navigation.addClass('col-sidebar-hidden');
             offMouseEvents();
             toggle_btn.hide();
+
             if (isSidebarLeft()) {
                 opnsense_sidebar_toggle(false);
                 offMouseEvents();
                 setTransitionDuration(350);
             }
-        } else if (!tooSmall && isSidebarHidden()) {
+        } else {
             navigation.removeClass('col-sidebar-hidden');
             setTransitionDuration(0);
             toggle_btn.show();
+
             if (storage && storage.getItem('toggle_sidebar_preset') == 1) {
                 opnsense_sidebar_toggle(false);
             }
         }
+    }
+
+    $(window).on('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(handleSidebarResize, 120);
     });
 
-    // --- Init: check viewport on page load before showing sidebar ---
-    // iOS FIX: window.innerHeight instead of $(window).height()
-    const tooSmallOnLoad = window.innerHeight < navHeight || window.innerWidth < 760;
-    if (tooSmallOnLoad) {
-        navigation.addClass('col-sidebar-hidden');
-        offMouseEvents();
-        toggle_btn.hide();
-        if (isSidebarLeft()) {
-            opnsense_sidebar_toggle(false);
-            offMouseEvents();
-            setTransitionDuration(350);
-        }
-    } else {
-        toggle_btn.show();
-        if (storage && storage.getItem('toggle_sidebar_preset') == 1) {
-            opnsense_sidebar_toggle(false);
-        }
-    }
+    // Initial Load
+    handleSidebarResize();
+
 });
