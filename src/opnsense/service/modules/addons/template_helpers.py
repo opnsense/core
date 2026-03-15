@@ -158,23 +158,16 @@ class Helpers(object):
         if cache_key in self._runtime_interface_address_cache:
             return self._runtime_interface_address_cache[cache_key]
 
-        if family == 'inet':
-            php_statement = 'print(get_interface_ip($argv[1]));'
-        elif family == 'inet6':
-            php_statement = 'list($ip) = interfaces_routed_address6($argv[1]); if (!empty($ip)) { print($ip); }'
-        else:
+        if family not in ('inet', 'inet6'):
             self._runtime_interface_address_cache[cache_key] = ''
             return ''
 
-        php_script = """
-require_once('/usr/local/etc/inc/util.inc');
-require_once('/usr/local/etc/inc/config.inc');
-require_once('/usr/local/etc/inc/interfaces.inc');
-%s
-""" % php_statement
-
         result = subprocess.run(
-            ['/usr/local/bin/php', '-r', php_script, name],
+            [
+                '/usr/local/opnsense/scripts/interfaces/get_interface_address.php',
+                name,
+                family
+            ],
             capture_output=True,
             text=True,
             check=False

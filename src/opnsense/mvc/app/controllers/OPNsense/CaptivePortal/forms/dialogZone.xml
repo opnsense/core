@@ -118,7 +118,7 @@
         <id>zone.servername</id>
         <label>Hostname</label>
         <type>text</type>
-        <help><![CDATA[Hostname (of this machine) to redirect login page to, leave blank to use this interface IP address, otherwise make sure the client can access DNS to resolve this location. When using a SSL certificate, make sure both this name and the cert name are equal.]]></help>
+        <help><![CDATA[Hostname to redirect the login page to. Leave blank to use the interface IP address. When using an SSL certificate, the hostname and certificate name must match.<br/><b>Note:</b> For IPv6-only client compatibility, either set a hostname with both A and AAAA records, or ensure the selected interface has a static IPv6 address configured. If only a dynamic DHCPv6 address is present and no hostname is set, IPv6-only clients may be redirected to an IPv4 address they cannot reach.]]></help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
