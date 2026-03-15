@@ -212,9 +212,15 @@ function ntpd_configure_do($verbose = false)
     }
     $ntpcfg .= "\n";
 
+    /* Clean up PPS symlink if PPS is disabled or port is not set */
+    if (empty($config['ntpd']['pps']['port'])) {
+        @unlink('/dev/pps0');
+    }
+
     /* Add PPS configuration */
     if (
         !empty($config['ntpd']['pps'])
+		&& !empty($config['ntpd']['pps']['port'])
         && file_exists('/dev/' . $config['ntpd']['pps']['port'])
         && ntpd_configure_pps($config['ntpd']['pps']['port'])
     ) {
