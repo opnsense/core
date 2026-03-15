@@ -410,6 +410,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/DhcpController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/agentSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/ddnsSettings.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogOption4.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogPDPool6.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogPeer4.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogPeer6.xml
@@ -1294,6 +1295,7 @@
 /usr/local/opnsense/scripts/ipsec/spddelete.py
 /usr/local/opnsense/scripts/ipsec/updown_event.py
 /usr/local/opnsense/scripts/kea/get_kea_leases.py
+/usr/local/opnsense/scripts/kea/kea_dhcp_options.py
 /usr/local/opnsense/scripts/kea/kea_prefix_watcher.py
 /usr/local/opnsense/scripts/monit/carp_status.php
 /usr/local/opnsense/scripts/monit/gateway_alert.php

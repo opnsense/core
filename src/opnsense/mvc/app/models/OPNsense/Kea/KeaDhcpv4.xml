@@ -129,6 +129,16 @@
                         <Mask>/^([^\n"])*$/u</Mask>
                     </v4_dnr>
                 </option_data>
+                <option type="ModelRelationField">
+                    <Model>
+                        <options>
+                            <source>OPNsense.Kea.KeaDhcpv4</source>
+                            <items>options.option</items>
+                            <display>description</display>
+                        </options>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                </option>
                 <match-client-id type="BooleanField">
                     <Default>1</Default>
                     <Required>Y</Required>
@@ -288,6 +298,27 @@
                 </option_data>
             </reservation>
         </reservations>
+        <options>
+            <option type="ArrayField">
+                <code type="JsonKeyValueStoreField">
+                    <ConfigdPopulateAct>kea list dhcp_options</ConfigdPopulateAct>
+                    <OptionValues>
+                        <!-- mock option groups returned by JSON -->
+                        <optgroup1>Assigned</optgroup1>
+                        <optgroup2>Unassigned</optgroup2>
+                    </OptionValues>
+                </code>
+                <data type="TextField">
+                    <Required>Y</Required>
+                    <Mask>/^[0-9A-F]+$/</Mask>
+                    <ValidationMessage>Data requires an uppercase hexadecimal value.</ValidationMessage>
+                </data>
+                <force type="BooleanField"/>
+                <description type="DescriptionField">
+                    <Required>Y</Required>
+                </description>
+            </option>
+        </options>
         <ha_peers>
             <peer type="ArrayField">
                 <name type="TextField">
