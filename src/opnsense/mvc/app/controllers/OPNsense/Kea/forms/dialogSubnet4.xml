@@ -145,10 +145,46 @@
         </grid_view>
     </field>
     <field>
-        <id>subnet4.option_data.boot_file_name</id>
-        <label>TFTP bootfile name</label>
+        <id>subnet4.option_data.boot_file_name_bios</id>
+        <label>BIOS bootfile</label>
         <type>text</type>
-        <help>Boot filename to request</help>
+        <help>BIOS Boot filename to request</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet4.option_data.boot_file_name_uefi32</id>
+        <label>x86 UEFI bootfile</label>
+        <type>text</type>
+        <help>x86 UEFI (32bit) boot filename to request</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet4.option_data.boot_file_name_uefi64</id>
+        <label>x64 UEFI bootfile</label>
+        <type>text</type>
+        <help>x86_64 UEFI (64bit) boot filename to request</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet4.option_data.boot_file_name_uefi32arm</id>
+        <label>ARM UEFI bootfile</label>
+        <type>text</type>
+        <help>ARM32 UEFI (32bit) boot filename to request</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet4.option_data.boot_file_name_uefi64arm</id>
+        <label>ARM64 UEFI bootfile</label>
+        <type>text</type>
+        <help>ARM64 UEFI (64bit) boot filename to request</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
