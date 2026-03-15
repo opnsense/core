@@ -32,19 +32,12 @@ require_once('config.inc');
 require_once('interfaces.inc');
 
 $interface = $argv[1] ?? '';
-$family = $argv[2] ?? 'inet6';
 
 if (empty($interface)) {
     exit(1);
 }
 
-if ($family === 'inet') {
-    $ip = get_interface_ip($interface);
-} elseif ($family === 'inet6') {
-    list($ip) = interfaces_routed_address6($interface);
-} else {
-    exit(1);
-}
+list($ip) = interfaces_routed_address6($interface);
 
 if (!empty($ip)) {
     echo $ip;

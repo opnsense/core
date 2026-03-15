@@ -153,34 +153,28 @@ class Helpers(object):
             result.append(self.getNodeByTag('interfaces.'+name+'.if'))
         return list(filter(None, result))
 
-    def _runtime_interface_address(self, name: str, family: str) -> str:
-        cache_key = (name, family)
+    def interface_routed_address6(self, name: str) -> str:
+        cache_key = ('inet6', name)
         if cache_key in self._runtime_interface_address_cache:
             return self._runtime_interface_address_cache[cache_key]
 
-        if family not in ('inet', 'inet6'):
-            self._runtime_interface_address_cache[cache_key] = ''
-            return ''
-
         result = subprocess.run(
             [
-                '/usr/local/opnsense/scripts/interfaces/get_interface_address.php',
-                name,
-                family
+                '/usr/local/opnsense/scripts/interfaces/'
+                'get_interface_address.php',
+                name
             ],
             capture_output=True,
             text=True,
             check=False
         )
-        address = result.stdout.strip() if result.returncode == 0 else ''
+        address = (
+            result.stdout.strip()
+            if result.returncode == 0
+            else ''
+        )
         self._runtime_interface_address_cache[cache_key] = address
         return address
-
-    def interface_routed_address4(self, name: str) -> str:
-        return self._runtime_interface_address(name, 'inet')
-
-    def interface_routed_address6(self, name: str) -> str:
-        return self._runtime_interface_address(name, 'inet6')
 
     def host_for_port(self, host_tag: str):
         return self.host_with_port(
