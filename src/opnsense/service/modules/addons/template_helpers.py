@@ -29,6 +29,7 @@ import datetime
 import glob
 import collections
 import ipaddress
+import subprocess
 
 class SortKeyHelper:
     """ generate item key for sort function
@@ -57,6 +58,7 @@ class Helpers(object):
         :param template_in_data: configuration data used by the engine
         """
         self._template_in_data = template_in_data
+        self._runtime_interface_address_cache = {}
 
     def getNodeByTag(self, tag):
         """ get tree node by tag
@@ -150,6 +152,42 @@ class Helpers(object):
         for name in names:
             result.append(self.getNodeByTag('interfaces.'+name+'.if'))
         return list(filter(None, result))
+
+    def _runtime_interface_address(self, name: str, family: str) -> str:
+        cache_key = (name, family)
+        if cache_key in self._runtime_interface_address_cache:
+            return self._runtime_interface_address_cache[cache_key]
+
+        if family == 'inet':
+            php_statement = 'print(get_interface_ip($argv[1]));'
+        elif family == 'inet6':
+            php_statement = 'list($ip) = interfaces_routed_address6($argv[1]); if (!empty($ip)) { print($ip); }'
+        else:
+            self._runtime_interface_address_cache[cache_key] = ''
+            return ''
+
+        php_script = """
+require_once('/usr/local/etc/inc/util.inc');
+require_once('/usr/local/etc/inc/config.inc');
+require_once('/usr/local/etc/inc/interfaces.inc');
+%s
+""" % php_statement
+
+        result = subprocess.run(
+            ['/usr/local/bin/php', '-r', php_script, name],
+            capture_output=True,
+            text=True,
+            check=False
+        )
+        address = result.stdout.strip() if result.returncode == 0 else ''
+        self._runtime_interface_address_cache[cache_key] = address
+        return address
+
+    def interface_routed_address4(self, name: str) -> str:
+        return self._runtime_interface_address(name, 'inet')
+
+    def interface_routed_address6(self, name: str) -> str:
+        return self._runtime_interface_address(name, 'inet6')
 
     def host_for_port(self, host_tag: str):
         return self.host_with_port(
