@@ -27,7 +27,6 @@
 import os
 import datetime
 import glob
-import json
 import collections
 import ipaddress
 import subprocess
@@ -163,68 +162,19 @@ class Helpers(object):
             self._runtime_interface_address_cache[cache_key] = ''
             return ''
 
-        address = ''
-        if family == 'inet':
-            address = self._address_from_pluginctl46(name, family)
-        elif family == 'inet6':
-            address = self._address_from_pluginctl46(name, family)
-            if not address or address.startswith('fe80:'):
-                address = self._routed_address6_from_pluginctl_d(name)
-
+        result = subprocess.run(
+            [
+                '/usr/local/opnsense/scripts/interfaces/get_interface_address.php',
+                name,
+                family
+            ],
+            capture_output=True,
+            text=True,
+            check=False
+        )
+        address = result.stdout.strip() if result.returncode == 0 else ''
         self._runtime_interface_address_cache[cache_key] = address
         return address
-
-    def _address_from_pluginctl46(self, name: str, family: str) -> str:
-        opt = '-4' if family == 'inet' else '-6'
-        result = subprocess.run(
-            ['/usr/local/sbin/pluginctl', opt, name],
-            capture_output=True, text=True, check=False
-        )
-        if result.returncode != 0:
-            return ''
-        try:
-            data = json.loads(result.stdout)
-        except (json.JSONDecodeError, ValueError):
-            return ''
-        for entry in data.get(name, []):
-            addr = entry.get('address', '')
-            if addr:
-                return addr
-        return ''
-
-    def _routed_address6_from_pluginctl_d(self, name: str) -> str:
-        """Fall back to pluginctl -D for track6 interfaces where -6
-        returns a link-local.  Walks the device and any tracked
-        devices to find the first non-link-local, non-deprecated GUA."""
-        device = self.physical_interface(name)
-        devices = [device]
-        # track6 interfaces derive their address on a different device
-        for intf_name, intf_cfg in (self._template_in_data.get('interfaces') or {}).items():
-            if isinstance(intf_cfg, dict) and intf_cfg.get('track6-interface') == name:
-                tracked_dev = intf_cfg.get('if')
-                if tracked_dev and tracked_dev not in devices:
-                    devices.append(tracked_dev)
-
-        for dev in devices:
-            result = subprocess.run(
-                ['/usr/local/sbin/pluginctl', '-D', dev],
-                capture_output=True, text=True, check=False
-            )
-            if result.returncode != 0:
-                continue
-            try:
-                data = json.loads(result.stdout)
-            except (json.JSONDecodeError, ValueError):
-                continue
-            for addr_info in data.get(dev, {}).get('ipv6', []):
-                if addr_info.get('link-local'):
-                    continue
-                if addr_info.get('deprecated') or addr_info.get('tentative'):
-                    continue
-                ipaddr = addr_info.get('ipaddr', '')
-                if ipaddr:
-                    return ipaddr
-        return ''
 
     def interface_routed_address4(self, name: str) -> str:
         return self._runtime_interface_address(name, 'inet')
