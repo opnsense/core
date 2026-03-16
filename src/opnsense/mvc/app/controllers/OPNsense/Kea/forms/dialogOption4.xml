@@ -9,7 +9,7 @@
         <id>option.encoding</id>
         <label>Encoding</label>
         <type>dropdown</type>
-        <help>Choose between auto-converting string data to binary, or providing hexadecimal data yourself. For encapsulated and other complex options, constructing your own binary payload can be a requirement.</help>
+        <help>Choose the encoding type. "Hex" supports all encapsulated and structured options generically via payload in uppercase hexadecimal byte pairs.</help>
     </field>
     <field>
         <id>option.data</id>

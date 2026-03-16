@@ -324,7 +324,6 @@
                     <Default>hex</Default>
                     <OptionValues>
                         <hex>hex</hex>
-                        <string>string</string>
                     </OptionValues>
                 </encoding>
                 <data type=".\KeaOptionDataField">
