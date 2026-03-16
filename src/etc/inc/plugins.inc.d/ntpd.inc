@@ -159,7 +159,7 @@ function ntpd_configure_pps($port)
 
     @unlink($pps_device);
     if (empty($port)) {
-        return false
+        return false;
     } elseif (!file_exists($serialport)) {
         return false;
     }

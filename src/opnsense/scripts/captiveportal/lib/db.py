@@ -331,7 +331,7 @@ class DB(object):
                         order by case when cc.username is not null then cc.username else cc.ip_address end
                         ,        cc.created desc
                     """, {'zoneid': zoneid})
-        
+
         ip_map = {}
         if include_ips:
             cur_ips = self._connection.cursor()
@@ -375,7 +375,7 @@ class DB(object):
         cur.close()
         return result
 
-    
+
     def list_session_ips(self, zoneid, sessionid):
         """
         Return primary + roaming IPs for a session.

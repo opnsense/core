@@ -42,22 +42,22 @@ class KeaOptionDataField extends BaseField
         if (!empty($this->internalValue)) {
             $validators[] = new CallbackValidator([
                 "callback" => function ($data) {
-    
+
                     $messages = [];
                     $encoding = $this->getParentNode()->encoding->getValue();
-    
+
                     if ($encoding === "hex") {
                         if (!preg_match('/^([0-9A-F]{2})+$/', $data)) {
                             $messages[] = gettext("Hex value must contain uppercase hexadecimal byte pairs.");
                         }
                     }
-    
+
                     if ($encoding === "string") {
                         if (preg_match('/[\'"]/', $data)) {
                             $messages[] = gettext("String value must not contain quotes.");
                         }
                     }
-    
+
                     return $messages;
                 }
             ]);
