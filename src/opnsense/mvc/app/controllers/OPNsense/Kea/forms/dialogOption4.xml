@@ -6,10 +6,16 @@
         <help>DHCPv4 option to offer to the client.</help>
     </field>
     <field>
+        <id>option.encoding</id>
+        <label>Encoding</label>
+        <type>dropdown</type>
+        <help>Choose between auto converting the option data to binary, or providing binary data yourself. For encapsulated and other complex options, constructing your own binary payload can be a requirement.</help>
+    </field>
+    <field>
         <id>option.data</id>
         <label>Data</label>
         <type>text</type>
-        <help>Raw byte code value that should be sent, represented in hexadecimal format. This is for advanced usecases, you have to construct the RFC conform DHCP byte code yourself. Consider using the option fields in subnets and reservations when possible.</help>
+        <help>Payload to send to a client.</help>
     </field>
     <field>
         <id>option.force</id>

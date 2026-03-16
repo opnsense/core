@@ -196,23 +196,48 @@ class KeaDhcpv4 extends BaseModel
 
                 // Add DHCP option-data elements for reservations
                 $optdata = $this->collectOptionData($reservation->option_data);
+                // Append raw options
+                foreach ($reservation->option->getValues() as $uuid) {
+                    $option = $this->getNodeByReference("options.option.$uuid");
+                    if ($option === null) {
+                        continue;
+                    }
+                    // Kea autoconverts strings to binary when providing 'data' => "'data to convert'"
+                    $data = $option->data->getValue();
+                    if ($option->encoding->getValue() === 'string') {
+                        $data = "'" . $data . "'";
+                    }
+
+                    $optdata[] = [
+                        'code' => $option->code->asInt(),
+                        'csv-format' => false,
+                        'data' => $data,
+                        'always-send' => !$option->force->isEmpty(),
+                    ];
+                }
                 if (!empty($optdata)) {
                     $res['option-data'] = $optdata;
                 }
 
                 $record['reservations'][] = $res;
             }
-            /* append raw hex options */
+            /* append raw options */
             foreach ($subnet->option->getValues() as $uuid) {
                 $option = $this->getNodeByReference("options.option.$uuid");
                 if ($option === null) {
                     continue;
                 }
 
+                // Kea autoconverts strings to binary when providing 'data' => "'data to convert'"
+                $data = $option->data->getValue();
+                if ($option->encoding->getValue() === 'string') {
+                    $data = "'" . $data . "'";
+                }
+
                 $entry = [
                     'code' => $option->code->asInt(),
                     'csv-format' => false,
-                    'data' => $option->data->getValue(),
+                    'data' => $data,
                     'always-send' => !$option->force->isEmpty(),
                 ];
 

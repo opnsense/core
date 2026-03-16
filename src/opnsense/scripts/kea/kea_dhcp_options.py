@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2026 Decico B.V.
+    Copyright (c) 2026 Deciso B.V.
     Copyright (c) 2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 

@@ -296,11 +296,22 @@
                         <Mask>/^([^\n"])*$/u</Mask>
                     </boot_file_name>
                 </option_data>
+                <option type="ModelRelationField">
+                    <Model>
+                        <options>
+                            <source>OPNsense.Kea.KeaDhcpv4</source>
+                            <items>options.option</items>
+                            <display>description</display>
+                        </options>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                </option>
             </reservation>
         </reservations>
         <options>
             <option type="ArrayField">
                 <code type="JsonKeyValueStoreField">
+                    <Required>Y</Required>
                     <ConfigdPopulateAct>kea list dhcp_options</ConfigdPopulateAct>
                     <OptionValues>
                         <!-- mock option groups returned by JSON -->
@@ -308,10 +319,16 @@
                         <optgroup2>Unassigned</optgroup2>
                     </OptionValues>
                 </code>
-                <data type="TextField">
+                <encoding type="OptionField">
                     <Required>Y</Required>
-                    <Mask>/^[0-9A-F]+$/</Mask>
-                    <ValidationMessage>Data requires an uppercase hexadecimal value.</ValidationMessage>
+                    <Default>hex</Default>
+                    <OptionValues>
+                        <hex>hex</hex>
+                        <string>string</string>
+                    </OptionValues>
+                </encoding>
+                <data type=".\KeaOptionDataField">
+                    <Required>Y</Required>
                 </data>
                 <force type="BooleanField"/>
                 <description type="DescriptionField">
