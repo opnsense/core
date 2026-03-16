@@ -129,6 +129,16 @@
                         <Mask>/^([^\n"])*$/u</Mask>
                     </v4_dnr>
                 </option_data>
+                <option type="ModelRelationField">
+                    <Model>
+                        <options>
+                            <source>OPNsense.Kea.KeaDhcpv4</source>
+                            <items>options.option</items>
+                            <display>description</display>
+                        </options>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                </option>
                 <match-client-id type="BooleanField">
                     <Default>1</Default>
                     <Required>Y</Required>
@@ -286,8 +296,46 @@
                         <Mask>/^([^\n"])*$/u</Mask>
                     </boot_file_name>
                 </option_data>
+                <option type="ModelRelationField">
+                    <Model>
+                        <options>
+                            <source>OPNsense.Kea.KeaDhcpv4</source>
+                            <items>options.option</items>
+                            <display>description</display>
+                        </options>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                </option>
             </reservation>
         </reservations>
+        <options>
+            <option type="ArrayField">
+                <code type="JsonKeyValueStoreField">
+                    <Required>Y</Required>
+                    <ConfigdPopulateAct>kea list dhcp_options</ConfigdPopulateAct>
+                    <OptionValues>
+                        <!-- mock option groups returned by JSON -->
+                        <optgroup1>Assigned</optgroup1>
+                        <optgroup2>Unassigned</optgroup2>
+                    </OptionValues>
+                </code>
+                <encoding type="OptionField">
+                    <Required>Y</Required>
+                    <Default>hex</Default>
+                    <OptionValues>
+                        <hex>hex</hex>
+                        <string>string</string>
+                    </OptionValues>
+                </encoding>
+                <data type=".\KeaOptionDataField">
+                    <Required>Y</Required>
+                </data>
+                <force type="BooleanField"/>
+                <description type="DescriptionField">
+                    <Required>Y</Required>
+                </description>
+            </option>
+        </options>
         <ha_peers>
             <peer type="ArrayField">
                 <name type="TextField">

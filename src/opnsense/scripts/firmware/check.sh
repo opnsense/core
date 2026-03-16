@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (C) 2015-2025 Franco Fichtner <franco@opnsense.org>
+# Copyright (C) 2015-2026 Franco Fichtner <franco@opnsense.org>
 # Copyright (C) 2014 Deciso B.V.
 # All rights reserved.
 #
@@ -117,6 +117,7 @@ if [ -z "${PKG_LOCAL}" ] || [ -z "${PKG_REMOTE}" ] || \
     [ "${PKG_LOCAL}" != "${PKG_REMOTE}" ]; then
 	output_txt "Upgrading package manager from version '${PKG_LOCAL}' to '${PKG_REMOTE}'"
 	output_cmd ${PKG} upgrade -r "${product_repo}" -y pkg
+	output_cmd -o ${OUTFILE} ${PKG} update -f
 fi
 
 # parse early errors
