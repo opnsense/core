@@ -204,8 +204,8 @@ class KeaDhcpv4 extends BaseModel
                     }
                     // Kea autoconverts strings to binary when providing 'data' => "'data to convert'"
                     $data = $option->data->getValue();
-                    if ($option->encoding->getValue() === 'string') {
-                        $data = "'" . $data . "'";
+                    if ($option->encoding->isEqual('string')) {
+                        $data = "'{$data}'";
                     }
 
                     $optdata[] = [
@@ -230,8 +230,8 @@ class KeaDhcpv4 extends BaseModel
 
                 // Kea autoconverts strings to binary when providing 'data' => "'data to convert'"
                 $data = $option->data->getValue();
-                if ($option->encoding->getValue() === 'string') {
-                    $data = "'" . $data . "'";
+                if ($option->encoding->isEqual('string')) {
+                    $data = "'{$data}'";
                 }
 
                 $entry = [
