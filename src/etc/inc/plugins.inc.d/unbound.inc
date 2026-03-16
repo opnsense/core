@@ -613,39 +613,57 @@ function unbound_add_host_entries($ifconfig_details)
                 }
 
                 foreach ($tmp_aliases as $alias) {
-                    if ($alias['hostname'] != '') {
-                        $alias['hostname'] .= '.';
-                    }
-
-                    switch ($host->rr) {
-                        case 'A':
-                        case 'AAAA':
-                            /* Handle wildcard entries which have "*" as a hostname. Since we added a . above, we match on "*.". */
-                            if ($alias['hostname'] == '*.') {
-                                $unbound_entries .= "local-zone: \"{$alias['domain']}\" redirect\n";
-                                $unbound_entries .= "local-data: \"{$alias['domain']} {$host->ttl} IN {$host->rr} {$host->server}\"\n";
-                            } else {
-                                if ($alias['addptr']) {
-                                    if (!in_array($host->server->getValue(), $ptr_records, true)) {
-                                        /* Only generate a PTR record for the non-alias override and only if the IP is not already associated with a PTR.
-                                         * The exception to this is an alias whose parent uses a wildcard and as such does not specify a PTR record.
-                                         */
-                                        $unbound_entries .= "local-data-ptr: \"{$host->server} {$alias['hostname']}{$alias['domain']}\"\n";
-                                        $ptr_records[] = $host->server->getValue();
-                                    } else {
-                                        syslog(LOG_WARNING, 'PTR record already exists for ' . $alias['hostname'] . $alias['domain'] . '(' . $host->server . ')');
-                                    }
-                                }
-                                $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} {$host->ttl} IN {$host->rr} {$host->server}\"\n";
-                            }
-                            break;
-                        case 'MX':
-                            $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} {$host->ttl} IN MX {$host->mxprio} {$host->mx}\"\n";
-                            break;
-                        case 'TXT':
-                            $unbound_entries .= "local-data: '{$alias['hostname']}{$alias['domain']} {$host->ttl} IN TXT \"" . addslashes($host->txtdata) . "\"'\n";
-                            break;
-                    }
+                  if ($alias['hostname'] != '') {
+                    $alias['hostname'].= '.';
+                  }
+                
+                  switch ($host->rr) {
+                    case 'A':
+                    case 'AAAA':
+                      /* Handle wildcard entries which have "*" as a hostname. Since we added a
+                       * . above, we match on "*.". */
+                      if ($alias['hostname'] == '*.') {
+                        $unbound_entries.= "local-zone: \"{$alias['domain']}\" redirect\n";
+                        $unbound_entries.=
+                            "local-data: \"{$alias['domain']} {$host->ttl} IN {$host->rr} "
+                            "{$host->server}\"\n";
+                      } else {
+                        if ($alias['addptr']) {
+                          if (!in_array($host->server->getValue(), $ptr_records, true)) {
+                            /* Only generate a PTR record for the non-alias override and only if
+                             * the IP is not already associated with a PTR. The exception to
+                             * this is an alias whose parent uses a wildcard and as such does
+                             * not specify a PTR record.
+                             */
+                            $unbound_entries.=
+                                "local-data-ptr: \"{$host->server} "
+                                "{$alias['hostname']}{$alias['domain']}\"\n";
+                            $ptr_records[] = $host->server->getValue();
+                          } else {
+                            syslog(LOG_WARNING,
+                                   'PTR record already exists for '.$alias['hostname']
+                                       .$alias['domain']
+                                       .' ('.$host->server.')');
+                          }
+                        }
+                      }
+                      $unbound_entries.=
+                          "local-data: \"{$alias['hostname']}{$alias['domain']} {$host->ttl} "
+                          "IN {$host->rr} {$host->server}\"\n";
+                  }
+                  break;
+                  case 'MX':
+                    $unbound_entries.=
+                        "local-data: \"{$alias['hostname']}{$alias['domain']} {$host->ttl} IN "
+                        "MX {$host->mxprio} {$host->mx}\"\n";
+                    break;
+                  case 'TXT':
+                    $unbound_entries.=
+                        "local-data: '{$alias['hostname']}{$alias['domain']} {$host->ttl} IN "
+                        "TXT \"".addslashes($host->txtdata)
+                            ."\"'\n";
+                    break;
+                }
 
                     if (!empty($alias['description']) && !empty($general['txtsupport']) && $alias['hostname'] != '*.') {
                         $unbound_entries .= "local-data: '{$alias['hostname']}{$alias['domain']} TXT \"" . addslashes($alias['description']) . "\"'\n";
