@@ -169,7 +169,12 @@ class ControllerRoot extends Controller
 
         $this->setLang();
 
-        $this->session->set("last_access", time());
+        $is_ajax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+        $is_post = $_SERVER['REQUEST_METHOD'] === 'POST';
+
+        if (!$is_ajax || $is_post) {
+            $this->session->set("last_access", time());
+        }
 
         // Authorization using legacy acl structure
         $acl = new ACL();

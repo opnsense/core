@@ -408,12 +408,18 @@ function initSessionTimeout() {
     });
 
     setInterval(function() {
-        let lastActive = parseInt(localStorage.getItem(ACTIVITY_KEY) || Date.now(), 10);
+        let activeKeyStr = localStorage.getItem(ACTIVITY_KEY);
+
+        if (!activeKeyStr) {
+            window.location.reload();
+            return;
+        }
+
+        let lastActive = parseInt(activeKeyStr, 10);
         let timeIdleMs = Date.now() - lastActive;
 
         if (timeIdleMs > sessionTimeoutMs) {
             localStorage.removeItem(ACTIVITY_KEY);
-
             window.location.reload();
         }
     }, 5000);
