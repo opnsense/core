@@ -52,6 +52,9 @@
                 case '#reservations':
                     grid_ids = ["{{formGridReservation['table_id']}}"];
                     break;
+                case '#options':
+                    grid_ids = ["{{formGridOption['table_id']}}"];
+                    break;
                 case '#ha-peers':
                     grid_ids = ["{{formGridPeer['table_id']}}"];
                     break;
@@ -203,6 +206,7 @@
     <li><a data-toggle="tab" href="#settings" id="tab_settings">{{ lang._('Settings') }}</a></li>
     <li><a data-toggle="tab" href="#subnets" id="tab_pools" class="is_managed"> {{ lang._('Subnets') }} </a></li>
     <li><a data-toggle="tab" href="#reservations" id="tab_reservations" class="is_managed"> {{ lang._('Reservations') }} </a></li>
+    <li><a data-toggle="tab" href="#options" id="tab_options">{{ lang._('Options') }}</a></li>
     <li><a data-toggle="tab" href="#ha-peers" id="tab_ha-peers" class="is_managed"> {{ lang._('HA Peers') }} </a></li>
 </ul>
 <div class="tab-content content-box">
@@ -220,6 +224,10 @@
             partial('layout_partials/base_bootgrid_table', formGridReservation)
         }}
     </div>
+    <!-- options -->
+        <div id="options" class="tab-pane fade in">
+            {{ partial('layout_partials/base_bootgrid_table', formGridOption)}}
+        </div>
     <!-- HA - peers -->
     <div id="ha-peers" class="tab-pane fade in">
        {{ partial('layout_partials/base_bootgrid_table', formGridPeer)}}
@@ -229,4 +237,5 @@
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/kea/service/reconfigure', 'data_service_widget': 'kea'}) }}
 {{ partial("layout_partials/base_dialog",['fields':formDialogSubnet,'id':formGridSubnet['edit_dialog_id'],'label':lang._('Edit Subnet')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogReservation,'id':formGridReservation['edit_dialog_id'],'label':lang._('Edit Reservation')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogOption,'id':formGridOption['edit_dialog_id'],'label':lang._('Edit Option')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogPeer,'id':formGridPeer['edit_dialog_id'],'label':lang._('Edit Peer')])}}

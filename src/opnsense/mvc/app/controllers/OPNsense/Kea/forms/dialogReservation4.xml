@@ -143,4 +143,13 @@
             <visible>false</visible>
         </grid_view>
     </field>
+    <field>
+        <id>reservation.option</id>
+        <label>Options</label>
+        <type>select_multiple</type>
+        <help>Select custom DHCPv4 options that were created in the options tab.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
 </form>
