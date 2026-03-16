@@ -256,4 +256,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
 <?php if (get_themed_filename('/js/theme.js', true)): ?>
     <script src="<?= cache_safe(get_themed_filename('/js/theme.js')) ?>"></script>
 <?php endif ?>
+    <script>
+        localStorage.setItem('opnsense_auth_sync', Date.now().toString());
+    </script>
 </head>

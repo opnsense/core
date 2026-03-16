@@ -335,6 +335,7 @@
             searchColumns: "{{ lang._('Search columns') }}",
             expand: "{{ lang._('Click to expand/collapse cell') }}"
         });
+        localStorage.setItem('opnsense_auth_sync', Date.now().toString());
     </script>
 
   </body>
