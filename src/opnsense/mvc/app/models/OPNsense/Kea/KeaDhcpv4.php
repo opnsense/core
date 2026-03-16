@@ -202,16 +202,10 @@ class KeaDhcpv4 extends BaseModel
                     if ($option === null) {
                         continue;
                     }
-                    // Kea autoconverts strings to binary when providing 'data' => "'data to convert'"
-                    $data = $option->data->getValue();
-                    if ($option->encoding->isEqual('string')) {
-                        $data = "'{$data}'";
-                    }
-
                     $optdata[] = [
                         'code' => $option->code->asInt(),
                         'csv-format' => false,
-                        'data' => $data,
+                        'data' => $option->data->getValue(),
                         'always-send' => !$option->force->isEmpty(),
                     ];
                 }
@@ -227,20 +221,12 @@ class KeaDhcpv4 extends BaseModel
                 if ($option === null) {
                     continue;
                 }
-
-                // Kea autoconverts strings to binary when providing 'data' => "'data to convert'"
-                $data = $option->data->getValue();
-                if ($option->encoding->isEqual('string')) {
-                    $data = "'{$data}'";
-                }
-
                 $entry = [
                     'code' => $option->code->asInt(),
                     'csv-format' => false,
-                    'data' => $data,
+                    'data' => $option->data->getValue(),
                     'always-send' => !$option->force->isEmpty(),
                 ];
-
                 $record['option-data'][] = $entry;
             }
             $result[] = $record;

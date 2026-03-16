@@ -52,12 +52,6 @@ class KeaOptionDataField extends BaseField
                         }
                     }
 
-                    if ($encoding === "string") {
-                        if (preg_match('/[\'"]/', $data)) {
-                            $messages[] = gettext("String value must not contain quotes.");
-                        }
-                    }
-
                     return $messages;
                 }
             ]);
