@@ -130,9 +130,9 @@ class ControllerRoot extends Controller
     {
         $cnf = Config::getInstance()->object();
         if (!empty($cnf->system->webgui->session_timeout)) {
-            $session_timeout = $cnf->system->webgui->session_timeout * 60;
+            $this->session_timeout = $cnf->system->webgui->session_timeout * 60;
         } else {
-            $session_timeout = 14400;
+            $this->session_timeout = 14400;
         }
         $redirect_uri = "/?url=" . $_SERVER['REQUEST_URI'];
         if ($this->session->has("Username") == false) {
@@ -147,7 +147,7 @@ class ControllerRoot extends Controller
             return false;
         } elseif (
             $this->session->has("last_access")
-            && $this->session->get("last_access") < (time() - $session_timeout)
+            && $this->session->get("last_access") < (time() - $this->session_timeout)
         ) {
             // session expired / cleanup session data
             $this->getLogger('audit')->notice(sprintf(

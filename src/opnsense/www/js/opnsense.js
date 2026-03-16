@@ -285,6 +285,9 @@ function ajaxCall(url, sendData, callback) {
         dataType:'json',
         contentType: 'application/json',
         complete: function(data, status) {
+            if (status === "success" && typeof resetSessionTimeout === 'function') {
+                resetSessionTimeout();
+            }
             if (callback != null) {
                 if ('responseJSON' in data) {
                     callback(data['responseJSON'], status);
@@ -311,6 +314,9 @@ function ajaxGet(url,sendData,callback) {
         dataType:'json',
         contentType: 'application/json',
         complete: function(data,status) {
+            if (status === "success" && typeof resetSessionTimeout === 'function') {
+                resetSessionTimeout();
+            }
             if (callback != null) {
                 if ('responseJSON' in data) {
                     callback(data['responseJSON'], status);
@@ -369,4 +375,50 @@ function download_content(payload, filename, file_type) {
             a_tag.get(0).click();
         }
     });
+}
+
+const ACTIVITY_KEY = 'opn_last_activity';
+let sessionThrottleTimer = null;
+
+/**
+ * Resets the shared local storage timestamp.
+ */
+function resetSessionTimeout() {
+    if (!sessionThrottleTimer) {
+        sessionThrottleTimer = setTimeout(function() {
+            localStorage.setItem(ACTIVITY_KEY, Date.now().toString());
+            sessionThrottleTimer = null;
+        }, 1000);
+    }
+}
+
+/**
+ * Initializes the auto-logout tracking mechanism.
+ */
+function initSessionTimeout() {
+    // Ensure window.sessionTimeout is set
+    if (typeof window.sessionTimeout !== 'number' || window.sessionTimeout <= 0) {
+        return;
+    }
+
+    const sessionTimeoutMs = window.sessionTimeout * 1000;
+
+    if (!localStorage.getItem(ACTIVITY_KEY)) {
+        localStorage.setItem(ACTIVITY_KEY, Date.now().toString());
+    }
+
+    $(document).on('mousemove keydown click scroll touchstart', function() {
+        resetSessionTimeout();
+    });
+
+    setInterval(function() {
+        let lastActive = parseInt(localStorage.getItem(ACTIVITY_KEY) || Date.now(), 10);
+        let timeIdleMs = Date.now() - lastActive;
+
+        if (timeIdleMs > sessionTimeoutMs) {
+            localStorage.removeItem(ACTIVITY_KEY);
+
+            window.location.reload();
+        }
+    }, 5000);
 }

@@ -112,6 +112,8 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
 
     <script>
     //<![CDATA[
+    window.sessionTimeout = <?= !empty($config['system']['webgui']['session_timeout']) ? $config['system']['webgui']['session_timeout'] * 60 : 14400 ?>;
+
     $( document ).ready(function() {
       $('[data-toggle="tooltip"]').tooltip();
       $("input").not("[autocomplete]").attr("autocomplete","off");
@@ -246,6 +248,8 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
       });
       // convert input form tables for better mobile experience
       hook_stacked_form_tables(".opnsense_standard_table_form");
+
+      initSessionTimeout();
     });
     //]]>
     </script>
