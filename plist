@@ -570,6 +570,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/PlainOpenVPN.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ViscosityVisz.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/AbstractStatus.php
+/usr/local/opnsense/mvc/app/library/OPNsense/System/Status/CaptivePortalStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/ConfigdProxyOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/CrashReporterStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/DiskSpaceStatus.php
