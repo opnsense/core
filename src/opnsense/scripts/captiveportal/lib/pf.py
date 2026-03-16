@@ -51,10 +51,6 @@ class PF(object):
     @staticmethod
     def add_to_table(zoneid, address):
         subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'add', address], capture_output=True)
-        # Clear pre-auth states so newly authorized sibling addresses can use the updated table match immediately.
-        subprocess.run(['/sbin/pfctl', '-k', f'{address}'], capture_output=True)
-        wildcard = '::/0' if PF._is_ipv6(address) else '0.0.0.0/0'
-        subprocess.run(['/sbin/pfctl', '-k', wildcard, '-k', f'{address}'], capture_output=True)
 
     @staticmethod
     def remove_from_table(zoneid, address):
