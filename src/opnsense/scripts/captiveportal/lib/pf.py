@@ -25,12 +25,19 @@
 
 """
 import subprocess
-import tempfile
-import time
+import ipaddress
 
 class PF(object):
     def __init__(self):
         pass
+
+    @staticmethod
+    def _is_ipv6(address):
+        try:
+            ipaddress.IPv6Address(address)
+            return True
+        except (ValueError, AttributeError):
+            return False
 
     @staticmethod
     def list_table(zoneid):
@@ -50,4 +57,6 @@ class PF(object):
         subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'del', address], capture_output=True)
         # kill associated states to and from this host
         subprocess.run(['/sbin/pfctl', '-k', f'{address}'], capture_output=True)
-        subprocess.run(['/sbin/pfctl', '-k', '0.0.0.0/0', '-k', f'{address}'], capture_output=True)
+        # Use appropriate wildcard based on IP version
+        wildcard = '::/0' if PF._is_ipv6(address) else '0.0.0.0/0'
+        subprocess.run(['/sbin/pfctl', '-k', wildcard, '-k', f'{address}'], capture_output=True)

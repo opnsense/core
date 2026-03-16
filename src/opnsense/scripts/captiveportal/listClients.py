@@ -37,5 +37,5 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-z', help='optional zoneid to filter on', type=str)
 args = parser.parse_args()
 
-response = DB().list_clients(int(args.z) if str(args.z).isdigit() else None)
+response = DB().list_clients(int(args.z) if str(args.z).isdigit() else None, True)
 print(ujson.dumps(response))
