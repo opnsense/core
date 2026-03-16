@@ -99,6 +99,16 @@
                         <Mask>/^([^\n"])*$/u</Mask>
                     </v6_dnr>
                 </option_data>
+                <option type="ModelRelationField">
+                    <Model>
+                        <options>
+                            <source>OPNsense.Kea.KeaDhcpv6</source>
+                            <items>options.option</items>
+                            <display>description</display>
+                        </options>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                </option>
                 <pools type=".\KeaPoolsField">
                 </pools>
                 <interface type="InterfaceField">
@@ -233,9 +243,118 @@
                     <AsList>Y</AsList>
                     <ValidationMessage>Please specify a valid list of domains.</ValidationMessage>
                 </domain_search>
+                <option type="ModelRelationField">
+                    <Model>
+                        <options>
+                            <source>OPNsense.Kea.KeaDhcpv6</source>
+                            <items>options.option</items>
+                            <display>description</display>
+                        </options>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                </option>
                 <description type="DescriptionField"/>
             </reservation>
         </reservations>
+        <options>
+            <option type="ArrayField">
+                <code type="JsonKeyValueStoreField">
+                    <Required>Y</Required>
+                    <ConfigdPopulateAct>kea list dhcp_options6</ConfigdPopulateAct>
+                    <OptionValues>
+                        <!-- mock option groups returned by JSON -->
+                        <optgroup1>Assigned</optgroup1>
+                        <optgroup2>Unassigned</optgroup2>
+                    </OptionValues>
+                </code>
+                <encoding type="OptionField">
+                    <Required>Y</Required>
+                    <Default>hex</Default>
+                    <OptionValues>
+                        <hex>hex</hex>
+                        <ipv4-address>IPv4 address</ipv4-address>
+                        <ipv6-address>IPv6 address</ipv6-address>
+                        <uint8>uint8</uint8>
+                        <uint16>uint16</uint16>
+                        <uint32>uint32</uint32>
+                        <int32>int32</int32>
+                        <boolean>bool</boolean>
+                        <string>string</string>
+                        <fqdn>FQDN</fqdn>
+                    </OptionValues>
+                </encoding>
+                <data type=".\KeaOptionDataField">
+                    <CodeSource>code</CodeSource>
+                    <EncodingSource>encoding</EncodingSource>
+                    <OptionSpace>dhcp6</OptionSpace>
+                    <Required>Y</Required>
+                </data>
+                <force type="BooleanField"/>
+                <match_code type="JsonKeyValueStoreField">
+                    <ConfigdPopulateAct>kea list dhcp_options6</ConfigdPopulateAct>
+                    <OptionValues>
+                        <!-- mock option groups returned by JSON -->
+                        <optgroup1>Assigned</optgroup1>
+                        <optgroup2>Unassigned</optgroup2>
+                    </OptionValues>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Match option and match data must either both be set or left empty.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>match_data</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </match_code>
+                <match_encoding type="OptionField">
+                    <OptionValues>
+                        <hex>hex</hex>
+                        <ipv4-address>IPv4 address</ipv4-address>
+                        <ipv6-address>IPv6 address</ipv6-address>
+                        <uint8>uint8</uint8>
+                        <uint16>uint16</uint16>
+                        <uint32>uint32</uint32>
+                        <int32>int32</int32>
+                        <boolean>bool</boolean>
+                        <string>string</string>
+                        <fqdn>FQDN</fqdn>
+                    </OptionValues>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Field is required when match data is set.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>match_data</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </match_encoding>
+                <match_data type=".\KeaOptionDataField">
+                    <CodeSource>match_code</CodeSource>
+                    <EncodingSource>match_encoding</EncodingSource>
+                    <OptionSpace>dhcp6</OptionSpace>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Match option and match data must either both be set or left empty.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>match_code</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </match_data>
+                <description type="DescriptionField">
+                    <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Description must be unique.</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
+                </description>
+            </option>
+        </options>
         <pd_pools>
             <pd_pool type="ArrayField">
                 <subnet type="ModelRelationField">
