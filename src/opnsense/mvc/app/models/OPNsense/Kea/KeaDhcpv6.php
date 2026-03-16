@@ -327,7 +327,7 @@ class KeaDhcpv6 extends BaseModel
         if (!$ddns->general->enabled->isEmpty()) {
             $cnf['Dhcp6']['dhcp-ddns'] = [
                 'enable-updates' => true,
-                'server-ip' => $ddns->general->server_ip->asValue(),
+                'server-ip' => $ddns->general->server_ip->getValue(),
                 'server-port' => $ddns->general->server_port->asInt(),
             ];
         }
