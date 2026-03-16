@@ -285,9 +285,6 @@ function ajaxCall(url, sendData, callback) {
         dataType:'json',
         contentType: 'application/json',
         complete: function(data, status) {
-            if (status === "success" && typeof resetSessionTimeout === 'function') {
-                resetSessionTimeout();
-            }
             if (callback != null) {
                 if ('responseJSON' in data) {
                     callback(data['responseJSON'], status);
@@ -314,9 +311,6 @@ function ajaxGet(url,sendData,callback) {
         dataType:'json',
         contentType: 'application/json',
         complete: function(data,status) {
-            if (status === "success" && typeof resetSessionTimeout === 'function') {
-                resetSessionTimeout();
-            }
             if (callback != null) {
                 if ('responseJSON' in data) {
                     callback(data['responseJSON'], status);
@@ -396,7 +390,9 @@ function resetSessionTimeout() {
  * Initializes the auto-logout tracking mechanism.
  */
 function initSessionTimeout() {
-    // Ensure window.sessionTimeout is set
+    if ($('input[name="usernamefld"]').length > 0 || window.location.href.includes('?url=')) {
+        return;
+    }
     if (typeof window.sessionTimeout !== 'number' || window.sessionTimeout <= 0) {
         return;
     }
