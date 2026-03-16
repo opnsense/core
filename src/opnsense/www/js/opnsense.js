@@ -391,8 +391,14 @@ function resetSessionTimeout() {
  */
 function initSessionTimeout() {
     if ($('input[name="usernamefld"]').length > 0 || window.location.href.includes('?url=')) {
+        setInterval(function() {
+            if (localStorage.getItem(ACTIVITY_KEY)) {
+                window.location.reload();
+            }
+        }, 3000);
         return;
     }
+
     if (typeof window.sessionTimeout !== 'number' || window.sessionTimeout <= 0) {
         return;
     }
