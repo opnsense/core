@@ -61,6 +61,11 @@ class ControllerRoot extends Controller
     protected $langcode = 'en_US';
 
     /**
+     * @var int session timeout in seconds
+     */
+    public $session_timeout = 14400;
+
+    /**
      * set system language according to configuration
      */
     protected function setLang()
