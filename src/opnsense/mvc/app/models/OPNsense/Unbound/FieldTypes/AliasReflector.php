@@ -34,6 +34,11 @@ class AliasReflector extends HostnameField
 {
     private $postLoadValue = [];
 
+    protected function defaultValidationMessage()
+    {
+        return gettext('[%s] is not a valid host/domain name.');
+    }
+
     private function splitHostDomain(string $s): array
     {
         $s = rtrim(trim($s), '.');
