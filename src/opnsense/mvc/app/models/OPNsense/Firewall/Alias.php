@@ -133,6 +133,7 @@ class Alias extends BaseModel
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'], ['source_port']];
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'], ['destination_net']];
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'], ['destination_port']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'], ['target']];
 
         return $sources;
     }
