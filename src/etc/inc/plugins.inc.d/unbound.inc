@@ -631,7 +631,7 @@ function unbound_add_host_entries($ifconfig_details)
                                      */
                                     $unbound_entries .= "local-data-ptr: \"{$host->server} {$alias['hostname']}{$alias['domain']}\"\n";
                                     $ptr_records[] = $host->server->getValue();
-                                } else {
+                                } elseif ($alias['addptr']) {
                                     syslog(LOG_WARNING, 'PTR record already exists for ' . $alias['hostname'] . $alias['domain'] . '(' . $host->server . ')');
                                 }
                                 $unbound_entries .= "local-data: \"{$alias['hostname']}{$alias['domain']} {$host->ttl} IN {$host->rr} {$host->server}\"\n";
