@@ -137,6 +137,31 @@ class Dhcpv6Controller extends ApiMutableModelControllerBase
         }
     }
 
+    public function searchOptionAction()
+    {
+        return $this->searchBase("options.option", null, "option");
+    }
+
+    public function setOptionAction($uuid)
+    {
+        return $this->setBase("option", "options.option", $uuid);
+    }
+
+    public function addOptionAction()
+    {
+        return $this->addBase("option", "options.option");
+    }
+
+    public function getOptionAction($uuid = null)
+    {
+        return $this->getBase("option", "options.option", $uuid);
+    }
+
+    public function delOptionAction($uuid)
+    {
+        return $this->delBase("options.option", $uuid);
+    }
+
     public function searchPdPoolAction()
     {
         return $this->searchBase("pd_pools.pd_pool");
