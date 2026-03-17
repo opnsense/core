@@ -821,7 +821,7 @@ function system_syslog_start($verbose = false)
     service_log('Configuring system logging...', $verbose);
 
     configd_run('template reload OPNsense/Syslog');
-    mwexecf('/usr/local/opnsense/scripts/syslog/generate_certs');
+    mwexecf('/usr/local/opnsense/scripts/syslog/generate_certs.php');
 
     $last_version = @file_get_contents('/var/run/syslog-ng.version');
     $this_version = shell_safe('syslog-ng -V | sha256');
