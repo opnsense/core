@@ -424,7 +424,7 @@ function initSessionTimeout() {
         let lastActive = parseInt(activeKeyStr, 10);
         let timeIdleMs = Date.now() - lastActive;
 
-        if (timeIdleMs > sessionTimeoutMs) {
+        if (timeIdleMs > (sessionTimeoutMs + 10000)) {
             localStorage.removeItem(ACTIVITY_KEY);
             window.location.reload();
         }
