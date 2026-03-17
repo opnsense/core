@@ -104,7 +104,7 @@ $( document ).ready(function() {
             }
         },
         options: {
-            selection: true,
+            selection: false,
             multiSelect: false, /* disable batched enable/disable behavior, not compatible with this grid */
             rowCount: [7, 20, 50, 100, 200, 500, -1],
             formatters: {
@@ -136,6 +136,8 @@ $( document ).ready(function() {
         tabulatorOptions: {
             dataTree: true,
             dataTreeElementColumn:"tree",
+            dataTreeCollapseElement:"<i class='fas fa-minus-square'></i>",
+            dataTreeExpandElement:"<i class='fas fa-plus-square'></i>",
             rowFormatter: function(row) {
                 const data = row.getData();
                 const $element = $(row.getElement());
