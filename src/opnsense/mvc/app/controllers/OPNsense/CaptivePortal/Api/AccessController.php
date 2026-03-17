@@ -342,29 +342,32 @@ class AccessController extends ApiControllerBase
      */
     public function logoffAction($zoneid = 0)
     {
+        $result = ["clientState" => "UNKNOWN", "ipAddress" => $this->getClientIp()];
         if ($this->request->isOptions()) {
             // return empty result on CORS preflight
             return [];
-        } else {
-            $zoneid = $this->request->getHeader("zoneid");
-            $clientSession = $this->clientSession((string)$zoneid);
-            if (
-                $clientSession['clientState'] == 'AUTHORIZED' &&
-                $clientSession['authenticated_via'] != '---ip---' &&
-                $clientSession['authenticated_via'] != '---mac---'
-            ) {
-                // you can only disconnect a connected client
-                $backend = new Backend();
-                $statusRAW = $backend->configdpRun("captiveportal disconnect", [$clientSession['sessionId'], "User-Request"]);
-                $status = json_decode($statusRAW, true);
-                if ($status != null) {
-                    $this->getLogger("captiveportal")->info(
-                        "LOGOUT " . $clientSession['userName'] .  " (" . $this->getClientIp() . ") zone " . $zoneid
-                    );
-                    return $status;
-                }
+        } elseif (!$this->request->isPost()) {
+            return $result;
+        }
+
+        $zoneid = $this->request->getHeader("zoneid");
+        $clientSession = $this->clientSession((string)$zoneid);
+        if (
+            $clientSession['clientState'] == 'AUTHORIZED' &&
+            $clientSession['authenticated_via'] != '---ip---' &&
+            $clientSession['authenticated_via'] != '---mac---'
+        ) {
+            // you can only disconnect a connected client
+            $backend = new Backend();
+            $statusRAW = $backend->configdpRun("captiveportal disconnect", [$clientSession['sessionId'], "User-Request"]);
+            $status = json_decode($statusRAW, true);
+            if ($status != null) {
+                $this->getLogger("captiveportal")->info(
+                    "LOGOUT " . $clientSession['userName'] .  " (" . $this->getClientIp() . ") zone " . $zoneid
+                );
+                return $status;
             }
         }
-        return ["clientState" => "UNKNOWN", "ipAddress" => $this->getClientIp()];
+        return $result;
     }
 }
