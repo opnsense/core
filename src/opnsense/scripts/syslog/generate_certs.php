@@ -37,7 +37,7 @@ $filenames = [];
 $targetdir = "/usr/local/etc/syslog-ng/cert.d";
 @mkdir($targetdir, 0700, true);
 foreach ((new Syslog())->destinations->destination->iterateItems() as $id => $item) {
-    if (in_array($item->transport, ['tls4', 'tls6']) && !$item->enabled->isEmpty()){
+    if (in_array($item->transport, ['tls4', 'tls6']) && !$item->enabled->isEmpty()) {
         if (($cert = Store::getCertificate((string)$item->certificate)) && isset($cert['prv'])) {
             $basename = $targetdir . "/" . str_replace("-", "", $id);
             foreach (['prv' => "{$basename}.key", 'crt' => "{$basename}.crt"] as $key => $filename) {
