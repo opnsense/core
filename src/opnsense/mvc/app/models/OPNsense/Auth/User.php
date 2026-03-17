@@ -149,6 +149,9 @@ class User extends BaseModel
             if ($node->password->isEmpty() && $node->scrambled_password->isEmpty()) {
                 $messages->appendMessage(new Message(gettext("A password is required"), $key . ".password"));
             }
+            if (!$node->scrambled_password->isEmpty() && !$node->hashed_password->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("scrambled_password and hashed_password can not be set at the same time"), $key . ".hashed_password"));
+            }
             /* XXX: validate reserved users? (/etc/passwd)*/
         }
         return $messages;

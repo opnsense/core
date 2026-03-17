@@ -98,7 +98,11 @@ class UserController extends ApiMutableModelControllerBase
             } else {
                 $password = $node->password->getValue();
             }
-            $hash = $this->getModel()->generatePasswordHash($password);
+            if (empty((string)$node->scrambled_password) && !empty((string)$node->hashed_password)) {
+                $hash = $password;
+            } else {
+                $hash = $this->getModel()->generatePasswordHash($password);
+            }
             if ($hash !== false && strpos($hash, '$') === 0) {
                 $node->password = $hash;
                 $node->pwd_changed_at = microtime(true);
