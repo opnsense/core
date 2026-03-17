@@ -411,6 +411,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/agentSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/ddnsSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogOption4.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogOption6.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogPDPool6.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogPeer4.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogPeer6.xml

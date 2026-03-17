@@ -99,6 +99,16 @@
                         <Mask>/^([^\n"])*$/u</Mask>
                     </v6_dnr>
                 </option_data>
+                <option type="ModelRelationField">
+                    <Model>
+                        <options>
+                            <source>OPNsense.Kea.KeaDhcpv6</source>
+                            <items>options.option</items>
+                            <display>description</display>
+                        </options>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                </option>
                 <pools type=".\KeaPoolsField">
                 </pools>
                 <interface type="InterfaceField">
@@ -233,9 +243,46 @@
                     <AsList>Y</AsList>
                     <ValidationMessage>Please specify a valid list of domains.</ValidationMessage>
                 </domain_search>
+                <option type="ModelRelationField">
+                    <Model>
+                        <options>
+                            <source>OPNsense.Kea.KeaDhcpv6</source>
+                            <items>options.option</items>
+                            <display>description</display>
+                        </options>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                </option>
                 <description type="DescriptionField"/>
             </reservation>
         </reservations>
+        <options>
+            <option type="ArrayField">
+                <code type="JsonKeyValueStoreField">
+                    <Required>Y</Required>
+                    <ConfigdPopulateAct>kea list dhcp_options6</ConfigdPopulateAct>
+                    <OptionValues>
+                        <!-- mock option groups returned by JSON -->
+                        <optgroup1>Assigned</optgroup1>
+                        <optgroup2>Unassigned</optgroup2>
+                    </OptionValues>
+                </code>
+                <encoding type="OptionField">
+                    <Required>Y</Required>
+                    <Default>hex</Default>
+                    <OptionValues>
+                        <hex>hex</hex>
+                    </OptionValues>
+                </encoding>
+                <data type=".\KeaOptionDataField">
+                    <Required>Y</Required>
+                </data>
+                <force type="BooleanField"/>
+                <description type="DescriptionField">
+                    <Required>Y</Required>
+                </description>
+            </option>
+        </options>
         <pd_pools>
             <pd_pool type="ArrayField">
                 <subnet type="ModelRelationField">
