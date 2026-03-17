@@ -240,8 +240,8 @@ class KeaDhcpv6 extends BaseModel
                     }
                     $res['option-data'][] = [
                         'code' => $option->code->asInt(),
-                        'csv-format' => $option->data->getValue(),
-                        'data' => $data,
+                        'csv-format' => false,
+                        'data' => $option->data->getValue(),
                         'always-send' => !$option->force->isEmpty(),
                     ];
                 }
