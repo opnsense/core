@@ -88,9 +88,27 @@ class LeasesController extends ApiControllerBase
         }
 
         foreach ($records as &$record) {
-            $is_ipv6 = Util::isIpv6Address($record['address'] ?? '');
-            $key = strtolower($is_ipv6 ? ($record['client_id'] ?? '') : ($record['hwaddr'] ?? ''));
-            $record['is_reserved'] = in_array($key, $reservedKeys, true) ? '1' : '0';
+            $is_ipv4 = Util::isIpv4Address($record['address'] ?? '');
+
+            $is_reserved = false;
+
+            // Always prefer client_id for both, IPv4 and IPv6
+            if (!empty($record['client_id'])) {
+                $key = strtolower($record['client_id']);
+                if (in_array($key, $reservedKeys, true)) {
+                    $is_reserved = true;
+                }
+            }
+
+            // Fallback to hwaddr for IPv4 if not matched yet
+            if (!$is_reserved && $is_ipv4 && !empty($record['hwaddr'])) {
+                $key = strtolower($record['hwaddr']);
+                if (in_array($key, $reservedKeys, true)) {
+                    $is_reserved = true;
+                }
+            }
+
+            $record['is_reserved'] = $is_reserved ? '1' : '0';
         }
 
         $response = $this->searchRecordsetBase(
