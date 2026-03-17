@@ -113,7 +113,7 @@ class BaseSetField extends BaseField
         }));
     }
 
-    public function setValues($values)
+    public function setValues(array $values)
     {
         $this->setValue(implode($this->internalFieldSeparator, $values));
     }

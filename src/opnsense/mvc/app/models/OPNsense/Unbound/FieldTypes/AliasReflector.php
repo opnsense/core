@@ -28,22 +28,85 @@
 
 namespace OPNsense\Unbound\FieldTypes;
 
-use OPNsense\Base\FieldTypes\BaseSetField;
+use OPNsense\Base\FieldTypes\HostnameField;
 
-class AliasReflector extends BaseSetField
+class AliasReflector extends HostnameField
 {
-    protected $internalAsList = true;
+    private $postLoadValue = [];
+
+    private function splitHostDomain(string $s): array
+    {
+        $s = rtrim(trim($s), '.');
+        if ($s === '') {
+            return ['host' => '', 'domain' => ''];
+        }
+
+        $pos = strpos($s, '.');
+
+        return $pos === false
+            ? ['host' => $s, 'domain' => '']
+            : ['host' => substr($s, 0, $pos), 'domain' => substr($s, $pos + 1)];
+    }
 
     public function actionPostLoadingEvent()
     {
         $uuid = $this->getParentNode()->getAttribute('uuid') ?? '';
-        $this->setValues(array_map(function ($node) {
+        $this->postLoadValue = array_map(function ($node) {
             $hostname = $node->hostname->getValue();
             $domain = $node->domain->getValue();
             $concat = !empty($hostname) ? $hostname . '.' : '';
             $concat .= !empty($domain) ? $domain : $this->getParentNode()->domain->getValue();
 
             return $concat;
-        }, $this->getParentModel()->getHostAliases($uuid)));
+        }, $this->getParentModel()->getHostAliases($uuid));
+        $this->setValues($this->postLoadValue);
+    }
+
+    public function setValue($value)
+    {
+        $a = array_filter(array_map('trim', explode(',', $value)));
+        $b = array_filter(array_map('trim', $this->postLoadValue));
+        $toDelete = array_values(array_diff($b, $a));
+        $toAdd = array_values(array_diff($a, $b));
+
+        if (empty($toDelete) && empty($toAdd)) {
+            return parent::setValue($value);
+        }
+
+        $hostNode = $this->getParentNode();
+        $mdl = $this->getParentModel();
+        $hostUUID = $hostNode->getAttribute('uuid') ?? '';
+
+        foreach ($toDelete as $delAlias) {
+            $split = $this->splitHostDomain($delAlias);
+            if ($split['domain'] === $hostNode->domain->getValue()) {
+                $split['domain'] = '';
+            }
+            foreach ($mdl->getHostAliases($hostUUID) as $aliasNode) {
+                if ($aliasNode->hostname->getValue() === $split['host'] && $aliasNode->domain->getValue() === $split['domain']) {
+                    $node = $mdl->getNodeByReference('aliases.alias');
+                    if ($node != null) {
+                        $node->del($aliasNode->getAttribute('uuid'));
+                    }
+                }
+            }
+        }
+
+        foreach ($toAdd as $addAlias) {
+            $split = $this->splitHostDomain($addAlias);
+            if ($split['domain'] === $hostNode->domain->getValue()) {
+                $split['domain'] = '';
+            }
+            $node = $mdl->aliases->alias->Add();
+            $node->setNodes([
+                'enabled' => 1,
+                'host' => $hostUUID,
+                'hostname' => $split['host'],
+                'domain' => $split['domain'],
+                'description' => ''
+            ]);
+        }
+
+        return parent::setValue($value);
     }
 }
