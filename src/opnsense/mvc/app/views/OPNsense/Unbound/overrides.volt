@@ -28,7 +28,7 @@
 $( document ).ready(function() {
     let selectedHostOverride = null;
     const commandOverride = {
-        dialog: "{{formGridHostAlias['edit_dialog_id']}}",
+        dialog: "DialogHostAlias",
         get: '/api/unbound/settings/get_host_alias/',
         set: '/api/unbound/settings/set_host_alias/',
         add: '/api/unbound/settings/add_host_alias/',
@@ -203,4 +203,4 @@ $( document ).ready(function() {
 </div>
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/unbound/service/reconfigure', 'data_service_widget': 'unbound'}) }}
 {{ partial("layout_partials/base_dialog",['fields':formDialogHostOverride,'id':formGridHostOverride['edit_dialog_id'],'label':lang._('Edit Host Override')])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogHostAlias,'id':formGridHostAlias['edit_dialog_id'],'label':lang._('Edit Host Override Alias')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogHostAlias,'id':'DialogHostAlias','label':lang._('Edit Host Override Alias')])}}
