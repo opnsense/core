@@ -232,7 +232,33 @@ class KeaDhcpv6 extends BaseModel
                         'data' => $reservation->domain_search->getValue()
                     ];
                 }
+                /* append raw options */
+                foreach ($reservation->option->getValues() as $uuid) {
+                    $option = $this->getNodeByReference("options.option.$uuid");
+                    if ($option === null) {
+                        continue;
+                    }
+                    $res['option-data'][] = [
+                        'code' => $option->code->asInt(),
+                        'csv-format' => $option->data->getValue(),
+                        'data' => $data,
+                        'always-send' => !$option->force->isEmpty(),
+                    ];
+                }
                 $record['reservations'][] = $res;
+            }
+            /* append raw options */
+            foreach ($subnet->option->getValues() as $uuid) {
+                $option = $this->getNodeByReference("options.option.$uuid");
+                if ($option === null) {
+                    continue;
+                }
+                $record['option-data'][] = [
+                    'code' => $option->code->asInt(),
+                    'csv-format' => false,
+                    'data' => $option->data->getValue(),
+                    'always-send' => !$option->force->isEmpty(),
+                ];
             }
             $result[] = $record;
         }
