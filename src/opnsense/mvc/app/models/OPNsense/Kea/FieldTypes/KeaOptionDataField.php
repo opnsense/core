@@ -36,6 +36,15 @@ class KeaOptionDataField extends BaseField
     protected $internalIsContainer = false;
     protected $internalValidationMessage = "Invalid option data";
 
+    private $internalEncodingSource = 'encoding';
+
+    public function setEncodingSource($value): void
+    {
+        if (!empty($value)) {
+            $this->internalEncodingSource = $value;
+        }
+    }
+
     public function getValidators()
     {
         $validators = parent::getValidators();
@@ -44,11 +53,17 @@ class KeaOptionDataField extends BaseField
                 "callback" => function ($data) {
 
                     $messages = [];
-                    $encoding = $this->getParentNode()->encoding->getValue();
 
-                    if ($encoding === "hex") {
-                        if (!preg_match('/^([0-9A-F]{2})+$/', $data)) {
-                            $messages[] = gettext("Hex value must contain uppercase hexadecimal byte pairs.");
+                    $parent = $this->getParentNode();
+                    $encodingSource = $this->internalEncodingSource;
+
+                    if ($parent !== null && isset($parent->$encodingSource)) {
+                        $encoding = $parent->$encodingSource->getValue();
+
+                        if ($encoding === "hex") {
+                            if (!preg_match('/^([0-9A-F]{2})+$/', $data)) {
+                                $messages[] = gettext("Hex value must contain uppercase hexadecimal byte pairs.");
+                            }
                         }
                     }
 

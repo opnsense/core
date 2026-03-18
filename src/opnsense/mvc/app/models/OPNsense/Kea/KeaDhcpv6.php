@@ -238,12 +238,17 @@ class KeaDhcpv6 extends BaseModel
                     if ($option === null) {
                         continue;
                     }
-                    $res['option-data'][] = [
+                    $entry = [
                         'code' => $option->code->asInt(),
                         'csv-format' => false,
                         'data' => $option->data->getValue(),
                         'always-send' => !$option->force->isEmpty(),
                     ];
+                    /* only conditionally send the option when a client option matches */
+                    if (!$option->match_code->isEmpty()) {
+                        $entry['client-classes'] = [$uuid];
+                    }
+                    $res['option-data'][] = $entry;
                 }
                 $record['reservations'][] = $res;
             }
@@ -253,14 +258,34 @@ class KeaDhcpv6 extends BaseModel
                 if ($option === null) {
                     continue;
                 }
-                $record['option-data'][] = [
+                $entry = [
                     'code' => $option->code->asInt(),
                     'csv-format' => false,
                     'data' => $option->data->getValue(),
                     'always-send' => !$option->force->isEmpty(),
                 ];
+                /* only conditionally send the option when a client option matches */
+                if (!$option->match_code->isEmpty()) {
+                    $entry['client-classes'] = [$uuid];
+                }
+                $record['option-data'][] = $entry;
             }
             $result[] = $record;
+        }
+        return $result;
+    }
+
+    private function getConfigClientClasses()
+    {
+        $result = [];
+        foreach ($this->options->option->iterateItems() as $uuid => $option) {
+            if ($option->match_code->isEmpty()) {
+                continue;
+            }
+            $result[] = [
+                'name' => $uuid,
+                'test' => sprintf('option[%d].hex == 0x%s', $option->match_code->asInt(), $option->match_data->getValue()),
+            ];
         }
         return $result;
     }
@@ -308,6 +333,10 @@ class KeaDhcpv6 extends BaseModel
                 'subnet6' => $this->getConfigSubnets(),
             ]
         ];
+        $client_classes = $this->getConfigClientClasses();
+        if (!empty($client_classes)) {
+            $cnf['Dhcp6']['client-classes'] = $client_classes;
+        }
         $expiredLeasesConfig = $this->getExpiredLeasesProcessingConfig();
         if ($expiredLeasesConfig !== null) {
             $cnf['Dhcp6']['expired-leases-processing'] = $expiredLeasesConfig;

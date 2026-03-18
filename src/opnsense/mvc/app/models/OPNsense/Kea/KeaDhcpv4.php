@@ -196,18 +196,23 @@ class KeaDhcpv4 extends BaseModel
 
                 // Add DHCP option-data elements for reservations
                 $optdata = $this->collectOptionData($reservation->option_data);
-                // Append raw options
+                /* append raw options */
                 foreach ($reservation->option->getValues() as $uuid) {
                     $option = $this->getNodeByReference("options.option.$uuid");
                     if ($option === null) {
                         continue;
                     }
-                    $optdata[] = [
+                    $entry = [
                         'code' => $option->code->asInt(),
                         'csv-format' => false,
                         'data' => $option->data->getValue(),
                         'always-send' => !$option->force->isEmpty(),
                     ];
+                    /* only conditionally send the option when a client option matches */
+                    if (!$option->match_code->isEmpty()) {
+                        $entry['client-classes'] = [$uuid];
+                    }
+                    $optdata[] = $entry;
                 }
                 if (!empty($optdata)) {
                     $res['option-data'] = $optdata;
@@ -227,9 +232,28 @@ class KeaDhcpv4 extends BaseModel
                     'data' => $option->data->getValue(),
                     'always-send' => !$option->force->isEmpty(),
                 ];
+                /* only conditionally send the option when a client option matches */
+                if (!$option->match_code->isEmpty()) {
+                    $entry['client-classes'] = [$uuid];
+                }
                 $record['option-data'][] = $entry;
             }
             $result[] = $record;
+        }
+        return $result;
+    }
+
+    private function getConfigClientClasses()
+    {
+        $result = [];
+        foreach ($this->options->option->iterateItems() as $uuid => $option) {
+            if ($option->match_code->isEmpty()) {
+                continue;
+            }
+            $result[] = [
+                'name' => $uuid,
+                'test' => sprintf('option[%d].hex == 0x%s', $option->match_code->asInt(), $option->match_data->getValue()),
+            ];
         }
         return $result;
     }
@@ -278,6 +302,10 @@ class KeaDhcpv4 extends BaseModel
                 'subnet4' => $this->getConfigSubnets(),
             ]
         ];
+        $client_classes = $this->getConfigClientClasses();
+        if (!empty($client_classes)) {
+            $cnf['Dhcp4']['client-classes'] = $client_classes;
+        }
         $expiredLeasesConfig = $this->getExpiredLeasesProcessingConfig();
         if ($expiredLeasesConfig !== null) {
             $cnf['Dhcp4']['expired-leases-processing'] = $expiredLeasesConfig;
