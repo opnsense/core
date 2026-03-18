@@ -48,7 +48,6 @@ class KeaOptionDataField extends BaseField
     public function getValidators()
     {
         $validators = parent::getValidators();
-
         if (!empty($this->internalValue)) {
             $validators[] = new CallbackValidator([
                 "callback" => function ($data) {
@@ -72,7 +71,6 @@ class KeaOptionDataField extends BaseField
                 }
             ]);
         }
-
         return $validators;
     }
 }
