@@ -69,6 +69,10 @@ class AliasReflector extends HostnameField
 
     public function setValue($value)
     {
+        if ($value === implode($this->internalFieldSeparator, $this->postLoadValue)) {
+            return parent::setValue($value);
+        }
+
         $a = array_filter(array_map('trim', explode($this->internalFieldSeparator, $value)));
         $b = array_filter(array_map('trim', $this->postLoadValue));
         $toDelete = array_values(array_diff($b, $a));
