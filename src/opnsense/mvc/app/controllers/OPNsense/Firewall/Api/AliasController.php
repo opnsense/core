@@ -495,29 +495,14 @@ class AliasController extends ApiMutableModelControllerBase
     }
 
     /**
-     * force geoip download
+     * update specified alias type
      */
-    public function updateGeoIPAction()
+    public function updateAction($action)
     {
-        if ($this->request->isPost()) {
-            (new Backend())->configdRun('filter geoip update');
-            return ['status' => 'ok', 'message' => gettext('GeoIP update completed')];
+        if ($this->request->isPost() && in_array($action, ['geoip', 'bogons'])) {
+            (new Backend())->configdRun('filter update ' . $action);
+            return ['status' => 'ok', 'message' => gettext('Update completed')];
         }
-        return ['status' => 'failed', 'message' => gettext('GeoIP update failed')];
-    }
-
-    /**
-     * update bogons table
-     * @return array status
-     */
-    public function updateBogonsAction()
-    {
-        if (!$this->request->isPost()) {
-            return ['status' => 'failed'];
-        }
-
-        $backend = new Backend();
-        $backend->configdRun('filter update bogons');
-        return array('status' => 'ok');
+        return ['status' => 'failed', 'message' => gettext('Error updating action')];
     }
 }
