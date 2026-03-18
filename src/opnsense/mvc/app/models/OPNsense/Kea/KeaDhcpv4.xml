@@ -348,7 +348,6 @@
                     </Constraints>
                 </match_code>
                 <match_encoding type="OptionField">
-                    <Default>hex</Default>
                     <OptionValues>
                         <hex>hex</hex>
                     </OptionValues>

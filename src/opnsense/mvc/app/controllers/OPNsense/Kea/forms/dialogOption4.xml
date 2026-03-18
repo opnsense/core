@@ -1,9 +1,5 @@
 <form>
     <field>
-        <type>header</type>
-        <label>Organization</label>
-    </field>
-    <field>
         <id>option.description</id>
         <label>Description</label>
         <type>text</type>
@@ -15,13 +11,13 @@
     </field>
     <field>
         <id>option.code</id>
-        <label>Code</label>
+        <label>Set Code</label>
         <type>dropdown</type>
         <help>DHCPv4 option to offer to the client.</help>
     </field>
     <field>
         <id>option.encoding</id>
-        <label>Encoding</label>
+        <label>Set Encoding</label>
         <type>dropdown</type>
         <help>Choose the encoding type. "Hex" supports all encapsulated and structured options generically via payload in uppercase hexadecimal byte pairs.</help>
         <grid_view>
@@ -30,7 +26,7 @@
     </field>
     <field>
         <id>option.data</id>
-        <label>Data</label>
+        <label>Set Data</label>
         <type>text</type>
         <help>Payload to send to a client.</help>
     </field>
@@ -39,6 +35,7 @@
         <label>Force</label>
         <type>checkbox</type>
         <help>Always send the option, also when the client does not ask for it in the parameter request list.</help>
+        <advanced>true</advanced>
         <grid_view>
             <type>boolean</type>
             <formatter>boolean</formatter>
@@ -48,12 +45,13 @@
     <field>
         <type>header</type>
         <label>Match DHCP option</label>
+        <collapse>true</collapse>
     </field>
     <field>
         <id>option.match_code</id>
         <label>Match Code</label>
         <type>dropdown</type>
-        <help>Only send the option when the client sends this DHCP option.</help>
+        <help>The server will only send the option defined in "Set DHCP option" if a client first sends the option defined in "Match DHCP option". Leave empty to always send the option.</help>
     </field>
     <field>
         <id>option.match_encoding</id>
