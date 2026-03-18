@@ -327,7 +327,7 @@
                     </OptionValues>
                 </encoding>
                 <data type=".\KeaOptionDataField">
-                    <EncodingField>encoding</EncodingField>
+                    <encoding_source>encoding</encoding_source>
                     <Required>Y</Required>
                 </data>
                 <force type="BooleanField"/>
@@ -363,7 +363,7 @@
                     </Constraints>
                 </match_encoding>
                 <match_data type=".\KeaOptionDataField">
-                    <EncodingField>match_encoding</EncodingField>
+                    <encoding_source>match_encoding</encoding_source>
                     <Constraints>
                         <check001>
                             <ValidationMessage>Match option and match data must either both be set or left empty.</ValidationMessage>
@@ -376,6 +376,12 @@
                 </match_data>
                 <description type="DescriptionField">
                     <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Description must be unique.</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
                 </description>
             </option>
         </options>

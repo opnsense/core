@@ -36,12 +36,12 @@ class KeaOptionDataField extends BaseField
     protected $internalIsContainer = false;
     protected $internalValidationMessage = "Invalid option data";
 
-    private $internalEncodingField = 'encoding';
+    private $internalEncodingSource = 'encoding';
 
-    public function setEncodingField($value): void
+    public function setEncodingSource($value): void
     {
         if (!empty($value)) {
-            $this->internalEncodingField = $value;
+            $this->internalEncodingSource = $value;
         }
     }
 
@@ -55,10 +55,10 @@ class KeaOptionDataField extends BaseField
                     $messages = [];
 
                     $parent = $this->getParentNode();
-                    $encodingField = $this->internalEncodingField;
+                    $encodingSource = $this->internalEncodingSource;
 
-                    if ($parent !== null && isset($parent->$encodingField)) {
-                        $encoding = $parent->$encodingField->getValue();
+                    if ($parent !== null && isset($parent->$encodingSource)) {
+                        $encoding = $parent->$encodingSource->getValue();
 
                         if ($encoding === "hex") {
                             if (!preg_match('/^([0-9A-F]{2})+$/', $data)) {
