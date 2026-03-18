@@ -40,6 +40,5 @@ class OverridesController extends IndexController
         $this->view->formGridHostOverride = $this->getFormGrid('dialogHostOverride');
 
         $this->view->formDialogHostAlias = $this->getForm('dialogHostAlias');
-        $this->view->formGridHostAlias = $this->getFormGrid('dialogHostAlias');
     }
 }
