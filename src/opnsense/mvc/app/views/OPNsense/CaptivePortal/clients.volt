@@ -124,15 +124,15 @@
         <thead>
             <tr>
                 <th data-column-id="sessionId" data-type="string" data-identifier="true" data-visible="false">{{ lang._('Session') }}</th>
-                <th data-column-id="zoneid" data-width="7em"  data-type="string" data-visible="false">{{ lang._('Zoneid') }}</th>
-                <th data-column-id="userName" data-type="string" data-width="10em" data-formatter="userName">{{ lang._('Username') }}</th>
-                <th data-column-id="macAddress" data-type="string" data-width="10em" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('MAC address') }}</th>
-                <th data-column-id="ipAddress" data-type="string" data-width="9em" data-formatter="ipAddress" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('IP Address') }}</th>
-                <th data-column-id="bytes_in" data-type="string" data-width="7em" data-formatter="bytes" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Bytes (in)') }}</th>
-                <th data-column-id="bytes_out" data-type="string" data-width="7em" data-formatter="bytes" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Bytes (out)') }}</th>
-                <th data-column-id="startTime" data-type="datetime" data-width="10em">{{ lang._('Connected since') }}</th>
-                <th data-column-id="last_accessed" data-type="datetime" data-width="10em" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Last accessed') }}</th>
-                <th data-column-id="commands" data-searchable="false" data-width="5em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                <th data-column-id="zoneid" data-type="string" data-visible="false">{{ lang._('Zoneid') }}</th>
+                <th data-column-id="userName" data-type="string" data-formatter="userName">{{ lang._('Username') }}</th>
+                <th data-column-id="macAddress" data-type="string">{{ lang._('MAC address') }}</th>
+                <th data-column-id="ipAddress" data-type="string" data-formatter="ipAddress">{{ lang._('IP Address') }}</th>
+                <th data-column-id="bytes_in" data-type="string" data-formatter="bytes">{{ lang._('Bytes (in)') }}</th>
+                <th data-column-id="bytes_out" data-type="string" data-formatter="bytes">{{ lang._('Bytes (out)') }}</th>
+                <th data-column-id="startTime" data-type="datetime">{{ lang._('Connected since') }}</th>
+                <th data-column-id="last_accessed" data-type="datetime">{{ lang._('Last accessed') }}</th>
+                <th data-column-id="commands" data-searchable="false" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
             </tr>
         </thead>
         <tbody>
