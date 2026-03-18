@@ -272,10 +272,20 @@
                     <Default>hex</Default>
                     <OptionValues>
                         <hex>hex</hex>
+                        <ipv4-address>IPv4 address</ipv4-address>
+                        <ipv6-address>IPv6 address</ipv6-address>
+                        <uint8>uint8</uint8>
+                        <uint16>uint16</uint16>
+                        <uint32>uint32</uint32>
+                        <int32>int32</int32>
+                        <boolean>bool</boolean>
+                        <string>string</string>
+                        <fqdn>FQDN</fqdn>
                     </OptionValues>
                 </encoding>
                 <data type=".\KeaOptionDataField">
-                    <encoding_source>encoding</encoding_source>
+                    <EncodingSource>encoding</EncodingSource>
+                    <OptionSpace>dhcp6</OptionSpace>
                     <Required>Y</Required>
                 </data>
                 <force type="BooleanField"/>
@@ -299,6 +309,15 @@
                 <match_encoding type="OptionField">
                     <OptionValues>
                         <hex>hex</hex>
+                        <ipv4-address>IPv4 address</ipv4-address>
+                        <ipv6-address>IPv6 address</ipv6-address>
+                        <uint8>uint8</uint8>
+                        <uint16>uint16</uint16>
+                        <uint32>uint32</uint32>
+                        <int32>int32</int32>
+                        <boolean>bool</boolean>
+                        <string>string</string>
+                        <fqdn>FQDN</fqdn>
                     </OptionValues>
                     <Constraints>
                         <check001>
@@ -311,7 +330,8 @@
                     </Constraints>
                 </match_encoding>
                 <match_data type=".\KeaOptionDataField">
-                    <encoding_source>match_encoding</encoding_source>
+                    <EncodingSource>match_encoding</EncodingSource>
+                    <OptionSpace>dhcp6</OptionSpace>
                     <Constraints>
                         <check001>
                             <ValidationMessage>Match option and match data must either both be set or left empty.</ValidationMessage>

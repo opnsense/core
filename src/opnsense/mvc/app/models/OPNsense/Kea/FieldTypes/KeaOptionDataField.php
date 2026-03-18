@@ -30,11 +30,242 @@ namespace OPNsense\Kea\FieldTypes;
 
 use OPNsense\Base\FieldTypes\BaseField;
 use OPNsense\Base\Validators\CallbackValidator;
+use OPNsense\Firewall\Util;
+
+// Avoid stringly-typed encoding values: enum guarantees valid types
+enum KeaEncoding: string
+{
+    case HEX = 'hex';
+    case IPV4 = 'ipv4-address';
+    case IPV6 = 'ipv6-address';
+    case UINT8 = 'uint8';
+    case UINT16 = 'uint16';
+    case UINT32 = 'uint32';
+    case INT32 = 'int32';
+    case BOOLEAN = 'boolean';
+    case STRING = 'string';
+    case FQDN = 'fqdn';
+}
 
 class KeaOptionDataField extends BaseField
 {
     protected $internalIsContainer = false;
     protected $internalValidationMessage = "Invalid option data";
+
+    private const VALIDATOR_MAP = [
+        KeaEncoding::HEX->value => 'validateHex',
+        KeaEncoding::IPV4->value => 'validateIpv4List',
+        KeaEncoding::IPV6->value => 'validateIpv6List',
+        KeaEncoding::UINT8->value => 'validateUInt8',
+        KeaEncoding::UINT16->value => 'validateUInt16',
+        KeaEncoding::UINT32->value => 'validateUInt32',
+        KeaEncoding::INT32->value => 'validateInt32',
+        KeaEncoding::BOOLEAN->value => 'validateBoolean',
+        KeaEncoding::STRING->value => 'validateString',
+        KeaEncoding::FQDN->value => 'validateFqdn',
+    ];
+
+    // For any complex DHCP type, user configurable hex is the bailout right now
+    // Each of these can have custom validators and encoders added when the demanded
+    // The strict validation ensures the possibility of misconfigurations is low.
+    // The main benefit is that we never have to touch config generation again since all types will be serialized as hex
+
+    private const DHCPV4_OPTION_TYPES = [
+        1   => [KeaEncoding::IPV4->value],
+        2   => [KeaEncoding::INT32->value],
+        3   => [KeaEncoding::IPV4->value],
+        4   => [KeaEncoding::IPV4->value],
+        5   => [KeaEncoding::IPV4->value],
+        6   => [KeaEncoding::IPV4->value],
+        7   => [KeaEncoding::IPV4->value],
+        8   => [KeaEncoding::IPV4->value],
+        9   => [KeaEncoding::IPV4->value],
+        10  => [KeaEncoding::IPV4->value],
+        11  => [KeaEncoding::IPV4->value],
+        12  => [KeaEncoding::STRING->value],
+        13  => [KeaEncoding::UINT16->value],
+        14  => [KeaEncoding::STRING->value],
+        15  => [KeaEncoding::FQDN->value],
+        16  => [KeaEncoding::IPV4->value],
+        17  => [KeaEncoding::STRING->value],
+        18  => [KeaEncoding::STRING->value],
+        19  => [KeaEncoding::BOOLEAN->value],
+        20  => [KeaEncoding::BOOLEAN->value],
+        21  => [KeaEncoding::IPV4->value],
+        22  => [KeaEncoding::UINT16->value],
+        23  => [KeaEncoding::UINT8->value],
+        24  => [KeaEncoding::UINT32->value],
+        25  => [KeaEncoding::UINT16->value],
+        26  => [KeaEncoding::UINT16->value],
+        27  => [KeaEncoding::BOOLEAN->value],
+        28  => [KeaEncoding::IPV4->value],
+        29  => [KeaEncoding::BOOLEAN->value],
+        30  => [KeaEncoding::BOOLEAN->value],
+        31  => [KeaEncoding::BOOLEAN->value],
+        32  => [KeaEncoding::IPV4->value],
+        33  => [KeaEncoding::IPV4->value],
+        34  => [KeaEncoding::BOOLEAN->value],
+        35  => [KeaEncoding::UINT32->value],
+        36  => [KeaEncoding::BOOLEAN->value],
+        37  => [KeaEncoding::UINT8->value],
+        38  => [KeaEncoding::UINT32->value],
+        39  => [KeaEncoding::BOOLEAN->value],
+        40  => [KeaEncoding::STRING->value],
+        41  => [KeaEncoding::IPV4->value],
+        42  => [KeaEncoding::IPV4->value],
+        43  => [KeaEncoding::HEX->value],       // Vendor-Specific Information: TLV container (enterprise-id + nested options)
+        44  => [KeaEncoding::IPV4->value],
+        45  => [KeaEncoding::IPV4->value],
+        46  => [KeaEncoding::UINT8->value],
+        47  => [KeaEncoding::STRING->value],
+        48  => [KeaEncoding::IPV4->value],
+        49  => [KeaEncoding::IPV4->value],
+        50  => [KeaEncoding::IPV4->value],
+        51  => [KeaEncoding::UINT32->value],
+        52  => [KeaEncoding::UINT8->value],
+        53  => [KeaEncoding::UINT8->value],
+        54  => [KeaEncoding::IPV4->value],
+        55  => [KeaEncoding::UINT8->value],
+        56  => [KeaEncoding::STRING->value],
+        57  => [KeaEncoding::UINT16->value],
+        58  => [KeaEncoding::UINT32->value],
+        59  => [KeaEncoding::UINT32->value],
+        60  => [KeaEncoding::STRING->value],
+        61  => [KeaEncoding::HEX->value],       // Client Identifier: variable binary (DUID or hardware type + address)
+        62  => [KeaEncoding::STRING->value],
+        63  => [KeaEncoding::HEX->value],       // NetWare/IP domain: structured binary format, not plain string
+        64  => [KeaEncoding::STRING->value],
+        65  => [KeaEncoding::IPV4->value],
+        66  => [KeaEncoding::STRING->value],
+        67  => [KeaEncoding::STRING->value],
+        68  => [KeaEncoding::IPV4->value],
+        69  => [KeaEncoding::IPV4->value],
+        70  => [KeaEncoding::IPV4->value],
+        71  => [KeaEncoding::IPV4->value],
+        72  => [KeaEncoding::IPV4->value],
+        73  => [KeaEncoding::IPV4->value],
+        74  => [KeaEncoding::IPV4->value],
+        75  => [KeaEncoding::IPV4->value],
+        76  => [KeaEncoding::IPV4->value],
+        77  => [KeaEncoding::HEX->value],       // User-Class: length-prefixed list of opaque values
+        78  => [KeaEncoding::HEX->value],       // SLP Directory Agent: complex record (flags + addresses)
+        79  => [KeaEncoding::HEX->value],       // SLP Service Scope: structured list with encoding rules
+        81  => [KeaEncoding::HEX->value],       // FQDN option: flags + encoded domain (not plain DNS format)
+        82  => [KeaEncoding::HEX->value],       // Relay Agent Information: nested suboptions (circuit-id, remote-id)
+        85  => [KeaEncoding::IPV4->value],
+        86  => [KeaEncoding::STRING->value],
+        87  => [KeaEncoding::STRING->value],
+        88  => [KeaEncoding::FQDN->value],
+        89  => [KeaEncoding::IPV4->value],
+        90  => [KeaEncoding::HEX->value],       // Authentication: protocol-specific binary structure
+        91  => [KeaEncoding::UINT32->value],
+        92  => [KeaEncoding::IPV4->value],
+        93  => [KeaEncoding::UINT16->value],
+        94  => [KeaEncoding::HEX->value],       // Client NDI: opaque binary identifier
+        97  => [KeaEncoding::HEX->value],       // UUID/GUID: fixed 16-byte binary structure
+        98  => [KeaEncoding::STRING->value],
+        99  => [KeaEncoding::HEX->value],       // GEOCONF: civic location (RFC4776 structured TLV)
+        100 => [KeaEncoding::STRING->value],
+        101 => [KeaEncoding::STRING->value],
+        108 => [KeaEncoding::UINT32->value],
+        112 => [KeaEncoding::IPV4->value],
+        113 => [KeaEncoding::STRING->value],
+        114 => [KeaEncoding::STRING->value],
+        116 => [KeaEncoding::UINT8->value],
+        117 => [KeaEncoding::UINT16->value],
+        118 => [KeaEncoding::IPV4->value],
+        119 => [KeaEncoding::FQDN->value],
+        124 => [KeaEncoding::HEX->value],       // Vendor-Identifying Vendor Class: enterprise + TLV list
+        125 => [KeaEncoding::UINT32->value],
+        136 => [KeaEncoding::IPV4->value],
+        137 => [KeaEncoding::FQDN->value],
+        138 => [KeaEncoding::IPV4->value],
+        141 => [KeaEncoding::FQDN->value],
+        146 => [KeaEncoding::HEX->value],       // ANDSF: complex policy structure (3GPP)
+        159 => [KeaEncoding::HEX->value],       // DHCP Captive Portal (binary URL encoding variant)
+        212 => [KeaEncoding::HEX->value],       // 6RD: IPv6 + IPv4 + prefix structure (mixed types)
+        213 => [KeaEncoding::FQDN->value],
+    ];
+
+    private const DHCPV6_OPTION_TYPES = [
+        1   => [KeaEncoding::HEX->value],       // client-id (DUID structure, variable binary)
+        2   => [KeaEncoding::HEX->value],       // server-id (DUID structure, variable binary)
+        3   => [KeaEncoding::HEX->value],       // ia-na (container with nested options)
+        4   => [KeaEncoding::HEX->value],       // ia-ta (deprecated container option)
+        5   => [KeaEncoding::HEX->value],       // iaaddr (nested address structure with lifetimes)
+        6   => [KeaEncoding::UINT16->value],
+        7   => [KeaEncoding::UINT8->value],
+        8   => [KeaEncoding::UINT16->value],
+        9   => [KeaEncoding::HEX->value],       // relay-msg (encapsulated DHCPv6 message)
+        11  => [KeaEncoding::HEX->value],       // auth (complex authentication structure)
+        12  => [KeaEncoding::IPV6->value],
+        13  => [KeaEncoding::UINT16->value],
+        14  => [KeaEncoding::HEX->value],       // rapid-commit (empty flag option, no payload)
+        15  => [KeaEncoding::HEX->value],       // user-class (opaque binary list of identifiers)
+        16  => [KeaEncoding::HEX->value],       // vendor-class (vendor-specific binary format)
+        17  => [KeaEncoding::HEX->value],       // vendor-opts (nested vendor option container)
+        18  => [KeaEncoding::HEX->value],       // interface-id (relay-provided opaque identifier)
+        21  => [KeaEncoding::FQDN->value],
+        22  => [KeaEncoding::IPV6->value],
+        23  => [KeaEncoding::IPV6->value],
+        24  => [KeaEncoding::FQDN->value],
+        25  => [KeaEncoding::HEX->value],       // ia-pd (prefix delegation container)
+        26  => [KeaEncoding::HEX->value],       // iaprefix (nested prefix structure)
+        27  => [KeaEncoding::IPV6->value],
+        28  => [KeaEncoding::IPV6->value],
+        29  => [KeaEncoding::FQDN->value],
+        30  => [KeaEncoding::FQDN->value],
+        31  => [KeaEncoding::IPV6->value],
+        32  => [KeaEncoding::UINT32->value],
+        33  => [KeaEncoding::FQDN->value],
+        34  => [KeaEncoding::IPV6->value],
+        36  => [KeaEncoding::HEX->value],       // geoconf-civic (record: uint8, uint16, binary)
+        37  => [KeaEncoding::HEX->value],       // remote-id (record: uint32, binary)
+        38  => [KeaEncoding::HEX->value],       // subscriber-id (binary blob)
+        39  => [KeaEncoding::HEX->value],       // client-fqdn (record with flags + fqdn encoding)
+        40  => [KeaEncoding::IPV6->value],
+        41  => [KeaEncoding::STRING->value],
+        42  => [KeaEncoding::STRING->value],
+        43  => [KeaEncoding::UINT16->value],
+        44  => [KeaEncoding::HEX->value],       // lq-query (record: uint8, ipv6-address)
+        45  => [KeaEncoding::HEX->value],       // client-data (empty container option)
+        46  => [KeaEncoding::UINT32->value],
+        47  => [KeaEncoding::HEX->value],       // lq-relay-data (record: ipv6-address + binary)
+        48  => [KeaEncoding::IPV6->value],
+        51  => [KeaEncoding::FQDN->value],
+        52  => [KeaEncoding::IPV6->value],
+        53  => [KeaEncoding::HEX->value],       // relay-id (binary identifier)
+        56  => [KeaEncoding::HEX->value],       // ntp-server (empty container, suboptions)
+        57  => [KeaEncoding::FQDN->value],
+        58  => [KeaEncoding::FQDN->value],
+        59  => [KeaEncoding::STRING->value],
+        60  => [KeaEncoding::HEX->value],       // bootfile-param (tuple type, variable structure)
+        61  => [KeaEncoding::UINT16->value],
+        62  => [KeaEncoding::HEX->value],       // nii (record: uint8, uint8, uint8)
+        64  => [KeaEncoding::FQDN->value],
+        65  => [KeaEncoding::FQDN->value],
+        66  => [KeaEncoding::HEX->value],       // rsoo (empty container option)
+        67  => [KeaEncoding::HEX->value],       // pd-exclude (binary prefix exclusion format)
+        74  => [KeaEncoding::HEX->value],       // rdnss-selection (record: ipv6, uint8, fqdn)
+        79  => [KeaEncoding::HEX->value],       // client-linklayer-addr (binary MAC-like structure)
+        80  => [KeaEncoding::IPV6->value],
+        82  => [KeaEncoding::UINT32->value],
+        83  => [KeaEncoding::UINT32->value],
+        88  => [KeaEncoding::IPV6->value],
+        89  => [KeaEncoding::HEX->value],       // s46-rule (complex record: mixed v4/v6 fields)
+        90  => [KeaEncoding::IPV6->value],
+        91  => [KeaEncoding::HEX->value],       // IPV6_PREFIX
+        92  => [KeaEncoding::HEX->value],       // s46-v4v6bind (record: ipv4 + ipv6-prefix)
+        93  => [KeaEncoding::HEX->value],       // s46-portparams (record: uint8 + psid)
+        94  => [KeaEncoding::HEX->value],       // s46-cont-mape (empty container)
+        95  => [KeaEncoding::HEX->value],       // s46-cont-mapt (empty container)
+        96  => [KeaEncoding::HEX->value],       // s46-cont-lw (empty container)
+        103 => [KeaEncoding::STRING->value],
+        136 => [KeaEncoding::HEX->value],       // v6-sztp-redirect (tuple type)
+        143 => [KeaEncoding::IPV6->value],
+        144 => [KeaEncoding::HEX->value],       // v6-dnr (record: uint16, uint16, fqdn, binary)
+        148 => [KeaEncoding::HEX->value],       // addr-reg-enable (empty flag option)
+    ];
 
     private $internalEncodingSource = 'encoding';
 
@@ -45,32 +276,261 @@ class KeaOptionDataField extends BaseField
         }
     }
 
+    private string $internalOptionSpace = 'dhcp4';
+
+    public function setOptionSpace($value): void
+    {
+        $value = strtolower(trim((string)$value));
+        if (in_array($value, ['dhcp4', 'dhcp6'], true)) {
+            $this->internalOptionSpace = $value;
+        }
+    }
+
+    /* Public endpoints */
+
+    public function getEncoding(): ?KeaEncoding
+    {
+        $parent = $this->getParentNode();
+        if ($parent === null || !isset($parent->{$this->internalEncodingSource})) {
+            return null;
+        }
+        return KeaEncoding::tryFrom($parent->{$this->internalEncodingSource}->getValue());
+    }
+
+    public function isEncodingAllowed(): bool
+    {
+        $parent = $this->getParentNode();
+        if ($parent === null || !isset($parent->code)) {
+            return true;
+        }
+        $encoding = $this->getEncoding();
+        if ($encoding === null || $encoding === KeaEncoding::HEX) {
+            return true; // configuring hex is always allowed as bailout
+        }
+        $code = $parent->code->asInt();
+        $map = $this->getOptionTypeMap();
+        if (!isset($map[$code])) {
+            return true; // unknown/vendor options
+        }
+        return in_array($encoding->value, $map[$code], true);
+    }
+
+    public function getEncodedValue(): string
+    {
+        $data = trim($this->getValue());
+        $encoding = $this->getEncoding();
+        if ($encoding === null) {
+            return '';
+        }
+        return match ($encoding) {
+            KeaEncoding::HEX => $data,
+            KeaEncoding::IPV4 => $this->encodeIpv4($data),
+            KeaEncoding::IPV6 => $this->encodeIpv6($data),
+            KeaEncoding::UINT8 => $this->encodeUInt($data, 8),
+            KeaEncoding::UINT16 => $this->encodeUInt($data, 16),
+            KeaEncoding::UINT32 => $this->encodeUInt($data, 32),
+            KeaEncoding::INT32 => $this->encodeInt32($data),
+            KeaEncoding::BOOLEAN => $this->encodeBool($data),
+            KeaEncoding::STRING => bin2hex($data),
+            KeaEncoding::FQDN => $this->encodeFqdn($data),
+        };
+    }
+
     public function getValidators()
     {
         $validators = parent::getValidators();
         if (!empty($this->internalValue)) {
             $validators[] = new CallbackValidator([
                 "callback" => function ($data) {
-
-                    $messages = [];
-
-                    $parent = $this->getParentNode();
-                    $encodingSource = $this->internalEncodingSource;
-
-                    if ($parent !== null && isset($parent->$encodingSource)) {
-                        $encoding = $parent->$encodingSource->getValue();
-
-                        if ($encoding === "hex") {
-                            if (!preg_match('/^([0-9A-F]{2})+$/', $data)) {
-                                $messages[] = gettext("Hex value must contain uppercase hexadecimal byte pairs.");
-                            }
-                        }
+                    $data = trim($data);
+                    $encoding = $this->getEncoding();
+                    if ($encoding === null || !isset(self::VALIDATOR_MAP[$encoding->value])) {
+                        return [gettext("Unsupported encoding type. Use hex for complex options.")];
                     }
-
-                    return $messages;
+                    if (!$this->isEncodingAllowed()) {
+                        $parent = $this->getParentNode();
+                        $code = $parent->code->asInt();
+                        $allowed = $this->getAllowedEncodingsForCode($code);
+                        if ($allowed === null) {
+                            // unknown option fallback message
+                            return [
+                                sprintf(
+                                    gettext("Encoding '%s' is not valid for this DHCP option, use hex instead."),
+                                    $encoding->value
+                                )
+                            ];
+                        }
+                        return [
+                            sprintf(
+                                gettext("Encoding '%s' is not valid for option %d, use %s or hex."),
+                                $encoding->value,
+                                $code,
+                                $this->formatEncodings($allowed)
+                            )
+                        ];
+                    }
+                    $method = self::VALIDATOR_MAP[$encoding->value];
+                    return $this->$method($data);
                 }
             ]);
         }
         return $validators;
+    }
+
+    /* Helpers */
+
+    private function getListValues(string $data): array
+    {
+        return array_values(array_filter(
+            array_map('trim', explode(',', $data)),
+            fn($v) => $v !== ''
+        ));
+    }
+
+    private function getOptionTypeMap(): array
+    {
+        return $this->internalOptionSpace === 'dhcp6'
+            ? self::DHCPV6_OPTION_TYPES
+            : self::DHCPV4_OPTION_TYPES;
+    }
+
+    private function getAllowedEncodingsForCode(int $code): ?array
+    {
+        $map = $this->getOptionTypeMap();
+        return $map[$code] ?? null;
+    }
+
+    private function formatEncodings(array $encodings): string
+    {
+        return implode(', ', $encodings);
+    }
+
+    /* Encoders */
+
+    private function encodeIpv4(string $data): string
+    {
+        return implode('', array_map(function ($ip) {
+            return implode('', array_map(fn($o) => sprintf('%02X', (int)$o), explode('.', $ip)));
+        }, $this->getListValues($data)));
+    }
+
+    private function encodeIpv6(string $data): string
+    {
+        return implode('', array_map(function ($ip) {
+            return strtoupper(bin2hex(inet_pton($ip)));
+        }, $this->getListValues($data)));
+    }
+
+    private function encodeUInt(string $data, int $bits): string
+    {
+        $value = (int)$data;
+        return strtoupper(str_pad(dechex($value), $bits / 4, '0', STR_PAD_LEFT));
+    }
+
+    private function encodeInt32(string $data): string
+    {
+        $value = (int)$data;
+        return strtoupper(bin2hex(pack('l', $value)));
+    }
+
+    private function encodeBool(string $data): string
+    {
+        $data = strtolower(trim($data));
+        return ($data === 'true' || $data === '1') ? '01' : '00';
+    }
+
+    private function encodeFqdn(string $data): string
+    {
+        $result = '';
+        foreach (explode('.', $data) as $label) {
+            $result .= sprintf('%02X', strlen($label)) . strtoupper(bin2hex($label));
+        }
+        return $result . '00';
+    }
+
+    /* Validators */
+
+    private function validateHex(string $data): array
+    {
+        if (!preg_match('/^([0-9A-F]{2})+$/', $data)) {
+            return [gettext("Hex value must contain uppercase hexadecimal byte pairs.")];
+        }
+        return [];
+    }
+
+    private function validateIpv4List(string $data): array
+    {
+        $messages = [];
+        foreach ($this->getListValues($data) as $ip) {
+            if (!Util::isIpv4Address($ip)) {
+                $messages[] = sprintf(gettext("Invalid IPv4 address: %s"), $ip);
+            }
+        }
+        return $messages;
+    }
+
+    private function validateIpv6List(string $data): array
+    {
+        $messages = [];
+        foreach ($this->getListValues($data) as $ip) {
+            if (!Util::isIpv6Address($ip)) {
+                $messages[] = sprintf(gettext("Invalid IPv6 address: %s"), $ip);
+            }
+        }
+        return $messages;
+    }
+
+    private function validateUInt(string $data, int $bits): array
+    {
+        if (!ctype_digit($data)) {
+            return [gettext("Value must be a positive integer.")];
+        }
+        return [];
+    }
+
+    private function validateUInt8(string $data): array
+    {
+        return $this->validateUInt($data, 8);
+    }
+    private function validateUInt16(string $data): array
+    {
+        return $this->validateUInt($data, 16);
+    }
+    private function validateUInt32(string $data): array
+    {
+        return $this->validateUInt($data, 32);
+    }
+
+    private function validateInt32(string $data): array
+    {
+        if (!is_numeric($data)) {
+            return [gettext("Value must be a number.")];
+        }
+        return [];
+    }
+
+    private function validateBoolean(string $data): array
+    {
+        $data = strtolower(trim($data));
+        if (!in_array($data, ['true', 'false', '0', '1'], true)) {
+            return [gettext("Boolean must be true/false or 0/1.")];
+        }
+        return [];
+    }
+
+    private function validateString(string $data): array
+    {
+        if (preg_match('/[\'"]/', $data)) {
+            return [gettext("String must not contain quotes.")];
+        }
+        return [];
+    }
+
+    private function validateFqdn(string $data): array
+    {
+        if (!preg_match('/^([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+$/', $data)) {
+            return [gettext("Invalid FQDN.")];
+        }
+        return [];
     }
 }
