@@ -26,6 +26,16 @@
 
 <script>
 $( document ).ready(function() {
+    let selectedHostOverride = null;
+    const commandOverride = {
+        dialog: "DialogHostAlias",
+        get: '/api/unbound/settings/get_host_alias/',
+        set: '/api/unbound/settings/set_host_alias/',
+        add: '/api/unbound/settings/add_host_alias/',
+        del: '/api/unbound/settings/del_host_alias/',
+        toggle: '/api/unbound/settings/toggle_host_alias/'
+    };
+
     let grid_hosts = $("#{{formGridHostOverride['table_id']}}").UIBootgrid({
         search:'/api/unbound/settings/search_host_override/',
         get:'/api/unbound/settings/get_host_override/',
@@ -33,12 +43,70 @@ $( document ).ready(function() {
         add:'/api/unbound/settings/add_host_override/',
         del:'/api/unbound/settings/del_host_override/',
         toggle:'/api/unbound/settings/toggle_host_override/',
+        commands: {
+            "edit": {filter: (cell) => !cell.getData()['isAlias']},
+            "copy": {filter: (cell) => !cell.getData()['isAlias']},
+            "delete": {filter: (cell) => !cell.getData()['isAlias']},
+            "add-alias": {
+                filter: (cell) => !cell.getData()['isAlias'],
+                method: function (event, cell) {
+                    const data = cell.getData();
+                    selectedHostOverride = data;
+                    grid_hosts.bootgrid('command_add', event, cell, commandOverride);
+                },
+                classname: 'fa fa-plus fa-fw',
+                sequence: 20,
+                title: "{{ lang._('Add Alias') }}"
+            },
+            "edit-alias": {
+                filter: (cell) => cell.getData()['isAlias'],
+                method: function (event, cell) {
+                    const data = cell.getData();
+                    grid_hosts.bootgrid('command_edit', event, cell, data.uuid, commandOverride);
+                },
+                classname: 'fa fa-fw fa-pencil',
+                sequence: 100,
+                title: "{{ lang._('Edit Alias') }}"
+            },
+            "copy-alias": {
+                filter: (cell) => cell.getData()['isAlias'],
+                method: function (event, cell) {
+                    const data = cell.getData();
+                    grid_hosts.bootgrid('command_copy', event, cell, data.uuid, commandOverride);
+                },
+                classname: 'fa fa-fw fa-clone',
+                sequence: 200,
+                title: "{{ lang._('Copy Alias') }}"
+            },
+            "delete-alias": {
+                filter: (cell) => cell.getData()['isAlias'],
+                method: function (event, cell) {
+                    const data = cell.getData();
+                    grid_hosts.bootgrid('command_delete', event, cell, data.uuid, commandOverride);
+                },
+                classname: 'fa fa-fw fa-trash-o',
+                sequence: 500,
+                title: "{{ lang._('Delete Alias') }}"
+            },
+            "toggle-alias": {
+                filter: (cell) => cell.getData()['isAlias'],
+                method: function (event, cell) {
+                    const data = cell.getData();
+                    grid_hosts.bootgrid('command_toggle', event, cell, data.uuid, commandOverride);
+                },
+                title: (cell) => {
+                    if (parseInt(cell.getValue()) === 1) {
+                        return "{{ lang._('Disable Alias') }}";
+                    } else {
+                        return "{{ lang._('Enable Alias') }}";
+                    }
+                }
+            }
+        },
         options: {
-            selection: true,
-            multiSelect: false,
-            rowSelect: true,
+            selection: false,
+            multiSelect: false, /* disable batched enable/disable behavior, not compatible with this grid */
             rowCount: [7, 20, 50, 100, 200, 500, -1],
-            stickySelect: true,
             formatters: {
                 "mxformatter": function (column, row) {
                     /* Format the "Value" column so it shows either an MX host ("MX" type) or a raw IP address ("A" type) */
@@ -47,53 +115,37 @@ $( document ).ready(function() {
                     }
                     return row.server;
                 },
+                "rowtoggle": function (column, row) {
+                    const command = row.isAlias ? 'command-toggle-alias' : 'command-toggle';
+                    if (parseInt(row[column.id], 2) === 1) {
+                        return `<span style="cursor: pointer;" class="fa fa-fw fa-check-square-o ${command} bootgrid-tooltip" data-value="1" data-row-id="${row.uuid}"></span>`;
+                    } else {
+                        return `<span style="cursor: pointer;" class="fa fa-fw fa-square-o ${command} bootgrid-tooltip" data-value="0" data-row-id="${row.uuid}"></span>`;
+                    }
+                }
             },
-        }
-    }).on("selected.rs.jquery.bootgrid", function (e, rows) {
-        $("#{{formGridHostAlias['table_id']}}").bootgrid('reload');
-    }).on("loaded.rs.jquery.bootgrid", function (e) {
-        let ids = $("#{{formGridHostOverride['table_id']}}").bootgrid("getCurrentRows");
-        if (ids.length > 0) {
-            $("#{{formGridHostOverride['table_id']}}").bootgrid('select', [ids[0].uuid]);
-        }
-    });
-
-    let grid_aliases = $("#{{formGridHostAlias['table_id']}}").UIBootgrid({
-        search:'/api/unbound/settings/search_host_alias/',
-        get:'/api/unbound/settings/get_host_alias/',
-        set:'/api/unbound/settings/set_host_alias/',
-        add:'/api/unbound/settings/add_host_alias/',
-        del:'/api/unbound/settings/del_host_alias/',
-        toggle:'/api/unbound/settings/toggle_host_alias/',
-        options: {
-            labels: {
-                noResults: "{{ lang._('No results found for selected host or none selected') }}"
-            },
-            selection: true,
-            multiSelect: true,
-            rowSelect: true,
-            rowCount: [7, 20, 50, 100, 200, 500, -1],
-            useRequestHandlerOnGet: true,
             requestHandler: function(request) {
-                let uuids = $("#{{formGridHostOverride['table_id']}}").bootgrid("getSelectedRows");
-                request['host'] = uuids.length > 0 ? uuids[0] : "__not_found__";
-                let selected = $(".host_selected");
-                uuids.length > 0 ? selected.show() : selected.hide();
-                if (request.rowCount === undefined) {
-                    // XXX: We can't easily see if we're being called by GET or POST, assume GET uri when there's no rowcount
-                    return new URLSearchParams(request).toString();
-                } else {
-                    return request;
+                if (selectedHostOverride) {
+                    request['host'] = selectedHostOverride.uuid;
+                    selectedHostOverride = null;
+                }
+
+                return request;
+            }
+        },
+        tabulatorOptions: {
+            dataTree: true,
+            dataTreeElementColumn:"tree",
+            dataTreeCollapseElement:"<i class='fas fa-minus-square'></i>",
+            dataTreeExpandElement:"<i class='fas fa-plus-square'></i>",
+            rowFormatter: function(row) {
+                const data = row.getData();
+                const $element = $(row.getElement());
+
+                if (data.isAlias) {
+                    $element.addClass('alias-row');
                 }
             }
-        }
-    });
-
-    $("div.actionBar").each(function(){
-        if ($(this).closest(".bootgrid-header").attr("id").includes("Alias")) {
-            $(this).parent().prepend($('<td id="heading-wrapper" class="col-sm-2 theading-text">{{ lang._('Aliases') }}</div>'));
-        } else {
-            $(this).parent().prepend($('<td id="heading-wrapper" class="col-sm-2 theading-text">{{ lang._('Hosts') }}</div>'));
         }
     });
 
@@ -129,6 +181,12 @@ $( document ).ready(function() {
 </script>
 
 <style>
+    .alias-row .tabulator-cell {
+        border: 0 !important;
+        box-shadow: none !important;
+        padding-left: 2rem;
+    }
+
     .theading-text {
         font-weight: 800;
         font-style: italic;
@@ -136,16 +194,13 @@ $( document ).ready(function() {
 </style>
 
 <div class="content-box __mb">
-    {{ partial('layout_partials/base_bootgrid_table', formGridHostOverride + {'hide_delete': true})}}
+    {{ partial('layout_partials/base_bootgrid_table', formGridHostOverride + {'hide_delete': true, 'command_width': '120'})}}
     <div id="infosection" class="bootgrid-footer container-fluid">
         {{ lang._('Entries in this section override individual results from the forwarders.') }}
         {{ lang._('Use these for changing DNS results or for adding custom DNS records.') }}
         {{ lang._('Keep in mind that all resource record types (i.e. A, AAAA, MX, etc. records) of a specified host below are being overwritten.') }}
     </div>
 </div>
-<div class="content-box __mb">
-    {{ partial('layout_partials/base_bootgrid_table', formGridHostAlias)}}
-</div>
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/unbound/service/reconfigure', 'data_service_widget': 'unbound'}) }}
 {{ partial("layout_partials/base_dialog",['fields':formDialogHostOverride,'id':formGridHostOverride['edit_dialog_id'],'label':lang._('Edit Host Override')])}}
-{{ partial("layout_partials/base_dialog",['fields':formDialogHostAlias,'id':formGridHostAlias['edit_dialog_id'],'label':lang._('Edit Host Override Alias')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogHostAlias,'id':'DialogHostAlias','label':lang._('Edit Host Override Alias')])}}
