@@ -336,6 +336,7 @@
                     </OptionValues>
                 </encoding>
                 <data type=".\KeaOptionDataField">
+                    <CodeSource>code</CodeSource>
                     <EncodingSource>encoding</EncodingSource>
                     <OptionSpace>dhcp4</OptionSpace>
                     <Required>Y</Required>
@@ -382,6 +383,7 @@
                     </Constraints>
                 </match_encoding>
                 <match_data type=".\KeaOptionDataField">
+                    <CodeSource>match_code</CodeSource>
                     <EncodingSource>match_encoding</EncodingSource>
                     <OptionSpace>dhcp4</OptionSpace>
                     <Constraints>

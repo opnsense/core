@@ -284,6 +284,7 @@
                     </OptionValues>
                 </encoding>
                 <data type=".\KeaOptionDataField">
+                    <CodeSource>code</CodeSource>
                     <EncodingSource>encoding</EncodingSource>
                     <OptionSpace>dhcp6</OptionSpace>
                     <Required>Y</Required>
@@ -330,6 +331,7 @@
                     </Constraints>
                 </match_encoding>
                 <match_data type=".\KeaOptionDataField">
+                    <CodeSource>match_code</CodeSource>
                     <EncodingSource>match_encoding</EncodingSource>
                     <OptionSpace>dhcp6</OptionSpace>
                     <Constraints>

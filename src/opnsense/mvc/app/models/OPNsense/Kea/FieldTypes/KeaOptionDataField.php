@@ -276,11 +276,19 @@ class KeaOptionDataField extends BaseField
         }
     }
 
+    private $internalCodeSource = 'code';
+
+    public function setCodeSource($value): void
+    {
+        if (!empty($value)) {
+            $this->internalCodeSource = $value;
+        }
+    }
+
     private string $internalOptionSpace = 'dhcp4';
 
     public function setOptionSpace($value): void
     {
-        $value = strtolower(trim((string)$value));
         if (in_array($value, ['dhcp4', 'dhcp6'], true)) {
             $this->internalOptionSpace = $value;
         }
@@ -300,14 +308,14 @@ class KeaOptionDataField extends BaseField
     public function isEncodingAllowed(): bool
     {
         $parent = $this->getParentNode();
-        if ($parent === null || !isset($parent->code)) {
+        if ($parent === null || !isset($parent->{$this->internalCodeSource})) {
             return true;
         }
         $encoding = $this->getEncoding();
         if ($encoding === null || $encoding === KeaEncoding::HEX) {
             return true; // configuring hex is always allowed as bailout
         }
-        $code = $parent->code->asInt();
+        $code = $parent->{$this->internalCodeSource}->asInt();
         $map = $this->getOptionTypeMap();
         if (!isset($map[$code])) {
             return true; // unknown/vendor options
@@ -317,7 +325,7 @@ class KeaOptionDataField extends BaseField
 
     public function getEncodedValue(): string
     {
-        $data = trim($this->getValue());
+        $data = $this->getValue();
         $encoding = $this->getEncoding();
         if ($encoding === null) {
             return '';
@@ -342,14 +350,16 @@ class KeaOptionDataField extends BaseField
         if (!empty($this->internalValue)) {
             $validators[] = new CallbackValidator([
                 "callback" => function ($data) {
-                    $data = trim($data);
                     $encoding = $this->getEncoding();
                     if ($encoding === null || !isset(self::VALIDATOR_MAP[$encoding->value])) {
                         return [gettext("Unsupported encoding type. Use hex for complex options.")];
                     }
                     if (!$this->isEncodingAllowed()) {
                         $parent = $this->getParentNode();
-                        $code = $parent->code->asInt();
+                        if ($parent === null || !isset($parent->{$this->internalCodeSource})) {
+                            return [gettext("Missing DHCP option code.")];
+                        }
+                        $code = $parent->{$this->internalCodeSource}->asInt();
                         $allowed = $this->getAllowedEncodingsForCode($code);
                         if ($allowed === null) {
                             // unknown option fallback message
