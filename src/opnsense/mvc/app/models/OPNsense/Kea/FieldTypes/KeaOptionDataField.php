@@ -299,18 +299,12 @@ class KeaOptionDataField extends BaseField
     public function getEncoding(): ?KeaEncoding
     {
         $parent = $this->getParentNode();
-        if ($parent === null || !isset($parent->{$this->internalEncodingSource})) {
-            return null;
-        }
         return KeaEncoding::tryFrom($parent->{$this->internalEncodingSource}->getValue());
     }
 
     public function isEncodingAllowed(): bool
     {
         $parent = $this->getParentNode();
-        if ($parent === null || !isset($parent->{$this->internalCodeSource})) {
-            return true;
-        }
         $encoding = $this->getEncoding();
         if ($encoding === null || $encoding === KeaEncoding::HEX) {
             return true; // configuring hex is always allowed as bailout
@@ -347,7 +341,7 @@ class KeaOptionDataField extends BaseField
     public function getValidators()
     {
         $validators = parent::getValidators();
-        if (!empty($this->internalValue)) {
+        if ($this->internalValue !== null && $this->internalValue !== '') {
             $validators[] = new CallbackValidator([
                 "callback" => function ($data) {
                     $encoding = $this->getEncoding();
@@ -356,9 +350,6 @@ class KeaOptionDataField extends BaseField
                     }
                     if (!$this->isEncodingAllowed()) {
                         $parent = $this->getParentNode();
-                        if ($parent === null || !isset($parent->{$this->internalCodeSource})) {
-                            return [gettext("Missing DHCP option code.")];
-                        }
                         $code = $parent->{$this->internalCodeSource}->asInt();
                         $allowed = $this->getAllowedEncodingsForCode($code);
                         if ($allowed === null) {
@@ -502,10 +493,12 @@ class KeaOptionDataField extends BaseField
     {
         return $this->validateUInt($data, 8);
     }
+
     private function validateUInt16(string $data): array
     {
         return $this->validateUInt($data, 16);
     }
+
     private function validateUInt32(string $data): array
     {
         return $this->validateUInt($data, 32);
