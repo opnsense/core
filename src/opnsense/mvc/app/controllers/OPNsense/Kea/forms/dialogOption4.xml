@@ -7,6 +7,32 @@
     </field>
     <field>
         <type>header</type>
+        <label>Match DHCP option</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>option.match_code</id>
+        <label>Match Code</label>
+        <type>dropdown</type>
+        <help>The server will only send the option defined in "Set DHCP option" if a client first sends the option defined in "Match DHCP option". Leave empty to always send the option.</help>
+    </field>
+    <field>
+        <id>option.match_encoding</id>
+        <label>Match Encoding</label>
+        <type>dropdown</type>
+        <help>Encoding used to evaluate the match condition. "Hex" supports all encapsulated and structured options generically via payload in uppercase hexadecimal byte pairs.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>option.match_data</id>
+        <label>Match Data</label>
+        <type>text</type>
+        <help>Data to match against the selected DHCP option.</help>
+    </field>
+    <field>
+        <type>header</type>
         <label>Set DHCP option</label>
     </field>
     <field>
@@ -41,31 +67,5 @@
             <formatter>boolean</formatter>
             <visible>false</visible>
         </grid_view>
-    </field>
-    <field>
-        <type>header</type>
-        <label>Match DHCP option</label>
-        <collapse>true</collapse>
-    </field>
-    <field>
-        <id>option.match_code</id>
-        <label>Match Code</label>
-        <type>dropdown</type>
-        <help>The server will only send the option defined in "Set DHCP option" if a client first sends the option defined in "Match DHCP option". Leave empty to always send the option.</help>
-    </field>
-    <field>
-        <id>option.match_encoding</id>
-        <label>Match Encoding</label>
-        <type>dropdown</type>
-        <help>Encoding used to evaluate the match condition. "Hex" supports all encapsulated and structured options generically via payload in uppercase hexadecimal byte pairs.</help>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
-        <id>option.match_data</id>
-        <label>Match Data</label>
-        <type>text</type>
-        <help>Data to match against the selected DHCP option.</help>
     </field>
 </form>
