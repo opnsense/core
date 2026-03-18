@@ -505,4 +505,19 @@ class AliasController extends ApiMutableModelControllerBase
         }
         return ['status' => 'failed', 'message' => gettext('GeoIP update failed')];
     }
+
+    /**
+     * update bogons table
+     * @return array status
+     */
+    public function updateBogonsAction()
+    {
+        if (!$this->request->isPost()) {
+            return ['status' => 'failed'];
+        }
+
+        $backend = new Backend();
+        $backend->configdRun('filter update bogons');
+        return array('status' => 'ok');
+    }
 }
