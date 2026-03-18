@@ -38,6 +38,7 @@ class DNatRule extends Rule
         'nat' => array(
             'disabled' => 'parseIsComment',
             'type' => 'parsePlain',
+            'log' => 'parseBool,log',
             'interface' => 'parseInterface',
             'from' => 'parsePlain,from ',
             'to' => 'parsePlain,to ',
