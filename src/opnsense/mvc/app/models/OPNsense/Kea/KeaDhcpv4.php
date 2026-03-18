@@ -196,13 +196,13 @@ class KeaDhcpv4 extends BaseModel
 
                 // Add DHCP option-data elements for reservations
                 $optdata = $this->collectOptionData($reservation->option_data);
-                // Append raw options
+                /* append raw options */
                 foreach ($reservation->option->getValues() as $uuid) {
                     $option = $this->getNodeByReference("options.option.$uuid");
                     if ($option === null) {
                         continue;
                     }
-                    $optdata[] = [
+                    $entry = [
                         'code' => $option->code->asInt(),
                         'csv-format' => false,
                         'data' => $option->data->getValue(),
@@ -210,8 +210,9 @@ class KeaDhcpv4 extends BaseModel
                     ];
                     /* only conditionally send the option when a client option matches */
                     if (!$option->match_code->isEmpty()) {
-                        $optdata['client-classes'] = [$uuid];
+                        $entry['client-classes'] = [$uuid];
                     }
+                    $optdata[] = $entry;
                 }
                 if (!empty($optdata)) {
                     $res['option-data'] = $optdata;

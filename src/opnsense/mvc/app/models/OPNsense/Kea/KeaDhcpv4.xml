@@ -334,6 +334,7 @@
                 <match_code type="JsonKeyValueStoreField">
                     <ConfigdPopulateAct>kea list dhcp_options</ConfigdPopulateAct>
                     <OptionValues>
+                        <!-- mock option groups returned by JSON -->
                         <optgroup1>Assigned</optgroup1>
                         <optgroup2>Unassigned</optgroup2>
                     </OptionValues>
