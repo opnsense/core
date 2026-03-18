@@ -210,9 +210,7 @@ class KeaDhcpv4 extends BaseModel
                     ];
                     /* only conditionally send the option when a client option matches */
                     if (!$option->match_code->isEmpty()) {
-                        $optdata['client-classes'] = [
-                            'class_' . str_replace('-', '_', $uuid)
-                        ];
+                        $optdata['client-classes'] = [$uuid];
                     }
                 }
                 if (!empty($optdata)) {
@@ -235,9 +233,7 @@ class KeaDhcpv4 extends BaseModel
                 ];
                 /* only conditionally send the option when a client option matches */
                 if (!$option->match_code->isEmpty()) {
-                    $entry['client-classes'] = [
-                        'class_' . str_replace('-', '_', $uuid)
-                    ];
+                    $entry['client-classes'] = [$uuid];
                 }
                 $record['option-data'][] = $entry;
             }
@@ -253,9 +249,8 @@ class KeaDhcpv4 extends BaseModel
             if ($option->match_code->isEmpty()) {
                 continue;
             }
-            // XXX: encoding is only hex for now, add more later if needed
             $result[] = [
-                'name' => 'class_' . str_replace('-', '_', $uuid),
+                'name' => $uuid,
                 'test' => sprintf('option[%d].hex == 0x%s', $option->match_code->asInt(), $option->match_data->getValue()),
             ];
         }
