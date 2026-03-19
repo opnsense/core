@@ -186,11 +186,13 @@ function kea_configure_do($verbose = false)
 
 function kea_syslog()
 {
-    $logfacilities = [];
-    $logfacilities['kea'] = ['facility' => ['kea-dhcp4', 'kea-dhcp6', 'kea-ctrl-agent','kea-dhcp-ddns']];
-    return $logfacilities;
+    return ['kea' => ['facility' => [
+        'kea-dhcp4',
+        'kea-dhcp6',
+        'kea-ctrl-agent',
+        'kea-dhcp-ddns',
+    ]]];
 }
-
 
 function kea_firewall($fw)
 {
