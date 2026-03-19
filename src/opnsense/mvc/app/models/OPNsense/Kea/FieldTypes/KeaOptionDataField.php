@@ -52,6 +52,10 @@ class KeaOptionDataField extends BaseField
     protected $internalIsContainer = false;
     protected $internalValidationMessage = "Invalid option data";
 
+    private $internalCodeSource = 'code';
+    private $internalEncodingSource = 'encoding';
+    private string $internalOptionSpace = 'dhcp4';
+
     private const VALIDATOR_MAP = [
         KeaEncoding::HEX->value => 'validateHex',
         KeaEncoding::IPV4->value => 'validateIpv4List',
@@ -280,16 +284,7 @@ class KeaOptionDataField extends BaseField
         148 => [KeaEncoding::HEX->value],       // addr-reg-enable (empty flag option)
     ];
 
-    private $internalEncodingSource = 'encoding';
-
-    public function setEncodingSource($value): void
-    {
-        if (!empty($value)) {
-            $this->internalEncodingSource = $value;
-        }
-    }
-
-    private $internalCodeSource = 'code';
+    /* Public endpoints */
 
     public function setCodeSource($value): void
     {
@@ -298,36 +293,18 @@ class KeaOptionDataField extends BaseField
         }
     }
 
-    private string $internalOptionSpace = 'dhcp4';
+    public function setEncodingSource($value): void
+    {
+        if (!empty($value)) {
+            $this->internalEncodingSource = $value;
+        }
+    }
 
     public function setOptionSpace($value): void
     {
         if (in_array($value, ['dhcp4', 'dhcp6'], true)) {
             $this->internalOptionSpace = $value;
         }
-    }
-
-    /* Public endpoints */
-
-    public function getEncoding(): ?KeaEncoding
-    {
-        $parent = $this->getParentNode();
-        return KeaEncoding::tryFrom($parent->{$this->internalEncodingSource}->getValue());
-    }
-
-    public function isEncodingAllowed(): bool
-    {
-        $parent = $this->getParentNode();
-        $encoding = $this->getEncoding();
-        if ($encoding === null || $encoding === KeaEncoding::HEX) {
-            return true; // configuring hex is always allowed as bailout
-        }
-        $code = $parent->{$this->internalCodeSource}->asInt();
-        $map = $this->getOptionTypeMap();
-        if (!isset($map[$code])) {
-            return true; // unknown/vendor options
-        }
-        return in_array($encoding->value, $map[$code], true);
     }
 
     public function encodeValue(): string
@@ -381,6 +358,27 @@ class KeaOptionDataField extends BaseField
     }
 
     /* Helpers */
+
+    private function getEncoding(): ?KeaEncoding
+    {
+        $parent = $this->getParentNode();
+        return KeaEncoding::tryFrom($parent->{$this->internalEncodingSource}->getValue());
+    }
+
+    private function isEncodingAllowed(): bool
+    {
+        $parent = $this->getParentNode();
+        $encoding = $this->getEncoding();
+        if ($encoding === null || $encoding === KeaEncoding::HEX) {
+            return true; // configuring hex is always allowed as bailout
+        }
+        $code = $parent->{$this->internalCodeSource}->asInt();
+        $map = $this->getOptionTypeMap();
+        if (!isset($map[$code])) {
+            return true; // unknown/vendor options
+        }
+        return in_array($encoding->value, $map[$code], true);
+    }
 
     private function getListValues(string $data): array
     {
