@@ -204,7 +204,7 @@ class TextFieldTest extends Field_Framework_TestCase
     public function testIntegerStringValue()
     {
         $field = new TextField();
-        $field->setValue("@1234");
+        $field->setValue("1234");
 
         $this->assertEmpty($this->validate($field));
     }
