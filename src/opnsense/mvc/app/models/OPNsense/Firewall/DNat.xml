@@ -103,8 +103,8 @@
             <pass type="OptionField">
                 <BlankDesc>Manual</BlankDesc>
                 <OptionValues>
-                    <rule>Register rule</rule>
                     <pass>Pass</pass>
+                    <rule>Register rule</rule>
                 </OptionValues>
             </pass>
             <!-- drop in a future version (27.1?), used for migration purposes.-->
