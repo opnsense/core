@@ -20,7 +20,7 @@
         <id>option.match_encoding</id>
         <label>Match Encoding</label>
         <type>dropdown</type>
-        <help>Encoding used to evaluate the match condition. "Hex" supports all encapsulated and structured options generically via payload in uppercase hexadecimal byte pairs.</help>
+        <help>Encoding used to evaluate the match condition. "Hex" supports all encapsulated and structured options generically via payload in hexadecimal byte pairs.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>

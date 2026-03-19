@@ -410,6 +410,11 @@ class KeaOptionDataField extends BaseField
 
     /* Encoders */
 
+    private function encodeHex(string $data): string
+    {
+        return strtoupper($data);
+    }
+
     private function encodeIpv4(string $data): string
     {
         return implode('', array_map(function ($ip) {
@@ -455,8 +460,8 @@ class KeaOptionDataField extends BaseField
 
     private function validateHex(string $data): array
     {
-        if (!preg_match('/^([0-9A-F]{2})+$/', $data)) {
-            return [gettext("Hex value must contain uppercase hexadecimal byte pairs.")];
+        if (!preg_match('/^([0-9A-Fa-f]{2})+$/', $data)) {
+            return [gettext("Hex value must contain valid hexadecimal byte pairs.")];
         }
         return [];
     }
