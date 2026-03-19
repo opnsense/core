@@ -65,6 +65,19 @@ class KeaOptionDataField extends BaseField
         KeaEncoding::FQDN->value => 'validateFqdn',
     ];
 
+    private const ENCODER_MAP = [
+        KeaEncoding::HEX->value => 'encodeHex',
+        KeaEncoding::IPV4->value => 'encodeIpv4',
+        KeaEncoding::IPV6->value => 'encodeIpv6',
+        KeaEncoding::UINT8->value => 'encodeUInt8',
+        KeaEncoding::UINT16->value => 'encodeUInt16',
+        KeaEncoding::UINT32->value => 'encodeUInt32',
+        KeaEncoding::INT32->value => 'encodeInt32',
+        KeaEncoding::BOOLEAN->value => 'encodeBool',
+        KeaEncoding::STRING->value => 'encodeString',
+        KeaEncoding::FQDN->value => 'encodeFqdn',
+    ];
+
     // For any complex DHCP type, user configurable hex is the bailout right now
     // Each of these can have custom validators and encoders added when the demanded
     // The strict validation ensures the possibility of misconfigurations is low.
@@ -319,23 +332,15 @@ class KeaOptionDataField extends BaseField
 
     public function getEncodedValue(): string
     {
-        $data = $this->getValue();
         $encoding = $this->getEncoding();
         if ($encoding === null) {
             return '';
         }
-        return match ($encoding) {
-            KeaEncoding::HEX => $data,
-            KeaEncoding::IPV4 => $this->encodeIpv4($data),
-            KeaEncoding::IPV6 => $this->encodeIpv6($data),
-            KeaEncoding::UINT8 => $this->encodeUInt($data, 8),
-            KeaEncoding::UINT16 => $this->encodeUInt($data, 16),
-            KeaEncoding::UINT32 => $this->encodeUInt($data, 32),
-            KeaEncoding::INT32 => $this->encodeInt32($data),
-            KeaEncoding::BOOLEAN => $this->encodeBool($data),
-            KeaEncoding::STRING => bin2hex($data),
-            KeaEncoding::FQDN => $this->encodeFqdn($data),
-        };
+        $method = self::ENCODER_MAP[$encoding->value] ?? null;
+        if ($method === null) {
+            return '';
+        }
+        return $this->$method($this->getValue());
     }
 
     public function getValidators()
@@ -485,6 +490,10 @@ class KeaOptionDataField extends BaseField
     {
         if (!ctype_digit($data)) {
             return [gettext("Value must be a positive integer.")];
+        }
+        $max = (2 ** $bits) - 1;
+        if ((int)$data > $max) {
+            return [sprintf(gettext("Value exceeds %d-bit limit."), $bits)];
         }
         return [];
     }
