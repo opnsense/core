@@ -330,7 +330,7 @@ class KeaOptionDataField extends BaseField
         return in_array($encoding->value, $map[$code], true);
     }
 
-    public function getEncodedValue(): string
+    public function encodeValue(): string
     {
         $encoding = $this->getEncoding();
         if ($encoding === null) {
