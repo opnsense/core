@@ -328,10 +328,8 @@ class KeaOptionDataField extends BaseField
                         return [gettext("Unsupported encoding type. Use hex for complex options.")];
                     }
                     if (!$this->isEncodingAllowed()) {
-                        $parent = $this->getParentNode();
-                        $code = $parent->{$this->internalCodeSource}->asInt();
-                        $map = $this->getOptionTypeMap();
-                        $allowed = $map[$code] ?? null;
+                        $code = $this->getParentNode()->{$this->internalCodeSource}->asInt();
+                        $allowed = $this->getOptionTypeMap()[$code] ?? null;
                         if ($allowed === null) {
                             // unknown option fallback message
                             return [
@@ -362,18 +360,16 @@ class KeaOptionDataField extends BaseField
 
     private function getEncoding(): ?KeaEncoding
     {
-        $parent = $this->getParentNode();
-        return KeaEncoding::tryFrom($parent->{$this->internalEncodingSource}->getValue());
+        return KeaEncoding::tryFrom($this->getParentNode()->{$this->internalEncodingSource}->getValue());
     }
 
     private function isEncodingAllowed(): bool
     {
-        $parent = $this->getParentNode();
         $encoding = $this->getEncoding();
         if ($encoding === null || $encoding === KeaEncoding::HEX) {
             return true; // configuring hex is always allowed as bailout
         }
-        $code = $parent->{$this->internalCodeSource}->asInt();
+        $code = $this->getParentNode()->{$this->internalCodeSource}->asInt();
         $map = $this->getOptionTypeMap();
         if (!isset($map[$code])) {
             return false; // unknown options are hex-only
@@ -419,14 +415,12 @@ class KeaOptionDataField extends BaseField
 
     private function encodeUInt(string $data, int $bits): string
     {
-        $value = (int)$data;
-        return strtoupper(str_pad(dechex($value), $bits / 4, '0', STR_PAD_LEFT));
+        return strtoupper(str_pad(dechex((int)$data), $bits / 4, '0', STR_PAD_LEFT));
     }
 
     private function encodeInt32(string $data): string
     {
-        $value = (int)$data;
-        return strtoupper(bin2hex(pack('l', $value)));
+        return strtoupper(bin2hex(pack('l', (int)$data)));
     }
 
     private function encodeBool(string $data): string
