@@ -505,8 +505,12 @@ class KeaOptionDataField extends BaseField
 
     private function validateInt32(string $data): array
     {
-        if (!is_numeric($data)) {
-            return [gettext("Value must be a number.")];
+        if (!preg_match('/^-?\d+$/', $data)) {
+            return [gettext("Value must be an integer.")];
+        }
+        $value = (int)$data;
+        if ($value < -2147483648 || $value > 2147483647) {
+            return [gettext("Value exceeds int32 range.")];
         }
         return [];
     }
