@@ -297,14 +297,10 @@ function kea_firewall($fw)
 
 function kea_xmlrpc_sync()
 {
-    $result = [];
-
-    $result[] = [
+    return [[
+        'services' => ['kea-dhcpv4', 'kea-dhcpv6', 'kea-dhcp-ddns'],
         'description' => gettext('Kea DHCP'),
         'section' => 'OPNsense.Kea',
         'id' => 'kea',
-        'services' => ["kea-dhcpv4", "kea-dhcpv6", "kea-dhcp-ddns"],
-    ];
-
-    return $result;
+    ]];
 }
