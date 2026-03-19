@@ -497,10 +497,10 @@ class AliasController extends ApiMutableModelControllerBase
     /**
      * update specified alias type
      */
-    public function updateAction($action)
+    public function updateAction($action = null)
     {
-        if ($this->request->isPost() && in_array($action, ['geoip', 'bogons'])) {
-            (new Backend())->configdRun('filter update ' . $action);
+        if ($this->request->isPost() && in_array($action, ['geoip', 'bogons'], true)) {
+            (new Backend())->configdpRun('filter update', [$action]);
             return ['status' => 'ok', 'message' => gettext('Update completed')];
         }
         return ['status' => 'failed', 'message' => gettext('Error updating action')];
