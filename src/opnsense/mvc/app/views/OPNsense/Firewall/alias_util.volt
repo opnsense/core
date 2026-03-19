@@ -75,15 +75,6 @@
 
         });
 
-        // update bogons
-        $("#update_bogons").on('click', function(event){
-            event.preventDefault();
-            $("#update_bogons_progress").addClass("fa fa-spinner fa-pulse");
-            ajaxCall("/api/firewall/alias_util/update_bogons", {}, function(){
-                $("#update_bogons_progress").removeClass("fa fa-spinner fa-pulse");
-            });
-        });
-
         $('#find_references').on('click', function (event) {
             BootstrapDialog.show({
                 type: BootstrapDialog.TYPE_DEFAULT,
@@ -198,9 +189,6 @@
                 </div>
                 </div>
                 <div class="col-xs-4">
-                    <button class="btn btn-default pull-right" id="update_bogons"><i id="update_bogons_progress" class=""></i>
-                    {{ lang._('Update bogons') }}
-                    </button>
                     <button class="btn btn-default pull-right" id="find_references" title="{{ lang._('Look up which aliases match a certain IP address') }}">
                         <span class="fa fa-search"></span> {{ lang._('Find references') }}
                     </button>
