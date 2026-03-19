@@ -376,7 +376,7 @@ class KeaOptionDataField extends BaseField
         $code = $parent->{$this->internalCodeSource}->asInt();
         $map = $this->getOptionTypeMap();
         if (!isset($map[$code])) {
-            return true; // unknown/vendor options
+            return false; // unknown options are hex-only
         }
         return in_array($encoding->value, $map[$code], true);
     }
