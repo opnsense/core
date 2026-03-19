@@ -594,6 +594,11 @@
         }
         loadSettings();
 
+        // update geoip button
+        $('#geoip_update_btn').SimpleActionButton();
+
+        // update bogons button
+        $('#update_bogons').SimpleActionButton();
 
         /**
          * reconfigure
@@ -641,6 +646,7 @@
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li><a data-toggle="tab" href="#aliases" id="aliases_tab">{{ lang._('Aliases') }}</a></li>
     <li><a data-toggle="tab" href="#geoip" id="geoip_tab">{{ lang._('GeoIP settings') }}</a></li>
+    <li><a data-toggle="tab" href="#actions" id="actions_tab">{{ lang._('Actions') }}</a></li>
 </ul>
 
 <div class="tab-content content-box">
@@ -721,6 +727,17 @@
     </div>
     <div id="geoip" class="tab-pane fade in">
       {{ partial("layout_partials/base_form",['fields':formGeoIPSettings,'id':'frm_GeopIPSettings'])}}
+    </div>
+    <div id="actions" class="tab-pane fade in">
+        <div class="content-box">
+            <div class="col-md-12">
+                <br/>
+                <button id="geoip_update_btn" type="button" class="btn btn-primary" data-endpoint="/api/firewall/alias/update/geoip" data-label="{{ lang._('Update GeoIP') }}" data-error-title="{{ lang._('Error updating GeoIP') }}"></button>
+                <button id="update_bogons" type="button" class="btn btn-primary" data-endpoint="/api/firewall/alias/update/bogons" data-label="{{ lang._('Update bogons') }}" data-error-title="{{ lang._('Error updating bogons') }}"></button>
+                <br/>
+                <br/>
+            </div>
+        </div>
     </div>
 </div>
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/alias/reconfigure'}) }}

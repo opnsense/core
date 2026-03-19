@@ -96,21 +96,6 @@ class AliasUtilController extends ApiControllerBase
     }
 
     /**
-     * update bogons table
-     * @return array status
-     */
-    public function updateBogonsAction()
-    {
-        if (!$this->request->isPost()) {
-            return ['status' => 'failed'];
-        }
-
-        $backend = new Backend();
-        $backend->configdRun('filter update bogons');
-        return array('status' => 'done');
-    }
-
-    /**
      * flush alias table
      * @param string $alias name to flush
      * @return array status
