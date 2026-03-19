@@ -90,7 +90,7 @@ class AuthGroupFieldTest extends Field_Framework_TestCase
         $field = new AuthGroupField();
         $field->eventPostLoading();
         $field->setMultiple('Y');
-        $field->setValue('101,100');
+        $field->setValues(['101', '100']);
         $this->assertTrue($field->isEqual('101,100'));
         $this->assertEquals(2, count($field->getValues()));
         $this->assertEquals('101', $field->getValues()[0]);
@@ -98,6 +98,11 @@ class AuthGroupFieldTest extends Field_Framework_TestCase
         $this->assertEmpty($this->validate($field));
         $field->setValue('101,,100');
         $this->assertTrue($field->isEqual('101,,100'));
+        $this->assertEquals(2, count($field->getValues()));
+        $this->assertEquals('101', $field->getValues()[0]);
+        $this->assertEquals('100', $field->getValues()[1]);
+        $field->setValues(['101','', '100']);
+        $this->assertTrue($field->isEqual('101,100'));
         $this->assertEquals(2, count($field->getValues()));
         $this->assertEquals('101', $field->getValues()[0]);
         $this->assertEquals('100', $field->getValues()[1]);
