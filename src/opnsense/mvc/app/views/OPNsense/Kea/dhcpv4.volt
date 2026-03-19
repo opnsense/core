@@ -220,14 +220,12 @@
     </div>
     <!-- reservations -->
     <div id="reservations" class="tab-pane fade in">
-        {{
-            partial('layout_partials/base_bootgrid_table', formGridReservation)
-        }}
+        {{ partial('layout_partials/base_bootgrid_table', formGridReservation) }}
     </div>
     <!-- options -->
-        <div id="options" class="tab-pane fade in">
-            {{ partial('layout_partials/base_bootgrid_table', formGridOption)}}
-        </div>
+    <div id="options" class="tab-pane fade in">
+        {{ partial('layout_partials/base_bootgrid_table', formGridOption)}}
+    </div>
     <!-- HA - peers -->
     <div id="ha-peers" class="tab-pane fade in">
        {{ partial('layout_partials/base_bootgrid_table', formGridPeer)}}
