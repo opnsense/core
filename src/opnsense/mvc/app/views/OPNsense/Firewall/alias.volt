@@ -729,13 +729,14 @@
       {{ partial("layout_partials/base_form",['fields':formGeoIPSettings,'id':'frm_GeopIPSettings'])}}
     </div>
     <div id="actions" class="tab-pane fade in">
-        <div class="row">
-            <section class="col-xs-12">
-                <div class="content-box">
-                    <button id="geoip_update_btn" type="button" class="btn btn-default" data-endpoint="/api/firewall/alias/update/geoip" data-label="{{ lang._('Update GeoIP') }}" data-error-title="{{ lang._('Error updating GeoIP') }}"></button>
-                    <button id="update_bogons" type="button" class="btn btn-default" data-endpoint="/api/firewall/alias/update/bogons" data-label="{{ lang._('Update bogons') }}" data-error-title="{{ lang._('Error updating bogons') }}"></button>
-                </div>
-            </section>
+        <div class="content-box">
+            <div class="col-md-12">
+                <br/>
+                <button id="geoip_update_btn" type="button" class="btn btn-primary" data-endpoint="/api/firewall/alias/update/geoip" data-label="{{ lang._('Update GeoIP') }}" data-error-title="{{ lang._('Error updating GeoIP') }}"></button>
+                <button id="update_bogons" type="button" class="btn btn-primary" data-endpoint="/api/firewall/alias/update/bogons" data-label="{{ lang._('Update bogons') }}" data-error-title="{{ lang._('Error updating bogons') }}"></button>
+                <br/>
+                <br/>
+            </div>
         </div>
     </div>
 </div>
