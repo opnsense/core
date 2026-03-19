@@ -330,7 +330,8 @@ class KeaOptionDataField extends BaseField
                     if (!$this->isEncodingAllowed()) {
                         $parent = $this->getParentNode();
                         $code = $parent->{$this->internalCodeSource}->asInt();
-                        $allowed = $this->getAllowedEncodingsForCode($code);
+                        $map = $this->getOptionTypeMap();
+                        $allowed = $map[$code] ?? null;
                         if ($allowed === null) {
                             // unknown option fallback message
                             return [
@@ -345,7 +346,7 @@ class KeaOptionDataField extends BaseField
                                 gettext("Encoding '%s' is not valid for option %d, use %s or hex."),
                                 $encoding->value,
                                 $code,
-                                $this->formatEncodings($allowed)
+                                implode(', ', $allowed)
                             )
                         ];
                     }
@@ -393,17 +394,6 @@ class KeaOptionDataField extends BaseField
         return $this->internalOptionSpace === 'dhcp6'
             ? self::DHCPV6_OPTION_TYPES
             : self::DHCPV4_OPTION_TYPES;
-    }
-
-    private function getAllowedEncodingsForCode(int $code): ?array
-    {
-        $map = $this->getOptionTypeMap();
-        return $map[$code] ?? null;
-    }
-
-    private function formatEncodings(array $encodings): string
-    {
-        return implode(', ', $encodings);
     }
 
     /* Encoders */
