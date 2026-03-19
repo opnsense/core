@@ -82,7 +82,7 @@
                         return moment.unix(row[column.id]).local().format('YYYY-MM-DD HH:mm:ss');
                     },
                     "reservation": function (column, row) {
-                        return row.is_reserved === '1'
+                        return row.is_reserved && row.is_reserved.length > 0
                             ? "{{ lang._('static') }}"
                             : "{{ lang._('dynamic') }}";
                     },
@@ -93,7 +93,14 @@
                         };
 
                         const baseUrl = `/ui/dnsmasq/settings#hosts`;
-                        const searchUrl = `${baseUrl}&search=${encodeURIComponent(isIPv6 ? row.client_id : row.hwaddr)}`;
+                        const reservedBy = row.is_reserved || [];
+                        let searchKey = '';
+                        if (reservedBy.includes('client_id') && row.client_id) {
+                            searchKey = row.client_id;
+                        } else {
+                            searchKey = row.hwaddr;
+                        }
+                        const searchUrl = `${baseUrl}&search=${encodeURIComponent(searchKey)}`;
                         const addUrlParams = {
                             ip: row.address || '',
                             ...(isIPv6 ? { client_id: row.client_id || '' } : { hwaddr: row.hwaddr || '' }),
