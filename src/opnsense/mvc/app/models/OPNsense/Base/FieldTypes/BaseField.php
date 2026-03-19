@@ -469,6 +469,16 @@ abstract class BaseField
     }
 
     /**
+     * default setter for array values
+     * @param array $values set field values
+     */
+    public function setValues(array $values)
+    {
+        /* we only set the first verbatim value as default */
+        $this->setValue($values[0] ?? '');
+    }
+
+    /**
      * force field to act as changed, used after cloning.
      */
     public function setChanged()
