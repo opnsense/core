@@ -87,11 +87,6 @@
                             : "{{ lang._('dynamic') }}";
                     },
                     "commands": function (column, row) {
-                        const isIPv6 = row.address.includes(':');
-                        const queryParams = {
-                            ...(isIPv6 ? { client_id: row.client_id || '' } : { hwaddr: row.hwaddr || '' }),
-                        };
-
                         const baseUrl = `/ui/dnsmasq/settings#hosts`;
                         const reservedBy = row.is_reserved || [];
                         let searchKey = '';
@@ -101,20 +96,21 @@
                             searchKey = row.hwaddr;
                         }
                         const searchUrl = `${baseUrl}&search=${encodeURIComponent(searchKey)}`;
+                        // No guessing here based on IP protocol, client_id and hwaddr can both be valid for IPv4 leases
                         const addUrlParams = {
                             ip: row.address || '',
-                            ...(isIPv6 ? { client_id: row.client_id || '' } : { hwaddr: row.hwaddr || '' }),
-                            ...(
-                                row.hostname && !row.hostname.includes('*')
-                                    ? { host: row.hostname }
-                                    : {}
+                            ...(row.client_id ? { client_id: row.client_id } : {}),
+                            ...(row.hwaddr ? { hwaddr: row.hwaddr } : {}),
+                            ...(row.hostname && !row.hostname.includes('*')
+                                ? { host: row.hostname }
+                                : {}
                             )
                         };
                         const addUrl = `${baseUrl}?${new URLSearchParams(addUrlParams)}`;
 
                         let btn;
 
-                        if (row.is_reserved === '1') {
+                        if (row.is_reserved && row.is_reserved.length > 0) {
                             btn = $(`
                                 <button type="button" class="btn btn-xs" data-toggle="tooltip"
                                     title="{{ lang._('Find Reservation') }}">
