@@ -1,5 +1,5 @@
 <section class="page-content-main">
-    <div class="content-box">
+    <div class="content-box grid-bottom-reserve">
         <div class="col-md-12">
             <br/>
             <div id="{{ message_id|default('change_message_base_form') }}" class="alert alert-info" style="display: none" role="alert">
