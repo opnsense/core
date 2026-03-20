@@ -206,13 +206,12 @@ class CPBackgroundProcess(object):
                     for ip in to_add:
                         self._add_client(zoneid, ip)
 
-            # remove any address from pf/ipfw that isn't expected
+            # remove any address from pf that isn't expected
             expected_addresses = set()
-            # need to query again as clients may have been updated
-            for db_client in self.db.list_clients(zoneid):
+            for db_client in expected_clients:
                 expected_addresses.update(self.db.list_session_ips(zoneid, db_client['sessionId']))
 
-            for registered_address in (registered_addresses_pf | registered_addresses_ipfw):
+            for registered_address in registered_addresses_pf:
                 if registered_address not in expected_addresses:
                     self._remove_client(zoneid, registered_address)
 
