@@ -69,7 +69,7 @@ class DNSBL:
         return self.dnsbl.get('config') if self.dnsbl else {}
 
     def _load_dnsbl(self):
-        last_state = (self.dnsbl is not None)
+        last_size_value = str(len(self.dnsbl['data'])) if self.dnsbl else '0'
 
         if not self._dnsbl_exists():
             self.dnsbl = None
@@ -99,7 +99,8 @@ class DNSBL:
         if os.path.exists(self.warn_file):
             os.remove(self.warn_file)
 
-        if last_state != (self.dnsbl is not None):
+        new_size_value = str(len(self.dnsbl['data'])) if self.dnsbl else '0'
+        if last_size_value != new_size_value:
             with open(self.size_file, 'w') as sfile:
                 sfile.write(str(len(self.dnsbl['data'])) if self.dnsbl else '0')
 
