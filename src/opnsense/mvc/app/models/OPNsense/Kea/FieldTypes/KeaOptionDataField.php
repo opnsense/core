@@ -464,6 +464,11 @@ class KeaOptionDataField extends BaseField
         return ($data === 'true' || $data === '1') ? '01' : '00';
     }
 
+    private function encodeString(string $data): string
+    {
+        return strtoupper(bin2hex($data));
+    }
+
     /**
      * Encode FQDN in DNS wire format:
      * - each label is prefixed with its length (1 byte)
