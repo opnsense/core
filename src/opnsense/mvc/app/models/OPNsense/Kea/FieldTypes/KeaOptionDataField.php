@@ -314,6 +314,9 @@ class KeaOptionDataField extends BaseField
             return '';
         }
         $method = self::ENCODER_MAP[$encoding->value] ?? null;
+        if ($method ===  null) {
+            return '';
+        }
         return $this->$method($this->getValue());
     }
 
