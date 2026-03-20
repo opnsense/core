@@ -1,5 +1,5 @@
 {# requires getFormGrid() input to render #}
-<table id="{{ table_id }}" class="table table-condensed table-hover table-striped" data-editDialog="{{ edit_dialog_id }}" data-editAlert="{{ edit_alert_id }}">
+<table id="{{ table_id }}" class="table table-condensed table-hover table-striped" style="visibility: hidden" data-editDialog="{{ edit_dialog_id }}" data-editAlert="{{ edit_alert_id }}">
     <thead>
         <tr>
             {% for field in fields %}
