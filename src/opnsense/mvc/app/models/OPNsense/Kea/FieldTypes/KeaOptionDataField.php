@@ -82,10 +82,12 @@ class KeaOptionDataField extends BaseField
         KeaEncoding::FQDN->value => 'encodeFqdn',
     ];
 
-    // For any complex DHCP type, user configurable hex is the bailout right now
-    // Each of these can have custom validators and encoders added when the demanded
-    // The strict validation ensures the possibility of misconfigurations is low.
-    // The main benefit is that we never have to touch config generation again since all types will be serialized as hex
+    /**
+     * For any complex or unknown DHCP type, user configurable HEX is the bailout right now.
+     * Each of these types can have custom validators and encoders added. Complex codes are commented and typed as HEX intentionally.
+     * Validation ensures only HEX or the correct encoding type can be chosen for each option code.
+     * The main benefit is that we never have to touch config generation again, since all types will be serialized as HEX.
+     */
 
     private const DHCPV4_OPTION_TYPES = [
         1   => [KeaEncoding::IPV4->value],
@@ -351,7 +353,10 @@ class KeaOptionDataField extends BaseField
                             )
                         ];
                     }
-                    $method = self::VALIDATOR_MAP[$encoding->value];
+                    $method = self::VALIDATOR_MAP[$encoding->value] ?? null;
+                    if ($method === null) {
+                        return [gettext("Unsupported encoding type. Use hex for complex options.")];
+                    }
                     return $this->$method($data);
                 }
             ]);
@@ -380,7 +385,7 @@ class KeaOptionDataField extends BaseField
         return in_array($encoding->value, $map[$code], true);
     }
 
-    private function getListValues(string $data): array
+    private function toList(string $data): array
     {
         return array_values(array_filter(
             array_map('trim', explode(',', $data)),
@@ -402,23 +407,50 @@ class KeaOptionDataField extends BaseField
         return strtoupper($data);
     }
 
+    /**
+     * Convert each IPv4 address into hex:
+     * - split into octets (e.g. "192.168.1.1" to [192,168,1,1])
+     * - format each octet as 2-digit uppercase hex (C0A80101)
+     * - concatenate all addresses without separators
+     */
     private function encodeIpv4(string $data): string
     {
         return implode('', array_map(function ($ip) {
             return implode('', array_map(fn($o) => sprintf('%02X', (int)$o), explode('.', $ip)));
-        }, $this->getListValues($data)));
+        }, $this->toList($data)));
     }
 
+    /**
+     * Convert each IPv6 address into hex:
+     * - inet_pton() returns packed binary (16 bytes)
+     * - bin2hex() returns hex representation
+     * - concatenate all addresses without separators
+     */
     private function encodeIpv6(string $data): string
     {
         return implode('', array_map(function ($ip) {
             return strtoupper(bin2hex(inet_pton($ip)));
-        }, $this->getListValues($data)));
+        }, $this->toList($data)));
     }
 
     private function encodeUInt(string $data, int $bits): string
     {
-        return strtoupper(str_pad(dechex((int)$data), $bits / 4, '0', STR_PAD_LEFT));
+        return strtoupper(str_pad(dechex((int)$data), (int)($bits / 4), '0', STR_PAD_LEFT));
+    }
+
+    private function encodeUInt8(string $data): string
+    {
+        return $this->encodeUInt($data, 8);
+    }
+
+    private function encodeUInt16(string $data): string
+    {
+        return $this->encodeUInt($data, 16);
+    }
+
+    private function encodeUInt32(string $data): string
+    {
+        return $this->encodeUInt($data, 32);
     }
 
     private function encodeInt32(string $data): string
@@ -432,6 +464,13 @@ class KeaOptionDataField extends BaseField
         return ($data === 'true' || $data === '1') ? '01' : '00';
     }
 
+    /**
+     * Encode FQDN in DNS wire format:
+     * - each label is prefixed with its length (1 byte)
+     * - label content is ASCII-encoded as hex
+     * - domain is terminated with a zero-length label (00)
+     * - "example.com" becomes: "07 6578616D706C65 03 636F6D 00"
+     */
     private function encodeFqdn(string $data): string
     {
         $result = '';
@@ -454,7 +493,7 @@ class KeaOptionDataField extends BaseField
     private function validateIpv4List(string $data): array
     {
         $messages = [];
-        foreach ($this->getListValues($data) as $ip) {
+        foreach ($this->toList($data) as $ip) {
             if (!Util::isIpv4Address($ip)) {
                 $messages[] = sprintf(gettext("Invalid IPv4 address: %s"), $ip);
             }
@@ -465,7 +504,7 @@ class KeaOptionDataField extends BaseField
     private function validateIpv6List(string $data): array
     {
         $messages = [];
-        foreach ($this->getListValues($data) as $ip) {
+        foreach ($this->toList($data) as $ip) {
             if (!Util::isIpv6Address($ip)) {
                 $messages[] = sprintf(gettext("Invalid IPv6 address: %s"), $ip);
             }
