@@ -54,6 +54,31 @@ class MenuSystem
     private $menuCacheTTL = 3600;
 
     /**
+     * @var bool whether the last getItems() call found any active favorites
+     */
+    private $hasFavorites = false;
+
+    /**
+     * @var bool whether resolveSelectedPage() has already run
+     */
+    private $selectedPageResolved = false;
+
+    /**
+     * @var array breadcrumbs for the currently selected page
+     */
+    private $breadcrumbs = [];
+
+    /**
+     * @var string URL of the currently selected page
+     */
+    private $selectedPageUrl = '';
+
+    /**
+     * @var bool whether the selected page is a favorite
+     */
+    private $selectedPageIsFavorite = false;
+
+    /**
      * add menu structure to root
      * @param string $filename menu xml filename
      * @return \SimpleXMLElement
@@ -402,14 +427,116 @@ class MenuSystem
     /**
      * return full menu system including selected items
      * @param string $url current location
+     * @param string $username current username (used to load favorites)
      * @return array
      */
-    public function getItems($url)
+    public function getItems($url, $username = '')
     {
         $this->root->toggleSelected($url);
-        $menu = $this->root->getChildren();
+        $this->hasFavorites = false;
+        if ($username !== '') {
+            $favorites = MenuFavorites::get($username);
+            if (!empty($favorites)) {
+                $validUrls = [];
+                $this->populateFavorites($this->root, array_flip($favorites), $validUrls);
+                $this->hasFavorites = !empty($validUrls);
+                /* prune favorites that no longer correspond to a menu item */
+                if (count($validUrls) !== count($favorites)) {
+                    MenuFavorites::save($username, $validUrls);
+                }
+            }
+        }
+        return $this->root->getChildren();
+    }
 
-        return $menu;
+    /**
+     * check if the last getItems() call found any active favorites
+     * NOTE: must be called after getItems()
+     * @return bool
+     */
+    public function hasUserFavorites()
+    {
+        return $this->hasFavorites;
+    }
+
+    /**
+     * check if a URL corresponds to an existing menu item
+     * @param string $url URL to check
+     * @param MenuItem|null $node starting node (defaults to root, used for recursion)
+     * @return bool
+     */
+    public function isValidMenuUrl($url, $node = null)
+    {
+        $node = $node ?? $this->root;
+        if ($node->getUrl() === $url) {
+            return true;
+        }
+        foreach ($node->fetchChildrenItems() as $child) {
+            if ($this->isValidMenuUrl($url, $child)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * recursively populate favorite status on menu items
+     * @param MenuItem $menuItem menu item to process
+     * @param array $userFavorites map of favorite menu URLs (keyed by URL)
+     * @param array &$validUrls collects URLs that matched a menu item
+     */
+    private function populateFavorites($menuItem, $userFavorites, &$validUrls)
+    {
+        if (isset($userFavorites[$menuItem->getUrl()])) {
+            $menuItem->setIsFavorite(true);
+            $validUrls[] = $menuItem->getUrl();
+        }
+
+        foreach ($menuItem->fetchChildrenItems() as $child) {
+            $this->populateFavorites($child, $userFavorites, $validUrls);
+        }
+    }
+
+    /**
+     * resolve the currently selected page's breadcrumbs, URL, and favorite status
+     * runs at most once per request; subsequent calls are no-ops
+     */
+    private function resolveSelectedPage()
+    {
+        if ($this->selectedPageResolved) {
+            return;
+        }
+
+        $this->selectedPageResolved = true;
+        $this->breadcrumbs = [];
+        $this->selectedPageUrl = '';
+        $this->selectedPageIsFavorite = false;
+
+        $nodes = $this->root->getChildren();
+
+        while ($nodes != null) {
+            $next = null;
+            foreach ($nodes as $node) {
+                if ($node->Selected) {
+                    /* client-side anchor: capture for the favorite star but skip breadcrumb */
+                    if (!empty($node->Url) && strpos($node->Url, '#') !== false) {
+                        $this->selectedPageUrl = $node->Url;
+                        $this->selectedPageIsFavorite = (bool)$node->IsFavorite;
+                        $next = null;
+                        break;
+                    }
+                    $this->breadcrumbs[] = ['name' => $node->VisibleName];
+                    if (!empty($node->Url)) {
+                        $this->selectedPageUrl = $node->Url;
+                        $this->selectedPageIsFavorite = (bool)$node->IsFavorite;
+                    }
+                    /* only go as far as the first reachable URL */
+                    $next = empty($node->Url) ? $node->Children : null;
+                    break;
+                }
+            }
+            $nodes = $next;
+        }
     }
 
     /**
@@ -418,27 +545,25 @@ class MenuSystem
      */
     public function getBreadcrumbs()
     {
-        $nodes = $this->root->getChildren();
-        $breadcrumbs = [];
+        $this->resolveSelectedPage();
+        return $this->breadcrumbs;
+    }
 
-        while ($nodes != null) {
-            $next = null;
-            foreach ($nodes as $node) {
-                if ($node->Selected) {
-                    /* ignore client-side anchor in breadcrumb */
-                    if (!empty($node->Url) && strpos($node->Url, '#') !== false) {
-                        $next = null;
-                        break;
-                    }
-                    $breadcrumbs[] = ['name' => $node->VisibleName];
-                    /* only go as far as the first reachable URL */
-                    $next = empty($node->Url) ? $node->Children : null;
-                    break;
-                }
-            }
-            $nodes = $next;
-        }
+    /**
+     * @return string URL of the selected page, or empty string
+     */
+    public function getSelectedPageUrl()
+    {
+        $this->resolveSelectedPage();
+        return $this->selectedPageUrl;
+    }
 
-        return $breadcrumbs;
+    /**
+     * @return bool whether the selected page is in the user's favorites
+     */
+    public function getSelectedPageIsFavorite()
+    {
+        $this->resolveSelectedPage();
+        return $this->selectedPageIsFavorite;
     }
 }

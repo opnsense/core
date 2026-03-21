@@ -95,6 +95,12 @@ class MenuItem
     private $selected = false;
 
     /**
+     * is this item in the user's favorites
+     * @var bool
+     */
+    private $isFavorite = false;
+
+    /**
      * class method getters
      * @var array
      */
@@ -303,6 +309,34 @@ class MenuItem
     public function getSelected()
     {
         return $this->selected;
+    }
+
+    /**
+     * setter for isFavorite field
+     * @param $value
+     */
+    public function setIsFavorite($value)
+    {
+        $this->isFavorite = (bool)$value;
+    }
+
+    /**
+     * getter for isFavorite field
+     * @return bool is this item a favorite
+     */
+    public function getIsFavorite()
+    {
+        return $this->isFavorite;
+    }
+
+    /**
+     * return raw MenuItem children (not converted to stdClass)
+     * NOTE: uses fetch* prefix to avoid auto-exposure in stdClass via get* reflection
+     * @return MenuItem[]
+     */
+    public function fetchChildrenItems()
+    {
+        return $this->children;
     }
 
     /**
