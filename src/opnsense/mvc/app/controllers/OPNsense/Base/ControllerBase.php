@@ -99,6 +99,7 @@ class ControllerBase extends ControllerRoot
             '/css/tabulator.min.css',
             '/css/opnsense-bootgrid.css',
             '/css/opnsense-bootgrid-layout.css',
+            '/css/opnsense-favorites.css',
             // Font awesome
             '/ui/assets/fontawesome/css/all.min.css',
             '/ui/assets/fontawesome/css/v4-shims.min.css',
@@ -371,8 +372,15 @@ class ControllerBase extends ControllerRoot
 
         $rewrite_uri = explode("?", $_SERVER["REQUEST_URI"])[0];
         $this->view->menuSystem = $menu->getItems($rewrite_uri);
-        /* XXX generating breadcrumbs requires getItems() call */
+        /* XXX generating breadcrumbs and selected URL require getItems() call */
         $this->view->menuBreadcrumbs = $menu->getBreadcrumbs();
+        $this->view->menuSelectedUrl = $menu->getSelectedUrl();
+
+        // per-user favorites - generating requires getItems() call
+        $favorites = new \OPNsense\Core\Favorites($_SESSION['Username'] ?? '');
+        $this->view->menuFavorites = $favorites->buildFavoritesEntries($this->view->menuSystem);
+        $this->view->menuHasFavorites = !empty($this->view->menuFavorites);
+        $this->view->menuSelectedIsFavorite = in_array($this->view->menuSelectedUrl, $favorites->getFavorites());
 
         // set theme in ui_theme template var, let template handle its defaults (if there is no theme).
         if (
