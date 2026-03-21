@@ -67,7 +67,7 @@
                 });
 
                 // hide empty menu items
-                $('#mainmenu > div > .collapse').each(function () {
+                $('#mainmenu > div > .collapse').not('#Favorites').each(function () {
                     // cleanup empty second level menu containers
                     $(this).find("div.collapse").each(function () {
                         if ($(this).children().length == 0) {
@@ -260,6 +260,9 @@
   <main class="page-content col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2">
       <!-- menu system -->
       {{ partial("layout_partials/base_menu_system") }}
+      <!-- menu favorites -->
+      <span id="favorites-config" data-add-text="{{ lang._('Add Favorite') }}" data-remove-text="{{ lang._('Remove Favorite') }}"></span>
+      <script src="{{ cache_safe('/ui/js/opnsense_favorites.js') }}"></script>
       <div class="row">
         <!-- page header -->
         <header class="page-content-head">
@@ -267,6 +270,9 @@
             <ul class="list-inline">
               <li><h1>{{title | default("")}}</h1></li>
               <li class="btn-group-container" id="service_status_container"></li>
+{% if menuSelectedUrl is defined and menuSelectedUrl != '' %}
+              <li><i class="menu-favorite-star {% if menuSelectedIsFavorite %}fas fa-star{% else %}far fa-star{% endif %}" data-menu-url="{{ menuSelectedUrl }}" data-menu-label="{{ title | default('') }}" data-toggle="tooltip" data-placement="bottom" title="{% if menuSelectedIsFavorite %}{{ lang._('Remove Favorite') }}{% else %}{{ lang._('Add Favorite') }}{% endif %}"></i></li>
+{% endif %}
             </ul>
           </div>
         </header>

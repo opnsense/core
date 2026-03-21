@@ -3,6 +3,7 @@
         <nav class="page-side-nav">
             <div id="mainmenu" class="panel" style="border:0px">
                 <div class="panel list-group" style="border:0px">
+                    {{ partial("layout_partials/base_menu_favorites") }}
                     {% for topMenuItem in menuSystem %}
                         {% if topMenuItem.Children|length >= 1 %}
                             <a href="#{{ topMenuItem.Id }}" class="list-group-item {% if topMenuItem.Selected %}  active-menu-title {% endif  %}" data-toggle="collapse" data-parent="#mainmenu">
@@ -25,10 +26,10 @@
                                         </a>
                                         <div class="collapse {% if subMenuItem.Selected %} active-menu in {% endif  %}" id="{{ topMenuItem.Id }}_{{ subMenuItem.Id }}">
                                             {% for subsubMenuItem in subMenuItem.Children %} {% if subsubMenuItem.IsExternal == "Y" %}
-                                            <a href="{{ subsubMenuItem.Url }}" target="_blank" rel="noopener noreferrer" class="list-group-item menu-level-3-item {% if subsubMenuItem.Selected %} active {% endif  %}">{{ subsubMenuItem.VisibleName }}</a>
-                                            {% elseif acl.isPageAccessible(session.get('Username'),subsubMenuItem.Url) %}
-                                            <a href="{{ subsubMenuItem.Url }}" class="list-group-item menu-level-3-item {% if subsubMenuItem.Selected %} active {% endif  %}">{{ subsubMenuItem.VisibleName }}</a>
-                                            {% endif %} {% endfor %}
+                                                <a href="{{ subsubMenuItem.Url }}" target="_blank" rel="noopener noreferrer" class="list-group-item menu-level-3-item {% if subsubMenuItem.Selected %} active {% endif  %}">{{ subsubMenuItem.VisibleName }}</a>
+                                                {% elseif acl.isPageAccessible(session.get('Username'),subsubMenuItem.Url) %}
+                                                <a href="{{ subsubMenuItem.Url }}" class="list-group-item menu-level-3-item {% if subsubMenuItem.Selected %} active {% endif  %}">{{ subsubMenuItem.VisibleName }}</a>
+                                                {% endif %} {% endfor %}
                                         </div>
                                     {% elseif subMenuItem.IsExternal == "Y" %}
                                         <a href="{{ subMenuItem.Url }}" target="_blank" rel="noopener noreferrer" class="list-group-item {% if subMenuItem.Selected %} active {% endif  %}"

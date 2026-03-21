@@ -413,6 +413,32 @@ class MenuSystem
     }
 
     /**
+     * return the currently selected page's URL
+     * NOTE: must be called after getItems()
+     * @return string URL or empty string
+     */
+    public function getSelectedUrl()
+    {
+        $nodes = $this->root->getChildren();
+
+        while ($nodes != null) {
+            $next = null;
+            foreach ($nodes as $node) {
+                if ($node->Selected) {
+                    if (!empty($node->Url)) {
+                        return $node->Url;
+                    }
+                    $next = !empty($node->Children) ? $node->Children : null;
+                    break;
+                }
+            }
+            $nodes = $next;
+        }
+
+        return '';
+    }
+
+    /**
      * return the currently selected page's breadcrumbs
      * @return array
      */
