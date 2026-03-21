@@ -88,8 +88,8 @@ $aclObj = new \OPNsense\Core\ACL();
 <?php
                           foreach($menuSystem as $topMenuItem): ?>
 <?php
-                          if (count($topMenuItem->Children) >= 1): ?>
-                            <a href="#<?=$topMenuItem->Id;?>" class="<?= $topMenuItem->LinkClass; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><span style="word-break: keep-all"><?= html_safe($topMenuItem->VisibleName) ?></span></a>
+                          if (count($topMenuItem->Children) >= 1 || $topMenuItem->Id === 'Favorites'): ?>
+                            <a href="#<?=$topMenuItem->Id;?>" class="<?= $topMenuItem->LinkClass; ?>"<?php if ($topMenuItem->Id === 'Favorites' && count($topMenuItem->Children) === 0) echo ' style="display:none"'; ?> data-toggle="collapse" data-parent="#mainmenu"><span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><span style="word-break: keep-all"><?= html_safe($topMenuItem->VisibleName) ?></span></a>
                             <div class="collapse <?=$topMenuItem->Selected ? 'active-menu in' :'';?>" id="<?=$topMenuItem->Id;?>">
 <?php
                             foreach($topMenuItem->Children as $subMenuItem): ?>
@@ -163,6 +163,9 @@ $aclObj = new \OPNsense\Core\ACL();
                         endforeach; ?>
                     </div>
                 </div>
+<span id="favorites-config" data-add-text="<?=html_safe(gettext('Add Favorite'))?>" data-remove-text="<?=html_safe(gettext('Remove Favorite'))?>" data-favorites="<?=html_safe(json_encode($menuFavorites))?>"></span>
+<script src="<?= cache_safe('/ui/js/opnsense_menusystem.js') ?>"></script>
+<script src="<?= cache_safe('/ui/js/opnsense_favorites.js') ?>"></script>
             </nav>
         </div>
     </aside>
@@ -195,6 +198,9 @@ $aclObj = new \OPNsense\Core\ACL();
               <?php endif; ?>
              </form>
           </li>
+<?php if (!empty($menuSelectedUrl)): ?>
+          <li><i class="menu-favorite-star <?= $menuSelectedIsFavorite ? 'fa fa-star' : 'fa fa-star-o' ?>" data-menu-url="<?= html_safe($menuSelectedUrl) ?>" data-toggle="tooltip" data-placement="bottom" title="<?= html_safe($menuSelectedIsFavorite ? gettext('Remove Favorite') : gettext('Add Favorite')) ?>"></i></li>
+<?php endif; ?>
         </ul>
       </div>
     </header>

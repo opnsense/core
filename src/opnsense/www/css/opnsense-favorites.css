@@ -1,0 +1,22 @@
+/*
+ * For universal layout adjustments that do not need theme compilation.
+ * No color or other variables allowed, only static layout changes.
+ */
+
+.menu-favorite-star {
+  cursor: pointer;
+}
+
+.page-content-head .menu-favorite-star {
+  font-size: 14px;
+  display: inline-block;
+}
+
+.page-content-head .list-inline {
+  display: flex;
+  align-items: center;
+}
+
+.page-content-head .list-inline > li:first-child {
+  flex: 1;
+}
