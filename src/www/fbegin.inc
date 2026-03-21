@@ -86,6 +86,41 @@ $aclObj = new \OPNsense\Core\ACL();
                 <div id="mainmenu" class="panel" style="border:0px" >
                     <div class="panel list-group" style="border:0px">
 <?php
+// Favorites section
+?>
+                            <a href="#Favorites" id="favorites-header" class="list-group-item" data-toggle="collapse" data-parent="#mainmenu"<?= !$menuHasFavorites ? ' style="display:none;"' : '' ?>>
+                                <span class="fas fa-star __iconspacer"></span><span style="word-break: keep-all"><?= html_safe(gettext('Favorites')) ?></span>
+                            </a>
+                            <div class="collapse" id="Favorites">
+<?php foreach ($menuSystem as $_mfi): ?>
+<?php if ($_mfi->IsFavorite && $_mfi->Url != ''): ?>
+<?php   if ($_mfi->IsExternal == "Y"): ?>
+                                <a href="<?=$_mfi->Url;?>" target="_blank" rel="noopener noreferrer" class="list-group-item" data-menu-url="<?=html_safe($_mfi->Url);?>"><?=html_safe(strip_tags($_mfi->VisibleName))?></a>
+<?php   elseif ($aclObj->isPageAccessible($_SESSION['Username'], $_mfi->Url)): ?>
+                                <a href="<?=$_mfi->Url;?>" class="list-group-item" data-menu-url="<?=html_safe($_mfi->Url);?>"><?=html_safe(strip_tags($_mfi->VisibleName))?></a>
+<?php   endif; ?>
+<?php endif; ?>
+<?php foreach ($_mfi->Children as $_mfs): ?>
+<?php   if ($_mfs->IsFavorite && $_mfs->Url != ''): ?>
+<?php     if ($_mfs->IsExternal == "Y"): ?>
+                                <a href="<?=$_mfs->Url;?>" target="_blank" rel="noopener noreferrer" class="list-group-item" data-menu-url="<?=html_safe($_mfs->Url);?>"><?=html_safe(strip_tags($_mfi->VisibleName))?>: <?=html_safe(strip_tags($_mfs->VisibleName))?></a>
+<?php     elseif ($aclObj->isPageAccessible($_SESSION['Username'], $_mfs->Url)): ?>
+                                <a href="<?=$_mfs->Url;?>" class="list-group-item" data-menu-url="<?=html_safe($_mfs->Url);?>"><?=html_safe(strip_tags($_mfi->VisibleName))?>: <?=html_safe(strip_tags($_mfs->VisibleName))?></a>
+<?php     endif; ?>
+<?php   endif; ?>
+<?php   foreach ($_mfs->Children as $_mfss): ?>
+<?php     if ($_mfss->IsFavorite && $_mfss->Url != ''): ?>
+<?php       if ($_mfss->IsExternal == "Y"): ?>
+                                <a href="<?=$_mfss->Url;?>" target="_blank" rel="noopener noreferrer" class="list-group-item" data-menu-url="<?=html_safe($_mfss->Url);?>"><?=html_safe(strip_tags($_mfi->VisibleName))?>: <?=html_safe(strip_tags($_mfs->VisibleName))?>: <?=html_safe(strip_tags($_mfss->VisibleName))?></a>
+<?php       elseif ($aclObj->isPageAccessible($_SESSION['Username'], $_mfss->Url)): ?>
+                                <a href="<?=$_mfss->Url;?>" class="list-group-item" data-menu-url="<?=html_safe($_mfss->Url);?>"><?=html_safe(strip_tags($_mfi->VisibleName))?>: <?=html_safe(strip_tags($_mfs->VisibleName))?>: <?=html_safe(strip_tags($_mfss->VisibleName))?></a>
+<?php       endif; ?>
+<?php     endif; ?>
+<?php   endforeach; ?>
+<?php endforeach; ?>
+<?php endforeach; ?>
+                            </div>
+<?php
                           foreach($menuSystem as $topMenuItem): ?>
 <?php
                           if (count($topMenuItem->Children) >= 1): ?>
@@ -163,6 +198,8 @@ $aclObj = new \OPNsense\Core\ACL();
                         endforeach; ?>
                     </div>
                 </div>
+<span id="favorites-config" data-add-text="<?=html_safe(gettext('Add Favorite'))?>" data-remove-text="<?=html_safe(gettext('Remove Favorite'))?>"></span>
+<script src="<?= cache_safe('/ui/js/opnsense_menu_favorites.js') ?>"></script>
             </nav>
         </div>
     </aside>
@@ -195,6 +232,9 @@ $aclObj = new \OPNsense\Core\ACL();
               <?php endif; ?>
              </form>
           </li>
+<?php if (!empty($menuSelectedUrl)): ?>
+          <li><i class="menu-favorite-star <?= $menuSelectedIsFavorite ? 'fas fa-star' : 'far fa-star' ?>" data-menu-url="<?= html_safe($menuSelectedUrl) ?>" data-menu-label="<?= html_safe(gentitle($menuBreadcrumbs)) ?>" data-toggle="tooltip" data-placement="bottom" title="<?= html_safe($menuSelectedIsFavorite ? gettext('Remove Favorite') : gettext('Add Favorite')) ?>"></i></li>
+<?php endif; ?>
         </ul>
       </div>
     </header>

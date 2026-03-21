@@ -654,6 +654,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UpdateOnlyTextField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UrlField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/VirtualIPField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuFavorites.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuInitException.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuItem.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuSystem.php
@@ -1043,6 +1044,7 @@
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_dialog_processing.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_form.volt
+/usr/local/opnsense/mvc/app/views/layout_partials/base_menu_favorites.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_menu_system.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_tabs_content.volt
 /usr/local/opnsense/mvc/app/views/layout_partials/base_tabs_header.volt
@@ -2163,6 +2165,7 @@
 /usr/local/opnsense/www/css/nv.d3.css
 /usr/local/opnsense/www/css/opnsense-bootgrid-layout.css
 /usr/local/opnsense/www/css/opnsense-bootgrid.css
+/usr/local/opnsense/www/css/opnsense-favorites.css
 /usr/local/opnsense/www/css/tabulator.min.css
 /usr/local/opnsense/www/css/tokenize2.css
 /usr/local/opnsense/www/fonts/FontAwesome.otf
@@ -2204,6 +2207,7 @@
 /usr/local/opnsense/www/js/opnsense.js
 /usr/local/opnsense/www/js/opnsense_bootgrid.js
 /usr/local/opnsense/www/js/opnsense_health.js
+/usr/local/opnsense/www/js/opnsense_menu_favorites.js
 /usr/local/opnsense/www/js/opnsense_status.js
 /usr/local/opnsense/www/js/opnsense_theme.js
 /usr/local/opnsense/www/js/opnsense_ui.js

@@ -110,7 +110,6 @@ class MenuController extends ApiControllerBase
         return $menu_items;
     }
 
-
     /**
      * flatten menu structure, only returning visible entries
      * @param $menu_items array containing stdClass objects
@@ -188,5 +187,52 @@ class MenuController extends ApiControllerBase
         $items = array();
         $this->extractMenuLeaves($menu_items, $items);
         return $items;
+    }
+
+    /**
+     * set/unset a menu item as favorite
+     * @return array
+     */
+    public function setFavoriteAction()
+    {
+        if (!$this->request->isPost()) {
+            return ['result' => 'failed'];
+        }
+
+        $menuUrl = $this->request->getPost('menuUrl', null, null);
+        $isFavorite = $this->request->getPost('isFavorite', null, null);
+
+        if ($menuUrl === null || $isFavorite === null) {
+            return ['result' => 'failed'];
+        }
+
+        // validate that the submitted URL corresponds to a real menu item
+        $menu = new Menu\MenuSystem();
+        if (!$menu->isValidMenuUrl($menuUrl)) {
+            return ['result' => 'failed'];
+        }
+
+        // verify the user has ACL access to this page
+        $username = $this->getUserName();
+        $acl = new \OPNsense\Core\ACL();
+        if (!$acl->isPageAccessible($username, $menuUrl)) {
+            return ['result' => 'failed'];
+        }
+
+        $favorites = Menu\MenuFavorites::get($username);
+
+        if ($isFavorite === 'true') {
+            if (!in_array($menuUrl, $favorites)) {
+                $favorites[] = $menuUrl;
+            }
+        } else {
+            $favorites = array_values(array_diff($favorites, [$menuUrl]));
+        }
+
+        if (!Menu\MenuFavorites::save($username, $favorites)) {
+            return ['result' => 'failed'];
+        }
+
+        return ['result' => 'saved'];
     }
 }

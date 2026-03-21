@@ -99,6 +99,7 @@ class ControllerBase extends ControllerRoot
             '/css/tabulator.min.css',
             '/css/opnsense-bootgrid.css',
             '/css/opnsense-bootgrid-layout.css',
+            '/css/opnsense-favorites.css',
             // Font awesome
             '/ui/assets/fontawesome/css/all.min.css',
             '/ui/assets/fontawesome/css/v4-shims.min.css',
@@ -370,9 +371,12 @@ class ControllerBase extends ControllerRoot
         $this->view->setVar('langcode', str_replace('_', '-', $this->langcode));
 
         $rewrite_uri = explode("?", $_SERVER["REQUEST_URI"])[0];
-        $this->view->menuSystem = $menu->getItems($rewrite_uri);
+        $this->view->menuSystem = $menu->getItems($rewrite_uri, $_SESSION['Username'] ?? '');
         /* XXX generating breadcrumbs requires getItems() call */
         $this->view->menuBreadcrumbs = $menu->getBreadcrumbs();
+        $this->view->menuHasFavorites = $menu->hasUserFavorites();
+        $this->view->menuSelectedUrl = $menu->getSelectedPageUrl();
+        $this->view->menuSelectedIsFavorite = $menu->getSelectedPageIsFavorite();
 
         // set theme in ui_theme template var, let template handle its defaults (if there is no theme).
         if (
