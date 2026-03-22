@@ -241,7 +241,7 @@ class KeaDhcpv6 extends BaseModel
                     $entry = [
                         'code' => $option->code->asInt(),
                         'csv-format' => false,
-                        'data' => $option->data->getValue(),
+                        'data' => $option->data->encodeValue(),
                         'always-send' => !$option->force->isEmpty(),
                     ];
                     /* only conditionally send the option when a client option matches */
@@ -261,7 +261,7 @@ class KeaDhcpv6 extends BaseModel
                 $entry = [
                     'code' => $option->code->asInt(),
                     'csv-format' => false,
-                    'data' => $option->data->getValue(),
+                    'data' => $option->data->encodeValue(),
                     'always-send' => !$option->force->isEmpty(),
                 ];
                 /* only conditionally send the option when a client option matches */
@@ -284,7 +284,7 @@ class KeaDhcpv6 extends BaseModel
             }
             $result[] = [
                 'name' => $uuid,
-                'test' => sprintf('option[%d].hex == 0x%s', $option->match_code->asInt(), $option->match_data->getValue()),
+                'test' => sprintf('option[%d].hex == 0x%s', $option->match_code->asInt(), $option->match_data->encodeValue()),
             ];
         }
         return $result;
