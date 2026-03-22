@@ -32,6 +32,7 @@ namespace OPNsense\Base;
 
 use OPNsense\Core\ACL;
 use OPNsense\Core\Config;
+use OPNsense\Core\Type;
 
 /**
  * Class ApiMutableModelControllerBase, inherit this class to implement
@@ -91,28 +92,22 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         }
     }
 
-    public function isValidUUID($uuid)
-    {
-        if (
-            !is_string($uuid) ||
-            preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $uuid) !== 1
-        ) {
-            return false;
-        }
-
-        return true;
-    }
-
     /**
      * check if a specific token is in use, either in a list of options (xxx,yyy) or as exact match
      * @param string $token token to search recursive
      * @param bool $contains exact match or in list
      * @param bool $only_mvc only report (versioned) models
      * @param array $exclude_refs exclude topics (for example the tokens original location)
+     * @param ?string $title message title when an exception is thrown
      * @throws UserException containing additional information
      */
-    protected function checkAndThrowValueInUse($token, $contains = true, $only_mvc = true, $exclude_refs = [])
-    {
+    protected function checkAndThrowValueInUse(
+        $token,
+        $contains = true,
+        $only_mvc = true,
+        $exclude_refs = [],
+        $title = null
+    ) {
         if ($contains) {
             $xpath = "//text()[contains(.,'{$token}')]";
         } else {
@@ -176,7 +171,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                     $usage['reference']
                 ) . "\n";
             }
-            throw new UserException($message, gettext("Item in use by"));
+            throw new UserException($message, $title ?? gettext("Item in use by"));
         }
     }
 
@@ -184,12 +179,13 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * Check if item can be safely deleted if $internalModelUseSafeDelete is enabled.
      * Throws a user exception when the $uuid seems to be used in some other config section.
      * @param $uuid string uuid to check
+     * @param ?string $title message title when an exception is thrown
      * @throws UserException containing additional information
      */
-    private function checkAndThrowSafeDelete($uuid)
+    private function checkAndThrowSafeDelete($uuid, $title = null)
     {
         if (static::$internalModelUseSafeDelete) {
-            $this->checkAndThrowValueInUse($uuid);
+            $this->checkAndThrowValueInUse($uuid, true, true, [], $title);
         }
     }
 
@@ -230,6 +226,14 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         }
 
         return $this->modelHandle;
+    }
+
+    /**
+     * reset internal model handle set the next getModel() will initiate it again
+     */
+    protected function invalidateModel()
+    {
+        $this->modelHandle = null;
     }
 
     /**
@@ -420,13 +424,21 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             }
         }
 
+        $search_tokens = array_filter(explode(' ', $this->request->get('searchPhrase', 'string', '')));
+
+        // we want the uuid field collected to search for exact matches only
+        if (!empty($search_tokens) && Type::containsUUID($search_tokens)) {
+            $fields = array_unique(array_merge($fields, ['uuid']));
+        }
+
         $grid = new UIModelGrid($element);
         return $grid->fetchBindRequest(
             $this->request,
             $fields,
             $defaultSort,
             $filter_funct,
-            $sort_flags
+            $sort_flags,
+            $search_tokens
         );
     }
 
@@ -502,31 +514,42 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     /**
      * Model delete wrapper, removes an item specified by path and uuid
      * @param string $path relative model path
-     * @param null|string $uuid node key
+     * @param null|string $uuids node key(s), comma-separated
      * @return array
      * @throws \OPNsense\Base\ValidationException on validation issues
      * @throws \ReflectionException when binding to the model class fails
      * @throws UserException when denied write access
      */
-    public function delBase($path, $uuid)
+    public function delBase($path, $uuids)
     {
         $result = ['result' => 'failed'];
 
         if ($this->request->isPost()) {
             Config::getInstance()->lock();
-            $this->checkAndThrowSafeDelete($uuid);
-            $mdl = $this->getModel();
-            if ($uuid != null) {
-                $tmp = $mdl;
-                foreach (explode('.', $path) as $step) {
-                    $tmp = $tmp->{$step};
-                }
-                if ($tmp->del($uuid)) {
-                    $this->save(false, true);
+            $uuids = !empty($uuids) ? explode(",", $uuids) : [];
+            $rootnode = $this->getModel()->getNodeByReference($path);
+            $changed = false;
+
+            if ($rootnode === null) {
+                return $result;
+            }
+            foreach ($uuids as $uuid) {
+                $n = $rootnode?->$uuid;
+                $name = (string)($n?->description ?: $n?->descr ?: $n?->name ?: $uuid);
+                $this->checkAndThrowSafeDelete(
+                    $uuid,
+                    sprintf(gettext("Item %s {%s} in use by:"), $path, $name)
+                );
+                if ($rootnode->del($uuid)) {
+                    $changed = true;
                     $result['result'] = 'deleted';
                 } else {
                     $result['result'] = 'not found';
                 }
+            }
+
+            if ($changed) {
+                $this->save(false, true);
             }
         }
         return $result;
@@ -550,7 +573,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $mdl = $this->getModel();
             $node = $mdl->getNodeByReference($path . '.' . $uuid);
             if ($node == null) {
-                if (!$this->isValidUUID($uuid)) {
+                if (!Type::isUUID($uuid)) {
                     // invalid uuid, upsert not allowed
                     return ["result" => "failed"];
                 }
@@ -586,22 +609,32 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     /**
      * Generic toggle function, assumes our model item has an enabled boolean type field.
      * @param string $path relative model path
-     * @param string $uuid node key
+     * @param string $uuids node key(s). Can be a comma-separated value for batching
      * @param string $enabled desired state enabled(1)/disabled(0), leave empty for toggle
      * @return array
      * @throws \OPNsense\Base\ValidationException on validation issues
      * @throws \ReflectionException when binding to the model class fails
      * @throws UserException when denied write access
      */
-    public function toggleBase($path, $uuid, $enabled = null)
+    public function toggleBase($path, $uuids, $enabled = null)
     {
         $result = ['result' => 'failed'];
         if ($this->request->isPost()) {
             Config::getInstance()->lock();
-            $mdl = $this->getModel();
-            if ($uuid != null) {
-                $node = $mdl->getNodeByReference($path . '.' . $uuid);
-                if ($node != null) {
+            $uuids = !empty($uuids) ? explode(",", $uuids) : [];
+            if (count($uuids) > 1 && $enabled === null) {
+                throw new UserException(
+                    gettext("Toggle with a list of items in only supported for explicit actions [0,1]"),
+                    gettext("Toggle")
+                );
+            }
+            $rootnode = $this->getModel()->getNodeByReference($path);
+            if ($rootnode === null) {
+                return $result;
+            }
+            foreach ($uuids as $uuid) {
+                $node = $rootnode->$uuid;
+                if ($node !== null) {
                     $result['changed'] = true;
                     if ($enabled == "0" || $enabled == "1") {
                         $result['result'] = !empty($enabled) ? "Enabled" : "Disabled";
@@ -610,6 +643,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                     } elseif ($enabled !== null) {
                         // failed
                         $result['changed'] = false;
+                        break;
                     } elseif ((string)$node->enabled == "1") {
                         $result['result'] = "Disabled";
                         $node->enabled = "0";
@@ -617,11 +651,10 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                         $result['result'] = "Enabled";
                         $node->enabled = "1";
                     }
-                    // if item has toggled, serialize to config and save
-                    if ($result['changed']) {
-                        $this->save(false, true);
-                    }
                 }
+            }
+            if ($result['changed']) {
+                $this->save(false, true);
             }
         }
         return $result;
@@ -643,12 +676,20 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         $data = [];
         $stream = fopen('php://temp', 'rw+');
         fwrite($stream, $payload);
+        /**
+         * auto-detect separator character (either , or ;), as the header is highly unlikely to contain both,
+         * it should be safe to use the first one found in the header
+         * (to increase compatibility with tools like Excel).
+         **/
+        $sep1 = strpos($payload, ',') !== false ? strpos($payload, ',') : 9999;
+        $sep2 = strpos($payload, ';') !== false ? strpos($payload, ';') : 9999;
+        $separator = $sep1 < $sep2 ? ',' : ';';
         fseek($stream, 0);
         $heading = [];
-        while (($line = fgetcsv($stream)) !== false) {
+        while (($line = fgetcsv($stream, null, $separator)) !== false) {
             if (empty($heading)) {
                 $heading = $line;
-            } else {
+            } elseif (count($line) >= 1 && !is_null($line[array_key_first($line)])) {
                 $record = [];
                 foreach ($line as $idx => $content) {
                     if (isset($heading[$idx])) {

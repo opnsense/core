@@ -70,6 +70,12 @@
                     <NetMaskRequired>Y</NetMaskRequired>
                     <AddressFamily>ipv4</AddressFamily>
                     <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <type>UniqueConstraint</type>
+                            <ValidationMessage>Subnet must be unique.</ValidationMessage>
+                        </check001>
+                    </Constraints>
                 </subnet>
                 <next_server type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
@@ -96,6 +102,7 @@
                         <AsList>Y</AsList>
                     </routers>
                     <static_routes type=".\KeaStaticRoutesField"/>
+                    <classless_static_route type=".\KeaClasslessStaticRouteField"/>
                     <domain_name type="HostnameField">
                         <IpAllowed>N</IpAllowed>
                     </domain_name>
@@ -118,13 +125,91 @@
                     <v6_only_preferred type="IntegerField">
                         <MinimumValue>300</MinimumValue>
                     </v6_only_preferred>
+                    <v4_dnr type="TextField">
+                        <Mask>/^([^\n"])*$/u</Mask>
+                    </v4_dnr>
                 </option_data>
+                <option type="ModelRelationField">
+                    <Model>
+                        <options>
+                            <source>OPNsense.Kea.KeaDhcpv4</source>
+                            <items>options.option</items>
+                            <display>description</display>
+                        </options>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                </option>
                 <match-client-id type="BooleanField">
                     <Default>1</Default>
                     <Required>Y</Required>
                 </match-client-id>
                 <pools type=".\KeaPoolsField">
                 </pools>
+                <ddns_forward_zone type="HostnameField">
+                    <IpAllowed>N</IpAllowed>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Forward zone and DNS server must either both be set or left empty.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>ddns_dns_server</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </ddns_forward_zone>
+                <ddns_dns_server type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Forward zone and DNS server must either both be set or left empty.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>ddns_forward_zone</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </ddns_dns_server>
+                <ddns_domain_key_name type="TextField">
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>TSIG name and secret must either both be set or left empty.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>ddns_domain_key_secret</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </ddns_domain_key_name>
+                <ddns_domain_key_secret type="Base64Field">
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>TSIG name and secret must either both be set or left empty.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>ddns_domain_key_name</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </ddns_domain_key_secret>
+                <ddns_domain_key_algorithm type="OptionField">
+                    <OptionValues>
+                        <hmac-md5>hmac-md5</hmac-md5>
+                        <hmac-sha1>hmac-sha1</hmac-sha1>
+                        <hmac-sha224>hmac-sha224</hmac-sha224>
+                        <hmac-sha256>hmac-sha256</hmac-sha256>
+                        <hmac-sha384>hmac-sha384</hmac-sha384>
+                        <hmac-sha512>hmac-sha512</hmac-sha512>
+                    </OptionValues>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>An algorithm is required if a TSIG secret is set.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>ddns_domain_key_secret</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </ddns_domain_key_algorithm>
                 <description type="DescriptionField"/>
             </subnet4>
         </subnets>
@@ -162,6 +247,7 @@
                         <check001>
                             <ValidationMessage>Duplicate entry exists.</ValidationMessage>
                             <type>UniqueConstraint</type>
+                            <caseInsensitive>Y</caseInsensitive>
                             <addFields>
                                 <field1>subnet</field1>
                             </addFields>
@@ -189,6 +275,7 @@
                         <AsList>Y</AsList>
                     </routers>
                     <static_routes type=".\KeaStaticRoutesField"/>
+                    <classless_static_route type=".\KeaClasslessStaticRouteField"/>
                     <domain_name type="HostnameField">
                         <IpAllowed>N</IpAllowed>
                     </domain_name>
@@ -209,8 +296,117 @@
                         <Mask>/^([^\n"])*$/u</Mask>
                     </boot_file_name>
                 </option_data>
+                <option type="ModelRelationField">
+                    <Model>
+                        <options>
+                            <source>OPNsense.Kea.KeaDhcpv4</source>
+                            <items>options.option</items>
+                            <display>description</display>
+                        </options>
+                    </Model>
+                    <Multiple>Y</Multiple>
+                </option>
             </reservation>
         </reservations>
+        <options>
+            <option type="ArrayField">
+                <code type="JsonKeyValueStoreField">
+                    <Required>Y</Required>
+                    <ConfigdPopulateAct>kea list dhcp_options</ConfigdPopulateAct>
+                    <OptionValues>
+                        <!-- mock option groups returned by JSON -->
+                        <optgroup1>Assigned</optgroup1>
+                        <optgroup2>Unassigned</optgroup2>
+                    </OptionValues>
+                </code>
+                <encoding type="OptionField">
+                    <Required>Y</Required>
+                    <Default>hex</Default>
+                    <OptionValues>
+                        <hex>hex</hex>
+                        <ipv4-address>IPv4 address</ipv4-address>
+                        <ipv6-address>IPv6 address</ipv6-address>
+                        <uint8>uint8</uint8>
+                        <uint16>uint16</uint16>
+                        <uint32>uint32</uint32>
+                        <int32>int32</int32>
+                        <boolean>bool</boolean>
+                        <string>string</string>
+                        <fqdn>FQDN</fqdn>
+                    </OptionValues>
+                </encoding>
+                <data type=".\KeaOptionDataField">
+                    <CodeSource>code</CodeSource>
+                    <EncodingSource>encoding</EncodingSource>
+                    <OptionSpace>dhcp4</OptionSpace>
+                    <Required>Y</Required>
+                </data>
+                <force type="BooleanField"/>
+                <match_code type="JsonKeyValueStoreField">
+                    <ConfigdPopulateAct>kea list dhcp_options</ConfigdPopulateAct>
+                    <OptionValues>
+                        <!-- mock option groups returned by JSON -->
+                        <optgroup1>Assigned</optgroup1>
+                        <optgroup2>Unassigned</optgroup2>
+                    </OptionValues>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Match option and match data must either both be set or left empty.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>match_data</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </match_code>
+                <match_encoding type="OptionField">
+                    <OptionValues>
+                        <hex>hex</hex>
+                        <ipv4-address>IPv4 address</ipv4-address>
+                        <ipv6-address>IPv6 address</ipv6-address>
+                        <uint8>uint8</uint8>
+                        <uint16>uint16</uint16>
+                        <uint32>uint32</uint32>
+                        <int32>int32</int32>
+                        <boolean>bool</boolean>
+                        <string>string</string>
+                        <fqdn>FQDN</fqdn>
+                    </OptionValues>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Field is required when match data is set.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>match_data</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </match_encoding>
+                <match_data type=".\KeaOptionDataField">
+                    <CodeSource>match_code</CodeSource>
+                    <EncodingSource>match_encoding</EncodingSource>
+                    <OptionSpace>dhcp4</OptionSpace>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Match option and match data must either both be set or left empty.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>match_code</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </match_data>
+                <description type="DescriptionField">
+                    <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Description must be unique.</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
+                </description>
+            </option>
+        </options>
         <ha_peers>
             <peer type="ArrayField">
                 <name type="TextField">

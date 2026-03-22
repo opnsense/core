@@ -50,12 +50,13 @@ class AccessController extends ApiControllerBase
     protected function clientSession(string $zoneid)
     {
         $backend = new Backend();
-        $allClientsRaw = $backend->configdpRun("captiveportal list_clients", [$zoneid]);
-        $allClients = json_decode($allClientsRaw, true);
+        $allClients = json_decode($backend->configdpRun("captiveportal list_clients", [$zoneid]), true);
+        $clientIp = $this->getClientIp();
+
         if ($allClients != null) {
             // search for client by ip address
             foreach ($allClients as $connectedClient) {
-                if ($connectedClient['ipAddress'] == $this->getClientIp()) {
+                if (in_array($clientIp, $connectedClient['ipAddresses'])) {
                     // client is authorized in this zone according to our administration
                     $connectedClient['clientState'] = 'AUTHORIZED';
                     return $connectedClient;
@@ -64,7 +65,7 @@ class AccessController extends ApiControllerBase
         }
 
         // return Unauthorized including authentication requirements
-        $result = ['clientState' => "NOT_AUTHORIZED", "ipAddress" => $this->getClientIp()];
+        $result = ['clientState' => "NOT_AUTHORIZED", "ipAddress" => $clientIp];
         $mdlCP = new CaptivePortal();
         $cpZone = $mdlCP->getByZoneID($zoneid);
         if ($cpZone != null && (string)$cpZone->extendedPreAuthData == '1') {
@@ -102,12 +103,17 @@ class AccessController extends ApiControllerBase
 
     protected function getClientMac($ip)
     {
-        $this->arp = empty($this->arp) ? json_decode((new Backend())->configdRun("interface list arp json"), true) : [];
-        foreach ($this->arp as $arp) {
-            if (!empty($arp['ip'] && $arp['ip'] == $ip)) {
-                return $arp['mac'];
+        if (empty($this->arp)) {
+            $data = json_decode((new Backend())->configdRun('hostwatch dump'), true) ?? [];
+            if (!empty($data['rows'])) {
+                foreach ($data['rows'] as $row) {
+                    // remove scope from IPv6 address if present (e.g., fe80::1%em0 -> fe80::1)
+                    $this->arp[$row[2]] = explode('%', $row[1])[0];
+                }
             }
         }
+
+        return $this->arp[$ip] ?? null;
     }
 
     /**
@@ -169,8 +175,8 @@ class AccessController extends ApiControllerBase
                 $secondsPassed = time() - $startTime;
                 $remainingTimes = [];
 
-                if (!empty((string)$zone->hardtimeout)) {
-                    $timeout = (int)$zone->hardtimeout * 60;
+                if (!$zone->hardtimeout->isEmpty()) {
+                    $timeout = $zone->hardtimeout->asInt() * 60;
                     if ($secondsPassed < $timeout) {
                         $remainingTimes[] = $timeout - $secondsPassed;
                     }
@@ -302,10 +308,11 @@ class AccessController extends ApiControllerBase
                             if (array_key_exists('session_timeout', $authProps) || $cpZone->alwaysSendAccountingReqs == '1') {
                                 $backend->configdpRun(
                                     "captiveportal set session_restrictions",
-                                    array((string)$cpZone->zoneid,
+                                    [
+                                        (string)$cpZone->zoneid,
                                         $CPsession['sessionId'],
                                         $authProps['session_timeout'] ?? null,
-                                        )
+                                    ]
                                 );
                             }
                         }
@@ -335,29 +342,32 @@ class AccessController extends ApiControllerBase
      */
     public function logoffAction($zoneid = 0)
     {
+        $result = ["clientState" => "UNKNOWN", "ipAddress" => $this->getClientIp()];
         if ($this->request->isOptions()) {
             // return empty result on CORS preflight
             return [];
-        } else {
-            $zoneid = $this->request->getHeader("zoneid");
-            $clientSession = $this->clientSession((string)$zoneid);
-            if (
-                $clientSession['clientState'] == 'AUTHORIZED' &&
-                $clientSession['authenticated_via'] != '---ip---' &&
-                $clientSession['authenticated_via'] != '---mac---'
-            ) {
-                // you can only disconnect a connected client
-                $backend = new Backend();
-                $statusRAW = $backend->configdpRun("captiveportal disconnect", [$clientSession['sessionId'], "User-Request"]);
-                $status = json_decode($statusRAW, true);
-                if ($status != null) {
-                    $this->getLogger("captiveportal")->info(
-                        "LOGOUT " . $clientSession['userName'] .  " (" . $this->getClientIp() . ") zone " . $zoneid
-                    );
-                    return $status;
-                }
+        } elseif (!$this->request->isPost()) {
+            return $result;
+        }
+
+        $zoneid = $this->request->getHeader("zoneid");
+        $clientSession = $this->clientSession((string)$zoneid);
+        if (
+            $clientSession['clientState'] == 'AUTHORIZED' &&
+            $clientSession['authenticated_via'] != '---ip---' &&
+            $clientSession['authenticated_via'] != '---mac---'
+        ) {
+            // you can only disconnect a connected client
+            $backend = new Backend();
+            $statusRAW = $backend->configdpRun("captiveportal disconnect", [$clientSession['sessionId'], "User-Request"]);
+            $status = json_decode($statusRAW, true);
+            if ($status != null) {
+                $this->getLogger("captiveportal")->info(
+                    "LOGOUT " . $clientSession['userName'] .  " (" . $this->getClientIp() . ") zone " . $zoneid
+                );
+                return $status;
             }
         }
-        return ["clientState" => "UNKNOWN", "ipAddress" => $this->getClientIp()];
+        return $result;
     }
 }

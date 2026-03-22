@@ -1,6 +1,5 @@
 OPNsense.rules:/usr/local/etc/suricata/rules/OPNsense.rules
 classification.config:/usr/local/etc/suricata/classification.config
-custom.yaml:/usr/local/etc/suricata/custom.yaml
 newsyslog.conf:/etc/newsyslog.conf.d/suricata
 rc.conf.d:/etc/rc.conf.d/suricata
 reference.config:/usr/local/etc/suricata/reference.config

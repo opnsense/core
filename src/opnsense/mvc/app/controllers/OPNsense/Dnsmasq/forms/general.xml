@@ -114,7 +114,7 @@
         <id>dnsmasq.add_mac</id>
         <label>Add MAC</label>
         <type>dropdown</type>
-        <help>Add the MAC address of the requestor to DNS queries which are forwarded upstream. The MAC address will only be added if the upstream DNS Server is in the same subnet as the requestor. Since this is not standardized, it should be considered experiemental. This is useful for selective DNS filtering on the upstream DNS server.</help>
+        <help>Add the MAC address of the requestor to DNS queries which are forwarded upstream. The MAC address will only be added if the upstream DNS Server is in the same subnet as the requestor. Since this is not standardized, it should be considered experimental. This is useful for selective DNS filtering on the upstream DNS server.</help>
         <advanced>true</advanced>
     </field>
     <field>
@@ -128,7 +128,7 @@
         <id>dnsmasq.strip_subnet</id>
         <label>Strip subnet</label>
         <type>checkbox</type>
-        <help>Strip the subnet received by a downstream DNS server. If "Add subnet" is used and the downstream DNS server already added a subnet, DNSMasq will not replace it without setting "Strip subnet".</help>
+        <help>Strip the subnet received by a downstream DNS server. If "Add subnet" is used and the downstream DNS server already added a subnet, Dnsmasq will not replace it without setting "Strip subnet".</help>
         <advanced>true</advanced>
     </field>
     <field>
@@ -193,10 +193,31 @@
         <help>Setting this will enable Router Advertisements for all configured DHCPv6 ranges with the managed address bits set, and the use SLAAC bit reset. To change this default, select a combination of the possible options in the individual DHCPv6 ranges. Keep in mind that this is a global option; if there are configured DHCPv6 ranges, RAs will be sent unconditionally and cannot be deactivated selectively. Setting Router Advertisement modes in DHCPv6 ranges will have no effect without this global option enabled.</help>
     </field>
     <field>
+        <id>dnsmasq.dhcp.host_ping</id>
+        <label>ICMP ping</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>By default, the DHCP server will use a ping to ensure that an address is not in use before allocating it to a host.</help>
+    </field>
+    <field>
         <id>dnsmasq.dhcp.nosync</id>
         <label>Disable HA sync</label>
         <type>checkbox</type>
         <help>Ignore the DHCP general settings from being updated using HA sync.</help>
+    </field>
+    <field>
+        <id>dnsmasq.dhcp.log_dhcp</id>
+        <label>Log DHCP options and tags</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Extra logging for DHCP, log all the options sent to DHCP clients and the tags used to determine them.</help>
+    </field>
+    <field>
+        <id>dnsmasq.dhcp.log_quiet</id>
+        <label>Quiet log messages</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Suppress logging of the routine operation of DHCP, RA and TFTP. Errors and problems will still be logged.</help>
     </field>
     <field>
         <type>header</type>

@@ -46,7 +46,8 @@ class BGPASN(BaseContentParser):
         do_update = True
         if os.path.isfile(cls._asn_filename):
             fstat = os.stat(cls._asn_filename)
-            if (time.time() - fstat.st_mtime) < cls._asn_ttl and fstat.st_size > 1024:
+            now = time.time()
+            if now >= fstat.st_mtime and (now - fstat.st_mtime) < cls._asn_ttl and fstat.st_size > 1024:
                 do_update = False
         if do_update:
             if not os.path.exists(os.path.dirname(cls._asn_filename)):
@@ -60,7 +61,12 @@ class BGPASN(BaseContentParser):
                 fcntl.flock(cls._asn_fhandle, fcntl.LOCK_UN)
                 return
 
-            req = requests.get(url=cls._asn_source, stream=True, timeout=20)
+            try:
+                req = requests.get(url=cls._asn_source, stream=True, timeout=20)
+            except requests.RequestException  as e:
+                syslog.syslog(syslog.LOG_ERR, 'error fetching BGP ASN url %s [%s]' % e)
+                raise IOError('error fetching BGP ASN url %s' % cls._asn_source)
+
             if req.status_code == 200:
                 gf = gzip.GzipFile(mode='r', fileobj=req.raw)
                 cls._asn_fhandle.seek(0)

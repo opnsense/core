@@ -7,6 +7,7 @@
             <category type="ArrayField">
                 <name type="TextField">
                     <Required>Y</Required>
+                    <Mask>/[^,]+/</Mask>
                     <Constraints>
                         <check001>
                             <ValidationMessage>A category with this name already exists.</ValidationMessage>

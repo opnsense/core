@@ -82,54 +82,62 @@
                         return moment.unix(row[column.id]).local().format('YYYY-MM-DD HH:mm:ss');
                     },
                     "reservation": function (column, row) {
-                        return row.is_reserved === '1'
+                        return row.is_reserved && row.is_reserved.length > 0
                             ? "{{ lang._('static') }}"
                             : "{{ lang._('dynamic') }}";
                     },
                     "commands": function (column, row) {
-                        const isIPv6 = row.address.includes(':');
-                        const queryParams = {
-                            ...(isIPv6 ? { client_id: row.client_id || '' } : { hwaddr: row.hwaddr || '' }),
-                        };
-
                         const baseUrl = `/ui/dnsmasq/settings#hosts`;
-                        const searchUrl = `${baseUrl}&search=${encodeURIComponent(isIPv6 ? row.client_id : row.hwaddr)}`;
+                        const reservedBy = row.is_reserved || [];
+                        let searchKey = '';
+                        if (reservedBy.includes('client_id') && row.client_id) {
+                            searchKey = row.client_id;
+                        } else {
+                            searchKey = row.hwaddr;
+                        }
+                        const searchUrl = `${baseUrl}&search=${encodeURIComponent(searchKey)}`;
+                        // No guessing here based on IP protocol, client_id and hwaddr can both be valid for IPv4 leases
                         const addUrlParams = {
                             ip: row.address || '',
-                            ...(isIPv6 ? { client_id: row.client_id || '' } : { hwaddr: row.hwaddr || '' }),
-                            ...(
-                                row.hostname && !row.hostname.includes('*')
-                                    ? { host: row.hostname }
-                                    : {}
+                            ...(row.client_id ? { client_id: row.client_id } : {}),
+                            ...(row.hwaddr ? { hwaddr: row.hwaddr } : {}),
+                            ...(row.hostname && !row.hostname.includes('*')
+                                ? { host: row.hostname }
+                                : {}
                             )
                         };
                         const addUrl = `${baseUrl}?${new URLSearchParams(addUrlParams)}`;
 
-                        if (row.is_reserved === '1') {
-                            return `
-                                <button type="button" class="btn btn-xs"
-                                    onclick="window.location.href = '${searchUrl}'"
+                        let btn;
+
+                        if (row.is_reserved && row.is_reserved.length > 0) {
+                            btn = $(`
+                                <button type="button" class="btn btn-xs" data-toggle="tooltip"
                                     title="{{ lang._('Find Reservation') }}">
                                     <i class="fa fa-fw fa-search"></i>
                                 </button>
-                            `;
+                            `).on('click', function () {
+                                window.location.href = searchUrl;
+                            });
                         } else {
-                            return `
-                                <button type="button" class="btn btn-xs"
-                                    onclick="window.location.href = '${addUrl}'"
+                            btn = $(`
+                                <button type="button" class="btn btn-xs" data-toggle="tooltip"
                                     title="{{ lang._('Add Reservation') }}">
                                     <i class="fa fa-fw fa-plus"></i>
                                 </button>
-                            `;
+                            `).on('click', function () {
+                                window.location.href = addUrl;
+                            });
                         }
-                    }
 
+                        return btn[0];
+                    }
                 }
             }
         });
 
-        $("#interface-selection-wrapper").detach().prependTo('#grid-leases-header > .row > .actionBar > .actions');
-        $("#protocol-selection-wrapper").detach().insertBefore("#interface-selection-wrapper");
+        $("#interface-selection-wrapper").detach().insertAfter('#grid-leases-header .search');
+        $("#protocol-selection-wrapper").detach().insertAfter("#interface-selection-wrapper");
 
         updateServiceControlUI('dnsmasq');
     });

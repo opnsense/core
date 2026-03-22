@@ -4,7 +4,7 @@
             <General order="10" url="/services_ntpd.php"/>
             <GPS order="20" url="/services_ntpd_gps.php"/>
             <PPS order="30" url="/services_ntpd_pps.php"/>
-            <Status order="40" url="/status_ntpd.php"/>
+            <Status order="40" url="/ui/ntpd/status"/>
             <Log order="50" VisibleName="Log File" url="/ui/diagnostics/log/core/ntpd"/>
         </NTP>
     </Services>

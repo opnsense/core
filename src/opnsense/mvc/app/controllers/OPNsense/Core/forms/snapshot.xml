@@ -13,9 +13,20 @@
         <type>text</type>
     </field>
     <field>
+        <id>note</id>
+        <label>Note</label>
+        <type>textbox</type>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
         <id>active</id>
         <label>Active</label>
         <type>ignore</type>
+        <grid_view>
+            <formatter>active</formatter>
+        </grid_view>
     </field>
     <field>
         <id>mountpoint</id>

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2019 Deciso B.V.
+ * Copyright (C) 2015-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,11 +39,6 @@ use OPNsense\Core\File;
 class ConfigdActionsField extends BaseListField
 {
     /**
-     * @var array collected options
-     */
-    private static $internalStaticOptionList = [];
-
-    /**
      * @var array filters to use on the configd selection
      */
     private $internalFilters = [];
@@ -58,53 +53,56 @@ class ConfigdActionsField extends BaseListField
      */
     protected function actionPostLoadingEvent()
     {
-        if (!isset(self::$internalStaticOptionList[$this->internalCacheKey])) {
-            self::$internalStaticOptionList[$this->internalCacheKey] = [];
-
-            $app = new AppConfig();
-            $cachefile = $app->application->tempDir . '/configdmodelfield.data';
-            $cacheowner = $app->globals->owner;
-
-            $backend = new Backend();
-
-            // check configd daemon for list of available actions, cache results as long as configd is not restarted
-            if (!file_exists($cachefile) || filemtime($cachefile) < $backend->getLastRestart()) {
-                $response = $backend->configdRun("configd actions json", false, 20);
-                $actions = json_decode($response, true);
-                if (is_array($actions)) {
-                    File::file_put_contents($cachefile, $response, 0640, 0, $cacheowner);
-                } else {
-                    $actions = [];
-                }
-            } else {
-                $actions = json_decode(file_get_contents($cachefile), true);
-                if (!is_array($actions)) {
-                    $actions = [];
-                }
-            }
-
-            foreach ($actions as $key => $value) {
-                // use filters to determine relevance
-                $isMatched = true;
-                foreach ($this->internalFilters as $filterKey => $filterData) {
-                    if (isset($value[$filterKey])) {
-                        $fieldData = $value[$filterKey];
-                        if (!preg_match($filterData, $fieldData)) {
-                            $isMatched = false;
-                        }
-                    }
-                }
-                if ($isMatched) {
-                    if (!isset($value['description']) || $value['description'] == '') {
-                        self::$internalStaticOptionList[$this->internalCacheKey][$key] = $key;
-                    } else {
-                        self::$internalStaticOptionList[$this->internalCacheKey][$key] = $value['description'];
-                    }
-                }
-            }
-            natcasesort(self::$internalStaticOptionList[$this->internalCacheKey]);
+        if ($this->hasStaticOptions($this->internalCacheKey)) {
+            $this->internalOptionList = $this->getStaticOptions($this->internalCacheKey);
+            return;
         }
-        $this->internalOptionList = self::$internalStaticOptionList[$this->internalCacheKey];
+
+        $data = [];
+        $app = new AppConfig();
+        $cachefile = $app->application->tempDir . '/configdmodelfield.data';
+        $cacheowner = $app->globals->owner;
+
+        $backend = new Backend();
+
+        // check configd daemon for list of available actions, cache results as long as configd is not restarted
+        if (!file_exists($cachefile) || filemtime($cachefile) < $backend->getLastRestart()) {
+            $response = $backend->configdRun("configd actions json", false, 20);
+            $actions = json_decode($response, true);
+            if (is_array($actions)) {
+                File::file_put_contents($cachefile, $response, 0640, 0, $cacheowner);
+            } else {
+                $actions = [];
+            }
+        } else {
+            $actions = json_decode(file_get_contents($cachefile), true);
+            if (!is_array($actions)) {
+                $actions = [];
+            }
+        }
+
+        foreach ($actions as $key => $value) {
+            // use filters to determine relevance
+            $isMatched = true;
+            foreach ($this->internalFilters as $filterKey => $filterData) {
+                if (isset($value[$filterKey])) {
+                    $fieldData = $value[$filterKey];
+                    if (!preg_match($filterData, $fieldData)) {
+                        $isMatched = false;
+                    }
+                }
+            }
+            if ($isMatched) {
+                if (!isset($value['description']) || $value['description'] == '') {
+                    $data[$key] = $key;
+                } else {
+                    $data[$key] = $value['description'];
+                }
+            }
+        }
+        natcasesort($data);
+
+        $this->internalOptionList = $this->setStaticOptions($data, $this->internalCacheKey);
     }
 
     /**

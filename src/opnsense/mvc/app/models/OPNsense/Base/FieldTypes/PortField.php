@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2020 Deciso B.V.
+ * Copyright (C) 2015-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,52 +39,53 @@ class PortField extends BaseListField
     /**
      * @var array list of well known services
      */
-    private static $wellknownservices = [
-        'cvsup',
-        'domain',
-        'ftp',
-        'hbci',
-        'http',
-        'https',
-        'aol',
-        'auth',
-        'imap',
-        'imaps',
-        'ipsec-msft',
-        'isakmp',
-        'l2f',
-        'ldap',
-        'ms-streaming',
-        'afs3-fileserver',
-        'microsoft-ds',
-        'ms-wbt-server',
-        'wins',
-        'msnp',
-        'nntp',
-        'ntp',
-        'netbios-dgm',
-        'netbios-ns',
-        'netbios-ssn',
-        'openvpn',
-        'pop3',
-        'pop3s',
-        'pptp',
-        'radius',
-        'radius-acct',
-        'avt-profile-1',
-        'sip',
-        'smtp',
-        'igmpv3lite',
-        'urd',
-        'snmp',
-        'snmptrap',
-        'ssh',
-        'nat-stun-port',
-        'submission',
-        'teredo',
-        'telnet',
-        'tftp',
-        'rfb'
+    protected static $wellknownservices = [
+        'afs3-fileserver' => 7000,
+        'aol' => 5190,
+        'auth' => 113,
+        'avt-profile-1' => 5004,
+        'cvsup' => 5999,
+        'domain' => 53,
+        'ftp' => 21,
+        'hbci' => 3000,
+        'http' => 80,
+        'https' => 443,
+        'igmpv3lite' => 465,
+        'imap' => 143,
+        'imaps' => 993,
+        'ipsec-msft' => 10000,
+        'ipsec-nat-t' => 4500,
+        'isakmp' => 500,
+        'l2f' => 1701,
+        'ldap' => 389,
+        'microsoft-ds' => 445,
+        'ms-streaming' => 1755,
+        'ms-wbt-server' => 3389,
+        'msnp' => 1863,
+        'nat-stun-port' => 3478,
+        'netbios-dgm' => 138,
+        'netbios-ns' => 137,
+        'netbios-ssn' => 139,
+        'nntp' => 119,
+        'ntp' => 123,
+        'openvpn' => 1194,
+        'pop3' => 110,
+        'pop3s' => 995,
+        'pptp' => 1723,
+        'radius' => 1812,
+        'radius-acct' => 1813,
+        'rfb' => 5900,
+        'sip' => 5060,
+        'smtp' => 25,
+        'snmp' => 161,
+        'snmptrap' => 162,
+        'ssh' => 22,
+        'submission' => 587,
+        'telnet' => 23,
+        'teredo' => 3544,
+        'tftp' => 69,
+        'urd' => 465,
+        'wins' => 1512,
     ];
 
     /**
@@ -108,6 +109,21 @@ class PortField extends BaseListField
     private $enableAlias = false;
 
     /**
+     * get the list of well known services
+     * @var ?string ask for specific service
+     * @return array service names
+     */
+    public static function getWellKnown(?string $search = null)
+    {
+        if (!is_null($search)) {
+            return isset(self::$wellknownservices[$search]) ?
+                [$search => self::$wellknownservices[$search]] : [];
+        }
+
+        return self::$wellknownservices;
+    }
+
+    /**
      * generate validation data (list of port numbers and well know ports)
      */
     protected function actionPostLoadingEvent()
@@ -117,13 +133,13 @@ class PortField extends BaseListField
         if (empty(self::$internalCacheOptionList[$setid])) {
             self::$internalCacheOptionList[$setid] = [];
             if ($this->enableWellKnown) {
-                foreach (["any"] + self::$wellknownservices as $wellknown) {
+                foreach (['any'] + array_keys(self::$wellknownservices) as $wellknown) {
                     self::$internalCacheOptionList[$setid][(string)$wellknown] = $wellknown;
                 }
             }
             if ($this->enableAlias) {
                 foreach (self::getArrayReference(Alias::getCachedData(), 'aliases.alias') as $uuid => $alias) {
-                    if (strpos($alias['type'], "port") !== false) {
+                    if ($alias['type'] == 'port') {
                         self::$internalCacheOptionList[$setid][$alias['name']] = $alias['name'];
                     }
                 }
@@ -169,7 +185,7 @@ class PortField extends BaseListField
     public function setValue($value)
     {
         $tmp = trim(strtolower($value));
-        if ($this->enableWellKnown && in_array($tmp, ["any"] + self::$wellknownservices)) {
+        if ($this->enableWellKnown && in_array($tmp, ['any'] + array_keys(self::$wellknownservices))) {
             return parent::setValue($tmp);
         } else {
             return parent::setValue($value);
@@ -183,7 +199,7 @@ class PortField extends BaseListField
     {
         $msg = gettext('Please specify a valid port number (1-65535).');
         if ($this->enableWellKnown) {
-            $msg .= ' ' . sprintf(gettext('A service name is also possible (%s).'), implode(', ', self::$wellknownservices));
+            $msg .= ' ' . sprintf(gettext('A service name is also possible (%s).'), implode(', ', array_keys(self::$wellknownservices)));
         }
         return $msg;
     }

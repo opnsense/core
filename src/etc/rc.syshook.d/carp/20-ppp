@@ -31,32 +31,37 @@ require_once("config.inc");
 require_once("interfaces.inc");
 require_once("util.inc");
 
+$a_hasync = config_read_array('hasync', false);
+if (empty($a_hasync['disconnectppps'])) {
+    exit(0);
+}
+
 $subsystem = !empty($argv[1]) ? $argv[1] : '';
 $type = !empty($argv[2]) ? $argv[2] : '';
 
-$a_hasync = &config_read_array('hasync');
-if (!empty($a_hasync['disconnectppps'])) {
-    if ($type != 'MASTER' && $type != 'BACKUP') {
-       log_msg("Carp '$type' event unknown from source '{$subsystem}'");
-       exit(1);
-    } elseif (!strstr($subsystem, '@')) {
-       log_msg("Carp '$type' event triggered from wrong source '{$subsystem}'");
-       exit(1);
+if (!in_array($type, ['BACKUP', 'INIT', 'MASTER'])) {
+   log_msg("CARP '$type' event unknown from source '{$subsystem}'");
+   exit(1);
+} elseif (!strstr($subsystem, '@')) {
+   log_msg("CARP '$type' event triggered from wrong source '{$subsystem}'");
+   exit(1);
+}
+
+list ($vhid, $iface) = explode('@', $subsystem);
+
+foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
+    /* XXX this ignores MLPPP but also reduces complexity */
+    if ($ppp['ports'] != $iface) {
+        continue;
     }
 
-    list ($vhid, $iface) = explode('@', $subsystem);
-    $a_ppps = &config_read_array('ppps', 'ppp');
-    foreach ($a_ppps as $ppp) {
-        if ($ppp['ports'] == $iface) {
-            foreach($config['interfaces'] as $ifkey => $interface) {
-                if ($ppp['if'] == $interface['if']) {
-                    log_msg("{$iface} is connected to ppp interface {$ifkey} set new status {$type}");
-                    if ($type == 'BACKUP') {
-                        interface_suspend($ifkey);
-                    } else {
-                        interface_ppps_configure($ifkey);
-                    }
-                }
+    foreach (config_read_array('interfaces', false) as $ifkey => $interface) {
+        if ($ppp['if'] == $interface['if']) {
+            log_msg("{$iface} is connected to ppp interface {$ifkey} set new status {$type}");
+            if (in_array($type, ['BACKUP', 'INIT'])) {
+                interface_suspend($ifkey);
+            } else {
+                interface_ppps_configure($ifkey);
             }
         }
     }

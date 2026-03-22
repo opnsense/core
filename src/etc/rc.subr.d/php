@@ -51,7 +51,7 @@ fi
 ${PW} user${PW_ARG} ${USER} -u ${UID} -g ${GID} -c "World Wide Web Only" -d /nonexistent -s /usr/sbin/nologin
 
 # set up required output directories for various PHP components
-for _PHPDIR in cache sessions tmp; do
+for _PHPDIR in cache sessions tests tmp; do
 	PHPDIR=/var/lib/php/${_PHPDIR}
 
 	mkdir -p ${PHPDIR}
@@ -65,7 +65,11 @@ for _PHPDIR in cache sessions tmp; do
 	chown -R ${OWNER} ${PHPDIR}
 done
 
+# ensure that "other" can access the tmp dir later on
+chmod 755 /var/lib /var/lib/php
+
 # change ownership for GUI related file access
+mkdir -p /conf/backup
 find /conf -name 'vouchers_*.db' -exec chown ${OWNER} {} \;
 find /conf/backup -name '*.xml' -exec chown ${OWNER} {} \;
 for PHPOWN in /conf /conf/config.xml /conf/backup /var/run/booting; do
@@ -75,4 +79,4 @@ for PHPOWN in /conf /conf/config.xml /conf/backup /var/run/booting; do
 done
 
 # flush Phalcon volt templates
-find /var/lib/php/cache -name '*.php' -exec rm {} \;
+find /var/lib/php/cache -name '*.php' -delete

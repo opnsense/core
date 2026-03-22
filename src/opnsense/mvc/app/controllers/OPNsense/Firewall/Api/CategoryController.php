@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2021 Deciso B.V.
+ *    Copyright (C) 2021-2026 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -41,6 +41,7 @@ use OPNsense\Core\Config;
 class CategoryController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'category';
+    protected static $internalModelUseSafeDelete = true; /* categories are used by uuid and name */
     protected static $internalModelClass = 'OPNsense\Firewall\Category';
 
     /**
@@ -69,6 +70,7 @@ class CategoryController extends ApiMutableModelControllerBase
      */
     public function setItemAction($uuid)
     {
+        Config::getInstance()->lock();
         $node = $this->getModel()->getNodeByReference('categories.category.' . $uuid);
         $old_name = $node != null ? (string)$node->name : null;
         if ($old_name !== null && $this->request->isPost() && $this->request->hasPost("category")) {
@@ -122,5 +124,21 @@ class CategoryController extends ApiMutableModelControllerBase
             throw new \OPNsense\Base\UserException($message, gettext("Category in use"));
         }
         return $this->delBase("categories.category", $uuid);
+    }
+
+    public function downloadAction()
+    {
+        if ($this->request->isGet()) {
+            $this->exportCsv($this->getModel()->categories->category->asRecordSet(false, ['auto']));
+        }
+    }
+
+    public function uploadAction()
+    {
+        if ($this->request->isPost() && $this->request->hasPost('payload')) {
+            return $this->importCsv('categories.category', $this->request->getPost('payload'), ['name']);
+        } else {
+            return ['status' => 'failed'];
+        }
     }
 }

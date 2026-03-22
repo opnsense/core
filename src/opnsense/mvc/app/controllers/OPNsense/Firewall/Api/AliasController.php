@@ -493,4 +493,16 @@ class AliasController extends ApiMutableModelControllerBase
         }
         return $result;
     }
+
+    /**
+     * update specified alias type
+     */
+    public function updateAction($action = null)
+    {
+        if ($this->request->isPost() && in_array($action, ['geoip', 'bogons'], true)) {
+            (new Backend())->configdpRun('filter update', [$action]);
+            return ['status' => 'ok', 'message' => gettext('Update completed')];
+        }
+        return ['status' => 'failed', 'message' => gettext('Error updating action')];
+    }
 }

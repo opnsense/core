@@ -133,6 +133,12 @@ class OpenVPN extends BaseModel
                         $key . ".verify_client_cert"
                     ));
                 }
+                if (!$instance->username_as_common_name->isEmpty() && $instance->authmode->isEmpty()) {
+                    $messages->appendMessage(new Message(
+                        gettext('Username as CN requires one or more authentication modes.'),
+                        $key . ".authmode"
+                    ));
+                }
                 if (!$instance->{'auth-gen-token'}->isEmpty() && (string)$instance->{'reneg-sec'} == '0') {
                     $messages->appendMessage(new Message(
                         gettext('A token lifetime requires a non zero Renegotiate time.'),
@@ -196,6 +202,18 @@ class OpenVPN extends BaseModel
                     gettext('DCO type instances do not support fragment size.'),
                     $key . ".fragment"
                 ));
+            }
+            if ($instance->dev_type == 'ovpn' && in_array('fast-io', $instance->various_flags->getValues())) {
+                $messages->appendMessage(new Message(
+                    gettext('DCO type instances do not support fast-io.'),
+                    $key . ".various_flags"
+                ));
+            }
+            if (
+                !str_starts_with($instance->proto->getValue(), 'udp') &&
+                in_array('fast-io', $instance->various_flags->getValues())
+            ) {
+                $messages->appendMessage(new Message(gettext('fast-io requires UDP.'), $key . ".various_flags"));
             }
         }
         return $messages;
@@ -664,7 +682,9 @@ class OpenVPN extends BaseModel
                         $options['push'][] = "\"register-dns\"";
                     }
                     if (!$node->dns_domain->isEmpty()) {
-                        $options['push'][] = "\"dhcp-option DOMAIN {$node->dns_domain}\"";
+                        foreach (explode(',', (string)$node->dns_domain) as $opt) {
+                            $options['push'][] = "\"dhcp-option DOMAIN {$opt}\"";
+                        }
                     }
                     if (!$node->dns_domain_search->isEmpty()) {
                         foreach (explode(',', (string)$node->dns_domain_search) as $opt) {
@@ -703,6 +723,10 @@ class OpenVPN extends BaseModel
 
                     if (!$node->{'ifconfig-pool-persist'}->isEmpty()) {
                         $options['ifconfig-pool-persist'] = "/var/etc/openvpn/instance-{$node_uuid}.pool";
+                    }
+
+                    if (!empty((string)$node->{'verify-x509-name'})) {
+                        $options['verify-x509-name'] = (string)$node->{'verify-x509-name'};
                     }
                 }
                 $options['persist-tun'] = null;
@@ -765,7 +789,7 @@ class OpenVPN extends BaseModel
                 }
 
                 // routes (ipv4, ipv6 local or push)
-                foreach (['route', 'push_route'] as $type) {
+                foreach (['route', 'push_route', 'push_excluded_routes'] as $type) {
                     foreach (explode(',', (string)$node->$type) as $item) {
                         if (empty($item)) {
                             continue;
@@ -778,6 +802,8 @@ class OpenVPN extends BaseModel
                         }
                         if ($type == 'push_route') {
                             $options['push'][] = "\"{$target_fieldname} $item\"";
+                        } elseif ($type == 'push_excluded_routes') {
+                            $options['push'][] = "\"{$target_fieldname} $item net_gateway\"";
                         } else {
                             $options[$target_fieldname][] = $item;
                         }

@@ -98,7 +98,7 @@ class InstancesController extends ApiMutableModelControllerBase
 
     public function genKeyAction($type = 'secret')
     {
-        if (in_array($type, ['secret', 'auth-token'])) {
+        if (in_array($type, ['secret', 'auth-token', 'tls-auth', 'tls-crypt'])) {
             $key = (new Backend())->configdpRun("openvpn genkey", [$type]);
             if (strpos($key, '-----BEGIN') !== false) {
                 return [

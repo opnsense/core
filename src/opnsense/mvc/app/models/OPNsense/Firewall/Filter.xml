@@ -2,7 +2,7 @@
     <mount>//OPNsense/Firewall/Filter</mount>
     <version>1.0.4</version>
     <migration_prefix>MFP</migration_prefix>
-    <description>Firewall autmation rules</description>
+    <description>Firewall rules (new)</description>
     <items>
         <rules>
             <rule type=".\FilterRuleField">
@@ -67,6 +67,7 @@
                     <OptionValues>
                         <in>In</in>
                         <out>Out</out>
+                        <any>Both</any>
                     </OptionValues>
                 </direction>
                 <ipprotocol type="OptionField">
@@ -88,24 +89,61 @@
                 <icmptype type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
-                        <echoreq>Echo Request</echoreq>
-                        <echorep>Echo Reply</echorep>
-                        <unreach>Destination Unreachable</unreach>
-                        <squench>Source Quench (Deprecated)</squench>
-                        <redir>Redirect</redir>
-                        <althost>Alternate Host Address (Deprecated)</althost>
-                        <routeradv>Router Advertisement</routeradv>
-                        <routersol>Router Solicitation</routersol>
-                        <timex>Time Exceeded</timex>
-                        <paramprob>Parameter Problem</paramprob>
-                        <timereq>Timestamp</timereq>
-                        <timerep>Timestamp Reply</timerep>
-                        <inforeq>Information Request (Deprecated)</inforeq>
-                        <inforep>Information Reply (Deprecated)</inforep>
-                        <maskreq>Address Mask Request (Deprecated)</maskreq>
-                        <maskrep>Address Mask Reply (Deprecated)</maskrep>
+                        <Common>
+                            <echoreq>Echo Request</echoreq>
+                            <echorep>Echo Reply</echorep>
+                            <unreach>Destination Unreachable</unreach>
+                            <redir>Redirect</redir>
+                            <routeradv>Router Advertisement</routeradv>
+                            <routersol>Router Solicitation</routersol>
+                            <timex>Time Exceeded</timex>
+                            <paramprob>Parameter Problem</paramprob>
+                            <timereq>Timestamp</timereq>
+                            <timerep>Timestamp Reply</timerep>
+                            <photuris>Photuris</photuris>
+                        </Common>
+                        <Deprecated>
+                            <squench>Source Quench</squench>
+                            <althost>Alternate Host Address</althost>
+                            <inforeq>Information Request</inforeq>
+                            <inforep>Information Reply</inforep>
+                            <maskreq>Address Mask Request</maskreq>
+                            <maskrep>Address Mask Reply</maskrep>
+                            <trace>Traceroute</trace>
+                            <dataconv>Data conversion problem</dataconv>
+                            <mobredir>Mobile host redirection</mobredir>
+                            <ipv6-where>IPv6 where-are-you</ipv6-where>
+                            <ipv6-here>IPv6 i-am-here</ipv6-here>
+                            <mobregreq>Mobile registration request</mobregreq>
+                            <mobregrep>Mobile registration reply</mobregrep>
+                            <skip>SKIP</skip>
+                        </Deprecated>
                     </OptionValues>
                 </icmptype>
+                <icmp6type type="OptionField">
+                    <Multiple>Y</Multiple>
+                    <OptionValues>
+                        <unreach value="1">Destination unreachable</unreach>
+                        <toobig value="2">Packet too big</toobig>
+                        <timex value="3">Time exceeded</timex>
+                        <paramprob value="4">Invalid IPv6 header</paramprob>
+                        <echoreq value="128">Echo service request</echoreq>
+                        <echorep value="129">Echo service reply</echorep>
+                        <listqry value="130">Multicast Listener Query</listqry>
+                        <listenrep value="131">Multicast listener report</listenrep>
+                        <listendone value="132">Multicast listener done</listendone>
+                        <routersol value="133">Router solicitation</routersol>
+                        <routeradv value="134">Router advertisement</routeradv>
+                        <neighbrsol value="135">Neighbor solicitation</neighbrsol>
+                        <neighbradv value="136">Neighbor advertisement</neighbradv>
+                        <redir value="137">Shorter route exists</redir>
+                        <routrrenum value="138">Route renumbering</routrrenum>
+                        <niqry value="139">ICMP Node Information Query</niqry>
+                        <nirep value="140">Node information reply</nirep>
+                        <mtraceresp value="200">mtrace response</mtraceresp>
+                        <mtrace value="201">mtrace messages</mtrace>
+                    </OptionValues>
+                </icmp6type>
                 <!-- XXX: should map internally to  'source' => array('network' => $source_net, "not" => true|false) -->
                 <source_net type="NetworkAliasField">
                     <Default>any</Default>
@@ -138,6 +176,10 @@
                     <EnableAlias>Y</EnableAlias>
                     <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
                 </destination_port>
+                <divert-to type="JsonKeyValueStoreField">
+                    <ConfigdPopulateAct>filter list diverts</ConfigdPopulateAct>
+                    <ValidationMessage>Specify a valid divert-to target.</ValidationMessage>
+                </divert-to>
                 <gateway type="JsonKeyValueStoreField">
                     <ConfigdPopulateAct>interface gateways list -g</ConfigdPopulateAct>
                     <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
@@ -168,24 +210,43 @@
                 </nopfsync>
                 <statetimeout type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </statetimeout>
+                <udp-first type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
+                </udp-first>
+                <udp-multiple type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
+                </udp-multiple>
+                <udp-single type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
+                </udp-single>
                 <max-src-nodes type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </max-src-nodes>
                 <max-src-states type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </max-src-states>
                 <max-src-conn type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </max-src-conn>
                 <max type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </max>
                 <max-src-conn-rate type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <MaximumValue>4294967</MaximumValue>
                 </max-src-conn-rate>
                 <max-src-conn-rates type="IntegerField">
                     <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </max-src-conn-rates>
                 <overload type="ModelRelationField">
                     <Model>
@@ -203,9 +264,11 @@
                 </overload>
                 <adaptivestart type="IntegerField">
                     <MinimumValue>0</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </adaptivestart>
                 <adaptiveend type="IntegerField">
                     <MinimumValue>0</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
                 </adaptiveend>
                 <prio type="OptionField">
                     <BlankDesc>Any priority</BlankDesc>
@@ -278,6 +341,7 @@
                         <cwr>cwr</cwr>
                     </OptionValues>
                 </tcpflags2>
+                <tcpflags_any type="BooleanField"/>
                 <categories type="ModelRelationField">
                     <Model>
                         <rulesets>
@@ -346,10 +410,10 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </nonat>
-                <sequence type="IntegerField">
+                <sequence type=".\FilterSequenceField">
                     <MinimumValue>1</MinimumValue>
-                    <MaximumValue>99999</MaximumValue>
-                    <ValidationMessage>Provide a valid sequence for sorting.</ValidationMessage>
+                    <MaximumValue>999999</MaximumValue>
+                    <ValidationMessage>Sequence shall be between 1 and 999999.</ValidationMessage>
                     <Required>Y</Required>
                     <Default>1</Default>
                 </sequence>
@@ -412,6 +476,7 @@
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
                 </target_port>
+                <staticnatport type="BooleanField"/>
                 <log type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
@@ -443,10 +508,10 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </log>
-                <sequence type="IntegerField">
+                <sequence type=".\FilterSequenceField">
                     <MinimumValue>1</MinimumValue>
-                    <MaximumValue>99999</MaximumValue>
-                    <ValidationMessage>Provide a valid sequence for sorting.</ValidationMessage>
+                    <MaximumValue>999999</MaximumValue>
+                    <ValidationMessage>Sequence shall be between 1 and 999999.</ValidationMessage>
                     <Required>Y</Required>
                     <Default>1</Default>
                 </sequence>
@@ -495,10 +560,10 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </log>
-                <sequence type="IntegerField">
+                <sequence type=".\FilterSequenceField">
                     <MinimumValue>1</MinimumValue>
-                    <MaximumValue>99999</MaximumValue>
-                    <ValidationMessage>Provide a valid sequence for sorting.</ValidationMessage>
+                    <MaximumValue>999999</MaximumValue>
+                    <ValidationMessage>Sequence shall be between 1 and 999999.</ValidationMessage>
                     <Required>Y</Required>
                     <Default>1</Default>
                 </sequence>

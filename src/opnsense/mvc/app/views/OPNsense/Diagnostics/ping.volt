@@ -31,53 +31,57 @@
             formatTokenizersUI();
             $('.selectpicker').selectpicker('refresh');
         });
-
-
-        let grid_jobs = $("#grid-jobs").UIBootgrid({
-            search:'/api/diagnostics/ping/search_jobs',
-            options:{
-                formatters: {
-                    "commands": function (column, row) {
-                        let btns = [];
-                        btns.push('<button type="button" data-toggle="tooltip" class="btn btn-xs btn-default command-remove" title="{{ lang._('remove') }}" data-row-id="' + row.id + '"><span class="fa fa-fw fa-remove"></span></button> ');
-                        if (row.status === 'stopped') {
-                            btns.push('<button type="button" data-toggle="tooltip" class="btn btn-xs btn-default command-start" title="{{ lang._('(re)start') }}" data-row-id="' + row.id + '"><span class="fa fa-fw fa-play"></span></button> ');
-                        } else if (row.status === 'running') {
-                            btns.push('<button type="button" data-toggle="tooltip" class="btn btn-xs btn-default command-stop" title="{{ lang._('stop') }}" data-row-id="' + row.id + '"><span class="fa fa-fw fa-stop"></span></button> ');
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            if (e.target.id == 'ping_jobs_tab') {
+                if (!$("#grid-jobs").hasClass('tabulator')) {
+                    let grid_jobs = $("#grid-jobs").UIBootgrid({
+                        search:'/api/diagnostics/ping/search_jobs',
+                        options:{
+                            formatters: {
+                                "commands": function (column, row) {
+                                    let btns = [];
+                                    btns.push('<button type="button" data-toggle="tooltip" class="btn btn-xs btn-default command-remove" title="{{ lang._('remove') }}" data-row-id="' + row.id + '"><span class="fa fa-fw fa-remove"></span></button> ');
+                                    if (row.status === 'stopped') {
+                                        btns.push('<button type="button" data-toggle="tooltip" class="btn btn-xs btn-default command-start" title="{{ lang._('(re)start') }}" data-row-id="' + row.id + '"><span class="fa fa-fw fa-play"></span></button> ');
+                                    } else if (row.status === 'running') {
+                                        btns.push('<button type="button" data-toggle="tooltip" class="btn btn-xs btn-default command-stop" title="{{ lang._('stop') }}" data-row-id="' + row.id + '"><span class="fa fa-fw fa-stop"></span></button> ');
+                                    }
+                                    return btns.join("");
+                                },
+                                "status": function (column, row) {
+                                    if (row.status == 'running') {
+                                        return '<i class="fa fa-fw fa-spinner fa-pulse"></i>';
+                                    } else {
+                                        return '<i class="fa fa-fw fa-stop-circle-o"></i>';
+                                    }
+                                }
+                            }
                         }
-
-                        return btns.join("");
-                    },
-                    "status": function (column, row) {
-                        if (row.status == 'running') {
-                            return '<i class="fa fa-fw fa-spinner fa-pulse"></i>';
-                        } else {
-                            return '<i class="fa fa-fw fa-stop-circle-o"></i>';
-                        }
-                    }
+                    });
+                    grid_jobs.on('loaded.rs.jquery.bootgrid', function() {
+                        $(".command-start").click(function(){
+                            let id = $(this).data('row-id');
+                            ajaxCall("/api/diagnostics/ping/start/" + id, {}, function(){
+                                $("#grid-jobs").bootgrid("reload");
+                            });
+                        });
+                        $(".command-stop").click(function(){
+                            let id = $(this).data('row-id');
+                            ajaxCall("/api/diagnostics/ping/stop/" + id, {}, function(){
+                                $("#grid-jobs").bootgrid("reload");
+                            });
+                        });
+                        $(".command-remove").click(function(){
+                            let id = $(this).data('row-id');
+                            ajaxCall("/api/diagnostics/ping/remove/" + id, {}, function(){
+                                $("#grid-jobs").bootgrid("reload");
+                            });
+                        });
+                    });
+                } else {
+                    $("#grid-jobs").bootgrid("reload");
                 }
             }
-        });
-        grid_jobs.on('loaded.rs.jquery.bootgrid', function() {
-            $('[data-toggle="tooltip"]').tooltip();
-            $(".command-start").click(function(){
-                let id = $(this).data('row-id');
-                ajaxCall("/api/diagnostics/ping/start/" + id, {}, function(){
-                    $("#grid-jobs").bootgrid("reload");
-                });
-            });
-            $(".command-stop").click(function(){
-                let id = $(this).data('row-id');
-                ajaxCall("/api/diagnostics/ping/stop/" + id, {}, function(){
-                    $("#grid-jobs").bootgrid("reload");
-                });
-            });
-            $(".command-remove").click(function(){
-                let id = $(this).data('row-id');
-                ajaxCall("/api/diagnostics/ping/remove/" + id, {}, function(){
-                    $("#grid-jobs").bootgrid("reload");
-                });
-            });
         });
 
         $("#btn_start_new").click(function () {
@@ -88,7 +92,6 @@
                     if (data.result && data.result === 'ok') {
                         ajaxCall("/api/diagnostics/ping/start/" + data.uuid, {}, function(){
                             $("#ping_jobs_tab").click();
-                            $("#grid-jobs").bootgrid("reload");
                         });
                     }
                 }

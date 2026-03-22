@@ -273,6 +273,9 @@ class OverviewController extends ApiControllerBase
                     $stats = $ifinfo['statistics'];
                     unset($ifinfo['statistics']);
 
+                    // keep parsed flags from $ifinfo
+                    unset($stats['flags']);
+
                     $ifinfo = array_merge($ifinfo, $stats);
                 }
 
@@ -296,7 +299,11 @@ class OverviewController extends ApiControllerBase
 
     public function reloadInterfaceAction($identifier = null)
     {
-        $result = ["message" => "failed"];
+        $result = ['message' => 'failed'];
+
+        if (!$this->request->isPost()) {
+            return $result;
+        }
 
         if ($identifier != null) {
             $backend = new Backend();

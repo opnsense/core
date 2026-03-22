@@ -48,12 +48,14 @@
       switch_mode(s_filter_val);
 
       let grid_log = $("#grid-log").UIBootgrid({
-          options:{
+          search:'/api/diagnostics/log/{{module}}/{{scope}}',
+          options: {
               initialSearchPhrase: getUrlHash('search'),
               sorting:false,
               rowSelect: false,
               selection: false,
               virtualDOM: true,
+              rowCount: [50, 100, 200, 500, 1000, 5000],
               labels: {
                   infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}"
               },
@@ -100,7 +102,9 @@
                   return request;
               },
           },
-          search:'/api/diagnostics/log/{{module}}/{{scope}}'
+          tabulatorOptions: {
+              index: "rnum"
+          }
       });
       $(".filter_act").change(function(event){
           event.stopPropagation();
@@ -152,12 +156,9 @@
 
       updateServiceControlUI('{{service}}');
 
-      // move filter into action header
-      $("#filter_container").detach().prependTo('#grid-log-header > .row > .actionBar > .actions');
-      $(".filter_act").tooltip();
-
-      $("#export-wrapper").detach().appendTo('#grid-log-header > .row > .actionBar > .btn-group');
-      $("#exportbtn").tooltip();
+      // Move filters directly into the actionBar instead of nested groups for better flex behavior
+      $("#filter_container").detach().insertAfter('#grid-log-header .search');
+      $("#export-wrapper").detach().appendTo('#grid-log-header .actionBar');
 
       function switch_mode(value) {
           let select = $("#severity_filter");

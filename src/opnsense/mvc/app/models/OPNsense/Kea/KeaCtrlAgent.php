@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Deciso B.V.
+ * Copyright (C) 2023-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,8 +37,8 @@ class KeaCtrlAgent extends BaseModel
     {
         $cnf = [
             'Control-agent' => [
-                'http-host' => (string)$this->general->http_host,
-                'http-port' => (int)$this->general->http_port->__toString(),
+                'http-host' => $this->general->http_host->getValue(),
+                'http-port' => $this->general->http_port->asInt(),
                 'control-sockets' => [
                     'dhcp4' => [
                         'socket-type' => 'unix',

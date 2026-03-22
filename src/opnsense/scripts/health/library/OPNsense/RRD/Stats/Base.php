@@ -29,6 +29,7 @@
 namespace OPNsense\RRD\Stats;
 
 use OPNsense\Core\Config;
+use OPNsense\Core\Shell;
 
 /**
  * Stats collection
@@ -40,13 +41,9 @@ abstract class Base
     /**
      * run simple shell command, expected to return json output
      */
-    protected function jsonShellCmd($cmd)
+    protected function jsonShellCmd($format, $args = [])
     {
-        exec($cmd . '  2>&1', $payload, $returncode);
-        if ($returncode == 0 && !empty($payload[0])) {
-            return json_decode($payload[0], true) ?? [];
-        }
-        return null;
+        return json_decode(Shell::shell_safe([...(array)$format, '2> /dev/null'], $args), true);
     }
 
     /**
@@ -54,13 +51,9 @@ abstract class Base
      * @param string $cmd command to execute
      * @return array output lines when returnvalue equals 0
      */
-    protected function shellCmd(string $cmd)
+    protected function shellCmd($format, $args = [])
     {
-        exec($cmd . '  2>&1', $payload, $returncode);
-        if ($returncode == 0 && !empty($payload[0])) {
-            return $payload;
-        }
-        return [];
+        return Shell::shell_safe([...(array)$format, '2> /dev/null'], $args, true);
     }
 
     /**

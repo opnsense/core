@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2025 Deciso B.V.
+ * Copyright (C) 2015-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -118,7 +118,7 @@ abstract class BaseField
     /**
      * @var string $internalToLower
      */
-    private $internalChangeCase = null;
+    protected $internalChangeCase = null;
 
     /**
      * @var bool is field loaded (after post loading event)
@@ -394,8 +394,7 @@ abstract class BaseField
      */
     public function getValues(): array
     {
-        $value = $this->getValue();
-        return strlen($value) ? [$value] : [];
+        return $this->isSet() ? [$this->getValue()] : [];
     }
 
     /**
@@ -417,12 +416,39 @@ abstract class BaseField
     }
 
     /**
-     * Try to convert to current value as float
+     * check if current value is empty (either boolean field as false or an empty field)
+     * @return bool
+     */
+    public function isEmpty(): bool
+    {
+        return empty($this->getValue());
+    }
+
+    /**
+     * check if current value is set (the stored string should be of zero length)
+     * @return bool
+     */
+    public function isSet(): bool
+    {
+        return $this->getValue() !== '';
+    }
+
+    /**
+     * convert current value to float
      * @return float
      */
     public function asFloat(): float
     {
-        return floatval($this->getValue());
+        return (float)$this->getValue();
+    }
+
+    /**
+     * convert current value to int
+     * @return int
+     */
+    public function asInt(): int
+    {
+        return (int)$this->getValue();
     }
 
     /**
@@ -431,16 +457,25 @@ abstract class BaseField
      */
     public function setValue($value)
     {
-        // if first set and not altered by the user, store initial value
+        $new_value = empty($this->internalChangeCase) ?
+            (string)$value : $this->applyChangeCase($value);
+
+        /* if first set and not altered by the user, store initial value */
         if ($this->internalFieldLoaded === false && $this->internalInitialValue === false) {
-            $this->internalInitialValue = (string)$value;
+            $this->internalInitialValue = $new_value;
         }
-        $this->internalValue = (string)$value;
-        // apply filters, may be extended later.
-        $filters = array('applyFilterChangeCase');
-        foreach ($filters as $filter) {
-            $this->$filter();
-        }
+
+        $this->internalValue = $new_value;
+    }
+
+    /**
+     * default setter for array values
+     * @param array $values set field values
+     */
+    public function setValues(array $values)
+    {
+        /* we only set the first verbatim value as default */
+        $this->setValue($values[0] ?? '');
     }
 
     /**
@@ -536,30 +571,12 @@ abstract class BaseField
     }
 
     /**
-     * check if current value is empty (either boolean field as false or an empty field)
-     * @return bool
-     */
-    public function isEmpty(): bool
-    {
-        return empty($this->getValue());
-    }
-
-    /**
      * check if this field is required
      * @return bool
      */
     public function isRequired(): bool
     {
         return $this->internalIsRequired;
-    }
-
-    /**
-     * check if this field is unused and required
-     * @return bool
-     */
-    public function isEmptyAndRequired(): bool
-    {
-        return $this->internalIsRequired && $this->getValue() === '';
     }
 
     /**
@@ -625,7 +642,7 @@ abstract class BaseField
     public function getValidators()
     {
         $validators = $this->getConstraintValidators();
-        if ($this->isEmptyAndRequired()) {
+        if ($this->isRequired() && !$this->isSet()) {
             $validators[] = new PresenceOf(['message' => gettext('A value is required.')]);
         }
         return $validators;
@@ -849,13 +866,20 @@ abstract class BaseField
     }
 
     /**
+     * @param ?string $content (part of) the failed content
      * @return string current validation message
      */
-    protected function getValidationMessage()
+    protected function getValidationMessage($content = null)
     {
-        return $this->internalValidationMessage !== null ?
+        $msg = $this->internalValidationMessage !== null ?
             gettext($this->internalValidationMessage) :
             $this->defaultValidationMessage();
+
+        if (!empty($msg) && substr_count($msg, '%s') == 1) {
+            return sprintf($msg, $content);
+        } else {
+            return $msg;
+        }
     }
 
     /**
@@ -883,7 +907,7 @@ abstract class BaseField
 
     /**
      * change character case on save
-     * @param string $value set case type, upper, lower, null (don't change)
+     * @param string $value set case type "upper" or "lower"
      */
     public function setChangeCase($value)
     {
@@ -891,9 +915,8 @@ abstract class BaseField
             $this->internalChangeCase = 'UPPER';
         } elseif (strtoupper(trim($value)) == 'LOWER') {
             $this->internalChangeCase = 'LOWER';
-        } else {
-            $this->internalChangeCase = null;
         }
+        /* do not allow changing back to the "null" default via typo */
     }
 
     /**
@@ -906,17 +929,21 @@ abstract class BaseField
     }
 
     /**
-     * apply change case to this node, called by setValue
+     * apply configured change case to a given value
+     * @param $value to be case-changed as configured
+     * @return string case-changed value for use
      */
-    private function applyFilterChangeCase()
+    public function applyChangeCase(string $value): string
     {
-        if (!empty($this->internalValue)) {
+        if (!empty($value)) {
             if ($this->internalChangeCase == 'UPPER') {
-                $this->internalValue = strtoupper($this->internalValue);
+                $value = strtoupper($value);
             } elseif ($this->internalChangeCase == 'LOWER') {
-                $this->internalValue = strtolower($this->internalValue);
+                $value = strtolower($value);
             }
         }
+
+        return $value;
     }
 
     /**

@@ -100,7 +100,7 @@ class ForwardRule extends Rule
         foreach ($this->reader() as $tmp) {
             $tmp['rule_types'] = array("rdr");
             $tmp['nordr'] = !empty($tmp['nordr']);
-            if (!empty($tmp['associated-rule-id']) && $tmp['associated-rule-id'] == "pass") {
+            if (!empty($tmp['pass']) && $tmp['pass'] == 'pass') {
                 $tmp['pass'] = empty($tmp['nordr']);
             }
             // target address, when invalid, disable rule
@@ -109,8 +109,8 @@ class ForwardRule extends Rule
                     $tmp['disabled'] = true;
                     $this->log("Missing target");
                 }
-            } elseif (Util::isAlias($tmp['target'])) {
-                $tmp['target'] = "\${$tmp['target']}";
+            } elseif (isset(static::$aliasMap[$tmp['target']])) {
+                $tmp['target'] = static::$aliasMap[$tmp['target']];
             } elseif (!Util::isIpAddress($tmp['target']) && !Util::isSubnet($tmp['target'])) {
                 $tmp['disabled'] = true;
                 $this->log("Invalid target");

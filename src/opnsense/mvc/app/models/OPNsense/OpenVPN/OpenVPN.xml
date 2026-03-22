@@ -57,7 +57,9 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </register_dns>
-                <dns_domain type="HostnameField"/>
+                <dns_domain type="HostnameField">
+                    <AsList>Y</AsList>
+                </dns_domain>
                 <dns_domain_search type="HostnameField">
                     <AsList>Y</AsList>
                 </dns_domain_search>
@@ -91,7 +93,7 @@
                     <OptionValues>
                         <tun>TUN</tun>
                         <tap>TAP</tap>
-                        <ovpn>DCO (experimental)</ovpn>
+                        <ovpn>DCO</ovpn>
                     </OptionValues>
                 </dev_type>
                 <verb type="OptionField">
@@ -173,6 +175,10 @@
                     <AsList>Y</AsList>
                     <WildcardEnabled>N</WildcardEnabled>
                 </push_route>
+                <push_excluded_routes type="NetworkField">
+                    <AsList>Y</AsList>
+                    <WildcardEnabled>N</WildcardEnabled>
+                </push_excluded_routes>
                 <cert type="CertificateField"/>
                 <crl type="CertificateField">
                     <type>crl</type>
@@ -236,16 +242,56 @@
                 <data-ciphers type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
-                        <AES-256-GCM>AES-256-GCM</AES-256-GCM>
-                        <AES-128-GCM>AES-128-GCM</AES-128-GCM>
-                        <CHACHA20-POLY1305>CHACHA20-POLY1305</CHACHA20-POLY1305>
+                        <Recommended>
+                            <AES-128-GCM>AES-128-GCM</AES-128-GCM>
+                            <AES-192-GCM>AES-192-GCM</AES-192-GCM>
+                            <AES-256-GCM>AES-256-GCM</AES-256-GCM>
+                            <CHACHA20-POLY1305>CHACHA20-POLY1305</CHACHA20-POLY1305>
+                        </Recommended>
+                        <Legacy>
+                            <AES-128-CBC>AES-128-CBC</AES-128-CBC>
+                            <AES-192-CBC>AES-192-CBC</AES-192-CBC>
+                            <AES-256-CBC>AES-256-CBC</AES-256-CBC>
+                            <AES-128-CFB>AES-128-CFB</AES-128-CFB>
+                            <AES-192-CFB>AES-192-CFB</AES-192-CFB>
+                            <AES-256-CFB>AES-256-CFB</AES-256-CFB>
+                            <AES-128-CFB1>AES-128-CFB1</AES-128-CFB1>
+                            <AES-192-CFB1>AES-192-CFB1</AES-192-CFB1>
+                            <AES-256-CFB1>AES-256-CFB1</AES-256-CFB1>
+                            <AES-128-CFB8>AES-128-CFB8</AES-128-CFB8>
+                            <AES-192-CFB8>AES-192-CFB8</AES-192-CFB8>
+                            <AES-256-CFB8>AES-256-CFB8</AES-256-CFB8>
+                            <AES-128-OFB>AES-128-OFB</AES-128-OFB>
+                            <AES-192-OFB>AES-192-OFB</AES-192-OFB>
+                            <AES-256-OFB>AES-256-OFB</AES-256-OFB>
+                        </Legacy>
                     </OptionValues>
                 </data-ciphers>
                 <data-ciphers-fallback type="OptionField">
                     <OptionValues>
-                        <AES-256-GCM>AES-256-GCM</AES-256-GCM>
-                        <AES-128-GCM>AES-128-GCM</AES-128-GCM>
-                        <CHACHA20-POLY1305>CHACHA20-POLY1305</CHACHA20-POLY1305>
+                        <Recommended>
+                            <AES-128-GCM>AES-128-GCM</AES-128-GCM>
+                            <AES-192-GCM>AES-192-GCM</AES-192-GCM>
+                            <AES-256-GCM>AES-256-GCM</AES-256-GCM>
+                            <CHACHA20-POLY1305>CHACHA20-POLY1305</CHACHA20-POLY1305>
+                        </Recommended>
+                        <Legacy>
+                            <AES-128-CBC>AES-128-CBC</AES-128-CBC>
+                            <AES-192-CBC>AES-192-CBC</AES-192-CBC>
+                            <AES-256-CBC>AES-256-CBC</AES-256-CBC>
+                            <AES-128-CFB>AES-128-CFB</AES-128-CFB>
+                            <AES-192-CFB>AES-192-CFB</AES-192-CFB>
+                            <AES-256-CFB>AES-256-CFB</AES-256-CFB>
+                            <AES-128-CFB1>AES-128-CFB1</AES-128-CFB1>
+                            <AES-192-CFB1>AES-192-CFB1</AES-192-CFB1>
+                            <AES-256-CFB1>AES-256-CFB1</AES-256-CFB1>
+                            <AES-128-CFB8>AES-128-CFB8</AES-128-CFB8>
+                            <AES-192-CFB8>AES-192-CFB8</AES-192-CFB8>
+                            <AES-256-CFB8>AES-256-CFB8</AES-256-CFB8>
+                            <AES-128-OFB>AES-128-OFB</AES-128-OFB>
+                            <AES-192-OFB>AES-192-OFB</AES-192-OFB>
+                            <AES-256-OFB>AES-256-OFB</AES-256-OFB>
+                        </Legacy>
                     </OptionValues>
                 </data-ciphers-fallback>
                 <tls_key type="ModelRelationField">
@@ -253,8 +299,8 @@
                         <host>
                             <source>OPNsense.OpenVPN.OpenVPN</source>
                             <items>StaticKeys.StaticKey</items>
-                            <display>mode,description</display>
-                            <display_format>[%s] %s</display_format>
+                            <display>description,mode</display>
+                            <display_format>%s [%s]</display_format>
                         </host>
                     </Model>
                 </tls_key>
@@ -275,6 +321,7 @@
                         <route-noexec>route-noexec</route-noexec>
                         <route-nopull>route-nopull</route-nopull>
                         <explicit-exit-notify>explicit-exit-notify</explicit-exit-notify>
+                        <fast-io>fast-io</fast-io>
                     </OptionValues>
                 </various_flags>
                 <various_push_flags type="OptionField">
@@ -346,7 +393,9 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </register_dns>
-                <dns_domain type="HostnameField"/>
+                <dns_domain type="HostnameField">
+                    <AsList>Y</AsList>
+                </dns_domain>
                 <dns_domain_search type="HostnameField">
                     <AsList>Y</AsList>
                 </dns_domain_search>
@@ -377,6 +426,7 @@
                 <http-proxy type="IPPortField">
                     <HostnameAllowed>Y</HostnameAllowed>
                 </http-proxy>
+                <verify-x509-name type="TextField"/>
             </Instance>
         </Instances>
         <StaticKeys>
@@ -393,7 +443,9 @@
                     <Required>Y</Required>
                     <ValidationMessage>A key is required; generate one with the button.</ValidationMessage>
                 </key>
-                <description type="DescriptionField"/>
+                <description type="DescriptionField">
+                    <Required>Y</Required>
+                </description>
             </StaticKey>
         </StaticKeys>
     </items>

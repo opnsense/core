@@ -63,7 +63,7 @@ output = None
 if args.cache:
     output = list()
     for line in unbound_control_reader('dump_cache'):
-        parts = re.split('^(\S+)\s+(?:([\d]*)\s+)?(IN)\s+(\S+)\s+(.*)$', line)
+        parts = re.split(r'^(\S+)\s+(?:([\d]*)\s+)?(IN)\s+(\S+)\s+(.*)$', line)
         if line.find('IN') > -1 and not line.startswith('msg') and len(parts) > 5:
             output.append({'host': parts[1], 'ttl': parts[2], 'type': parts[3], 'rrtype': parts[4], 'value': parts[5]})
 elif args.infra:

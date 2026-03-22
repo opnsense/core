@@ -41,7 +41,7 @@ class FilterRule extends Rule
     private $procorder = array(
         'disabled' => 'parseIsComment',
         'type' => 'parseType',
-        'direction' => 'parseReplaceSimple,any:|:in',
+        'direction' => 'parseReplaceSimple,:in|any:',
         'log' => 'parseBool,log',
         'quick' => 'parseBool,quick',
         'interface' => 'parseInterface',
@@ -54,7 +54,7 @@ class FilterRule extends Rule
         'os' => 'parsePlain, os {","}',
         'to' => 'parsePlainCurly,to ',
         'to_port' => 'parsePlainCurly, port ',
-        'icmp-type' => 'parsePlain,icmp-type {,}',
+        'icmp-type' => 'parseReplaceSimple,skip:"skip",icmp-type {,}',
         'icmp6-type' => 'parsePlain,icmp6-type {,}',
         'flags' => 'parsePlain, flags ',
         'state' => 'parseState',
@@ -65,6 +65,7 @@ class FilterRule extends Rule
         'tagged' => 'parsePlain, tagged ',
         'allowopts' => 'parseBool,allow-opts',
         'dn' =>  'parsePlain',
+        'divert-to' => 'parsePlain,divert-to ',
         'label' => 'parsePlain,label ",",63',
         'descr' => 'parseComment'
     );
@@ -134,7 +135,7 @@ class FilterRule extends Rule
                     $rule['reply'] = "reply-to {$if} ";
                 }
             }
-        } elseif (!isset($rule['disablereplyto']) && ($rule['direction'] ?? "") != 'any' && empty($rule['interfacenot'])) {
+        } elseif (empty($rule['disablereplyto']) && ($rule['direction'] ?? "") != 'any' && empty($rule['interfacenot'])) {
             $proto = $rule['ipprotocol'];
             if (!empty($this->interfaceMapping[$rule['interface']]['if']) && empty($rule['gateway'])) {
                 $if = $this->interfaceMapping[$rule['interface']]['if'];
@@ -197,7 +198,7 @@ class FilterRule extends Rule
             }
             // restructure flags
             if (isset($rule['protocol']) && $rule['protocol'] == "tcp") {
-                if (isset($rule['tcpflags_any'])) {
+                if (!empty($rule['tcpflags_any'])) {
                     $rule['flags'] = "any";
                 } elseif (!empty($rule['tcpflags2'])) {
                     $rule['flags'] = "";
@@ -242,6 +243,15 @@ class FilterRule extends Rule
                     if (!empty($rule['statetimeout'])) {
                         $rule['state']['options'][] = "tcp.established " . $rule['statetimeout'];
                     }
+                    if (!empty($rule['udp-first'])) {
+                        $rule['state']['options'][] = "udp.first " . $rule['udp-first'];
+                    }
+                    if (!empty($rule['udp-multiple'])) {
+                        $rule['state']['options'][] = "udp.multiple " . $rule['udp-multiple'];
+                    }
+                    if (!empty($rule['udp-single'])) {
+                        $rule['state']['options'][] = "udp.single " . $rule['udp-single'];
+                    }
                     if (!empty($rule['max-src-conn-rate']) && !empty($rule['max-src-conn-rates'])) {
                         $otbl = !empty($rule['overload']) ? $rule['overload'] : "virusprot";
                         $rule['state']['options'][] = "max-src-conn-rate " . $rule['max-src-conn-rate'] . " " .
@@ -253,11 +263,11 @@ class FilterRule extends Rule
                 }
             }
             // icmp-type switch (ipv4/ipv6)
-            if (!empty($rule['protocol']) && $rule['protocol'] == "icmp" && !empty($rule['icmptype'])) {
-                if ($rule['ipprotocol'] == 'inet') {
+            if (!empty($rule['protocol']) && in_array($rule['protocol'], ['icmp', 'ipv6-icmp'], true)) {
+                if ($rule['ipprotocol'] == 'inet' && !empty($rule['icmptype'])) {
                     $rule['icmp-type'] = $rule['icmptype'];
-                } elseif ($rule['ipprotocol'] == 'inet6') {
-                    $rule['icmp6-type'] = $rule['icmptype'];
+                } elseif ($rule['ipprotocol'] == 'inet6' && !empty($rule['icmp6type'])) {
+                    $rule['icmp6-type'] = $rule['icmp6type'];
                 }
             }
             // icmpv6
@@ -341,18 +351,18 @@ class FilterRule extends Rule
     {
         if (!empty($this->rule['from'])) {
             return preg_replace('/,(?=[^\s])/', ', ', $this->rule['from']);
-        } elseif (isset($this->rule['source']['address'])) {
+        } elseif (!empty($this->rule['source']['address'])) {
             return $this->rule['source']['address'];
         } elseif (isset($this->rule['source']['any'])) {
             return '*';
-        } elseif (isset($this->rule['source']['network'])) {
+        } elseif (!empty($this->rule['source']['network'])) {
             return $this->uiConvertNet($this->rule['source']['network']);
         }
         return '*';
     }
     public function isUIFromNot()
     {
-        return (isset($this->rule['source']) && isset($this->rule['source']['not'])) || !empty($this->rule['from_not']);
+        return !empty($this->rule['source']['not']) || !empty($this->rule['from_not']);
     }
     public function getUIFromPort()
     {
@@ -367,18 +377,18 @@ class FilterRule extends Rule
     {
         if (!empty($this->rule['to'])) {
             return preg_replace('/,(?=[^\s])/', ', ', $this->rule['to']);
-        } elseif (isset($this->rule['destination']['address'])) {
+        } elseif (!empty($this->rule['destination']['address'])) {
             return $this->rule['destination']['address'];
         } elseif (isset($this->rule['destination']['any'])) {
             return '*';
-        } elseif (isset($this->rule['destination']['network'])) {
+        } elseif (!empty($this->rule['destination']['network'])) {
             return $this->uiConvertNet($this->rule['destination']['network']);
         }
         return '*';
     }
     public function isUIToNot()
     {
-        return isset($this->rule['destination']) && isset($this->rule['destination']['not']) || !empty($this->rule['to_not']);
+        return !empty($this->rule['destination']['not']) || !empty($this->rule['to_not']);
     }
     public function getUIToPort()
     {

@@ -32,6 +32,7 @@ use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Core\Type;
 use OPNsense\Firewall\Util;
 
 class SettingsController extends ApiMutableModelControllerBase
@@ -53,8 +54,8 @@ class SettingsController extends ApiMutableModelControllerBase
     public function searchGatewayAction()
     {
         $cfg = Config::getInstance()->object();
-        $ifconfig = json_decode((new Backend())->configdRun('interface list ifconfig'), true);
-        $gateways_status = json_decode((new Backend())->configdRun('interface gateways status'), true);
+        $ifconfig = json_decode((new Backend())->configdRun('interface list ifconfig'), true) ?? [];
+        $gateways_status = json_decode((new Backend())->configdRun('interface gateways status'), true) ?? [];
         $gateways = array_values($this->getModel()->gatewaysIndexedByName(true, false, true));
         $down_gateways = !empty((string)$cfg->system->gw_switch_default) ? array_map(function ($gw) {
             if (str_contains($gw['status'], 'down')) {
@@ -70,7 +71,13 @@ class SettingsController extends ApiMutableModelControllerBase
                 $gateways[$idx]['uuid'] = $gateway['name'];
             }
 
-            /* flags used by view to filter or format elements */
+            /*
+             * Flags used by view to filter or format elements:
+             *
+             * This output does not consistently represent the model data
+             * in types returned and actual values but is kept this way to
+             * provide a compatible API experience for existing API users.
+             */
             $gateways[$idx]['virtual'] = !empty($gateway['virtual']);
             $gateways[$idx]['disabled'] = !empty($gateway['disabled']);
             $gateways[$idx]['upstream'] = !empty($gateway['defaultgw']);
@@ -150,7 +157,7 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function getGatewayAction($uuid = null)
     {
-        if (!$this->isValidUUID($uuid)) {
+        if (!Type::isUUID($uuid)) {
             /* uuid is likely a gateway name (legacy config) */
             $gateway = $this->getModel()->gatewaysIndexedByName(true, false, true)[$uuid] ?? [];
             if (!empty($gateway)) {
@@ -171,7 +178,7 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function setGatewayAction($uuid)
     {
-        if (!$this->isValidUUID($uuid)) {
+        if (!Type::isUUID($uuid)) {
             $mdl = $this->getModel();
             $uuid = $mdl->gateway_item->generateUUID();
         }

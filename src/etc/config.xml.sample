@@ -11,7 +11,7 @@
     <dnsallowoverride_exclude/>
     <group>
       <name>admins</name>
-      <description><![CDATA[System Administrators]]></description>
+      <description>System Administrators</description>
       <scope>system</scope>
       <gid>1999</gid>
       <member>0</member>
@@ -19,7 +19,7 @@
     </group>
     <user>
       <name>root</name>
-      <descr><![CDATA[System Administrator]]></descr>
+      <descr>System Administrator</descr>
       <scope>system</scope>
       <groupname>admins</groupname>
       <password>$2y$10$YRVoF4SgskIsrXOvOQjGieB9XqHPRra9R7d80B3BZdbY/j21TwBfS</password>
@@ -33,10 +33,6 @@
     <disablenatreflection>yes</disablenatreflection>
     <usevirtualterminal>1</usevirtualterminal>
     <disableconsolemenu/>
-    <disablevlanhwfilter>1</disablevlanhwfilter>
-    <disablechecksumoffloading>1</disablechecksumoffloading>
-    <disablesegmentationoffloading>1</disablesegmentationoffloading>
-    <disablelargereceiveoffloading>1</disablelargereceiveoffloading>
     <ipv6allow>1</ipv6allow>
     <powerd_ac_mode>hadp</powerd_ac_mode>
     <powerd_battery_mode>hadp</powerd_battery_mode>
@@ -73,7 +69,7 @@
       <if>mismatch0</if>
       <ipaddr>192.168.1.1</ipaddr>
       <subnet>24</subnet>
-      <ipaddrv6>track6</ipaddrv6>
+      <ipaddrv6>idassoc6</ipaddrv6>
       <subnetv6>64</subnetv6>
       <media/>
       <mediaopt/>
@@ -82,23 +78,28 @@
     </lan>
   </interfaces>
   <dnsmasq>
-      <enable>1</enable>
-      <port>0</port>
+    <enable>1</enable>
+    <port>53053</port>
+    <interface>lan</interface>
+    <dhcp>
+      <enable_ra>1</enable_ra>
+    </dhcp>
+    <dhcp_ranges>
       <interface>lan</interface>
-      <dhcp_ranges>
-          <interface>lan</interface>
-          <start_addr>192.168.1.100</start_addr>
-          <end_addr>192.168.1.199</end_addr>
-      </dhcp_ranges>
+      <start_addr>192.168.1.100</start_addr>
+      <end_addr>192.168.1.199</end_addr>
+    </dhcp_ranges>
+    <dhcp_ranges>
+      <interface>lan</interface>
+      <start_addr>::1000</start_addr>
+      <end_addr>::2000</end_addr>
+      <constructor>lan</constructor>
+      <ra_mode>slaac</ra_mode>
+    </dhcp_ranges>
   </dnsmasq>
   <unbound>
     <enable>1</enable>
   </unbound>
-  <snmpd>
-    <syslocation/>
-    <syscontact/>
-    <rocommunity>public</rocommunity>
-  </snmpd>
   <nat>
     <outbound>
       <mode>automatic</mode>
@@ -108,7 +109,7 @@
     <rule>
       <type>pass</type>
       <ipprotocol>inet</ipprotocol>
-      <descr><![CDATA[Default allow LAN to any rule]]></descr>
+      <descr>Default allow LAN to any rule</descr>
       <interface>lan</interface>
       <source>
         <network>lan</network>
@@ -120,7 +121,7 @@
     <rule>
       <type>pass</type>
       <ipprotocol>inet6</ipprotocol>
-      <descr><![CDATA[Default allow LAN IPv6 to any rule]]></descr>
+      <descr>Default allow LAN IPv6 to any rule</descr>
       <interface>lan</interface>
       <source>
         <network>lan</network>
@@ -135,5 +136,6 @@
   </rrd>
   <ntpd>
     <prefer>0.opnsense.pool.ntp.org</prefer>
+    <ispool>0.opnsense.pool.ntp.org 1.opnsense.pool.ntp.org 2.opnsense.pool.ntp.org 3.opnsense.pool.ntp.org</ispool>
   </ntpd>
 </opnsense>

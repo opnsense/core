@@ -101,6 +101,7 @@ class UserController extends ApiMutableModelControllerBase
             $hash = $this->getModel()->generatePasswordHash($password);
             if ($hash !== false && strpos($hash, '$') === 0) {
                 $node->password = $hash;
+                $node->pwd_changed_at = microtime(true);
             } else {
                 /* log and throw exception, not being able to hash the password should be fatal. */
                 $this->getLogger('audit')->error(sprintf("Failed to hash password for user %s", $node->name));

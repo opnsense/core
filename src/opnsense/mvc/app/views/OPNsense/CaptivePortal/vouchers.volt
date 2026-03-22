@@ -69,6 +69,7 @@
                     // link on change event
                     $('#voucher-groups').off().on('change', function(){
                         updateVoucherList();
+                        $('.selectpicker').selectpicker('refresh');
                     });
                     // initial load voucher list
                     updateVoucherList();
@@ -80,6 +81,7 @@
          * list vouchers in grid
          */
         $("#grid-vouchers").UIBootgrid({
+            datakey: 'username',
             options: {
                 ajax: false,
                 selection: true,

@@ -14,7 +14,6 @@
             <formatter>rowtoggle</formatter>
             <sequence>5</sequence>
             <align>center</align>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -28,7 +27,6 @@
             <visible>false</visible>
             <!-- The sequence order of firewall rules is absolute, no other field shall be sorted -->
             <order>asc</order>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -40,7 +38,6 @@
         <grid_view>
             <sequence>15</sequence>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -50,7 +47,6 @@
         <style>tokenize</style>
         <help>For grouping purposes you may select multiple groups here to organize items.</help>
         <grid_view>
-            <sortable>false</sortable>
             <formatter>category</formatter>
             <sequence>1</sequence>
             <width>80</width>
@@ -64,7 +60,8 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
         </grid_view>
     </field>
     <field>
@@ -74,7 +71,7 @@
         <help>You may enter a description here for your reference (not parsed).</help>
         <grid_view>
             <sequence>110</sequence>
-            <sortable>false</sortable>
+            <min-width>100</min-width>
         </grid_view>
     </field>
     <field>
@@ -98,7 +95,6 @@
         <grid_view>
             <formatter>interfaces</formatter>
             <sequence>25</sequence>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -136,7 +132,8 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
         </grid_view>
     </field>
     <field>
@@ -155,8 +152,8 @@
         <label>Version</label>
         <type>dropdown</type>
         <grid_view>
+            <formatter>any</formatter>
             <sequence>35</sequence>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -166,7 +163,6 @@
         <grid_view>
             <formatter>any</formatter>
             <sequence>40</sequence>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -174,9 +170,19 @@
         <label>ICMP type</label>
         <type>select_multiple</type>
         <hint>Any</hint>
-        <advanced>true</advanced>
+        <style>selectpicker rule_protocol protocol_icmp</style>
         <grid_view>
-            <ignore>true</ignore>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.icmp6type</id>
+        <label>ICMPv6 type</label>
+        <type>select_multiple</type>
+        <hint>Any</hint>
+        <style>selectpicker rule_protocol protocol_ipv6-icmp</style>
+        <grid_view>
+            <visible>false</visible>
         </grid_view>
     </field>
     <field>
@@ -196,7 +202,7 @@
         <grid_view>
             <formatter>alias</formatter>
             <sequence>50</sequence>
-            <sortable>false</sortable>
+            <min-width>100</min-width>
         </grid_view>
     </field>
     <field>
@@ -206,9 +212,10 @@
         <help>Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
         <style>port_selector</style>
         <grid_view>
+            <label>Port</label>
             <sequence>60</sequence>
-            <sortable>false</sortable>
             <formatter>alias</formatter>
+            <min-width>60</min-width>
         </grid_view>
     </field>
     <field>
@@ -228,7 +235,7 @@
         <grid_view>
             <formatter>alias</formatter>
             <sequence>70</sequence>
-            <sortable>false</sortable>
+            <min-width>100</min-width>
         </grid_view>
     </field>
     <field>
@@ -238,9 +245,10 @@
         <help>Destination port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
         <style>port_selector</style>
         <grid_view>
+            <label>Port</label>
             <sequence>80</sequence>
-            <sortable>false</sortable>
             <formatter>alias</formatter>
+            <min-width>60</min-width>
         </grid_view>
     </field>
     <field>
@@ -260,7 +268,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -271,7 +278,16 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.tcpflags_any</id>
+        <label>TCP flags any</label>
+        <type>checkbox</type>
+        <help>Use this to choose TCP flags that must be cleared for this rule to match.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
         </grid_view>
     </field>
     <field>
@@ -281,12 +297,28 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
+            <formatter>sched</formatter>
         </grid_view>
+    </field>
+    <!-- XXX: start as advanced, promote to non-advanced feature in a later version -->
+    <field>
+        <id>rule.divert-to</id>
+        <label>Divert-to</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+        <help>Send packets matching this rule to the service specified, when the service is not running, packets will be dropped</help>
     </field>
     <field>
         <type>header</type>
         <label>Stateful firewall</label>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <type>subheader</type>
+        <label>State options</label>
         <advanced>true</advanced>
     </field>
     <field>
@@ -297,7 +329,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -312,18 +343,63 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
+        <id>rule.nopfsync</id>
+        <label>NO pfsync</label>
+        <type>checkbox</type>
+        <help>This prevents states created by this rule to be synced with pfsync.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>subheader</type>
+        <label>State timeouts</label>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <id>rule.statetimeout</id>
-        <label>State timeout</label>
+        <label>TCP established</label>
         <type>text</type>
-        <help>State Timeout in seconds (TCP only)</help>
+        <help>The state timeout in seconds of fully established TCP.</help>
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.udp-first</id>
+        <label>UDP first</label>
+        <type>text</type>
+        <help>The state timeout in seconds after the first UDP packet.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.udp-single</id>
+        <label>UDP single</label>
+        <type>text</type>
+        <help>The state timeout in seconds if both hosts have sent UDP packets.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.udp-multiple</id>
+        <label>UDP multiple</label>
+        <type>text</type>
+        <help>The state timeout in seconds if the source host sends more than one UDP packet but the destination host has never sent one back.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
         </grid_view>
     </field>
     <field>
@@ -334,7 +410,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -345,8 +420,12 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
+    </field>
+    <field>
+        <type>subheader</type>
+        <label>State limits</label>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>rule.max</id>
@@ -359,7 +438,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -370,7 +448,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -381,7 +458,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -392,7 +468,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -403,7 +478,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -414,7 +488,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -429,25 +502,11 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
-        </grid_view>
-    </field>
-    <field>
-        <id>rule.nopfsync</id>
-        <label>NO pfsync</label>
-        <type>checkbox</type>
-        <help>This prevents states created by this rule to be synced with pfsync.</help>
-        <advanced>true</advanced>
-        <grid_view>
-            <type>boolean</type>
-            <formatter>boolean</formatter>
-            <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
         <type>header</type>
-        <label>Traffic shaping [experimental]</label>
+        <label>Traffic shaping</label>
         <advanced>true</advanced>
     </field>
     <field>
@@ -458,7 +517,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -469,7 +527,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -486,7 +543,6 @@
         <grid_view>
             <formatter>any</formatter>
             <sequence>100</sequence>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -500,7 +556,6 @@
             <type>boolean</type>
             <formatter>boolean</formatter>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -514,7 +569,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
             <formatter>default</formatter>
         </grid_view>
     </field>
@@ -531,7 +585,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -547,7 +600,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -561,7 +613,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -571,7 +622,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -594,7 +644,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -605,53 +654,16 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <sortable>false</sortable>
         </grid_view>
     </field>
     <!-- Not exposed in dialog, do not exist in model, only for grid -->
     <field>
-        <id>rule.evaluations</id>
-        <label>Evaluations</label>
+        <id>rule.statistics</id>
+        <label>Statistics</label>
         <type>ignore</type>
         <grid_view>
-            <visible>false</visible>
-            <sortable>false</sortable>
-            <label>Stats - Evaluations</label>
+            <formatter>statistics</formatter>
             <sequence>115</sequence>
-        </grid_view>
-    </field>
-    <field>
-        <id>rule.states</id>
-        <label>States</label>
-        <type>ignore</type>
-        <grid_view>
-            <visible>false</visible>
-            <sortable>false</sortable>
-            <label>Stats - States</label>
-            <sequence>116</sequence>
-        </grid_view>
-    </field>
-    <field>
-        <id>rule.packets</id>
-        <label>Packets</label>
-        <type>ignore</type>
-        <grid_view>
-            <visible>false</visible>
-            <sortable>false</sortable>
-            <label>Stats - Packets</label>
-            <sequence>117</sequence>
-        </grid_view>
-    </field>
-    <field>
-        <id>rule.bytes</id>
-        <label>Bytes</label>
-        <type>ignore</type>
-        <grid_view>
-            <visible>false</visible>
-            <sortable>false</sortable>
-            <label>Stats - Bytes</label>
-            <sequence>118</sequence>
-            <formatter>bytes</formatter>
         </grid_view>
     </field>
     <field>
@@ -660,7 +672,6 @@
         <type>ignore</type>
         <grid_view>
             <width>120</width>
-            <sortable>false</sortable>
             <formatter>ruleIcons</formatter>
             <sequence>15</sequence>
         </grid_view>

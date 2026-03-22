@@ -98,7 +98,7 @@ class ApiControllerBase extends ControllerRoot
                 // not applicable according to $filter_funct()
                 return false;
             } elseif (!empty($search_clauses)) {
-                foreach ($search_clauses as $clause) {
+                foreach ($search_clauses as $clauses) {
                     $matches = false;
                     foreach ($records[$key] as $itemkey => $itemval) {
                         if (!empty($fields) && !in_array($itemkey, $fields)) {
@@ -112,9 +112,16 @@ class ApiControllerBase extends ControllerRoot
                             });
                             $itemval = implode(' ', $tmp);
                         }
-
-                        if (stripos((string)$itemval, $clause) !== false) {
-                            $matches = true;
+                        /**
+                         *
+                         * Usually "clauses" are singular, in which case all clauses together act as an "AND"
+                         * When a "clauses" item is actually an array, all items in the list act as aliases for the same
+                         * phrase (OR)
+                         **/
+                        foreach ((array)$clauses as $clause) {
+                            if (stripos((string)$itemval, $clause) !== false) {
+                                $matches = true;
+                            }
                         }
                     }
                     if (!$matches) {
@@ -150,22 +157,23 @@ class ApiControllerBase extends ControllerRoot
         $records,
         $headers = [
             'Content-Type: text/csv', 'Content-Transfer-Encoding: binary', 'Pragma: no-cache', 'Expires: 0'
-        ]
+        ],
+        $separator = ';'
     ) {
         $records = is_array($records) ? $records : [];
         $stream = fopen('php://temp', 'rw+');
         if (isset($records[0])) {
-            fputcsv($stream, array_keys($records[0]));
+            fputcsv($stream, array_keys($records[0]), $separator);
         }
         foreach ($records as $record) {
-            fputcsv($stream, $record);
+            fputcsv($stream, $record, $separator);
         }
         foreach ($headers as $header) {
             $parts = explode(':', $header, 2);
             $this->response->setHeader($parts[0], ltrim($parts[1]));
         }
         rewind($stream);
-        $this->response->setContent($stream);
+        $this->response->setContent($stream, true);
     }
 
     /**

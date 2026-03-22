@@ -36,12 +36,14 @@ class Autoconf
     private static function get($if, $type, $ipproto = 'inet')
     {
         $fsuffix = $ipproto == 'inet6' ? 'v6' : '';
+
         foreach (['', ':slaac'] as $isuffix) {
             $file = "/tmp/{$if}{$isuffix}_{$type}{$fsuffix}";
             if (file_exists($file)) {
                 return trim(@file_get_contents($file));
             }
         }
+
         return null;
     }
 
@@ -83,15 +85,16 @@ class Autoconf
      */
     public static function all($if)
     {
-
         $result = [];
+
         foreach (['inet', 'inet6'] as $ipproto) {
             $map = [
                 'nameserver' => self::getNameserver($if, $ipproto),
                 'prefix' => self::getPrefix($if, $ipproto),
                 'router' => self::getRouter($if, $ipproto),
-                'searchdomain' => self::getSearchdomain($if, $ipproto)
+                'searchdomain' => self::getSearchdomain($if, $ipproto),
             ];
+
             foreach ($map as $key => $content) {
                 if ($content !== null) {
                     if (!isset($result[$key])) {
@@ -101,6 +104,7 @@ class Autoconf
                 }
             }
         }
+
         return $result;
     }
 }

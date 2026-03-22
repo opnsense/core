@@ -28,22 +28,22 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
+TMPPERM=01777
+TMPDIRS="
+/var/lib/php/tmp
+"
+
 USE_MFS_TMP=$(/usr/bin/grep -c 'use_mfs_tmp[^_]' /conf/config.xml)
 
 # see if / is writable (aka. not a live media boot)
 if _tmpdir=$(mktemp -d -q /.diskless.XXXXXX); then
-	# only remove the directory
+	# in this mode we are allowed to clear /tmp
+	TMPDIRS="/tmp ${TMPDIRS}"
 	rmdir ${_tmpdir}
 else
 	# disable to avoid spurious /tmp mount
 	USE_MFS_TMP=0
 fi
-
-TMPPERM=01777
-TMPDIRS="
-/tmp
-/var/lib/php/tmp
-"
 
 for TMPDIR in ${TMPDIRS}; do
 	mkdir -p ${TMPDIR}

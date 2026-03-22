@@ -85,6 +85,9 @@ class Swanctl extends BaseModel
         foreach ($this->VTIs->VTI->iterateItems() as $node) {
             if (!$validateFullModel && !$node->isFieldChanged()) {
                 continue;
+            } elseif ($node->origin->getValue() == 'legacy') {
+                /* read-only auto-generated */
+                continue;
             }
             $key = $node->__reference;
             $vti_inets = [];

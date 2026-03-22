@@ -1,7 +1,7 @@
 <model>
     <mount>/dnsmasq</mount>
     <description>Dnsmasq DNS and DHCP</description>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
     <items>
         <enable type="BooleanField"/>
         <regdhcp type="BooleanField"/>
@@ -73,31 +73,49 @@
                 <MaximumValue>60</MaximumValue>
             </reply_delay>
             <enable_ra type="BooleanField"/>
+            <host_ping type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </host_ping>
             <nosync type="BooleanField"/>
+            <log_dhcp type="BooleanField">
+                <Constraints>
+                    <check001>
+                        <reference>log_quiet.check001</reference>
+                    </check001>
+                </Constraints>
+            </log_dhcp>
+            <log_quiet type="BooleanField">
+                <Constraints>
+                    <check001>
+                        <type>SingleSelectConstraint</type>
+                        <addFields>
+                            <field>log_dhcp</field>
+                        </addFields>
+                        <ValidationMessage>This option and "Log DHCP options and tags" cannot be enabled at the same time.</ValidationMessage>
+                    </check001>
+                </Constraints>
+            </log_quiet>
         </dhcp>
         <no_ident type="BooleanField">
             <Required>Y</Required>
             <Default>1</Default>
         </no_ident>
         <hosts type="ArrayField">
-            <host type="HostnameField">
-                <HostWildcardAllowed>Y</HostWildcardAllowed>
-                <IsDNSName>Y</IsDNSName>
-                <IpAllowed>N</IpAllowed>
+            <host type=".\HostnameField">
+                <IsWildcardAllowed>Y</IsWildcardAllowed>
             </host>
-            <domain type="TextField">
-                <Mask>/^(?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.)*(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
-                <ValidationMessage>A valid domain must be specified.</ValidationMessage>
+            <domain type=".\HostnameField">
+                <IsDomain>Y</IsDomain>
             </domain>
             <local type="BooleanField"/>
             <ip type="NetworkField">
                 <NetMaskAllowed>N</NetMaskAllowed>
                 <AsList>Y</AsList>
             </ip>
-            <cnames type="HostnameField">
+            <cnames type=".\HostnameField">
+                <IsDomain>Y</IsDomain>
                 <AsList>Y</AsList>
-                <IsDNSName>Y</IsDNSName>
-                <IpAllowed>N</IpAllowed>
             </cnames>
             <client_id type="TextField">
                 <Mask>/^(?:\*|(?:[0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2})+))$/</Mask>
@@ -120,10 +138,10 @@
             <descr type="TextField"/>
             <comments type="TextField"/>
             <!-- Intentionally last, AliasesField back references other fields (which should already be there) -->
-            <aliases type=".\AliasesField">
+            <aliases type=".\HostnameField">
+                <IsDomain>Y</IsDomain>
+                <IsLegacyXML>Y</IsLegacyXML>
                 <AsList>Y</AsList>
-                <IsDNSName>Y</IsDNSName>
-                <IpAllowed>N</IpAllowed>
             </aliases>
         </hosts>
         <domainoverrides type="ArrayField">
@@ -134,11 +152,10 @@
                 <Required>Y</Required>
                 <ValidationMessage>Please enter a value between 1 and 99999.</ValidationMessage>
             </sequence>
-            <domain type="HostnameField">
-                <HostWildcardAllowed>Y</HostWildcardAllowed>
-                <IsDNSName>Y</IsDNSName>
-                <IpAllowed>N</IpAllowed>
+            <domain type=".\HostnameField">
                 <Required>Y</Required>
+                <IsDomain>Y</IsDomain>
+                <IsWildcardAllowed>Y</IsWildcardAllowed>
             </domain>
             <ipset type="ModelRelationField">
                 <Model>
@@ -148,7 +165,7 @@
                         <display>name</display>
                         <filters>
                             <type>/^[Ee]xternal.*/</type>
-                            <name>/^(?!bogons$|bogonsv6$|virusprot$|sshlockout$|__captiveportal.*).*/</name>
+                            <name>/^(?!bogons$|bogonsv6$|virusprot$|sshlockout$|__.*).*/</name>
                         </filters>
                     </aliases>
                 </Model>
@@ -264,9 +281,21 @@
             </type>
             <option type="JsonKeyValueStoreField">
                 <ConfigdPopulateAct>dnsmasq list dhcp_options</ConfigdPopulateAct>
+                <OptionValues>
+                    <!-- mock option groups returned by JSON -->
+                    <optgroup1>Common</optgroup1>
+                    <optgroup2>Assigned</optgroup2>
+                    <optgroup3>Unassigned</optgroup3>
+                </OptionValues>
             </option>
             <option6 type="JsonKeyValueStoreField">
                 <ConfigdPopulateAct>dnsmasq list dhcp_options6</ConfigdPopulateAct>
+                <OptionValues>
+                    <!-- mock option groups returned by JSON -->
+                    <optgroup1>Common</optgroup1>
+                    <optgroup2>Assigned</optgroup2>
+                    <optgroup3>Unassigned</optgroup3>
+                </OptionValues>
             </option6>
             <interface type="InterfaceField">
                 <BlankDesc>Any</BlankDesc>

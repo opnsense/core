@@ -1,4 +1,4 @@
-# Copyright (c) 2023-2024 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2023-2026 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -23,7 +23,7 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-CORE_ABI?=	25.7
+CORE_ABIS?=	26.1
 CORE_ADDITIONS?=#empty
 CORE_MESSAGE?=	Carry on my wayward son
 CORE_NAME?=	opnsense-devel
@@ -32,3 +32,92 @@ CORE_NICKNAME?=	Not Yet
 CORE_TYPE?=	development
 # plugins that were migrated to core are here
 CORE_CONFLICTS?=firewall wireguard wireguard-go
+
+CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} release
+CORE_MAINTAINER?=	project@opnsense.org
+CORE_ORIGIN?=		opnsense/${CORE_NAME}
+CORE_PACKAGESITE?=	https://pkg.opnsense.org
+CORE_PRODUCT?=		OPNsense
+CORE_WWW?=		https://opnsense.org/
+CORE_USER?=		wwwonly
+CORE_UID?=		789
+CORE_GROUP?=		${CORE_USER}
+CORE_GID?=		${CORE_UID}
+
+CORE_DEPENDS_aarch64?=	py${CORE_PYTHON}-duckdb \
+			py${CORE_PYTHON}-numpy \
+			py${CORE_PYTHON}-pandas \
+			suricata
+
+CORE_DEPENDS_amd64?=	beep \
+			${CORE_DEPENDS_aarch64}
+
+CORE_DEPENDS?=		ca_root_nss \
+			choparp \
+			colordiff \
+			cpustats \
+			dhcp6c \
+			dhcrelay \
+			dnsmasq \
+			dpinger \
+			filterlog \
+			flock \
+			flowd \
+			hostapd \
+			hostwatch \
+			ifinfo \
+			iftop \
+			kea \
+			lighttpd \
+			monit \
+			mpd5 \
+			ntp \
+			openssh-portable \
+			openvpn \
+			opnsense-installer \
+			opnsense-lang \
+			opnsense-update \
+			pam_opnsense \
+			pftop \
+			php${CORE_PHP}-ctype \
+			php${CORE_PHP}-curl \
+			php${CORE_PHP}-dom \
+			php${CORE_PHP}-filter \
+			php${CORE_PHP}-gettext \
+			php${CORE_PHP}-ldap \
+			php${CORE_PHP}-pcntl \
+			php${CORE_PHP}-pdo \
+			php${CORE_PHP}-pear-Crypt_CHAP \
+			php${CORE_PHP}-pecl-radius \
+			php${CORE_PHP}-phalcon \
+			php${CORE_PHP}-phpseclib \
+			php${CORE_PHP}-session \
+			php${CORE_PHP}-simplexml \
+			php${CORE_PHP}-sockets \
+			php${CORE_PHP}-sqlite3 \
+			php${CORE_PHP}-xml \
+			php${CORE_PHP}-zlib \
+			pkg \
+			py${CORE_PYTHON}-Jinja2 \
+			py${CORE_PYTHON}-dnspython \
+			py${CORE_PYTHON}-jq \
+			py${CORE_PYTHON}-ldap3 \
+			py${CORE_PYTHON}-requests \
+			py${CORE_PYTHON}-sqlite3 \
+			py${CORE_PYTHON}-ujson \
+			py${CORE_PYTHON}-vici \
+			radvd \
+			rrdtool \
+			samplicator \
+			strongswan \
+			sudo \
+			syslog-ng \
+			unbound \
+			wpa_supplicant \
+			zip \
+			${CORE_ADDITIONS} \
+			${CORE_DEPENDS_${CORE_ARCH}}
+
+CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
+CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
+CORE_COPYRIGHT_YEARS?=	2014-2026

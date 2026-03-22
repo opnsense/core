@@ -108,7 +108,7 @@
         /**
          * Quick instance filter on top
          */
-        $("#filter_container").detach().prependTo('#{{formGridWireguardClient["table_id"]}}-header > .row > .actionBar > .actions');
+        $("#filter_container").detach().insertAfter('#{{formGridWireguardClient["table_id"]}}-header .search');
         $("#server_filter").change(function(){
             $('#{{formGridWireguardClient['table_id']}}').bootgrid('reload');
         });

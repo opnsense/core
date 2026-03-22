@@ -28,8 +28,6 @@
  */
 
 require_once("util.inc");
-require_once("config.inc");
-require_once("system.inc");
 
 $fp = fopen('php://stdin', 'r');
 
@@ -37,7 +35,7 @@ echo 'The system will reboot. Do you want to proceed? [y/N]: ';
 
 if (strcasecmp(chop(fgets($fp)), 'y') == 0) {
     echo PHP_EOL;
-    passthru('/usr/local/etc/rc.reboot');
+    pass_safe('/usr/local/etc/rc.reboot');
 }
 
 fclose($fp);

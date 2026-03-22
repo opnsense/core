@@ -53,7 +53,7 @@ foreach (return_gateways_status() as $status) {
         /* collect "metered" gateways for all non-down status reports */
         if (!empty($status['monitor_killstates_priority'])) {
             $metered_gws[$status['ipprotocol']][] = $status;
-	/* only consider currently affected gateways as priority candidates */
+        /* only consider currently affected gateways as priority candidates */
         } elseif (in_array($status['name'], $affected_gateways)) {
             $metered_found_prios[$status['ipprotocol']] = min($status['priority'], $metered_found_prios[$status['ipprotocol']]);
         }

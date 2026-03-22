@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2026 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
  * All rights reserved.
@@ -28,27 +28,21 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-function timeout($timer = 7)
+function timeout($wait = 7)
 {
-    while (!isset($key)) {
-        if ($timer >= 9) {
-            echo chr(8) . chr(8) . ($timer == 9 ? chr(32) : null)  . "{$timer}";
-        } else {
-            echo chr(8) . "{$timer}";
-        }
-        shell_exec('/bin/stty -icanon min 0 time 10');
-        $key = shell_exec('/bin/dd count=1 status=none');
-        shell_exec('/bin/stty icanon');
-        if ($key == '') {
-            unset($key);
-        }
-        $timer--;
-        if ($timer == 0) {
+    $ret = true;
+
+    while ($ret) {
+        echo '.';
+        shell_safe('/bin/stty cbreak -echo');
+        $ret = !!mwexecfm('timeout 1 dd of=/dev/null count=1 status=none');
+        shell_safe('/bin/stty -cbreak echo');
+        if (--$wait == 0) {
             break;
         }
     }
 
-    return $key;
+    return $ret;
 }
 
 function is_interface_mismatch($locked = true)
@@ -83,9 +77,9 @@ function is_interface_mismatch($locked = true)
 
 function set_networking_interfaces_ports($probe = false)
 {
-    exec('/sbin/conscontrol mute on');
+    shell_safe('/sbin/conscontrol mute on');
     $ret = _set_networking_interfaces_ports($probe);
-    exec('/sbin/conscontrol mute off');
+    shell_safe('/sbin/conscontrol mute off');
 
     return $ret;
 }
@@ -110,16 +104,9 @@ function _set_networking_interfaces_ports($probe = false)
     }
 
     if ($probe) {
-        echo PHP_EOL . 'Press any key to start the manual interface assignment:  ';
-
-        $key = timeout();
-        if (!isset($key)) {
-            $interactive = false;
-        }
-
-        if ($key != "\n") {
-            echo PHP_EOL;
-        }
+        echo PHP_EOL . 'Press any key to start the manual interface assignment: ';
+        $interactive = !timeout();
+        echo PHP_EOL;
     }
 
     if (!empty($iflist)) {
@@ -390,7 +377,7 @@ EOD;
             if ($wanif) {
                 $config['interfaces']['lan']['track6-interface'] = 'wan';
                 $config['interfaces']['lan']['track6-prefix-id'] = '0';
-                $config['interfaces']['lan']['ipaddrv6'] = 'track6';
+                $config['interfaces']['lan']['ipaddrv6'] = 'idassoc6';
                 $config['interfaces']['lan']['subnetv6'] = '64';
             }
 
@@ -398,18 +385,26 @@ EOD;
                 unset($config['dhcpd']['lan']);
             }
 
-            config_read_array('dnsmasq', 'dhcp_ranges');
-            foreach ($config['dnsmasq']['dhcp_ranges'] as $idx => $range) {
+            foreach (config_read_array('dnsmasq', 'dhcp_ranges', false) as $idx => $range) {
                 if ($range['interface'] == 'lan') {
                     unset($config['dnsmasq']['dhcp_ranges'][$idx]);
                 }
             }
-            $config['dnsmasq']['enable'] = '1';
-            $config['dnsmasq']['dhcp_ranges'][] = [
-                'interface' => 'lan',
+            config_merge_array('dnsmasq', ['enable' => '1']);
+            config_merge_array('dnsmasq', 'dhcp', ['enable_ra' => '1']);
+            config_push_array('dnsmasq', 'dhcp_ranges', [
+                '@attributes' => ['uuid' => generate_uuid()],
                 'start_addr' => '192.168.1.100',
-                'end_addr' => '192.168.1.200'
-            ];
+                'end_addr' => '192.168.1.199',
+                'interface' => 'lan',
+            ]);
+            config_push_array('dnsmasq', 'dhcp_ranges', [
+                '@attributes' => ['uuid' => generate_uuid()],
+                'start_addr' => '::1000',
+                'end_addr' => '::2000',
+                'ra_mode' => 'slaac',
+                'interface' => 'lan',
+            ]);
 
             config_read_array('nat', 'outbound');
             $config['nat']['outbound']['mode'] = 'automatic';

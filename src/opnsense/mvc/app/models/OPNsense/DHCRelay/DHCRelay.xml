@@ -23,6 +23,10 @@
             <agent_info type="BooleanField">
                 <Required>Y</Required>
             </agent_info>
+            <carp_depend_on type="VirtualIPField">
+                <type>carp</type>
+                <key>mvc</key>
+            </carp_depend_on>
         </relays>
         <destinations type="ArrayField">
             <name type="TextField">

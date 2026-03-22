@@ -2,6 +2,7 @@
 
 /*
  * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2026 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,85 +29,122 @@
 
 namespace OPNsense\Core;
 
-use OPNsense\Core\AppConfig;
-
 /**
  * Class Shell shell/command handling routines
  * @package OPNsense\Core
  */
 class Shell
 {
-    /**
-     * simulation mode, only print commands, dom not execute
-     * @var bool
-     */
-    private $simulate = false;
+    public static $exec_log = true;
 
     /**
-     * debug mode
-     * @var bool
+     * safe shell command formatter
      */
-    private $debug = false;
-
-    /**
-     * new shell object
-     */
-    public function __construct()
+    public static function exec_safe($format, $args = [])
     {
-        // init, set simulation mode / debug autoput
-        $appconfig = new AppConfig();
-        $this->simulate = $appconfig->globals->simulate_mode;
-        $this->debug = $appconfig->globals->debug;
-    }
+        $command = '/usr/bin/true';
 
-    /**
-     * execute command or list of commands
-     *
-     * @param string|array $command command to execute
-     * @param bool $mute
-     * @param array &$output
-     */
-    public function exec($command, $mute = false, &$output = null)
-    {
-        if (!is_array($command)) {
-            $command = array($command);
+        if (!is_array($format)) {
+            $format = [$format];
         }
 
-        foreach ($command as $comm) {
-            $this->execSingle($comm, $mute, $output);
-        }
-    }
-
-    /**
-     * execute shell command
-     * @param string $command command to execute
-     * @param bool $mute
-     * @param array &$output
-     * @return int
-     */
-    private function execSingle($command, $mute = false, &$output = null)
-    {
-        $oarr = array();
-        $retval = 0;
-
-        // debug output
-        if ($this->debug) {
-            print("Shell->exec : " . $command . " \n");
+        if (!is_array($args)) {
+            $args = [$args];
         }
 
-        // only execute actual command if not in simulation mode
-        if (!$this->simulate) {
-            exec("$command 2>&1", $output, $retval);
+        try {
+            $_command = preg_replace_callback('/%./', function ($matches) use (&$args) {
+                if ($matches[0] === '%%') {
+                    return '%';
+                } elseif ($matches[0] !== '%s') {
+                    throw new \TypeError('exec_safe(): Unsupported formatter');
+                }
+                if (!count($args)) {
+                    throw new \TypeError('exec_safe(): Missing arguments');
+                }
+                return escapeshellarg(array_shift($args) ?? '');
+            }, implode(' ', $format));
 
-            if (($retval != 0) && ($mute === false)) {
-                // TODO: log
-                unset($output);
+            if (count($args)) {
+                throw new \TypeError('exec_safe(): Excess arguments');
             }
 
-            unset($oarr);
-            return $retval;
+            $command = $_command;
+        } catch (\Error $e) {
+            if (self::$exec_log) {
+                error_log($e);
+            }
         }
 
-        return null;
+        return $command;
+    }
+
+    /**
+     * pass commands through to stdout
+     */
+    public static function pass_safe($format, $args = [], &$result_code = null)
+    {
+        return passthru(self::exec_safe($format, $args), $result_code);
+    }
+
+    /**
+     * run commands safely with failure reports by default
+     * @param string $command command to execute
+     * @param bool $mute
+     * @return int
+     */
+    public static function run_safe($format, $args = [], $mute = false)
+    {
+        $command = self::exec_safe($format, $args);
+        $result_code = 0;
+        $output = [];
+
+        /*
+         * Redirect stderr to stdout for error logging and because
+         * stderr appears to be passed through to the executing code.
+         */
+        exec("{$command} 2>&1", $output, $result_code);
+
+        if ($result_code != 0 && $mute == false) {
+            /* use this prefix for the log message for legacy emulation */
+            $page = $_SERVER['SCRIPT_NAME'];
+            if (empty($page)) {
+                $files = get_included_files();
+                $page = basename($files[0]);
+            }
+
+            /* log directly without opening syslog to avoid clobbering the subsequent callers */
+            syslog(LOG_ERR, "{$page}: " . sprintf(
+                'The command <%s> returned exit code %d and the output was "%s"',
+                $command,
+                $result_code,
+                implode(' ', $output)
+            ));
+        }
+
+        return $result_code;
+    }
+
+    /**
+     * run commands and grab their output
+     */
+    public static function shell_safe($format, $args = [], $explode = false, $separator = "\n")
+    {
+        $ret = shell_exec(self::exec_safe($format, $args));
+
+        /* shell_exec() has weird semantics */
+        if ($ret === false || $ret === null) {
+            $ret = '';
+        }
+
+        /* single string output */
+        if (!$explode) {
+            return trim($ret);
+        }
+
+        /* explode as array emulating exec()'s semantics */
+        $ret = rtrim($ret);
+
+        return strlen($ret) ? explode($separator, $ret) : [];
     }
 }

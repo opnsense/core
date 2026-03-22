@@ -1,4 +1,4 @@
-# Copyright (c) 2014-2025 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2014-2026 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -26,13 +26,14 @@
 all:
 	@cat ${.CURDIR}/README.md | ${PAGER}
 
+.include "Mk/version.mk"
+
 .include "Mk/defaults.mk"
 .include "Mk/common.mk"
 .include "Mk/git.mk"
 .include "Mk/lint.mk"
 .include "Mk/style.mk"
 .include "Mk/sweep.mk"
-.include "Mk/version.mk"
 
 .for REPLACEMENT in ABI PHP PYTHON
 . if empty(CORE_${REPLACEMENT})
@@ -108,97 +109,6 @@ CORE_PKGVERSION=	${CORE_VERSION}_${CORE_REVISION}
 CORE_PKGVERSION=	${CORE_VERSION}
 .endif
 
-CORE_PYTHON_DOT=	${CORE_PYTHON:C/./&./1}
-
-CORE_COMMENT?=		${CORE_PRODUCT} ${CORE_TYPE} release
-CORE_MAINTAINER?=	project@opnsense.org
-CORE_ORIGIN?=		opnsense/${CORE_NAME}
-CORE_PACKAGESITE?=	https://pkg.opnsense.org
-CORE_PRODUCT?=		OPNsense
-CORE_REPOSITORY?=	${CORE_ABI}/latest
-CORE_WWW?=		https://opnsense.org/
-CORE_USER?=		wwwonly
-CORE_UID?=		789
-CORE_GROUP?=		${CORE_USER}
-CORE_GID?=		${CORE_UID}
-
-CORE_COPYRIGHT_HOLDER?=	Deciso B.V.
-CORE_COPYRIGHT_WWW?=	https://www.deciso.com/
-CORE_COPYRIGHT_YEARS?=	2014-2025
-
-CORE_DEPENDS_aarch64?=	py${CORE_PYTHON}-duckdb \
-			py${CORE_PYTHON}-numpy \
-			py${CORE_PYTHON}-pandas \
-			suricata
-
-CORE_DEPENDS_amd64?=	beep \
-			${CORE_DEPENDS_aarch64}
-
-CORE_DEPENDS?=		ca_root_nss \
-			choparp \
-			cpustats \
-			dhcp6c \
-			dhcrelay \
-			dnsmasq \
-			dpinger \
-			filterlog \
-			flock \
-			flowd \
-			hostapd \
-			ifinfo \
-			iftop \
-			isc-dhcp44-server \
-			kea \
-			lighttpd \
-			monit \
-			mpd5 \
-			ntp \
-			openssh-portable \
-			openvpn \
-			opnsense-installer \
-			opnsense-lang \
-			opnsense-update \
-			pam_opnsense \
-			pftop \
-			php${CORE_PHP}-ctype \
-			php${CORE_PHP}-curl \
-			php${CORE_PHP}-dom \
-			php${CORE_PHP}-filter \
-			php${CORE_PHP}-gettext \
-			php${CORE_PHP}-ldap \
-			php${CORE_PHP}-pcntl \
-			php${CORE_PHP}-pdo \
-			php${CORE_PHP}-pear-Crypt_CHAP \
-			php${CORE_PHP}-pecl-radius \
-			php${CORE_PHP}-phalcon \
-			php${CORE_PHP}-phpseclib \
-			php${CORE_PHP}-session \
-			php${CORE_PHP}-simplexml \
-			php${CORE_PHP}-sockets \
-			php${CORE_PHP}-sqlite3 \
-			php${CORE_PHP}-xml \
-			php${CORE_PHP}-zlib \
-			pkg \
-			py${CORE_PYTHON}-Jinja2 \
-			py${CORE_PYTHON}-dnspython \
-			py${CORE_PYTHON}-jq \
-			py${CORE_PYTHON}-ldap3 \
-			py${CORE_PYTHON}-requests \
-			py${CORE_PYTHON}-sqlite3 \
-			py${CORE_PYTHON}-ujson \
-			py${CORE_PYTHON}-vici \
-			radvd \
-			rrdtool \
-			samplicator \
-			strongswan \
-			sudo \
-			syslog-ng \
-			unbound \
-			wpa_supplicant \
-			zip \
-			${CORE_ADDITIONS} \
-			${CORE_DEPENDS_${CORE_ARCH}}
-
 .for CONFLICT in ${CORE_CONFLICTS}
 CORE_CONFLICTS+=	${CONFLICT}-devel
 .endfor
@@ -208,7 +118,7 @@ CORE_CONFLICTS:=	${CORE_CONFLICTS:S/^/os-/g:O}
 
 mount:
 	@if [ ! -f ${WRKDIR}/.mount_done ]; then \
-	    echo -n "Enabling core live mount..."; \
+	    echo -n ">>> Enabling core live mount..."; \
 	    sed ${SED_REPLACE} ${.CURDIR}/src/${VERSIONFILE}.in > \
 	        ${.CURDIR}/src/${VERSIONFILE}; \
 	    mount_unionfs ${.CURDIR}/src ${LOCALBASE}; \
@@ -219,7 +129,7 @@ mount:
 
 umount:
 	@if [ -f ${WRKDIR}/.mount_done ]; then \
-	    echo -n "Disabling core live mount..."; \
+	    echo -n ">>> Disabling core live mount..."; \
 	    umount -f "<above>:${.CURDIR}/src"; \
 	    rm ${WRKDIR}/.mount_done; \
 	    echo "done"; \
@@ -230,7 +140,7 @@ manifest-check:
 	# check if all annotations are in the version file
 .for REPLACEMENT in ${REPLACEMENTS}
 	@grep -q '\"${REPLACEMENT}\": \"%%${REPLACEMENT}%%\"' ${.CURDIR}/src/${VERSIONFILE}.in || \
-	    (echo "Could not find ${REPLACEMENT} in version file"; exit 1)
+	    (echo ">>> Could not find ${REPLACEMENT} in version file" >&2; exit 1)
 .endfor
 
 manifest:
@@ -335,18 +245,21 @@ package: lint-plist manifest-check package-check clean-wrksrc
 
 upgrade-check:
 	@if ! ${PKG} info ${CORE_NAME} > /dev/null; then \
-		echo ">>> Cannot find package.  Please run 'opnsense-update -t ${CORE_NAME}'" >&2; \
+		REAL_NAME=$$(pkg which -q /usr/local/opnsense/version/core); \
+		echo ">>> Upgrade cannot continue without installed package" >&2; \
+		echo ">>> To continue anyway set CORE_NAME=$${REAL_NAME%-*}" >&2; \
 		exit 1; \
 	fi
 	@if [ "$$(${VERSIONBIN} -vH)" = "${CORE_PKGVERSION} ${CORE_HASH}" ]; then \
-		echo "Installed version already matches ${CORE_PKGVERSION} ${CORE_HASH}" >&2; \
+		echo ">>> Installed version already matches ${CORE_PKGVERSION} ${CORE_HASH}" >&2; \
+		echo ">>> To continue anyway set CORE_HASH=<something>" >&2; \
 		exit 1; \
 	fi
 
 upgrade: upgrade-check clean-pkgdir package
 	@${PKG} delete -fy ${CORE_NAME} || true
 	@${PKG} add ${PKGDIR}/*.pkg
-	@${PLUGINCTL} -c webgui
+	${.CURDIR}/src/etc/rc.restart_webgui
 
 glint: sweep plist-fix lint
 
@@ -362,15 +275,7 @@ validate:
 	@${PLUGINCTL} -v
 
 test:
-.if exists(${TESTDIR})
-	@if [ "$$(${VERSIONBIN} -v)" != "${CORE_PKGVERSION}" ]; then \
-		echo "Installed version does not match, expected ${CORE_PKGVERSION}"; \
-		exit 1; \
-	fi
-	@cd ${TESTDIR} && phpunit || true; rm -rf ${TESTDIR}/.phpunit.result.cache \
-	    ${TESTDIR}/app/models/OPNsense/ACL/AclConfig/backup; \
-	    ${GIT} checkout -f ${TESTDIR}/app/models/OPNsense/ACL/AclConfig/config.xml
-.endif
+	@cd ${TESTDIR} && phpunit || true; rm -rf ${TESTDIR}/.phpunit.result.cache
 
 clean: clean-pkgdir clean-wrksrc clean-mfcdir checkout
 

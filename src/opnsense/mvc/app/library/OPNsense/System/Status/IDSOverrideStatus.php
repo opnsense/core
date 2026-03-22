@@ -47,10 +47,20 @@ class IDSOverrideStatus extends AbstractStatus
 
     public function collectStatus()
     {
-        $fileHash = @hash_file('sha256', '/usr/local/opnsense/service/templates/OPNsense/IDS/custom.yaml');
-        $sampleHash = @hash_file('sha256', '/usr/local/opnsense/service/templates/OPNsense/IDS/custom.yaml.sample');
+        /**
+         * The conf.d directory can be used for our own output and custom yaml files, here we can collect our own
+         * and signal when additional files are there.
+         **/
+        $expected_confs = [];
+        $found_custom = false;
+        foreach (glob('/usr/local/etc/suricata/conf.d/*.yaml') as $filename) {
+            if (!in_array(basename($filename), $expected_confs)) {
+                $found_custom = true;
+                break;
+            }
+        }
 
-        if ($fileHash && $sampleHash && $fileHash !== $sampleHash) {
+        if ($found_custom) {
             $this->internalMessage = gettext(
                 'The configuration contains manual overwrites, these may interfere with the settings configured here.'
             );

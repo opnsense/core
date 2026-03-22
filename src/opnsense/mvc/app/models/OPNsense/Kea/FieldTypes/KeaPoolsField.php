@@ -62,4 +62,14 @@ class KeaPoolsField extends BaseField
         }
         return $validators;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getValues(): array
+    {
+        return array_values(array_filter(explode("\n", $this->internalValue), function ($k) {
+            return !!strlen($k);
+        }));
+    }
 }

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SURICATA_DIRS="/var/log/suricata"
+SURICATA_DIRS="/var/log/suricata /usr/local/etc/suricata/conf.d"
 
 for SURICATA_DIR in ${SURICATA_DIRS}; do
 	mkdir -p ${SURICATA_DIR}
@@ -10,3 +10,6 @@ done
 
 # make sure we can load our yaml file if we don't have rules installed yet
 touch /usr/local/etc/suricata/installed_rules.yaml
+
+# always load ipdivert so inline mode is available
+kldload -q ipdivert || true

@@ -365,7 +365,7 @@
                     $('.geoip_select[data-id="geoip_region_'+item.region+'"]').append(
                         $("<option/>")
                             .val(country)
-                            .data('icon', 'flag-icon flag-icon-' + country.toLowerCase() + ' flag-icon-squared')
+                            .attr('data-icon', 'flag-icon flag-icon-' + country.toLowerCase() + ' flag-icon-squared')
                             .html(item.name)
                     );
                 }
@@ -484,6 +484,7 @@
                     $("#row_alias\\.path_expression").show();
                     /* FALLTHROUGH */
                 case 'urltable':
+                case 'host':
                     $("#row_alias\\.updatefreq").show();
                     /* FALLTHROUGH */
                 case 'url':
@@ -494,10 +495,14 @@
                         $("#alias\\.password").hide();
                         switch ($(this).val()) {
                             case 'Basic':
-                                $("#alias\\.username").show();
+                                $("#alias\\.username").show().attr('placeholder', '{{lang._('Username')}}');
                                 $("#alias\\.password").show().attr('placeholder', '{{lang._('Password')}}');
                                 break;
                             case 'Bearer':
+                                $("#alias\\.password").show().attr('placeholder', '{{lang._('API token')}}');
+                                break;
+                            case 'Header':
+                                $("#alias\\.username").show().attr('placeholder', '{{lang._('HTTP Header')}}');
                                 $("#alias\\.password").show().attr('placeholder', '{{lang._('API token')}}');
                                 break;
                         }
@@ -589,6 +594,11 @@
         }
         loadSettings();
 
+        // update geoip button
+        $('#geoip_update_btn').SimpleActionButton();
+
+        // update bogons button
+        $('#update_bogons').SimpleActionButton();
 
         /**
          * reconfigure
@@ -616,7 +626,7 @@
         });
 
         // move filter into action header
-        $("#type_filter_container").detach().prependTo('#grid-aliases-header > .row > .actionBar > .actions');
+        $("#type_filter_container").detach().insertAfter('#grid-aliases-header .search');
         // alias size in service container
         $("#aliases_stat").detach().prependTo('#service_status_container');
         $("#service_status_container").css('width', '250px');
@@ -636,6 +646,7 @@
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li><a data-toggle="tab" href="#aliases" id="aliases_tab">{{ lang._('Aliases') }}</a></li>
     <li><a data-toggle="tab" href="#geoip" id="geoip_tab">{{ lang._('GeoIP settings') }}</a></li>
+    <li><a data-toggle="tab" href="#actions" id="actions_tab">{{ lang._('Actions') }}</a></li>
 </ul>
 
 <div class="tab-content content-box">
@@ -716,6 +727,17 @@
     </div>
     <div id="geoip" class="tab-pane fade in">
       {{ partial("layout_partials/base_form",['fields':formGeoIPSettings,'id':'frm_GeopIPSettings'])}}
+    </div>
+    <div id="actions" class="tab-pane fade in">
+        <div class="content-box">
+            <div class="col-md-12">
+                <br/>
+                <button id="geoip_update_btn" type="button" class="btn btn-primary" data-endpoint="/api/firewall/alias/update/geoip" data-label="{{ lang._('Update GeoIP') }}" data-error-title="{{ lang._('Error updating GeoIP') }}"></button>
+                <button id="update_bogons" type="button" class="btn btn-primary" data-endpoint="/api/firewall/alias/update/bogons" data-label="{{ lang._('Update bogons') }}" data-error-title="{{ lang._('Error updating bogons') }}"></button>
+                <br/>
+                <br/>
+            </div>
+        </div>
     </div>
 </div>
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/alias/reconfigure'}) }}
@@ -842,7 +864,7 @@
                                         </table>
                                         <div class="hidden" data-for="help_for_alias.frequency">
                                             <small>
-                                                {{lang._('The frequency that the list will be refreshed, in days + hours, so 1 day and 8 hours means the alias will be refreshed after 32 hours. ')}}
+                                                {{lang._('The frequency that the list will be refreshed, in days + hours, so 1 day and 8 hours means the alias will be refreshed after 32 hours. When empty the types defaults will be used, which could also be single shot.')}}
                                             </small>
                                         </div>
                                     </td>
@@ -950,7 +972,7 @@
                                     <td>
                                         <select id="alias.authtype" data-container="body" class="selectpicker" style="margin-bottom: 3px;"></select>
                                         <input type="text" placeholder="{{lang._('Username')}}" class="form-control" size="50" id="alias.username"/>
-                                        <input type="password" class="form-control" size="50" id="alias.password"/>
+                                        <input type="password" class="form-control" autocomplete="new-password" size="50" id="alias.password"/>
                                         <div class="hidden" data-for="help_for_alias.authtype">
                                             <small>
                                                 {{lang._('If the remote server enforces authorization, you can specify the authorization type here.')}}

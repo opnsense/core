@@ -119,7 +119,7 @@ class HostnameField extends BaseSetField
      */
     protected function defaultValidationMessage()
     {
-        return gettext('Please specify a valid IP address or hostname.');
+        return gettext('[%s] is not a valid IP address or hostname.');
     }
 
     /**
@@ -137,6 +137,7 @@ class HostnameField extends BaseSetField
                 $response = [];
 
                 foreach ($sender->iterateInput($data) as $value) {
+                    $orig = $value;
                     // set filter options
                     $filterOptDomain = $sender->internalIsDNSName ? 0 : FILTER_FLAG_HOSTNAME;
                     $val_is_ip = filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6) !== false;
@@ -159,7 +160,7 @@ class HostnameField extends BaseSetField
 
                     if (!$result) {
                         // append validation message
-                        $response[] = $sender->getValidationMessage();
+                        $response[] = $sender->getValidationMessage($orig);
                         break;
                     }
                 }

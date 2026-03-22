@@ -14,7 +14,8 @@
     <page-status-ntp>
         <name>Status: NTP</name>
         <patterns>
-            <pattern>status_ntpd.php*</pattern>
+            <pattern>/ui/ntpd/status/*</pattern>
+            <pattern>/api/ntpd/service/status</pattern>
         </patterns>
     </page-status-ntp>
     <page-services-ntp-pps>

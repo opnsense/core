@@ -24,7 +24,7 @@
     </field>
     <field>
         <id>queue.mask</id>
-        <label>mask</label>
+        <label>Mask</label>
         <type>dropdown</type>
         <help><![CDATA[Dynamic queue creation by source or destination address.
         <li>Choose destination to evenly share every IP in destination field of rules the specified bandwidth. A pipe with 1Mbit e.g. would let 4 clients lend 250Kbit each. Normally this is used for download queues.</li>

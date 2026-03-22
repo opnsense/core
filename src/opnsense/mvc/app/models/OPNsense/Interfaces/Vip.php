@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2022-2025 Deciso B.V.
+ * Copyright (C) 2022-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -276,5 +276,45 @@ class Vip extends BaseModel
             }
         }
         return false;
+    }
+
+    /**
+     * @param string $reference subnet or legacy name to be searched
+     * @param ?string $interface optionally limit to a specific interface
+     * @param ?string $af optionally limit to specific address family ("4" or "6")
+     * @return string subnet from found VIP or empty string otherwise
+     */
+    public function findSubnet(string $reference, ?string $interface = null, ?string $af = null): string
+    {
+        foreach ($this->vip->iterateItems() as $vip) {
+            if (!is_null($interface) && !$vip->interface->isEqual($interface)) {
+                continue;
+            }
+
+            $subnet = $vip->subnet->getValue();
+
+            if (!is_null($af)) {
+                $colon = strpos($subnet, ':') !== false;
+                if (($colon && $af == '4') || (!$colon && $af == '6')) {
+                    continue;
+                }
+            }
+            switch ($vip->mode->getValue()) {
+                case 'carp':
+                    if ($reference == "{$vip->interface}_vip{$vip->vhid}") {
+                        /* translated from legacy format */
+                        return $subnet;
+                    }
+                    /* FALLTHROUGH */
+                default:
+                    if ($reference === $subnet) {
+                        /* exact match is intentional */
+                        return $subnet;
+                    }
+                    break;
+            }
+        }
+
+        return '';
     }
 }

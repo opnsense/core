@@ -35,6 +35,7 @@ CMD=${1}
 MTREE_PATTERNS="
 ./.cshrc
 ./.profile
+./etc/cron.d/at
 ./etc/csh.cshrc
 ./etc/group
 ./etc/hosts

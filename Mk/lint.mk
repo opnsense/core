@@ -1,4 +1,4 @@
-# Copyright (c) 2025 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2025-2026 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -54,6 +54,9 @@ lint-model:
 .if exists(${.CURDIR}/${DIR})
 	@for MODEL in $$(find ${DIR} -depth 3 \
 	    -name "*.xml"); do \
+		(xmllint $${MODEL} --xpath '/model/description' 2> /dev/null | wc -l | awk '{ print $$1 }' | grep -v '^1$$' || true) | while read LINE; do \
+			echo "$${MODEL}: <description/> is not on a single line or missing"; \
+		done; \
 		(xmllint $${MODEL} --xpath '//*[@type and not(@type="ArrayField") and (not(Required) or Required="N") and Default]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
 			echo "$${MODEL}: $${LINE} has a spurious default value set"; \
 		done; \
@@ -81,6 +84,9 @@ lint-model:
 		(xmllint $${MODEL} --xpath '//*[@type="CSVListField" and Mask and (not(MaskPerItem) or MaskPerItem=N)]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
 			echo "$${MODEL}: $${LINE} uses Mask regex with MaskPerItem=N"; \
 		done; \
+		(xmllint $${MODEL} --xpath '//*[@type="CSVListField" and not(Mask)]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
+			echo "$${MODEL}: $${LINE} does not specify a Mask regex"; \
+		done; \
 		for TYPE in .\\AliasesField .\\DomainIPField HostnameField IPPortField NetworkField MacAddressField .\\RangeAddressField; do \
 			(xmllint $${MODEL} --xpath '//*[@type="'$${TYPE}'" and FieldSeparator=","]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
 				echo "$${MODEL}: $${LINE} FieldSeparator=, is the default"; \
@@ -95,15 +101,15 @@ lint-model:
 		(grep '<ValidationMessage>[a-z ]' $${MODEL} || true) | while read LINE; do \
 			echo "$${MODEL}: $${LINE} does not start with an uppercase letter"; \
 		done; \
-		(xmllint $${MODEL} --xpath '/model/description' 2> /dev/null | wc -l | awk '{ print $$1 }' | grep -v '^1$$' || true) | while read LINE; do \
-			echo "$${MODEL}: <description/> is not on a single line or missing"; \
-		done; \
 	done
 .endif
 .endfor
 
 lint-acl:
 	@${COREREFDIR}/Scripts/dashboard-acl.sh ${COREREFDIR}
+
+lint-class:
+	@${COREREFDIR}/Scripts/class-filename.sh ${COREREFDIR}
 
 SCRIPTDIRS!=	if [ -d ${.CURDIR}/src/opnsense/scripts ]; then find ${.CURDIR}/src/opnsense/scripts -type d -depth 1; fi
 
@@ -114,6 +120,16 @@ lint-exec:
 	    ! -name "*.xml" ! -name "*.csv" ! -name "*.sql" -print0 | \
 	    xargs -0 -t -n1 test -x || \
 	    (echo "Missing executable permission in ${DIR}"; exit 1)
+.endif
+.endfor
+.for DIR in ${.CURDIR}/src
+.if exists(${DIR})
+	@git grep -e '[^li][^w>:]exec(' -e '^exec(' -e 'shell_exec(' \
+	    -e '[^f]passthru(' -e '^passthru(' -e '[^._a-z]system(' \
+	    -e '^system(' ':!*.js' ':!*.py' ':!*/contrib/*' \
+	    ':!*/OPNsense/Core/Shell.php' ':!*/interfaces.lib.inc' \
+	    ':!*/inc/certs.inc' ':!*/rc.configure_firmware' \
+	    ':!*/rc.subr.d/recover' ${DIR} || true
 .endif
 .endfor
 
@@ -138,4 +154,4 @@ lint-plist:
 	@rm ${WRKDIR}/plist.*
 .endif
 
-lint: lint-plist lint-desc lint-shell lint-xml lint-model lint-acl lint-exec lint-php
+lint: lint-plist lint-desc lint-shell lint-xml lint-model lint-acl lint-class lint-exec lint-php

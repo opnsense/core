@@ -140,8 +140,9 @@ class DNSReader:
         if r == '':
             return False
 
-        q = tuple(r.strip("\n").split('|'))
-        self.buffer.append(q)
+        q = r.strip("\n").split('|')
+        q[0] = None if q[0] == "" else q[0] # convert UUID field
+        self.buffer.append(tuple(q))
 
         self.update_clients.add(q[2])
 

@@ -39,12 +39,12 @@ class IDS extends BaseModel
     /**
      * @var array internal list of all sid's in this object
      */
-    private $sid_list = array();
+    private $sid_list = [];
 
     /**
      * @var array internal list of all known actions (key/value)
      */
-    private $action_list = array();
+    private $action_list = [];
 
     /**
      * update internal cache of sid's and actions

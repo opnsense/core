@@ -125,7 +125,7 @@
     </field>
     <field>
         <id>vip.advbase</id>
-        <label>advbase</label>
+        <label>Advbase</label>
         <type>text</type>
         <style>mode mode_carp</style>
         <help>Specifies the base of the advertisement interval in seconds. The acceptable values are 1 to 255.</help>
@@ -135,7 +135,7 @@
     </field>
     <field>
         <id>vip.advskew</id>
-        <label>advskew</label>
+        <label>Advskew</label>
         <type>text</type>
         <style>mode mode_carp advanced</style>
         <help>

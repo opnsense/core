@@ -39,28 +39,25 @@ if (isset($opts['h']) || empty($opts['u'])) {
     exit(-1);
 } else {
     $username = $opts['u'];
-    $a_user = &config_read_array('system', 'user');
 
     /**
      * XXX: If performance will be challenging at some point in time, we can cut some of the local user handling,
      *      currently we need this to remove the shell account when dropped on update.
      */
     $localusers = [];
-    exec("/usr/sbin/pw usershow -a", $data, $ret);
-    if (!$ret) {
-        foreach ($data as $record) {
-            $line = explode(':', $record);
-            // filter system managed users
-            if (count($line) < 3 ||  !strncmp($line[0], '_', 1) || ($line[2] < 2000 && $line[0] != 'root') || $line[2] > 65000) {
-                continue;
-            }
-            $localusers[$line[0]] = $line;
+    foreach (shell_safe('/usr/sbin/pw %s -a', 'usershow', true) as $record) {
+        $line = explode(':', $record);
+        // filter system managed users
+        if (count($line) < 3 || !strncmp($line[0], '_', 1) || ($line[2] < 2000 && $line[0] != 'root') || $line[2] > 65000) {
+            continue;
         }
+        $localusers[$line[0]] = $line;
     }
 
     $update_user = null;
     $userdb = [];
-    foreach ($a_user as $userent) {
+
+    foreach (config_read_array('system', 'user', false) as $userent) {
         if (!empty($userent['shell']) || $userent['uid'] == 0) {
             /* only users with a shell account are allowed to have a local entry */
             $userdb[] = $userent['name'];

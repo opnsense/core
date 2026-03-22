@@ -9,7 +9,7 @@
     </field>
     <field>
         <id>group.gid</id>
-        <label>gid</label>
+        <label>GID</label>
         <type>info</type>
         <grid_view>
             <visible>false</visible>

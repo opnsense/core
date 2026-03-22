@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2020 Deciso B.V.
+ * Copyright (C) 2020-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,12 +34,9 @@ namespace OPNsense\Base\FieldTypes;
  */
 class ProtocolField extends BaseListField
 {
-    private $additionalOptions = [];
+    protected $internalChangeCase = 'UPPER';
 
-    /**
-     * @var array cached collected protocols
-     */
-    private static $internalStaticOptionList = [];
+    private $additionalOptions = [];
 
     /**
      * setter for maximum value
@@ -58,27 +55,83 @@ class ProtocolField extends BaseListField
     protected function actionPostLoadingEvent()
     {
         /* IPv6 extension headers are skipped by the packet filter, we cannot police them */
-        $ipv6_ext = array('IPV6-ROUTE', 'IPV6-FRAG', 'IPV6-OPTS', 'IPV6-NONXT', 'MOBILITY-HEADER');
+        $ipv6_ext = ['IPV6-ROUTE', 'IPV6-FRAG', 'IPV6-OPTS', 'IPV6-NONXT', 'MOBILITY-HEADER'];
+
+        /* protocols that should be listed as priority if in the final list */
+        $prio_set = ['TCP', 'UDP', 'TCP/UDP', 'ICMP', 'ESP', 'AH', 'GRE', 'IGMP', 'PIM', 'OSPF'];
+
+        /* construct option hash to avoid repopulating options multiple times */
         $opt_hash = empty($this->additionalOptions) ? hash('sha256', json_encode($this->additionalOptions)) : '-';
-        if (empty(self::$internalStaticOptionList[$opt_hash])) {
-            self::$internalStaticOptionList[$opt_hash] = ['any' => gettext('any')];
-            foreach (explode("\n", file_get_contents('/etc/protocols')) as $line) {
-                if (substr($line, 0, 1) != "#") {
-                    $parts = preg_split('/\s+/', $line);
-                    if (count($parts) >= 4 && $parts[1] > 0) {
-                        $protocol = trim(strtoupper($parts[0]));
-                        if (!in_array($protocol, $ipv6_ext) && !isset(self::$internalStaticOptionList[$protocol])) {
-                            self::$internalStaticOptionList[$opt_hash][$protocol] = $protocol;
-                        }
+        $opt_hash .= $this->internalIsRequired ? 'R' : 'O';
+        $opt_hash .= $this->internalChangeCase;
+
+        if ($this->hasStaticOptions($opt_hash)) {
+            $this->internalOptionList = $this->getStaticOptions($opt_hash);
+            return;
+        }
+
+        $any_label = gettext('any');
+        $new_list = [];
+
+        /* populate generic protocol options */
+        foreach (explode("\n", file_get_contents('/etc/protocols')) as $line) {
+            if (substr($line, 0, 1) != "#") {
+                $parts = preg_split('/\s+/', $line);
+                if (count($parts) >= 4 && $parts[1] > 0) {
+                    $protocol = $this->applyChangeCase($parts[0]);
+                    if (in_array(strtoupper($protocol), $ipv6_ext)) {
+                        continue;
                     }
+                    $new_list[$protocol] = strtoupper($protocol);
                 }
             }
-            /* append additional options */
-            foreach ($this->additionalOptions as $prop => $value) {
-                self::$internalStaticOptionList[$opt_hash][$prop] = $value;
-            }
-            asort(self::$internalStaticOptionList[$opt_hash], SORT_NATURAL | SORT_FLAG_CASE);
         }
-        $this->internalOptionList = self::$internalStaticOptionList[$opt_hash];
+
+        /* append additional options */
+        foreach ($this->additionalOptions as $prop => $value) {
+            /* allow overwriting all values, but make sure 'any' is lowercase and prepended last */
+            if (strtolower($prop) == 'any') {
+                $any_label = $value;
+                continue;
+            }
+
+            $new_list[$this->applyChangeCase($prop)] = $value;
+        }
+
+        /* sort backwards to append 'any' last if needed */
+        arsort($new_list, SORT_NATURAL | SORT_FLAG_CASE);
+
+        foreach (array_reverse($prio_set) as $prio) {
+            $prio = $this->applyChangeCase($prio);
+            if (isset($new_list[$prio])) {
+                $temp = $new_list[$prio];
+                unset($new_list[$prio]);
+                $new_list[$prio] = $temp;
+            }
+        }
+
+        if ($this->internalIsRequired) {
+            /* 'any' is not treated with ChangeCase for backwards compatibility  */
+            $new_list['any'] = $any_label;
+        }
+
+        /* reverse and store the result */
+        $this->internalOptionList = $this->setStaticOptions(array_reverse($new_list, true), $opt_hash);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setValue($value)
+    {
+        $new_value = strtolower((string)$value) == 'any' ?
+            strtolower((string)$value) : $this->applyChangeCase($value);
+
+        /* if first set and not altered by the user, store initial value */
+        if ($this->internalFieldLoaded === false && $this->internalInitialValue === false) {
+            $this->internalInitialValue = $new_value;
+        }
+
+        $this->internalValue = $new_value;
     }
 }

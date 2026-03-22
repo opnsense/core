@@ -31,6 +31,64 @@ export default class Firewall extends BaseTableWidget {
         this.counters = {};
         this.chart = null;
         this.rotation = 5;
+        this.configurable = true;
+        this.colorScheme = 'contrast';
+        // Map actions to Classic10 color indices: red=block, green=pass, blue=rdr/nat/binat, gray=unknown
+        this.actionColorIndex = { block: 3, pass: 2, rdr: 0, nat: 0, binat: 0 };
+        this.defaultColorIndex = 7;
+    }
+
+    _shadeColor(hex, factor) {
+        // Lighten (factor > 0) or darken (factor < 0) a hex color
+        let r = parseInt(hex.slice(1, 3), 16);
+        let g = parseInt(hex.slice(3, 5), 16);
+        let b = parseInt(hex.slice(5, 7), 16);
+        r = Math.min(255, Math.max(0, Math.round(r + (factor > 0 ? (255 - r) : r) * factor)));
+        g = Math.min(255, Math.max(0, Math.round(g + (factor > 0 ? (255 - g) : g) * factor)));
+        b = Math.min(255, Math.max(0, Math.round(b + (factor > 0 ? (255 - b) : b) * factor)));
+        return `#${((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1)}`;
+    }
+
+    _getColor(action, rid, index = null) {
+        let colors = Chart.colorschemes.tableau.Classic10;
+        if (this.colorScheme === 'semantic') {
+            let idx = this.actionColorIndex[action] ?? this.defaultColorIndex;
+            let base = colors[idx];
+            let hash = parseInt(rid.slice(0, 8), 16);
+            let factor = ((hash % 10) - 5) * 0.08;
+            return this._shadeColor(base, factor);
+        }
+        const i = index ?? this.chart.data.datasets[0].rids.length;
+        return colors[i % colors.length];
+    }
+
+    async getWidgetOptions() {
+        return {
+            colorscheme: {
+                title: this.translations.colorscheme,
+                type: 'select',
+                options: [
+                    { value: 'contrast', label: this.translations.contrast },
+                    { value: 'semantic', label: this.translations.semantic }
+                ],
+                default: 'contrast'
+            }
+        }
+    }
+
+    async onWidgetOptionsChanged(options) {
+        this.colorScheme = options.colorscheme;
+
+        if (this.chart) {
+            let palette = Chart.colorschemes.tableau.Classic10;
+            let rids = this.chart.data.datasets[0].rids;
+            let colors = this.chart.data.datasets[0].backgroundColor;
+            let actions = this.chart.data.datasets[0].actions;
+            rids.forEach((rid, i) => {
+                colors[i] = this._getColor(actions[i], rid, i);
+            });
+            this.chart.update();
+        }
     }
 
     getMarkup() {
@@ -111,8 +169,9 @@ export default class Firewall extends BaseTableWidget {
                 <sub>${this.translations.click}</sub>
             </p>
         `).prop('outerHTML');
+        let logHash = new URLSearchParams({field: 'rid', operator: '=', value: data.rid});
         let popover = $(`
-            <a target="_blank" href="/ui/diagnostics/firewall/log?rid=${data.rid}" type="button"
+            <a target="_blank" href="/ui/diagnostics/firewall/log#${logHash}" type="button"
                 data-toggle="popover" data-trigger="hover" data-html="true" data-title="${this.translations.matchedrule}"
                 data-content="${popContent}">
                 ${actIcons[data.action]}
@@ -147,23 +206,30 @@ export default class Firewall extends BaseTableWidget {
             $(this).data("bs.popover").tip().css("max-width", "100%")
         });
 
-        this._updateChart(data.rid, this.counters[data.rid].label, this.counters[data.rid].count);
+        let iface = this.ifMap[data.interface] ?? data.interface;
+        this._updateChart(data.rid, this.counters[data.rid].label, this.counters[data.rid].count, data.action, iface);
 
         if (Object.keys(this.counters).length < this.rotation) {
             this.config.callbacks.updateGrid();
         }
     }
 
-    _updateChart(rid, label, count) {
+    _updateChart(rid, label, count, action, iface) {
         let labels = this.chart.data.labels;
-        let data = this.chart.data.datasets[0].data;
-        let rids = this.chart.data.datasets[0].rids;
+        let dataset = this.chart.data.datasets[0];
+        let data = dataset.data;
+        let rids = dataset.rids;
+        let actions = dataset.actions;
+        let colors = dataset.backgroundColor;
 
         let idx = rids.findIndex(x => x === rid);
         if (idx === -1) {
-            labels.push(label);
+            let decodedLabel = $("<textarea/>").html(label).text();
+            labels.push(iface ? `${decodedLabel} (${iface})` : decodedLabel);
             data.push(count);
             rids.push(rid);
+            actions.push(action);
+            colors.push(this._getColor(action, rid));
         } else {
             data[idx] = count;
         }
@@ -175,10 +241,13 @@ export default class Firewall extends BaseTableWidget {
         const data = await this.ajaxCall('/api/diagnostics/interface/get_interface_names');
         this.ifMap = data;
 
+        const config = await this.getWidgetConfig();
+        this.colorScheme = config.colorscheme;
+
         super.openEventSource('/api/diagnostics/firewall/stream_log', this._onMessage.bind(this));
 
         let context = document.getElementById('fw-chart').getContext('2d');
-        let config = {
+        let chartConfig = {
             type: 'doughnut',
             data: {
                 labels: [],
@@ -186,6 +255,8 @@ export default class Firewall extends BaseTableWidget {
                     {
                         data: [],
                         rids: [],
+                        actions: [],
+                        backgroundColor: [],
                     }
                 ]
             },
@@ -202,15 +273,14 @@ export default class Firewall extends BaseTableWidget {
                 onClick: (event, elements, chart) => {
                     const i = elements[0].index;
                     const rid = chart.data.datasets[0].rids[i];
-                    window.open(`/ui/diagnostics/firewall/log?rid=${rid}`);
+                    let logHash = new URLSearchParams({field: 'rid', operator: '=', value: rid});
+                    window.open(`/ui/diagnostics/firewall/log#${logHash}`);
                 },
                 onHover: (event, elements) => {
                     event.native.target.style.cursor = elements[0] ? 'pointer' : 'grab';
                 },
                 plugins: {
-                    colorschemes: {
-                        scheme: 'tableau.Classic10'
-                    },
+                    colorschemes: false,
                     legend: {
                         display: true,
                         position: 'left',
@@ -268,7 +338,7 @@ export default class Firewall extends BaseTableWidget {
             ]
         }
 
-        this.chart = new Chart(context, config);
+        this.chart = new Chart(context, chartConfig);
     }
 
     onWidgetClose() {

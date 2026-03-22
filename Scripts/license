@@ -67,6 +67,7 @@ sub process_file
     my $filename = $File::Find::name;
 
     return if not -f "$cwd/$filename";
+    return if $filename =~ /\/Private\//;
 
     my @lines = read_file( "$cwd/$filename" );
     my $possibly_bsd;

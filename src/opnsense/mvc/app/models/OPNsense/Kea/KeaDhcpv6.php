@@ -52,10 +52,15 @@ class KeaDhcpv6 extends BaseModel
             $subnet = "";
             $subnet_node = $this->getNodeByReference("subnets.subnet6.{$reservation->subnet}");
             if ($subnet_node) {
-                $subnet = (string)$subnet_node->subnet;
+                $subnet = $subnet_node->subnet->getValue();
             }
-            if (!Util::isIPInCIDR((string)$reservation->ip_address, $subnet)) {
+            if (!Util::isIPInCIDR($reservation->ip_address->getValue(), $subnet)) {
                 $messages->appendMessage(new Message(gettext("Address not in specified subnet"), $key . ".ip_address"));
+            }
+            if (!$reservation->duid->isEmpty() && !$reservation->hw_address->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("Either a DUID or an Ether address should be specified, but not both"), $key . ".duid"));
+            } elseif ($reservation->duid->isEmpty() && $reservation->hw_address->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("Either a DUID or an Ether address should be specified."), $key . ".duid"));
             }
         }
         // validate changed subnets
@@ -65,10 +70,50 @@ class KeaDhcpv6 extends BaseModel
                 continue;
             }
             $key = $subnet->__reference;
-            if (!in_array((string)$subnet->interface, $this_interfaces)) {
+            if (!in_array($subnet->interface->getValue(), $this_interfaces)) {
                 $messages->appendMessage(
                     new Message(gettext("Interface not configured in general settings"), $key . ".interface")
                 );
+            }
+            foreach ($subnet->pools->getValues() as $pool) {
+                if (Util::isSubnet($pool)) {
+                    $range = Util::cidrToRange($pool);
+                } else {
+                    $range = explode('-', $pool);
+                }
+                foreach (!empty($range) ? $range : [] as $addr) {
+                    if (!Util::isIPInCIDR($addr, $subnet->subnet->getValue())) {
+                        $messages->appendMessage(
+                            new Message(sprintf(gettext("Pool %s not in specified subnet"), $pool), $key . ".pools")
+                        );
+                        break;
+                    }
+                }
+            }
+        }
+        // validate changed pd_pools
+        foreach ($this->pd_pools->pd_pool->iterateItems() as $pool) {
+            if (!$validateFullModel && !$pool->isFieldChanged()) {
+                continue;
+            }
+            $key = $pool->__reference;
+            if ($pool->prefix_len->getValue() >= $pool->delegated_len->getValue()) {
+                $messages->appendMessage(new Message(gettext("Delegated length must be longer than or equal to prefix length"), $key . ".delegated_len"));
+            }
+            $subnet = $pool->prefix->getValue() . "/" . $pool->prefix_len->getValue();
+            $trange = Util::cidrToRange($subnet);
+            if (!Util::isSubnetStrict($subnet)) {
+                $messages->appendMessage(new Message(gettext("Invalid Pool boundaries, offered address is not the first address in the prefix."), $key . ".prefix"));
+            }
+            foreach ($this->pd_pools->pd_pool->iterateItems() as $tmppool) {
+                if ($key === $tmppool->__reference) {
+                    continue;
+                }
+                $osubnet = $tmppool->prefix->getValue() . "/" . $tmppool->prefix_len->getValue();
+                $orange = Util::cidrToRange($osubnet);
+                if (Util::isIPInCIDR($orange[0], $subnet) || Util::isIPInCIDR($trange[0], $osubnet)) {
+                    $messages->appendMessage(new Message(gettext("Pool overlaps with an existing one."), $key . ".prefix"));
+                }
             }
         }
 
@@ -77,7 +122,7 @@ class KeaDhcpv6 extends BaseModel
 
     public function isEnabled()
     {
-        return (string)$this->general->enabled == '1' && !empty((string)(string)$this->general->interfaces);
+        return $this->general->enabled->isEqual('1') && !$this->general->interfaces->isEmpty();
     }
 
     /**
@@ -86,9 +131,9 @@ class KeaDhcpv6 extends BaseModel
      */
     public function fwrulesEnabled()
     {
-        return  (string)$this->general->enabled == '1' &&
-                (string)$this->general->fwrules == '1' &&
-                !empty((string)$this->general->interfaces);
+        return  $this->general->enabled->isEqual('1') &&
+                $this->general->fwrules->isEqual('1') &&
+                !$this->general->interfaces->isEmpty();
     }
 
     /**
@@ -98,7 +143,7 @@ class KeaDhcpv6 extends BaseModel
     {
         $result = [];
         $cfg = Config::getInstance()->object();
-        foreach (explode(',', $this->general->interfaces) as $if) {
+        foreach ($this->general->interfaces->getValues() as $if) {
             if (isset($cfg->interfaces->$if) && !empty($cfg->interfaces->$if->if)) {
                 $result[] = (string)$cfg->interfaces->$if->if;
             }
@@ -108,7 +153,7 @@ class KeaDhcpv6 extends BaseModel
 
     private function getConfigThisServerHostname()
     {
-        $hostname = (string)$this->ha->this_server_name;
+        $hostname = $this->ha->this_server_name->getValue();
         if (empty($hostname)) {
             $hostname = (string)Config::getInstance()->object()->system->hostname;
         }
@@ -123,26 +168,26 @@ class KeaDhcpv6 extends BaseModel
         foreach ($this->subnets->subnet6->iterateItems() as $subnet_uuid => $subnet) {
             $record = [
                 'id' => $subnet_id++,
-                'subnet' => (string)$subnet->subnet,
+                'subnet' => $subnet->subnet->getValue(),
                 'option-data' => [],
                 'pools' => [],
                 'pd-pools' => [],
                 'reservations' => []
             ];
-            $if = (string)$subnet->interface;
+            $if = $subnet->interface->getValue();
             if (isset($cfg->interfaces->$if) && !empty($cfg->interfaces->$if->if)) {
                 $record['interface'] = (string)$cfg->interfaces->$if->if;
             }
             if (!$subnet->{'pd-allocator'}->isEmpty()) {
-                $record['pd-allocator'] = (string)$subnet->{'pd-allocator'};
+                $record['pd-allocator'] = $subnet->{'pd-allocator'}->getValue();
             }
             if (!$subnet->allocator->isEmpty()) {
-                $record['allocator'] = (string)$subnet->allocator;
+                $record['allocator'] = $subnet->allocator->getValue();
             }
             /* standard option-data elements */
             foreach ($subnet->option_data->iterateItems() as $key => $value) {
                 $target_fieldname = str_replace('_', '-', $key);
-                if ((string)$value != '') {
+                if (!$value->isEqual('')) {
                     $record['option-data'][] = [
                         'name' => $target_fieldname,
                         'data' => (string)$value
@@ -155,7 +200,7 @@ class KeaDhcpv6 extends BaseModel
                 }
             }
             /* add pools */
-            foreach (array_filter(explode("\n", $subnet->pools)) as $pool) {
+            foreach (array_filter(explode("\n", $subnet->pools->getValue())) as $pool) {
                 $record['pools'][] = ['pool' => $pool];
             }
             /* add pd-pools */
@@ -164,32 +209,83 @@ class KeaDhcpv6 extends BaseModel
                     continue;
                 }
                 $record['pd-pools'][] = [
-                    'prefix' => (string)$pdpool->prefix,
-                    'prefix-len' => (int)$pdpool->prefix_len->getValue(),
-                    'delegated-len' => (int)$pdpool->delegated_len->getValue()
+                    'prefix' => $pdpool->prefix->getValue(),
+                    'prefix-len' => $pdpool->prefix_len->asInt(),
+                    'delegated-len' => $pdpool->delegated_len->asInt()
                 ];
             }
             /* static reservations */
             foreach ($this->reservations->reservation->iterateItems() as $key => $reservation) {
-                if ($reservation->subnet != $subnet_uuid) {
+                if (!$reservation->subnet->isEqual($subnet_uuid)) {
                     continue;
                 }
                 $res = ['option-data' => []];
-                foreach (['duid', 'hostname'] as $key) {
-                    if (!empty((string)$reservation->$key)) {
-                        $res[str_replace('_', '-', $key)] = (string)$reservation->$key;
+                foreach (['duid', 'hw_address', 'hostname'] as $key) {
+                    if (!$reservation->$key->isEmpty()) {
+                        $res[str_replace('_', '-', $key)] = $reservation->$key->getValue();
                     }
                 }
-                $res['ip-addresses'] = explode(',', (string)$reservation->ip_address);
+                $res['ip-addresses'] = explode(',', $reservation->ip_address->getValue());
                 if (!$reservation->domain_search->isEmpty()) {
                     $res['option-data'][] = [
                         'name' => 'domain-search',
-                        'data' => (string)$reservation->domain_search
+                        'data' => $reservation->domain_search->getValue()
                     ];
+                }
+                /* append raw options */
+                foreach ($reservation->option->getValues() as $uuid) {
+                    $option = $this->getNodeByReference("options.option.$uuid");
+                    if ($option === null) {
+                        continue;
+                    }
+                    $entry = [
+                        'code' => $option->code->asInt(),
+                        'csv-format' => false,
+                        'data' => $option->data->encodeValue(),
+                        'always-send' => !$option->force->isEmpty(),
+                    ];
+                    /* only conditionally send the option when a client option matches */
+                    if (!$option->match_code->isEmpty()) {
+                        $entry['client-classes'] = [$uuid];
+                    }
+                    $res['option-data'][] = $entry;
                 }
                 $record['reservations'][] = $res;
             }
+            /* append raw options */
+            foreach ($subnet->option->getValues() as $uuid) {
+                $option = $this->getNodeByReference("options.option.$uuid");
+                if ($option === null) {
+                    continue;
+                }
+                $entry = [
+                    'code' => $option->code->asInt(),
+                    'csv-format' => false,
+                    'data' => $option->data->encodeValue(),
+                    'always-send' => !$option->force->isEmpty(),
+                ];
+                /* only conditionally send the option when a client option matches */
+                if (!$option->match_code->isEmpty()) {
+                    $entry['client-classes'] = [$uuid];
+                }
+                $record['option-data'][] = $entry;
+            }
             $result[] = $record;
+        }
+        return $result;
+    }
+
+    private function getConfigClientClasses()
+    {
+        $result = [];
+        foreach ($this->options->option->iterateItems() as $uuid => $option) {
+            if ($option->match_code->isEmpty()) {
+                continue;
+            }
+            $result[] = [
+                'name' => $uuid,
+                'test' => sprintf('option[%d].hex == 0x%s', $option->match_code->asInt(), $option->match_data->encodeValue()),
+            ];
         }
         return $result;
     }
@@ -199,10 +295,9 @@ class KeaDhcpv6 extends BaseModel
         $config = [];
         $lexpireFields = iterator_to_array($this->lexpire->iterateItems());
         foreach ($lexpireFields as $fieldName => $fieldValue) {
-            $value = $fieldValue->__toString();
             if (!$fieldValue->isEqual('')) {
                 $keaFieldName = str_replace('_', '-', $fieldName);
-                $config[$keaFieldName] = (int)$fieldValue->getValue();
+                $config[$keaFieldName] = $fieldValue->asInt();
             }
         }
         return empty($config) ? null : $config;
@@ -212,7 +307,7 @@ class KeaDhcpv6 extends BaseModel
     {
         $cnf = [
             'Dhcp6' => [
-                'valid-lifetime' => (int)$this->general->valid_lifetime->__toString(),
+                'valid-lifetime' => $this->general->valid_lifetime->asInt(),
                 'interfaces-config' => [
                     'interfaces' => $this->getConfigPhysicalInterfaces()
                 ],
@@ -238,6 +333,10 @@ class KeaDhcpv6 extends BaseModel
                 'subnet6' => $this->getConfigSubnets(),
             ]
         ];
+        $client_classes = $this->getConfigClientClasses();
+        if (!empty($client_classes)) {
+            $cnf['Dhcp6']['client-classes'] = $client_classes;
+        }
         $expiredLeasesConfig = $this->getExpiredLeasesProcessingConfig();
         if ($expiredLeasesConfig !== null) {
             $cnf['Dhcp6']['expired-leases-processing'] = $expiredLeasesConfig;
@@ -247,7 +346,10 @@ class KeaDhcpv6 extends BaseModel
             $cnf['Dhcp6']['hooks-libraries'][] = [
                 'library' => '/usr/local/lib/kea/hooks/libdhcp_lease_cmds.so'
             ];
-            if (!empty((string)$this->ha->enabled)) {
+            $cnf['Dhcp6']['hooks-libraries'][] = [
+                'library' => '/usr/local/lib/kea/hooks/libdhcp_host_cmds.so'
+            ];
+            if (!$this->ha->enabled->isEmpty()) {
                 $record = [
                     'library' => '/usr/local/lib/kea/hooks/libdhcp_ha.so',
                     'parameters' => [
@@ -258,7 +360,7 @@ class KeaDhcpv6 extends BaseModel
                                 'heartbeat-delay' => 10000,
                                 'max-response-delay' => 60000,
                                 'max-ack-delay' => 5000,
-                                'max-unacked-clients' => (int)((string)$this->ha->max_unacked_clients),
+                                'max-unacked-clients' => $this->ha->max_unacked_clients->asInt(),
                                 'sync-timeout' => 60000,
                             ]
                         ]
@@ -269,12 +371,20 @@ class KeaDhcpv6 extends BaseModel
                         $record['parameters']['high-availability'][0]['peers'] = [];
                     }
                     $record['parameters']['high-availability'][0]['peers'][] = array_map(
-                        fn($x) => (string)$x,
+                        fn($x) => $x->getValue(),
                         iterator_to_array($peer->iterateItems())
                     );
                 }
                 $cnf['Dhcp6']['hooks-libraries'][] = $record;
             }
+        }
+        $ddns = new KeaDdns();
+        if (!$ddns->general->enabled->isEmpty()) {
+            $cnf['Dhcp6']['dhcp-ddns'] = [
+                'enable-updates' => true,
+                'server-ip' => $ddns->general->server_ip->getValue(),
+                'server-port' => $ddns->general->server_port->asInt(),
+            ];
         }
         File::file_put_contents($target, json_encode($cnf, JSON_PRETTY_PRINT), 0600);
     }

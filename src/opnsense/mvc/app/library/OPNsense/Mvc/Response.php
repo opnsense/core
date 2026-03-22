@@ -117,7 +117,7 @@ class Response
             @fclose($this->content);
         } else {
             if (is_array($this->content)) {
-                $result = json_encode($this->content);
+                $result = json_encode($this->content, JSON_INVALID_UTF8_IGNORE);
                 echo $this->safe_output ? $result : htmlspecialchars($result, ENT_NOQUOTES);
             } elseif (!empty($this->content)) {
                 /* XXX: assume safe content here, to prevent breaking existing callers.

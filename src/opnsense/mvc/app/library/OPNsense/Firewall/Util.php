@@ -43,9 +43,9 @@ class Util
     private static $aliasObject = null;
 
     /**
-     * @var null|array cached alias descriptions
+     * @var null|array cached alias content
      */
-    private static $aliasDescriptions = [];
+    private static $aliasSummaries = [];
 
     /**
      * @var array cached getservbyname results
@@ -178,6 +178,38 @@ class Util
     }
 
     /**
+     * fetch alias by uuid from model
+     * @param string $uuid
+     * @return Alias|null
+     */
+    private static function getAliasByUuid($uuid)
+    {
+        if (self::$aliasObject == null) {
+            // Cache the alias object to avoid object creation overhead.
+            self::$aliasObject = new Alias(true);
+            self::$aliasObject->flushCache();
+        }
+        if (!empty($uuid)) {
+            return self::$aliasObject->getNodeByReference('aliases.alias.' . $uuid);
+        }
+        return null;
+    }
+
+    /**
+     * resolve alias uuid to alias name
+     * @param string $uuid
+     * @return string|null
+     */
+    public static function aliasUuidToName($uuid)
+    {
+        $alias = self::getAliasByUuid($uuid);
+        if ($alias !== null) {
+            return $alias->name->getValue();
+        }
+        return null;
+    }
+
+    /**
      * fetch alias by name from model
      * @param string $name name
      * @return Alias|null
@@ -208,7 +240,7 @@ class Util
         if ($alias != null) {
             if ($valid) {
                 // check validity for port type aliases
-                if (preg_match("/port/i", (string)$alias->type) && empty((string)$alias->content)) {
+                if ((string)$alias->type == 'port' && empty((string)$alias->content)) {
                     return false;
                 }
             }
@@ -226,7 +258,7 @@ class Util
         $alias = self::getAliasByName($name);
         if ($alias != null) {
             // check validity for port type aliases
-            if (preg_match("/port/i", (string)$alias->type) && !empty((string)$alias->content)) {
+            if ((string)$alias->type == 'port' && !empty((string)$alias->content)) {
                 return true;
             }
         }
@@ -234,20 +266,20 @@ class Util
     }
 
     /**
-     * return alias descriptions
+     * return alias summary (description and content as found)
      * @param string $name name
      * @return string
      */
-    public static function aliasDescription($name)
+    public static function aliasSummary($name)
     {
-        if (empty(self::$aliasDescriptions)) {
+        if (empty(self::$aliasSummaries)) {
             // read all aliases at once, and cache descriptions.
             foreach ((new Alias(true))->aliasIterator() as $alias) {
-                if (empty(self::$aliasDescriptions[$alias['name']])) {
+                if (empty(self::$aliasSummaries[$alias['name']])) {
                     if (!empty($alias['description'])) {
-                        self::$aliasDescriptions[$alias['name']] = '<strong>' . $alias['description'] . '</strong><br/>';
+                        self::$aliasSummaries[$alias['name']] = '<strong>' . $alias['description'] . '</strong><br/>';
                     } else {
-                        self::$aliasDescriptions[$alias['name']] = "";
+                        self::$aliasSummaries[$alias['name']] = '';
                     }
 
                     if (!empty($alias['content'])) {
@@ -256,16 +288,13 @@ class Util
                         if (count($alias['content']) > 10) {
                             $tmp[] = '[...]';
                         }
-                        self::$aliasDescriptions[$alias['name']] .= implode("<br/>", $tmp);
+                        self::$aliasSummaries[$alias['name']] .= implode('<br/>', $tmp);
                     }
                 }
             }
         }
-        if (!empty(self::$aliasDescriptions[$name])) {
-            return self::$aliasDescriptions[$name];
-        } else {
-            return null;
-        }
+
+        return self::$aliasSummaries[$name] ?? null;
     }
 
     /**
@@ -567,5 +596,50 @@ class Util
                 }
             }
         }
+    }
+
+    /**
+     * query anti lockout interface and ports using only our config object
+     * @return array [if => [ports]]
+     */
+    public static function getAntiLockout()
+    {
+        $cfg = Config::getInstance()->object();
+        if (isset($cfg->system->webgui->noantilockout)) {
+            return [];
+        }
+
+        /*  "priority" list to identify primary local interface: lan, optX or wan */
+        $iflist = array_keys((array)$cfg->interfaces->children());
+        natsort($iflist);
+        foreach ($iflist as $if) {
+            if (preg_match('/^(lan|opt[0-9]+|wan)$/', $if)) {
+                $lockout_if = $if;
+                break;
+            }
+        }
+        if (empty($lockout_if)) {
+            return [];
+        }
+        $lockout_ports = [];
+        if (empty($cfg->system->webgui->port)) {
+            $lockout_ports[] = $cfg->system->webgui->protocol == 'https' ? '443' : '80';
+        } else {
+            $lockout_ports[] = (string)$cfg->system->webgui->port;
+        }
+        if ($cfg->system->webgui->protocol == 'https' && !isset($cfg->system->webgui->disablehttpredirect)) {
+            $lockout_ports[] = '80';
+        }
+        if (isset($cfg->system->ssh->enabled)) {
+            /**
+             * filter_core_get_antilockout() checked for install media as well,
+             * which looks like an overkill and is expensive to check
+             **/
+            $lockout_ports[] = empty($cfg->system->ssh->port) ? '22' : (string)$cfg->system->ssh->port;
+        }
+        sort($lockout_ports);
+
+        /* return a convenient one-entry array to iterate over for our callers */
+        return [$lockout_if => $lockout_ports];
     }
 }

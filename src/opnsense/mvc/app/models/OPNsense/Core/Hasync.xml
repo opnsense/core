@@ -30,6 +30,7 @@
                 <v1400 value="1400">OPNsense 24.7 or above</v1400>
             </OptionValues>
         </pfsyncversion>
+        <pfsyncdefer type="BooleanField"/>
         <synchronizetoip type="TextField">
             <!-- XXX: accepts uri or address -->
         </synchronizetoip>

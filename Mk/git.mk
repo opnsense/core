@@ -23,7 +23,8 @@
 # OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 # SUCH DAMAGE.
 
-ARGS=	diff feed mfc mlog slog tag
+ARGS=	diff feed mfc mlog slog tag vim
+VIM!=	which vim || which vi || echo false
 
 # handle argument expansion for required targets
 .for TARGET in ${.TARGETS}
@@ -98,7 +99,7 @@ ${CORE_MAINS}:
 
 rebase:
 	@${GIT} checkout ${CORE_STABLE}
-	@${GIT} rebase -i
+	@${GIT} rebase -i || ${GIT} rebase --abort
 	@${GIT} checkout ${CORE_MAIN}
 
 reset:
@@ -112,9 +113,20 @@ mlog:
 slog: ensure-stable
 	@${GIT} log --stat -p ${CORE_STABLE} ${slog_ARGS}
 
+TO_PULL:=	# blank
+.if "${CORE_STABLE}" == "stable/${CORE_ABI}"
+.for __CORE_ABI in ${CORE_ABIS}
+TO_PULL+=	stable/${__CORE_ABI}
+.endfor
+.else
+TO_PULL+=	${CORE_STABLE}
+.endif
+
 pull:
-	@${GIT} checkout ${CORE_STABLE}
+.for _TO_PULL in ${TO_PULL}
+	@${GIT} checkout ${_TO_PULL}
 	@${GIT} pull
+.endfor
 	@${GIT} checkout ${CORE_MAIN}
 
 push:
@@ -128,5 +140,24 @@ checkout:
 	@${GIT} reset -q ${.CURDIR}/src && \
 	    ${GIT} checkout -f ${.CURDIR}/src && \
 	    ${GIT} clean -xdqf ${.CURDIR}/src
+.endif
+.endfor
+
+vim:
+.for DIR in ${.CURDIR}/src
+.if exists(${DIR})
+	@FOUND="$$(find ${.CURDIR}/src -type f -name "$$(basename '${vim_ARG}')*" | \
+	    grep -F '${vim_ARG}')"; \
+	if [ -n "$${FOUND}" ]; then \
+		if [ "$$(echo "$${FOUND}" | wc -l | awk '{ print $$1 }')" = "1" ]; then \
+			${VIM} "$${FOUND}"; \
+			${PHPBIN} -l "$${FOUND}" > /dev/null; \
+		else \
+			echo "Found multiple files to open:"; \
+			echo "$${FOUND}"; \
+		fi; \
+	else \
+		echo "Could not find file to open: ${vim_ARG}"; \
+	fi
 .endif
 .endfor

@@ -1,0 +1,132 @@
+<model>
+    <mount>//OPNsense/radvd</mount>
+    <version>1.0.0</version>
+    <description>Radvd configuration</description>
+    <items>
+        <entries type="ArrayField">
+            <enabled type="BooleanField">
+                <Default>1</Default>
+                <Required>Y</Required>
+            </enabled>
+            <interface type="InterfaceField">
+                <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>A configuration for this interface already exists.</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                    </check001>
+                </Constraints>
+            </interface>
+            <Base6Interface type="InterfaceField"/>
+            <mode type="OptionField">
+                <Required>Y</Required>
+                <Default>stateless</Default>
+                <OptionValues>
+                    <router>Router Only</router>
+                    <unmanaged>Unmanaged</unmanaged>
+                    <managed>Managed</managed>
+                    <assist>Assisted</assist>
+                    <stateless>Stateless</stateless>
+                </OptionValues>
+            </mode>
+            <DeprecatePrefix type="OptionField">
+                <BlankDesc>Automatic</BlankDesc>
+                <OptionValues>
+                    <on>On</on>
+                    <off>Off</off>
+                </OptionValues>
+            </DeprecatePrefix>
+            <RemoveAdvOnExit type="OptionField">
+                <BlankDesc>Automatic</BlankDesc>
+                <OptionValues>
+                    <on>On</on>
+                    <off>Off</off>
+                </OptionValues>
+            </RemoveAdvOnExit>
+            <RemoveRoute type="OptionField">
+                <BlankDesc>Automatic</BlankDesc>
+                <OptionValues>
+                    <on>On</on>
+                    <off>Off</off>
+                </OptionValues>
+            </RemoveRoute>
+            <routes type="NetworkField">
+                <NetMaskRequired>Y</NetMaskRequired>
+                <AddressFamily>ipv6</AddressFamily>
+                <AsList>Y</AsList>
+            </routes>
+            <RDNSS type="NetworkField">
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <AddressFamily>ipv6</AddressFamily>
+                <AsList>Y</AsList>
+            </RDNSS>
+            <DNSSL type="HostnameField">
+                <IsDNSName>Y</IsDNSName>
+                <IpAllowed>N</IpAllowed>
+                <AsList>Y</AsList>
+            </DNSSL>
+            <dns type="BooleanField">
+                <Required>Y</Required>
+                <Default>1</Default>
+            </dns>
+            <MinRtrAdvInterval type="IntegerField">
+                <Default>200</Default>
+                <Required>Y</Required>
+                <MinimumValue>3</MinimumValue>
+                <ValidationMessage>Value cannot be less than 3 seconds.</ValidationMessage>
+            </MinRtrAdvInterval>
+            <MaxRtrAdvInterval type="IntegerField">
+                <Default>600</Default>
+                <Required>Y</Required>
+                <MinimumValue>4</MinimumValue>
+                <MaximumValue>1800</MaximumValue>
+                <ValidationMessage>Maximum interval must be between 4 and 1800 seconds.</ValidationMessage>
+            </MaxRtrAdvInterval>
+            <AdvDNSSLLifetime type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>4294967295</MaximumValue>
+                <ValidationMessage>Value must be between 1 and 4294967295.</ValidationMessage>
+            </AdvDNSSLLifetime>
+            <AdvDefaultLifetime type="IntegerField"/>
+            <AdvLinkMTU type="IntegerField">
+                <MinimumValue>1280</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+                <ValidationMessage>AdvLinkMTU must be between 1280 and 65535 bytes.</ValidationMessage>
+            </AdvLinkMTU>
+            <AdvPreferredLifetime type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>4294967295</MaximumValue>
+                <ValidationMessage>Value must be between 1 and 4294967295.</ValidationMessage>
+            </AdvPreferredLifetime>
+            <AdvRASrcAddress type=".\VipLinkLocalField"/>
+            <AdvRDNSSLifetime type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>4294967295</MaximumValue>
+                <ValidationMessage>Value must be between 1 and 4294967295.</ValidationMessage>
+            </AdvRDNSSLifetime>
+            <AdvRouteLifetime type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>4294967295</MaximumValue>
+                <ValidationMessage>Value must be between 1 and 4294967295.</ValidationMessage>
+            </AdvRouteLifetime>
+            <AdvValidLifetime type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>4294967295</MaximumValue>
+                <ValidationMessage>Value must be between 1 and 4294967295.</ValidationMessage>
+            </AdvValidLifetime>
+            <AdvDefaultPreference type="OptionField">
+                <Required>Y</Required>
+                <Default>medium</Default>
+                <OptionValues>
+                    <low>Low</low>
+                    <medium>Medium</medium>
+                    <high>High</high>
+                </OptionValues>
+            </AdvDefaultPreference>
+            <nat64prefix type="NetworkField">
+                <NetMaskRequired>Y</NetMaskRequired>
+                <AddressFamily>ipv6</AddressFamily>
+            </nat64prefix>
+        </entries>
+    </items>
+</model>

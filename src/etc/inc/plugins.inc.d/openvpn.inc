@@ -291,31 +291,36 @@ function openvpn_port_next($prot, $interface = "wan")
 
 function openvpn_get_cipherlist()
 {
-    $ciphers = ["" => gettext("None")];
-    exec('/usr/local/sbin/openvpn --show-ciphers', $lines);
-    foreach ($lines as $line) {
+    $ciphers = ['' => gettext('None')];
+
+    foreach (shell_safe('/usr/local/sbin/openvpn --show-ciphers', [], true) as $line) {
         if (strstr($line, '  (') !== false) {
             $cipher = explode(' ', $line)[0];
             $ciphers[$cipher] = $line;
         }
     }
+
     ksort($ciphers, SORT_STRING | SORT_FLAG_CASE);
+
     return $ciphers;
 }
 
 function openvpn_get_digestlist()
 {
-    $digests = array();
-    exec('/usr/local/sbin/openvpn --show-digests', $lines);
-    foreach ($lines as $line) {
+    $digests = [];
+
+    foreach (shell_safe('/usr/local/sbin/openvpn --show-digests', [], true) as $line) {
         if (strstr($line, 'digest size') !== false) {
             $digest = explode(' ', $line)[0];
             $bits = explode(' ', explode('bit', $line)[0])[1];
             $digests[$digest] = $digest . " (" . $bits . "-bit)";
         }
     }
+
     ksort($digests);
-    $digests["none"] = gettext("None (No Authentication)");
+
+    $digests['none'] = gettext('None (No Authentication)');
+
     return $digests;
 }
 
@@ -365,7 +370,9 @@ function openvpn_validate_cidr($value, $name, $multiple = false, $ipproto = 'ipv
 function openvpn_add_dhcpopts(&$settings, &$conf)
 {
     if (!empty($settings['dns_domain'])) {
-        $conf .= "push \"dhcp-option DOMAIN {$settings['dns_domain']}\"\n";
+        foreach (explode(",", $settings['dns_domain']) as $domain) {
+            $conf .= "push \"dhcp-option DOMAIN {$domain}\"\n";
+        }
     }
     if (!empty($settings['dns_domain_search'])) {
         foreach (explode(",", $settings['dns_domain_search']) as $domain) {
@@ -1195,7 +1202,7 @@ function openvpn_clear_route($mode, $settings)
         list($ip1, $ip2) = openvpn_get_interface_ip($ip, $mask);
         $ip_to_clear = ($mode == "server") ? $ip1 : $ip2;
         /* XXX: Family for route? */
-        mwexec("/sbin/route -q delete {$ip_to_clear}");
+        mwexecf('/sbin/route -q delete %s', $ip_to_clear);
     }
 }
 
@@ -1279,9 +1286,10 @@ function openvpn_refresh_crls()
                 case 'server_user':
                     if (!empty($settings['crlref'])) {
                         $crl = lookup_crl($settings['crlref']);
-                        $fpath = "/var/etc/openvpn/server{$settings['vpnid']}.crl-verify";
-                        file_put_contents($fpath, !empty($crl['text']) ? base64_decode($crl['text']) : '');
-                        @chmod($fpath, 0644);
+                        file_safe(
+                            "/var/etc/openvpn/server{$settings['vpnid']}.crl-verify",
+                            !empty($crl['text']) ? base64_decode($crl['text']) : ''
+                        );
                     }
                     break;
             }
@@ -1290,10 +1298,11 @@ function openvpn_refresh_crls()
 
     foreach ((new OPNsense\OpenVPN\OpenVPN())->Instances->Instance->iterateItems() as $key => $node) {
         if (!empty((string)$node->enabled) && !empty((string)$node->crl)) {
-            $fpath = "/var/etc/openvpn/server-{$key}.crl-verify";
             $crl = lookup_crl((string)$node->crl);
-            file_put_contents($fpath, !empty($crl['text']) ? base64_decode($crl['text']) : '');
-            @chmod($fpath, 0644);
+            file_safe(
+                "/var/etc/openvpn/server-{$key}.crl-verify",
+                !empty($crl['text']) ? base64_decode($crl['text']) : ''
+            );
         }
     }
 }

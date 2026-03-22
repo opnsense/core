@@ -107,10 +107,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $mode = $config['nat']['outbound']['mode'];
 
-$interface_names= array();
-// add this hosts ips
-foreach ($config['interfaces'] as $intf => $intfdata) {
-    if (isset($intfdata['ipaddr']) && $intfdata['ipaddr'] != 'dhcp') {
+$interface_names = [];
+foreach (config_read_array('interfaces', false) as $intf => $intfdata) {
+    if (is_ipaddrv4($intfdata['ipaddr'] ?? 'none')) {
         $interface_names[$intfdata['ipaddr']] = sprintf(gettext('%s address'), !empty($intfdata['descr']) ? $intfdata['descr'] : $intf );
     }
 }

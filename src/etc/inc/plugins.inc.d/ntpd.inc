@@ -152,17 +152,17 @@ function ntpd_configure_gps($serialport)
     return true;
 }
 
-function ntpd_configure_pps($serialport)
+function ntpd_configure_pps($port)
 {
     $pps_device = '/dev/pps0';
-    $serialport = "/dev/{$serialport}";
+    $serialport = "/dev/{$port}";
 
-    if (!file_exists($serialport)) {
+    @unlink($pps_device);
+    if (empty($port)) {
+        return false;
+    } elseif (!file_exists($serialport)) {
         return false;
     }
-
-    // Create symlink that ntpd requires
-    @unlink($pps_device);
     @symlink($serialport, $pps_device);
 
     return true;
@@ -213,11 +213,7 @@ function ntpd_configure_do($verbose = false)
     $ntpcfg .= "\n";
 
     /* Add PPS configuration */
-    if (
-        !empty($config['ntpd']['pps'])
-        && file_exists('/dev/' . $config['ntpd']['pps']['port'])
-        && ntpd_configure_pps($config['ntpd']['pps']['port'])
-    ) {
+    if (!empty($config['ntpd']['pps']) && ntpd_configure_pps($config['ntpd']['pps']['port'])) {
         $ntpcfg .= "\n";
         $ntpcfg .= "# PPS Setup\n";
         $ntpcfg .= 'server 127.127.22.0';
@@ -330,12 +326,13 @@ function ntpd_configure_do($verbose = false)
     $noselect = isset($config['ntpd']['noselect']) ? explode(' ', $config['ntpd']['noselect']) : [];
     $prefer = isset($config['ntpd']['prefer']) ? explode(' ', $config['ntpd']['prefer']) : [];
     $iburst = isset($config['ntpd']['iburst']) ? explode(' ', $config['ntpd']['iburst']) : [];
+    $ispool = isset($config['ntpd']['ispool']) ? explode(' ', $config['ntpd']['ispool']) : [];
 
     $ntpcfg .= "\n\n# Upstream Servers\n";
     /* foreach through ntp servers and write out to ntpd.conf */
     foreach (explode(' ', $config['system']['timeservers']) as $ts) {
-        /* Determine if Network Time Server is from the NTP Pool or not */
-        if (preg_match("/\.pool\.ntp\.org$/", $ts)) {
+        /* Determine if Network Time Server is a pool or not */
+        if (in_array($ts, $ispool) || preg_match("/\.pool\.ntp\.org$/", $ts)) {
             $ntpcfg .= "pool {$ts}";
         } else {
             $ntpcfg .= "server {$ts}";
@@ -464,7 +461,7 @@ function ntpd_configure_do($verbose = false)
     if (empty($config['ntpd']['clientmode'])) {
         mwexecf('/usr/local/sbin/ntpd -g -c %s', ['/var/etc/ntpd.conf']);
     } else {
-        mwexecf_bg('/usr/local/sbin/ntpd -q -g -c %s', ['/var/etc/ntpd.conf']);
+        mwexecfb('/usr/local/sbin/ntpd -q -g -c %s', ['/var/etc/ntpd.conf']);
     }
 
     service_log("done.\n", $verbose);

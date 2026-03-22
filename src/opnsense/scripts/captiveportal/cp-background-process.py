@@ -40,6 +40,7 @@ from lib import Config
 from lib.db import DB
 from lib.arp import ARP
 from lib.pf import PF
+from lib.ipfw import IPFW
 from lib.daemonize import Daemonize
 from sqlite3_helper import check_and_repair
 
@@ -55,41 +56,21 @@ class CPBackgroundProcess(object):
         self.arp = ARP()
         self.cnf = Config()
         self.db = DB()
+        self.db.create()
         self._conf_zone_info = self.cnf.get_zones()
-
-        self._accounting_info = {k: {'cur': {}, 'prev': {}, 'reset': False} for k in self.list_zone_ids()}
 
     def list_zone_ids(self):
         """ return zone numbers
         """
         return self._conf_zone_info.keys()
 
-    def get_accounting(self):
-        """ returns only how much the accounting should add in total
-        """
-        result = {}
-        for zoneid in self.list_zone_ids():
-            self._accounting_info[zoneid]['prev'] = self._accounting_info[zoneid]['cur']
-            self._accounting_info[zoneid]['cur'] = PF.list_accounting_info(zoneid)
-            cur = copy.deepcopy(self._accounting_info[zoneid]['cur'] )
+    def _add_client(self, zoneid, ip):
+        PF.add_to_table(zoneid, ip)
+        IPFW.add_accounting(ip)
 
-            for ip in cur:
-                # take in/out bytes active time as last access time
-                cur[ip]['last_accessed'] = max(cur[ip]['in_last_accessed'], cur[ip]['out_last_accessed'])
-
-                if self._accounting_info[zoneid]['reset']:
-                    # anchor has just been synced, we'll add the whole thing outside of this loop
-                    continue
-
-                # pf anchor hasn't yet reset, calculate difference
-                for key in ['in_pkts', 'in_bytes', 'out_pkts', 'out_bytes']:
-                    if ip in self._accounting_info[zoneid]['prev']:
-                        cur[ip][key] = self._accounting_info[zoneid]['cur'][ip][key] \
-                            - self._accounting_info[zoneid]['prev'][ip][key]
-
-            result[zoneid] = cur
-
-        return {k: v for subdict in result.values() for k, v in subdict.items()}
+    def _remove_client(self, zoneid, ip):
+        PF.remove_from_table(zoneid, ip)
+        IPFW.del_accounting(ip)
 
     def initialize_fixed(self):
         """ initialize fixed ip / hosts per zone
@@ -97,7 +78,7 @@ class CPBackgroundProcess(object):
         cpzones = self._conf_zone_info
         for zoneid in cpzones:
             for conf_section in ['allowedaddresses', 'allowedmacaddresses']:
-                for address in cpzones[zoneid][conf_section]:
+                for address in (a.lower() for a in cpzones[zoneid][conf_section]):
                     if conf_section.find('mac') == -1:
                         sessions = self.db.sessions_per_address(zoneid, ip_address=address)
                         ip_address = address
@@ -123,29 +104,31 @@ class CPBackgroundProcess(object):
             for dbclient in self.db.list_clients(zoneid):
                 if dbclient['authenticated_via'] == '---ip---' \
                         and dbclient['ipAddress'] not in cpzones[zoneid]['allowedaddresses']:
-                        PF.remove_from_table(zoneid, dbclient['ipAddress'])
+                        self._remove_client(zoneid, dbclient['ipAddress'])
                         self.db.del_client(zoneid, dbclient['sessionId'], 'NAS-Request')
                 elif dbclient['authenticated_via'] == '---mac---' \
-                        and dbclient['macAddress'] not in cpzones[zoneid]['allowedmacaddresses']:
+                        and dbclient['macAddress'] not in (a.lower() for a in cpzones[zoneid]['allowedmacaddresses']):
                         if dbclient['ipAddress'] != '':
-                            PF.remove_from_table(zoneid, dbclient['ipAddress'])
+                            self._remove_client(zoneid, dbclient['ipAddress'])
                         self.db.del_client(zoneid, dbclient['sessionId'], 'NAS-Request')
 
-    def sync_zone(self, zoneid):
+    def sync_zone(self, zoneid, registered_addr_accounting):
         """ Synchronize captiveportal zone.
             Handles timeouts and administrative changes to this zones sessions
         """
         if zoneid in self._conf_zone_info:
             # fetch data for this zone
             cpzone_info = self._conf_zone_info[zoneid]
-            registered_addresses = PF.list_table(zoneid)
+            registered_addresses_pf = set(PF.list_table(zoneid))
+            registered_addresses_ipfw = set(registered_addr_accounting.keys())
             expected_clients = self.db.list_clients(zoneid)
             concurrent_users = self.db.find_concurrent_user_sessions(zoneid)
+            allow_roaming = bool(int(cpzone_info['roaming']))
 
             # handle connected clients, timeouts, address changes, etc.
             for db_client in expected_clients:
                 # fetch ip address (or network) from database
-                cpnet = db_client['ipAddress'].strip()
+                session_ips = self.db.list_session_ips(zoneid, db_client['sessionId'])
 
                 # there are different reasons why a session should be removed, check for all reasons and
                 # use the same method for the actual removal
@@ -178,8 +161,8 @@ class CPBackgroundProcess(object):
                             drop_session_reason = "remove concurrent session %s" % db_client['sessionId']
                             delete_reason = "User-Request"
 
-                    # if mac address changes, drop session. it's not the same client
-                    current_arp = self.arp.get_by_ipaddress(cpnet)
+                    # if mac address changes, drop session. it's not the same client. Use the "primary IP" to determine this
+                    current_arp = self.arp.get_by_ipaddress(db_client['ipAddress'])
                     if current_arp is not None and current_arp['mac'] != db_client['macAddress']:
                         drop_session_reason = "mac address changed for session %s" % db_client['sessionId']
                         delete_reason = "Admin-Reset"
@@ -190,50 +173,47 @@ class CPBackgroundProcess(object):
                             and time.time() - float(db_client['startTime']) > db_client['acc_session_timeout']:
                             drop_session_reason = "accounting limit reached for session %s" % db_client['sessionId']
                             delete_reason = "Session-Timeout"
-                elif db_client['authenticated_via'] == '---mac---':
-                    # detect mac changes
-                    current_ip = self.arp.get_address_by_mac(db_client['macAddress'])
-                    if current_ip is not None and db_client['ipAddress'] != current_ip:
-                        if db_client['ipAddress'] != '':
-                            # remove old ip
-                            PF.remove_from_table(zoneid, db_client['ipAddress'])
-                        self.db.update_client_ip(zoneid, db_client['sessionId'], current_ip)
-                        PF.add_to_table(zoneid, current_ip)
 
-                # check session, if it should be active, validate its properties
-                if drop_session_reason is None:
-                    # registered client, but not active or missing accounting according to pf (after reboot)
-                    if cpnet not in registered_addresses:
-                        PF.add_to_table(zoneid, cpnet)
-                else:
+                if drop_session_reason is not None:
                     # remove session
                     syslog.syslog(syslog.LOG_NOTICE, drop_session_reason)
-                    PF.remove_from_table(zoneid, cpnet)
+                    for ip in session_ips:
+                        self._remove_client(zoneid, ip)
                     self.db.del_client(zoneid, db_client['sessionId'], delete_reason)
+                    continue
 
-            # if there are addresses/networks in the underlying pf table which are not in our administration,
-            # remove them from pf.
-            for registered_address in registered_addresses:
-                address_active = False
-                for db_client in expected_clients:
-                    if registered_address == db_client['ipAddress']:
-                        address_active = True
-                        break
-                if not address_active:
-                    PF.remove_from_table(zoneid, registered_address)
+                # if primary IP changed, update db accordingly. Not relevant for static IP-authenticated clients
+                if db_client['authenticated_via'] != '---ip---':
+                    current_ips = self.arp.get_all_addresses_by_mac(db_client['macAddress'])
+                    if len(current_ips) > 0 and db_client['ipAddress'] != current_ips[0]:
+                        if db_client['ipAddress'] != '':
+                            # remove old ip
+                            self._remove_client(zoneid, db_client['ipAddress'])
+                        self.db.update_client_ip(zoneid, db_client['sessionId'], current_ips[0])
+                        self._add_client(zoneid, current_ips[0])
+                        db_client['ipAddress'] = current_ips[0]
 
-    def sync_accounting(self):
-        for zoneid in self.list_zone_ids():
-            pf_stats = self._accounting_info[zoneid]['cur']
-            current_clients = self.db.list_clients(zoneid)
+                # session should be active, validate its properties
+                if allow_roaming:
+                    # this will add the "primary" IP as well, but both list_session_ips and update_roaming_ips will return a deduplicated set
+                    session_ips = self.db.update_roaming_ips(zoneid, db_client['sessionId'], self.arp.get_all_addresses_by_mac(db_client['macAddress']))
+                else:
+                    # may have been updated if primary IP changed
+                    session_ips = {db_client['ipAddress']}
 
-            pf_ips = set(pf_stats.keys())
-            db_ips = {entry['ipAddress'] for entry in current_clients}
+                to_add = (session_ips - registered_addresses_pf) | (session_ips - registered_addresses_ipfw)
+                if session_ips and to_add:
+                    for ip in to_add:
+                        self._add_client(zoneid, ip)
 
-            self._accounting_info[zoneid]['reset'] = False
-            if pf_ips != db_ips:
-                self._accounting_info[zoneid]['reset'] = True
-                PF.sync_accounting(zoneid)
+            # remove any address from pf that isn't expected
+            expected_addresses = set()
+            for db_client in expected_clients:
+                expected_addresses.update(self.db.list_session_ips(zoneid, db_client['sessionId']))
+
+            for registered_address in registered_addresses_pf:
+                if registered_address not in expected_addresses:
+                    self._remove_client(zoneid, registered_address)
 
 def main():
     """ Background process loop, runs as backend daemon for all zones. only one should be active at all times.
@@ -259,15 +239,14 @@ def main():
             # reload cached arp table contents
             bgprocess.arp.reload()
 
+            accounting_info = IPFW.list_accounting_info()
+
             # process sessions per zone
             for zoneid in bgprocess.list_zone_ids():
-                bgprocess.sync_zone(zoneid)
+                bgprocess.sync_zone(zoneid, accounting_info)
 
             # update accounting info, for all zones
-            bgprocess.db.update_accounting_info(bgprocess.get_accounting())
-
-            # sync accounting after db update, resets zone counters if sync is needed
-            bgprocess.sync_accounting()
+            bgprocess.db.update_accounting_info(accounting_info)
 
             # close the database handle while waiting for the next poll
             bgprocess.db.close()

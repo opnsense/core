@@ -1,7 +1,7 @@
 <form>
     <field>
         <id>spd.enabled</id>
-        <label>enabled</label>
+        <label>Enabled</label>
         <type>checkbox</type>
         <grid_view>
             <type>boolean</type>

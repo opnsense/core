@@ -28,58 +28,56 @@
 
 function core_services()
 {
-    global $config;
+    $services = [];
 
-    $services = array();
-
-    $services[] = array(
+    $services[] = [
         'description' => gettext('System Configuration Daemon'),
         'pidfile' => '/var/run/configd.pid',
-        'mwexec' => array(
-            'restart' => array('/usr/local/etc/rc.d/configd restart'),
-            'start' => array('/usr/local/etc/rc.d/configd start'),
-            'stop' => array('/usr/local/etc/rc.d/configd stop'),
-        ),
+        'mwexec' => [
+            'restart' => ['/usr/local/etc/rc.d/configd restart'],
+            'start' => ['/usr/local/etc/rc.d/configd start'],
+            'stop' => ['/usr/local/etc/rc.d/configd stop'],
+        ],
         'name' => 'configd',
         'locked' => true,
-    );
+    ];
 
-    $services[] = array(
+    $services[] = [
         'description' => gettext('Users and Groups'),
-        'php' => array(
-            "restart" => array('system_login_configure')
-        ),
+        'php' => [
+            'restart' => ['system_login_configure'],
+        ],
         'nocheck' => true,
         'name' => 'login',
-    );
+    ];
 
-    $services[] = array(
+    $services[] = [
         'description' => gettext('System routing'),
-        'php' => array(
-            "restart" => array('system_routing_configure')
-        ),
+        'php' => [
+            'restart' => ['system_routing_configure'],
+        ],
         'nocheck' => true,
         'name' => 'routing',
-    );
+    ];
 
-    $services[] = array(
+    $services[] = [
         'description' => gettext('System tunables'),
-        'php' => array(
-            "restart" => array('system_sysctl_configure')
-        ),
+        'php' => [
+            'restart' => ['system_sysctl_configure'],
+        ],
         'nocheck' => true,
         'name' => 'sysctl',
-    );
+    ];
 
-    $services[] = array(
+    $services[] = [
         'description' => gettext('Cron'),
-        'php' => array(
+        'php' => [
             'start' => ['system_cron_configure'],
             'restart' => ['system_cron_configure'],
-        ),
+        ],
         'pidfile' => '/var/run/cron.pid',
         'name' => 'cron',
-    );
+    ];
 
     $services[] = [
         'description' => gettext('Syslog-ng Daemon'),
@@ -103,7 +101,7 @@ function core_devices()
 
     $bridge_names = [];
 
-    foreach (config_read_array('bridges', 'bridged') as $dev) {
+    foreach (config_read_array('bridges', 'bridged', false) as $dev) {
         $bridge_names[$dev['bridgeif']] = [
             'descr' => sprintf('%s (%s)', $dev['bridgeif'], $dev['descr']),
             'ifdescr' => sprintf('%s', $dev['descr']),
@@ -121,7 +119,7 @@ function core_devices()
 
     $gif_names = [];
 
-    foreach (config_read_array('gifs', 'gif') as $dev) {
+    foreach (config_read_array('gifs', 'gif', false) as $dev) {
         $gif_names[$dev['gifif']] = [
             'descr' => sprintf('%s %s (%s)', $dev['gifif'], $dev['remote-addr'], $dev['descr']),
             'ifdescr' => sprintf('%s', $dev['descr']),
@@ -140,7 +138,7 @@ function core_devices()
 
     $gre_names = [];
 
-    foreach (config_read_array('gres', 'gre') as $dev) {
+    foreach (config_read_array('gres', 'gre', false) as $dev) {
         $gre_names[$dev['greif']] = [
             'descr' => sprintf('%s %s (%s)', $dev['greif'], $dev['remote-addr'], $dev['descr']),
             'ifdescr' => sprintf('%s', $dev['descr']),
@@ -159,7 +157,7 @@ function core_devices()
 
     $lagg_names = [];
 
-    foreach (config_read_array('laggs', 'lagg') as $dev) {
+    foreach (config_read_array('laggs', 'lagg', false) as $dev) {
         $lagg_names[$dev['laggif']] = [
             'descr' => sprintf('%s (%s)', $dev['laggif'], $dev['descr']),
             'ifdescr' => sprintf('%s', $dev['descr']),
@@ -177,7 +175,7 @@ function core_devices()
 
     $ppp_names = [];
 
-    foreach (config_read_array('ppps', 'ppp') as $dev) {
+    foreach (config_read_array('ppps', 'ppp', false) as $dev) {
         $ppp_names[$dev['if']] = [
             'descr' => sprintf('%s (%s) - %s %s', $dev['if'], $dev['ports'], $dev['descr'] ?? '', $dev['username']),
             'ifdescr' => sprintf('%s', $dev['descr'] ?? ''),
@@ -195,7 +193,7 @@ function core_devices()
 
     $vlan_names = [];
 
-    foreach (config_read_array('vlans', 'vlan') as $dev) {
+    foreach (config_read_array('vlans', 'vlan', false) as $dev) {
         $vlan_names[$dev['vlanif']] = [
             'descr' => sprintf(gettext('%s %s (Parent: %s, Tag: %s)'), $dev['vlanif'], $dev['descr'], $dev['if'], $dev['tag']),
             'ifdescr' => sprintf('%s', $dev['descr']),
@@ -212,7 +210,7 @@ function core_devices()
 
     $wlan_names = [];
 
-    foreach (config_read_array('wireless', 'clone') as $dev) {
+    foreach (config_read_array('wireless', 'clone', false) as $dev) {
         $wlan_names[$dev['cloneif']] = [
             'descr' => sprintf('%s (%s)', $dev['cloneif'], $dev['descr']),
             'ifdescr' => sprintf('%s', $dev['descr']),
@@ -227,18 +225,6 @@ function core_devices()
                 'descr' => sprintf('%s (%s)', $conf['if'], gettext('wireless clone')),
                 'ifdescr' => gettext('wireless clone'),
                 'name' => $conf['if'],
-            ];
-
-            $realif = get_real_interface($id);
-            if ($realif == $conf['if']) {
-                continue;
-            }
-
-            /* return both implicit and explicit clone if implicit clone was given */
-            $wlan_names[$realif] = [
-                'descr' => sprintf('%s (%s)', $realif, gettext('wireless clone')),
-                'ifdescr' => gettext('wireless clone'),
-                'name' => $realif,
             ];
         }
     }
@@ -261,15 +247,15 @@ function core_cron()
 {
     global $config;
 
-    $jobs = array();
+    $jobs = [];
 
-    $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d syslog archive', '1');
-    $jobs[]['autocron'] = array('/usr/local/sbin/ping_hosts.sh', '*/4');
-    $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d firmware changelog cron', '0', '22');
+    $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d syslog archive', '1'];
+    $jobs[]['autocron'] = ['/usr/local/sbin/ping_hosts.sh', '*/4'];
+    $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d firmware changelog cron', '0', '22'];
 
     foreach ((new \OPNsense\Firewall\Alias(true))->aliases->alias->iterateItems() as $alias) {
         if ($alias->type->isEqual('external') && !$alias->expire->isEmpty()) {
-            $cmd = [exec_safe("/sbin/pfctl -t %s -T expire %s", [$alias->name, $alias->expire])];
+            $cmd = [exec_safe('/sbin/pfctl -qt %s -T expire %s', [$alias->name, $alias->expire])];
             if ($alias->expire->asFloat() >= 3600) {
                 $cmd[] = '0,15,30,45';  /* every 15 minute cleanup */
             }
@@ -288,38 +274,22 @@ function core_cron()
     }
 
     if (!empty($config['system']['rrdbackup']) && $config['system']['rrdbackup'] > 0) {
-        $jobs[]['autocron'] = array(
-            '/usr/local/etc/rc.syshook.d/backup/20-rrd',
-            '0',
-            '*/' . $config['system']['rrdbackup']
-        );
-    }
-
-    if (!empty($config['system']['dhcpbackup']) && $config['system']['dhcpbackup'] > 0) {
-        $jobs[]['autocron'] = array(
-            '/usr/local/etc/rc.syshook.d/backup/20-dhcpleases',
-            '0',
-            '*/' . $config['system']['dhcpbackup']
-        );
+        $jobs[]['autocron'] = ['/usr/local/etc/rc.syshook.d/backup/20-rrd', '0', '*/' . $config['system']['rrdbackup']];
     }
 
     if (!empty($config['system']['netflowbackup']) && $config['system']['netflowbackup'] > 0) {
-        $jobs[]['autocron'] = array(
-            '/usr/local/etc/rc.syshook.d/backup/20-netflow',
-            '0',
-            '*/' . $config['system']['netflowbackup']
-        );
+        $jobs[]['autocron'] = ['/usr/local/etc/rc.syshook.d/backup/20-netflow', '0', '*/' . $config['system']['netflowbackup']];
     }
 
     foreach ((new OPNsense\Backup\BackupFactory())->listProviders() as $classname => $provider) {
         if ($provider['handle']->isEnabled()) {
-            $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system remote backup 3600', 0, 1);
+            $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d system remote backup 3600', 0, 1];
             break;
         }
     }
 
     if (!(new OPNsense\Trust\General())->fetch_crls->isEmpty()) {
-        $jobs[]['autocron'] = array('/usr/local/sbin/configctl -d system trust download_crls', '1');
+        $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d system trust download_crls', '1'];
     }
 
     return $jobs;
@@ -331,13 +301,12 @@ function core_syslog()
 
     $logfacilities['audit'] = ['facility' => ['audit']];
     $logfacilities['configd'] = ['facility' => ['configd.py']];
-    $logfacilities['dhcpd'] = ['facility' => ['dhcpd']];
     $logfacilities['kernel'] = ['facility' => ['kernel']];
     $logfacilities['lighttpd'] = ['facility' => ['lighttpd']];
     $logfacilities['pkg'] = ['facility' => ['pkg', 'pkg-static']];
     $logfacilities['ppps'] = ['facility' => ['ppp']];
     $logfacilities['resolver'] = ['facility' => ['unbound']];
-    $logfacilities['routing'] = ['facility' => ['routed', 'olsrd', 'zebra', 'ospfd', 'bgpd', 'miniupnpd']];
+    $logfacilities['routing'] = ['facility' => ['routed', 'olsrd', 'zebra', 'ospfd', 'bgpd']];
     $logfacilities['wireless'] = ['facility' => ['hostapd']];
 
     return $logfacilities;
@@ -388,7 +357,7 @@ function core_xmlrpc_sync()
     $result[] = [
         'description' => gettext('System logging'),
         'section' => 'syslog,OPNsense.Syslog',
-        'id' => 'syslog',
+        'id' => 'syslog-ng',
         'services' => ['syslogd'],
     ];
 
@@ -424,6 +393,12 @@ function core_configure()
         'crl' => ['core_trust_crl'],
         'dns_reload' => ['system_resolver_configure'],
         'firmware_reload' => ['system_firmware_configure'],
+        'networking_reload' => [
+            'interface_dhcpv6_duid:0',
+            'system_sysctl_configure',
+            'interfaces_hardware',
+            'filter_configure:0',
+        ],
         'route_reload' => ['system_routing_configure:2'],
         'syslog_reset' => ['system_syslog_reset'],
         'trust_reload' => ['system_trust_configure'],
@@ -448,11 +423,9 @@ function core_user_changed_groups($unused, $username)
     if (is_array($config['system']['user'])) {
         foreach ($config['system']['user'] as $user) {
             if ($user['name'] == $username && (!empty($user['shell']) || $user['uid'] == 0)) {
-                exec("/usr/bin/groups " . escapeshellarg($username) . ' 2>/dev/null', $out, $ret);
-                $current_groups = [];
-                if (!$ret) {
-                    $current_groups = explode(" ", $out[0]);
-                }
+                $output = shell_safe('/usr/bin/groups %s 2> /dev/null', $username);
+                $current_groups = strlen($output) ? explode(' ', $output) : [];
+
                 foreach ($config['system']['group'] as $group) {
                     $in_group = false;
                     foreach (!empty($group['member']) ? $group['member'] : [] as $grp) {

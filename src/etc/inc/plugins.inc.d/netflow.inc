@@ -80,13 +80,10 @@ function netflow_services()
  */
 function netflow_xmlrpc_sync()
 {
-    $result = [];
-    $result[] = array(
+    return [[
         'description' => gettext('Netflow / Insight'),
+        'id' => 'syslog', /* historic yet tolerated typo */
         'section' => 'OPNsense.Netflow',
-        'id' => 'syslog',
-        'services' => ["samplicate", "flowd_aggregate"],
-    );
-
-    return $result;
+        'services' => ['samplicate', 'flowd_aggregate'],
+    ]];
 }

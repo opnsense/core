@@ -133,6 +133,11 @@ class CertificatesField extends ArrayField
 
     protected function actionPostLoadingEvent()
     {
+        parent::actionPostLoadingEvent();
+        if ($this->getParentModel()->isLazyLoaded()) {
+            /* skip dynamic content */
+            return;
+        }
         $usernames = [];
         foreach (Config::getInstance()->object()->system->user as $user) {
             if (isset($user->name)) {
@@ -192,6 +197,5 @@ class CertificatesField extends ArrayField
 
             $node->is_user = in_array((string)$node->commonname, $usernames) ? '1' : '0';
         }
-        return parent::actionPostLoadingEvent();
     }
 }

@@ -35,6 +35,8 @@ use OPNsense\Core\Backend;
 
 class Unbound extends BaseModel
 {
+    private $aliasCache = null;
+
     public function performValidation($validateFullModel = false)
     {
         $messages = parent::performValidation($validateFullModel);
@@ -61,6 +63,51 @@ class Unbound extends BaseModel
             }
         }
 
+        foreach ($this->dnsbl->blocklist->iterateItems() as $node) {
+            if ($node->isFieldChanged() || $validateFullModel) {
+                /* Extract all subnets (eg x.x.x.x/24 --> 24) and protocol families */
+                $sizes = array_unique(
+                    array_map(fn($x) => explode("/", $x)[1] ?? null, explode(",", $node->source_nets))
+                );
+                $ipproto = array_unique(
+                    array_map(fn($x) => strpos($x, ':') == false ? 'inet' : 'inet6', explode(",", $node->source_nets))
+                );
+                if (count($sizes) > 1) {
+                    $messages->appendMessage(new Message(
+                        gettext('All offered networks should be equally sized to avoid overlaps.'),
+                        $node->source_nets->__reference
+                    ));
+                }
+                if (count($ipproto) > 1) {
+                    $messages->appendMessage(new Message(
+                        gettext('All offered networks should use the same IP protocol.'),
+                        $node->source_nets->__reference
+                    ));
+                }
+            }
+        }
+
         return $messages;
+    }
+
+    public function getHostAliases($host = null)
+    {
+        if ($this->aliasCache === null) {
+            $this->aliasCache = [];
+            foreach ($this->aliases->alias->iterateItems() as $node) {
+                $hostUUID = $node->host->getValue();
+                if (!isset($this->aliasCache[$hostUUID])) {
+                    $this->aliasCache[$hostUUID] = [];
+                }
+
+                $this->aliasCache[$hostUUID][] = $node;
+            }
+        }
+
+        if ($host !== null) {
+            return $this->aliasCache[$host] ?? [];
+        }
+
+        return $this->aliasCache;
     }
 }

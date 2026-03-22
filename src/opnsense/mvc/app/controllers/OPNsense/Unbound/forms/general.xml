@@ -103,6 +103,13 @@
         </help>
     </field>
     <field>
+        <id>unbound.general.safesearch</id>
+        <label>Force SafeSearch</label>
+        <type>checkbox</type>
+        <style>safesearch</style>
+        <help>Force the usage of SafeSearch on Google, DuckDuckGo, Bing, Qwant, PixaBay and YouTube</help>
+    </field>
+    <field>
         <id>unbound.general.local_zone_type</id>
         <label>Local Zone Type</label>
         <type>dropdown</type>

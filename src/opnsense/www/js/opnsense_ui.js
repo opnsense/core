@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015-2024 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,22 +28,30 @@
  * User interface shared components, requires opnsense.js for supporting functions.
  */
 
- /**
-  * format bytes
-  * @param bytes number of bytes to format
-  * @param decimals decimal places
-  * @return string
-  */
- function byteFormat(bytes, decimals)
- {
-     if (decimals === undefined) {
+/**
+ * format bytes or large numbers
+ * @param value number to format
+ * @param decimals decimal places
+ * @param is_number when true, format as number, else byte
+ * @return string
+ */
+function byteFormat(value, decimals, is_number)
+{
+    if (decimals === undefined) {
         decimals = 0;
-     }
-     const kb = 1024;
-     const ndx = bytes === 0 ? 0 : Math.floor(Math.log(bytes) / Math.log(kb));
-     const fileSizeTypes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-     return (bytes / Math.pow(kb, ndx)).toFixed(decimals) + ' ' + fileSizeTypes[ndx];
- }
+    }
+
+    const base = is_number ? 1000 : 1024;
+    const fileSizeTypes = is_number
+        ? ["", "K", "M", "B", "T", "P", "E", "Z", "Y"]
+        : ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+
+    const ndx = value === 0 ? 0 : Math.floor(Math.log(value) / Math.log(base));
+    // Apply decimals if the base has been exceeded at least once
+    const usedDecimals = ndx === 0 ? 0 : decimals;
+
+    return (value / Math.pow(base, ndx)).toFixed(usedDecimals) + ' ' + fileSizeTypes[ndx];
+}
 
 /**
  * save form to server
@@ -308,7 +316,12 @@ function addMultiSelectClearUI() {
             let element = $('select[id="' + id + '"]');
             if (element.hasClass("tokenize")) {
                 // trigger close on all Tokens
+                element.unbind('tokenize:tokens:change');
                 element.tokenize2().trigger('tokenize:clear');
+                /* re-attach change event to signal changes to original control (see formatTokenizersUI) */
+                element.on('tokenize:tokens:change', function(){
+                    source.change();
+                });
                 element.change();
             } else {
                 // remove options from selection
@@ -376,9 +389,14 @@ function addMultiSelectClearUI() {
             }
             destination.val(source.val().join('\n'));
             destination.unbind('change').change(function(){
+                source.unbind('tokenize:tokens:change');
                 source.tokenize2().trigger('tokenize:clear');
                 $.each($(this).val().split("\n"), function( index, value ) {
                     source.tokenize2().trigger('tokenize:tokens:add', [value, value, true]);
+                });
+                /* re-attach change event to signal changes to original control (see formatTokenizersUI) */
+                source.on('tokenize:tokens:change', function(){
+                    source.change();
                 });
             });
         });
@@ -602,6 +620,7 @@ stdDialogRemoveItem.defaults = {
  *  Action button, expects the following data attributes on the widget
  *      data-endpoint='/path/to/my/endpoint'
  *      data-label="Apply text"
+ *      data-icon="fa fa-icon"
  *      data-service-widget="service" (optional service widget to signal)
  *      data-error-title="My error message"
  */
@@ -616,8 +635,15 @@ $.fn.SimpleActionButton = function (params) {
     }
 
     this.construct = function () {
-        const label_content = '<b>' + this_button.data('label') + '</b> <i class="reload_progress" style="display:inline-block;"></i>';
-        this_button.html(label_content);
+        let label_contents = [];
+        if (this_button.data('icon')) {
+            label_contents.push($("<i/>").addClass(this_button.data('icon')).prop('outerHTML'));
+        }
+        if (this_button.data('label')) {
+            label_contents.push('<b>' + this_button.data('label') + '</b>');
+        }
+        label_contents.push('<i class="reload_progress" style="display:inline-block;"></i>');
+        this_button.html(label_contents.join(' '));
 
         let hideCheckTimeout;
 
@@ -670,6 +696,8 @@ $.fn.SimpleActionButton = function (params) {
                     if (this_button.data('grid-reload')) {
                         $(this_button.data('grid-reload')).bootgrid('reload');
                     }
+
+                    updateSystemStatus();
                 });
             }).fail(function () {
                 setIcon(icon, 'fa fa-check fa-spinner fa-pulse', '');
@@ -785,6 +813,7 @@ $.fn.fetch_options = function(url, params, data_callback, store_data, post_callb
  *          {
  *            'sequence': X << sequence number,  first data record starts at 0
  *            'message': '' << validation message
+ *            'field': '' << fieldname
  *          }
  *     ]
  *  }
@@ -799,20 +828,27 @@ $.fn.SimpleFileUploadDlg = function (params) {
         this_button.click(function(){
             let content = $("<div/>");
             let fileinp = $("<input type='file'/>");
-            let error_output = $("<textarea style='display:none; max-width:100%; height:200px;'/>");
+            let error_output = $("<tbody/>");
             let doinp = $('<button style="display:none" type="button" class="btn btn-xs"/>');
+            let dlval = $('<button style="display:none" type="button" class="btn btn-xs"/>');
             doinp.append($('<span class="fa fa-fw fa-check"></span>'));
+            dlval.append($('<span class="fa fa-fw fa-cloud-download text-warning"></span>'));
 
             content.append(
                 $("<table/>").append(
                     $("<tr/>").append(
                         $("<td style='width:200px;'/>").append(fileinp),
-                        $("<td/>").append(doinp)
+                        $("<td/>").append(doinp, '&nbsp;', dlval)
                     ),
                     $("<tr/>").append($("<td colspan='2' style='height:10px;'/>"))
                 )
             );
-            content.append(error_output);
+            content.append(
+                $("<table/>").append(
+                    error_output,
+                    $("<tfoot/>").append($("<td colspan=3 style='min-height=20px;'/>"))
+                )
+            );
             fileinp.change(function(evt) {
                 if (evt.target.files[0]) {
                     var reader = new FileReader();
@@ -826,10 +862,13 @@ $.fn.SimpleFileUploadDlg = function (params) {
             });
             let dialog = BootstrapDialog.show({
                 title: this_button.data('title'),
-                type: BootstrapDialog.TYPE_DEFAULT,
+                type: BootstrapDialog.TYPE_INFO,
                 message: content
             });
+            dialog.$modalDialog.css('width', '800px'); /* larger dialog to increase readability of error output */
+
             doinp.click(function(){
+                error_output.empty();
                 let eparams =  {
                     'payload': $(this).data('payload'),
                     'filename': $(this).data('filename')
@@ -839,8 +878,8 @@ $.fn.SimpleFileUploadDlg = function (params) {
                         params.onAction(data, status);
                     }
                     if (data.validations && data.validations.length > 0) {
-                        // When validation errors are returned, write to textarea including original data lines.
-                        let output = [];
+                        let validation_output = data.validations;
+                        // When validation errors are returned, write to error_output including original data lines.
                         let records = eparams.payload.split('\n');
                         records.shift();
                         for (r=0; r < records.length; ++r) {
@@ -848,18 +887,43 @@ $.fn.SimpleFileUploadDlg = function (params) {
                             for (i=0; i < data.validations.length ; ++i) {
                                 if (r == data.validations[i].sequence) {
                                     if (!found) {
-                                        output.push(records[data.validations[i].sequence]);
+                                        error_output.append($("<tr/>").append(
+                                            $("<td/>").append($("<i class='fa fa-bars'/>")),
+                                            $("<td style='min-width:5px;'/>"),
+                                            $("<td/>").text(records[data.validations[i].sequence]).css('white-space', 'nowrap')
+                                        ));
                                         found = true;
+                                        validation_output[i].payload = records[data.validations[i].sequence];
                                     }
-                                    output.push('!! ' + data.validations[i].message);
+                                    error_output.append($("<tr/>").append(
+                                        $("<td/>").append($("<i class='fa fa-times'/>")),
+                                        $("<td style='min-width:5px;'/>"),
+                                        $("<td/>").text('[' + data.validations[i].field + '] ' + data.validations[i].message).css('white-space', 'nowrap')
+                                    ));
                                 }
                             }
                         }
-                        error_output.val(output.join('\n')).show();
+                        dlval.data('validations', validation_output).show();
                     } else {
                         dialog.close();
                     }
                 });
+            });
+            dlval.click(function(){
+                let output_data = 'field;message;payload\n';
+                let validations = $(this).data('validations');
+                for (i=0; i < validations.length ; ++i) {
+                    let line = [
+                        validations[i].field,
+                        '"' + validations[i].message.replaceAll('"', '""') + '"',
+                        '"' + validations[i].payload.replaceAll('"', '""') + '"'
+                    ];
+                    output_data += line.join(';') + "\n";
+                }
+                $('<a></a>')
+                    .attr('href', 'data:text/csv;charset=utf8,' + encodeURIComponent(output_data))
+                    .attr('download', 'validation_errrors.csv')
+                    .appendTo('body')[0].click();
             });
         });
     }
@@ -917,7 +981,7 @@ $.fn.replaceInputWithSelector = function (data, multiple=false) {
                     optgrp.append($("<option/>").val(key2).text(this_item));
                 });
                 options.push(optgrp);
-            } else {
+            } else if (data[key].label !== undefined) {
                 options.push($("<option/>").val(empty_select_token).text(data[key].label));
             }
         });
@@ -942,20 +1006,21 @@ $.fn.replaceInputWithSelector = function (data, multiple=false) {
         });
         $this_input.attr('id', $(this).attr('id'));
         $this_input.change(function(){
-            let selopt = multiple ? $(this).val().split(',') : [$(this).val()];
+            let selopt = [];
+            /* skim given options for valid ones in our list, so we can safely set them and identify manual input*/
+            let givenopts = multiple ? $(this).val().split(',') : [$(this).val()];
             $this_select.find('option').each(function(){
-                if (selopt.includes($(this).val())) {
-                    selopt.splice(selopt.indexOf($(this).val()), 1)
-                    $(this).attr('selected', 'selected');
-                } else {
-                    $(this).prop('selected', false);
+                if (givenopts.includes($(this).val())) {
+                    selopt.push($(this).val());
                 }
             });
             if (selopt.length == 0) {
-                $this_input.hide(); /* items not in selector, show input */
-            } else {
+                /* none of the options are selected, so we need to feed empty_select_token here and show manual input*/
+                $this_select.val(multiple ? [empty_select_token]: empty_select_token);
                 $this_input.show();
-                $this_select.val(empty_select_token);
+            } else {
+                $this_select.val(multiple ? selopt : selopt[0]);
+                $this_input.hide();
             }
             $this_select.selectpicker('refresh');
         });

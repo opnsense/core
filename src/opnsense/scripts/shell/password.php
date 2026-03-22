@@ -30,6 +30,7 @@
 
 require_once('config.inc');
 require_once('auth.inc');
+require_once('util.inc');
 
 $fp = fopen('php://stdin', 'r');
 
@@ -45,9 +46,9 @@ if (isset($argv[2]) && isset($argv[3]) && $argv[2] === '-h' && $argv[3] === '0')
     }
 
     echo "new password for user {$admin_user['name']}:";
-    shell_exec('/bin/stty -echo');
+    shell_safe('/bin/stty -echo');
     $password = chop(fgets($fp));
-    shell_exec('/bin/stty echo');
+    shell_safe('/bin/stty echo');
     echo "\n";
 
     if (empty($password)) {
@@ -64,10 +65,9 @@ if (isset($argv[2]) && isset($argv[3]) && $argv[2] === '-h' && $argv[3] === '0')
 } elseif (isset($argv[2]) && isset($argv[3]) && $argv[2] === '-x' && $argv[3] === '0') {
     $admin_user = &getUserEntryByUID(0);
     if (!$admin_user) {
-        $admin_user = array();
+        $admin_user = [];
         $admin_user['uid'] = 0;
-        $a_users = &config_read_array('system', 'user');
-        $a_users[] = $admin_user;
+        config_push_array('system', 'user', $admin_user);
     }
 
     $admin_user['scope'] = 'system';
@@ -81,9 +81,9 @@ if (isset($argv[2]) && isset($argv[3]) && $argv[2] === '-h' && $argv[3] === '0')
     }
 
     echo "new password for user {$admin_user['name']}:";
-    shell_exec('/bin/stty -echo');
+    shell_safe('/bin/stty -echo');
     $password = chop(fgets($fp));
-    shell_exec('/bin/stty echo');
+    shell_safe('/bin/stty echo');
     echo "\n";
 
     if (empty($password)) {
@@ -117,11 +117,9 @@ if (isset($config['system']['webgui']['authmode']) && $config['system']['webgui'
 
 $admin_user = &getUserEntryByUID(0);
 if (!$admin_user) {
-    $admin_user = array();
+    $admin_user = [];
     $admin_user['uid'] = 0;
-    $a_users = &config_read_array('system', 'user');
-    $a_users[] = $admin_user;
-    echo "\nRestored missing root user.\n";
+    config_push_array('system', 'user', $admin_user);
 }
 
 $admin_user['scope'] = 'system';
@@ -136,9 +134,9 @@ if (isset($admin_user['shell'])) {
 
 echo "\nType a new password: ";
 
-shell_exec('/bin/stty -echo');
+shell_safe('/bin/stty -echo');
 $password = chop(fgets($fp));
-shell_exec('/bin/stty echo');
+shell_safe('/bin/stty echo');
 echo "\n";
 if (empty($password)) {
     echo "\nPassword cannot be empty.\n";
@@ -146,9 +144,9 @@ if (empty($password)) {
 }
 
 echo "Confirm new password: ";
-shell_exec('/bin/stty -echo');
+shell_safe('/bin/stty -echo');
 $confirm = chop(fgets($fp));
-shell_exec('/bin/stty echo');
+shell_safe('/bin/stty echo');
 echo "\n";
 if ($password !== $confirm) {
     echo "\nPasswords do not match.\n";

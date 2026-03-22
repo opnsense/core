@@ -25,6 +25,10 @@
                 <MaximumValue>65535</MaximumValue>
             </packetsize>
             <disable_frag type="BooleanField"/>
+            <interval type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>120</MaximumValue>
+            </interval>
             <description type="DescriptionField"/>
         </settings>
     </items>

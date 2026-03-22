@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2022 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2015-2026 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2009 Erik Kristensen <erik@erikkristensen.com>
  * Copyright (C) 2004-2010 Scott Ullrich <sullrich@gmail.com>
  * Copyright (C) 2003-2004 Manuel Kasper <mk@neon1.net>
@@ -164,32 +164,19 @@ function convert_config($verbose = false)
 
     if (!isset($config['revision'])) {
         /* force a revision tag for proper handling in config history */
-        write_config('Factory configuration', false);
+        write_config('Factory configuration');
     }
+
+    $function = $verbose ? 'pass_safe' : 'mwexecf';
 
     /* chain the new migration into this function call */
-    $cmd = '/usr/local/sbin/pluginctl -m';
-    if ($verbose) {
-        passthru($cmd);
-    } else {
-        mwexecf($cmd);
-    }
+    $function('/usr/local/sbin/pluginctl %s', $verbose ? '-m' : '-M');
 
     /* register pluggable interfaces */
-    $cmd = '/usr/local/sbin/pluginctl -i';
-    if ($verbose) {
-        passthru($cmd);
-    } else {
-        mwexecf($cmd);
-    }
+    $function('/usr/local/sbin/pluginctl -i');
 
     /* factory reset on release type and plugins if necessary */
-    $cmd = '/usr/local/opnsense/scripts/firmware/register.php sync';
-    if ($verbose) {
-        passthru($cmd);
-    } else {
-        mwexecf($cmd);
-    }
+    $function('/usr/local/opnsense/scripts/firmware/register.php sync');
 
     /* reload the config as it was rewritten and saved in the script context */
     OPNsense\Core\Config::getInstance()->forceReload();
@@ -261,15 +248,59 @@ function &config_read_array()
     global $config;
 
     $current = &$config;
+    $insert_mode = true;
 
-    foreach (func_get_args() as $key) {
+    $keys = func_get_args();
+    if (is_bool($keys[array_key_last($keys)])) {
+        /*
+         * Last argument is the insert mode if given:
+         *
+         * If true, vifivy the config key with an array
+         * and return the element for inserts (default).
+         *
+         * If false, do not vivify and return an empty
+         * detached array reference instead. This avoids
+         * clobbering reads which written to config would
+         * make an empty array an empty string node instead
+         * and where insert is not intended but can still
+         * delete by index if the config path exists.
+         */
+        $insert_mode = array_pop($keys);
+    }
+
+    foreach ($keys as $key) {
         if (!isset($current[$key]) || !is_array($current[$key])) {
-            $current[$key] = [];
+            if ($insert_mode) {
+                $current[$key] = [];
+            } else {
+                $detached = [];
+                return $detached;
+            }
         }
+
         $current = &$current[$key];
     }
 
     return $current;
+}
+
+function config_push_array()
+{
+    $keys = func_get_args();
+    $new = array_pop($keys);
+
+    /* array_push() will require a reference so the insert succeeds */
+    array_push(call_user_func_array('config_read_array', $keys), $new);
+}
+
+function config_merge_array()
+{
+    $keys = func_get_args();
+    $new = array_pop($keys);
+
+    /* auto-vivify for upcoming write */
+    $current = &call_user_func_array('config_read_array', $keys);
+    $current = array_merge($current, $new);
 }
 
 function make_config_revision_entry($desc = '')
@@ -333,6 +364,7 @@ function legacy_config_get_interfaces($filters = [], $exclude_ifs = [])
             $iface['descr'] = !empty($iface['descr']) ? $iface['descr'] : strtoupper($ifname);
             $iface['ipaddrv6'] = !empty($iface['ipaddrv6']) ? $iface['ipaddrv6'] : null;
             $iface['ipaddr'] = !empty($iface['ipaddr']) ? $iface['ipaddr'] : null;
+            $iface['if'] = !empty($iface['if']) ? $iface['if'] : null;
             $interfaces[$ifname] = $iface;
         }
     }

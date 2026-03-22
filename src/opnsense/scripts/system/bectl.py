@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-    Copyright (c) 2024 Deciso B.V.
+    Copyright (c) 2024-2026 Deciso B.V.
     Copyright (c) 2024 Sheridan Computers Limited
     All rights reserved.
 
@@ -47,6 +47,7 @@ if __name__ == '__main__':
     parser.add_argument('--from-source', help='boot environment to clone', type=str)
     inputargs = parser.parse_args()
 
+    datasets = {}
     cmd = []
     error_msg = None
     if subprocess.run(['df', '-Tt', 'zfs', '/'], capture_output=True).returncode != 0:
@@ -55,16 +56,21 @@ if __name__ == '__main__':
         print(json.dumps({"status": "OK", "message": "File system is ZFS"}))
     elif inputargs.action == 'list':
         cmd = ['bectl', 'list', '-H']
+        # build index of snapshot names with epoch timestamps
+        for line in subprocess.run(['zfs','get','-p','creation'], capture_output=True, text=True).stdout.split("\n"):
+            if line.find('/ROOT/') > -1 and line.find('@') == -1:
+                parts = line.split()
+                datasets[parts[0].split('/')[-1]] = parts[2]
     elif inputargs.action == 'activate' and inputargs.beName:
-        cmd = ['bectl', 'activate', inputargs.beName]
+        cmd = ['bectl', 'activate', '--', inputargs.beName]
     elif inputargs.action == 'create':
         name = inputargs.beName if inputargs.beName else "{date:%Y%m%d%H%M%S}".format(date=datetime.datetime.now())
-        cmd = ['bectl', 'create', name]
+        cmd = ['bectl', 'create', '--', name]
     elif inputargs.action == 'clone' and inputargs.from_source:
         name = inputargs.beName if inputargs.beName else "{date:%Y%m%d%H%M%S}".format(date=datetime.datetime.now())
-        cmd = ['bectl', 'create', '-e', inputargs.from_source, name]
+        cmd = ['bectl', 'create', '-e', inputargs.from_source, '--', name]
     elif inputargs.action == 'destroy' and inputargs.beName:
-        cmd = ['bectl', 'destroy', inputargs.beName]
+        cmd = ['bectl', 'destroy', '--', inputargs.beName]
     elif inputargs.action == 'rename' and inputargs.beName and inputargs.from_source:
         cmd = ['bectl', 'rename', inputargs.from_source, inputargs.beName]
     else:
@@ -83,7 +89,7 @@ if __name__ == '__main__':
                 parts = line.split("\t")
                 if len(parts) >= 5:
                     result.append({
-                        "uuid": str(uuid.uuid3(uuid.NAMESPACE_DNS, parts[0])),
+                        "uuid": str(uuid.uuid3(uuid.NAMESPACE_DNS, datasets.get(parts[0],parts[0]))),
                         "name": parts[0],
                         "active": parts[1],
                         "mountpoint": parts[2],

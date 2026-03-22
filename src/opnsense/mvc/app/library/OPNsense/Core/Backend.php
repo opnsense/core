@@ -123,7 +123,6 @@ class Backend
     public function configdpStream($event, $params = [], $poll_timeout = 2, $detach = false, $timeout = 120, $connect_timeout = 10)
     {
         if (!is_array($params)) {
-            /* just in case there's only one parameter */
             $params = [$params];
         }
 
@@ -195,7 +194,6 @@ class Backend
     public function configdpRun($event, $params = [], $detach = false, $timeout = 120, $connect_timeout = 10)
     {
         if (!is_array($params)) {
-            /* just in case there's only one parameter */
             $params = [$params];
         }
 

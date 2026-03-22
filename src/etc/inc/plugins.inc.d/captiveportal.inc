@@ -85,15 +85,12 @@ function captiveportal_firewall($fw)
 
             $zoneid = (string)$zone->zoneid;
             $uuid = $zone->getAttribute('uuid');
-            // register anchor, to be filled with ether rules for accounting
-            $fw->registerAnchor("captiveportal_zone_{$zoneid}", "ether", 0, "head", false, (string)$zone->interfaces);
 
             if (!$zone->disableRules->isEmpty()) {
                 continue;
             }
 
             foreach ($zone->interfaces->getValues() as $intf) {
-                // allow DNS
                 $fw->registerFilterRule(
                     1,
                     [
@@ -113,7 +110,7 @@ function captiveportal_firewall($fw)
                 foreach (['80', '443'] as $to_port) {
                     $rdr_port = $to_port === '443' ? (8000 + (int)$zoneid) : (9000 + (int)$zoneid);
 
-                    // forward to localhost if not authenticated
+                    // forward to localhost if not authenticated (IPv4)
                     $fw->registerForwardRule(
                         2,
                         [
@@ -135,7 +132,29 @@ function captiveportal_firewall($fw)
                         ]
                     );
 
-                    // Allow access to the captive portal
+                    // forward to localhost if not authenticated (IPv6)
+                    $fw->registerForwardRule(
+                        2,
+                        [
+                            'interface' => $intf,
+                            'pass' => true,
+                            'nordr' => false,
+                            'ipprotocol' => 'inet6',
+                            'protocol' => 'tcp',
+                            'from' => "<__captiveportal_zone_{$zoneid}>",
+                            'from_not' => true,
+                            'to' => "<__captiveportal_zone_{$zoneid}>",
+                            'to_not' => true,
+                            'to_port' => $to_port,
+                            'target' => $intf . 'ip',
+                            'localport' => $rdr_port,
+                            'natreflection' => 'disable',
+                            'log' => true,
+                            'descr' => "Redirect to Captive Portal (zone {$zoneid})",
+                            '#ref' => "ui/captiveportal#edit={$uuid}"
+                        ]
+                    );
+
                     $proto = $to_port === '443' ? 'https' : 'http';
                     $fw->registerFilterRule(
                         2,
@@ -154,7 +173,6 @@ function captiveportal_firewall($fw)
                     );
                 }
 
-                // block all non-authenticated users
                 $fw->registerFilterRule(
                     3,
                     [

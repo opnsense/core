@@ -49,7 +49,7 @@ $userindex = index_users();
  */
 function isAuthLocalIP($http_host)
 {
-    foreach (config_read_array('virtualip', 'vip') as $vip) {
+    foreach (config_read_array('virtualip', 'vip', false) as $vip) {
         if ($vip['subnet'] == $http_host) {
             return true;
         }
@@ -236,28 +236,31 @@ function local_sync_accounts()
 
     /* we need to know the current state of users and groups, both configured and actual */
     $current_data = [];
+
     foreach (['usershow', 'groupshow'] as $command) {
         $section = $command == 'usershow' ? 'user' : 'group';
         $current_data[$section] = [];
-        $data = "";
-        exec("/usr/sbin/pw {$command} -a", $data, $ret);
-        if (!$ret) {
-            foreach ($data as $record) {
-                $line = explode(':', $record);
-                // filter system managed users and groups
-                if (count($line) < 3 ||  !strncmp($line[0], '_', 1) || ($line[2] < 2000 && $line[0] != 'root') || $line[2] > 65000) {
-                    continue;
-                }
-                $current_data[$section][$line[2]] = $line;
+
+        foreach (shell_safe('/usr/sbin/pw %s -a', $command, true) as $record) {
+            $line = explode(':', $record);
+
+            // filter system managed users and groups
+            if (count($line) < 3 ||  !strncmp($line[0], '_', 1) || ($line[2] < 2000 && $line[0] != 'root') || $line[2] > 65000) {
+                continue;
             }
+
+            $current_data[$section][$line[2]] = $line;
         }
     }
+
+    /* get array of user and group IDs in the configuration */
     $config_map = [];
+
     foreach (['user', 'group'] as $section) {
         $config_map[$section] = [];
-        if (is_array($config['system'][$section])) {
+        if (!empty($config['system'][$section])) {
             foreach ($config['system'][$section] as $item) {
-                if ($section == 'user' && (empty($item['shell']) && $item['uid'] != 0)) {
+                if ($section == 'user' && (empty($item) || (empty($item['shell']) && !empty($item['uid'])))) {
                     /* no shell, no local user */
                     continue;
                 }
@@ -266,6 +269,7 @@ function local_sync_accounts()
             }
         }
     }
+
     /* remove conflicting users and groups (uid/gid or name mismatch) */
     foreach ($current_data as $section => $data) {
         foreach ($data as $oid => $object) {
@@ -410,7 +414,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
         @unlink("{$user_home}/.ssh/authorized_keys");
     }
 
-    mwexecf('/usr/sbin/pw %s %s', [$lock_account, $user_name], true);
+    mwexecfm('/usr/sbin/pw %s %s', [$lock_account, $user_name]);
 }
 
 function local_user_set_password(&$user, $password = null)
@@ -450,6 +454,7 @@ function local_user_set_password(&$user, $password = null)
 
     if ($hash !== false && strpos($hash, '$') === 0) {
         $user['password'] = $hash;
+        $user['pwd_changed_at'] = microtime(true);
     } else {
         auth_log("Failed to hash password for user {$user['name']}");
     }
@@ -459,12 +464,14 @@ function local_user_set_password(&$user, $password = null)
 function local_user_list_uids()
 {
     $uids = [];
-    foreach (explode("\n", shell_safe('/usr/sbin/pw usershow -a')) as $line) {
+
+    foreach (shell_safe('/usr/sbin/pw usershow -a', [], true) as $line) {
         $parts = explode(":", $line);
         if (count($parts) > 2) {
             $uids[] = $parts[2];
         }
     }
+
     return $uids;
 }
 
@@ -518,16 +525,12 @@ function local_group_set($group, $uids = null)
         $group_members = implode(',', $members);
     }
 
-    $ret = mwexecf('/usr/sbin/pw groupshow %s', $group_name, true);
-    if ($ret) {
-        $group_op = 'groupadd';
-    } else {
-        $group_op = 'groupmod';
-    }
+    $new = mwexecfm('/usr/sbin/pw groupshow %s', $group_name);
 
-    mwexecf('/usr/sbin/pw %s %s -g %s -M %s', [$group_op, $group_name, $group_gid, $group_members]);
+    mwexecf('/usr/sbin/pw group%s %s -g %s -M %s', [
+        $new ? 'add' : 'mod', $group_name, $group_gid, $group_members
+    ]);
 }
-
 
 /**
  * @param $name string name of the authentication system configured on the authentication server page or 'Local Database' for local authentication

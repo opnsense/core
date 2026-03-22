@@ -115,4 +115,15 @@
             <visible>false</visible>
         </grid_view>
     </field>
+    <field>
+        <id>server.debug</id>
+        <label>Debug Log</label>
+        <type>checkbox</type>
+        <help>Enable the debug flag on this instance for enhanced error logging.</help>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
+    </field>
 </form>

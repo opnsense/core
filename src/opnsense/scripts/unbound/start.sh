@@ -64,7 +64,7 @@ chown -R unbound:unbound /var/unbound
 /usr/local/opnsense/scripts/unbound/cache.sh load
 
 if [ -n "${DOMAIN}" ]; then
-	/usr/local/opnsense/scripts/dhcp/unbound_watcher.py --domain ${DOMAIN}
+	/usr/local/opnsense/scripts/unbound/unbound_watcher.py --domain ${DOMAIN}
 fi
 
 if [ -f /var/unbound/data/stats ]; then

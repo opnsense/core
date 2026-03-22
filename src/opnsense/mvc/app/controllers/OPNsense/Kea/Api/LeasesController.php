@@ -31,6 +31,8 @@ namespace OPNsense\Kea\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Kea\KeaDhcpv4;
+use OPNsense\Kea\KeaDhcpv6;
 
 abstract class LeasesController extends ApiControllerBase
 {
@@ -58,9 +60,27 @@ abstract class LeasesController extends ApiControllerBase
             ];
         }
 
+        // Mark records as reserved based on hwaddr (IPv4) or duid/hwaddr (IPv6) match
+        $resv4 = [];
+        $resv6 = [];
+
+        foreach ((new KeaDhcpv4())->reservations->reservation->iterateItems() as $reservation) {
+            $resv4[strtolower($reservation->hw_address->getValue())] = 'hwaddr';
+        }
+
+        foreach ((new KeaDhcpv6())->reservations->reservation->iterateItems() as $reservation) {
+            // At least one of these is required in the model
+            if (!$reservation->duid->isEmpty()) {
+                $resv6[strtolower($reservation->duid->getValue())] = 'duid';
+            } elseif (!$reservation->hw_address->isEmpty()) {
+                $resv6[strtolower($reservation->hw_address->getValue())] = 'hwaddr';
+            }
+        }
+
         if (!empty($leases) && isset($leases['records'])) {
             $records = $leases['records'];
             foreach ($records as &$record) {
+                // Interface
                 $record['if_descr'] = '';
                 $record['if_name'] = '';
                 if (!empty($record['if']) && isset($ifmap[$record['if']])) {
@@ -68,8 +88,26 @@ abstract class LeasesController extends ApiControllerBase
                     $record['if_name'] = $ifmap[$record['if']]['key'];
                     $interfaces[$ifmap[$record['if']]['key']] = $ifmap[$record['if']]['descr'];
                 }
+                // Vendor
                 $mac = strtoupper(substr(str_replace(':', '', $record['hwaddr']), 0, 6));
                 $record['mac_info'] = isset($mac_db[$mac]) ? $mac_db[$mac] : '';
+                // Reservation
+                $record['is_reserved'] = '';
+                $addr = $record['address'] ?? '';
+                if (strpos($addr, ':') !== false) {
+                    $duid = strtolower($record['duid'] ?? '');
+                    $mac = strtolower($record['hwaddr'] ?? '');
+                    if (isset($resv6[$duid])) {
+                        $record['is_reserved'] = $resv6[$duid];
+                    } elseif (isset($resv6[$mac])) {
+                        $record['is_reserved'] = $resv6[$mac];
+                    }
+                } else {
+                    $mac = strtolower($record['hwaddr'] ?? '');
+                    if (isset($resv4[$mac])) {
+                        $record['is_reserved'] = $resv4[$mac];
+                    }
+                }
             }
         } else {
             $records = [];

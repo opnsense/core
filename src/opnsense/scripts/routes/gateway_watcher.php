@@ -149,8 +149,7 @@ while (1) {
     }
 
     if ($cache_rewrite) {
-        file_put_contents($cache_file . '.next', $cache_data);
-        rename($cache_file . '.next', $cache_file);
+        file_safe($cache_file, $cache_data);
     }
 
     if (count($alarm_gateways) && $action != null) {

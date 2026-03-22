@@ -27,8 +27,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once('script/load_phalcon.php');
 require_once('legacy_bindings.inc');
+
 use OPNsense\Core\Config;
 use OPNsense\Auth\User;
 

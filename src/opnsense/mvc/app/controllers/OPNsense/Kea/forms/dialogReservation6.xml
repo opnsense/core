@@ -18,6 +18,12 @@
         <help>duid of the client in question</help>
     </field>
     <field>
+        <id>reservation.hw_address</id>
+        <label>MAC address</label>
+        <type>text</type>
+        <help>MAC/Ether address of the client in question, although for IPv6 usually a DUID is used, we can specify an ether address instead.</help>
+    </field>
+    <field>
         <id>reservation.hostname</id>
         <label>Hostname</label>
         <type>text</type>
@@ -31,6 +37,15 @@
         <allownew>true</allownew>
         <separator>,</separator>
         <help>Specifies a ´search list´ of Domain Names to be used by the client to locate not-fully-qualified domain names.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>reservation.option</id>
+        <label>Options</label>
+        <type>select_multiple</type>
+        <help>Select custom DHCPv6 options that were created in the options tab.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>

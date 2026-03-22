@@ -91,34 +91,37 @@ class TextFieldTest extends Field_Framework_TestCase
      * no value set
      * not required (BaseField default)
      */
-    public function testIsEmptyAndRequiredN()
+    public function testIsNotSetAndRequiredN()
     {
         $field = new TextField();
 
-        $this->assertFalse($field->isEmptyAndRequired());
+        $this->assertFalse($field->isRequired());
+        $this->assertFalse($field->isSet());
     }
 
     /**
      * no value set, but required
      */
-    public function testIsEmptyAndRequiredY()
+    public function testIsNotSetAndRequiredY()
     {
         $field = new TextField();
         $field->setRequired("Y");
 
-        $this->assertTrue($field->isEmptyAndRequired());
+        $this->assertTrue($field->isRequired());
+        $this->assertFalse($field->isSet());
     }
 
     /**
      * required, value not empty
      */
-    public function testRequiredNotEmpty()
+    public function testRequiredisSet()
     {
         $field = new TextField();
         $value = "Not empty string value";
         $field->setRequired("Y");
         $field->setValue($value);
 
+        $this->assertTrue($field->isSet());
         $this->assertEquals($field->getNodeData(), $value);
         $this->assertEquals(1, count($field->getValues()));
         $this->assertEquals($value, $field->getValues()[0]);
@@ -147,7 +150,8 @@ class TextFieldTest extends Field_Framework_TestCase
     public function testEmptyValue()
     {
         $field = new TextField();
-        $field->setValue("");
+        $field->setValue("foo");
+        $field->setValues([]);
 
         $this->assertEmpty($this->validate($field));
         $this->assertEquals(0, count($field->getValues()));
@@ -213,10 +217,16 @@ class TextFieldTest extends Field_Framework_TestCase
     public function testIntegerValue()
     {
         $field = new TextField();
-        $field->setValue(1234);
 
+        $field->setValues(['nope', 1234]);
+        $this->assertEquals($field->getNodeData(), "nope");
+
+        $field->setValues([1234, 'nope']);
         $this->assertEquals($field->getNodeData(), "1234");
         $this->assertEmpty($this->validate($field));
+
+        $field->setValues(['']);
+        $this->assertEquals($field->getNodeData(), '');
     }
 
     /**

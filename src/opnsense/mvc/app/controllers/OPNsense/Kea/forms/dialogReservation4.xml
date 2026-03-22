@@ -54,6 +54,15 @@
         </grid_view>
     </field>
     <field>
+        <id>reservation.option_data.classless_static_route</id>
+        <label>Classless static routes</label>
+        <type>text</type>
+        <help>Classless static routes (option 121) that the client should install in its routing cache, defined as dest_net1 - router_ip1,dest_net2 - router_ip2</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>reservation.option_data.domain_name_servers</id>
         <label>DNS servers</label>
         <type>select_multiple</type>
@@ -130,6 +139,15 @@
         <label>TFTP bootfile name</label>
         <type>text</type>
         <help>Boot filename to request</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>reservation.option</id>
+        <label>Options</label>
+        <type>select_multiple</type>
+        <help>Select custom DHCPv4 options that were created in the options tab.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>

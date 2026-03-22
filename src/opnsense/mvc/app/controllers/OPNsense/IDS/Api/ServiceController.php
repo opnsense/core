@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2017 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,7 +33,6 @@ use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Core\SanitizeFilter;
 use OPNsense\Cron\Cron;
-use OPNsense\IDS\IDS;
 
 /**
  * Class ServiceController
@@ -57,10 +56,10 @@ class ServiceController extends ApiMutableServiceControllerBase
     {
         $status = "failed";
         if ($this->request->isPost()) {
-            $mdlIDS = new IDS();
+            $mdlIDS = $this->getModel();
             $runStatus = $this->statusAction();
             // we should always have a cron item configured for IDS, let's create one upon first reconfigure.
-            if ((string)$mdlIDS->general->UpdateCron == "") {
+            if ($mdlIDS->general->UpdateCron->isEmpty()) {
                 $mdlCron = new Cron();
                 // update cron relation (if this doesn't break consistency)
                 $mdlIDS->general->UpdateCron = $mdlCron->newDailyJob("IDS", "ids update", "ids rule updates", "*", "0");
@@ -100,7 +99,7 @@ class ServiceController extends ApiMutableServiceControllerBase
                 $status = "error generating ids template (" . $bckresult . ")";
             }
         }
-        return array("status" => $status);
+        return ["status" => $status];
     }
 
     /**
@@ -132,7 +131,7 @@ class ServiceController extends ApiMutableServiceControllerBase
             }
         }
 
-        return array("status" => $status);
+        return ["status" => $status];
     }
 
     /**
@@ -153,7 +152,7 @@ class ServiceController extends ApiMutableServiceControllerBase
                 $status = "template error";
             }
         }
-        return array("status" => $status);
+        return ["status" => $status];
     }
 
     /**
@@ -175,16 +174,14 @@ class ServiceController extends ApiMutableServiceControllerBase
                 $searchPhrase = '';
             }
 
-
             if ($this->request->getPost('fileid', 'string', '') != "") {
                 $fileid = $this->request->getPost('fileid', 'int', -1);
             } else {
                 $fileid = null;
             }
 
-            $backend = new Backend();
-            $response = $backend->configdpRun("ids query alerts", array($itemsPerPage,
-                ($currentPage - 1) * $itemsPerPage, $searchPhrase, $fileid));
+            $response = (new Backend())->configdpRun("ids query alerts", [$itemsPerPage,
+                ($currentPage - 1) * $itemsPerPage, $searchPhrase, $fileid]);
             $result = json_decode($response, true);
             if ($result != null) {
                 $result['rowCount'] = count($result['rows']);
@@ -194,7 +191,7 @@ class ServiceController extends ApiMutableServiceControllerBase
                 return $result;
             }
         }
-        return array();
+        return [];
     }
 
     /**
@@ -206,14 +203,13 @@ class ServiceController extends ApiMutableServiceControllerBase
      */
     public function getAlertInfoAction($alertId, $fileid = "")
     {
-        $backend = new Backend();
         $id = (new SanitizeFilter())->sanitize($alertId, "int");
-        $response = $backend->configdpRun("ids query alerts", array(1, 0, "filepos/" . $id, $fileid));
+        $response = (new Backend())->configdpRun("ids query alerts", [1, 0, "filepos/" . $id, $fileid]);
         $result = json_decode($response, true);
         if ($result != null && count($result['rows']) > 0) {
             return $result['rows'][0];
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -224,18 +220,17 @@ class ServiceController extends ApiMutableServiceControllerBase
      */
     public function getAlertLogsAction()
     {
-        $backend = new Backend();
-        $response = $backend->configdRun("ids list alertlogs");
+        $response = (new Backend())->configdRun("ids list alertlogs");
         $result = json_decode($response, true);
         if ($result != null) {
-            $logs = array();
+            $logs = [];
             foreach ($result as $log) {
                 $log['modified'] = date('Y/m/d G:i', (int)$log['modified']);
                 $logs[] = $log;
             }
             return $logs;
         } else {
-            return array();
+            return [];
         }
     }
 
@@ -247,14 +242,13 @@ class ServiceController extends ApiMutableServiceControllerBase
     public function dropAlertLogAction()
     {
         if ($this->request->isPost()) {
-            $backend = new Backend();
             $filename = $this->request->getPost('filename', 'string', null);
             if ($filename != null) {
                 $filename = basename($filename);
-                $backend->configdpRun("ids drop alertlog", array($filename));
-                return array("status" => "ok");
+                (new Backend())->configdpRun("ids drop alertlog", [$filename]);
+                return ["status" => "ok"];
             }
         }
-        return array("status" => "failed");
+        return ["status" => "failed"];
     }
 }

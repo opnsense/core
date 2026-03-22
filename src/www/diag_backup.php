@@ -519,7 +519,7 @@ $( document ).ready(function() {
                                 <td>
                                     <?= gettext('Be aware of how much space is consumed by backups before adjusting this value.'); ?>
 <?php if (count(OPNsense\Core\Config::getInstance()->getBackups(true)) > 0): ?>
-                                    <?= gettext('Current space used:') . ' ' . exec("/usr/bin/du -sh /conf/backup | /usr/bin/awk '{print $1;}'") ?>
+                                    <?= gettext('Current space used:') ;?> <?= preg_split('/\s+/', shell_safe('/usr/bin/du %s %s', ['-hs', '/conf/backup']))[0];?>
 <?php endif ?>
                                 </td>
                             </tr>

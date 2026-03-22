@@ -41,11 +41,8 @@ if (flock($fp, LOCK_EX)) {
     $current_demotion = get_single_sysctl("net.inet.carp.demotion");
     $failed_services = array();
     foreach (glob("/usr/local/etc/rc.carp_service_status.d/*") as $filename) {
-        if (is_executable($filename)) {
-            $status = mwexec($filename, true);
-            if ($status != 0) {
-                $failed_services[] = basename($filename);
-            }
+        if (is_executable($filename) && mwexecfm($filename)) {
+            $failed_services[] = basename($filename);
         }
     }
     $demotion_set = ($current_demotion & SRV_FAIL_FACTOR);

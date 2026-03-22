@@ -37,17 +37,17 @@ const IPSEC_LOG_SUBSYSTEMS = [
     'chd' => 'CHILD_SA/IPsec SA',
     'dmn' => 'Main daemon setup/cleanup/signal handling',
     'enc' => 'Packet encoding/decoding encryption/decryption operations',
-    'esp' => 'libipsec library messages',
+    'esp' => 'Libipsec library messages',
     'ike' => 'IKE_SA/ISAKMP SA',
     'imc' => 'Integrity Measurement Collector',
     'imv' => 'Integrity Measurement Verifier',
     'job' => 'Jobs queuing/processing and thread pool management',
     'knl' => 'IPsec/Networking kernel interface',
-    'lib' => 'libstrongwan library messages',
+    'lib' => 'Libstrongswan library messages',
     'mgr' => 'IKE_SA manager, handling synchronization for IKE_SA access',
     'net' => 'IKE network communication',
     'pts' => 'Platform Trust Service',
-    'tls' => 'libtls library messages',
+    'tls' => 'Libtls library messages',
     'tnc' => 'Trusted Network Connect',
 ];
 
@@ -700,12 +700,12 @@ function ipsec_configure_spd()
      * try to figure out which SPD entries where created manually and collect them in a list sequenced by reqid
      * when the entry is either bound to an interface (ifname=) or has a lifetime, these where not likely created by us
      */
-    exec('/sbin/setkey -PD', $lines);
-    $line_count = 0;
     $src = $dst = $direction = $reqid = '';
-    $is_automatic = false;
     $previous_spd_entries = [];
-    foreach ($lines as $line) {
+    $is_automatic = false;
+    $line_count = 0;
+
+    foreach (shell_safe('/sbin/setkey -PD', [], true) as $line) {
         if ($line[0] != "\t") {
             $tmp = explode(' ', $line);
             $src = $dst = $direction = $reqid = '';
@@ -786,7 +786,7 @@ function ipsec_configure_spd()
 
         $tmpfname = tempnam("/tmp", "setkey");
         file_put_contents($tmpfname, implode("\n", $spd_entries) . "\n");
-        mwexec("/sbin/setkey -f " . $tmpfname, true);
+        mwexecfm('/sbin/setkey -f %s', $tmpfname);
         unlink($tmpfname);
     }
 }
@@ -854,7 +854,7 @@ function ipsec_setup_pinghosts()
                 }
                 /* if no valid src IP was found in configured interfaces, try the vips */
                 if (is_null($srcip)) {
-                    foreach (config_read_array('virtualip', 'vip') as $vip) {
+                    foreach (config_read_array('virtualip', 'vip', false) as $vip) {
                         if (ip_in_subnet($vip['subnet'], $local_subnet)) {
                             $srcip = $vip['subnet'];
                             break;
@@ -1142,20 +1142,20 @@ function ipsec_configure_do($verbose = false, $interface_map = null)
     $a_client = isset($config['ipsec']['client']) ? $config['ipsec']['client'] : [];
 
     if (!isset($ipseccfg['enable'])) {
-        mwexec('/usr/local/etc/rc.d/strongswan onestop', true);
-        mwexec('/sbin/ifconfig enc0 down', true);
+        mwexecfm('/usr/local/etc/rc.d/strongswan onestop');
+        mwexecfm('/sbin/ifconfig enc0 down');
         return;
     }
 
     if (get_single_sysctl('net.inet.ipsec.def_policy') == '') {
-        mwexec('/sbin/kldload ipsec');
+        mwexecf('/sbin/kldload ipsec');
     }
-    mwexec('/sbin/ifconfig enc0 up');
+    mwexecf('/sbin/ifconfig enc0 up');
 
     service_log('Configuring IPsec VPN...', $verbose);
 
     /* cleanup legacy ipsec.conf bits but then recreate structure to mute charon complaints */
-    mwexec('rm -rf /usr/local/etc/ipsec.d');
+    mwexecf('rm -rf /usr/local/etc/ipsec.d');
     foreach (['aacerts', 'acerts', 'cacerts', 'certs', 'crls', 'ocspcerts', 'private', 'reqs'] as $dir) {
         mkdir("/usr/local/etc/ipsec.d/{$dir}", 0664, true);
     }
@@ -1457,20 +1457,17 @@ function ipsec_configure_do($verbose = false, $interface_map = null)
 
     file_put_contents("/usr/local/etc/swanctl/swanctl.conf", $swanctltxt);
 
-    /* mange process */
     if (isvalidpid('/var/run/charon.pid')) {
-        /* Update configuration changes */
-        mwexec_bg('/usr/local/etc/rc.d/strongswan onereload', false);
+        mwexecfb('/usr/local/etc/rc.d/strongswan onereload');
     } else {
-        mwexec_bg("/usr/local/etc/rc.d/strongswan onestart", false);
+        mwexecfb('/usr/local/etc/rc.d/strongswan onestart');
     }
 
-    /* load manually defined SPD entries */
     ipsec_configure_spd();
 
     service_log("done.\n", $verbose);
 
-    /* reload routes on all attached VTI devices */
+    /* reload routes on all attached VTI devices after done since this prints too */
     plugins_configure('route_reload', $verbose, [array_keys(array_merge(ipsec_get_configured_vtis(), (new \OPNsense\IPsec\Swanctl())->getVtiDevices()))]);
 }
 

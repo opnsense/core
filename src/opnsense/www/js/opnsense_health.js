@@ -162,6 +162,8 @@ class HealthGraph {
                         ctx.stroke();
                     }
                 });
+
+                ctx.restore(); // restore canvas state
             }
         };
 

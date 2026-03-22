@@ -31,38 +31,10 @@ class OneToOneController extends \OPNsense\Base\IndexController
 {
     public function indexAction()
     {
-        $this->view->pick('OPNsense/Firewall/filter');
-        $this->view->ruleController = "one_to_one";
-        $this->view->gridFields = [
-            [
-                'id' => 'enabled', 'formatter' => 'rowtoggle' ,'width' => '6em', 'heading' => gettext('Enabled')
-            ],
-            [
-                'id' => 'sequence','width' => '9em', 'heading' => gettext('Sequence')
-            ],
-            [
-                'id' => 'interface','width' => '9em', 'heading' => gettext('Interface')
-            ],
-            [
-                'id' => 'external', 'heading' => gettext('External')
-            ],
-            [
-                'id' => 'source_not', 'type' => 'boolean', 'formatter' => 'boolean', 'visible' => 'false', 'heading' => gettext('Source / Invert')
-            ],
-            [
-                'id' => 'source_net', 'heading' => gettext('Internal')
-            ],
-            [
-                'id' => 'destination_not', 'type' => 'boolean', 'formatter' => 'boolean', 'visible' => 'false', 'heading' => gettext('Destination / Invert')
-            ],
-            [
-                'id' => 'destination_net', 'heading' => gettext('Destination')
-            ],
-            [
-                'id' => 'description', 'heading' => gettext('Description')
-            ]
-        ];
-
-        $this->view->formDialogFilterRule = $this->getForm("dialogOneToOneRule");
+        $this->view->entrypoint = 'one_to_one';
+        $this->view->categoryKey = 'categories';
+        $this->view->pick('OPNsense/Firewall/nat_rule');
+        $this->view->formDialogRule = $this->getForm('dialogOneToOneRule');
+        $this->view->formGridRule = $this->getFormGrid('dialogOneToOneRule');
     }
 }

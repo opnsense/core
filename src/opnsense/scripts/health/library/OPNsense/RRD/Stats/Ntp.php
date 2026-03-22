@@ -35,26 +35,27 @@ class Ntp extends Base
         if (!self::$metadata['ntp_statsgraph']) {
             return;
         }
+
         $data = [];
-        $ntpq = $this->shellCmd('/usr/local/sbin/ntpq -c rv');
-        if (!empty($ntpq)) {
-            $fieldmap = [
-                'offset' => 'offset',
-                'frequency' => 'freq',
-                'sys_jitter' => 'sjit',
-                'clk_jitter' => 'cjit',
-                'clk_wander' => 'wander',
-                'rootdisp' => 'disp'
-            ];
-            foreach ($ntpq as $idx => $item) {
-                foreach (explode(',', $item) as $part) {
-                    $tmp = explode('=', trim($part));
-                    if (isset($fieldmap[$tmp[0]])) {
-                        $data[$fieldmap[$tmp[0]]] = $tmp[1];
-                    }
+
+        $fieldmap = [
+            'offset' => 'offset',
+            'frequency' => 'freq',
+            'sys_jitter' => 'sjit',
+            'clk_jitter' => 'cjit',
+            'clk_wander' => 'wander',
+            'rootdisp' => 'disp',
+        ];
+
+        foreach ($this->shellCmd('/usr/local/sbin/ntpq -c rv') as $idx => $item) {
+            foreach (explode(',', $item) as $part) {
+                $tmp = explode('=', trim($part));
+                if (isset($fieldmap[$tmp[0]])) {
+                    $data[$fieldmap[$tmp[0]]] = $tmp[1];
                 }
             }
         }
+
         return $data;
     }
 }

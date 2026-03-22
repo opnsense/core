@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017-2023 Deciso B.V.
+ * Copyright (C) 2017-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
 
 namespace OPNsense\Firewall;
 
+use OPNsense\Base\FieldTypes\PortField;
 use OPNsense\Firewall\Alias;
 
 /**
@@ -58,7 +59,7 @@ abstract class Rule
                 }
             }
             foreach ((new Alias())->aliases->alias->iterateItems() as $alias) {
-                if (preg_match("/port/i", (string)$alias->type)) {
+                if ((string)$alias->type == 'port') {
                     continue;
                 }
                 static::$aliasMap[(string)$alias->name] = sprintf('$%s', $alias->name);
@@ -119,8 +120,13 @@ abstract class Rule
                         $this->log("Unable to map port {$port}, empty?");
                     }
                 } elseif (!empty($port)) {
-                    $rule['disabled'] = true;
-                    $this->log("Unable to map port {$port}, config error?");
+                    $known = PortField::getWellKnown($rule[$pfield]);
+                    if (!empty($known)) {
+                        $rule[$pfield] = array_shift($known);
+                    } else {
+                        $rule['disabled'] = true;
+                        $this->log("Unable to map port {$port}, config error?");
+                    }
                 }
             }
         }
@@ -204,7 +210,7 @@ abstract class Rule
      */
     protected function parsePlain($value, $prefix = "", $suffix = "", $maxsize = null)
     {
-        if (!empty($maxsize) && strlen($value) > $maxsize) {
+        if (!empty($maxsize) && strlen($value ?? '') > $maxsize) {
             $value = substr($value, 0, $maxsize);
         }
         return $value == null || $value === '' ? '' : $prefix . $value . $suffix . ' ';
@@ -228,27 +234,28 @@ abstract class Rule
     }
 
     /**
-     * parse data, use replace map
-     * @param string $value field value
+     * parse data, use replace map for comma-separated values
+     * @param string $values combined field values
      * @param string $map
      * @param string $prefix
      * @param string $suffix
      * @return string
      */
-    protected function parseReplaceSimple($value, $map, $prefix = "", $suffix = "")
+    protected function parseReplaceSimple($values, $map, $prefix = '', $suffix = '')
     {
-        $retval = $value;
+        $retvals = !is_null($values) && strlen($values) ? explode(',', $values) : [];
         foreach (explode('|', $map) as $item) {
             $tmp = explode(':', $item);
-            if ($tmp[0] == $value) {
-                $retval = $tmp[1] . " ";
-                break;
+            if (in_array($tmp[0], $retvals)) {
+                $retvals[array_search($tmp[0], $retvals)] = $tmp[1];
+            } elseif (!count($retvals) && $tmp[0] === '') {
+                $retvals[] = $tmp[1];
             }
         }
-        if (!empty($retval)) {
-            return $prefix . $retval . $suffix . " ";
+        if (count($retvals)) {
+            return $prefix . join(',', $retvals) . $suffix . ' ';
         } else {
-            return "";
+            return '';
         }
     }
 
@@ -353,14 +360,14 @@ abstract class Rule
         $interfaces = $this->interfaceMapping;
         foreach ($fields as $tag => $target) {
             if (!empty($rule[$tag])) {
-                if (isset($rule[$tag]['any'])) {
-                    $rule[$target] = 'any';
-                } elseif (!empty($rule[$tag]['network'])) {
+                if (!empty($rule[$tag]['network'])) {
                     $rule[$target] = $rule[$tag]['network'];
                 } elseif (!empty($rule[$tag]['address'])) {
                     $rule[$target] = $rule[$tag]['address'];
+                } else {
+                    $rule[$target] = 'any';
                 }
-                $rule[$target . '_not'] = isset($rule[$tag]['not']); /* to be used in mapAddressInfo() */
+                $rule[$target . '_not'] = !empty($rule[$tag]['not']); /* to be used in mapAddressInfo() */
 
                 if (
                     isset($rule['protocol']) &&
@@ -368,13 +375,6 @@ abstract class Rule
                     !empty($rule[$tag]['port'])
                 ) {
                     $rule[$target . "_port"] = $rule[$tag]['port'];
-                }
-                if (!isset($rule[$target])) {
-                    // couldn't convert address, disable rule
-                    // dump all tag contents in target (from/to) for reference
-                    $rule['disabled'] = true;
-                    $this->log("Unable to convert address, see {$target} for details");
-                    $rule[$target] = json_encode($rule[$tag]);
                 }
             }
         }
@@ -481,6 +481,16 @@ abstract class Rule
             return isset($this->rule['seq']) ? 'interface' : 'automation';
         }
         return 'internal2'; // late
+    }
+
+    public function updateDescription($descr)
+    {
+        $this->rule['descr'] = $descr;
+    }
+
+    public function disable()
+    {
+        $this->rule['disabled'] = 1;
     }
 
     /**

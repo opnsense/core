@@ -34,6 +34,7 @@ class Processor extends Base
     {
         $cpustats = $this->shellCmd('/usr/local/sbin/cpustats');
         $ps = $this->shellCmd('/bin/ps uxaH');
+
         if (!empty($cpustats) && !empty($ps)) {
             $tmp = explode(':', $cpustats[0]);
             return [
@@ -44,6 +45,7 @@ class Processor extends Base
                 'processes' => count($ps) - 1
             ];
         }
+
         return [];
     }
 }

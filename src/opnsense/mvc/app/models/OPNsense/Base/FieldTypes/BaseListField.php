@@ -57,11 +57,52 @@ abstract class BaseListField extends BaseField
     protected $internalMultiSelect = false;
 
     /**
+     * statically cached options per inherited classtype
+     */
+    private static $internalStaticOptList = [];
+
+    protected function hasStaticOptions(?string $hash = null): bool
+    {
+        if (!is_null($hash)) {
+            return !empty(self::$internalStaticOptList[static::class][$hash]);
+        }
+
+        return !empty(self::$internalStaticOptList[static::class]);
+    }
+
+    protected function getStaticOptions(?string $hash = null): array
+    {
+        if (!is_null($hash)) {
+            return self::$internalStaticOptList[static::class][$hash] ?? [];
+        }
+
+        return self::$internalStaticOptList[static::class] ?? [];
+    }
+
+    protected function setStaticOptions(array $data, ?string $hash = null)
+    {
+        if (!is_null($hash)) {
+            return self::$internalStaticOptList[static::class][$hash] = $data;
+        }
+
+        return self::$internalStaticOptList[static::class] = $data;
+    }
+
+    public function resetStaticOptions(?string $hash = null)
+    {
+        if (!is_null($hash)) {
+            return self::$internalStaticOptList[static::class][$hash] = [];
+        }
+
+        return self::$internalStaticOptList[static::class] = [];
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function defaultValidationMessage()
     {
-        return gettext('Option not in list.');
+        return gettext('Option [%s] not in list.');
     }
 
     /**
@@ -155,8 +196,7 @@ abstract class BaseListField extends BaseField
                 if ($that->internalMultiSelect) {
                     foreach (explode(",", $data) as $valItem) {
                         if (!isset($this->internalOptionList[$valItem])) {
-                            $messages[] = $this->getValidationMessage();
-                            break;
+                            $messages[] = $this->getValidationMessage($valItem);
                         }
                     }
                 } elseif (!isset($this->internalOptionList[$data])) {
@@ -198,5 +238,15 @@ abstract class BaseListField extends BaseField
         return array_values(array_filter(explode(',', $this->internalValue), function ($k) {
             return !!strlen($k);
         }));
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setValues(array $values)
+    {
+        $this->setValue(implode(',', array_values(array_filter($values, function ($k) {
+            return !!strlen($k);
+        }))));
     }
 }

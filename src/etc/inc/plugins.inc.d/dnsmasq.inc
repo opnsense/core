@@ -168,7 +168,7 @@ function dnsmasq_configure_do($verbose = false)
     global $config;
 
     killbypid('/var/run/dnsmasq_dhcpd.pid');
-    mwexec('/usr/local/etc/rc.d/dnsmasq stop', true);
+    mwexecfm('/usr/local/etc/rc.d/dnsmasq stop');
 
     if (!dnsmasq_enabled()) {
         return;
@@ -180,7 +180,7 @@ function dnsmasq_configure_do($verbose = false)
 
     configd_run('template reload OPNsense/Dnsmasq');
 
-    mwexec('/usr/local/etc/rc.d/dnsmasq start');
+    mwexecf('/usr/local/etc/rc.d/dnsmasq start');
 
     if (!empty($config['dnsmasq']['regdhcp'])) {
         /* XXX: deprecate when moving ISC to plugins ? */
@@ -188,7 +188,7 @@ function dnsmasq_configure_do($verbose = false)
         if (!empty($config['dnsmasq']['regdhcpdomain'])) {
             $domain = $config['dnsmasq']['regdhcpdomain'];
         }
-        mwexecf('/usr/local/opnsense/scripts/dhcp/dnsmasq_watcher.py --domain %s', $domain);
+        mwexecf('/usr/local/opnsense/scripts/dnsmasq/dnsmasq_watcher.py --domain %s', $domain);
     }
 
     service_log("done.\n", $verbose);
@@ -254,20 +254,10 @@ function _dnsmasq_add_host_entries()
         }
     }
 
-    if (!empty($dnsmasqcfg['dhcpfirst'])) {
-        file_put_contents('/var/etc/dnsmasq-hosts', $dhosts . $lhosts);
-    } else {
-        file_put_contents('/var/etc/dnsmasq-hosts', $lhosts . $dhosts);
-    }
+    file_safe(
+        '/var/etc/dnsmasq-hosts',
+        !empty($dnsmasqcfg['dhcpfirst']) ? $dhosts . $lhosts : $lhosts . $dhosts
+    );
 
-    /*
-     * Several reports indicated 600 permissions on this file.
-     * The reason is currently unknown, but setting it to 644
-     * as it should be brings the service back to life.
-     */
-    chmod('/var/etc/dnsmasq-hosts', 0644);
-
-    @unlink('/var/etc/dnsmasq-leases');
-    touch('/var/etc/dnsmasq-leases');
-    chmod('/var/etc/dnsmasq-leases', 0644);
+    file_safe('/var/etc/dnsmasq-leases'); /* clear file for later use */
 }

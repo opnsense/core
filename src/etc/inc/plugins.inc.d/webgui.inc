@@ -149,7 +149,7 @@ function webgui_configure_do($verbose = false, $interface_map = null)
     configd_run('template reload OPNsense/WebGui');
 
     /* arrange configuration directories and ownership */
-    passthru('/usr/local/etc/rc.subr.d/php');
+    pass_safe('/usr/local/etc/rc.subr.d/php');
 
     /* we need a marker file for development mode to ensure quick action */
     if (empty($config['system']['deployment'])) {
@@ -176,9 +176,6 @@ function webgui_create_selfsigned($verbose = false)
 {
     global $config;
 
-    $a_ca = &config_read_array('ca');
-    $a_cert = &config_read_array('cert');
-
     service_log('Creating self-signed web GUI certificate...', $verbose);
 
     $cert = [];
@@ -204,7 +201,7 @@ function webgui_create_selfsigned($verbose = false)
 
     cert_import($cert, $crt, $key);
 
-    $a_cert[] = $cert;
+    config_push_array('cert', $cert);
 
     $config['system']['webgui']['ssl-certref'] = $cert['refid'];
 

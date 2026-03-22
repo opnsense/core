@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -24,12 +24,9 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
-
-    --------------------------------------------------------------------------------------
-
-    query suricata alert log
 """
 
+import argparse
 import sys
 import os.path
 import re
@@ -37,33 +34,24 @@ import shlex
 import ujson
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from log_helper import reverse_log_reader
-from params import update_params
 from lib import suricata_alert_log
 
 if __name__ == '__main__':
-    # handle parameters
-    parameters = {'limit': '0', 'offset': '0', 'filter': '', 'fileid': ''}
-    update_params(parameters)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--limit', help='limit the amount of results', default=0, type=int)
+    parser.add_argument('--offset', help='offset to start', default=0, type=int)
+    parser.add_argument('--filter', help='filter to apply', default='')
+    parser.add_argument('--fileid', help='log file number', default='')
+    args = parser.parse_args()
 
-    # choose logfile by number
-    if parameters['fileid'].isdigit():
-        suricata_log = '%s.%d' % (suricata_alert_log, int(parameters['fileid']))
+    if args.fileid.isdigit():
+        suricata_log = '%s.%d' % (suricata_alert_log, int(args.fileid))
     else:
         suricata_log = suricata_alert_log
 
-    if parameters['limit'].isdigit():
-        limit = int(parameters['limit'])
-    else:
-        limit = 0
-
-    if parameters['offset'].isdigit():
-        offset = int(parameters['offset'])
-    else:
-        offset = 0
-
     data_filters = {}
     data_filters_comp = {}
-    for filter_txt in shlex.split(parameters['filter']):
+    for filter_txt in shlex.split(args.filter):
         filterField = filter_txt.split('/')[0]
         if filter_txt.find('/') > -1:
             data_filters[filterField] = '/'.join(filter_txt.split('/')[1:])
@@ -97,7 +85,7 @@ if __name__ == '__main__':
             if 'alert' in record:
                 # add position in file
                 record['filepos'] = line['pos']
-                record['fileid'] = parameters['fileid']
+                record['fileid'] = args.fileid
                 # flatten structure
                 record['alert_sid'] = record['alert']['signature_id']
                 record['alert_action'] = record['alert']['action']
@@ -116,9 +104,9 @@ if __name__ == '__main__':
                         do_output = False
                 if do_output:
                     result['total_rows'] += 1
-                    if (len(result['rows']) < limit or limit == 0) and result['total_rows'] >= offset:
+                    if (len(result['rows']) < args.limit or args.limit == 0) and result['total_rows'] >= args.offset:
                         result['rows'].append(record)
-                    elif result['total_rows'] > offset + limit:
+                    elif result['total_rows'] > args.offset + args.limit:
                         # do not fetch data until end of file...
                         break
 

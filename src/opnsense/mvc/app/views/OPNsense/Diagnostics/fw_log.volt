@@ -64,6 +64,29 @@
             })
         }
 
+        resize(newCapacity) {
+            if (!Number.isInteger(newCapacity) || newCapacity <= 0) {
+                throw new Error("newCapacity must be a positive integer");
+            }
+            if (newCapacity === this.capacity) return this;
+
+            const oldCapacity = this.capacity;
+            const oldLength = this.length;
+
+            const m = Math.min(oldLength, newCapacity);
+            const newBuf = new Array(newCapacity);
+
+            for (let i = 0; i < m; i++) {
+                newBuf[i] = this.get(i);
+            }
+
+            this.buf = newBuf;
+            this.capacity = newCapacity;
+            this.length = m;
+            this.head = 0;
+            return this;
+        }
+
         // Insert as "most recent". O(1)
         push(value) {
             this.head = (this.head - 1 + this.capacity) % this.capacity;
@@ -142,9 +165,8 @@
             dst.clear();
             const m = Math.min(n, this.length);
             let tmp = [];
-            for (let i = m - 1; i >= 0; i--) {
+            for (let i = 0; i <= m; i++) {
                 tmp.push(this.get(i));
-                // dst.push(this.get(i));
             }
             dst.pushMany(tmp);
         }
@@ -234,7 +256,7 @@
          * This model also maintains the main live log
          * table.
          */
-        constructor(bucket, table = null, bufferSize = 100) {
+        constructor(bucket, table = null, bufferSize = 25) {
             this.bufferSize = bufferSize;
             this.bucket = bucket;
             this.table = table;
@@ -251,8 +273,11 @@
         }
 
         _init() {
-            // pushes this.bufferSize entries to the models' buffer
-            this.bucket.copyTo(this.viewBuffer, this.bufferSize);
+            /**
+             * Rebuild the view buffer from the raw bucket using the current filter state.
+             * Acts as the single pipeline for init, filter updates, and bucket resets.
+             */
+            this._filterChange();
         }
 
         _onBucketEvent(event) {
@@ -266,7 +291,6 @@
                     }
                     break;
                 case 'pushMany':
-                    event.data.reverse();
                     const tmp = event.data.filter(record => this._passesCurrentFilters(record));
                     this.viewBuffer.pushMany(tmp);
                     break;
@@ -279,28 +303,17 @@
          * mutated on the viewbuffer is considered valid (passed the filter(s)).
          */
         _onViewBufferEvent(event) {
-            // also investigate setData instead of addDate + remove
             switch (event.type) {
                 case 'push':
-                    this.table.addData([event.data], true);
-                    break;
                 case 'pushMany':
-                    this.table.addData(event.data.reverse(), true);
-                    break;
                 case 'reset':
-                    let tmp = this.viewBuffer.toArray();
-                    this.table.addData(tmp, true);
+                    this.table.replaceData(this.viewBuffer.toArray());
+                    $('.tooltip:visible').hide();
                     break;
                 case 'clear':
                     this.table.clearData();
+                    $('.tooltip:visible').hide();
                     break;
-            }
-
-            let rows = this.table.getRows();
-            if (this.viewBuffer.length >= this.bufferSize && rows.length > this.bufferSize) {
-                for (let i = this.bufferSize; i < rows.length; i++) {
-                    rows[i].delete();
-                }
             }
         }
 
@@ -328,18 +341,27 @@
         _buildPredicate(field, operator, value) {
             const needle = String(value ?? '').toLowerCase().trim();
 
+            let regex = null;
+            if (operator === '~' || operator === '!~') {
+                try {
+                    regex = new RegExp(needle, 'i');
+                } catch {
+                    regex = null;
+                }
+            }
+
             return (item) => {
-                const haystack = String(item?.[field] ?? '').toLowerCase();
+                const haystack = String(item?.[field] ?? '');
 
                 switch (operator) {
                 case '~':
-                    return haystack.includes(needle);
+                    return regex ? regex.test(haystack) : false;
                 case '!~':
-                    return !haystack.includes(needle);
+                    return regex ? !regex.test(haystack) : true;
                 case '=':
-                    return haystack === needle;
+                    return haystack.toLowerCase() === needle;
                 case '!=':
-                    return haystack !== needle;
+                    return haystack.toLowerCase() !== needle;
                 default:
                     return true; // unknown operator -> pass everything
                 }
@@ -427,14 +449,13 @@
          * search string modified). This function is idempotent.
          */
         _filterChange() {
-            const { fn, reset } = this._buildFilterFn();
+            const { fn, isNoop } = this._buildFilterFn();
 
-            if (reset) {
-                this._init();
+            if (isNoop) {
+                // pure init without any filters
+                this.bucket.copyTo(this.viewBuffer, this.bufferSize);
                 return;
             }
-
-            this.viewBuffer.clear();
 
             const result = this.bucket.filter(fn);
 
@@ -453,15 +474,18 @@
             this._filterChange();
         }
 
+        setBufferSize(bufferSize) {
+            this.bufferSize = bufferSize;
+            this.viewBuffer.resize(this.bufferSize);
+            this.reset();
+        }
+
         /**
-         *
+         * Update existing records in the table. Records supplied but not found in
+         * the table (indexed by __digest__) are ignored.
          */
         updateTable(records) {
-            try {
-                this.table.updateData(records, true);
-            } catch (e) {
-                // ignore
-            }
+            this.table.updateData(records).catch((error) => {});
         }
 
         setFilterMode(mode = 'AND') {
@@ -479,21 +503,15 @@
         /**
          * Example: { field: 'src', operator: '=', value: '192.168.1.1', format:'RFC1918' (optional) }
          * The optional 'format' parameter replaces the value for display purposes only
+         * Combined filters are inferred when `field` is an array (e.g. ['src','dst'])
          */
         addFilter(filter) {
             const id = this._hashFilter(filter);
-            this.filterStore.filters[id] = filter;
-            this._filterChange();
-        }
-
-        /**
-         * Example: { field: ['src', 'dst'], operator: '!=', value: '192.168.1.1' }
-         * The meaning of a combined filter is dependent on the operator. In the case of a
-         * positive operator, "OR" is used, otherwise "AND".
-         */
-        addCombinedFilter(filter) {
-            const id = this._hashFilter(filter);
-            this.filterStore.combinedFilters[id] = filter;
+            if (Array.isArray(filter.field)) {
+                this.filterStore.combinedFilters[id] = filter;
+            } else {
+                this.filterStore.filters[id] = filter;
+            }
             this._filterChange();
         }
 
@@ -535,9 +553,6 @@
                     for (let record of data) {
                         // initial data formatting for front-end purposes
                         record['status'] = map[record['action']];
-                        // deal with IPs we haven't seen before
-                        if (!hostnames.get(record.src)) hostnames.set(record.src, null);
-                        if (!hostnames.get(record.dst)) hostnames.set(record.dst, null);
 
                         // make sure the hostname key exists
                         record['srchostname'] = hostnames.get(record.src);
@@ -604,7 +619,7 @@
                     );
                 }
                 const $chip = $(`
-                    <li class="filter-chip" data-id="${id}">
+                    <li class="filter-chip badge" data-id="${id}">
                     <span>${f.field} ${operatorMap[f.operator].translation} “${f.format ?? f.value}”</span>
                     <button aria-label="Remove filter" title="Remove filter">&times;</button>
                     </li>
@@ -695,7 +710,9 @@
             })
         }
 
-        const tableWrapper = $("#example-table").UIBootgrid({
+        let hostnames = new Map();
+
+        const tableWrapper = $("#livelog-table").UIBootgrid({
             options: {
                 ajax: false,
                 navigation: 0,
@@ -703,6 +720,25 @@
                 multiSelect: false,
                 virtualDOM: true,
                 formatters: {
+                    direction: function(column, row, onRendered) {
+                        return row.dir == 'in' ? "{{ lang._('In') }}" : "{{ lang._('Out') }}";
+                    },
+                    lookup: function(column, row, onRendered) {
+                        const value = row[column.id.replace("hostname", "")];
+                        const hostname = hostnames.get(value);
+                        // deal with IPs we haven't seen before
+                        if (!hostname) hostnames.set(value, null);
+
+                        const side = column.id.includes('src') ? 'src' : 'dst';
+                        const port = row[`${side}port`];
+
+                        if (!hostname) return '<span class="fa fa-spinner fa-pulse"></span>';
+
+                        const hasIPv6 = hostname.includes(':');
+                        return port
+                            ? `${hasIPv6 ? `[${hostname}]` : hostname}:${port}`
+                            : hostname;
+                    },
                     proto: function(column, row, onRendered) {
                         return row.protoname.toUpperCase();
                     },
@@ -762,33 +798,38 @@
                                 }
                                 tbl.append(tbl_tbody);
                                 BootstrapDialog.show({
-                                title: "{{ lang._('Detailed rule info') }}",
-                                message: tbl,
-                                type: BootstrapDialog.TYPE_INFO,
-                                draggable: true,
-                                buttons: [{
-                                    label: '<i class="fa fa-search" aria-hidden="true"></i>',
-                                    action: function(){
-                                    $(this).unbind('click');
-                                    $(".act_info_fld_src, .act_info_fld_dst").each(function(){
-                                        let target_field = $(this);
-                                        ajaxGet('/api/diagnostics/dns/reverse_lookup', {'address': target_field.text()}, function(data, status) {
-                                            if (data[target_field.text()] != undefined) {
-                                                let resolv_output = data[target_field.text()];
-                                                if (target_field.text() != resolv_output) {
-                                                    target_field.text(target_field.text() + ' [' + resolv_output + ']');
+                                    title: "{{ lang._('Detailed rule info') }}",
+                                    message: tbl,
+                                    type: BootstrapDialog.TYPE_INFO,
+                                    draggable: true,
+                                    buttons: [{
+                                        label: '<i class="fa fa-search" aria-hidden="true"></i>',
+                                        action: function(){
+                                            $(this).unbind('click');
+                                            $(".act_info_fld_srchostname, .act_info_fld_dsthostname").each(function(){
+                                                let target_field = $(this);
+                                                const dir = target_field.attr('class').indexOf('src') > -1 ? 'src' : 'dst';
+                                                const ip = sender_details[dir];
+                                                const hostname = hostnames.get(ip);
+                                                if (hostname && hostname !== '<in-flight>') {
+                                                    target_field.text(hostname);
+                                                } else {
+                                                    ajaxGet('/api/diagnostics/dns/reverse_lookup', {'address': ip}, function(data, status) {
+                                                        if (data[ip] != undefined) {
+                                                            let resolv_output = data[ip];
+                                                            hostnames.set(ip, resolv_output);
+                                                            target_field.text(resolv_output);
+                                                        }
+                                                    });
                                                 }
-                                            }
-                                            target_field.prepend('<i class="fa fa-search" aria-hidden="true"></i>&nbsp;');
-                                        });
-                                    });
-                                    }
-                                },{
-                                    label: "{{ lang._('Close') }}",
-                                    action: function(dialogItself){
-                                    dialogItself.close();
-                                    }
-                                }]
+                                            });
+                                        }
+                                    },{
+                                        label: "{{ lang._('Close') }}",
+                                        action: function(dialogItself){
+                                        dialogItself.close();
+                                        }
+                                    }]
                                 });
                             });
                         })
@@ -805,13 +846,13 @@
                 index: "__digest__",
                 autoResize: false,
                 addRowPos: 'top',
-                persistence: false, // ideally persistence should be on, but we have no reset button at the moment due to missing navigation
                 height:undefined,
                 layout:"fitColumns",
                 pagination: false
             }
         });
 
+        const $reset = $('#table-reset');
         const $global = $('#globalSearch');
         const $filterField = $('#filter-field');
         const $filterOperator = $('#filter-operator')
@@ -819,6 +860,10 @@
         const $interfaceSelect = $('#interface-select');
         const $apply = $('#apply-filter');
         const $list = $('#filtersList');
+        const $tableSizeSelect = $('#table-size');
+        $tableSizeSelect.selectpicker();
+        const $historySizeSelect = $('#history-size');
+        $historySizeSelect.selectpicker();
 
         const operatorMap = {
             '~': {val: 'contains', translation: "{{ lang._('contains') }}"},
@@ -842,9 +887,25 @@
         const buffer = new RingBuffer(seedAmount);
         const filterVM = new FilterViewModel(buffer, table);
         let pollTimeout = null;
-        let hostnames = new Map();
         let interfaceMap = {};
         let bufferDataUnsubscribe = null;
+
+        $reset.on('click', function() {
+            tableWrapper.bootgrid('setPersistence', false);
+            location.reload();
+        });
+
+        table.on('tableBuilt', () => {
+            const params = new URLSearchParams(window.location.hash.slice(1));
+            const field = params.get('field');
+            const operator = params.get('operator');
+            const value = params.get('value');
+
+            if (field && operator && value) {
+                filterVM.addFilter({ field, operator, value });
+                history.replaceState(null, '', location.pathname);
+            }
+        });
 
         $apply.on('click', function () {
             const field = $filterField.val();
@@ -854,10 +915,10 @@
 
             switch (field) {
                 case '__addr__':
-                    filterVM.addCombinedFilter({field: ['src', 'dst'], operator: operator, value: searchString});
+                    filterVM.addFilter({field: ['src', 'dst'], operator: operator, value: searchString});
                     break;
                 case '__port__':
-                    filterVM.addCombinedFilter({field: ['srcport', 'dstport'], operator: operator, value: searchString});
+                    filterVM.addFilter({field: ['srcport', 'dstport'], operator: operator, value: searchString});
                     break;
                 case 'interface':
                     filterVM.addFilter({field: field, operator: operator, value: $interfaceSelect.val(), format: $interfaceSelect.find('option:selected').text()});
@@ -901,108 +962,91 @@
             switch (id) {
                 case 'tg-lookup':
                     if (checked) {
-                        const lookup = (maxPerRequest=50) => {
-                            return new Promise((resolve, reject) => {
-                                let toResolve = new Set();
-                                let again = false;
-                                for (const addr of hostnames) {
-                                    if (!addr[1]) { // new entries are null
-                                        toResolve.add(addr[0]);
-                                    }
+                        const lookup = (maxPerRequest = 50) => {
+                            const pending = [];
+                            for (const [addr, val] of hostnames) {
+                                if (!val && addr) { // new entries are null or already being processed
+                                    pending.push(addr);
+                                    hostnames.set(addr, '<in-flight>');
                                 }
+                            }
 
-                                if (toResolve.size === 0) {
-                                    resolve();
-                                    return;
-                                }
+                            if (pending.length === 0) return [];
 
-                                const portion = () => {
-                                    let addresses = Array.from(toResolve);
+                            // Split into chunks
+                            const batches = [];
+                            for (let i = 0; i < pending.length; i += maxPerRequest) {
+                                batches.push(pending.slice(i, i + maxPerRequest));
+                            }
 
-                                    if (addresses.length > maxPerRequest) {
-                                        addresses = addresses.slice(0, maxPerRequest);
-                                        again = true;
-                                    } else {
-                                        again = false;
-                                    }
-
-                                    addresses.forEach(addr => toResolve.delete(addr));
-                                    return addresses;
-                                }
-
-                                const runAjax = (addresses) => {
+                            return batches.map(addresses =>
+                                new Promise((resolve, reject) => {
                                     $.ajax({
                                         type: 'GET',
                                         url: '/api/diagnostics/dns/reverse_lookup',
                                         dataType: 'json',
                                         contentType: 'application/json',
                                         data: { address: addresses },
-                                        complete: function (data, status) {
-                                            if ('responseJSON' in data) {
-                                                data = data['responseJSON'];
+                                        complete: function (xhr) {
+                                            const data = xhr && xhr.responseJSON;
+                                            if (data) {
                                                 addresses.forEach(addr => {
                                                     const resolved = data && data[addr];
                                                     hostnames.set(addr, resolved || addr);
                                                 });
-
-                                                if (again) {
-                                                    // recurse
-                                                    runAjax(portion());
-                                                    return;
-                                                }
+                                                resolve();
+                                            } else {
+                                                // still mark something reasonable to avoid leaving <in-flight>
+                                                addresses.forEach(addr => hostnames.set(addr, addr));
+                                                reject(new Error('Invalid response for batch: ', addresses));
                                             }
-
-                                            resolve();
+                                        },
+                                        error: function (_xhr, status, err) {
+                                            // clear in-flight flags on error
+                                            addresses.forEach(addr => hostnames.set(addr, null));
+                                            reject(err || new Error(status || 'Request failed'));
                                         }
                                     });
-                                }
-
-                                runAjax(portion());
-                            });
-                        }
-
-                        bufferDataUnsubscribe = buffer.subscribe((event) => {
-                            // register to active data feed, apply hostnames as they come
-                            if (event.type === "push" || event.type === "pushMany") {
-                                let records = Array.isArray(event.data) ? event.data : [event.data];
-                                records.map((record) => {
-                                    ['srchostname', 'dsthostname'].forEach(host => {
-                                        if (!record[host]) {
-                                            record[host] = '<span class="fa fa-spinner fa-pulse"></span>';
-                                        }
-                                    });
-                                });
-
-                                filterVM.updateTable(records);
-                                lookup().then(() => {
-                                    records.map((record) => {
-                                        record['srchostname'] = hostnames.get(record.src);
-                                        record['dsthostname'] = hostnames.get(record.dst);
-                                        return record;
-                                    });
-
-                                    filterVM.updateTable(records);
                                 })
-                            }
-                        });
+                            );
+                        };
 
-                        // initial hostname lookup
+                        tableWrapper.bootgrid('unsetColumns', ['src', 'dst']);
                         tableWrapper.bootgrid('setColumns', ['srchostname', 'dsthostname']);
-                        lookup().then(() => {
-                             // operate on entire buffer
-                            buffer.map((record) => {
-                                record['srchostname'] = hostnames.get(record.src);
-                                record['dsthostname'] = hostnames.get(record.dst);
-                                return record;
-                            });
 
-                            filterVM.reset();
+                        // lookup new entries
+                        const updateViewBuffer = () => {
+                            const promises = lookup();
+                            promises.forEach(p => p.then(() => {
+                                filterVM.viewBuffer.map((record) => {
+                                    if (hostnames.get(record.src) !== '<in-flight>') {
+                                        record['srchostname'] = hostnames.get(record.src);
+                                    }
+                                    if (hostnames.get(record.dst) !== '<in-flight>') {
+                                        record['dsthostname'] = hostnames.get(record.dst);
+                                    }
+                                    return record;
+                                });
+                                filterVM.reset();
+                            }));
+                        };
+
+
+                        bufferDataUnsubscribe = filterVM.viewBuffer.subscribe((event) => {
+                            updateViewBuffer();
                         });
+
+                        // lookup current view ("lookup" grid formatter will have collected addresses)
+                        // we do not lookup the entire buffer, as most items aren't relevant yet until
+                        // specifically asked for.
+                        filterVM.reset();
+
                     } else {
                         if (bufferDataUnsubscribe !== null) {
                             bufferDataUnsubscribe();
                             bufferDataUnsubscribe = null;
                             tableWrapper.bootgrid('unsetColumns', ['srchostname', 'dsthostname']);
+                            tableWrapper.bootgrid('setColumns', ['src', 'dst']);
                             filterVM.reset();
                         }
                     }
@@ -1025,7 +1069,9 @@
 
         // Main startup logic
         tableWrapper.on("load.rs.jquery.bootgrid", function() {
-            $(`#example-table > .tabulator-tableholder`)
+            tableWrapper.bootgrid('unsetColumns', ['srchostname', 'dsthostname']);
+            tableWrapper.bootgrid('setColumns', ['src', 'dst']);
+            $(`#livelog-table > .tabulator-tableholder`)
                 .prepend($('<span class="bootgrid-overlay"><i class="fa fa-spinner fa-spin"></i></span>'));
         });
 
@@ -1054,7 +1100,7 @@
 
             fetch_log(null, seedAmount).then((data) => {
                 buffer.reset(data);
-                $(`#example-table > .tabulator-tableholder > .bootgrid-overlay`).remove();
+                $(`#livelog-table > .tabulator-tableholder > .bootgrid-overlay`).remove();
 
                 poller(1000);
             });
@@ -1153,32 +1199,34 @@
                 const parseTemplate = (template) => {
                     const or = template.or;
                     const mode = or === "1" ? 'OR' : 'AND';
-                    let interface = null;
                     const filters = template.filters.split(',').map(val => {
+                        let interface = null;
                         const parts = val.split(/(!=|!~|=|~)/);
-                        // XXX consolidate with earlier parsing
-                        switch (parts[0]) {
+                        /* determine if combined filter */
+                        let combinedMatch = parts[0].match(/^\s*(\w+)\s+(or|and)\s+(\w+)\s*$/i);
+                        let field = combinedMatch ? [combinedMatch[1], combinedMatch[3]] : parts[0];
+                        switch (field) {
                             case '__addr__':
-                                parts[0] = ['src', 'dst'];
+                                /* backwards compatibility */
+                                field = ['src', 'dst'];
                                 break;
                             case '__port__':
-                                parts[0] = ['srcport', 'dstport']
+                                /* backwards compatibility */
+                                field = ['srcport', 'dstport']
                             case 'interface':
-                                interface = interfaceMap[parts[2]]
+                            case 'interface_name':
+                                interface = interfaceMap[parts[2]];
+                                field = 'interface';
                                 break;
                         }
-                        return {field: parts[0], operator: parts[1], value: parts[2], format: interface};
-                    })
+                        return {field: field, operator: parts[1], value: parts[2], format: interface};
+                    });
 
                     return {filters, mode}
                 };
                 const {filters, mode} = parseTemplate(tmpl);
                 for (const filter of filters) {
-                    if (Array.isArray(filter.field)) {
-                        filterVM.addCombinedFilter(filter);
-                    } else {
-                        filterVM.addFilter(filter);
-                    }
+                    filterVM.addFilter(filter);
                 }
                 filterVM.setFilterMode(mode);
                 if (mode === 'OR') {
@@ -1223,6 +1271,23 @@
                 delTemplate(id);
             }
         });
+
+        $tableSizeSelect.on('changed.bs.select', function(e) {
+            filterVM.setBufferSize(parseInt($(this).val()));
+        });
+
+        $historySizeSelect.on('changed.bs.select', function(e) {
+            const bufSize = parseInt($(this).val());
+            buffer.resize(bufSize);
+            stopPoller();
+            $(`#livelog-table > .tabulator-tableholder`)
+                .prepend($('<span class="bootgrid-overlay"><i class="fa fa-spinner fa-spin"></i></span>'));
+            fetch_log(null, bufSize).then((data) => {
+                $(`#livelog-table > .tabulator-tableholder > .bootgrid-overlay`).remove();
+                buffer.reset(data);
+                poller(1000);
+            });
+        });
     });
 </script>
 
@@ -1239,7 +1304,7 @@
 
 .filters-wrap { display:flex; gap:1rem; align-items:center; margin:0.5rem 0; }
 .filters-list { display:flex; gap:0.5rem; flex-wrap:wrap; margin:0.25rem 0 0; padding:0; list-style:none; align-items: center; }
-.filter-chip { background:#f2f2f2; border-radius:999px; padding:0.25rem 0.6rem; display:flex; gap:0.4rem; align-items:center; }
+.filter-chip { border-radius:999px; padding:0.25rem 0.6rem; display:flex; gap:0.4rem; align-items:center; }
 .filter-chip button { border:none; background:transparent; cursor:pointer; font-weight:bold; }
 .muted { color:#666; font-size:0.9em; }
 .stack { display:flex; flex-direction:column; gap:0.35rem; }
@@ -1247,24 +1312,22 @@
 .filters-bar {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;   /* keep tops aligned */
+  align-items: flex-start; /* keep tops aligned */
   gap: 2rem;
   min-height: 130px;
   margin-bottom: 10px;
 }
 
 .filters-middle {
-    /* margin-left: auto;
-    margin-right: auto; */
+    margin-left: auto;
     display: flex;
     flex-direction: row;
     gap: 0.75rem;
-    /* min-width: 260px; */
 }
 
 /* Right column */
 .filters-right {
-  margin-left: auto;         /* push all the way right */
+  margin-left: auto; /* push all the way right */
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -1298,6 +1361,9 @@
   .filters-actions { justify-content: flex-start; }
 }
 
+.tabulator-row.tabulator-row-odd {
+    background-color: transparent;
+}
 </style>
 
 <div class="tab-content content-box" style="padding: 10px;">
@@ -1306,10 +1372,14 @@
         <div class="filters-left">
             <div class="filters-ui">
                 <!-- Live global search (matches ANY value in a record) -->
+                <div class="muted">{{ lang._('Filters')}}</div>
                 <div class="filters-wrap">
                     <input id="globalSearch" type="text" placeholder="{{ lang._('Quick search (all fields)…') }}" />
-                    <button id="refresh" class="btn btn-default" type="button" title="{{ lang._('Refresh') }}">
+                    <button id="refresh" class="btn btn-default" type="button" data-toggle="tooltip" title="{{ lang._('Refresh') }}">
                         <span class="icon fa-solid fa-arrows-rotate"></span>
+                    </button>
+                    <button id="table-reset" class="btn" title="{{ lang._('Reset all table dimension modifications and reload the page') }}">
+                        <span class="icon fa-solid fa-share-square"></span>
                     </button>
                 </div>
 
@@ -1349,10 +1419,6 @@
         </div>
 
         <aside class="filters-middle">
-
-        </aside>
-
-        <aside class="filters-right">
             <div>
                 <div class="muted">{{ lang._('Templates')}}</div>
                 <button id="stageTemplate" class="btn btn-default">
@@ -1370,9 +1436,9 @@
                     <span class="fa fa-save"></span>
                 </button>
             </div>
+        </aside>
 
-            &nbsp;
-
+        <aside class="filters-right">
             <div class="toggle-group">
                 <div class="muted">{{ lang._('Options')}}</div>
                 <label class="toggle">
@@ -1396,24 +1462,46 @@
                     <span class="toggle-label">{{ lang._('Select any of given criteria (or)') }}</span>
                 </label>
             </div>
+
+            <div>
+                <select id="table-size" class="selectpicker" data-width="100px">
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="75">75</option>
+                    <option value="100">100</option>
+                    <option value="1000">1000</option>
+                    <option value="5000">5000</option>
+                    <option value="10000">10000</option>
+                </select>
+                <label>{{ lang._('Table size') }}</label>
+            </div>
+            <div>
+                <select id="history-size" class="selectpicker" data-width="100px">
+                    <option value="10000">10000</option>
+                    <option value="20000">20000</option>
+                    <option value="30000">30000</option>
+                </select>
+                <label>{{ lang._('History size') }}</label>
+            </div>
         </aside>
     </div>
 
-    <table id="example-table" class="table table-condensed table-hover table-striped table-responsive">
+    <table id="livelog-table" class="table table-condensed table-hover table-striped table-responsive">
         <thead>
             <tr>
                 <th data-column-id="__digest__" data-identifier="true" data-sortable="false" data-visible="false">{{ lang._('Digest') }}</th>
                 <th data-column-id="interface" data-type="string" data-formatter="interface" data-sortable="false" data-width="80">{{ lang._('Interface') }}</th>
+                <th data-column-id="dir" data-type="string" data-formatter="direction" data-sortable="false" data-width="30"></th>
                 <th data-column-id="__timestamp__" data-sortable="false" data-width="150">{{ lang._('Time') }}</th>
                 <th data-column-id="protoname" data-sortable="false" data-formatter="proto" data-width="80">{{ lang._('Protocol') }}</th>
                 <th data-column-id="src" data-type="string" data-formatter="appendPort" data-sortable="false">{{ lang._('Source') }}</th>
-                <th data-column-id="srchostname" data-type="string" data-sortable="false" data-visible="false">{{ lang._('Source Hostname') }}</th>
+                <th data-column-id="srchostname" data-type="string" data-formatter="lookup" data-sortable="false" data-visible="false">{{ lang._('Source Hostname') }}</th>
                 <th data-column-id="dst" data-type="string" data-formatter="appendPort" data-sortable="false">{{ lang._('Destination') }}</th>
-                <th data-column-id="dsthostname" data-type="string" data-sortable="false" data-visible="false">{{ lang._('Destination Hostname') }}</th>
+                <th data-column-id="dsthostname" data-type="string" data-formatter="lookup" data-sortable="false" data-visible="false">{{ lang._('Destination Hostname') }}</th>
                 <th data-column-id="action" data-type="string" data-sortable="false" data-width="80">{{ lang._('Action') }}</th>
-                <th data-column-id="label" data-type="string" data-sortable="false">{{ lang._('Label') }}</th>
+                <th data-column-id="label" data-type="string" data-sortable="false" data-width="350">{{ lang._('Label') }}</th>
                 <th data-column-id="status" data-type="string" data-sortable="false" data-visible="false">{{ lang._('Status') }}</th>
-                <th data-column-id="" data-formatter="info" data-width="20"></th>
+                <th data-column-id="" data-sortable="false" data-formatter="info" data-width="30"></th>
             </tr>
         </thead>
     </table>

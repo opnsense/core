@@ -182,7 +182,7 @@ class FirewallController extends ApiControllerBase
             }
 
             if ($this->request->getPost('searchPhrase', 'string', '') != '') {
-                $searchPhrase = $filter->sanitize($this->request->getPost('searchPhrase'), 'query');
+                $searchPhrase = $filter->sanitize($this->request->getPost('searchPhrase'), 'string');
             }
             if (
                 $this->request->has('sort') &&

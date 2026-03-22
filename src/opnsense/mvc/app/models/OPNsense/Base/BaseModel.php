@@ -69,6 +69,12 @@ abstract class BaseModel
     private $internal_model_version = "0.0.0";
 
     /**
+     * this model's description
+     * @var string
+     */
+    private $internal_model_descr = "";
+
+    /**
      * prefix for migration files, default is M (e.g. M1_0_0.php equals version 1.0.0)
      * when models share a namespace, they should be allowed to use their own unique prefix
      * @var string
@@ -456,6 +462,9 @@ abstract class BaseModel
         if (!empty($model_xml->version)) {
             $this->internal_model_version = (string)$model_xml->version;
         }
+        if (!empty($model_xml->description)) {
+            $this->internal_model_descr = trim(preg_replace('/\s+/', ' ', (string)$model_xml->description));
+        }
         if (!empty($model_xml->migration_prefix)) {
             $this->internal_model_migration_prefix = (string)$model_xml->migration_prefix;
         }
@@ -698,6 +707,9 @@ abstract class BaseModel
                 $rootnode->addAttribute('version', $this->internal_current_model_version);
                 /* when versioned, also mark node with a timestamp */
                 $rootnode->addAttribute('persisted_at', sprintf("%0.2f", microtime(true)));
+                if (!empty($this->internal_model_descr)) {
+                    $rootnode->addAttribute('description', $this->internal_model_descr);
+                }
             }
         }
 
@@ -740,7 +752,15 @@ abstract class BaseModel
              * e.g. /system/user should place new entries at /system
              **/
             $pxpath = implode("/", array_slice(explode("/", $xpath), 0, -1));
-            $toDom = dom_import_simplexml($target_node->xpath($pxpath)[0]);
+            $target = $target_node->xpath($pxpath);
+            if (empty($target)) {
+                /* target doesn't exist yet, create the root node by traversing the tree (starting inside /opnsense) */
+                $target = $target_node;
+                foreach (array_slice(explode("/", trim($xpath, "/")), 1, -1) as $p) {
+                    $target = count($target_node->xpath($p)) == 0 ? $target->addChild($p) : $target->xpath($p)[0];
+                }
+            }
+            $toDom = dom_import_simplexml($target[0]);
             foreach ($newNodes as $node) {
                 if ($node !== null) {
                     $toDom->appendChild($toDom->ownerDocument->importNode($node, true));

@@ -5,7 +5,7 @@
     </field>
     <field>
         <id>instance.vpnid</id>
-        <label>vpnid</label>
+        <label>VPN ID</label>
         <!-- hide id, but push to server-->
         <style>role</style>
         <type>text</type>
@@ -337,7 +337,6 @@
         <label>Data Ciphers</label>
         <type>select_multiple</type>
         <advanced>true</advanced>
-        <style>selectpicker role role_server</style>
         <help>Restrict the allowed ciphers to be negotiated to the ciphers in this list.</help>
         <grid_view>
             <visible>false</visible>
@@ -348,7 +347,6 @@
         <label>Data Ciphers Fallback</label>
         <type>dropdown</type>
         <advanced>true</advanced>
-        <style>selectpicker role role_server</style>
         <help>
             Configure a cipher that is used to fall back to if we could not determine which cipher the peer is willing to use.
             This option should only be needed to connect to peers that are running OpenVPN 2.3 or older versions,
@@ -518,6 +516,18 @@ Set to 0 to disable, remember to change your client as well.
         </grid_view>
     </field>
     <field>
+        <id>instance.push_excluded_routes</id>
+        <label>Excluded routes</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <advanced>true</advanced>
+        <help>Specify routes to be excluded from the VPN tunnel. Traffic to these destinations will use the client’s existing default IP gateway (net_gateway) instead. Concretely, new routes will be added on the client system so that these destinations are sent via the user’s usual default gateway. Note: this feature is not supported on all client systems.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <type>header</type>
         <label>Miscellaneous</label>
     </field>
@@ -586,10 +596,11 @@ Set to 0 to disable, remember to change your client as well.
     </field>
     <field>
         <id>instance.dns_domain</id>
-        <label>DNS Default Domain</label>
-        <type>text</type>
-        <style>role role_server</style>
-        <help>Set Connection-specific DNS Suffix.</help>
+        <label>DNS Domain list</label>
+        <type>select_multiple</type>
+        <style>tokenize role role_server</style>
+        <allownew>true</allownew>
+        <help>Set Connection-specific DNS Suffixes.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -697,6 +708,16 @@ Set to 0 to disable, remember to change your client as well.
         <type>text</type>
         <style>role role_client</style>
         <help>Use a http proxy to connect to the selected server, define as host:port.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>instance.verify-x509-name</id>
+        <label>Verify X.509 name</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Accept connections only if a host's X.509 name is equal to name.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>

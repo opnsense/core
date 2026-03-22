@@ -84,7 +84,7 @@ function upload_crash_report($files, $agent)
 
 include('head.inc');
 
-$plugins = implode(' ',  explode("\n", shell_safe('/usr/local/sbin/pkg-static info -g "os-*"')));
+$plugins = implode(' ', shell_safe('/usr/local/sbin/pkg-static info -g "os-*"', [], true));
 $product = product::getInstance();
 
 $crash_report_header = sprintf(
@@ -152,11 +152,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             file_put_contents('/var/crash/crashreport_header.txt', $crash_report_header);
             if (file_exists('/var/lib/php/tmp/PHP_errors.log')) {
                 // limit PHP_errors to send to 1MB
-                exec('/usr/bin/tail -c 1048576 /var/lib/php/tmp/PHP_errors.log > /var/crash/PHP_errors.log');
+                shell_safe('/usr/bin/tail -c 1048576 /var/lib/php/tmp/PHP_errors.log > /var/crash/PHP_errors.log');
                 @unlink('/var/lib/php/tmp/PHP_errors.log');
             }
             @copy('/var/run/dmesg.boot', '/var/crash/dmesg.boot');
-            exec('/usr/bin/gzip /var/crash/*');
+            shell_safe('/usr/bin/gzip /var/crash/*');
             $files_to_upload = glob('/var/crash/*');
             upload_crash_report($files_to_upload, $user_agent);
             foreach ($files_to_upload as $file_to_upload) {

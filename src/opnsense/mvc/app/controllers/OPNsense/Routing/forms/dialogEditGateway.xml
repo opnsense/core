@@ -55,9 +55,7 @@
         <type>checkbox</type>
         <help>This will select the above gateway as a default gateway candidate.</help>
         <grid_view>
-            <visible>false</visible>
-            <type>boolean</type>
-            <formatter>boolean</formatter>
+            <ignore>true</ignore>
         </grid_view>
     </field>
     <field>

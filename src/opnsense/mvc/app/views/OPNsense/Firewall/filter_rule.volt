@@ -41,11 +41,6 @@
             });
         }
 
-        // Show statistics columns when inspect button is checked
-        function updateStatisticColumns() {
-            grid.bootgrid(inspectEnabled ? "setColumns" : "unsetColumns", ['evaluations', 'states', 'packets', 'bytes']);
-        }
-
         // Get all advanced fields, used for advanced mode tooltips
         const advancedFieldIds = "{{ advancedFieldIds }}".split(',');
 
@@ -65,9 +60,12 @@
         let inspectEnabled = localStorage.getItem("firewall_rule_inspect") === "1";
         $('#toggle_inspect_button').toggleClass('active btn-primary', inspectEnabled);
 
+        function updateStatisticColumns() {
+            grid.bootgrid(inspectEnabled ? "setColumns" : "unsetColumns", ['statistics']);
+        }
+
         // read interface from URL hash once, for the first grid load
-        const hashMatchInterface = window.location.hash.match(/(?:^#|&)interface=([^&]+)/);
-        let pendingUrlInterface = hashMatchInterface ? decodeURIComponent(hashMatchInterface[1]) : null;
+        let pendingUrlInterface = getUrlHash('interface') || null;
 
         // Lives outside the grid, so the logic of the response handler can be changed after grid initialization
         function dynamicResponseHandler(resp) {
@@ -106,6 +104,19 @@
             return Object.assign({}, resp, { rows: buckets });
         }
 
+        /* hook import/export buttons */
+        $("#upload_rules").SimpleFileUploadDlg({
+            onAction: function(){
+                $("#{{formGridFilterRule['table_id']}}").bootgrid('reload');
+                $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
+            }
+        });
+
+        $('#download_rules').click(function(e){
+            e.preventDefault();
+            window.open("/api/firewall/filter/download_rules");
+        });
+
         // Initialize grid
         const grid = $("#{{formGridFilterRule['table_id']}}").UIBootgrid({
             search:'/api/firewall/filter/search_rule/',
@@ -131,6 +142,7 @@
                     // hide the row selection checkbox for internal and dataTree group rules
                     if (data.isGroup || !data.uuid || !data.uuid.includes("-")) {
                         $element.addClass('row-no-select');
+                        $element.removeClass('tabulator-selectable');
                     }
 
                     // bucket row (dataTree) styling
@@ -138,11 +150,15 @@
                         $element.addClass('bucket-row');
                     }
                 },
+                selectableRowsCheck: function(row) {
+                    const data = row.getData();
+                    return !(data.isGroup || !data.uuid || !data.uuid.includes("-"));
+                }
             },
             options: {
                 responsive: true,
+                sorting: false,
                 initialSearchPhrase: getUrlHash('search'),
-                triggerEditFor: getUrlHash('edit'),
                 requestHandler: function(request){
                     // Add category selectpicker
                     if ( $('#category_filter').val().length > 0) {
@@ -150,11 +166,14 @@
                     }
                     // Add interface selectpicker, or fall back to hash for the first load
                     let selectedInterface = $('#interface_select').val();
-                    if ((!selectedInterface || selectedInterface.length === 0) && pendingUrlInterface) {
-                        request['interface'] = pendingUrlInterface;
-                        pendingUrlInterface = null; // consume the hash so it is not used again
-                    } else if (selectedInterface && selectedInterface.length > 0) {
-                        request['interface'] = selectedInterface;
+                    if (selectedInterface == null && pendingUrlInterface != null) {
+                        selectedInterface = pendingUrlInterface;
+                    }
+                    if (selectedInterface === '__floating') {
+                        request.interface = '';
+                    } else if (selectedInterface !== null && selectedInterface !== '__any') {
+                        request.interface = selectedInterface;
+                        // '__any' omit parameter for all rules
                     }
                     if (inspectEnabled) {
                         // Send as a comma separated string
@@ -187,31 +206,77 @@
                     categories: function (column) {
                         return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Categories") }}"></i>';
                     },
+                    statistics: function () {
+                        const element = $(`
+                            <span class="stats-header-icons">
+                                <span data-toggle="tooltip" title="{{ lang._('Statistics') }}">
+                                    <i class="fa-solid fa-fw fa-eye"></i>
+                                </span>
+                                <span class="inspect-cache-flush"
+                                    style="cursor:pointer; margin-left:4px;"
+                                    data-toggle="tooltip"
+                                    title="{{ lang._('Refresh') }}">
+                                    <i class="fa-solid fa-fw fa-rotate-right"></i>
+                                </span>
+                            </span>
+                        `);
+
+                        element.find('.inspect-cache-flush').on('click', function () {
+                            ajaxCall(
+                                '/api/firewall/filter/flush_inspect_cache',
+                                {},
+                                function () {
+                                    $('#{{ formGridFilterRule["table_id"] }}').bootgrid('reload');
+                                },
+                                null,
+                                'POST'
+                            );
+                        });
+
+                        return element[0];
+                    },
                 },
                 formatters:{
-                    // Only show command buttons for rules that have a uuid, internal rules will not have one
                     commands: function (column, row) {
                         // All formatters except category must skip processing bucket rows in tree view
                         if (row.isGroup) {
                             return "";
                         }
-                        let rowId = row.uuid;
+                        const rowId = row.uuid || "";
+                        const hasUuid = rowId.includes("-");
+
+                        const logSearchCommand = (rid, log) => {
+                            const loggingEnabled = log === '1' || log === true;
+                            if (!loggingEnabled) return '';
+
+                            return `
+                                <a href="/ui/diagnostics/firewall/log#${new URLSearchParams({field:'rid',operator:'=',value:rid})}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                class="btn btn-xs btn-default bootgrid-tooltip"
+                                title="{{ lang._('View log entries for this rule') }}">
+                                    <i class="fa fa-fw fa-search"></i>
+                                </a>
+                            `;
+                        };
 
                         // If UUID is invalid, its an internal rule, use the #ref field to show a lookup button.
-                        if (!rowId || !rowId.includes('-')) {
-                            let ref = row["ref"] || "";
-                            if (ref.trim().length > 0) {
-                                let url = `/${ref}`;
-                                return `
-                                    <a href="${url}"
-                                    class="btn btn-xs btn-default bootgrid-tooltip"
-                                    title="{{ lang._('Lookup Rule') }}">
-                                        <span class="fa fa-fw fa-search"></span>
-                                    </a>
-                                `;
-                            }
-                            // If ref is empty
-                            return "";
+                        if (!hasUuid) {
+                            const ref = (row["ref"] || "");
+
+                            // optional lookup button if ref exists
+                            const lookupRefCommand = ref ? `
+                                <a href="/${ref}" target="_blank" rel="noopener noreferrer"
+                                class="btn btn-xs btn-default bootgrid-tooltip"
+                                title="{{ lang._('Lookup rule reference') }}">
+                                    <i class="fa fa-fw fa-link"></i>
+                                </a>
+                            ` : '';
+
+                            return `
+                                ${logSearchCommand(rowId, row.log)}
+                                ${lookupRefCommand}
+                            `;
                         }
 
                         return `
@@ -226,7 +291,7 @@
                                 title="${row.log == '1'
                                     ? '{{ lang._("Disable Logging") }}'
                                     : '{{ lang._("Enable Logging") }}'}">
-                                <i class="fa fa-exclamation-circle fa-fw ${row.log == '1' ? 'text-info' : 'text-muted'}"></i>
+                                <i class="fa fa-fw ${row.log == '1' ? 'fa-bell' : 'fa-bell-slash'}"></i>
                             </button>
 
                             <button type="button" class="btn btn-xs btn-default command-edit
@@ -246,6 +311,8 @@
                                 title="{{ lang._('Delete') }}">
                                 <span class="fa fa-fw fa-trash-o"></span>
                             </button>
+
+                            ${logSearchCommand(rowId, row.log)}
                         `;
                     },
                     // Disable rowtoggle for internal rules
@@ -276,11 +343,10 @@
                         }
 
                         if (
-                            row[column.id] !== '' &&
-                            row[column.id] !== 'any' &&
-                            row[column.id] !== 'None'
+                            row[column.id] !== undefined &&
+                            !['', 'any', 'None'].includes(row[column.id])
                         ) {
-                            return row[column.id];
+                            return row["%" + column.id] || row[column.id];
                         } else {
                             return '*';
                         }
@@ -296,25 +362,28 @@
                                 ? `<span class="category-icon category-cell">
                                     <i class="fa fa-fw fa-tag"></i>
                                     <strong>{{ lang._('Uncategorized') }}</strong>
-                                    <span class="badge badge-sm bg-info"
+                                    <span class="badge chip"
                                             style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
                                 </span>`
                                 : '';
                         }
 
-                        const categories = (row["%categories"] || row.categories).split(',');
-                        const colors     = row.category_colors;
+                        const categories = row.category_colors || [];
 
-                        const icons = categories.map((cat, idx) => `
-                            <span class="category-icon" data-toggle="tooltip" title="${cat}">
-                                <i class="fa fa-fw fa-tag" style="color:${colors[idx]};"></i>
-                            </span>`).join(' ');
+                        const icons = categories.map(cat => {
+                            const bgColor = cat.color ? ` style="color:${cat.color};"` : '';
+
+                            return `
+                                <span class="category-icon" data-toggle="tooltip" title="${cat.name}">
+                                    <i class="fa fa-fw fa-tag"${bgColor}></i>
+                                </span>`;
+                        }).join(' ');
 
                         return isGroup
                             ? `<span class="category-cell">
                                     <span class="category-cell-content">
-                                        <strong>${icons} ${categories.join(', ')}</strong>
-                                        <span class="badge badge-sm bg-info"
+                                        <strong>${icons} ${categories.map(cat => cat.name).join(', ')}</strong>
+                                        <span class="badge chip"
                                                 style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
                                     </span>
                             </span>`
@@ -403,7 +472,7 @@
                         const usedAdvancedFields = [];
 
                         advancedFieldIds.forEach(function (fieldId) {
-                            const value = row[fieldId];
+                            const value = row["%" + fieldId] ?? row[fieldId];
                             if (value !== undefined) {
                                 const lowerValue = value.toString().toLowerCase().trim();
                                 // Check: if the value is empty OR starts with any default prefix, consider it default
@@ -434,7 +503,7 @@
                         // Return all icons
                         return result;
                     },
-                    // Show Edit alias icon, alias description and integrate "not" functionality
+                    // Show Edit alias icon, alias info and integrate "not" functionality
                     alias: function(column, row) {
                         if (row.isGroup) {
                             return "";
@@ -456,7 +525,7 @@
 
                         const renderedItems = aliasMetadataList.map(aliasInfo => {
                             if (aliasInfo.isAlias) {
-                                const tooltipHtml = aliasInfo.description || aliasInfo.value || "";
+                                const tooltipHtml = aliasInfo.summary || aliasInfo.description || aliasInfo.value || "";
                                 return `
                                     <span data-toggle="tooltip" data-html="true" title="${tooltipHtml}">${aliasInfo.value}&nbsp;</span>
                                     <a href="/ui/firewall/alias/index/${encodeURIComponent(aliasInfo.value)}"
@@ -472,9 +541,93 @@
                         // There can only be a single negated value
                         return isNegated + renderedItems;
                     },
+                    statistics: function(column, row) {
+                        if (row.isGroup || !inspectEnabled) {
+                            return "";
+                        }
+
+                        const evals   = row["evaluations"] ?? "";
+                        const states  = row["states"] ?? "";
+                        const packets = row["packets"] ?? "";
+                        const bytes   = row["bytes"] ?? "";
+                        const uuid    = row["uuid"] ?? "";
+
+                        function render(icon, title, value, is_number = false, link = null) {
+                            if (!value || value === "0") {
+                                return "";
+                            }
+
+                            const numValue  = parseInt(value, 10);
+                            const formatted = byteFormat(numValue, 1, is_number);
+
+                            return `
+                                <span data-toggle="tooltip" title="${title}: ${numValue.toLocaleString()}">
+                                    ${link
+                                        ? `<a href="${link}" target="_blank" rel="noopener noreferrer" id="${uuid}_states">
+                                            <i class="fa fa-fw ${icon}"></i> ${formatted}
+                                        </a>`
+                                        : `<i class="fa fa-fw ${icon}"></i> ${formatted}`}
+                                </span>
+                            `;
+                        }
+
+                        const parts = [
+                            render("fa-chart-line", "{{ lang._('States') }}", states, true, `/ui/diagnostics/firewall/states#${uuid}`),
+                            render("fa-bullseye", "{{ lang._('Evaluations') }}", evals, true),
+                            render("fa-box", "{{ lang._('Packets') }}", packets, true),
+                            render("fa-database", "{{ lang._('Bytes') }}", bytes)
+                        ].filter(Boolean);
+
+                        if (parts.length === 0) {
+                            return "";
+                        }
+
+                        return `
+                            <div class="stats-cell">
+                                ${parts.join("")}
+                            </div>
+                        `;
+                    },
+                    sched: function(column, row) {
+                        if (row.isGroup || typeof row[column.id] !== "string" || row[column.id] === "") {
+                            return "";
+                        }
+                        return `
+                            ${row[column.id]} &nbsp;
+                            <a href="/firewall_schedule_edit.php?name=${row[column.id]}" data-toggle="tooltip" title="{{ lang._('Edit') }}">
+                                <i class="fa fa-calendar text-muted"></i>
+                            </a>
+                        `;
+                    },
                 },
             },
             commands: {
+                upload_rules: {
+                    onRendered: function () {
+                        const $el = $(this);
+                        $el.data('title', "{{ lang._('Import rules') }}");
+                        $el.data('endpoint', '/api/firewall/filter/upload_rules');
+                        $el.SimpleFileUploadDlg({
+                            onAction: function () {
+                                $("#{{formGridFilterRule['table_id']}}").bootgrid('reload');
+                            }
+                        });
+                    },
+                    footer: true,
+                    classname: 'fa fa-fw fa-upload',
+                    title: "{{ lang._('Import csv') }}",
+                    sequence: 400
+                },
+                download_rules: {
+                    footer: true,
+                    classname: 'fa fa-fw fa-table',
+                    title: "{{ lang._('Export as csv') }}",
+                    method: function (e) {
+                        e.preventDefault();
+                        window.open("/api/firewall/filter/download_rules");
+                    },
+                    sequence: 500
+                },
                 move_before: {
                     method: function(event) {
                         // Ensure exactly one rule is selected to be moved
@@ -557,6 +710,10 @@
 
         });
 
+        grid.on('loaded.rs.jquery.bootgrid', function () {
+            updateStatisticColumns(); // ensures inspect columns are consistent after reload
+        });
+
         // Track if user has actually changed a dropdown, or it was the controller
         let interfaceInitialized = false;
         let categoryInitialized = false;
@@ -585,14 +742,14 @@
 
                     return data.rows.map(row => {
                         const optVal = $('<div/>').text(row.name).html();
-                        const bgColor = row.color || '31708f';
+                        const bgColor = row.color ? ` style="background:#${row.color};"` : '';
 
                         return {
                             value: row.uuid,
                             label: row.name,
                             id: row.used > 0 ? row.uuid : undefined,
                             'data-content': row.used > 0
-                                ? `<span><span class="badge badge-sm" style="background:#${bgColor};">${row.used}</span> ${optVal}</span>`
+                                ? `<span><span class="label label-sm"${bgColor}>${row.used}</span> ${optVal}</span>`
                                 : undefined
                         };
                     });
@@ -610,6 +767,7 @@
 
         // Populate interface selectpicker
         function populateInterfaceSelectpicker() {
+            const currentSelection = $("#interface_select").val();
             return $('#interface_select').fetch_options(
                 '/api/firewall/filter/get_interface_list',
                 {},
@@ -622,20 +780,20 @@
                             const subtext = group.label;
 
                             const bgClassMap = {
-                                floating: 'bg-primary',
-                                group: 'bg-warning',
-                                interface: 'bg-info'
+                                floating: 'label-primary',
+                                group: 'label-warning',
+                                interface: 'label-info',
+                                any: 'label-primary',
                             };
-                            const badgeClass = bgClassMap[item.type] || 'bg-info';
+                            const badgeClass = bgClassMap[item.type] || 'label-info';
 
                             return {
                                 value: item.value,
                                 label: label,
                                 'data-content': `
                                     <span>
-                                        ${count > 0 ? `<span class="badge badge-sm ${badgeClass}">${count}</span>` : ''}
+                                        ${count > 0 ? `<span class="label label-sm ${badgeClass}">${count}</span>` : ''}
                                         ${label}
-                                        <small class="text-muted ms-2"><em>${subtext}</em></small>
                                     </span>
                                 `.trim()
                             };
@@ -645,17 +803,19 @@
                 },
                 false,
                 function (data) {  // post_callback, apply the URL hash logic
-                    const match = window.location.hash.match(/^#interface=([^&]+)/);
-                    if (match) {
-                        const ifaceFromHash = decodeURIComponent(match[1]);
+                    const $select = $('#interface_select');
+                    const interfaceCandidate = (!interfaceInitialized && pendingUrlInterface)
+                        ? pendingUrlInterface
+                        : currentSelection;
 
-                        const allOptions = Object.values(data).flatMap(group => group.items.map(i => i.value));
-                        if (allOptions.includes(ifaceFromHash)) {
-                            $('#interface_select').val(ifaceFromHash).selectpicker('refresh');
-                        }
+                    $select.selectpicker('val', interfaceCandidate);
+
+                    if (!$select.val()) {
+                        $select.selectpicker('val', '__any');
                     }
-                    interfaceInitialized = true;
 
+                    interfaceInitialized = true;
+                    pendingUrlInterface = null; // consume the hash so it is not used again
                 },
                 true  // render_html to show counts as badges
             );
@@ -664,7 +824,7 @@
         $("#interface_select_container").show();
 
         // move selectpickers into action bar
-        $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header > .row > .actionBar > .search');
+        $("#interface_select_container").detach().insertBefore('#{{formGridFilterRule["table_id"]}}-header .search');
         $('#interface_select').on('changed.bs.select', function () {
             // Skip grid reload during reconfigureAct and initial page load
             if (!interfaceInitialized || reconfigureActInProgress) return;
@@ -712,11 +872,6 @@
             } else {
                 $table.find('.tabulator-data-tree-control-collapse').trigger('click');
             }
-        });
-
-        grid.on('loaded.rs.jquery.bootgrid', function () {
-            updateStatisticColumns();  // ensures inspect columns are consistent after reload
-            $("#{{formGridFilterRule['table_id']}}").toggleClass("tree-enabled", treeViewEnabled);
         });
 
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
@@ -787,6 +942,14 @@
             }
         });
 
+        // Hide additional protocol settings in dialog, e.g., ICMP types
+        $('#rule\\.protocol').change(function() {
+            $('.rule_protocol:not(div)').closest('tr').hide();
+            $('.' + $.escapeSelector('protocol_' + $(this).val().toLowerCase()) + ':not(div)')
+                .closest('tr')
+                .show();
+        });
+
         // Dynamically add fa icons to selectpickers
         $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
 
@@ -845,23 +1008,14 @@
         float: left;
         margin-left: 5px;
     }
-    /*
-     * XXX: Since the badge class uses its own default background-color, we must override it explicitly.
-     *      Essentially we would like to use the main style sheet for this.
-     *      bg-info is slightly different from text-info, so we use the text-info color for consistency.
-     */
-    .badge.bg-primary {
-        background-color: #C03E14 !important;
-    }
-    .badge.bg-warning {
-        background-color: #f0ad4e !important;
-    }
-    .badge.bg-info {
-        background-color: #31708f !important;
-    }
-    .badge-sm {
-        font-size: 12px;
-        padding: 2px 5px;
+
+    /* labels are rectengular by default, we want them circle shaped */
+    .label.label-sm {
+        display: inline-flex;
+        align-items: center;
+        height: 18px;
+        padding: 0 6px;
+        border-radius: 50%;
     }
 
     /* bucket row style */
@@ -912,17 +1066,70 @@
         opacity: 0.4;
     }
 
+    /* Action bar specific layout */
+    #interface_select_container,
+    #type_filter_container {
+        float: none !important;
+        flex: 1 1 150px;
+        min-width: 0;
+        max-width: 400px;
+    }
+
+    #interface_select_container .bootstrap-select,
+    #type_filter_container .bootstrap-select {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .bootgrid-header .actionBar .btn-group {
+        align-items: flex-start;
+    }
+
+    @media (max-width: 1024px) {
+        #interface_select_container,
+        #type_filter_container {
+            flex: 1 1 100%;
+            max-width: 100%;
+            margin: 0;
+        }
+
+        #dialogFilterRule-header #inspect_toggle_container,
+        #dialogFilterRule-header #tree_toggle_container,
+        #dialogFilterRule-header #tree_expand_container {
+            flex: 1 1 0;
+            margin: 0;
+        }
+    }
+
+    .stats-cell {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 10px;
+        align-items: center;
+        container-type: inline-size;
+    }
+
+    .stats-cell > span {
+        white-space: nowrap;
+    }
+
+    @container (max-width: 160px) {
+        .stats-cell > span {
+            flex: 1 1 50%;
+        }
+    }
+
 </style>
 
 <div class="tab-content content-box">
     <!-- filters -->
     <div class="hidden">
         <div id="type_filter_container" class="btn-group">
-            <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="30" multiple data-width="300px" data-container="body">
+            <select id="category_filter" data-title="{{ lang._('Categories') }}" class="selectpicker" data-live-search="true" data-size="30" multiple data-container="body">
             </select>
         </div>
         <div id="interface_select_container" class="btn-group">
-            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="30" data-width="300px" data-container="body">
+            <select id="interface_select" class="selectpicker" data-live-search="true" data-size="30" data-container="body">
             </select>
         </div>
         <div id="inspect_toggle_container" class="btn-group">
@@ -963,7 +1170,7 @@
         </div>
     </div>
     <!-- grid -->
-    {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '150'}) }}
+    {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '180'}) }}
 </div>
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/filter/apply'}) }}

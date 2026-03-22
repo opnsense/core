@@ -81,6 +81,8 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up', $reload = false)
         mwexecf('/sbin/ifconfig %s mtu %s', [$server->interface, $server->mtu]);
     }
 
+    mwexecf('/sbin/ifconfig %s %sdebug', [$server->interface->getValue(), $server->debug->getValue() === '1' ? '' : '-']);
+
     if (empty((string)$server->disableroutes)) {
         /**
          * Add routes for all configured peers, wg-quick seems to parse 'wg show wgX allowed-ips' for this,

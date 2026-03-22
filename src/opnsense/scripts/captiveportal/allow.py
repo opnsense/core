@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2024 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -34,6 +34,7 @@ import ujson
 from lib.db import DB
 from lib.arp import ARP
 from lib.pf import PF
+from lib.ipfw import IPFW
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--username', help='username', type=str, required=True)
@@ -41,6 +42,7 @@ parser.add_argument('--zoneid', help='zone number to allow this user in', type=s
 parser.add_argument('--authenticated_via', help='authentication source', type=str)
 parser.add_argument('--ip_address', help='source ip address', type=str)
 args = parser.parse_args()
+
 
 arp_entry = ARP().get_by_ipaddress(args.ip_address)
 response = DB().add_client(
@@ -51,5 +53,7 @@ response = DB().add_client(
     mac_address=arp_entry['mac'] if arp_entry is not None else None
 )
 PF.add_to_table(zoneid=args.zoneid, address=args.ip_address)
+IPFW.add_accounting(args.ip_address)
+
 response['clientState'] = 'AUTHORIZED'
 print(ujson.dumps(response))

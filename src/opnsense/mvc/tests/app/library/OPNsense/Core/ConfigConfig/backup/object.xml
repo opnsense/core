@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<opnsense>
+  <dhcpdv6>
+    <lan>
+      <ramode>disabled</ramode>
+    </lan>
+  </dhcpdv6>
+</opnsense>

@@ -50,7 +50,7 @@ sweep-whitespace:
 .for DIR in ${.CURDIR}/src
 .if exists(${DIR})
 	find ${DIR} ! -name "*.min.*" ! -name "*.svg" \
-	    ! -name "*.ser" -type f -print0 | \
+	    ! -name "*.ser" ! -name "*.css.map" -type f -print0 | \
 	    xargs -0 -n1 ${COREREFDIR}/Scripts/cleanfile
 .endif
 .endfor

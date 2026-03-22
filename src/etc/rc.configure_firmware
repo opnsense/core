@@ -32,8 +32,12 @@ if (!file_exists('/conf/config.xml')) {
     exit(0);
 }
 
-/* there seems to be a race with unpacking files */
-shell_exec('/bin/sync');
+/*
+ * There seems to be a race with unpacking files and including
+ * them below.  So an explicit exec() is used to force a sync
+ * to make sure the files have their new content ready on the FS.
+ */
+exec('/bin/sync');
 
 require_once 'config.inc';
 require_once 'auth.inc';

@@ -42,8 +42,8 @@ $monitor_gws = $argv[2] ?? '';
 /* drop deleted routes */
 foreach (glob("/tmp/delete_route_*.todo") as $filename) {
     $network = trim(file_get_contents($filename));
-    $inet = (is_subnetv6($network) ? "-inet6" : "-inet");
-    mwexec("/sbin/route delete {$inet} " . escapeshellarg($network), true);
+    $inet = is_subnetv6($network) ? 'inet6' : 'inet';
+    mwexecfm('/sbin/route delete -%s %s', [$inet, $network]);
     unlink($filename);
 }
 
@@ -51,7 +51,7 @@ foreach (glob("/tmp/delete_route_*.todo") as $filename) {
 system_routing_configure(true, null, !$monitor_hook);
 
 if ($monitor_hook) {
-    passthru(exec_safe('/usr/local/etc/rc.syshook monitor %s', $monitor_gws));
+    pass_safe('/usr/local/etc/rc.syshook monitor %s', $monitor_gws);
 }
 
 filter_configure_sync(true, false);

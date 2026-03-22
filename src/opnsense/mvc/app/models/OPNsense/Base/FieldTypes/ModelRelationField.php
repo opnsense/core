@@ -51,6 +51,8 @@ class ModelRelationField extends BaseListField
       */
     private $internalOptionsFromThisModel = false;
 
+    private $internalDisableCache = false;
+
     /**
      * @var string cache relations
      */
@@ -76,7 +78,7 @@ class ModelRelationField extends BaseListField
         if (!class_exists($classname)) {
             return []; /* not found */
         }
-        if (!isset(self::$internalCacheModelStruct[$classname]) || $force) {
+        if ($this->internalDisableCache || !isset(self::$internalCacheModelStruct[$classname]) || $force) {
             $pmodel = $this->getParentModel();
             if ($pmodel !== null && strcasecmp(get_class($pmodel), $classname) === 0) {
                 // model options from the same model, use this model instead of creating something new
@@ -166,6 +168,18 @@ class ModelRelationField extends BaseListField
     }
 
     /**
+     * Disable caching and force a model reload, this can be useful in cases where multiple layers of generated
+     * fields stack on each other which are dependent or if the related model has dynamically generated items.
+     * (in which case the persisted_at attribute doesn't tell the full story)
+     *
+     * @param $value boolean value Y/N
+     */
+    public function setDisableCache($value)
+    {
+        $this->internalDisableCache = trim(strtoupper($value)) == "Y";
+    }
+
+    /**
      * load model options when initialized
      */
     protected function actionPostLoadingEvent()
@@ -202,19 +216,6 @@ class ModelRelationField extends BaseListField
 
         return parent::getNodeData();
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDescription()
-    {
-        $tmp = [];
-        foreach (explode(',', $this->internalValue) as $key) {
-            $tmp[] = $this->internalOptionList[$key] ?? '';
-        }
-        return implode(', ', $tmp);
-    }
-
 
     /**
      * retrieve field validators for this field type

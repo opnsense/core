@@ -81,9 +81,14 @@
         $("#row_statickey\\.mode > td:eq(1) > div:last").before($("#keygen_div").detach().show());
         $("#control_label_instance\\.auth-gen-token-secret").before($("#keygen_auth_token_div").detach().show());
 
-        $("#keygen").click(function(){
-            ajaxGet("/api/openvpn/instances/gen_key/secret", {}, function(data, status){
-                if (data.result && data.result === 'ok') {
+        $("#keygen").click(function() {
+            let statickey_mode = $("#statickey\\.mode").val();
+            const mode_map = {
+                auth: "tls-auth",
+                crypt: "tls-crypt"
+            };
+            ajaxGet("/api/openvpn/instances/gen_key/" + mode_map[statickey_mode], {}, function(data){
+                if (data.result === 'ok') {
                     $("#statickey\\.key").val(data.key);
                 }
             });

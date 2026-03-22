@@ -157,13 +157,17 @@ def handle_top(args):
             """, [args.max]).fetchdf().astype('object')
 
             r_top_blocked = db.connection.execute("""
-                SELECT domain, COUNT(domain) as cnt, blocklist
+                SELECT
+                    domain,
+                    COUNT(*) AS cnt,
+                    blocklist,
+                    CAST(arg_max(uuid, time) AS VARCHAR) AS uuid
                 FROM query
-                WHERE action == 1
+                WHERE action = 1
                 GROUP BY domain, blocklist
                 ORDER BY cnt DESC
                 LIMIT ?
-            """, [args.max]).fetchdf().astype('object')
+            """, [args.max]).fetchdf().astype("object")
 
             r_total = db.connection.execute("""
                 SELECT COUNT(*) AS total,
@@ -198,7 +202,8 @@ def handle_top(args):
         top_blocked = r_top_blocked.set_index('domain').apply(lambda x: {
             "total": x.cnt,
             "pcnt": percent(x.cnt, blocked),
-            "blocklist": x.blocklist
+            "blocklist": x.blocklist,
+            "latest_policy_uuid": x.uuid
         }, axis=1).to_dict()
 
     print(ujson.dumps({
@@ -226,14 +231,14 @@ def handle_details(args):
                     WHERE q.client = ? AND q.time > ? AND q.time < ?
                     ORDER BY time DESC
                     LIMIT ?
-                """, [args.client, args.start, args.end, args.limit]).fetchdf().astype({'uuid': str})
+                """, [args.client, args.start, args.end, args.limit]).fetchdf().astype({'uuid': 'string'})
             else:
                 details = db.connection.execute("""
                     SELECT * FROM query
                     LEFT JOIN client resolved on client = resolved.ipaddr
                     ORDER BY time DESC
                     LIMIT ?
-                """, [args.limit]).fetchdf().astype({'uuid': str})
+                """, [args.limit]).fetchdf().astype({'uuid': 'string'})
 
 
     if not details.empty:

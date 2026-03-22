@@ -55,12 +55,7 @@
             <monitor_killstates type="BooleanField"/>
             <monitor_killstates_priority type="BooleanField"/>
             <monitor type="TextField">
-                <Constraints>
-                    <check001>
-                        <type>UniqueConstraint</type>
-                        <ValidationMessage>This monitor IP address already exists.</ValidationMessage>
-                    </check001>
-                </Constraints>
+                <!-- all validations in model class -->
             </monitor>
             <force_down type="BooleanField"/>
             <priority type="IntegerField">

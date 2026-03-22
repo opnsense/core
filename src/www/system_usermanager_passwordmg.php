@@ -36,7 +36,7 @@ $username = $_SESSION['Username'];
 
 /* determine if user is not local to system */
 $userFound = false;
-foreach ($config['system']['user'] as $user) {
+foreach (config_read_array('system', 'user', false) as $user) {
     if ($user['name'] == $username) {
         $userFound = true;
         break;
@@ -109,13 +109,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $config['system']['user'][$userindex[$username]]['language'] = $pconfig['language'];
             } elseif (isset($config['system']['user'][$userindex[$username]]['language'])) {
                 unset($config['system']['user'][$userindex[$username]]['language']);
-            }
-
-            // only update password change date if there is a policy constraint
-            if (!empty($config['system']['webgui']['enable_password_policy_constraints']) &&
-                !empty($config['system']['webgui']['password_policy_length'])
-            ) {
-                $config['system']['user'][$userindex[$username]]['pwd_changed_at'] = microtime(true);
             }
             if (!empty($_SESSION['user_shouldChangePassword'])) {
                 session_start();

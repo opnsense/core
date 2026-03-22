@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2020 Deciso B.V.
+ # Copyright (c) 2020-2026 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -44,8 +44,35 @@
                                 }
                             },
                         }
+                    },
+                    commands: {
+                        upload:{
+                            onRendered: function() {
+                                const $el = $(this);
+                                $el.data('title', "{{ lang._('Import csv') }}");
+                                $el.data('endpoint', '/api/firewall/category/upload');
+                                $el.SimpleFileUploadDlg({
+                                    onAction: function() {
+                                        $("#{{formGridCategory['table_id']}}").bootgrid('reload');
+                                    }
+                                });
+                            },
+                            footer: true,
+                            classname: 'fa fa-fw fa-upload',
+                            title: "{{ lang._('Import csv') }}",
+                            sequence: 400
+                        },
+                        download: {
+                            footer: true,
+                            classname: 'fa fa-fw fa-table',
+                            title: "{{ lang._('Export as csv') }}",
+                            method: function(e) {
+                                e.preventDefault();
+                                window.open("/api/firewall/category/download");
+                            },
+                            sequence: 500
+                        },
                     }
-
                 }
         );
 

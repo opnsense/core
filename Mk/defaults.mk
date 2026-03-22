@@ -40,7 +40,7 @@ CORE_ARCH?=	${_CORE_ARCH}
 
 CORE_MAKE=	${MAKE}
 
-PHPBIN=		${LOCALBASE}/bin/php
+PHPBIN!=	which php || echo ${LOCABASE}/bin/php
 
 .if exists(${PHPBIN})
 _CORE_PHP!=	${PHPBIN} -v
@@ -53,6 +53,7 @@ VERSIONBIN=	${LOCALBASE}/sbin/opnsense-version
 _CORE_ABI!=	${VERSIONBIN} -a
 CORE_ABI?=	${_CORE_ABI}
 .else
+CORE_ABI?=	${CORE_ABIS:[1]}
 VERSIONBIN=	true
 .endif
 
@@ -62,6 +63,8 @@ PYTHONLINK=	${LOCALBASE}/bin/python3
 _CORE_PYTHON!=	${PYTHONLINK} -V
 CORE_PYTHON?=	${_CORE_PYTHON:[2]:S/./ /g:[1..2]:tW:S/ //}
 .endif
+
+CORE_PYTHON_DOT=${CORE_PYTHON:C/./&./1}
 
 .if exists(${PKG})
 _CORE_SYSLOGNG!=${PKG} query %v syslog-ng
@@ -88,7 +91,6 @@ REPLACEMENTS=	CORE_ABI \
 		CORE_PKGVERSION \
 		CORE_PRODUCT \
 		CORE_PYTHON_DOT \
-		CORE_REPOSITORY \
 		CORE_SERIES \
 		CORE_SERIES_FW \
 		CORE_SYSLOGNG \

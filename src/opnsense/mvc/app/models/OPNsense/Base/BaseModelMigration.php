@@ -46,7 +46,7 @@ class BaseModelMigration
         foreach ($node->iterateItems() as $key => $subnode) {
             if (count(iterator_to_array($subnode->iterateItems())) > 0) {
                 $this->checkDefaults($subnode);
-            } elseif ($subnode->isEmptyAndRequired()) {
+            } elseif ($subnode->isRequired() && !$subnode->isSet()) {
                 $subnode->applyDefault();
             }
         }

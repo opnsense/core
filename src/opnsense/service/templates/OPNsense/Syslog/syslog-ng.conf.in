@@ -17,7 +17,7 @@ source s_all {
 {#
     merge all source configurations
 #}
-{%  for sfilename in helpers.glob("OPNsense/Syslog/sources/*.conf") %}{%
+{%  for sfilename in helpers.glob("OPNsense/Syslog/sources/*.conf")|sort %}{%
         include sfilename without context
 %}
 

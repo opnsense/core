@@ -29,6 +29,7 @@
 namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Core\Config;
+use OPNsense\Firewall\Util;
 use OPNsense\Firewall\Group;
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\ContainerField;
@@ -54,7 +55,7 @@ class FilterRuleContainerField extends ContainerField
             'label' => $this->getAttribute('uuid')
         ];
         $map_manual = ['source_net', 'source_not', 'source_port', 'destination_net', 'destination_not',
-            'destination_port', 'enabled', 'description', 'sequence', 'action', 'replyto'];
+            'destination_port', 'enabled', 'description', 'sequence', 'action', 'replyto', 'disablereplyto'];
         // 1-on-1 map (with type conversion if needed)
         foreach ($this->iterateItems() as $key => $node) {
             if (!in_array($key, $map_manual)) {
@@ -88,14 +89,29 @@ class FilterRuleContainerField extends ContainerField
                 $result['to_port'] = (string)$this->destination_port;
             }
         }
+        if (!$this->overload->isEmpty()) {
+            $alias = Util::aliasUuidToName($this->overload->getValue());
+            if ($alias !== null) {
+                $result['overload'] = $alias;
+            } else {
+                // fall back to default virusprod table
+                unset($result['overload']);
+            }
+        }
         // field mappings and differences
         $result['disabled'] = empty((string)$this->enabled);
         $result['descr'] = (string)$this->description;
         $result['type'] = (string)$this->action;
         $result['reply-to'] = (string)$this->replyto;
-        if (strpos((string)$this->interface, ",") !== false) {
+        if (!$this->disablereplyto->isEmpty()) {
+            /* XXX: registerFilterRule() merges disablereplyto, which requires the item to only exist when set  */
+            $result['disablereplyto'] = true;
+        }
+        /* XXX this is an approximation of the complex situation and will be removed eventually */
+        if (count($this->interface->getValues()) != 1 || !$this->interfacenot->isEmpty()) {
             $result['floating'] = true;
         }
+
         return $result;
     }
 
@@ -107,33 +123,37 @@ class FilterRuleContainerField extends ContainerField
     public function getPriority()
     {
         $configObj = Config::getInstance()->object();
-        $interface = (string)$this->interface;
-        if (strpos($interface, ",") !== false || empty($interface)) {
+        $interfaces = $this->interface->getValues();
+
+        /* XXX this is an approximation of the complex situation and will be removed eventually */
+        if (count($interfaces) != 1 || !$this->interfacenot->isEmpty()) {
             // floating (multiple interfaces involved)
             return 200000;
-        } elseif (
-            !empty($configObj->interfaces) &&
-            !empty($configObj->interfaces->$interface) &&
-            !empty($configObj->interfaces->$interface->type) &&
-            $configObj->interfaces->$interface->type == 'group'
-        ) {
+        }
+
+        // there can be only one
+        $interface = $interfaces[0];
+
+        if ($configObj?->interfaces?->$interface?->type == 'group') {
             if (static::$ifgroups === null) {
                 static::$ifgroups = [];
                 foreach ((new Group())->ifgroupentry->iterateItems() as $node) {
-                    if (!empty((string)$node->sequence)) {
-                        static::$ifgroups[(string)$node->ifname] =  (int)((string)$node->sequence);
+                    if (!$node->sequence->isEmpty()) {
+                        static::$ifgroups[$node->ifname->getValue()] = $node->sequence->asInt();
                     }
                 }
             }
+
             if (!isset(static::$ifgroups[$interface])) {
                 static::$ifgroups[$interface] = 0;
             }
+
             // group type
             return 300000 + static::$ifgroups[$interface];
-        } else {
-            // default
-            return 400000;
         }
+
+        // default
+        return 400000;
     }
 }
 

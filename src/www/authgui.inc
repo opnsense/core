@@ -294,7 +294,7 @@ if ($_SESSION['Username'] != 'root' && !$acl->isPageAccessible($_SESSION['Userna
     }
     $page = $acl->getLandingPage($_SESSION['Username']);
     if (!empty($page)) {
-        $username = empty($_SESSION["Username"]) ? "(system)" : $_SESSION['Username'];
+        $username = empty($_SESSION['Username']) ? '(unknown)' : $_SESSION['Username'];
         if (!empty($_SERVER['REMOTE_ADDR'])) {
             $username .= '@' . $_SERVER['REMOTE_ADDR'];
         }

@@ -1,0 +1,236 @@
+<form>
+    <field>
+        <type>header</type>
+        <label>General Settings</label>
+    </field>
+    <field>
+        <id>entries.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable or disable this entry.</help>
+        <grid_view>
+            <width>6em</width>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.interface</id>
+        <label>Interface</label>
+        <type>dropdown</type>
+        <help>Choose the interface that should send Router Advertisements.</help>
+    </field>
+    <field>
+        <id>entries.Base6Interface</id>
+        <label>Constructor</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>Construct a prefix out of IPv6 addresses of the chosen interface. In most cases an NDP proxy is required if the same prefix is shared by multiple interfaces.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.mode</id>
+        <label>Mode</label>
+        <type>dropdown</type>
+        <help>Select which flags to set in Router Advertisements sent from this interface. Use "Router Only" to disable Stateless Address Autoconfiguration (SLAAC) and DHCPv6, "Unmanaged" for SLAAC (A flag), "Managed" for Stateful DHCPv6 (M+O flags), "Assisted" for Stateful DHCPv6 and SLAAC (M+O+A flags), or "Stateless" for Stateless DHCPv6 and SLAAC (O+A flags).</help>
+    </field>
+    <field>
+        <id>entries.MinRtrAdvInterval</id>
+        <label>Minimum interval</label>
+        <type>text</type>
+        <help>The minimum time allowed between sending unsolicited multicast router advertisements from the interface, in seconds.</help>
+    </field>
+    <field>
+        <id>entries.MaxRtrAdvInterval</id>
+        <label>Maximum interval</label>
+        <type>text</type>
+        <help>The maximum time allowed between sending unsolicited multicast router advertisements from the interface, in seconds.</help>
+    </field>
+    <field>
+        <id>entries.AdvDefaultPreference</id>
+        <label>Preference</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>Select the Priority for the Router Advertisement (RA) Daemon.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.DeprecatePrefix</id>
+        <label>Deprecate Prefix</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>Deprecate advertised prefixes on shutdown by announcing a zero preferred lifetime.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.RemoveAdvOnExit</id>
+        <label>Shutdown Advertisement</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>Upon shutdown, send a final advertisement with zero router lifetime.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.AdvDefaultLifetime</id>
+        <label>Default Lifetime</label>
+        <type>text</type>
+        <help>Lifetime in seconds this router is considered a valid default router.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.AdvPreferredLifetime</id>
+        <label>Preferred Lifetime</label>
+        <type>text</type>
+        <help>Lifetime in seconds addresses remain preferred for new connections.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.AdvValidLifetime</id>
+        <label>Valid Lifetime</label>
+        <type>text</type>
+        <help>Lifetime in seconds addresses remain valid before becoming unusable.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.AdvRASrcAddress</id>
+        <label>Source Address</label>
+        <type>text</type>
+        <help>Select the source address embedded in the RA messages. If a CARP address is used DeprecatePrefix and RemoveRoute are both set to "off" by default.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.nat64prefix</id>
+        <label>NAT64 prefix</label>
+        <type>text</type>
+        <help>The NAT64 prefix included in the router advertisements. The "well-known prefix" reserved for this service is 64:ff9b::/96.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.AdvLinkMTU</id>
+        <label>Link MTU</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Advertise a specific MTU to clients. Must be equal or greater than 1280 and valid for the link.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>DNS Settings</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>entries.dns</id>
+        <label>Enable DNS</label>
+        <type>checkbox</type>
+        <help>Control the sending of the embedded DNS configuration (RFC 8106).</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.RDNSS</id>
+        <label>Recursive DNS Servers (RDNSS)</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>The default is to use this interface IP address with an enabled DNS service or the configured global DNS servers. You may specify up to three explict servers here instead.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.AdvRDNSSLifetime</id>
+        <label>Recursive DNS Servers Lifetime</label>
+        <type>text</type>
+        <help>Lifetime in seconds for advertised recursive DNS servers.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.DNSSL</id>
+        <label>DNS Search List (DNSSL)</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>The default is to use the domain name of this system as the DNSSL option. You may specify explicit domains here instead.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.AdvDNSSLLifetime</id>
+        <label>DNS Search List Lifetime</label>
+        <type>text</type>
+        <help>Lifetime in seconds for advertised DNS search domains.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Routes</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>entries.routes</id>
+        <label>Routes</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Routes are specified in CIDR format. The prefix of a route definition should be network prefix; it can be used to advertise more specific routes to the hosts.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.AdvRouteLifetime</id>
+        <label>Route Lifetime</label>
+        <type>text</type>
+        <help>Lifetime in seconds for advertised routes.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>entries.RemoveRoute</id>
+        <label>Remove Route</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>Withdraw advertised routes on shutdown by sending a zero lifetime.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+</form>

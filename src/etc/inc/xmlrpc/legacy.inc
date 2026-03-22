@@ -57,8 +57,8 @@ function does_vip_exist($vip)
         case "carp":
         case "ipalias":
             /* XXX: Make proper checks? */
-            $realif = get_real_interface($vip['interface']);
-            if (!does_interface_exist($realif)) {
+            $device = get_real_interface($vip['interface']);
+            if (!does_interface_exist($device)) {
                 return false;
             }
             break;
@@ -68,7 +68,7 @@ function does_vip_exist($vip)
             return false;
     }
 
-    foreach (array_keys(interfaces_addresses($realif, true)) as $vipips) {
+    foreach (array_keys(interfaces_addresses($device, true)) as $vipips) {
         if ($vipips == "{$vip['subnet']}/{$vip['subnet_bits']}") {
             return true;
         }
@@ -184,6 +184,8 @@ function restore_config_section_xmlrpc($new_config)
                 if (!array_key_exists($vipKey, $vhidVipsInNewConfig)) {
                     unset($config['virtualip']['vip'][$vipindex]);
                 }
+            } elseif (!empty($vip['vhid']) && !empty($vip['nosync'])) {
+                null; /* merge_config_attributes() will preserve these records */
             } elseif (!isset($vhidVipsInNewConfig[$vipKey])) {
                 $vipbackup[$vipKey] = $vip;
             }
@@ -195,7 +197,9 @@ function restore_config_section_xmlrpc($new_config)
 
     if (count($vipbackup) > 0) {
         // if $new_config contained VIPs and the old config contained VIPs with no VHID, prepend original VIPs
-        array_unshift($config['virtualip']['vip'], array_values($vipbackup));
+        foreach ($vipbackup as $vip) {
+            array_unshift($config['virtualip']['vip'], $vip);
+        }
     }
 
     /* Log what happened */

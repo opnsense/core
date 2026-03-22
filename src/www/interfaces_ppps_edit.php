@@ -33,13 +33,9 @@ require_once("interfaces.inc");
 
 function interfaces_ptpid_used($ptpid)
 {
-    global $config;
-
-    if (isset($config['ppps']['ppp'])) {
-        foreach ($config['ppps']['ppp'] as & $settings) {
-            if ($ptpid == $settings['ptpid']) {
-                return true;
-            }
+    foreach (config_read_array('ppps', 'ppp', false) as $settings) {
+        if ($ptpid == $settings['ptpid']) {
+            return true;
         }
     }
 
@@ -59,40 +55,40 @@ function interfaces_ptpid_next()
 
 function serial_devices()
 {
-    // collect 3g/4g modems
-    $sysctl = [];
-    exec('/sbin/sysctl -a', $sysctl);
-    $modems = array();
-    foreach ($sysctl as $line) {
-        if (strpos($line, 'dev.u3g.') === 0) {
-            $portnum = explode('.', $line)[2];
-            if (is_numeric($portnum)) {
-                if (!isset($modems[$portnum])) {
-                    $modems[$portnum] = array();
-                }
-                if (strpos($line, '%desc:') !== false) {
-                    $modems[$portnum]['descr'] = explode('%desc:', $line)[1];
-                } elseif (strpos($line, '%pnpinfo:') !== false) {
-                    foreach (explode(' ', explode('%pnpinfo:', $line)[1]) as $prop) {
-                        $tmp = explode('=', $prop);
-                        if (count($tmp) == 2) {
-                            $modems[$portnum][$tmp[0]] = $tmp[1];
-                        }
+    $modems = [];
+
+    foreach (shell_safe('/sbin/sysctl -qa %s', 'dev.u3g', true) as $line) {
+        $portnum = explode('.', $line)[2];
+        if (is_numeric($portnum)) {
+            if (!isset($modems[$portnum])) {
+                $modems[$portnum] = [];
+            }
+            if (strpos($line, '%desc:') !== false) {
+                $modems[$portnum]['descr'] = explode('%desc:', $line)[1];
+            } elseif (strpos($line, '%pnpinfo:') !== false) {
+                foreach (explode(' ', explode('%pnpinfo:', $line)[1]) as $prop) {
+                    $tmp = explode('=', $prop);
+                    if (count($tmp) == 2) {
+                        $modems[$portnum][$tmp[0]] = $tmp[1];
                     }
                 }
             }
         }
     }
-    $serialports = array();
-    foreach (glob("/dev/cua?[0-9]{,.[0-9]}", GLOB_BRACE) as $device) {
-        $serialports[$device] = array('descr' => '');
+
+    $serialports = [];
+
+    foreach (glob('/dev/cua?[0-9]{,.[0-9]}', GLOB_BRACE) as $device) {
+        $serialports[$device] = ['descr' => ''];
         $tty = explode('.', explode('cua', $device)[1])[0];
+
         foreach ($modems as $modem) {
             if (isset($modem['ttyname']) && $modem['ttyname'] == $tty) {
                 $serialports[$device] = $modem;
             }
         }
     }
+
     return $serialports;
 }
 
@@ -501,10 +497,8 @@ include("head.inc");
                           $iflist = get_configured_interface_with_descr();
                           $portlist = array_merge($portlist, $iflist);
 
-                          if (isset($config['vlans']['vlan'])) {
-                              foreach ($config['vlans']['vlan'] as $vlan) {
-                                  $portlist[$vlan['vlanif']] = $vlan;
-                              }
+                          foreach (config_read_array('vlans', 'vlan', false) as $vlan) {
+                              $portlist[$vlan['vlanif']] = $vlan;
                           }
                           foreach ($portlist as $intf_key => $intf_value):?>
                           <option data-type="interface" value="<?=$intf_key;?>" <?=in_array($intf_key, $pconfig['ports']) ? "selected=\"selected\"" : "";?> >

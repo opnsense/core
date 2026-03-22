@@ -25,9 +25,11 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 """
+import syslog
 from lib.alias.geoip import GEOIP
 
 # output files and lines processed
+syslog.openlog('firewall', facility=syslog.LOG_LOCAL4)
 data = GEOIP().download()
 print ("%(file_count)d files written, with a total number of %(address_count)d lines" % data)
 print ("locations filename : %(locations_filename)s" % data)

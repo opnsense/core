@@ -97,4 +97,14 @@ class DHCRelay extends BaseModel
 
         return $messages;
     }
+
+    public function isCarpTrackingEnabled()
+    {
+        foreach ($this->relays->iterateItems() as $key => $node) {
+            if (!$node->enabled->isEmpty() && !$node->carp_depend_on->isEmpty()) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

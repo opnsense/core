@@ -149,6 +149,7 @@ function setFormData(parent,data) {
                             // when setting the same content twice to a widget, tokenize2 sorting mixes up.
                             // Ideally formatTokenizersUI() or tokenize2 should handle this better, but for now
                             // this seems like the only fix that actually works.
+                            targetNode.unbind('tokenize:tokens:change');
                             targetNode.tokenize2().trigger('tokenize:clear');
                         }
                         targetNode.empty(); // flush
@@ -157,7 +158,9 @@ function setFormData(parent,data) {
                             // key value (sorted) list
                             // (eg node[keypart][0] = {selected: 0, value: 'my item', key: 'item'})
                             for (i=0; i < node[keypart].length; ++i) {
-                                let opt = $("<option>").val(htmlDecode(node[keypart][i].key)).text(node[keypart][i].value);
+                                let opt = $("<option>").val(htmlDecode(node[keypart][i].key)).text(
+                                    htmlDecode(node[keypart][i].value)
+                                );
                                 if (String(node[keypart][i].selected) !== "0") {
                                     opt.attr('selected', 'selected');
                                 }
@@ -171,7 +174,7 @@ function setFormData(parent,data) {
                             // default "dictionary" type select items
                             // (eg node[keypart]['item'] = {selected: 0, value: 'my item'})
                             $.each(node[keypart],function(indxItem, keyItem){
-                                let opt = $("<option>").val(htmlDecode(indxItem)).text(keyItem["value"]);
+                                let opt = $("<option>").val(htmlDecode(indxItem)).text(htmlDecode(keyItem["value"]));
                                 let optgroup = keyItem.optgroup ?? '';
                                 if (String(keyItem["selected"]) !== "0") {
                                     opt.attr('selected', 'selected');
@@ -188,6 +191,10 @@ function setFormData(parent,data) {
                             } else {
                                 targetNode.append($("<optgroup/>").attr('label', group).append(items));
                             }
+                        }
+                        if (targetNode.parent().hasClass('bootstrap-select')) {
+                            /* if our node is a selectpicker type, refresh after re-populating */
+                            targetNode.selectpicker('refresh');
                         }
                     } else if (targetNode.prop("type") === "checkbox") {
                         // checkbox type

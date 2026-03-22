@@ -180,8 +180,19 @@
                 $("#row_openvpn_export\\.p12_password").removeClass("ui_hide");
             }
         });
-    });
 
+        $("#accounts_search").on("input", function () {
+            const needle = $(this).val().toLowerCase();
+            if (!needle) {
+                $("#accounts_table tbody tr").show();
+                return;
+            }
+            $("#accounts_table tbody tr").each(function () {
+                const haystack = $(this).text().toLowerCase();
+                $(this).toggle(haystack.includes(needle));
+            });
+        });
+    });
 
 </script>
 
@@ -192,7 +203,18 @@
         <table class="table table-striped table-condensed table-responsive table-hover" id="accounts_table">
             <thead>
                 <tr>
-                    <th colspan="3">{{ lang._('Accounts / certificates')}}</th>
+                    <th colspan="3">
+                        <div style="display:flex; align-items:center; justify-content:space-between;">
+                            <span>{{ lang._('Accounts / certificates') }}</span>
+
+                            <div class="input-group input-group-sm" style="width: 400px;">
+                                <span class="input-group-addon">
+                                    <i class="fa fa-magnifying-glass"></i>
+                                </span>
+                                <input type="text" id="accounts_search" class="form-control" placeholder="{{ lang._('Search') }}">
+                            </div>
+                        </div>
+                    </th>
                 </tr>
                 <tr>
                     <th>{{ lang._('Certificate')}}</th>

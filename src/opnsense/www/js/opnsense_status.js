@@ -101,20 +101,19 @@ class StatusDialog {
         if (!this.clickHandlerRegistered) {
             this.clickHandlerRegistered = true;
             const translations = status.metadata.translations;
+            this.dialog = new BootstrapDialog({
+                title: translations.dialogTitle,
+                draggable: true,
+                buttons: [{
+                    id: 'close',
+                    label: translations.dialogCloseButton,
+                    action: (dialogRef) => {
+                        dialogRef.close();
+                        this.dialogOpen = false;
+                    }
+                }],
+            });
             $('#system_status').click(() => {
-                this.dialog = new BootstrapDialog({
-                    title: translations.dialogTitle,
-                    draggable: true,
-                    buttons: [{
-                        id: 'close',
-                        label: translations.dialogCloseButton,
-                        action: (dialogRef) => {
-                            dialogRef.close();
-                            this.dialogOpen = false;
-                        }
-                    }],
-                });
-
                 this._setDialogContent(this.currentStatus);
 
                 this.dialog.open();
@@ -122,11 +121,6 @@ class StatusDialog {
             });
         } else {
             this._setDialogContent(this.currentStatus);
-
-            if (!this.dialogOpen) {
-                this.dialog.open();
-                this.dialogOpen = true;
-            }
         }
     }
 
@@ -252,9 +246,11 @@ class StatusBanner {
 const statusObj = new Status();
 
 function updateSystemStatus() {
-    statusObj.attach(new StatusIcon());
-    statusObj.attach(new StatusDialog());
-    statusObj.attach(new StatusBanner());
+    if (statusObj.observers.length === 0) {
+        statusObj.attach(new StatusIcon());
+        statusObj.attach(new StatusDialog());
+        statusObj.attach(new StatusBanner());
+    }
 
     statusObj.updateStatus();
 }

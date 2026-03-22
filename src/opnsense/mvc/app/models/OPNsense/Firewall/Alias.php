@@ -78,6 +78,19 @@ class Alias extends BaseModel
                         $messages->appendMessage(new Message(gettext('Illegal characters in token'), $ref . '.authtype'));
                     }
                     break;
+                case 'Header':
+                    if (empty($username) || empty($password)) {
+                        $messages->appendMessage(new Message(gettext('Please provide a header key and value when Header auth is selected'), $ref . '.authtype'));
+                    } elseif (strlen($username) > 255) {
+                        $messages->appendMessage(new Message(gettext('Invalid key length'), $ref . '.authtype'));
+                    } elseif (strlen($password) > 512) {
+                        $messages->appendMessage(new Message(gettext('Invalid value length'), $ref . '.authtype'));
+                    } elseif (!preg_match('/^[A-Za-z0-9-_.]+$/', $username)) {
+                        $messages->appendMessage(new Message(gettext('Illegal characters in key'), $ref . '.authtype'));
+                    } elseif (!preg_match('/^[A-Za-z0-9-_.]+$/', $password)) {
+                        $messages->appendMessage(new Message(gettext('Illegal characters in value'), $ref . '.authtype'));
+                    }
+                    break;
             }
         }
 
@@ -112,7 +125,6 @@ class Alias extends BaseModel
         $sources[] = [['nat', 'outbound', 'rule'], ['dstport']];
         $sources[] = [['nat', 'outbound', 'rule'], ['target']];
         $sources[] = [['staticroutes', 'route'], ['network']];
-        // os-firewall plugin paths
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'rules', 'rule'], ['source_net']];
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'rules', 'rule'], ['source_port']];
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'rules', 'rule'], ['destination_net']];
@@ -121,6 +133,7 @@ class Alias extends BaseModel
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'], ['source_port']];
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'], ['destination_net']];
         $sources[] = [['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'], ['destination_port']];
+        $sources[] = [['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'], ['target']];
 
         return $sources;
     }

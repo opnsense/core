@@ -1,7 +1,7 @@
 <form>
     <field>
         <id>job.enabled</id>
-        <label>enabled</label>
+        <label>Enabled</label>
         <type>checkbox</type>
         <help>Select if job is enabled or not</help>
         <grid_view>

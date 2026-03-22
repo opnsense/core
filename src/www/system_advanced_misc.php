@@ -82,7 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['max_mfs_tmp'] = $config['system']['max_mfs_tmp'] ?? null;
     $pconfig['use_swap_file'] = isset($config['system']['use_swap_file']);
     $pconfig['rrdbackup'] = !empty($config['system']['rrdbackup']) ? $config['system']['rrdbackup'] : null;
-    $pconfig['dhcpbackup'] = !empty($config['system']['dhcpbackup']) ? $config['system']['dhcpbackup'] : null;
     $pconfig['netflowbackup'] = !empty($config['system']['netflowbackup']) ? $config['system']['netflowbackup'] : null;
     $pconfig['captiveportalbackup'] = !empty($config['system']['captiveportalbackup']) ? $config['system']['captiveportalbackup'] : null;
     $pconfig['powerd_ac_mode'] = "hadp";
@@ -191,12 +190,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['rrdbackup'] = $pconfig['rrdbackup'];
         } elseif (isset($config['system']['rrdbackup'])) {
             unset($config['system']['rrdbackup']);
-        }
-
-        if (!empty($pconfig['dhcpbackup'])) {
-            $config['system']['dhcpbackup'] = $pconfig['dhcpbackup'];
-        } elseif (isset($config['system']['dhcpbackup'])) {
-            unset($config['system']['dhcpbackup']);
         }
 
         if (!empty($pconfig['netflowbackup'])) {
@@ -334,23 +327,6 @@ include("head.inc");
                   <br />
                   <div class="hidden" data-for="help_for_rrdbackup">
                     <?=gettext("This will periodically backup the RRD data so it can be restored automatically on the next boot.");?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_dhcpbackup" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Periodic DHCP Leases Backup");?></td>
-                <td>
-                  <select name="dhcpbackup" class="selectpicker" data-style="btn-default" id="dhcpbackup">
-                    <option value='0' <?= $pconfig['dhcpbackup'] == 0 ? "selected='selected'" : '' ?>><?= gettext('Power off') ?></option>
-<?php for ($x = 1; $x <= 24; $x++): ?>
-                    <option value="<?= $x ?>" <?= $pconfig['dhcpbackup'] == $x ? 'selected="selected"' : '';?>>
-                      <?= $x == 1 ? gettext('1 hour') : sprintf(gettext('%s hours'), $x) ?>
-                    </option>
-<?php endfor ?>
-                    <option value='-1' <?= $pconfig['dhcpbackup'] == -1 ? "selected='selected'" : '' ?>><?= gettext('Disabled') ?></option>
-                  </select>
-                  <div class="hidden" data-for="help_for_dhcpbackup">
-                    <?=gettext("This will periodically backup the DHCP leases data so it can be restored automatically on the next boot.");?>
                   </div>
                 </td>
               </tr>

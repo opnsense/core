@@ -28,7 +28,7 @@
         </Access>
         <Configuration cssClass="fa fa-history fa-fw">
             <Backups url="/diag_backup.php"/>
-            <Defaults url="/diag_defaults.php"/>
+            <Defaults url="/ui/core/defaults"/>
             <History url="/ui/core/backup/history/this"/>
             <Wizard url="/ui/core/initial_setup"/>
         </Configuration>
@@ -92,14 +92,11 @@
         <Categories url="/ui/firewall/category" cssClass="fa fa-tags fa-fw"/>
         <Groups url="/ui/firewall/group" cssClass="fa fa-sitemap fa-fw"/>
         <NAT cssClass="fa fa-exchange fa-fw">
-            <PortForward order="100" VisibleName="Port Forward" url="/firewall_nat.php">
-                <Edit url="/firewall_nat_edit.php*" visibility="hidden"/>
-            </PortForward>
             <Outbound order="300" VisibleName="Outbound" url="/firewall_nat_out.php">
                 <Edit url="/firewall_nat_out_edit.php*" visibility="hidden"/>
             </Outbound>
         </NAT>
-        <Rules cssClass="fa fa-check fa-fw" />
+        <Rules VisibleName="Rules [legacy]" cssClass="fa fa-check fa-fw" />
         <Settings order="200" cssClass="fa fa-cogs fa-fw">
             <Schedules url="/firewall_schedule.php">
                 <SchedulesEdit url="/firewall_schedule_edit.php*" visibility="hidden"/>
@@ -124,15 +121,7 @@
         </LogFiles>
     </Firewall>
     <Services order="60" cssClass="fa fa-cog">
-        <ISC_DHCPv4 VisibleName="ISC DHCPv4 [legacy]" cssClass="fa fa-bullseye fa-fw">
-            <Leases order="300" url="/ui/dhcpv4/leases"/>
-            <LogFile VisibleName="Log File" order="400" url="/ui/diagnostics/log/core/dhcpd"/>
-        </ISC_DHCPv4>
-        <ISC_DHCPv6 VisibleName="ISC DHCPv6 [legacy]" cssClass="fa fa-bullseye fa-fw">
-            <Leases order="400" url="/ui/dhcpv6/leases"/>
-        </ISC_DHCPv6>
         <OpenDNS VisibleName="OpenDNS" url="/services_opendns.php" cssClass="fa fa-tags fa-fw"/>
-        <RouterAdv VisibleName="Router Advertisements" cssClass="fa fa-bullseye fa-fw" />
     </Services>
     <VPN order="50" cssClass="fa fa-globe">
         <OpenVPN cssClass="fa fa-lock fa-fw">
