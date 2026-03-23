@@ -91,9 +91,18 @@
                     },
                     "commands": function (column, row) {
                         const baseUrl = `/ui/kea/dhcp/v6#reservations`;
-                        const searchUrl = `${baseUrl}&search=${encodeURIComponent(row.hwaddr || '')}`;
+                        let searchValue = '';
+
+                        if (row.is_reserved === 'duid') {
+                            searchValue = row.duid || '';
+                        } else if (row.is_reserved === 'hwaddr') {
+                            searchValue = row.hwaddr || '';
+                        }
+
+                        const searchUrl = `${baseUrl}&search=${encodeURIComponent(searchValue)}`;
                         const addUrlParams = {
                             ip_address: row.address || '',
+                            duid: row.duid || '',
                             hw_address: row.hwaddr || '',
                             hostname: row.hostname || ''
                         };
