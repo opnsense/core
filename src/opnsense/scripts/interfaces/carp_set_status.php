@@ -33,7 +33,6 @@ require_once('system.inc');
 require_once('util.inc');
 
 $action = strtolower($argv[1] ?? '');
-$a_vip = &config_read_array('virtualip', 'vip');
 
 if ($action == 'maintenance') {
     if (isset($config["virtualip_carp_maintenancemode"])) {
@@ -57,7 +56,7 @@ if ($action == 'maintenance') {
     }
 } elseif ($action == 'disable') {
     set_single_sysctl('net.inet.carp.allow', '0');
-    foreach ($a_vip as $vip) {
+    foreach (config_read_array('virtualip', 'vip', false) as $vip) {
         if (!empty($vip['vhid'])) {
             interface_vip_bring_down($vip);
         }
@@ -66,7 +65,7 @@ if ($action == 'maintenance') {
 } elseif ($action == 'enable') {
     interfaces_pfsync_configure();
     set_single_sysctl('net.inet.carp.allow', '1');
-    foreach ($a_vip as $vip) {
+    foreach (config_read_array('virtualip', 'vip', false) as $vip) {
         if (!empty($vip['vhid'])) {
             if ($vip['mode'] == 'carp') {
                 interface_carp_configure($vip);

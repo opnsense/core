@@ -31,8 +31,8 @@ require_once('config.inc');
 require_once('util.inc');
 
 $carpcount = 0;
-$a_vip = &config_read_array('virtualip', 'vip');
-foreach ($a_vip as $carp) {
+
+foreach (config_read_array('virtualip', 'vip', false) as $carp) {
     if ($carp['mode'] == "carp") {
         $carpcount++;
         break;
@@ -43,7 +43,7 @@ $response = [
     'demotion' =>  get_single_sysctl('net.inet.carp.demotion'),
     'allow' => get_single_sysctl('net.inet.carp.allow'),
     'maintenancemode' => !empty($config["virtualip_carp_maintenancemode"]),
-    'status_msg' => ''
+    'status_msg' => '',
 ];
 
 if (empty($response['maintenancemode']) && !empty($response['demotion'])) {
