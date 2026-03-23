@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     if not os.path.exists(path):
         print(ujson.dumps({"status": "error", "message": f"socket not found: {path}"}))
-        return
+        exit(1)
 
     s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
     s.connect(path)
