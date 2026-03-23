@@ -34,6 +34,7 @@
 
         $("#grid-leases").UIBootgrid({
             search:'/api/kea/leases6/search/',
+            del:'/api/kea/leases6/del_lease/',
             tabulatorOptions: {
                 groupBy: "if_descr",
                 groupHeader: (value, count, data, group) => {
@@ -46,6 +47,7 @@
                 },
             },
             options: {
+                datakey: 'address',
                 selection: false,
                 multiSelect: false,
                 useRequestHandlerOnGet: true,
@@ -131,32 +133,16 @@
                         }
 
                         const deleteBtn = $(`
-                            <button type="button" class="btn btn-xs" data-toggle="tooltip"
+                            <button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip"
+                                data-row-id="${row.address}"
                                 title="{{ lang._('Delete Lease') }}">
-                                <i class="fa fa-fw fa-trash"></i>
+                                <span class="fa fa-fw fa-trash-o"></span>
                             </button>
-                        `).on('click', function () {
-                            BootstrapDialog.confirm(
-                                "{{ lang._('Are you sure you want to delete this lease?') }}",
-                                function(ok) {
-                                    if (!ok) return;
-                                    ajaxCall(
-                                        "/api/kea/leases6/delete_lease/" + encodeURIComponent(row.address),
-                                        {},
-                                        function(data, status) {
-                                            if (status === "success" && data.status === "ok") {
-                                                $('#grid-leases').bootgrid('reload');
-                                            }
-                                        },
-                                        "POST"
-                                    );
-                                }
-                            );
-                        });
+                        `);
 
-                        return $('<span>').append(reservationBtn).append(deleteBtn)[0];
+                        return $('<div class="btn-group"></div>').append(reservationBtn).append(deleteBtn)[0];
                     },
-                },
+                }
             }
         });
 

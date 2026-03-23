@@ -122,7 +122,7 @@ abstract class LeasesController extends ApiControllerBase
         return $response;
     }
 
-    public function deleteLeaseAction($ip = null)
+    public function delLeaseAction($ip = null)
     {
         if (!$this->request->isPost()) {
             return ['status' => 'error', 'message' => gettext('Invalid request method')];
