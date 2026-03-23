@@ -40,9 +40,7 @@ def build_ranges(proto):
     ranges = {}
     this_interface = None
     addr_prefix = "\tinet6" if proto == 'inet6' else "\tinet "
-
     ifconfig = subprocess.run(['/sbin/ifconfig', '-f', 'inet:cidr,inet6:cidr'], capture_output=True, text=True).stdout
-
     for line in ifconfig.split('\n'):
         if not line.startswith("\t") and ':' in line:
             this_interface = line.strip().split(':')[0]
