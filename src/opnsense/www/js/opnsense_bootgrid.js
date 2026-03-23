@@ -2044,9 +2044,18 @@ class UIBootgrid {
     showSaveAlert(event) {
         let editAlert = this.$compatElement.attr('data-editAlert');
         if (editAlert !== undefined) {
-            $("#" + editAlert).slideDown(1000, function () {
+            const $el = $("#" + editAlert);
+            const height = $('.navbar').first().outerHeight() + 5;
+
+            $el.css({
+                position: "fixed",
+                top: height + "px",
+                right: "20px",
+                zIndex: 9999,
+            });
+            $el.slideDown(1000, function () {
                 setTimeout(function () {
-                    $("#" + editAlert).not(":animated").slideUp(2000);
+                    $el.not(":animated").slideUp(2000);
                 }, 2000);
             });
         }
