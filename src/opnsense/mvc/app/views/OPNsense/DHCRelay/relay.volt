@@ -62,7 +62,7 @@ $( document ).ready(function() {
 <div class="content-box __mb">
     {{ partial('layout_partials/base_bootgrid_table', formGridDest)}}
 </div>
-<div class="content-box __mb">
+<div class="content-box">
     {{ partial('layout_partials/base_bootgrid_table', formGridRelay)}}
 </div>
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/dhcrelay/service/reconfigure', 'data_grid_reload': formGridRelay['table_id']}) }}
