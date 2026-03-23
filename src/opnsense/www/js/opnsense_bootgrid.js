@@ -2045,14 +2045,19 @@ class UIBootgrid {
         let editAlert = this.$compatElement.attr('data-editAlert');
         if (editAlert !== undefined) {
             const $el = $("#" + editAlert);
-            const height = $('.navbar').first().outerHeight() + 5;
+            const rect = $(".page-content-head").first()[0].getBoundingClientRect();
+            const top = $('.navbar').first().outerHeight() + 5;
+            const centerX = rect.left + (rect.width / 2);
 
             $el.css({
                 position: "fixed",
-                top: height + "px",
-                right: "20px",
+                top: top + "px",
+                left: centerX + "px",
+                right: "auto",
                 zIndex: 9999,
+                transform: "translateX(-50%)"
             });
+
             $el.slideDown(1000, function () {
                 setTimeout(function () {
                     $el.not(":animated").slideUp(2000);
