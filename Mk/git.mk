@@ -146,8 +146,10 @@ checkout:
 vim:
 .for DIR in ${.CURDIR}/src
 .if exists(${DIR})
-	@FOUND="$$(find ${.CURDIR}/src -type f -name "$$(basename '${vim_ARG}')*" | \
-	    grep -F '${vim_ARG}')"; \
+	@FOUND="$$(find ${.CURDIR}/src -type f -iname "*$$(basename '${vim_ARG}')*")"; \
+        if [ -n "$${FOUND}" -a "$$(dirname '${vim_ARG}')" != "." ]; then \
+		FOUND="$$(echo "$${FOUND}" | grep -iF "$$(dirname '${vim_ARG}')")"; \
+	fi; \
 	if [ -n "$${FOUND}" ]; then \
 		if [ "$$(echo "$${FOUND}" | wc -l | awk '{ print $$1 }')" = "1" ]; then \
 			${VIM} "$${FOUND}"; \
