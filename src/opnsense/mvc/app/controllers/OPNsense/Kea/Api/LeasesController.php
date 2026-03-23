@@ -33,6 +33,7 @@ use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Kea\KeaDhcpv4;
 use OPNsense\Kea\KeaDhcpv6;
+use OPNsense\Base\UserException;
 
 abstract class LeasesController extends ApiControllerBase
 {
@@ -119,5 +120,26 @@ abstract class LeasesController extends ApiControllerBase
 
         $response['interfaces'] = $interfaces;
         return $response;
+    }
+
+    public function deleteLeaseAction($ip = null)
+    {
+        if (!$this->request->isPost()) {
+            return ['status' => 'error', 'message' => gettext('Invalid request method')];
+        }
+        if (empty($ip)) {
+            return ['status' => 'error', 'message' => gettext('Missing lease IP parameter')];
+        }
+
+        $result = json_decode((new Backend())->configdpRun("kea delete lease " . escapeshellarg($ip)), true);
+
+        if (isset($result['status']) && $result['status'] === 'error') {
+            throw new UserException($result['message'] ?? gettext('KEA Control Agent is not running'));
+        }
+        if (isset($result['result']) && $result['result'] !== 0) {
+            throw new UserException($result['text'] ?? gettext('Failed to delete lease'));
+        }
+
+        return ['status' => 'ok'];
     }
 }

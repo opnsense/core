@@ -1298,6 +1298,7 @@
 /usr/local/opnsense/scripts/ipsec/saddelete.py
 /usr/local/opnsense/scripts/ipsec/spddelete.py
 /usr/local/opnsense/scripts/ipsec/updown_event.py
+/usr/local/opnsense/scripts/kea/del_kea_leases.py
 /usr/local/opnsense/scripts/kea/get_kea_leases.py
 /usr/local/opnsense/scripts/kea/kea_dhcp_options.py
 /usr/local/opnsense/scripts/kea/kea_prefix_watcher.py
