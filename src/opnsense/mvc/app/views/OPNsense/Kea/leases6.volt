@@ -99,40 +99,40 @@
                         };
                         const addUrl = `${baseUrl}?${new URLSearchParams(addUrlParams)}`;
 
-                        const deleteBtn = `
-                            <button type="button" class="btn btn-xs command-delete_lease"
-                                data-row-id="${row.address}"
-                                title="{{ lang._('Delete Lease') }}">
-                                <i class="fa fa-fw fa-trash"></i>
-                            </button>`;
+                        let btn;
 
-                        const reserveBtn = row.is_reserved !== ''
-                            ? `<button type="button" class="btn btn-xs"
+                        if (row.is_reserved !== '') {
+                            reservationBtn = $(`
+                                <button type="button" class="btn btn-xs" data-toggle="tooltip"
                                     title="{{ lang._('Find Reservation') }}">
                                     <i class="fa fa-fw fa-search"></i>
-                            </button>`
-                            : `<button type="button" class="btn btn-xs"
+                                </button>
+                            `).on('click', function () {
+                                window.location.href = searchUrl;
+                            });
+                        } else {
+                            reservationBtn = $(`
+                                <button type="button" class="btn btn-xs" data-toggle="tooltip"
                                     title="{{ lang._('Add Reservation') }}">
                                     <i class="fa fa-fw fa-plus"></i>
-                            </button>`;
+                                </button>
+                            `).on('click', function () {
+                                window.location.href = addUrl;
+                            });
+                        }
 
-                        const btn = $(reserveBtn).on('click', function () {
-                            window.location.href = row.is_reserved !== '' ? searchUrl : addUrl;
-                        });
-
-                        return btn[0].outerHTML + deleteBtn;
-                    },
-                },
-                commands: {
-                    delete_lease: {
-                        method(e) {
-                            const ip = $(this).data("row-id");
+                        const deleteBtn = $(`
+                            <button type="button" class="btn btn-xs" data-toggle="tooltip"
+                                title="{{ lang._('Delete Lease') }}">
+                                <i class="fa fa-fw fa-trash"></i>
+                            </button>
+                        `).on('click', function () {
                             BootstrapDialog.confirm(
-                                "{{ lang._('Are you sure you want to delete this lease? This can cause duplicate IP addresses in your network, use with care!') }}",
+                                "{{ lang._('Are you sure you want to delete this lease?') }}",
                                 function(ok) {
                                     if (!ok) return;
                                     ajaxCall(
-                                        "/api/kea/leases6/delete_lease/" + encodeURIComponent(ip),
+                                        "/api/kea/leases6/delete_lease/" + encodeURIComponent(row.address),
                                         {},
                                         function(data, status) {
                                             if (status === "success" && data.status === "ok") {
@@ -143,10 +143,9 @@
                                     );
                                 }
                             );
-                        },
-                        classname: "fa fa-fw fa-trash text-danger",
-                        title: "{{ lang._('Delete Lease') }}",
-                        sequence: 30
+                        });
+
+                        return $('<span>').append(reservationBtn).append(deleteBtn)[0];
                     },
                 },
             }
