@@ -35,7 +35,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("ip", help="IP address to delete")
     ip = parser.parse_args().ip
-
     path = "/var/run/kea/kea6-ctrl-socket" if ":" in ip else "/var/run/kea/kea4-ctrl-socket"
     cmd = "lease6-del" if ":" in ip else "lease4-del"
 
@@ -43,8 +42,8 @@ if __name__ == '__main__':
         print(ujson.dumps({"status": "error", "message": f"socket not found: {path}"}))
         exit(1)
 
-    s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    s.connect(path)
-    s.sendall(ujson.dumps({"command": cmd, "arguments": {"ip-address": ip}}).encode() + b"\n")
-    print(s.recv(4096).decode())
-    s.close()
+    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    sock.connect(path)
+    sock.sendall(ujson.dumps({"command": cmd, "arguments": {"ip-address": ip}}).encode() + b"\n")
+    print(sock.recv(4096).decode())
+    sock.close()
