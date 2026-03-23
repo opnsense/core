@@ -99,7 +99,7 @@
                         };
                         const addUrl = `${baseUrl}?${new URLSearchParams(addUrlParams)}`;
 
-                        let btn;
+                        let reservationBtn;
 
                         if (row.is_reserved !== '') {
                             reservationBtn = $(`
