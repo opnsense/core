@@ -1,6 +1,7 @@
 #!/usr/local/bin/python3
 
 """
+    Copyright (c) 2026 Deciso B.V.
     Copyright (c) 2023-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
@@ -32,16 +33,47 @@ import argparse
 import os
 import csv
 import ujson
+import socket
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--proto', help='protocol to fetch (inet, inet6)', default='inet', choices=['inet', 'inet6'])
     inputargs = parser.parse_args()
-    if inputargs.proto == 'inet':
-        filename = '/var/db/kea/kea-leases4.csv'
-    else:
-        filename = '/var/db/kea/kea-leases6.csv'
+    # The in-memory database is the most accurate, only use the CSV files as fallback if the socket is not available
+    # If leases are deleted in the in-memory database this does not immediately reflect on the CSV files
+    filename = '/var/db/kea/kea-leases4.csv' if inputargs.proto == 'inet' else '/var/db/kea/kea-leases6.csv'
+    socket_path = '/var/run/kea/kea4-ctrl-socket' if inputargs.proto == 'inet' else '/var/run/kea/kea6-ctrl-socket'
+    lease_cmd = 'lease4-get-all' if inputargs.proto == 'inet' else 'lease6-get-all'
+    config_key = 'subnet4' if inputargs.proto == 'inet' else 'subnet6'
+
+    if os.path.exists(socket_path):
+        # config-get so we know which subnet IDs exist, leases can only be collected subnet specific
+        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        sock.connect(socket_path)
+        sock.sendall(ujson.dumps({"command": "config-get"}).encode() + b"\n")
+        data = b""
+        while True:
+            chunk = sock.recv(4096)
+            data += chunk
+            if data.strip().endswith(b'}'):
+                break
+        config = ujson.loads(data.decode())
+        sock.close()
+        subnets = [x['id'] for x in config.get('arguments', {}).get(config_key, []) if 'id' in x]
+
+        # lease-get-all with subnet ID for all configured subnets
+        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        sock.connect(socket_path)
+        sock.sendall(ujson.dumps({"command": lease_cmd, "arguments": {"subnets": subnets}}).encode() + b"\n")
+        data = b""
+        while True:
+            chunk = sock.recv(4096)
+            data += chunk
+            if data.strip().endswith(b'}'):
+                break
+        leases = ujson.loads(data.decode())
+        sock.close()
 
     ranges = {}
     this_interface = None
