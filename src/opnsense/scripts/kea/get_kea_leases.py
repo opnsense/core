@@ -36,56 +36,95 @@ import ujson
 import socket
 
 
+def build_ranges(proto):
+    ranges = {}
+    this_interface = None
+    addr_prefix = "\tinet6" if proto == 'inet6' else "\tinet "
+
+    ifconfig = subprocess.run(['/sbin/ifconfig', '-f', 'inet:cidr,inet6:cidr'], capture_output=True, text=True).stdout
+
+    for line in ifconfig.split('\n'):
+        if not line.startswith("\t") and ':' in line:
+            this_interface = line.strip().split(':')[0]
+        elif this_interface is not None and line.startswith(addr_prefix) and '-->' not in line:
+            ranges[ipaddress.ip_network(line.split()[1], strict=False)] = this_interface
+
+    return ranges
+
+
+def send_command(socket_path, payload):
+    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    sock.connect(socket_path)
+    sock.sendall(ujson.dumps(payload).encode() + b"\n")
+
+    data = b""
+    while True:
+        chunk = sock.recv(4096)
+        if not chunk:
+            break
+        data += chunk
+        if data.strip().endswith(b'}'):
+            break
+
+    sock.close()
+    return ujson.loads(data.decode())
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--proto', help='protocol to fetch (inet, inet6)', default='inet', choices=['inet', 'inet6'])
     inputargs = parser.parse_args()
-    # The in-memory database is the most accurate, only use the CSV files as fallback if the socket is not available
-    # If leases are deleted in the in-memory database this does not immediately reflect on the CSV files
+
     filename = '/var/db/kea/kea-leases4.csv' if inputargs.proto == 'inet' else '/var/db/kea/kea-leases6.csv'
     socket_path = '/var/run/kea/kea4-ctrl-socket' if inputargs.proto == 'inet' else '/var/run/kea/kea6-ctrl-socket'
     lease_cmd = 'lease4-get-all' if inputargs.proto == 'inet' else 'lease6-get-all'
     config_key = 'subnet4' if inputargs.proto == 'inet' else 'subnet6'
+    dhcp_key = 'Dhcp4' if inputargs.proto == 'inet' else 'Dhcp6'
 
+    # Figure out how to group leases by interface
+    ranges = build_ranges(inputargs.proto)
+
+    # The in-memory database is the most accurate, only use the CSV files as fallback if the socket is not available
+    # If leases are deleted in the in-memory database this does not immediately reflect on the CSV files
     if os.path.exists(socket_path):
-        # config-get so we know which subnet IDs exist, leases can only be collected subnet specific
-        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        sock.connect(socket_path)
-        sock.sendall(ujson.dumps({"command": "config-get"}).encode() + b"\n")
-        data = b""
-        while True:
-            chunk = sock.recv(4096)
-            data += chunk
-            if data.strip().endswith(b'}'):
-                break
-        config = ujson.loads(data.decode())
-        sock.close()
-        subnets = [x['id'] for x in config.get('arguments', {}).get(config_key, []) if 'id' in x]
+        config = send_command(socket_path, {"command": "config-get"})
 
-        # lease-get-all with subnet ID for all configured subnets
-        sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-        sock.connect(socket_path)
-        sock.sendall(ujson.dumps({"command": lease_cmd, "arguments": {"subnets": subnets}}).encode() + b"\n")
-        data = b""
-        while True:
-            chunk = sock.recv(4096)
-            data += chunk
-            if data.strip().endswith(b'}'):
-                break
-        leases = ujson.loads(data.decode())
-        sock.close()
+        subnets = [
+            subnet['id']
+            for subnet in config.get('arguments', {}).get(dhcp_key, {}).get(config_key, [])
+            if 'id' in subnet
+        ]
 
-    ranges = {}
-    this_interface = None
-    ifconfig = subprocess.run(['/sbin/ifconfig', '-f', 'inet:cidr,inet6:cidr'], capture_output=True, text=True).stdout
-    for line in ifconfig.split('\n'):
-        if not line.startswith("\t") and line.find(':') > -1:
-            this_interface = line.strip().split(':')[0]
-        elif this_interface is not None and line.startswith("\tinet") and line.find('-->') == -1:
-            ranges[ipaddress.ip_network(line.split()[1], strict=False)] = this_interface
+        leases = send_command(socket_path, {"command": lease_cmd, "arguments": {"subnets": subnets}})
 
-    result = {'records': []}
-    header = None
+        records = []
+        for lease in leases.get('arguments', {}).get('leases', []):
+            address = lease.get("ip-address")
+            lease_if = None
+
+            if address:
+                for net, ifname in ranges.items():
+                    if net.overlaps(ipaddress.ip_network(address)):
+                        lease_if = ifname
+                        break
+
+            # Normalize as keys are different than in the CSV files
+            records.append({
+                "address": address,
+                "hwaddr": lease.get("hw-address", ""),
+                "valid_lifetime": lease.get("valid-lft", 0),
+                "expire": lease.get("cltt", 0) + lease.get("valid-lft", 0),
+                "hostname": lease.get("hostname", ""),
+                "if": lease_if,
+                "if_descr": "",
+                "is_reserved": ""
+            })
+
+        if records:
+            print(ujson.dumps({"records": records}))
+            exit(0)
+
+    # CSV fallback if control socket is unavailable or returns no records
     # Lease processing after cleanup according to KEA
     # https://github.com/isc-projects/kea/blob/ef1f878f5272d/src/lib/dhcpsrv/memfile_lease_mgr.h#L1039-L1051
     if os.path.isfile('%s.completed' % filename):
@@ -98,6 +137,7 @@ if __name__ == '__main__':
         if not os.path.isfile(filename):
             continue
         with open(filename, 'r', encoding='utf-8',  errors='ignore') as csvfile:
+            header = None
             for idx, record in enumerate(csv.reader(csvfile, delimiter=',', quotechar='"')):
                 rec_key = ','.join(record[:2])
                 if idx == 0:
