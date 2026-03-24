@@ -34,20 +34,23 @@ import socket
 
 def send_command(socket_path, payload):
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    sock.connect(socket_path)
-    sock.sendall(ujson.dumps(payload).encode() + b"\n")
+    try:
+        sock.connect(socket_path)
+        sock.sendall(ujson.dumps(payload).encode() + b"\n")
 
-    data = b""
-    while True:
-        chunk = sock.recv(4096)
-        if not chunk:
-            break
-        data += chunk
-        if data.strip().endswith(b'}'):
-            break
+        data = b""
+        while True:
+            chunk = sock.recv(4096)
+            if not chunk:
+                break
+            data += chunk
+            if data.strip().endswith(b'}'):
+                break
 
-    sock.close()
-    return ujson.loads(data.decode())
+        return ujson.loads(data.decode())
+
+    finally:
+        sock.close()
 
 
 if __name__ == '__main__':
