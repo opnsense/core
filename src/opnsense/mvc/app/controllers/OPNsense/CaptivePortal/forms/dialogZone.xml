@@ -37,16 +37,6 @@
         </grid_view>
     </field>
     <field>
-        <id>zone.roaming</id>
-        <type>checkbox</type>
-        <label>Client roaming</label>
-        <help>Allow a connecting client to use multiple IPs (bound to the same MAC) over the course of its session. This option is needed for maximum IPv6 compatibility and also affects IPv4 clients.</help>
-        <grid_view>
-            <type>boolean</type>
-            <formatter>boolean</formatter>
-        </grid_view>
-    </field>
-    <field>
         <id>zone.authservers</id>
         <label>Authenticate using</label>
         <type>select_multiple</type>

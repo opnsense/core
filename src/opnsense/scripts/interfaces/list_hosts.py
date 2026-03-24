@@ -55,12 +55,6 @@ if __name__ == '__main__':
     parser.add_argument(
         '-v', '--verbose', help='Verbose output (including vendors)', action="store_true", default=False
     )
-    parser.add_argument(
-        "--last-seen-window",
-        type=int,
-        default=None,
-        help="Only return hosts seen in the last N seconds"
-    )
     parser.add_argument('--rc_file', help='hostwatch rc(8) config filename', default='/etc/rc.conf.d/hostwatch')
     parser.add_argument('--db_file', help='hostwatch sqlite3 database', default='/var/db/hostwatch/hosts.db')
     inputargs = parser.parse_args()
@@ -71,27 +65,12 @@ if __name__ == '__main__':
         result['source'] = 'discovery'
         con = sqlite3.connect("file:%s?mode=ro" % inputargs.db_file, uri=True)
         con.row_factory = sqlite3.Row
-        query = """
-            SELECT *
-            FROM v_hosts
-            WHERE protocol IN (?, ?)
-        """
-        params = [inputargs.proto[0], inputargs.proto[-1]]
-
-        if inputargs.last_seen_window is not None:
-            query += """
-                AND last_seen >= datetime('now', '-' || ? || ' seconds')
-            """
-            params.append(inputargs.last_seen_window)
-
-        for row in con.execute(query, params):
+        for row in con.execute(
+            'select * from v_hosts where protocol in (?, ?)', (inputargs.proto[0], inputargs.proto[-1])
+        ):
             record = [row['interface_name'], row['ether_address'], row['ip_address']]
             if inputargs.verbose:
-                record += [
-                    row['organization_name'],
-                    row['first_seen'],
-                    row['last_seen']
-                ]
+                record = record + [row['organization_name'], row['first_seen'], row['last_seen']]
             result['rows'].append(record)
     else:
         result['source'] = 'arp-ndp'

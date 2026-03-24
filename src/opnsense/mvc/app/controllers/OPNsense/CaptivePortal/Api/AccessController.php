@@ -50,13 +50,12 @@ class AccessController extends ApiControllerBase
     protected function clientSession(string $zoneid)
     {
         $backend = new Backend();
-        $allClients = json_decode($backend->configdpRun("captiveportal list_clients", [$zoneid]), true);
-        $clientIp = $this->getClientIp();
-
+        $allClientsRaw = $backend->configdpRun("captiveportal list_clients", [$zoneid]);
+        $allClients = json_decode($allClientsRaw, true);
         if ($allClients != null) {
             // search for client by ip address
             foreach ($allClients as $connectedClient) {
-                if (in_array($clientIp, $connectedClient['ipAddresses'])) {
+                if ($connectedClient['ipAddress'] == $this->getClientIp()) {
                     // client is authorized in this zone according to our administration
                     $connectedClient['clientState'] = 'AUTHORIZED';
                     return $connectedClient;
@@ -65,7 +64,7 @@ class AccessController extends ApiControllerBase
         }
 
         // return Unauthorized including authentication requirements
-        $result = ['clientState' => "NOT_AUTHORIZED", "ipAddress" => $clientIp];
+        $result = ['clientState' => "NOT_AUTHORIZED", "ipAddress" => $this->getClientIp()];
         $mdlCP = new CaptivePortal();
         $cpZone = $mdlCP->getByZoneID($zoneid);
         if ($cpZone != null && (string)$cpZone->extendedPreAuthData == '1') {
@@ -104,15 +103,14 @@ class AccessController extends ApiControllerBase
     protected function getClientMac($ip)
     {
         if (empty($this->arp)) {
+            /* currently this only matches ipv4 properly, for ipv6 we need to unpack both rows and offered parameter */
             $data = json_decode((new Backend())->configdRun('hostwatch dump'), true) ?? [];
             if (!empty($data['rows'])) {
                 foreach ($data['rows'] as $row) {
-                    // remove scope from IPv6 address if present (e.g., fe80::1%em0 -> fe80::1)
-                    $this->arp[$row[2]] = explode('%', $row[1])[0];
+                    $this->arp[$row[2]] = $row[1];
                 }
             }
         }
-
         return $this->arp[$ip] ?? null;
     }
 
@@ -308,11 +306,10 @@ class AccessController extends ApiControllerBase
                             if (array_key_exists('session_timeout', $authProps) || $cpZone->alwaysSendAccountingReqs == '1') {
                                 $backend->configdpRun(
                                     "captiveportal set session_restrictions",
-                                    [
-                                        (string)$cpZone->zoneid,
+                                    array((string)$cpZone->zoneid,
                                         $CPsession['sessionId'],
                                         $authProps['session_timeout'] ?? null,
-                                    ]
+                                        )
                                 );
                             }
                         }

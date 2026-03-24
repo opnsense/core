@@ -3,7 +3,7 @@
 --
 
 -- connected clients
-create table if not exists cp_clients (
+create table cp_clients (
       zoneid int
 ,     sessionid varchar
 ,     authenticated_via varchar
@@ -15,25 +15,11 @@ create table if not exists cp_clients (
 ,     primary key (zoneid, sessionid)
 );
 
-create index if not exists cp_clients_ip ON cp_clients (ip_address);
-create index if not exists  cp_clients_zone ON cp_clients (zoneid);
-
--- multiple IPs per session
-create table if not exists cp_client_ips (
-      zoneid     int not null
-,     sessionid  varchar not null
-,     ip_address varchar not null
-,     primary key (zoneid, sessionid, ip_address)
-,     foreign key (zoneid, sessionid)
-        references cp_clients(zoneid, sessionid)
-        on delete cascade
-);
-
-create index if not exists cp_client_ips_ip   on cp_client_ips (ip_address);
-create index if not exists cp_client_ips_zone on cp_client_ips (zoneid);
+create index cp_clients_ip ON cp_clients (ip_address);
+create index cp_clients_zone ON cp_clients (zoneid);
 
 -- session (accounting) info
-create table if not exists session_info (
+create table session_info (
       zoneid int
 ,     sessionid varchar
 ,     prev_packets_in integer default (0)
@@ -49,7 +35,7 @@ create table if not exists session_info (
 );
 
 -- session (accounting) restrictions
-create table if not exists session_restrictions (
+create table session_restrictions (
       zoneid int
 ,     sessionid varchar
 ,     session_timeout int
@@ -57,7 +43,7 @@ create table if not exists session_restrictions (
 ) ;
 
 --  accounting state, record the state of (radius) accounting messages
-create table if not exists accounting_state (
+create table accounting_state (
       zoneid int
 ,     sessionid varchar
 ,     state varchar
