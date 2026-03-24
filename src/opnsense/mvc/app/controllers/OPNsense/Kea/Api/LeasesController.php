@@ -122,23 +122,30 @@ abstract class LeasesController extends ApiControllerBase
         return $response;
     }
 
-    public function delLeaseAction($ip = null)
+    public function delLeaseAction($ips = null)
     {
         if (!$this->request->isPost()) {
             return ['status' => 'error', 'message' => gettext('Invalid request method')];
         }
-        if (empty($ip)) {
+
+        if (empty($ips)) {
             return ['status' => 'error', 'message' => gettext('Missing lease IP parameter')];
         }
 
-        $result = json_decode((new Backend())->configdpRun("kea delete lease " . escapeshellarg($ip)), true);
+        $results = json_decode((new Backend())->configdpRun("kea delete lease " . escapeshellarg($ips)), true);
 
-        if (!is_array($result) || ($result['status'] ?? '') === 'error' || ($result['result'] ?? 0) === 2) {
-            throw new UserException(gettext('KEA Control Agent is not running'));
+        if (!is_array($results) || empty($results)) {
+            throw new UserException(gettext('Invalid backend response'));
         }
 
-        if (($result['result'] ?? 0) !== 0) {
-            throw new UserException($result['text'] ?? gettext('Failed to delete lease'));
+        foreach ($results as $result) {
+            if (!is_array($result) || ($result['status'] ?? '') === 'error' || ($result['result'] ?? 0) === 2) {
+                throw new UserException(gettext('KEA Control Agent is not running'));
+            }
+
+            if (($result['result'] ?? 0) !== 0) {
+                throw new UserException($result['text'] ?? gettext('Failed to delete lease'));
+            }
         }
 
         return ['status' => 'ok'];

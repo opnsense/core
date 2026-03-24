@@ -33,6 +33,7 @@
         })
 
         $("#grid-leases").UIBootgrid({
+            datakey: 'address',
             search:'/api/kea/leases6/search/',
             del:'/api/kea/leases6/del_lease/',
             tabulatorOptions: {
@@ -47,9 +48,8 @@
                 },
             },
             options: {
-                datakey: 'address',
-                selection: false,
-                multiSelect: false,
+                selection: true,
+                multiSelect: true,
                 useRequestHandlerOnGet: true,
                 requestHandler: function(request) {
                     request['selected_interfaces'] = selected_interfaces;
@@ -183,6 +183,13 @@
         <tbody>
         </tbody>
         <tfoot>
+            <tr>
+                <td>
+                    <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default">
+                        <span class="fa fa-trash-o fa-fw"></span>
+                    </button>
+                </td>
+            </tr>
         </tfoot>
         </tr>
     </table>

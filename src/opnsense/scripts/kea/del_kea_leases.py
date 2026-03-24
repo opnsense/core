@@ -27,23 +27,46 @@
 """
 
 import argparse
-import socket
 import os
 import ujson
+import socket
+
+
+def send_command(socket_path, payload):
+    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+    sock.connect(socket_path)
+    sock.sendall(ujson.dumps(payload).encode() + b"\n")
+
+    data = b""
+    while True:
+        chunk = sock.recv(4096)
+        if not chunk:
+            break
+        data += chunk
+        if data.strip().endswith(b'}'):
+            break
+
+    sock.close()
+    return ujson.loads(data.decode())
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("ip", help="IP address to delete")
-    ip = parser.parse_args().ip
-    path = "/var/run/kea/kea6-ctrl-socket" if ":" in ip else "/var/run/kea/kea4-ctrl-socket"
-    cmd = "lease6-del" if ":" in ip else "lease4-del"
+    parser.add_argument("ip", help="IP address(es) to delete, comma separated")
+    ips = [ip.strip() for ip in parser.parse_args().ip.split(',') if ip.strip()]
 
-    if not os.path.exists(path):
-        print(ujson.dumps({"status": "error", "message": f"socket not found: {path}"}))
-        exit(1)
+    results = []
 
-    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    sock.connect(path)
-    sock.sendall(ujson.dumps({"command": cmd, "arguments": {"ip-address": ip}}).encode() + b"\n")
-    print(sock.recv(4096).decode())
-    sock.close()
+    for ip in ips:
+        path = "/var/run/kea/kea6-ctrl-socket" if ":" in ip else "/var/run/kea/kea4-ctrl-socket"
+        cmd = "lease6-del" if ":" in ip else "lease4-del"
+
+        if not os.path.exists(path):
+            results.append({"ip": ip, "status": "error", "message": f"socket not found: {path}"})
+            continue
+
+        result = send_command(path, {"command": cmd, "arguments": {"ip-address": ip}})
+        result["ip"] = ip
+        results.append(result)
+
+    print(ujson.dumps(results))
