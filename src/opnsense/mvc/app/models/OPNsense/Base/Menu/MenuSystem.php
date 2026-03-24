@@ -489,7 +489,8 @@ class MenuSystem
 
     /**
      * return the currently selected page's breadcrumbs
-     * also captures the selected page's URL and favorite status
+     * NOTE: must be called after getItems(); also populates state for
+     *       getSelectedPageUrl() and getSelectedPageIsFavorite()
      * @return array
      */
     public function getBreadcrumbs()
@@ -527,6 +528,7 @@ class MenuSystem
     }
 
     /**
+     * NOTE: must be called after getBreadcrumbs()
      * @return string URL of the selected page, or empty string
      */
     public function getSelectedPageUrl()
@@ -535,6 +537,7 @@ class MenuSystem
     }
 
     /**
+     * NOTE: must be called after getBreadcrumbs()
      * @return bool whether the selected page is in the user's favorites
      */
     public function getSelectedPageIsFavorite()
