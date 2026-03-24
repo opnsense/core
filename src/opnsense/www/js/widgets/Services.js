@@ -38,7 +38,7 @@ export default class Services extends BaseTableWidget {
     }
 
     getMarkup() {
-        return $(`<div id="services-container" style="display: flex; flex-wrap: wrap; padding: 5px; gap: 5px; justify-content: flex-start;"></div>`);
+        return $(`<div id="services-container" style="display: grid; grid-template-columns: repeat(3, 1fr); padding: 5px; gap: 5px;"></div>`);
     }
 
     serviceControl(actions) {
@@ -88,9 +88,6 @@ export default class Services extends BaseTableWidget {
                     border: 1px solid #e5e5e5;
                     border-radius: 4px;
                     padding: 8px;
-                    width: 32%;
-                    flex-grow: 1;
-                    min-width: 140px;
                     display: flex;
                     flex-direction: column;
                     align-items: center;
