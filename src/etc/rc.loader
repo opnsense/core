@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2016-2018 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2016-2026 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -54,7 +54,12 @@ for LOADERCHUNK in ${LOADERCHUNKS}; do
 	LOADERNAME=${LOADERCHUNK#??-}
 
 	if [ "${LOADERNAME}" = "zfs" ]; then
-		if ! kldstat -qm zfs; then
+		# during a build we do not look at modules
+		if [ -n "${PRODUCT_NAME}" ]; then
+			if [ -z "${PRODUCT_ZFS}" ]; then
+				continue
+			fi
+		elif ! kldstat -qm zfs; then
 			continue
 		fi
 	fi
