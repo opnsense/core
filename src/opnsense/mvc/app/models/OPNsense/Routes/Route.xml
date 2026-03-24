@@ -15,10 +15,10 @@
                 <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
             </gateway>
             <descr type="DescriptionField"/>
-            <disabled type="BooleanField">
-                <Default>0</Default>
+            <enabled type="BooleanField">
+                <Default>1</Default>
                 <Required>Y</Required>
-            </disabled>
+            </enabled>
         </route>
     </items>
 </model>
