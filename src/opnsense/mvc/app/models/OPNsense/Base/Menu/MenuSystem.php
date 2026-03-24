@@ -59,22 +59,12 @@ class MenuSystem
     private $hasFavorites = false;
 
     /**
-     * @var bool whether resolveSelectedPage() has already run
-     */
-    private $selectedPageResolved = false;
-
-    /**
-     * @var array breadcrumbs for the currently selected page
-     */
-    private $breadcrumbs = [];
-
-    /**
-     * @var string URL of the currently selected page
+     * @var string URL of the currently selected page (set by getBreadcrumbs)
      */
     private $selectedPageUrl = '';
 
     /**
-     * @var bool whether the selected page is a favorite
+     * @var bool whether the selected page is a favorite (set by getBreadcrumbs)
      */
     private $selectedPageIsFavorite = false;
 
@@ -498,21 +488,16 @@ class MenuSystem
     }
 
     /**
-     * resolve the currently selected page's breadcrumbs, URL, and favorite status
-     * runs at most once per request; subsequent calls are no-ops
+     * return the currently selected page's breadcrumbs
+     * also captures the selected page's URL and favorite status
+     * @return array
      */
-    private function resolveSelectedPage()
+    public function getBreadcrumbs()
     {
-        if ($this->selectedPageResolved) {
-            return;
-        }
-
-        $this->selectedPageResolved = true;
-        $this->breadcrumbs = [];
+        $nodes = $this->root->getChildren();
+        $breadcrumbs = [];
         $this->selectedPageUrl = '';
         $this->selectedPageIsFavorite = false;
-
-        $nodes = $this->root->getChildren();
 
         while ($nodes != null) {
             $next = null;
@@ -525,7 +510,7 @@ class MenuSystem
                         $next = null;
                         break;
                     }
-                    $this->breadcrumbs[] = ['name' => $node->VisibleName];
+                    $breadcrumbs[] = ['name' => $node->VisibleName];
                     if (!empty($node->Url)) {
                         $this->selectedPageUrl = $node->Url;
                         $this->selectedPageIsFavorite = (bool)$node->IsFavorite;
@@ -537,16 +522,8 @@ class MenuSystem
             }
             $nodes = $next;
         }
-    }
 
-    /**
-     * return the currently selected page's breadcrumbs
-     * @return array
-     */
-    public function getBreadcrumbs()
-    {
-        $this->resolveSelectedPage();
-        return $this->breadcrumbs;
+        return $breadcrumbs;
     }
 
     /**
@@ -554,7 +531,6 @@ class MenuSystem
      */
     public function getSelectedPageUrl()
     {
-        $this->resolveSelectedPage();
         return $this->selectedPageUrl;
     }
 
@@ -563,7 +539,6 @@ class MenuSystem
      */
     public function getSelectedPageIsFavorite()
     {
-        $this->resolveSelectedPage();
         return $this->selectedPageIsFavorite;
     }
 }

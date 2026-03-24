@@ -2,6 +2,7 @@
 
 // link menu system
 $menu = new OPNsense\Base\Menu\MenuSystem();
+/* XXX generating breadcrumbs requires getItems() call */
 $menuSystem = $menu->getItems($_SERVER['REQUEST_URI'], $_SESSION['Username'] ?? '');
 $menuBreadcrumbs = $menu->getBreadcrumbs();
 $menuHasFavorites = $menu->hasUserFavorites();

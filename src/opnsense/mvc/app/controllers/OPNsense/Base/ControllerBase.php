@@ -372,6 +372,7 @@ class ControllerBase extends ControllerRoot
 
         $rewrite_uri = explode("?", $_SERVER["REQUEST_URI"])[0];
         $this->view->menuSystem = $menu->getItems($rewrite_uri, $_SESSION['Username'] ?? '');
+        /* XXX generating breadcrumbs requires getItems() call */
         $this->view->menuBreadcrumbs = $menu->getBreadcrumbs();
         $this->view->menuHasFavorites = $menu->hasUserFavorites();
         $this->view->menuSelectedUrl = $menu->getSelectedPageUrl();
