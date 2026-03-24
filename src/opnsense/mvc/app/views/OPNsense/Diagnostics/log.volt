@@ -158,7 +158,7 @@
 
       // Move filters directly into the actionBar instead of nested groups for better flex behavior
       $("#filter_container").detach().insertAfter('#grid-log-header .search');
-      $("#export-wrapper").detach().appendTo('#grid-log-header .actionBar');
+      $("#command-wrapper").detach().appendTo('#grid-log-header .actionBar');
 
       function switch_mode(value) {
           let select = $("#severity_filter");
@@ -230,9 +230,12 @@
                         </select>
                     </div>
                 </div>
-                <div id="export-wrapper" class="btn-group">
-                    <button id="exportbtn" class="btn btn-default" data-toggle="tooltip" title="" type="button" data-original-title="{{ lang._('Download selection')}}">
-                        <span class="fa fa-cloud-download"></span>
+                <div id="command-wrapper" class="btn-group">
+                    <button id="exportbtn" class="btn btn-default" data-toggle="tooltip" type="button" data-original-title="{{ lang._('Download selection')}}">
+                        <span class="fa fa-fw fa-cloud-download"></span>
+                    </button>
+                    <button class="btn btn-primary" id="flushlog"  data-toggle="tooltip" type="button" data-original-title="{{ lang._('Clear log') }}">
+                        <span class="fa fa-fw fa-trash"></span>
                     </button>
                 </div>
                 <table id="grid-log" class="table table-condensed table-hover table-striped table-responsive">
@@ -240,8 +243,8 @@
                     <tr>
                         <th data-column-id="timestamp" data-width="11em" data-type="string">{{ lang._('Date') }}</th>
                         <th data-column-id="facility" data-type="string" data-visible="false">{{ lang._('Facility') }}</th>
-                        <th data-column-id="severity" data-type="string" data-width="2em">{{ lang._('Severity') }}</th>
-                        <th data-column-id="process_name" data-width="2em" data-type="string">{{ lang._('Process') }}</th>
+                        <th data-column-id="severity" data-type="string" data-width="110">{{ lang._('Severity') }}</th>
+                        <th data-column-id="process_name" data-width="140" data-type="string">{{ lang._('Process') }}</th>
                         <th data-column-id="pid" data-width="2em" data-type="numeric" data-visible="false">{{ lang._('PID') }}</th>
                         <th data-column-id="line" data-type="string">{{ lang._('Line') }}</th>
                         <th data-column-id="rnum" data-type="numeric" data-formatter="page" data-width="2em" data-identifier="true"></th>
@@ -252,17 +255,6 @@
                     <tfoot>
                       <td></td>
                     </tfoot>
-                </table>
-                <table class="table">
-                    <tbody>
-                        <tr>
-                            <td>
-                              <button class="btn btn-primary pull-right" id="flushlog">
-                                  {{ lang._('Clear log') }}
-                              </button>
-                            </td>
-                        </tr>
-                    </tbody>
                 </table>
             </div>
         </div>
