@@ -160,7 +160,7 @@ class KeaDhcpv6 extends BaseModel
         return $hostname;
     }
 
-    private function getConfigSubnets()
+    private function getConfigSubnets($ddns_enabled = false)
     {
         $cfg = Config::getInstance()->object();
         $result = [];
@@ -270,6 +270,13 @@ class KeaDhcpv6 extends BaseModel
                 }
                 $record['option-data'][] = $entry;
             }
+            /* DDNS per subnet settings */
+            if ($ddns_enabled) {
+                if (!$subnet->ddns_qualifying_suffix->isEmpty()) {
+                    $record['ddns-qualifying-suffix'] = $subnet->ddns_qualifying_suffix->getValue();
+                }
+                $record['ddns-send-updates'] = !$subnet->ddns_dns_server->isEmpty();
+            }
             $result[] = $record;
         }
         return $result;
@@ -305,6 +312,8 @@ class KeaDhcpv6 extends BaseModel
 
     public function generateConfig($target = '/usr/local/etc/kea/kea-dhcp6.conf')
     {
+        $ddns = new KeaDdns();
+        $ddns_enabled = !$ddns->general->enabled->isEmpty();
         $cnf = [
             'Dhcp6' => [
                 'valid-lifetime' => $this->general->valid_lifetime->asInt(),
@@ -330,7 +339,7 @@ class KeaDhcpv6 extends BaseModel
                         'severity' => 'INFO',
                     ]
                 ],
-                'subnet6' => $this->getConfigSubnets(),
+                'subnet6' => $this->getConfigSubnets($ddns_enabled),
             ]
         ];
         $client_classes = $this->getConfigClientClasses();
@@ -378,8 +387,7 @@ class KeaDhcpv6 extends BaseModel
                 $cnf['Dhcp6']['hooks-libraries'][] = $record;
             }
         }
-        $ddns = new KeaDdns();
-        if (!$ddns->general->enabled->isEmpty()) {
+        if ($ddns_enabled) {
             $cnf['Dhcp6']['dhcp-ddns'] = [
                 'enable-updates' => true,
                 'server-ip' => $ddns->general->server_ip->getValue(),
