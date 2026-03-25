@@ -93,28 +93,34 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
      */
     protected function getNetworks($names)
     {
+        $result = [];
+
         /* As we are rendering MVC and legacy content, we can't use the descriptions from the fieldtypes */
         if (empty($this->networks)) {
-            $nets = [];
-            $nets['any'] = gettext('any');
-            $nets['(self)'] = gettext('This Firewall');
+            $nets = [
+                'any' => gettext('any'),
+                '(self)' => gettext('This Firewall'),
+            ];
+
             foreach (Config::getInstance()->object()->interfaces->children() as $ifname => $ifdetail) {
                 $descr = htmlspecialchars(!empty($ifdetail->descr) ? $ifdetail->descr : strtoupper($ifname));
-                $nets[$ifname] = $descr . ' ' . gettext('net');
+                $nets[$ifname] = sprintf(gettext('%s network'), $descr);
                 if (!empty($ifdetail->if)) {
                     /* some automatic rules use device names */
-                    $nets[(string)$ifdetail->if] = $descr . ' ' . gettext('net');
+                    $nets[(string)$ifdetail->if] = sprintf(gettext('%s network'), $descr);
                 }
-                $nets[$ifname . 'ip'] = $descr . ' ' . gettext('address');
+                $nets["{$ifname}ip"] = sprintf(gettext('%s address'), $descr);
             }
+
             foreach ($nets as $key => $value) {
                 $this->networks[$key] = [
                     'value' => $key,
                     '%value' => $value,
                     'isAlias' => false,
-                    'description' => ''
+                    'description' => '',
                 ];
             }
+
             /* create alias object for summary */
             Util::attachAliasObject(new Alias(true));
             foreach (Alias::getCachedData()['aliases']['alias'] ?? [] as $alias) {
@@ -127,7 +133,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
                 ];
             }
         }
-        $result = [];
+
         foreach (array_map('trim', explode(',', $names)) as $name) {
             if (isset($this->networks[$name])) {
                 $result[] = $this->networks[$name];
@@ -137,10 +143,11 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
                     'value' => $name,
                     '%value' => $name,
                     'isAlias' => false,
-                    'description' => ''
+                    'description' => '',
                 ];
             }
         }
+
         return $result;
     }
 
@@ -188,37 +195,49 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
      */
     public function listNetworkSelectOptionsAction()
     {
+        $networks = [];
+        $aliases = [];
         $result = [
             'single' => [
-                'label' => gettext("Single host or Network")
+                'label' => gettext('Single host or Network'),
             ],
             'aliases' => [
-                'label' => gettext("Aliases"),
-                'items' => []
+                'label' => gettext('Aliases'),
+                'items' => [],
             ],
             'networks' => [
-                'label' => gettext("Networks"),
+                'label' => gettext('Networks'),
                 'items' => [
                     'any' => gettext('any'),
-                    '(self)' => gettext("This Firewall")
+                    '(self)' => gettext('This Firewall'),
                 ]
             ]
         ];
+
         foreach ((Config::getInstance()->object())->interfaces->children() as $ifname => $ifdetail) {
             $descr = htmlspecialchars(!empty($ifdetail->descr) ? $ifdetail->descr : strtoupper($ifname));
-            $result['networks']['items'][$ifname] = $descr . " " . gettext("net");
+            $networks[$ifname] = sprintf(gettext('%s network'), $descr);
             if (!isset($ifdetail->virtual)) {
-                $result['networks']['items'][$ifname . "ip"] = $descr . " " . gettext("address");
+                $networks["{$ifname}ip"] = sprintf(gettext('%s address'), $descr);
             }
         }
-        foreach ((new Alias())->aliases->alias->iterateItems() as $alias) {
-            if ($alias->type == 'internal') {
-                /* currently only used for legacy bindings, align with legacy_list_aliases() usage */
-                continue;
-            } elseif ($alias->type != 'port') {
-                $result['aliases']['items'][(string)$alias->name] = (string)$alias->name;
+
+        foreach (Alias::getCachedData()['aliases']['alias'] ?? [] as $alias) {
+            switch ($alias['type']) {
+                case 'internal': /* currently only used for legacy bindings, align with legacy_list_aliases() usage */
+                case 'port': /* we are only looking for networks and addresses only */
+                    break;
+                default:
+                    $aliases[$alias['name']] = $alias['name'];
+                    break;
             }
         }
+
+        natcasesort($networks);
+        natcasesort($aliases);
+
+        $result['networks']['items'] += $networks;
+        $result['aliases']['items'] += $aliases;
 
         return $result;
     }
@@ -229,6 +248,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
      */
     public function listPortSelectOptionsAction()
     {
+        $aliases = [];
         $result = [
             'single' => [
                 'label' => gettext('Single port or range'),
@@ -262,15 +282,19 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             $result['ports']['items'][$service] = sprintf('%s (%s)', strtoupper($service), $port);
         }
 
-        foreach ((new Alias())->aliases->alias->iterateItems() as $alias) {
-            if ($alias->type == 'internal') {
-                /* currently only used for legacy bindings, align with legacy_list_aliases() usage */
-                continue;
-            }
-            if ((string)$alias->type == 'port') {
-                $result['aliases']['items'][(string)$alias->name] = (string)$alias->name;
+        foreach (Alias::getCachedData()['aliases']['alias'] ?? [] as $alias) {
+            switch ($alias['type']) {
+                case 'port':
+                    $aliases[$alias['name']] = $alias['name'];
+                    break;
+                default:
+                    break;
             }
         }
+
+        natcasesort($aliases);
+
+        $result['aliases']['items'] += $aliases;
 
         return $result;
     }
