@@ -24,17 +24,19 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-export default class Notepad extends BaseWidget {
+export default class Notes extends BaseWidget {
     constructor(config) {
         super(config);
+        this.titleVisible = false;
+
     }
 
     getMarkup() {
         let $container = $(`
-        <div id="notepad-container-${this.id}" class="widget-content">
+        <div id="notes-container-${this.id}" class="widget-content">
             <div style="padding: 10px;">
                 <textarea
-                    id="notepad-text-${this.id}" maxlength="8192"
+                    id="notes-text-${this.id}" maxlength="8192"
                     style="
                         min-width: 0;
                         resize: none;
@@ -47,10 +49,10 @@ export default class Notepad extends BaseWidget {
                     ">
                 </textarea>
                 <div style="display: flex; justify-content: flex-end; align-items: center;">
-                    <span id="notepad-saved-msg-${this.id}" style="color: green; margin-right: 10px; display: none;">
+                    <span id="notes-saved-msg-${this.id}" style="color: green; margin-right: 10px; display: none;">
                         <i class="fa fa-check"></i> ${this.translations.saved}
                     </span>
-                    <button id="notepad-save-btn-${this.id}" class="btn btn-primary btn-sm">
+                    <button id="notes-save-btn-${this.id}" class="btn btn-primary btn-sm">
                         ${this.translations.save}
                     </button>
                 </div>
@@ -61,9 +63,9 @@ export default class Notepad extends BaseWidget {
     }
 
     async onMarkupRendered() {
-        const textElement = $(`#notepad-text-${this.id}`);
-        const saveButton = $(`#notepad-save-btn-${this.id}`);
-        const savedMsg = $(`#notepad-saved-msg-${this.id}`);
+        const textElement = $(`#notes-text-${this.id}`);
+        const saveButton = $(`#notes-save-btn-${this.id}`);
+        const savedMsg = $(`#notes-saved-msg-${this.id}`);
 
         const data = await this.ajaxCall('/api/core/dashboard/getNote');
         if (data.result === 'ok') {
