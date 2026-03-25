@@ -337,7 +337,7 @@
                     <Constraints>
                         <check001>
                             <ValidationMessage>Match option and match data must either both be set or left empty.</ValidationMessage>
-                            <type>DependConstraint</type>
+                            <type>SetConstraint</type>
                             <addFields>
                                 <field1>match_code</field1>
                             </addFields>
