@@ -63,7 +63,6 @@ $(document).ready(function () {
             // the same way the page's own hashchange handler does
             if (this.hash && this.hash !== window.location.hash) {
                 $('a[href="' + this.hash + '"]').click();
-                return;
             }
 
             var activeItem = $('#mainmenu .list-group-item.active').not('#Favorites .list-group-item');
