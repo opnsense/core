@@ -31,15 +31,31 @@ export default class Notepad extends BaseWidget {
 
     getMarkup() {
         let $container = $(`
-            <div id="notepad-container" class="widget-content">
-                <div style="padding: 10px; display: flex; flex-direction: column; height: 100%;">
-                    <textarea id="notepad-text-${this.id}" style="width: 100%; resize: vertical; min-height: 150px; flex-grow: 1; margin-bottom: 10px;"></textarea>
-                    <div style="display: flex; justify-content: flex-end; align-items: center;">
-                        <span id="notepad-saved-msg-${this.id}" style="color: green; margin-right: 10px; display: none;"><i class="fa fa-check"></i> ${this.translations.saved}</span>
-                        <button id="notepad-save-btn-${this.id}" class="btn btn-primary btn-sm">${this.translations.save}</button>
-                    </div>
+        <div id="notepad-container-${this.id}" class="widget-content">
+            <div style="padding: 10px;">
+                <textarea
+                    id="notepad-text-${this.id}" maxlength="8192"
+                    style="
+                        min-width: 0;
+                        resize: none;
+                        min-height: 150px;
+                        margin-bottom: 10px;
+                        max-width: 100%;
+                        max-height: 100%;
+                        flex-grow: 1;
+                        box-sizing: border-box;
+                    ">
+                </textarea>
+                <div style="display: flex; justify-content: flex-end; align-items: center;">
+                    <span id="notepad-saved-msg-${this.id}" style="color: green; margin-right: 10px; display: none;">
+                        <i class="fa fa-check"></i> ${this.translations.saved}
+                    </span>
+                    <button id="notepad-save-btn-${this.id}" class="btn btn-primary btn-sm">
+                        ${this.translations.save}
+                    </button>
                 </div>
             </div>
+        </div>
         `);
         return $container;
     }
