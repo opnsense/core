@@ -352,6 +352,44 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     /**
      * @depends testRunMigrations
      */
+    public function testSetConstraintInitial()
+    {
+        self::$model->SetConstraint->value1 = '';
+        self::$model->SetConstraint->value2 = '';
+        self::$model->serializeToConfig();
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SetConstraint->value1, '');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SetConstraint->value2, '');
+    }
+
+    /**
+     * @depends testSetConstraintInitial
+     */
+    public function testSetConstraintNok()
+    {
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('When "value1" is enabled, "value2" is required.');
+        self::$model->SetConstraint->value1 = '0';
+        self::$model->SetConstraint->value2 = '';
+        self::$model->serializeToConfig();
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SetConstraint->value1, '');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SetConstraint->value2, '');
+    }
+
+    /**
+     * @depends testSetConstraintInitial
+     */
+    public function testSetConstraintok()
+    {
+        self::$model->SetConstraint->value1 = '0';
+        self::$model->SetConstraint->value2 = '0';
+        self::$model->serializeToConfig();
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SetConstraint->value1, '0');
+        $this->assertEquals(Config::getInstance()->object()->tests->OPNsense->TestModel->SetConstraint->value2, '0');
+    }
+
+    /**
+     * @depends testRunMigrations
+     */
     public function testDependConstraintInitial()
     {
         self::$model->DependConstraint->value1 = '0';

@@ -110,6 +110,26 @@
                 </Constraints>
             </value2>
         </DependConstraint>
+        <SetConstraint>
+            <value1 type="TextField">
+                <Constraints>
+                    <check001>
+                        <reference>value2.check001</reference>
+                    </check001>
+                </Constraints>
+            </value1>
+            <value2 type="TextField">
+                <Constraints>
+                    <check001>
+                        <type>SetConstraint</type>
+                        <ValidationMessage>When "value1" is enabled, "value2" is required.</ValidationMessage>
+                        <addFields>
+                            <field1>value1</field1>
+                        </addFields>
+                    </check001>
+                </Constraints>
+            </value2>
+        </SetConstraint>
         <simpleList>
             <items type="ArrayField">
                 <number type="IntegerField"/>
