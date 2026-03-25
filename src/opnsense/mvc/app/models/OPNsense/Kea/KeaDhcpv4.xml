@@ -351,7 +351,7 @@
                     </OptionValues>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Match option and match data must either both be set or left empty.</ValidationMessage>
+                            <ValidationMessage>Match code and match data must either both be set or left empty.</ValidationMessage>
                             <type>DependConstraint</type>
                             <addFields>
                                 <field1>match_data</field1>
@@ -388,7 +388,7 @@
                     <OptionSpace>dhcp4</OptionSpace>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Match option and match data must either both be set or left empty.</ValidationMessage>
+                            <ValidationMessage>Match code and match data must either both be set or left empty.</ValidationMessage>
                             <type>SetConstraint</type>
                             <addFields>
                                 <field1>match_code</field1>
