@@ -153,7 +153,7 @@ vim:
 	if [ -n "$${FOUND}" ]; then \
 		if [ "$$(echo "$${FOUND}" | wc -l | awk '{ print $$1 }')" = "1" ]; then \
 			${VIM} "$${FOUND}"; \
-			${PHPBIN} -l "$${FOUND}" > /dev/null; \
+			${PHPBIN} -l "$${FOUND}"; \
 		else \
 			echo "Found multiple files to open:"; \
 			echo "$${FOUND}"; \
