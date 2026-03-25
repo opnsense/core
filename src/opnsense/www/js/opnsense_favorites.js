@@ -58,6 +58,14 @@ $(document).ready(function () {
         if (this.pathname + this.search == window.location.pathname + window.location.search) {
             e.preventDefault();
             $('#Favorites').collapse('hide');
+
+            // switch tab when the hash differs; click the matching tab link
+            // the same way the page's own hashchange handler does
+            if (this.hash && this.hash !== window.location.hash) {
+                $('a[href="' + this.hash + '"]').click();
+                return;
+            }
+
             var activeItem = $('#mainmenu .list-group-item.active').not('#Favorites .list-group-item');
             if (activeItem.length) {
                 activeItem.parents('.collapse').each(function () {
