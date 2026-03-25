@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2018 Fabian Franz
+ * Copyright (C) 2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,21 +29,15 @@
 namespace OPNsense\Base\Constraints;
 
 /**
- * validate if a field is set depending on the setting of another field
- * containing a specific value
- * Class SetIfConstraint
+ * Class SetConstraint, add a constraint to this field stating dependency of another field
+ * (if this field is not set then the referred field should be not be set too)
  * @package OPNsense\Base\Constraints
  */
-class SetIfConstraint extends BaseConstraint
+class SetConstraint extends BaseConstraint
 {
     /**
-     * Executes validation, where the value must be set if another field is
-     * set to a specific value. Configuration example:
-     *
-     *   &lt;ValidationMessage&gt;This field must be set.&lt;/ValidationMessage&gt;
-     *   &lt;type&gt;SetIfConstraint&lt;/type&gt;
-     *   &lt;field&gt;name of another field which has the same parent node&lt;/field&gt;
-     *   &lt;check&gt;the value to check for as a string (for example the value of a OptionField)&lt;/check&gt;
+     * Executes validation, expects a list of fields in "addFields" which to check for content.
+     * Fields are concerned empty if boolean false or containing an empty string
      *
      * @param $validator
      * @param string $attribute
@@ -53,13 +47,14 @@ class SetIfConstraint extends BaseConstraint
     {
         $node = $this->getOption('node');
 
-        if ($node) {
+        if ($node && !$node->isSet()) {
             $parentNode = $node->getParentNode();
-            $field_name = $this->getOption('field');
-            $check = $this->getOption('check', '');
 
-            if ($node->isEmpty() && $parentNode->$field_name->isEqual($check)) {
-                $this->appendMessage($validator, $attribute);
+            foreach (array_unique($this->getOptionValueList('addFields')) as $fieldname) {
+                if (!is_null($parentNode->$fieldname) && $parentNode->$fieldname->isSet()) {
+                    $this->appendMessage($validator, $attribute);
+                    break;
+                }
             }
         }
 
