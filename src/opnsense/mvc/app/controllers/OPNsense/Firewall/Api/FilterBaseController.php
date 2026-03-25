@@ -219,6 +219,16 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
                 $result['aliases']['items'][(string)$alias->name] = (string)$alias->name;
             }
         }
+        natcasesort($result['aliases']['items']);
+        $static_nets = [];
+        foreach (['any', '(self)'] as $key) {
+            if (isset($result['networks']['items'][$key])) {
+                $static_nets[$key] = $result['networks']['items'][$key];
+                unset($result['networks']['items'][$key]);
+            }
+        }
+        natcasesort($result['networks']['items']);
+        $result['networks']['items'] = $static_nets + $result['networks']['items'];
 
         return $result;
     }
