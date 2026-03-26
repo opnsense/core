@@ -139,7 +139,7 @@ class BackupController extends ApiControllerBase
                 $diff = Shell::shell_safe('/usr/bin/diff -u %s %s', [$bckfilename2, $bckfilename1], true);
                 if (!empty($diff)) {
                     foreach ($diff as $line) {
-                        $result['items'][] = htmlspecialchars($line, ENT_QUOTES | ENT_HTML401);
+                        $result['items'][] = htmlspecialchars($line ?? '', ENT_QUOTES | ENT_HTML401);
                     }
                 }
             }

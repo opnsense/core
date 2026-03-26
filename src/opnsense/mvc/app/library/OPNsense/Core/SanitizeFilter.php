@@ -70,7 +70,7 @@ class SanitizeFilter
 
     protected function filter_string($input)
     {
-        return htmlspecialchars($input, ENT_QUOTES | ENT_HTML401);
+        return htmlspecialchars($input ?? '', ENT_QUOTES | ENT_HTML401);
     }
 
     protected function filter_alnum($input)
