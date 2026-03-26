@@ -79,7 +79,7 @@ class KeaDhcpv6 extends BaseModel
                 if (Util::isSubnet($pool)) {
                     $range = Util::cidrToRange($pool);
                 } else {
-                    $range = explode('-', $pool);
+                    $range = array_map('trim', explode('-', $pool));
                 }
                 foreach (!empty($range) ? $range : [] as $addr) {
                     if (!Util::isIPInCIDR($addr, $subnet->subnet->getValue())) {
