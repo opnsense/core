@@ -143,8 +143,7 @@
                     <Default>1</Default>
                     <Required>Y</Required>
                 </match-client-id>
-                <pools type=".\KeaPoolsField">
-                </pools>
+                <pools type=".\KeaPoolsField"/>
                 <ddns_forward_zone type="HostnameField">
                     <IpAllowed>N</IpAllowed>
                     <Constraints>

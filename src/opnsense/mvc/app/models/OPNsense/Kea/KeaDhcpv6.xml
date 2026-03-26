@@ -109,8 +109,7 @@
                     </Model>
                     <Multiple>Y</Multiple>
                 </option>
-                <pools type=".\KeaPoolsField">
-                </pools>
+                <pools type=".\KeaPoolsField"/>
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                 </interface>
