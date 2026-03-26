@@ -30,7 +30,7 @@ namespace OPNsense\Base\Constraints;
 
 /**
  * Class SetConstraint, add a constraint to this field stating dependency of another field
- * (if this field is not set then the referred field should be not be set too)
+ * (if this field is not set then the referred field should also not be set)
  * @package OPNsense\Base\Constraints
  */
 class SetConstraint extends BaseConstraint
