@@ -930,14 +930,8 @@
                 // and do the same with category selection (supports multiple)
                 const selectedCategories = $('#category_filter').val();
                 if (selectedCategories && selectedCategories.length > 0) {
-                    let categorySelect = $('#rule\\.categories');
-
-                    categorySelect.tokenize2().trigger('tokenize:clear');
-
-                    selectedCategories.forEach(function(categoryUUID) {
-                        let categoryLabel = $('#rule\\.categories option[value="' + categoryUUID + '"]').text();
-                        categorySelect.tokenize2().trigger('tokenize:tokens:add', [categoryUUID, categoryLabel]);
-                    });
+                    $('#rule\\.categories').selectpicker('val', selectedCategories);
+                    $('#rule\\.categories').selectpicker('refresh');
                 }
             }
         });

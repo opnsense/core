@@ -31,7 +31,6 @@
         <id>rule.category</id>
         <label>Categories</label>
         <type>select_multiple</type>
-        <style>tokenize</style>
         <help>Assign categories for rule organization.</help>
         <grid_view>
             <formatter>category</formatter>
