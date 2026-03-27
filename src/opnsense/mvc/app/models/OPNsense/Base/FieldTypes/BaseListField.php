@@ -141,7 +141,7 @@ abstract class BaseListField extends BaseField
         if (!$this->internalIsRequired && !$this->internalMultiSelect) {
             $result[""] = [
                 "value" => $this->internalEmptyDescription,
-                "selected" => empty((string)$this->internalValue) ? 1 : 0
+                "selected" => !$this->isSet() ? 1 : 0
             ];
         }
 
