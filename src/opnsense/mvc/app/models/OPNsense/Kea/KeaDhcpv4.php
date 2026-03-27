@@ -176,7 +176,7 @@ class KeaDhcpv4 extends BaseModel
                 'reservations' => []
             ];
             /* add pools */
-            foreach (array_filter(explode("\n", $subnet->pools->getValue())) as $pool) {
+            foreach ($subnet->pools->getValues() as $pool) {
                 $record['pools'][] = ['pool' => $pool];
             }
             /* static reservations */

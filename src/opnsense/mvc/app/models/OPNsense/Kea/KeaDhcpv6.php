@@ -72,23 +72,13 @@ class KeaDhcpv6 extends BaseModel
             $key = $subnet->__reference;
             if (!in_array($subnet->interface->getValue(), $this_interfaces)) {
                 $messages->appendMessage(
-                    new Message(gettext("Interface not configured in general settings"), $key . ".interface")
+                    new Message(gettext('Interface is not selected in the general settings.'), $key . ".interface")
                 );
             }
-            foreach ($subnet->pools->getValues() as $pool) {
-                if (Util::isSubnet($pool)) {
-                    $range = Util::cidrToRange($pool);
-                } else {
-                    $range = explode('-', $pool);
-                }
-                foreach (!empty($range) ? $range : [] as $addr) {
-                    if (!Util::isIPInCIDR($addr, $subnet->subnet->getValue())) {
-                        $messages->appendMessage(
-                            new Message(sprintf(gettext("Pool %s not in specified subnet"), $pool), $key . ".pools")
-                        );
-                        break;
-                    }
-                }
+            foreach ($subnet->pools->checkSubnet($subnet->subnet->getValue()) as $pool) {
+                $messages->appendMessage(
+                    new Message(sprintf(gettext('Pool "%s" not in specified subnet.'), $pool), $key . ".pools")
+                );
             }
         }
         // validate changed pd_pools
@@ -200,7 +190,7 @@ class KeaDhcpv6 extends BaseModel
                 }
             }
             /* add pools */
-            foreach (array_filter(explode("\n", $subnet->pools->getValue())) as $pool) {
+            foreach ($subnet->pools->getValues() as $pool) {
                 $record['pools'][] = ['pool' => $pool];
             }
             /* add pd-pools */
