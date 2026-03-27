@@ -39,7 +39,7 @@ class BaseSetField extends BaseField
     protected $internalIsContainer = false;
 
     /**
-     * @var null when multiple values could be provided at once, specify the split character
+     * @var string when multiple values could be provided at once, specify the split character
      */
     protected $internalFieldSeparator = ',';
 
