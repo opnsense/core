@@ -32,6 +32,7 @@
         <label>Categories</label>
         <type>select_multiple</type>
         <style>tokenize</style>
+        <size>1000</size>
         <help>Assign categories for rule organization.</help>
         <grid_view>
             <formatter>category</formatter>

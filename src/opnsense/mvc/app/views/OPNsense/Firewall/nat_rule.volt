@@ -634,6 +634,11 @@
             margin: 0;
         }
     }
+    .tokenize-dropdown > .dropdown-menu {
+        max-height: 250px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 </style>
 
 <div class="tab-content content-box">

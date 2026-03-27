@@ -1119,6 +1119,13 @@
         }
     }
 
+    /* Limit tokenizer dropdown height since many categories can exist in it */
+    .tokenize-dropdown > .dropdown-menu {
+        max-height: 250px;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
 </style>
 
 <div class="tab-content content-box">
