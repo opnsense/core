@@ -42,6 +42,7 @@
 
     <script>
             // setup default scripting after page loading.
+            window.sessionTimeout = {{ session_timeout|default('14400') }};
             $( document ).ready(function() {
                 // hook into jquery ajax requests to ensure csrf handling.
                 $.ajaxSetup({
@@ -97,6 +98,7 @@
                 addMultiSelectClearUI();
                 initGlobalOpenShortcuts();
 
+                initSessionTimeout();
                 updateSystemStatus();
 
                 // Register collapsible table headers
@@ -333,6 +335,7 @@
             searchColumns: "{{ lang._('Search columns') }}",
             expand: "{{ lang._('Click to expand/collapse cell') }}"
         });
+        localStorage.setItem('opnsense_auth_sync', Date.now().toString());
     </script>
 
   </body>

@@ -397,6 +397,7 @@ class ControllerBase extends ControllerRoot
         $this->view->session_username = !empty($_SESSION['Username']) ? $_SESSION['Username'] : '(unknown)';
         $this->view->system_hostname = $cnf->object()->system->hostname;
         $this->view->system_domain = $cnf->object()->system->domain;
+        $this->view->session_timeout = $this->session_timeout;
 
         if (isset($this->view->menuBreadcrumbs[0]['name'])) {
             $output = [];

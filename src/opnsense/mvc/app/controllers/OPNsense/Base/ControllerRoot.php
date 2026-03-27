@@ -61,6 +61,11 @@ class ControllerRoot extends Controller
     protected $langcode = 'en_US';
 
     /**
+     * @var int session timeout in seconds
+     */
+    public $session_timeout = 14400;
+
+    /**
      * set system language according to configuration
      */
     protected function setLang()
@@ -130,9 +135,9 @@ class ControllerRoot extends Controller
     {
         $cnf = Config::getInstance()->object();
         if (!empty($cnf->system->webgui->session_timeout)) {
-            $session_timeout = $cnf->system->webgui->session_timeout * 60;
+            $this->session_timeout = $cnf->system->webgui->session_timeout * 60;
         } else {
-            $session_timeout = 14400;
+            $this->session_timeout = 14400;
         }
         $redirect_uri = "/?url=" . $_SERVER['REQUEST_URI'];
         if ($this->session->has("Username") == false) {
@@ -147,7 +152,7 @@ class ControllerRoot extends Controller
             return false;
         } elseif (
             $this->session->has("last_access")
-            && $this->session->get("last_access") < (time() - $session_timeout)
+            && $this->session->get("last_access") < (time() - $this->session_timeout)
         ) {
             // session expired / cleanup session data
             $this->getLogger('audit')->notice(sprintf(
@@ -164,7 +169,12 @@ class ControllerRoot extends Controller
 
         $this->setLang();
 
-        $this->session->set("last_access", time());
+        $is_ajax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+        $is_post = $_SERVER['REQUEST_METHOD'] === 'POST';
+
+        if (!$is_ajax || $is_post) {
+            $this->session->set("last_access", time());
+        }
 
         // Authorization using legacy acl structure
         $acl = new ACL();

@@ -370,3 +370,63 @@ function download_content(payload, filename, file_type) {
         }
     });
 }
+
+const ACTIVITY_KEY = 'opn_last_activity';
+let sessionThrottleTimer = null;
+
+/**
+ * Resets the shared local storage timestamp.
+ */
+function resetSessionTimeout() {
+    if (!sessionThrottleTimer) {
+        sessionThrottleTimer = setTimeout(function() {
+            localStorage.setItem(ACTIVITY_KEY, Date.now().toString());
+            sessionThrottleTimer = null;
+        }, 1000);
+    }
+}
+
+/**
+ * Initializes the auto-logout tracking mechanism.
+ */
+function initSessionTimeout() {
+    if ($('input[name="usernamefld"]').length > 0 || window.location.href.includes('?url=')) {
+        setInterval(function() {
+            if (localStorage.getItem(ACTIVITY_KEY)) {
+                window.location.reload();
+            }
+        }, 3000);
+        return;
+    }
+
+    if (typeof window.sessionTimeout !== 'number' || window.sessionTimeout <= 0) {
+        return;
+    }
+
+    const sessionTimeoutMs = window.sessionTimeout * 1000;
+
+    if (!localStorage.getItem(ACTIVITY_KEY)) {
+        localStorage.setItem(ACTIVITY_KEY, Date.now().toString());
+    }
+
+    $(document).on('mousemove keydown click scroll touchstart', function() {
+        resetSessionTimeout();
+    });
+
+    setInterval(function() {
+        let activeKeyStr = localStorage.getItem(ACTIVITY_KEY);
+
+        if (!activeKeyStr) {
+            window.location.reload();
+            return;
+        }
+
+        let lastActive = parseInt(activeKeyStr, 10);
+        let timeIdleMs = Date.now() - lastActive;
+
+        if (timeIdleMs > (sessionTimeoutMs + 10000)) {
+            localStorage.removeItem(ACTIVITY_KEY);
+            window.location.reload();
+        }
+    }, 5000);
+}
