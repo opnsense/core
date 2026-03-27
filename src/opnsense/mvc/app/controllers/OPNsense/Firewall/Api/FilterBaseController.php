@@ -103,7 +103,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             ];
 
             foreach (Config::getInstance()->object()->interfaces->children() as $ifname => $ifdetail) {
-                $descr = htmlspecialchars(!empty($ifdetail->descr) ? $ifdetail->descr : strtoupper($ifname));
+                $descr = !empty($ifdetail->descr) ? (string)$ifdetail->descr : strtoupper($ifname);
                 $nets[$ifname] = sprintf(gettext('%s network'), $descr);
                 if (!empty($ifdetail->if)) {
                     /* some automatic rules use device names */
@@ -215,7 +215,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         ];
 
         foreach ((Config::getInstance()->object())->interfaces->children() as $ifname => $ifdetail) {
-            $descr = htmlspecialchars(!empty($ifdetail->descr) ? $ifdetail->descr : strtoupper($ifname));
+            $descr = !empty($ifdetail->descr) ? (string)$ifdetail->descr : strtoupper($ifname);
             $networks[$ifname] = sprintf(gettext('%s network'), $descr);
             if (!isset($ifdetail->virtual)) {
                 $networks["{$ifname}ip"] = sprintf(gettext('%s address'), $descr);

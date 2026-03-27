@@ -72,7 +72,7 @@ class NetworkAliasField extends BaseListField
         ];
         // interface nets and addresses
         foreach (Config::getInstance()->object()->interfaces->children() as $ifname => $ifdetail) {
-            $descr = htmlspecialchars(!empty($ifdetail->descr) ? $ifdetail->descr : strtoupper($ifname));
+            $descr = !empty($ifdetail->descr) ? (string)$ifdetail->descr : strtoupper($ifname);
             $data[$ifname] = $descr . " " . gettext("net");
             if (!isset($ifdetail->virtual)) {
                 $data[$ifname . "ip"] = $descr . " " . gettext("address");
