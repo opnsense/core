@@ -65,10 +65,6 @@ export default class Disk extends BaseGaugeWidget {
      * Note: Uses 1000-based conversion to match user-facing expectations
      * (e.g. disk labels and UI conventions), not binary (1024-based) units.
      */
-
-    _formatGB(bytes) {
-        return (bytes / (1000 * 1000 * 1000)).toFixed(1);
-    }
     
     getMarkup() {
         return $(`
@@ -103,9 +99,9 @@ export default class Disk extends BaseGaugeWidget {
                 const usedBytes = chart.config.data.datasets[0].data[0];
                 const freeBytes = chart.config.data.datasets[0].data[1];
                 const totalBytes = usedBytes + freeBytes;
-                const usedGB = this._formatGB(usedBytes);
-                const totalGB = this._formatGB(totalBytes);
-                return `(${usedGB}/${totalGB}) GB`;
+                const usedStr = this._formatField(usedBytes, 1, false);
+                const totalStr = this._formatField(totalBytes, 1, false);
+                return `${usedStr} / ${totalStr}`;
             }
             
         })
@@ -209,7 +205,8 @@ export default class Disk extends BaseGaugeWidget {
     }
 
     onWidgetResize(elem, width, height) {
-        if (width < 500) {
+        let gsW = elem.getAttribute('gs-w');
+        if (gsW === null || gsW < 3) {
             $('#disk-chart').show();
             $('#disk-detailed-chart').hide();
         } else {
