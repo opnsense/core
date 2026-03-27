@@ -205,7 +205,8 @@ export default class Disk extends BaseGaugeWidget {
     }
 
     onWidgetResize(elem, width, height) {
-        let gsW = elem.getAttribute('gs-w');
+        let gsItem = elem.closest('[gs-w]');
+        let gsW = gsItem ? parseInt(gsItem.getAttribute('gs-w'), 10) : null;
         if (gsW === null || gsW < 3) {
             $('#disk-chart').show();
             $('#disk-detailed-chart').hide();
