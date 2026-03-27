@@ -58,14 +58,6 @@ export default class Disk extends BaseGaugeWidget {
         return size * units[unit];
     }
     
-    /**
-     * Converts bytes to gigabytes using SI units (base-10).
-     * This returns a numeric value rounded to one decimal place without the "GB" label,
-     * useful for displaying raw numbers in a compact format.
-     * Note: Uses 1000-based conversion to match user-facing expectations
-     * (e.g. disk labels and UI conventions), not binary (1024-based) units.
-     */
-    
     getMarkup() {
         return $(`
             <div class="${this.id}-chart-container">
