@@ -136,13 +136,15 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         } elseif (isset($ignorelist[$dhcpv6if])) {
             $radvdconf .= "# Skipping ignored interface {$dhcpv6if}\n";
             continue;
-        } elseif ($entry->enabled->isEmpty()) {
-            $radvdconf .= "# Skipping unset interface {$dhcpv6if}\n";
-            continue;
         }
 
         /* disable for automatic case below */
         $ignorelist[$dhcpv6if] = '1';
+
+        if ($entry->enabled->isEmpty()) {
+            $radvdconf .= "# Skipping unset interface {$dhcpv6if}\n";
+            continue;
+        }
 
         $carp_mode = false;
         $src_addr = false;
