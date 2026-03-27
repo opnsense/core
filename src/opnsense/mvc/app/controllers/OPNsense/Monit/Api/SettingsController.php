@@ -32,7 +32,6 @@ namespace OPNsense\Monit\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Config;
-use OPNsense\Base\UIModelGrid;
 
 /**
  * Class SettingsController
