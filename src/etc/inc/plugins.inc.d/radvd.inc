@@ -130,13 +130,7 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
     foreach ($mdl->entries->iterateItems() as $entry) {
         $dhcpv6if = $entry->interface->getValue();
 
-        if (($config['interfaces'][$dhcpv6if]['ipaddrv6'] ?? 'none') == 'track6' && !isset($config['interfaces'][$dhcpv6if]['dhcpd6track6allowoverride'])) {
-            /* need to check now to disable automatic case below */
-            if ($entry->enabled->isEmpty()) {
-                $ignorelist[$dhcpv6if] = '1';
-            }
-            continue;
-        } elseif (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
+        if (!isset($config['interfaces'][$dhcpv6if]['enable'])) {
             $radvdconf .= "# Skipping disabled interface {$dhcpv6if}\n";
             continue;
         } elseif (isset($ignorelist[$dhcpv6if])) {
@@ -146,6 +140,9 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
             $radvdconf .= "# Skipping unset interface {$dhcpv6if}\n";
             continue;
         }
+
+        /* disable for automatic case below */
+        $ignorelist[$dhcpv6if] = '1';
 
         $carp_mode = false;
         $src_addr = false;
