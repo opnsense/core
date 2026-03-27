@@ -57,7 +57,7 @@ export default class Disk extends BaseGaugeWidget {
 
         return size * units[unit];
     }
-    
+
     getMarkup() {
         return $(`
             <div class="${this.id}-chart-container">
