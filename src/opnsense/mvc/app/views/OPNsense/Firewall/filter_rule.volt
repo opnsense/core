@@ -1112,6 +1112,7 @@
             flex: 1 1 50%;
         }
     }
+
 </style>
 
 <div class="tab-content content-box">
