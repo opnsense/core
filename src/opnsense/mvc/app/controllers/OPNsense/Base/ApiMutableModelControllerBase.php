@@ -342,7 +342,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * setAction is called. This hook is called after a model has been
      * constructed and validated but before it serialized to the configuration
      * and written to disk
-     * @return string error message on error, or null/void on success
+     * @return array|string|null validation errors (field-keyed array), error message (string), or null on success
      */
     protected function setActionHook()
     {
@@ -376,9 +376,13 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $mdl->setNodes($this->request->getPost(static::$internalModelName));
             $result = $this->validate();
             if (empty($result['result'])) {
-                $hookErrorMessage = $this->setActionHook();
-                if (!empty($hookErrorMessage)) {
-                    $result['error'] = $hookErrorMessage;
+                $hookResult = $this->setActionHook();
+                if (is_array($hookResult)) {
+                    $result['validations'] = $hookResult;
+                    $result['result'] = 'failed';
+                } elseif (!empty($hookResult)) {
+                    $result['error'] = $hookResult;
+                    $result['result'] = 'failed';
                 } else {
                     return $this->save(false, true);
                 }
