@@ -805,6 +805,7 @@ class WidgetManager  {
                         $select.append($(`<option value="${option.value}" ${selected ? 'selected' : ''}>${option.label}</option>`));
                     }
 
+                    $option.append($(`<div><b>${value.title}</b></div>`));
                     $option.append($select);
                     break;
                 case 'textarea':
@@ -845,7 +846,7 @@ class WidgetManager  {
                         switch (value.type) {
                             case 'select':
                                 values[key] = $(`#${value.id}`).val() ?? value.default;
-                            break;
+                                break;
                             case 'select_multiple':
                                 values[key] = $(`#${value.id}`).val();
                                 if (values[key].count === 0) {

@@ -389,6 +389,7 @@
         <filename>Notes.js</filename>
         <translations>
             <title>Notes</title>
+            <titleedit>Note editor</titleedit>
         </translations>
     </notes>
 </metadata>
