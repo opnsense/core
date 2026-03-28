@@ -29,7 +29,10 @@ export default class Notes extends BaseWidget {
         super(config);
         this.titleVisible = false;
         this.configurable = true;
-        this.dialogTitle = `${this.translations.titleedit}`;
+    }
+
+    get dialogTitle() {
+        return this.translations.titleedit;
     }
 
     getMarkup() {
