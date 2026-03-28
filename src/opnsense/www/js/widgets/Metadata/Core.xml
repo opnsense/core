@@ -387,14 +387,8 @@
     </dnsmasqleases>
     <notes>
         <filename>Notes.js</filename>
-        <endpoints>
-            <endpoint>/api/core/dashboard/getNote</endpoint>
-            <endpoint>/api/core/dashboard/saveNote</endpoint>
-        </endpoints>
         <translations>
             <title>Notes</title>
-            <save>Save</save>
-            <saved>Saved</saved>
         </translations>
     </notes>
 </metadata>
