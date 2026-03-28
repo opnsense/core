@@ -341,8 +341,11 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * Hook to be overridden if the controller is to take an action when
      * setAction is called. This hook is called after a model has been
      * constructed and validated but before it serialized to the configuration
-     * and written to disk
-     * @return array|string|null validation errors (field-keyed array), error message (string), or null on success
+     * and written to disk. May be used for save-time validation that cannot be
+     * expressed in the model; errors must be pinned to a specific field.
+     * For fatal issues not attributable to a specific field, throw a UserException.
+     * @return array field-keyed validation errors, or null on success
+     * @throws UserException when action is not possible (and save should be aborted)
      */
     protected function setActionHook()
     {
@@ -364,7 +367,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @return array status / validation errors
      * @throws \OPNsense\Base\ValidationException on validation issues
      * @throws \ReflectionException when binding to the model class fails
-     * @throws UserException when denied write access
+     * @throws UserException when denied write access or when setActionHook() rejects the action
      */
     public function setAction()
     {
@@ -377,12 +380,11 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $result = $this->validate();
             if (empty($result['result'])) {
                 $hookResult = $this->setActionHook();
-                if (is_array($hookResult)) {
+                if (is_array($hookResult) && !empty($hookResult)) {
                     $result['validations'] = $hookResult;
                     $result['result'] = 'failed';
                 } elseif (!empty($hookResult)) {
-                    $result['error'] = $hookResult;
-                    $result['result'] = 'failed';
+                    throw new UserException((string)$hookResult);
                 } else {
                     return $this->save(false, true);
                 }

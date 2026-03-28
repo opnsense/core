@@ -102,35 +102,6 @@ function saveFormToEndpoint(url, formid, callback_ok, disable_dialog, callback_f
                     // execute callback function
                     callback_fail(data);
                 }
-            // if there is a general error, show a dialog.
-            } else if (data['error'] !== undefined) {
-                if (!disable_dialog) {
-                    const detailsid = "errorfrm" + Math.floor((Math.random() * 10000000) + 1);
-                    const errorMessage = $('<div></div>');
-                    errorMessage.append($('<span></span>').text(data['error'])).append('<br />');
-                    errorMessage.append('<i class="fa fa-bug pull-right" aria-hidden="true" data-toggle="collapse" '+
-                                        'data-target="#'+detailsid+'" aria-expanded="false" aria-controls="'+detailsid+'"></i>');
-                    errorMessage.append('<div class="collapse" id="'+detailsid+'"><hr/><pre></pre></div>');
-
-                    BootstrapDialog.show({
-                        type:BootstrapDialog.TYPE_WARNING,
-                        title: 'Error',
-                        message: errorMessage,
-                        buttons: [{
-                            label: 'Dismiss',
-                            action: function(dialogRef){
-                                dialogRef.close();
-                            }
-                        }],
-                        onshown: function(){
-                            $("#"+detailsid + " > pre").html(JSON.stringify(data, null, 2));
-                        }
-                    });
-                }
-
-                if ( callback_fail !== undefined ) {
-                    callback_fail(data);
-                }
             } else if ( callback_ok !== undefined ) {
                 // execute callback function
                 callback_ok(data);
