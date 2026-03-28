@@ -139,6 +139,16 @@
         </grid_view>
     </field>
     <field>
+        <id>entries.AdvCurHopLimit</id>
+        <label>Hop limit</label>
+        <type>text</type>
+        <help>Controls the maximum number of hops a packet can traverse before being discarded</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <type>header</type>
         <label>DNS Settings</label>
         <collapse>true</collapse>
