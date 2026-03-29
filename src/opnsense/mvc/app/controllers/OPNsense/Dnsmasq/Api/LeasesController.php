@@ -79,7 +79,8 @@ class LeasesController extends ApiControllerBase
         ];
 
         foreach ((new Dnsmasq())->hosts->iterateItems() as $host) {
-            if (!$host->client_id->isEmpty()) {
+            // Exclude '*' and other non-unique matches
+            if (!$host->client_id->isEmpty() && strpos($host->client_id->getValue(), ':') !== false) {
                 $reservedKeys['client_id'][strtolower($host->client_id->getValue())] = true;
             }
 
