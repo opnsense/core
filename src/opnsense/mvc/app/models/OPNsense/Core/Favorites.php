@@ -35,8 +35,6 @@ use OPNsense\Auth\User;
  * @package OPNsense\Core
  *
  * Shared helper for reading and writing per-user menu favorites.
- * Favorites are stored as a JSON array of URL strings in the
- * <menu_favorites> element of each <user> node in config.xml.
  */
 class Favorites
 {
