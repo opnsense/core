@@ -49,6 +49,7 @@
             </group_memberships>
             <descr type="DescriptionField"/>
             <dashboard type="TextField"/>
+            <menu_favorites type="TextField"/>
         </user>
     </items>
 </model>
