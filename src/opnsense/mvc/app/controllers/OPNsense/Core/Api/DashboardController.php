@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2024 Deciso B.V.
+ * Copyright (C) 2024-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,17 +30,20 @@ namespace OPNsense\Core\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\ACL;
+use OPNsense\Auth\User;
 use OPNsense\Core\Config;
-use SimpleXMLElement;
+
 
 class DashboardController extends ApiControllerBase
 {
     private $metadataFileLocation = "/usr/local/opnsense/www/js/widgets/Metadata";
     private $acl = null;
+    private $usermdl = null;
 
     public function __construct()
     {
         $this->acl = new ACL();
+        $this->usermdl = new User();
     }
 
     private function canAccessEndpoints($endpoints)
@@ -64,9 +67,7 @@ class DashboardController extends ApiControllerBase
             if ($metadataXml === false) {
                 // not a valid xml file
                 continue;
-            }
-
-            if ($metadataXml->getName() !== "metadata") {
+            } elseif ($metadataXml->getName() !== "metadata") {
                 // wrong type
                 continue;
             }
@@ -103,13 +104,8 @@ class DashboardController extends ApiControllerBase
         $result = [];
         $dashboard = null;
 
-        $config = Config::getInstance()->object();
-        foreach ($config->system->user as $node) {
-            if ($this->getUserName() === (string)$node->name) {
-                // json_decode returns null if json is invalid
-                $dashboard = json_decode(base64_decode((string)$node->dashboard), true);
-                break;
-            }
+        if ( ($node = $this->usermdl->getUserByName($this->getUserName())) !== null) {
+            $dashboard = json_decode(base64_decode($node->dashboard->getValue()), true);
         }
 
         if (empty($dashboard)) {
@@ -132,9 +128,7 @@ class DashboardController extends ApiControllerBase
 
                 if (!$this->canAccessEndpoints($endpoints)) {
                     continue;
-                }
-
-                if (!file_exists('/usr/local/opnsense/www/js/widgets/' . $fname)) {
+                } elseif (!file_exists('/usr/local/opnsense/www/js/widgets/' . $fname)) {
                     continue;
                 }
 
@@ -165,24 +159,17 @@ class DashboardController extends ApiControllerBase
     public function saveWidgetsAction()
     {
         $result = ['result' => 'failed'];
-
         if ($this->request->isPost() && $this->request->hasPost('widgets')) {
             $dashboard = json_encode($this->request->getPost());
             if (strlen($dashboard) > (1024 * 1024)) {
                 // prevent saving large blobs of data
                 $result['message'] = 'dashboard size limit reached';
-                return $result;
-            }
-
-            $encoded = base64_encode($dashboard);
-            $config = Config::getInstance()->object();
-            $name = $this->getUserName();
-            foreach ($config->system->user as $node) {
-                if ($name === (string)$node->name) {
-                    $node->dashboard = $encoded;
+            } elseif (($node = $this->usermdl->getUserByName($this->getUserName())) !== null) {
+                $node->dashboard = base64_encode($dashboard);
+                if ($this->usermdl->serializeToConfig(false, true)) {
+                    /* selectively save dashboard property, ignoring user-config-readonly when set */
                     Config::getInstance()->save();
-                    $result = ['result' => 'saved'];
-                    break;
+                    return ['result' => 'saved'];
                 }
             }
         }
@@ -194,17 +181,13 @@ class DashboardController extends ApiControllerBase
     {
         $result = ['result' => 'failed'];
 
-        if ($this->request->isPost()) {
+        if ($this->request->isPost() && ($node = $this->usermdl->getUserByName($this->getUserName())) !== null) {
+            $node->dashboard = '';
             $config = Config::getInstance()->object();
             $name = $this->getUserName();
-
-            foreach ($config->system->user as $node) {
-                if ($name === (string)$node->name) {
-                    $node->dashboard = null;
-                    Config::getInstance()->save();
-                    $result = ['result' => 'saved'];
-                    break;
-                }
+            if ($this->usermdl->serializeToConfig(false, true)) {
+                /* selectively reset dashboard property, ignoring user-config-readonly when set */
+                Config::getInstance()->save();
             }
         }
 
