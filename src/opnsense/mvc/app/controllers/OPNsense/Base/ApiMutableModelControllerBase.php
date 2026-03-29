@@ -1,8 +1,8 @@
 <?php
 
 /*
+ * Copyright (C) 2016-2026 Deciso B.V.
  * Copyright (C) 2016 IT-assistans Sverige AB
- * Copyright (C) 2016 Deciso B.V.
  * Copyright (C) 2018 Fabian Franz
  * All rights reserved.
  *
@@ -328,7 +328,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                     Config::getInstance()->save();
                 }
             }
-            return array("result" => "saved");
+            return ["result" => "saved"];
         } else {
             // XXX remove user-config-readonly in some future release
             throw new UserException(
@@ -342,7 +342,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * setAction is called. This hook is called after a model has been
      * constructed and validated but before it serialized to the configuration
      * and written to disk
-     * @return string error message on error, or null/void on success
+     * @throws UserException when action is not possible (and save should be aborted)
      */
     protected function setActionHook()
     {
@@ -376,12 +376,8 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $mdl->setNodes($this->request->getPost(static::$internalModelName));
             $result = $this->validate();
             if (empty($result['result'])) {
-                $hookErrorMessage = $this->setActionHook();
-                if (!empty($hookErrorMessage)) {
-                    $result['error'] = $hookErrorMessage;
-                } else {
-                    return $this->save(false, true);
-                }
+                $this->setActionHook();
+                return $this->save(false, true);
             }
         }
         return $result;
@@ -457,14 +453,14 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $node = $mdl->getNodeByReference($path . '.' . $uuid);
             if ($node != null) {
                 // return node
-                return array($key_name => $node->getNodes());
+                return [$key_name => $node->getNodes()];
             }
         } else {
             foreach (explode('.', $path) as $step) {
                 $mdl = $mdl->{$step};
             }
             $node = $mdl->Add();
-            return array($key_name => $node->getNodes());
+            return [$key_name => $node->getNodes()];
         }
         return [];
     }
@@ -500,10 +496,10 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 $this->setBaseHook($node);
                 // save config if validated correctly
                 $this->save(false, true);
-                $result = array(
+                $result = [
                     "result" => "saved",
                     "uuid" => $node->getAttribute('uuid')
-                );
+                ];
             } else {
                 $result["result"] = "failed";
             }
