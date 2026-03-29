@@ -808,6 +808,19 @@ class WidgetManager  {
                     $option.append($(`<div><b>${value.title}</b></div>`));
                     $option.append($select);
                     break;
+                case 'textarea':
+                    let $textarea = $(`<textarea
+                                     id="${value.id}"
+                                     maxlength="${value.maxlength || 8192}"
+                                     class="form-control"
+                                     style="
+                                         max-width: 100%;
+                                         resize: vertical;
+                                         min-height: ${value.minHeight || '150px'};
+                                         box-sizing: border-box;
+                                     ">${config[key] || ''}</textarea>`);
+                    $option.append($textarea);
+                    break;
                 default:
                     console.error('Unknown option type', value.type);
                     continue;
@@ -816,27 +829,32 @@ class WidgetManager  {
             $content.append($option);
         }
 
+        const hasTextarea = Object.values(options).some(v => v.type === 'textarea');
+        const modalTitle = widget.dialogTitle || this.gettext.options;
         // present widget options
         BootstrapDialog.show({
-            title: this.gettext.options,
+            title: modalTitle,
             draggable: true,
             animate: false,
             message: $content,
             buttons: [{
                 label: this.gettext.ok,
-                hotkey: 13,
+                hotkey: hasTextarea ? undefined : 13,
                 action: async (dialog) => {
                     let values = {};
                     for (const [key, value] of Object.entries(options)) {
                         switch (value.type) {
                             case 'select':
                                 values[key] = $(`#${value.id}`).val() ?? value.default;
-                            break;
+                                break;
                             case 'select_multiple':
                                 values[key] = $(`#${value.id}`).val();
                                 if (values[key].count === 0) {
                                     values[key] = value.default;
                                 }
+                                break;
+                            case 'textarea':
+                                values[key] = $(`#${value.id}`).val() ?? value.default;
                                 break;
                             default:
                                 console.error('Unknown option type', value.type);

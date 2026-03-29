@@ -170,7 +170,7 @@ class DashboardController extends ApiControllerBase
             $dashboard = json_encode($this->request->getPost());
             if (strlen($dashboard) > (1024 * 1024)) {
                 // prevent saving large blobs of data
-                $result['message'] = 'dashboard size limit reached';
+                $result['message'] = 'Dashboard size limit reached';
                 return $result;
             }
 
