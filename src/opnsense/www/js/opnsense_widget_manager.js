@@ -414,6 +414,7 @@ class WidgetManager  {
                                     $('.link-handle').hide();
                                     $('.close-handle').show();
                                     $('.edit-handle').show();
+                                    $('.title-invisible').css('display', '');
                                 }
 
                                 changed = true;
