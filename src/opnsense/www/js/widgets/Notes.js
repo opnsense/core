@@ -27,25 +27,12 @@
 export default class Notes extends BaseWidget {
     constructor(config) {
         super(config);
+        this.titleVisible = false;
         this.configurable = true;
     }
 
     get dialogTitle() {
         return this.translations.titleedit;
-    }
-
-    _applyNote(note) {
-        const $empty = $(`#notes-empty-${this.id}`);
-        const $text = $(`#notes-text-${this.id}`);
-        if (note) {
-            $text.text(note).show();
-            $empty.hide();
-            this.titleVisible = false;
-        } else {
-            $text.hide();
-            $empty.show();
-            this.titleVisible = true;
-        }
     }
 
     getMarkup() {
