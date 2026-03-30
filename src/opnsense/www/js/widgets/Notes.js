@@ -37,25 +37,21 @@ export default class Notes extends BaseWidget {
     _applyNote(note) {
         const $empty = $(`#notes-empty-${this.id}`);
         const $text = $(`#notes-text-${this.id}`);
-        const $header = $(`#notes-container-${this.id}`).closest('.panel').find('.panel-heading');
         if (note) {
             $text.text(note).show();
             $empty.hide();
-            $header.hide();
+            this.titleVisible = false;
         } else {
             $text.hide();
             $empty.show();
-            $header.show();
+            this.titleVisible = true;
         }
     }
 
     getMarkup() {
         return $(`
         <div id="notes-container-${this.id}" class="widget-content">
-            <div id="notes-empty-${this.id}" style="padding: 10px; cursor: pointer; text-align: center; display: none;">
-                Click here to add a note
-            </div>
-            <div id="notes-text-${this.id}" style="padding: 10px; white-space: pre-wrap; word-wrap: break-word; cursor: pointer; display: none;"></div>
+            <div id="notes-text-${this.id}" style="padding: 10px; white-space: pre-wrap; word-wrap: break-word;"></div>
         </div>
         `);
     }
@@ -81,7 +77,7 @@ export default class Notes extends BaseWidget {
 
         this._applyNote(config.note || '');
 
-        $(`#notes-empty-${this.id}, #notes-text-${this.id}`).on('click', () => {
+        $(`#notes-empty-${this.id}`).on('click', () => {
             this.showDialogOptions();
         });
     }
