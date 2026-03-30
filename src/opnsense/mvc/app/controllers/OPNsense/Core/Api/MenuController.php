@@ -33,6 +33,7 @@ namespace OPNsense\Core\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Base\Menu;
 use OPNsense\Core\ACL;
+use OPNsense\Core\Favorites;
 
 /**
  * Class MenuController
@@ -109,7 +110,6 @@ class MenuController extends ApiControllerBase
         $this->applyACL($menu_items, $acl);
         return $menu_items;
     }
-
 
     /**
      * flatten menu structure, only returning visible entries
@@ -188,5 +188,45 @@ class MenuController extends ApiControllerBase
         $items = array();
         $this->extractMenuLeaves($menu_items, $items);
         return $items;
+    }
+
+    /**
+     * set/unset a menu item as favorite
+     * @return array
+     */
+    public function setFavoriteAction()
+    {
+        if (!$this->request->isPost()) {
+            return ['result' => 'failed'];
+        }
+
+        $menuUrl = $this->request->getPost('menuUrl', null, null);
+        $isFavorite = $this->request->getPost('isFavorite', null, null);
+
+        if ($menuUrl === null || $isFavorite === null) {
+            return ['result' => 'failed'];
+        }
+
+        // validate that the submitted URL is a visible menu item for this user
+        $menuItems = $this->getMenu('/');
+        $items = [];
+        $this->extractMenuLeaves($menuItems, $items);
+        if (!in_array($menuUrl, array_column($items, 'Url'))) {
+            return ['result' => 'failed'];
+        }
+
+        $favorites = new Favorites($this->getUserName());
+
+        if ($isFavorite === 'true') {
+            $favorites->addFavorite($menuUrl);
+        } else {
+            $favorites->removeFavorite($menuUrl);
+        }
+
+        if (!$favorites->save()) {
+            return ['result' => 'failed'];
+        }
+
+        return ['result' => 'saved'];
     }
 }
