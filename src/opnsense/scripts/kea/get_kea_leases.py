@@ -61,8 +61,7 @@ if __name__ == '__main__':
     # Figure out how to group leases by interface
     ranges = build_ranges(inputargs.proto)
 
-    ctrl = KeaCtrl()
-    config = ctrl.send_command("config-get", None, service)
+    config = KeaCtrl.send_command("config-get", None, service)
 
     subnets = [
         subnet['id']
@@ -70,7 +69,7 @@ if __name__ == '__main__':
         if 'id' in subnet
     ]
 
-    leases = ctrl.send_command(lease_cmd, {"subnets": subnets}, service)
+    leases = KeaCtrl.send_command(lease_cmd, {"subnets": subnets}, service)
 
     records = []
     for lease in leases.get("arguments", {}).get("leases", []):

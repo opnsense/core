@@ -26,74 +26,62 @@
     POSSIBILITY OF SUCH DAMAGE.
 """
 
-import os
-import ujson
 import json
+import os
 import socket
+import syslog
 
 KEA4_PATH = "/var/run/kea/kea4-ctrl-socket"
 KEA6_PATH = "/var/run/kea/kea6-ctrl-socket"
 
 class KeaCtrl:
-    def __init__(self):
-        self.socket4 = None
-        self.socket6 = None
-        self.decoder = json.JSONDecoder()
+    @staticmethod
+    def _socket_path(service):
+        if service == "dhcp4":
+            return KEA4_PATH
+        if service == "dhcp6":
+            return KEA6_PATH
+        return ""
 
-    def _connect(self, service="dhcp4"):
-        if service == "dhcp4" and self.socket4 is None and os.path.exists(KEA4_PATH):
-            try:
-                self.socket4 = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-                self.socket4.connect(KEA4_PATH)
-                return True
-            except:
-                return False
-        if service == "dhcp6" and self.socket6 is None and os.path.exists(KEA6_PATH):
-            try:
-                self.socket6 = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-                self.socket6.connect(KEA6_PATH)
-                return True
-            except:
-                return False
-
-        return False
-    
-    def _close(self):
-        if self.socket4 is not None:
-            self.socket4.close()
-            self.socket4 = None
-        if self.socket6 is not None:
-            self.socket6.close()
-            self.socket6 = None
-
-    def _json_recv(self, service="dhcp4"):
+    @staticmethod
+    def _json_recv(sock):
+        # kea source code doesn't indicate command responses are properly newline-terminated
+        # so assume we need a full valid JSON structure here.
+        decoder = json.JSONDecoder()
         buffer = ""
-        sock = self.socket4 if service == "dhcp4" else self.socket6
+
         while True:
             chunk = sock.recv(4096)
             if not chunk:
                 raise ConnectionError("Socket closed before full JSON was received")
+
             buffer += chunk.decode("utf-8")
+
             try:
-                obj, _ = self.decoder.raw_decode(buffer)
+                obj, _ = decoder.raw_decode(buffer)
                 return obj
             except json.JSONDecodeError:
                 continue
-        
-    def send_command(self, command, args=None, service="dhcp4"):
-        result = {}
-        if not self._connect(service):
-            return result
-        sock = self.socket4 if service == "dhcp4" else self.socket6
-        cmd = {"command": command}
-        if args is not None:
-            cmd["arguments"] = args
-        sock.settimeout(5.0)
-        sock.sendall(ujson.dumps(cmd).encode() + b"\n")
-        try:
-            result = self._json_recv(service)
-        except (ConnectionError, socket.timeout):
-            pass
 
-        self._close()
-        return result
+    @staticmethod
+    def send_command(command, args = None, service = "dhcp4", timeout = 5.0):
+        path = KeaCtrl._socket_path(service)
+        syslog.openlog("kea-%s" % service, facility=syslog.LOG_LOCAL4)
+        if not os.path.exists(path):
+            syslog.syslog(syslog.LOG_WARNING, f"kea_ctrl.py: kea-{service} control socket path \"{path}\" does not exist")
+            return {"result": 1}
+
+        payload  = {"command": command}
+        if args is not None:
+            payload["arguments"] = args
+
+        try:
+            with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
+                sock.settimeout(timeout)
+                sock.connect(path)
+                sock.sendall(json.dumps(payload).encode("utf-8") + b"\n")
+                response = KeaCtrl._json_recv(sock)
+                return response
+        except (OSError, ConnectionError, socket.timeout) as e:
+            syslog.syslog(syslog.LOG_ERR, f"kea_ctrl.py: kea-{service} command \"{command}\" failed: {e}")
+            return {"result": 1}

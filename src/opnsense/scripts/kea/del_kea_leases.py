@@ -29,30 +29,8 @@
 import argparse
 import os
 import ujson
-import socket
 
 from lib.kea_ctrl import KeaCtrl
-
-def send_command(socket_path, payload):
-    sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
-    try:
-        sock.connect(socket_path)
-        sock.sendall(ujson.dumps(payload).encode() + b"\n")
-
-        data = b""
-        while True:
-            chunk = sock.recv(4096)
-            if not chunk:
-                break
-            data += chunk
-            if data.strip().endswith(b'}'):
-                break
-
-        return ujson.loads(data.decode())
-
-    finally:
-        sock.close()
-
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -62,14 +40,11 @@ if __name__ == '__main__':
     results = []
 
     for ip in ips:
-        path = "/var/run/kea/kea6-ctrl-socket" if ":" in ip else "/var/run/kea/kea4-ctrl-socket"
-        cmd = "lease6-del" if ":" in ip else "lease4-del"
+        is_v6 = ":" in ip
+        cmd = "lease6-del" if is_v6 else "lease4-del"
+        service = "dhcp6" if is_v6 else "dhcp4"
 
-        if not os.path.exists(path):
-            results.append({"ip": ip, "status": "error", "message": f"socket not found: {path}"})
-            continue
-
-        result = send_command(path, {"command": cmd, "arguments": {"ip-address": ip}})
+        result = KeaCtrl.send_command(cmd, {"ip-address": ip}, service)
         result["ip"] = ip
         results.append(result)
 

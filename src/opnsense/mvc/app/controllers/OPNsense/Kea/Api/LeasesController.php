@@ -140,7 +140,7 @@ abstract class LeasesController extends ApiControllerBase
 
         foreach ($results as $result) {
             if (($result['result'] ?? 0) !== 0) {
-                throw new UserException($result['text'] ?? gettext('Failed to delete lease'));
+                throw new UserException($result['text'] ?? sprintf(gettext('Failed to delete lease for ip %s'), $result['ip']));
             }
         }
 
