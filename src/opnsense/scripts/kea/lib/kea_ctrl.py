@@ -31,16 +31,13 @@ import os
 import socket
 import syslog
 
-KEA4_PATH = "/var/run/kea/kea4-ctrl-socket"
-KEA6_PATH = "/var/run/kea/kea6-ctrl-socket"
-
 class KeaCtrl:
     @staticmethod
     def _socket_path(service):
         if service == "dhcp4":
-            return KEA4_PATH
+            return "/var/run/kea/kea4-ctrl-socket"
         if service == "dhcp6":
-            return KEA6_PATH
+            return "/var/run/kea/kea6-ctrl-socket"
         return ""
 
     @staticmethod
