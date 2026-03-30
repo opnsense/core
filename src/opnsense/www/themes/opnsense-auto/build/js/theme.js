@@ -11,7 +11,7 @@
                 links[i].href = links[i].href.replace(/\/ui\/themes\/[^\/]+\//, '/ui/themes/' + theme_name + '/');
             }
         }
-        console.log(imgs);
+
         for (let i=0; i < imgs.length; i++) {
             if (imgs[i].src && imgs[i].src.indexOf('/ui/themes/') !== -1) {
                 imgs[i].src = imgs[i].src.replace(/\/ui\/themes\/[^\/]+\//, '/ui/themes/' + theme_name + '/');
