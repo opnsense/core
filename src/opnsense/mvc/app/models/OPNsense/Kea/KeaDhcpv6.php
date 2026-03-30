@@ -331,6 +331,10 @@ class KeaDhcpv6 extends BaseModel
                     ]
                 ],
                 'subnet6' => $this->getConfigSubnets(),
+                'hooks-libraries' => [
+                    ['library' => '/usr/local/lib/kea/hooks/libdhcp_lease_cmds.so'],
+                    ['library' => '/usr/local/lib/kea/hooks/libdhcp_host_cmds.so']
+                ]
             ]
         ];
         $client_classes = $this->getConfigClientClasses();
@@ -342,13 +346,6 @@ class KeaDhcpv6 extends BaseModel
             $cnf['Dhcp6']['expired-leases-processing'] = $expiredLeasesConfig;
         }
         if (!(new KeaCtrlAgent())->general->enabled->isEmpty()) {
-            $cnf['Dhcp6']['hooks-libraries'] = [];
-            $cnf['Dhcp6']['hooks-libraries'][] = [
-                'library' => '/usr/local/lib/kea/hooks/libdhcp_lease_cmds.so'
-            ];
-            $cnf['Dhcp6']['hooks-libraries'][] = [
-                'library' => '/usr/local/lib/kea/hooks/libdhcp_host_cmds.so'
-            ];
             if (!$this->ha->enabled->isEmpty()) {
                 $record = [
                     'library' => '/usr/local/lib/kea/hooks/libdhcp_ha.so',

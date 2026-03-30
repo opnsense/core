@@ -31,6 +31,7 @@ import os
 import ujson
 import socket
 
+from lib.kea_ctrl import KeaCtrl
 
 def send_command(socket_path, payload):
     sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)

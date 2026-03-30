@@ -139,10 +139,6 @@ abstract class LeasesController extends ApiControllerBase
         }
 
         foreach ($results as $result) {
-            if (!is_array($result) || ($result['status'] ?? '') === 'error' || ($result['result'] ?? 0) === 2) {
-                throw new UserException(gettext('KEA Control Agent is not running'));
-            }
-
             if (($result['result'] ?? 0) !== 0) {
                 throw new UserException($result['text'] ?? gettext('Failed to delete lease'));
             }
