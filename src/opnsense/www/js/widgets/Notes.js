@@ -68,14 +68,17 @@ export default class Notes extends BaseWidget {
     }
 
     async onWidgetOptionsChanged(options) {
-        $(`#notes-text-${this.id}`).text(options.note || '');
+        this._applyNote(options.note || '');
         this.config.callbacks.updateGrid();
     }
 
     async onMarkupRendered() {
         const config = await this.getWidgetConfig();
-        const note = config.note || '';
 
-        $(`#notes-text-${this.id}`).text(note);
+        this._applyNote(config.note || '');
+
+        $(`#notes-empty-${this.id}`).on('click', () => {
+            this.showDialogOptions();
+        });
     }
 }
