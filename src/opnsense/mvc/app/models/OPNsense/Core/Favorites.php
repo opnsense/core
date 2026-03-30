@@ -28,48 +28,29 @@
 
 namespace OPNsense\Core;
 
+use OPNsense\Auth\User;
+
 /**
  * Class Favorites
  * @package OPNsense\Core
  *
  * Shared helper for reading and writing per-user menu favorites.
- * Favorites are stored as a JSON array of URL strings in the
- * <menu_favorites> element of each <user> node in config.xml.
  */
 class Favorites
 {
-    /**
-     * @var string username
-     */
-    private $username;
+    private $username = null;
+    private $favorites = [];
+    private $usermdl = null;
 
-    /**
-     * @var array list of favorite URLs
-     */
-    private $favorites;
-
-    /**
-     * @param string $username
-     */
     public function __construct($username)
     {
         $this->username = $username;
-        $this->favorites = [];
+        $this->usermdl = new User();
 
-        if (!empty($username)) {
-            try {
-                $cfg = Config::getInstance();
-                foreach ($cfg->object()->system->user as $node) {
-                    if ($username === (string)$node->name && !empty($node->menu_favorites)) {
-                        $decoded = json_decode((string)$node->menu_favorites, true);
-                        if (is_array($decoded)) {
-                            $this->favorites = $decoded;
-                        }
-                        break;
-                    }
-                }
-            } catch (\Exception $e) {
-                /* ignore */
+        if (!empty($username) && ($node = $this->usermdl->getUserByName($username)) !== null) {
+            $decoded = json_decode($node->menu_favorites->getValue(), true);
+            if (is_array($decoded)) {
+                $this->favorites = $decoded;
             }
         }
     }
@@ -93,19 +74,17 @@ class Favorites
             return false;
         }
 
-        try {
-            $cfg = Config::getInstance();
-            foreach ($cfg->object()->system->user as $node) {
-                if ($this->username === (string)$node->name) {
-                    $node->menu_favorites = json_encode(array_values($this->favorites));
-                    $cfg->save();
-                    return true;
-                }
-            }
-            return false;
-        } catch (\Exception $e) {
+        if (($node = $this->usermdl->getUserByName($this->username)) === null) {
             return false;
         }
+
+        $node->menu_favorites = json_encode(array_values($this->favorites));
+        if ($this->usermdl->serializeToConfig(false, true)) {
+            Config::getInstance()->save();
+            return true;
+        }
+
+        return false;
     }
 
     /**
