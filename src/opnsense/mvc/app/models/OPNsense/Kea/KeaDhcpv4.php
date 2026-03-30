@@ -309,6 +309,10 @@ class KeaDhcpv4 extends BaseModel
                     ]
                 ],
                 'subnet4' => $this->getConfigSubnets($ddns_enabled),
+                'hooks-libraries' => [
+                    ['library' => '/usr/local/lib/kea/hooks/libdhcp_lease_cmds.so'],
+                    ['library' => '/usr/local/lib/kea/hooks/libdhcp_host_cmds.so'],
+                ],
             ]
         ];
         $client_classes = $this->getConfigClientClasses();
@@ -320,13 +324,6 @@ class KeaDhcpv4 extends BaseModel
             $cnf['Dhcp4']['expired-leases-processing'] = $expiredLeasesConfig;
         }
         if (!(new KeaCtrlAgent())->general->enabled->isEmpty()) {
-            $cnf['Dhcp4']['hooks-libraries'] = [];
-            $cnf['Dhcp4']['hooks-libraries'][] = [
-                'library' => '/usr/local/lib/kea/hooks/libdhcp_lease_cmds.so'
-            ];
-            $cnf['Dhcp4']['hooks-libraries'][] = [
-                'library' => '/usr/local/lib/kea/hooks/libdhcp_host_cmds.so'
-            ];
             if (!$this->ha->enabled->isEmpty()) {
                 $record = [
                     'library' => '/usr/local/lib/kea/hooks/libdhcp_ha.so',

@@ -1,6 +1,7 @@
 #!/usr/local/bin/python3
 
 """
+    Copyright (c) 2026 Deciso B.V.
     Copyright (c) 2023-2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
@@ -30,58 +31,67 @@ import ipaddress
 import subprocess
 import argparse
 import os
-import csv
 import ujson
 
+from lib.kea_ctrl import KeaCtrl
+
+def build_ranges(proto):
+    ranges = {}
+    this_interface = None
+    addr_prefix = "\tinet6" if proto == 'inet6' else "\tinet "
+    ifconfig = subprocess.run(['/sbin/ifconfig', '-f', 'inet:cidr,inet6:cidr'], capture_output=True, text=True).stdout
+    for line in ifconfig.split('\n'):
+        if not line.startswith("\t") and ':' in line:
+            this_interface = line.strip().split(':')[0]
+        elif this_interface is not None and line.startswith(addr_prefix) and '-->' not in line:
+            ranges[ipaddress.ip_network(line.split()[1], strict=False)] = this_interface
+
+    return ranges
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--proto', help='protocol to fetch (inet, inet6)', default='inet', choices=['inet', 'inet6'])
     inputargs = parser.parse_args()
-    if inputargs.proto == 'inet':
-        filename = '/var/db/kea/kea-leases4.csv'
-    else:
-        filename = '/var/db/kea/kea-leases6.csv'
 
-    ranges = {}
-    this_interface = None
-    ifconfig = subprocess.run(['/sbin/ifconfig', '-f', 'inet:cidr,inet6:cidr'], capture_output=True, text=True).stdout
-    for line in ifconfig.split('\n'):
-        if not line.startswith("\t") and line.find(':') > -1:
-            this_interface = line.strip().split(':')[0]
-        elif this_interface is not None and line.startswith("\tinet") and line.find('-->') == -1:
-            ranges[ipaddress.ip_network(line.split()[1], strict=False)] = this_interface
+    lease_cmd = 'lease4-get-all' if inputargs.proto == 'inet' else 'lease6-get-all'
+    service = 'dhcp4' if inputargs.proto == 'inet' else 'dhcp6'
+    config_key = 'subnet4' if inputargs.proto == 'inet' else 'subnet6'
+    dhcp_key = 'Dhcp4' if inputargs.proto == 'inet' else 'Dhcp6'
 
-    result = {'records': []}
-    header = None
-    # Lease processing after cleanup according to KEA
-    # https://github.com/isc-projects/kea/blob/ef1f878f5272d/src/lib/dhcpsrv/memfile_lease_mgr.h#L1039-L1051
-    if os.path.isfile('%s.completed' % filename):
-        filenames = ['%s.completed' % filename, filename]
-    else:
-        filenames = ['%s.2' % filename, '%s.1' % filename, filename]
+    # Figure out how to group leases by interface
+    ranges = build_ranges(inputargs.proto)
 
-    leases = {}
-    for filename in filenames:
-        if not os.path.isfile(filename):
-            continue
-        with open(filename, 'r', encoding='utf-8',  errors='ignore') as csvfile:
-            for idx, record in enumerate(csv.reader(csvfile, delimiter=',', quotechar='"')):
-                rec_key = ','.join(record[:2])
-                if idx == 0:
-                    header = record
-                elif header:
-                    named_record = {'if': None}
-                    for findx, field in enumerate(record):
-                        if findx < len(header):
-                            named_record[header[findx]] = field
-                    if rec_key in leases:
-                        named_record['if'] = leases[rec_key]['if']
-                    else:
-                        # prevent additional range check when lease was already found in an earlier set.
-                        for net in ranges:
-                            if net.overlaps(ipaddress.ip_network(named_record['address'])):
-                                named_record['if'] = ranges[net]
-                    leases[rec_key] = named_record
+    config = KeaCtrl.send_command("config-get", None, service)
 
-    print (ujson.dumps({'records': list(leases.values())}))
+    subnets = [
+        subnet['id']
+        for subnet in config.get('arguments', {}).get(dhcp_key, {}).get(config_key, [])
+        if 'id' in subnet
+    ]
+
+    leases = KeaCtrl.send_command(lease_cmd, {"subnets": subnets}, service)
+
+    records = []
+    for lease in leases.get("arguments", {}).get("leases", []):
+        address = lease.get("ip-address")
+        lease_if = None
+
+        if address:
+            for net, ifname in ranges.items():
+                if net.overlaps(ipaddress.ip_network(address)):
+                    lease_if = ifname
+                    break
+
+        records.append({
+            "address": address,
+            "hwaddr": lease.get("hw-address", ""),
+            "valid_lifetime": lease.get("valid-lft", 0),
+            "expire": lease.get("cltt", 0) + lease.get("valid-lft", 0),
+            "hostname": lease.get("hostname", ""),
+            "if": lease_if,
+            "if_descr": "",
+            "is_reserved": ""
+        })
+    
+    if records:
+        print(ujson.dumps({"records": records}))
