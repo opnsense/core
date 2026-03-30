@@ -44,7 +44,6 @@
         <id>rule.categories</id>
         <label>Categories</label>
         <type>select_multiple</type>
-        <style>tokenize</style>
         <help>For grouping purposes you may select multiple groups here to organize items.</help>
         <grid_view>
             <formatter>category</formatter>

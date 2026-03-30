@@ -143,8 +143,7 @@
                     <Default>1</Default>
                     <Required>Y</Required>
                 </match-client-id>
-                <pools type=".\KeaPoolsField">
-                </pools>
+                <pools type=".\KeaPoolsField"/>
                 <ddns_forward_zone type="HostnameField">
                     <IpAllowed>N</IpAllowed>
                     <Constraints>
@@ -157,6 +156,7 @@
                         </check001>
                     </Constraints>
                 </ddns_forward_zone>
+                <ddns_qualifying_suffix type="HostnameField"/>
                 <ddns_dns_server type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
                     <Constraints>
@@ -351,7 +351,7 @@
                     </OptionValues>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Match option and match data must either both be set or left empty.</ValidationMessage>
+                            <ValidationMessage>Match code and match data must either both be set or left empty.</ValidationMessage>
                             <type>DependConstraint</type>
                             <addFields>
                                 <field1>match_data</field1>
@@ -388,8 +388,8 @@
                     <OptionSpace>dhcp4</OptionSpace>
                     <Constraints>
                         <check001>
-                            <ValidationMessage>Match option and match data must either both be set or left empty.</ValidationMessage>
-                            <type>DependConstraint</type>
+                            <ValidationMessage>Match code and match data must either both be set or left empty.</ValidationMessage>
+                            <type>SetConstraint</type>
                             <addFields>
                                 <field1>match_code</field1>
                             </addFields>

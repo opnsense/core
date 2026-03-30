@@ -99,7 +99,7 @@
                         // No guessing here based on IP protocol, client_id and hwaddr can both be valid for IPv4 leases
                         const addUrlParams = {
                             ip: row.address || '',
-                            ...(row.client_id ? { client_id: row.client_id } : {}),
+                            ...(row.client_id && row.client_id.includes(':') ? { client_id: row.client_id } : {}),
                             ...(row.hwaddr ? { hwaddr: row.hwaddr } : {}),
                             ...(row.hostname && !row.hostname.includes('*')
                                 ? { host: row.hostname }

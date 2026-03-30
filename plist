@@ -616,6 +616,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/BaseConstraint.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/ComparedToFieldConstraint.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/DependConstraint.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/SetConstraint.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/SetIfConstraint.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/SingleSelectConstraint.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Constraints/UniqueConstraint.php

@@ -39,27 +39,32 @@ class KeaPoolsField extends BaseField
      */
     protected $internalIsContainer = false;
 
+    /**
+     * {@inheritdoc}
+     */
     public function getValidators()
     {
         $validators = parent::getValidators();
+
         if ($this->internalValue != null) {
             $validators[] = new CallbackValidator(["callback" => function ($data) {
                 $messages = [];
                 foreach (explode("\n", $data) as $entry) {
-                    $parts = array_map('trim', explode('-', $entry));
-                    if (empty($entry)) {
+                    if (!strlen($entry)) {
                         continue;
-                    } elseif (Util::isSubnet($entry)) {
+                    }
+                    $parts = explode('-', $entry);
+                    if (count($parts) == 2 && Util::isIpAddress(trim($parts[0])) && Util::isIpAddress(trim($parts[1]))) {
                         continue;
-                    } elseif (count($parts) == 2 && Util::isIpAddress($parts[0]) && Util::isIpAddress($parts[1])) {
+                    } elseif (count($parts) == 1 && Util::isSubnet($parts[0])) {
                         continue;
                     }
                     $messages[] = sprintf(gettext('Entry "%s" is not a valid range or subnet.'), $entry);
                 }
                 return $messages;
-            }
-            ]);
+            }]);
         }
+
         return $validators;
     }
 
@@ -71,5 +76,26 @@ class KeaPoolsField extends BaseField
         return array_values(array_filter(explode("\n", $this->internalValue), function ($k) {
             return !!strlen($k);
         }));
+    }
+
+    /**
+     * validate stored pools against a given subnet
+     * @param string $subnet the given subnet
+     * @return array of non-matching pools
+     */
+    public function checkSubnet($subnet)
+    {
+        $invalid = [];
+
+        foreach ($this->getValues() as $pool) {
+            $range = Util::isSubnet($pool) ? Util::cidrToRange($pool) : explode('-', $pool);
+            foreach ($range as $addr) {
+                if (!Util::isIPInCIDR(trim($addr), $subnet)) {
+                    $invalid[] = $pool;
+                }
+            }
+        }
+
+        return $invalid;
     }
 }

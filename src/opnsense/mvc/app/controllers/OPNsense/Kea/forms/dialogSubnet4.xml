@@ -191,7 +191,16 @@
         <id>subnet4.ddns_forward_zone</id>
         <label>DNS forward zone</label>
         <type>text</type>
-        <help>DNS zone where DHCP clients should be registered (e.g. home.arpa).</help>
+        <help>DNS zone where DHCP clients should be registered (e.g. "home.arpa.").</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet4.ddns_qualifying_suffix</id>
+        <label>DNS qualifying suffix</label>
+        <type>text</type>
+        <help>If a DHCP client only sends a hostname in option 81, append this suffix to create an FQDN (e.g. "home.arpa.").</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>

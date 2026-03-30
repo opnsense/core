@@ -52,14 +52,17 @@ class SetIfConstraint extends BaseConstraint
     public function validate($validator, $attribute): bool
     {
         $node = $this->getOption('node');
-        $field_name = $this->getOption('field');
-        $check = $this->getOption('check', '');
+
         if ($node) {
             $parentNode = $node->getParentNode();
+            $field_name = $this->getOption('field');
+            $check = $this->getOption('check', '');
+
             if ($node->isEmpty() && $parentNode->$field_name->isEqual($check)) {
                 $this->appendMessage($validator, $attribute);
             }
         }
+
         return true;
     }
 }

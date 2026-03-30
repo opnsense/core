@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2025 Deciso B.V.
+ * Copyright (C) 2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,27 +26,38 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\CaptivePortal\Api;
-
-use OPNsense\Base\ApiMutableServiceControllerBase;
+namespace OPNsense\Base\Constraints;
 
 /**
- * Class ServiceController
- * @package OPNsense\CaptivePortal
+ * Class SetConstraint, add a constraint to this field stating dependency of another field
+ * (if this field is not set then the referred field should also not be set)
+ * @package OPNsense\Base\Constraints
  */
-class ServiceController extends ApiMutableServiceControllerBase
+class SetConstraint extends BaseConstraint
 {
-    protected static $internalServiceClass = '\OPNsense\CaptivePortal\CaptivePortal';
-    protected static $internalServiceTemplate = 'OPNsense/Captiveportal';
-    protected static $internalServiceName = 'captiveportal';
-
-    protected function serviceEnabled()
+    /**
+     * Executes validation, expects a list of fields in "addFields" which to check for content.
+     * Fields are concerned empty if boolean false or containing an empty string
+     *
+     * @param $validator
+     * @param string $attribute
+     * @return boolean
+     */
+    public function validate($validator, $attribute): bool
     {
-        return  $this->getModel()->isEnabled();
-    }
+        $node = $this->getOption('node');
 
-    protected function invokeFirewallReload()
-    {
+        if ($node && !$node->isSet()) {
+            $parentNode = $node->getParentNode();
+
+            foreach (array_unique($this->getOptionValueList('addFields')) as $fieldname) {
+                if (!is_null($parentNode->$fieldname) && $parentNode->$fieldname->isSet()) {
+                    $this->appendMessage($validator, $attribute);
+                    break;
+                }
+            }
+        }
+
         return true;
     }
 }

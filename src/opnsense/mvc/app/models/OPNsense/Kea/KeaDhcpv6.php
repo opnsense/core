@@ -72,23 +72,13 @@ class KeaDhcpv6 extends BaseModel
             $key = $subnet->__reference;
             if (!in_array($subnet->interface->getValue(), $this_interfaces)) {
                 $messages->appendMessage(
-                    new Message(gettext("Interface not configured in general settings"), $key . ".interface")
+                    new Message(gettext('Interface is not selected in the general settings.'), $key . ".interface")
                 );
             }
-            foreach ($subnet->pools->getValues() as $pool) {
-                if (Util::isSubnet($pool)) {
-                    $range = Util::cidrToRange($pool);
-                } else {
-                    $range = explode('-', $pool);
-                }
-                foreach (!empty($range) ? $range : [] as $addr) {
-                    if (!Util::isIPInCIDR($addr, $subnet->subnet->getValue())) {
-                        $messages->appendMessage(
-                            new Message(sprintf(gettext("Pool %s not in specified subnet"), $pool), $key . ".pools")
-                        );
-                        break;
-                    }
-                }
+            foreach ($subnet->pools->checkSubnet($subnet->subnet->getValue()) as $pool) {
+                $messages->appendMessage(
+                    new Message(sprintf(gettext('Pool "%s" not in specified subnet.'), $pool), $key . ".pools")
+                );
             }
         }
         // validate changed pd_pools
@@ -160,7 +150,7 @@ class KeaDhcpv6 extends BaseModel
         return $hostname;
     }
 
-    private function getConfigSubnets()
+    private function getConfigSubnets($ddns_enabled = false)
     {
         $cfg = Config::getInstance()->object();
         $result = [];
@@ -200,7 +190,7 @@ class KeaDhcpv6 extends BaseModel
                 }
             }
             /* add pools */
-            foreach (array_filter(explode("\n", $subnet->pools->getValue())) as $pool) {
+            foreach ($subnet->pools->getValues() as $pool) {
                 $record['pools'][] = ['pool' => $pool];
             }
             /* add pd-pools */
@@ -270,6 +260,13 @@ class KeaDhcpv6 extends BaseModel
                 }
                 $record['option-data'][] = $entry;
             }
+            /* DDNS per subnet settings */
+            if ($ddns_enabled) {
+                if (!$subnet->ddns_qualifying_suffix->isEmpty()) {
+                    $record['ddns-qualifying-suffix'] = $subnet->ddns_qualifying_suffix->getValue();
+                }
+                $record['ddns-send-updates'] = !$subnet->ddns_dns_server->isEmpty();
+            }
             $result[] = $record;
         }
         return $result;
@@ -305,6 +302,8 @@ class KeaDhcpv6 extends BaseModel
 
     public function generateConfig($target = '/usr/local/etc/kea/kea-dhcp6.conf')
     {
+        $ddns = new KeaDdns();
+        $ddns_enabled = !$ddns->general->enabled->isEmpty();
         $cnf = [
             'Dhcp6' => [
                 'valid-lifetime' => $this->general->valid_lifetime->asInt(),
@@ -330,11 +329,11 @@ class KeaDhcpv6 extends BaseModel
                         'severity' => 'INFO',
                     ]
                 ],
-                'subnet6' => $this->getConfigSubnets(),
+                'subnet6' => $this->getConfigSubnets($ddns_enabled),
                 'hooks-libraries' => [
                     ['library' => '/usr/local/lib/kea/hooks/libdhcp_lease_cmds.so'],
                     ['library' => '/usr/local/lib/kea/hooks/libdhcp_host_cmds.so']
-                ]
+                ],
             ]
         ];
         $client_classes = $this->getConfigClientClasses();
@@ -375,8 +374,7 @@ class KeaDhcpv6 extends BaseModel
                 $cnf['Dhcp6']['hooks-libraries'][] = $record;
             }
         }
-        $ddns = new KeaDdns();
-        if (!$ddns->general->enabled->isEmpty()) {
+        if ($ddns_enabled) {
             $cnf['Dhcp6']['dhcp-ddns'] = [
                 'enable-updates' => true,
                 'server-ip' => $ddns->general->server_ip->getValue(),
