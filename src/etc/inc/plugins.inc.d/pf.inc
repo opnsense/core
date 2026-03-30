@@ -133,7 +133,7 @@ function pf_firewall($fw)
         $GatewaysList = $fw->getGateways()->gatewaysIndexedByName(false, true);
 
         foreach (get_staticroutes() as $route) {
-            if (!empty($GatewaysList[$route['gateway']]['interface']) && empty($route['disabled'])) {
+            if (!empty($GatewaysList[$route['gateway']]['interface']) && !empty($route['enabled'])) {
                 $gw = $GatewaysList[$route['gateway']];
                 $routeent = explode("/", $route['network']);
                 if (is_ipaddrv4($routeent[0]) && empty($ifdetails[$gw['if']]['ipv4'])) {
