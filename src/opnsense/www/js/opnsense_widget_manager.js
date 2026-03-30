@@ -397,7 +397,7 @@ class WidgetManager  {
                 buttons: [{
                     label: this.gettext.add,
                     hotkey: 13,
-                    action: (dialog) => {
+                    action: async (dialog) => {
                         let ids = $('select', dialog.$modalContent).val();
                         let changed = false;
                         for (const id of ids) {
@@ -406,7 +406,7 @@ class WidgetManager  {
                                 // XXX make sure to account for the defaults here in time
                                 this._createGridStackWidget(id, this.loadedModules[id]);
                                 this.grid.addWidget(this.widgetConfigurations[id]);
-                                this._onMarkupRendered(this.widgetClasses[id]);
+                                await this._onMarkupRendered(this.widgetClasses[id]);
                                 this._updateGrid(this.widgetHTMLElements[id]);
 
                                 if (this.runtimeOptions.editMode) {
@@ -414,6 +414,7 @@ class WidgetManager  {
                                     $('.link-handle').hide();
                                     $('.close-handle').show();
                                     $('.edit-handle').show();
+                                    $('.title-invisible').css('display', '');
                                 }
 
                                 changed = true;
