@@ -111,6 +111,9 @@ lint-acl:
 lint-class:
 	@${COREREFDIR}/Scripts/class-filename.sh ${COREREFDIR}
 
+lint-import:
+	@${COREREFDIR}/Scripts/class-import.sh ${COREREFDIR}
+
 SCRIPTDIRS!=	if [ -d ${.CURDIR}/src/opnsense/scripts ]; then find ${.CURDIR}/src/opnsense/scripts -type d -depth 1; fi
 
 lint-exec:
@@ -154,4 +157,4 @@ lint-plist:
 	@rm ${WRKDIR}/plist.*
 .endif
 
-lint: lint-plist lint-desc lint-shell lint-xml lint-model lint-acl lint-class lint-exec lint-php
+lint: lint-plist lint-desc lint-shell lint-xml lint-model lint-acl lint-class lint-import lint-exec lint-php
