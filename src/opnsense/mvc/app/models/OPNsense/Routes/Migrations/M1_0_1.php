@@ -15,7 +15,7 @@ class M1_0_1 extends BaseModelMigration
             foreach ($cfgObj->staticroutes->route as $route) {
                 $uuid = (string)$route['uuid'];
                 if (!empty($uuid) && isset($modelRoutes[$uuid]) && isset($route->disabled)) {
-                    $modelRoutes[$uuid]->enabled = ((int)$route->disabled === 1) ? 0 : 1;
+                    $modelRoutes[$uuid]->enabled = empty((string)$route->disabled) ? '1' : '0';
                 }
             }
         }
