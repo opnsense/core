@@ -156,6 +156,9 @@ class IPsecProposalField extends BaseListField
             }
 
             $dhgroups = [
+                'modp768' => 'DH1',
+                'modp1024' => 'DH2',
+                'modp1536' => 'DH5',
                 'modp2048' => 'DH14',
                 'modp3072' => 'DH15',
                 'modp4096' => 'DH16',
@@ -174,7 +177,7 @@ class IPsecProposalField extends BaseListField
             ];
             $gcm_prf_options = [];
             foreach (['aes128', 'aes192', 'aes256', 'aes128gcm16', 'aes192gcm16', 'aes256gcm16'] as $encalg) {
-                foreach (['sha256', 'sha384', 'sha512', 'aesxcbc'] as $intalg) {
+                foreach (['sha1', 'sha256', 'sha384', 'sha512', 'aesxcbc'] as $intalg) {
                     foreach ($dhgroups as $dhgroup => $descr) {
                         $cipher = "{$encalg}-{$intalg}-{$dhgroup}";
                         if (strpos($encalg, 'gcm') !== false && $this->phase != '1') {
