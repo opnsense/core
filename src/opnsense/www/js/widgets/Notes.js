@@ -31,6 +31,12 @@ export default class Notes extends BaseWidget {
         this.configurable = true;
     }
 
+    getGridOptions() {
+        return {
+            minH: 82,
+        }
+    }
+
     get dialogTitle() {
         return this.translations.titleedit;
     }
@@ -64,5 +70,6 @@ export default class Notes extends BaseWidget {
         const note = config.note || '';
 
         $(`#notes-text-${this.id}`).text(note);
+        this.config.callbacks.updateGrid();
     }
 }
