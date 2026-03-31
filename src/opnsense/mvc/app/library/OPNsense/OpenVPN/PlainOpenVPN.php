@@ -28,6 +28,9 @@
 
 namespace OPNsense\OpenVPN;
 
+use OPNsense\Base\UserException;
+use OPNsense\OpenVPN\KeyGenerator;
+
 class PlainOpenVPN extends BaseExporter implements IExportProvider
 {
     /**
@@ -196,7 +199,15 @@ class PlainOpenVPN extends BaseExporter implements IExportProvider
             $conf[] = "</key>";
         }
         if (!empty($this->config['tls'])) {
-            if ($this->config['tlsmode'] === 'crypt') {
+            if ($this->config['tlsmode'] === 'crypt-v2') {
+                $clientKey = KeyGenerator::generate('tls-crypt-v2-client', $this->config['tls']);
+                if (empty($clientKey)) {
+                    throw new UserException(gettext('Failed to generate tls-crypt-v2 client key'));
+                }
+                $conf[] = "<tls-crypt-v2>";
+                $conf = array_merge($conf, explode("\n", trim(base64_decode($clientKey, true))));
+                $conf[] = "</tls-crypt-v2>";
+            } elseif ($this->config['tlsmode'] === 'crypt') {
                 $conf[] = "<tls-crypt>";
                 $conf = array_merge($conf, explode("\n", trim(base64_decode($this->config['tls']))));
                 $conf[] = "</tls-crypt>";

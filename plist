@@ -572,6 +572,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/BaseExporter.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ExportFactory.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/IExportProvider.php
+/usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/KeyGenerator.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/PlainOpenVPN.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ViscosityVisz.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/AbstractStatus.php
@@ -1325,6 +1326,7 @@
 /usr/local/opnsense/scripts/openssh/ssh_query.py
 /usr/local/opnsense/scripts/openvpn/client_connect.php
 /usr/local/opnsense/scripts/openvpn/client_disconnect.sh
+/usr/local/opnsense/scripts/openvpn/gen_client_key.sh
 /usr/local/opnsense/scripts/openvpn/kill_session.py
 /usr/local/opnsense/scripts/openvpn/ovpn_event.py
 /usr/local/opnsense/scripts/openvpn/ovpn_service_control.php
