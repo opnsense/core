@@ -34,6 +34,15 @@
         </help>
     </field>
     <field>
+        <id>unbound.advanced.belownxdomain</id>
+        <label>Harden Below NXDOMAIN</label>
+        <type>checkbox</type>
+        <help>
+            Stops queries for names under a known NXDOMAIN. Improves security and performance.
+            May cause issues with very old software or non-DNSSEC reverse lookups.
+        </help>
+    </field>
+    <field>
         <id>unbound.advanced.aggressivensec</id>
         <label>Aggressive NSEC</label>
         <type>checkbox</type>
