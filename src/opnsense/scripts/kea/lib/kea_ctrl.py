@@ -68,7 +68,7 @@ class KeaCtrl:
             syslog.syslog(syslog.LOG_WARNING, f"kea_ctrl.py: kea-{service} control socket path \"{path}\" does not exist")
             return {"result": 1}
 
-        payload  = {"command": command}
+        payload = {"command": command}
         if args is not None:
             payload["arguments"] = args
 
@@ -78,6 +78,10 @@ class KeaCtrl:
                 sock.connect(path)
                 sock.sendall(json.dumps(payload).encode("utf-8") + b"\n")
                 response = KeaCtrl._json_recv(sock)
+                code = response.get("result", 1)
+                if code > 0:
+                    text = response.get("text", "unknown error")
+                    syslog.syslog(syslog.LOG_ERR, f"kea_ctrl.py: kea-{service} command returned non-zero exit code {code}: {text}")
                 return response
         except (OSError, ConnectionError, socket.timeout) as e:
             syslog.syslog(syslog.LOG_ERR, f"kea_ctrl.py: kea-{service} command \"{command}\" failed: {e}")

@@ -138,10 +138,18 @@ abstract class LeasesController extends ApiControllerBase
             throw new UserException(gettext('Invalid backend response'));
         }
 
+        $errors = [];
         foreach ($results as $result) {
             if (($result['result'] ?? 0) !== 0) {
-                throw new UserException($result['text'] ?? sprintf(gettext('Failed to delete lease for ip %s'), $result['ip']));
+                $errors[] = $result['ip'];
             }
+        }
+
+        if (!empty($errors)) {
+            throw new UserException(sprintf(
+                gettext('Failed to delete lease(s) for ip(s) %s. Check the logs for details.'),
+                implode(', ', $errors)
+            ));
         }
 
         return ['status' => 'ok'];
