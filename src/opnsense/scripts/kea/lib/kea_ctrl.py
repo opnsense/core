@@ -81,7 +81,7 @@ class KeaCtrl:
                 code = response.get("result", 1)
                 if code > 0:
                     text = response.get("text", "unknown error")
-                    syslog.syslog(syslog.LOG_ERR, f"kea_ctrl.py: kea-{service} command returned non-zero exit code {code}: {text}")
+                    syslog.syslog(syslog.LOG_ERR, f"kea_ctrl.py: kea-{service} command \"{command}\" returned non-zero exit code {code}: {text}")
                 return response
         except (OSError, ConnectionError, socket.timeout) as e:
             syslog.syslog(syslog.LOG_ERR, f"kea_ctrl.py: kea-{service} command \"{command}\" failed: {e}")
