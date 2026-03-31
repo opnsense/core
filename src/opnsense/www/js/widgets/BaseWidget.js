@@ -106,6 +106,10 @@ class BaseWidget {
         return {};
     }
 
+    get dialogTitle() {
+        return null;
+    }
+
     getMarkup() {
         return $("");
     }
