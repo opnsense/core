@@ -83,6 +83,16 @@ export default class Disk extends BaseGaugeWidget {
             primaryText: (data, chart) => {
                 return chart.config.data.datasets[0].pct[0] + '%';
             },
+            // Displays used and total disk space in GB below the percentage,
+            // similar to the Memory widget layout. Uses base-10 formatting for clarity.
+            secondaryText: (data, chart) => {
+                const usedBytes = chart.config.data.datasets[0].data[0];
+                const freeBytes = chart.config.data.datasets[0].data[1];
+                const totalBytes = usedBytes + freeBytes;
+                const usedStr = this._formatField(usedBytes, 1, false);
+                const totalStr = this._formatField(totalBytes, 1, false);
+                return `${usedStr} / ${totalStr}`;
+            }
         })
 
         let context_detailed = document.getElementById("disk-detailed-chart").getContext("2d");
@@ -184,7 +194,9 @@ export default class Disk extends BaseGaugeWidget {
     }
 
     onWidgetResize(elem, width, height) {
-        if (width < 500) {
+        let gsItem = elem.closest('[gs-w]');
+        let gsW = gsItem ? parseInt(gsItem.getAttribute('gs-w'), 10) : null;
+        if (gsW === null || gsW < 3) {
             $('#disk-chart').show();
             $('#disk-detailed-chart').hide();
         } else {
