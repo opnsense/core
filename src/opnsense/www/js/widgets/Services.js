@@ -38,7 +38,7 @@ export default class Services extends BaseTableWidget {
     }
 
     getMarkup() {
-        return $(`<div id="services-container" style="display: grid; grid-template-columns: repeat(3, 1fr); padding: 5px; gap: 5px;"></div>`);
+        return $(`<div id="services-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); padding: 5px; gap: 5px;"></div>`);
     }
 
     serviceControl(actions) {
