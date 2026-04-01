@@ -48,7 +48,7 @@ if __name__ == '__main__':
 
         result = KeaCtrl.send_command(cmd, {"ip-address": ip}, service)
         if result.get("result", 1) > 0:
-            results["failed"].append(ip)
+            results["failed"].append(f"{ip}: {result.get("text", "unknown error")}")
         else:
             results["removed"].append(ip)
 

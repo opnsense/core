@@ -138,7 +138,7 @@ abstract class LeasesController extends ApiControllerBase
 
         if (!empty($results['failed'])) {
             throw new UserException(sprintf(
-                gettext('Failed to delete lease(s) for ip(s) %s. Check the logs for details.'),
+                gettext('Failed to delete lease(s): %s'),
                 implode(', ', $results['failed'])
             ));
         }

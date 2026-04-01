@@ -29,8 +29,6 @@
 import ujson
 import os
 import socket
-import sys
-import syslog
 
 class KeaCtrl:
     @staticmethod
@@ -41,11 +39,8 @@ class KeaCtrl:
         elif service == "dhcp6":
             path = "/var/run/kea/kea6-ctrl-socket"
 
-        syslog.openlog("kea-%s" % service, facility=syslog.LOG_LOCAL4)
-
         if not os.path.exists(path):
-            syslog.syslog(syslog.LOG_ERR, f"kea_ctrl.py: kea-{service} control socket path \"{path}\" does not exist, exiting.")
-            sys.exit(1)
+            return {"result": 1, "text": f"kea-{service} control socket path \"{path}\" does not exist"}
 
         payload = {"command": command}
         if args is not None:
@@ -62,12 +57,6 @@ class KeaCtrl:
                     if not chunk:
                         break
                     buffer.append(chunk)
-                response = ujson.loads(b''.join(buffer).decode('utf-8'))
-                code = response.get("result", 1)
-                if code > 0:
-                    text = response.get("text", "unknown error")
-                    syslog.syslog(syslog.LOG_ERR, f"kea_ctrl.py: kea-{service} command \"{command}\" returned non-zero exit code {code}: {text}")
-                return response
+                return ujson.loads(b''.join(buffer).decode('utf-8'))
         except (OSError, ConnectionError, socket.timeout) as e:
-            syslog.syslog(syslog.LOG_ERR, f"kea_ctrl.py: kea-{service} command \"{command}\" failed: {e}, exiting.")
-            sys.exit(1)
+            return {"result": 1, "text": f"kea-{service} command \"{command}\" failed: {e}"}
