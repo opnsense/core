@@ -26,47 +26,26 @@
     POSSIBILITY OF SUCH DAMAGE.
 """
 
-import json
+import ujson
 import os
 import socket
+import sys
 import syslog
 
 class KeaCtrl:
     @staticmethod
-    def _socket_path(service):
+    def send_command(command, args = None, service = "dhcp4"):
+        path = ""
         if service == "dhcp4":
-            return "/var/run/kea/kea4-ctrl-socket"
-        if service == "dhcp6":
-            return "/var/run/kea/kea6-ctrl-socket"
-        return ""
+            path = "/var/run/kea/kea4-ctrl-socket"
+        elif service == "dhcp6":
+            path = "/var/run/kea/kea6-ctrl-socket"
 
-    @staticmethod
-    def _json_recv(sock):
-        # kea source code doesn't indicate command responses are properly newline-terminated
-        # so assume we need a full valid JSON structure here.
-        decoder = json.JSONDecoder()
-        buffer = ""
-
-        while True:
-            chunk = sock.recv(4096)
-            if not chunk:
-                raise ConnectionError("Socket closed before full JSON was received")
-
-            buffer += chunk.decode("utf-8")
-
-            try:
-                obj, _ = decoder.raw_decode(buffer)
-                return obj
-            except json.JSONDecodeError:
-                continue
-
-    @staticmethod
-    def send_command(command, args = None, service = "dhcp4", timeout = 5.0):
-        path = KeaCtrl._socket_path(service)
         syslog.openlog("kea-%s" % service, facility=syslog.LOG_LOCAL4)
+
         if not os.path.exists(path):
-            syslog.syslog(syslog.LOG_WARNING, f"kea_ctrl.py: kea-{service} control socket path \"{path}\" does not exist")
-            return {"result": 1}
+            syslog.syslog(syslog.LOG_ERR, f"kea_ctrl.py: kea-{service} control socket path \"{path}\" does not exist, exiting.")
+            sys.exit(1)
 
         payload = {"command": command}
         if args is not None:
@@ -74,15 +53,21 @@ class KeaCtrl:
 
         try:
             with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
-                sock.settimeout(timeout)
+                sock.settimeout(5.0)
                 sock.connect(path)
-                sock.sendall(json.dumps(payload).encode("utf-8") + b"\n")
-                response = KeaCtrl._json_recv(sock)
+                sock.sendall(ujson.dumps(payload).encode("utf-8") + b'\n')
+                buffer = []
+                while True:
+                    chunk = sock.recv(4096)
+                    if not chunk:
+                        break
+                    buffer.append(chunk)
+                response = ujson.loads(b''.join(buffer).decode('utf-8'))
                 code = response.get("result", 1)
                 if code > 0:
                     text = response.get("text", "unknown error")
                     syslog.syslog(syslog.LOG_ERR, f"kea_ctrl.py: kea-{service} command \"{command}\" returned non-zero exit code {code}: {text}")
                 return response
         except (OSError, ConnectionError, socket.timeout) as e:
-            syslog.syslog(syslog.LOG_ERR, f"kea_ctrl.py: kea-{service} command \"{command}\" failed: {e}")
-            return {"result": 1}
+            syslog.syslog(syslog.LOG_ERR, f"kea_ctrl.py: kea-{service} command \"{command}\" failed: {e}, exiting.")
+            sys.exit(1)

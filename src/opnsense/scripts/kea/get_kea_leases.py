@@ -30,7 +30,6 @@
 import ipaddress
 import subprocess
 import argparse
-import os
 import ujson
 
 from lib.kea_ctrl import KeaCtrl

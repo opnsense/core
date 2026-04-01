@@ -126,29 +126,20 @@ abstract class LeasesController extends ApiControllerBase
     {
         if (!$this->request->isPost()) {
             return ['status' => 'error', 'message' => gettext('Invalid request method')];
-        }
-
-        if (empty($ips)) {
+        } elseif (empty($ips)) {
             return ['status' => 'error', 'message' => gettext('Missing lease IP parameter')];
         }
 
-        $results = json_decode((new Backend())->configdpRun("kea delete lease " . escapeshellarg($ips)), true);
+        $results = json_decode((new Backend())->configdpRun("kea delete lease " . $ips), true);
 
         if (!is_array($results) || empty($results)) {
             throw new UserException(gettext('Invalid backend response'));
         }
 
-        $errors = [];
-        foreach ($results as $result) {
-            if (($result['result'] ?? 0) !== 0) {
-                $errors[] = $result['ip'];
-            }
-        }
-
-        if (!empty($errors)) {
+        if (!empty($results['failed'])) {
             throw new UserException(sprintf(
                 gettext('Failed to delete lease(s) for ip(s) %s. Check the logs for details.'),
-                implode(', ', $errors)
+                implode(', ', $results['failed'])
             ));
         }
 

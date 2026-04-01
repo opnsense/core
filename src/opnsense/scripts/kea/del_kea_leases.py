@@ -27,7 +27,6 @@
 """
 
 import argparse
-import os
 import ujson
 
 from lib.kea_ctrl import KeaCtrl
@@ -37,7 +36,10 @@ if __name__ == '__main__':
     parser.add_argument("ip", help="IP address(es) to delete, comma separated")
     ips = [ip.strip() for ip in parser.parse_args().ip.split(',') if ip.strip()]
 
-    results = []
+    results = {
+        "failed": [],
+        "removed": []
+    }
 
     for ip in ips:
         is_v6 = ":" in ip
@@ -45,7 +47,9 @@ if __name__ == '__main__':
         service = "dhcp6" if is_v6 else "dhcp4"
 
         result = KeaCtrl.send_command(cmd, {"ip-address": ip}, service)
-        result["ip"] = ip
-        results.append(result)
+        if result.get("result", 1) > 0:
+            results["failed"].append(ip)
+        else:
+            results["removed"].append(ip)
 
     print(ujson.dumps(results))
