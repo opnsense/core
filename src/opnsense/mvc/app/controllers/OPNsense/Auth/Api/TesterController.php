@@ -131,15 +131,13 @@ class TesterController extends ApiControllerBase
         }
 
         if ($userUID === null) {
-            return $member_groups;
+            return [];
         }
 
         foreach ($configObj->system->group ?? [] as $groupNode) {
-            foreach ($groupNode->member as $memberUID) {
-                if ((string)$memberUID === $userUID) {
-                    $member_groups[] = (string)$groupNode->name;
-                    break;
-                }
+            $members = explode(',', (string)$groupNode->member);
+            if (in_array($userUID, $members)) {
+                $member_groups[] = (string)$groupNode->name;
             }
         }
 
