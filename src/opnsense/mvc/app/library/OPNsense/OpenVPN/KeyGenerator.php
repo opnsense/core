@@ -34,21 +34,12 @@ class KeyGenerator
 {
     public static function generate(string $type, ?string $serverKey = null): ?string
     {
-        if ($type === 'tls-crypt-v2-client') {
-            if (empty($serverKey)) {
-                return null;
-            }
-            return self::run("openvpn genkeyclient", [$serverKey]);
-        }
-
-        $key = self::run("openvpn genkey", [$type]);
-        // other configd action returns PEM, convert to base64
-        return $key !== null ? base64_encode($key) : null;
+        return self::run("openvpn genkey", [$type, $serverKey]);
     }
 
     private static function run(string $command, array $params): ?string
     {
         $key = (new Backend())->configdpRun($command, $params);
-        return !empty($key) ? trim($key) : null;
+        return !empty($key) ? $key : null;
     }
 }

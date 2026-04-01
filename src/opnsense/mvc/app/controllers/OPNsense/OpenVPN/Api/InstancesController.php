@@ -99,6 +99,7 @@ class InstancesController extends ApiMutableModelControllerBase
 
     public function genKeyAction(string $type = 'secret'): array
     {
+        // tls-crypt-v2-client is not valid in here, since it requires a server key
         if (!in_array($type, ['secret', 'auth-token', 'tls-auth', 'tls-crypt', 'tls-crypt-v2-server'], true)) {
             return ['result' => 'failed', 'message' => gettext('unknown key type')];
         }
