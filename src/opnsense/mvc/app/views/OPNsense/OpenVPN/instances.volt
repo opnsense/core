@@ -86,7 +86,7 @@
             const mode_map = {
                 "auth": "tls-auth",
                 "crypt": "tls-crypt",
-                "crypt-v2": "tls-crypt-v2-server",  // Only the server key can be generated from nothing, client key must always be given by user
+                "crypt-v2": "tls-crypt-v2-server",
             };
             ajaxGet("/api/openvpn/instances/gen_key/" + mode_map[statickey_mode], {}, function(data){
                 if (data.result === 'ok') {

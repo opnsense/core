@@ -99,7 +99,9 @@ class InstancesController extends ApiMutableModelControllerBase
 
     public function genKeyAction(string $type = 'secret'): array
     {
-        // tls-crypt-v2-client is not valid in here, since it requires a server key
+        // If openvpn is run in client mode, the user must supply their own tls-crypt-v2-client key.
+        // Generating it is pointless since the server key should remain with the server only.
+        // We only generate keys here that can be used verbatim in server mode.
         if (!in_array($type, ['secret', 'auth-token', 'tls-auth', 'tls-crypt', 'tls-crypt-v2-server'], true)) {
             return ['result' => 'failed', 'message' => gettext('unknown key type')];
         }
