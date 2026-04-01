@@ -2240,6 +2240,7 @@
 /usr/local/opnsense/www/js/widgets/Memory.js
 /usr/local/opnsense/www/js/widgets/Metadata/Core.xml
 /usr/local/opnsense/www/js/widgets/Monit.js
+/usr/local/opnsense/www/js/widgets/Notes.js
 /usr/local/opnsense/www/js/widgets/OpenVPNClients.js
 /usr/local/opnsense/www/js/widgets/OpenVPNServers.js
 /usr/local/opnsense/www/js/widgets/Picture.js
@@ -2249,6 +2250,10 @@
 /usr/local/opnsense/www/js/widgets/ThermalSensors.js
 /usr/local/opnsense/www/js/widgets/Traffic.js
 /usr/local/opnsense/www/js/widgets/Wireguard.js
+/usr/local/opnsense/www/themes/opnsense-auto/build/css
+/usr/local/opnsense/www/themes/opnsense-auto/build/fonts
+/usr/local/opnsense/www/themes/opnsense-auto/build/images
+/usr/local/opnsense/www/themes/opnsense-auto/build/js/theme.js
 /usr/local/opnsense/www/themes/opnsense-dark/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.eot
 /usr/local/opnsense/www/themes/opnsense-dark/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.otf
 /usr/local/opnsense/www/themes/opnsense-dark/assets/fonts/SourceSansPro-Bold/SourceSansPro-Bold.ttf
