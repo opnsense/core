@@ -68,6 +68,8 @@ class DbConnection:
                 # in a timestamp adjusted for the current time zone. Since we want to store and query
                 # UTC at all times also set the database time zone to UTC. This is scoped within the connection.
                 self.connection.execute("SET TimeZone='UTC'")
+                if not self._read_only:
+                    self.connection.execute("SET threads=1")
             except duckdb.IOException as e:
                 if str(e).find('database file with version number') > -1:
                     # XXX: this is extremely wacky, apparently we are not able to read the current storage version
