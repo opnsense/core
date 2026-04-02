@@ -442,11 +442,8 @@ class FilterController extends FilterBaseController
         // ALL rules
         $result['any']['items'][] = $makeItem('__any', gettext('All rules'), $totalRules, 'any');
 
-        // Sort items by count and alphabetically
         foreach ($result as &$section) {
-            usort($section['items'], fn($a, $b) =>
-                ($b['count'] ?? 0) <=> ($a['count'] ?? 0)
-                    ?: strcasecmp($a['label'], $b['label']));
+            usort($section['items'], fn($a, $b) => strcasecmp($a['label'], $b['label']));
         }
 
         return $result;
