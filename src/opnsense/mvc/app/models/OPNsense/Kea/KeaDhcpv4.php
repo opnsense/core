@@ -328,35 +328,33 @@ class KeaDhcpv4 extends BaseModel
         if ($expiredLeasesConfig !== null) {
             $cnf['Dhcp4']['expired-leases-processing'] = $expiredLeasesConfig;
         }
-        if (!(new KeaCtrlAgent())->general->enabled->isEmpty()) {
-            if (!$this->ha->enabled->isEmpty()) {
-                $record = [
-                    'library' => '/usr/local/lib/kea/hooks/libdhcp_ha.so',
-                    'parameters' => [
-                        'high-availability' => [
-                            [
-                                'this-server-name' => $this->getConfigThisServerHostname(),
-                                'mode' => 'hot-standby',
-                                'heartbeat-delay' => 10000,
-                                'max-response-delay' => 60000,
-                                'max-ack-delay' => 5000,
-                                'max-unacked-clients' => $this->ha->max_unacked_clients->asInt(),
-                                'sync-timeout' => 60000,
-                            ]
+        if (!$this->ha->enabled->isEmpty()) {
+            $record = [
+                'library' => '/usr/local/lib/kea/hooks/libdhcp_ha.so',
+                'parameters' => [
+                    'high-availability' => [
+                        [
+                            'this-server-name' => $this->getConfigThisServerHostname(),
+                            'mode' => 'hot-standby',
+                            'heartbeat-delay' => 10000,
+                            'max-response-delay' => 60000,
+                            'max-ack-delay' => 5000,
+                            'max-unacked-clients' => $this->ha->max_unacked_clients->asInt(),
+                            'sync-timeout' => 60000,
                         ]
                     ]
-                ];
-                foreach ($this->ha_peers->peer->iterateItems() as $peer) {
-                    if (!isset($record['parameters']['high-availability'][0]['peers'])) {
-                        $record['parameters']['high-availability'][0]['peers'] = [];
-                    }
-                    $record['parameters']['high-availability'][0]['peers'][] = array_map(
-                        fn($x) => $x->getValue(),
-                        iterator_to_array($peer->iterateItems())
-                    );
+                ]
+            ];
+            foreach ($this->ha_peers->peer->iterateItems() as $peer) {
+                if (!isset($record['parameters']['high-availability'][0]['peers'])) {
+                    $record['parameters']['high-availability'][0]['peers'] = [];
                 }
-                $cnf['Dhcp4']['hooks-libraries'][] = $record;
+                $record['parameters']['high-availability'][0]['peers'][] = array_map(
+                    fn($x) => $x->getValue(),
+                    iterator_to_array($peer->iterateItems())
+                );
             }
+            $cnf['Dhcp4']['hooks-libraries'][] = $record;
         }
         if ($ddns_enabled) {
             $cnf['Dhcp4']['dhcp-ddns'] = [
