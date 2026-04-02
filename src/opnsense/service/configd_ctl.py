@@ -35,6 +35,7 @@ import argparse
 import socket
 import os.path
 import traceback
+import shlex
 import sys
 import syslog
 import time
@@ -111,7 +112,7 @@ if not os.path.exists(configd_socket_name):
 if not args.command:
     exec_commands=['configd actions']
 else:
-    exec_commands=[' '.join(args.command)]
+    exec_commands=[' '.join(shlex.quote(c) for c in args.command)]
 
 if args.e:
     # use as event handler, execute configd command on every line on stdin
