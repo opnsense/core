@@ -731,15 +731,6 @@
                 function (data) {
                     if (!data.rows) return [];
 
-                    // Sort used categories first, then alphabetically
-                    data.rows.sort((a, b) => {
-                        const aUsed = a.used > 0 ? 0 : 1;
-                        const bUsed = b.used > 0 ? 0 : 1;
-
-                        if (aUsed !== bUsed) return aUsed - bUsed;
-                        return a.name.localeCompare(b.name);
-                    });
-
                     return data.rows.map(row => {
                         const optVal = $('<div/>').text(row.name).html();
                         const bgColor = row.color ? ` style="background:#${row.color};"` : '';
