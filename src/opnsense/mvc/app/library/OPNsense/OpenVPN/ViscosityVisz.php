@@ -31,7 +31,6 @@ namespace OPNsense\OpenVPN;
 use OPNsense\Base\UserException;
 use OPNsense\Core\AppConfig;
 use OPNsense\Core\Shell;
-use OPNsense\OpenVPN\KeyGenerator;
 
 class ViscosityVisz extends PlainOpenVPN
 {
@@ -132,7 +131,7 @@ class ViscosityVisz extends PlainOpenVPN
         }
         if (!empty($this->config['tls'])) {
             if ($this->config['tlsmode'] === 'crypt-v2') {
-                $clientKey = KeyGenerator::generate('tls-crypt-v2-client', $this->config['tls']);
+                $clientKey = $this->export_crypt_v2_client_key($this->config['tls']);
                 if (empty($clientKey)) {
                     throw new UserException(gettext('Failed to generate tls-crypt-v2 client key'));
                 }

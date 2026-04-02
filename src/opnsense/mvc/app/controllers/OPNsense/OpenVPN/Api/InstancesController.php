@@ -30,7 +30,6 @@ namespace OPNsense\OpenVPN\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Backend;
-use OPNsense\OpenVPN\KeyGenerator;
 
 /**
  * Class InstancesController
@@ -105,9 +104,9 @@ class InstancesController extends ApiMutableModelControllerBase
         if (!in_array($type, ['secret', 'auth-token', 'tls-auth', 'tls-crypt', 'tls-crypt-v2-server'], true)) {
             return ['result' => 'failed', 'message' => gettext('unknown key type')];
         }
-        $key = KeyGenerator::generate($type);
+        $key = (new Backend())->configdpRun("openvpn genkey", [$type]);
         if ($key !== null) {
-            return ['result' => 'ok', 'key' => base64_decode($key, true)];
+            return ['result' => 'ok', 'key' => trim($key)];
         }
         return ['result' => 'failed'];
     }
