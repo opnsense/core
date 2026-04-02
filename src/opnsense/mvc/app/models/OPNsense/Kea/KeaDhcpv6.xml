@@ -12,6 +12,8 @@
             <interfaces type="InterfaceField">
                 <Multiple>Y</Multiple>
             </interfaces>
+            <service_sockets_max_retries type="IntegerField"/>
+            <service_sockets_retry_wait_time type="IntegerField"/>
             <valid_lifetime type="IntegerField">
                 <Default>4000</Default>
                 <Required>Y</Required>

@@ -308,7 +308,12 @@ class KeaDhcpv6 extends BaseModel
             'Dhcp6' => [
                 'valid-lifetime' => $this->general->valid_lifetime->asInt(),
                 'interfaces-config' => [
-                    'interfaces' => $this->getConfigPhysicalInterfaces()
+                    'interfaces' => $this->getConfigPhysicalInterfaces(),
+                    'service-sockets-require-all' => false,
+                    'service-sockets-max-retries' => !$this->general->service_sockets_max_retries->isEmpty() ?
+                                                     $this->general->service_sockets_max_retries->asInt() : 5,
+                    'service-sockets-retry-wait-time' => !$this->general->service_sockets_retry_wait_time->isEmpty() ?
+                                                         $this->general->service_sockets_retry_wait_time->asInt() : 5000,
                 ],
                 'lease-database' => [
                     'type' => 'memfile',
