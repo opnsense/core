@@ -27,6 +27,22 @@
         <help>Select interfaces to listen on.</help>
     </field>
     <field>
+        <id>dhcpv4.general.service_sockets_max_retries</id>
+        <label>Socket retries</label>
+        <type>text</type>
+        <hint>5</hint>
+        <advanced>true</advanced>
+        <help>Sometimes interfaces can be slow to come up or be unavailable temporarily. This option defines how many times KEA should retry the socket binding.</help>
+    </field>
+    <field>
+        <id>dhcpv4.general.service_sockets_retry_wait_time</id>
+        <label>Socket retry wait time</label>
+        <type>text</type>
+        <hint>5000</hint>
+        <advanced>true</advanced>
+        <help>Defines the wait time in milliseconds between socket retry attempts.</help>
+    </field>
+    <field>
         <id>dhcpv4.general.valid_lifetime</id>
         <label>Valid lifetime</label>
         <type>text</type>
