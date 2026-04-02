@@ -288,7 +288,7 @@ class KeaDhcpv4 extends BaseModel
                 'interfaces-config' => [
                     'interfaces' => $this->getConfigPhysicalInterfaces(),
                     'dhcp-socket-type' => $this->general->dhcp_socket_type->getValue(),
-                    'service-sockets-require-all' => false,
+                    /* socket retries are on a per-interface basis, failing to open one won't affect others */
                     'service-sockets-max-retries' => !$this->general->service_sockets_max_retries->isEmpty() ?
                                                      $this->general->service_sockets_max_retries->asInt() : 5,
                     'service-sockets-retry-wait-time' => !$this->general->service_sockets_retry_wait_time->isEmpty() ?
