@@ -127,6 +127,7 @@ class UIBootgrid {
         this.treeStorageKey = `tabulator-${this.persistenceID}-openTree`;
         this.rememberedTreeIds = new Set(JSON.parse(localStorage.getItem(this.treeStorageKey) || '[]'));
         this.isVisible = false;
+        this.scrollPos = 0;
 
         // wrapper-specific options
         this.options = {
@@ -756,6 +757,7 @@ class UIBootgrid {
             if (!id) return;
             open ? this.rememberedTreeIds.add(id) : this.rememberedTreeIds.delete(id);
             localStorage.setItem(this.treeStorageKey, JSON.stringify([...this.rememberedTreeIds]));
+            this._maintainScrollPosition(this.scrollPos);
         };
 
         this.table.on('dataTreeRowExpanded',  (row) => rememberTree(row, true));
@@ -875,6 +877,10 @@ class UIBootgrid {
             });
 
             intersectObserver.observe(this.$element[0]);
+        });
+
+        this.table.on('scrollVertical', (top) => {
+            this.scrollPos = top;
         });
     }
 
@@ -1595,12 +1601,18 @@ class UIBootgrid {
     _reload(inplace=false) {
         let page = this.table.getPage();
 
+        const scrollPos = this.scrollPos;
+
         // both calls trigger an ajax request
         if (inplace) {
-            this.table.setPage(page);
+            this.table.setPage(page).then(() => this._maintainScrollPosition(scrollPos));
         } else {
-            this.table.replaceData();
+            this.table.replaceData().then(() => this._maintainScrollPosition(scrollPos));
         }
+    }
+
+    _maintainScrollPosition(pos) {
+        $(`#${this.id} > .tabulator-tableholder`)[0].scrollTop = pos;
     }
 
     _getPlaceholder() {
