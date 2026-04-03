@@ -9,12 +9,12 @@ assignees: ''
 
 Before you add a new report, we ask you kindly to acknowledge the following:
 
-- [ ] I have read the contributing guide lines at https://github.com/opnsense/core/blob/master/CONTRIBUTING.md
+- [ ] I have read the contributing guidelines at https://github.com/opnsense/core/blob/master/CONTRIBUTING.md
 - [ ] I am convinced that my issue is new after having checked both open and closed issues at https://github.com/opnsense/core/issues?q=is%3Aissue
 
 **Is your feature request related to a problem? Please describe.**
 
-A clear and concise description of what the problem is including your motivation for the request,
+A clear and concise description of what the problem is, including your motivation for the request,
 i.e. "For the purpose of [...] I am missing a solution that will [...]."
 
 **Describe the solution you like**
