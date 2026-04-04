@@ -100,6 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['radius_secret'] = $a_server[$id]['radius_secret'] ?? '';
             $pconfig['radius_timeout'] = $a_server[$id]['radius_timeout'] ?? '';
             $pconfig['radius_stationid'] = $a_server[$id]['radius_stationid'] ?? '';
+            $pconfig['radius_nasipaddress'] = $a_server[$id]['radius_nasipaddress'] ?? '';
 
             if (!empty($pconfig['radius_auth_port']) &&
                 !empty($pconfig['radius_acct_port'])) {
@@ -284,6 +285,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                   unset($server['radius_stationid']);
               }
 
+              if (!empty($pconfig['radius_nasipaddress'])) {
+                  $server['radius_nasipaddress'] = $pconfig['radius_nasipaddress'];
+              } else {
+		      unset($server['radius_nasipaddress']);
+              }
+
               if ($pconfig['radius_srvcs'] == "both") {
                   $server['radius_auth_port'] = $pconfig['radius_auth_port'];
                   $server['radius_acct_port'] = $pconfig['radius_acct_port'];
@@ -296,7 +303,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               $server['sync_memberof'] = !empty($pconfig['sync_memberof']);
               $server['sync_memberof_groups'] = !empty($pconfig['sync_memberof_groups']) ? implode(",", $pconfig['sync_memberof_groups']) : [];
               $server['sync_default_groups'] = !empty($pconfig['sync_default_groups']) ? implode(",", $pconfig['sync_default_groups']) : [];
-              $server['sync_create_local_users'] = !empty($pconfig['sync_create_local_users']);
+	      $server['sync_create_local_users'] = !empty($pconfig['sync_create_local_users']);
+	      $server['radius_nasporttype'] = RADIUS_VIRTUAL;
           } elseif ($server['type'] == 'local') {
               foreach (['password_policy_duration', 'enable_password_policy_constraints',
                   'password_policy_complexity', 'password_policy_compliance',
@@ -369,6 +377,8 @@ $all_authfields = [
     'radius_srvcs',
     'radius_timeout',
     'radius_stationid',
+    'radius_nasipaddress',
+    'radius_nasporttype',
     'sync_create_local_users',
     'sync_memberof',
     'ldap_attr_memberof',
@@ -872,6 +882,15 @@ endif; ?>
                       <br /><?= gettext("This value serves as a unique identifier for this NAS. This value typically contains a MAC address, optionally appended with a known SSID or FQDN, separated by a \":\".") ?>
                       <br /><?= gettext("The MAC address can be any uniquely associated with this machine, but typically the MAC address facing the RADIUS server is used.") ?>
                       <br /><?= gettext("For example: 00:1A:2B:3C:4F:5E:opnsense.localdomain") ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_radius auth_options hidden">
+                  <td><a id="help_for_radius_nasipaddress" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("NAS IP Address");?></td>
+                  <td>
+                    <input name="radius_nasipaddress" type="text" id="radius_nasipaddress" size="20" value="<?=$pconfig['radius_nasipaddress'];?>"/>
+                    <div class="hidden" data-for="help_for_radius_nasipaddress">
+                      <br /><?= gettext("Enter the IP to use for the 'NAS-IP-Address' attribute during RADIUS Access-Requests.") ?>
                     </div>
                   </td>
                 </tr>

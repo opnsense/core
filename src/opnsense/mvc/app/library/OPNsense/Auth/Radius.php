@@ -70,6 +70,11 @@ class Radius extends Base implements IAuthConnector
     private $callingStationId = null;
 
     /**
+     * @var string ip addess to use for NAS-IP-Address attribute
+     */
+    private $nasIpAddress = null;
+
+    /**
      * @var int timeout to use
      */
     private $timeout = 10;
@@ -108,6 +113,8 @@ class Radius extends Base implements IAuthConnector
      * @var array list of groups to add by default
      */
     private $syncDefaultGroups = [];
+
+    private $nasPortType = RADIUS_ETHERNET;
 
     private function mapTerminateCause($cause)
     {
@@ -165,6 +172,8 @@ class Radius extends Base implements IAuthConnector
             'radius_acct_port' => 'acctPort',
             'radius_protocol' => 'protocol',
             'radius_stationid' => 'calledStationId',
+	    'radius_nasipaddress' => 'nasIpAddress',
+	    'radius_nasporttype' => 'nasPortType',
             'refid' => 'nasIdentifier'
         );
 
@@ -507,12 +516,14 @@ class Radius extends Base implements IAuthConnector
             $error = radius_strerror($radius);
         } elseif (!radius_put_int($radius, RADIUS_NAS_PORT, 0)) {
             $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_ETHERNET)) {
+        } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, $this->nasPortType)) {
             $error = radius_strerror($radius);
         } elseif (!empty($this->calledStationId) && !radius_put_string($radius, RADIUS_CALLED_STATION_ID, $this->calledStationId)) {
             $error = radius_strerror($radius);
         } elseif (!empty($this->callingStationId) && !radius_put_string($radius, RADIUS_CALLING_STATION_ID, $this->callingStationId)) {
             $error = radius_strerror($radius);
+        } elseif (!empty($this->nasIpAddress) && !radius_put_addr($radius, RADIUS_NAS_IP_ADDRESS, $this->nasIpAddress)) {
+            $error = radius_stderror($radius);
         } else {
             // Implement extra protocols in this section.
             switch ($this->protocol) {
