@@ -100,8 +100,8 @@ class ForwardRule extends Rule
         foreach ($this->reader() as $tmp) {
             $tmp['rule_types'] = array("rdr");
             $tmp['nordr'] = !empty($tmp['nordr']);
-            if (!empty($tmp['pass']) && $tmp['pass'] == 'pass') {
-                $tmp['pass'] = empty($tmp['nordr']);
+            if (!empty($tmp['pass'])) {
+                $tmp['pass'] = empty($tmp['nordr']) && $tmp['pass'] != 'rule';
             }
             // target address, when invalid, disable rule
             if (empty($tmp['target'])) {
