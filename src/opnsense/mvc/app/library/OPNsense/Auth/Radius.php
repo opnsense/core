@@ -172,8 +172,8 @@ class Radius extends Base implements IAuthConnector
             'radius_acct_port' => 'acctPort',
             'radius_protocol' => 'protocol',
             'radius_stationid' => 'calledStationId',
-	    'radius_nasipaddress' => 'nasIpAddress',
-	    'radius_nasporttype' => 'nasPortType',
+            'radius_nasipaddress' => 'nasIpAddress',
+            'radius_nasporttype' => 'nasPortType',
             'refid' => 'nasIdentifier'
         );
 

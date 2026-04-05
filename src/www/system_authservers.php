@@ -288,7 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               if (!empty($pconfig['radius_nasipaddress'])) {
                   $server['radius_nasipaddress'] = $pconfig['radius_nasipaddress'];
               } else {
-		      unset($server['radius_nasipaddress']);
+                  unset($server['radius_nasipaddress']);
               }
 
               if ($pconfig['radius_srvcs'] == "both") {
@@ -303,8 +303,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               $server['sync_memberof'] = !empty($pconfig['sync_memberof']);
               $server['sync_memberof_groups'] = !empty($pconfig['sync_memberof_groups']) ? implode(",", $pconfig['sync_memberof_groups']) : [];
               $server['sync_default_groups'] = !empty($pconfig['sync_default_groups']) ? implode(",", $pconfig['sync_default_groups']) : [];
-	      $server['sync_create_local_users'] = !empty($pconfig['sync_create_local_users']);
-	      $server['radius_nasporttype'] = RADIUS_VIRTUAL;
+              $server['sync_create_local_users'] = !empty($pconfig['sync_create_local_users']);
+              $server['radius_nasporttype'] = RADIUS_VIRTUAL;
           } elseif ($server['type'] == 'local') {
               foreach (['password_policy_duration', 'enable_password_policy_constraints',
                   'password_policy_complexity', 'password_policy_compliance',
