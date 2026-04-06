@@ -21,6 +21,12 @@
                 <Strict>Y</Strict>
                 <WildcardEnabled>N</WildcardEnabled>
             </skip_nets>
+            <expire4_interval type="IntegerField">
+                <MinimumValue>3600</MinimumValue>
+            </expire4_interval>
+            <expire6_interval type="IntegerField">
+                <MinimumValue>3600</MinimumValue>
+            </expire6_interval>
             <interface type="InterfaceField">
                 <AllowDynamic>Y</AllowDynamic>
                 <Multiple>Y</Multiple>

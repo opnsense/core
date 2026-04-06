@@ -25,6 +25,18 @@
         <help>Verbosity mode, send more detailed information to the log.</help>
     </field>
     <field>
+        <id>hostdiscovery.general.expire4_interval</id>
+        <label>Expire/cleanup IPv4</label>
+        <type>text</type>
+        <help>Remove registrations after a defined number of seconds with a minimum of 3600 (1 hour). when unset, addresses will be archived indefinitely and reported when seen again after a longer period of time</help>
+    </field>
+    <field>
+        <id>hostdiscovery.general.expire6_interval</id>
+        <label>Expire/cleanup IPv6</label>
+        <type>text</type>
+        <help>Remove registrations after a defined number of seconds with a minimum of 3600 (1 hour). when unset, addresses will be archived indefinitely and reported when seen again after a longer period of time</help>
+    </field>
+    <field>
         <id>hostdiscovery.general.skip_nets</id>
         <label>Ignore networks</label>
         <type>select_multiple</type>
