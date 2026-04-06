@@ -27,6 +27,7 @@
  */
 
 namespace OPNsense\Auth;
+require_once("interfaces.inc");
 
 /**
  * Class Radius connector
@@ -114,8 +115,6 @@ class Radius extends Base implements IAuthConnector
      */
     private $syncDefaultGroups = [];
 
-    private $nasPortType = RADIUS_ETHERNET;
-
     private function mapTerminateCause($cause)
     {
         switch ($cause) {
@@ -173,7 +172,6 @@ class Radius extends Base implements IAuthConnector
             'radius_protocol' => 'protocol',
             'radius_stationid' => 'calledStationId',
             'radius_nasipaddress' => 'nasIpAddress',
-            'radius_nasporttype' => 'nasPortType',
             'refid' => 'nasIdentifier'
         );
 
@@ -215,6 +213,31 @@ class Radius extends Base implements IAuthConnector
         $options['radius_protocol']['validate'] = function ($value) {
             if (!in_array($value, ['PAP', 'MSCHAPv2'])) {
                 return [gettext('Invalid protocol specified')];
+            } else {
+                return [];
+            }
+        };
+
+        $options['radius_nasipaddress'] = [];
+        $options['radius_nasipaddress']['name'] = gettext('NAS IP address');
+        $options['radius_nasipaddress']['type'] = 'dropdown';
+        $options['radius_nasipaddress']['default'] = '';
+        $options['radius_nasipaddress']['options'] = [null => ''];
+        $interfaces = get_configured_interface_with_descr();
+
+        // Create options list using interface IPs
+        foreach($interfaces as $if => $descr) {
+            $ip = get_interface_ip($if);
+            $options['radius_nasipaddress']['options'] += [$ip => "$descr - $ip"];
+        }
+
+        $options['radius_nasipaddress']['validate'] = function ($value) {
+            $interfaces = get_configured_interface_with_descr();
+            $ips = [];
+            foreach($interfaces as $if => $descr)
+                $ips[] = get_interface_ip($if);
+            if(!empty($value) && !in_array($value, $ips)) {
+                return [gettext('Invalid address specified')];
             } else {
                 return [];
             }
@@ -510,13 +533,11 @@ class Radius extends Base implements IAuthConnector
             $error = radius_strerror($radius);
         } elseif (!radius_put_int($radius, RADIUS_SERVICE_TYPE, RADIUS_LOGIN)) {
             $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_FRAMED_PROTOCOL, RADIUS_ETHERNET)) {
-            $error = radius_strerror($radius);
         } elseif (!radius_put_string($radius, RADIUS_NAS_IDENTIFIER, $this->nasIdentifier)) {
             $error = radius_strerror($radius);
         } elseif (!radius_put_int($radius, RADIUS_NAS_PORT, 0)) {
             $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, $this->nasPortType)) {
+        } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_VIRTUAL)) {
             $error = radius_strerror($radius);
         } elseif (!empty($this->calledStationId) && !radius_put_string($radius, RADIUS_CALLED_STATION_ID, $this->calledStationId)) {
             $error = radius_strerror($radius);
