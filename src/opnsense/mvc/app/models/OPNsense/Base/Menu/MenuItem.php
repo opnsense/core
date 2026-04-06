@@ -44,7 +44,7 @@ class MenuItem
      * this items id (xml tag name)
      * @var item|string
      */
-    private $id = "";
+    private $id = '';
 
     /**
      * visible name, default same as id
@@ -62,13 +62,19 @@ class MenuItem
      * layout information, icon
      * @var string
      */
-    private $CssClass = "";
+    private $CssClass = '';
+
+    /**
+     * Classes to add to the link
+     * @var string
+     */
+    private $LinkClass = '';
 
     /**
      * link to url location
      * @var string
      */
-    private $Url = "";
+    private $Url = '';
 
     /**
      * link to external page
@@ -93,6 +99,12 @@ class MenuItem
      * @var bool
      */
     private $selected = false;
+
+    /**
+     * Tree depth
+     * @var int
+     */
+    private $depth = 0;
 
     /**
      * class method getters
@@ -141,6 +153,9 @@ class MenuItem
         $this->id = $id;
         $this->visibleName = gettext($id);
         $this->parent = $parent;
+        if ($parent !== null) {
+            $this->depth = $parent->getDepth() + 1;
+        }
         $prop_exclude_list = ['getXmlPropertySetterName' => true];
         if (self::$internalClassMethodAliases === null) {
             self::$internalClassMethodAliases = [];
@@ -167,6 +182,14 @@ class MenuItem
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * return this nodes depth in the menu
+     */
+    public function getDepth()
+    {
+        return $this->depth;
     }
 
 
@@ -240,6 +263,40 @@ class MenuItem
     public function getCssClass()
     {
         return $this->CssClass;
+    }
+
+    /**
+     * setter for default link class
+     * @param $value
+     */
+    public function setLinkClass($value)
+    {
+        $this->LinkClass = $value;
+    }
+
+
+    /**
+     * getter for css class set on the actual link
+     */
+    public function getLinkClass()
+    {
+        $css = ['list-group-item'];
+        if (count($this->children) >= 1 && $this->depth < 3) {
+            if ($this->selected) {
+                $css[] = 'active-menu-title';
+            }
+        } else {
+            if ($this->depth == 3) {
+                $css[] = 'menu-level-3-item';
+            }
+            if ($this->selected) {
+                $css[] = 'active';
+            }
+        }
+        if ($this->Url != '') {
+            $css[] = 'menu_ref_' . md5($this->Url);
+        }
+        return implode(' ', $css) . " " . $this->LinkClass;
     }
 
     /**
@@ -398,7 +455,7 @@ class MenuItem
         foreach ($this->children as $nodeId => &$node) {
             if ($node->isVisible()) {
                 $node->toggleSelected($url);
-                if ($node->getUrl() != "") {
+                if ($node->getUrl() != '') {
                     // hash part isn't available on server end
                     $menuItemUrl = explode("#", $node->getUrl())[0];
                     $match = str_replace([".", "*","?", "@"], ["\.", ".*","\?", "\@"], $menuItemUrl);
