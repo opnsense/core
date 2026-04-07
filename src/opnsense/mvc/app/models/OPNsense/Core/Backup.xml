@@ -1,0 +1,20 @@
+<model>
+    <mount>//system/backup/settings</mount>
+    <version>1.0.2</version>
+    <description>System Backup Settings</description>
+    <items>
+        <backupcount type="IntegerField">
+            <Required>Y</Required>
+            <Default>15</Default>
+            <MinimumValue>1</MinimumValue>
+            <MaximumValue>9999</MaximumValue>
+            <ValidationMessage>Only numerical values in the range 1 to 9999 are allowed.</ValidationMessage>
+        </backupcount>
+        <pushtime type="TextField">
+            <Required>Y</Required>
+            <Default>02:00</Default>
+            <Mask>/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/</Mask>
+            <ValidationMessage>Please enter a valid 24-hour time in HH:MM format (e.g., 14:30 or 08:15).</ValidationMessage>
+        </pushtime>
+    </items>
+</model>
