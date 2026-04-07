@@ -48,7 +48,7 @@ for WIDGET in ${WIDGETS}; do
 
 	if [ -z "${ENDPOINTS}" ]; then
 		echo "No endpoints found for ${WIDGET}"
-		exit 1
+		continue
 	fi
 
 	REGISTERED=
