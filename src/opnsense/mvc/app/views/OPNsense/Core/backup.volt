@@ -146,6 +146,13 @@
             });
         });
 
+        $("#encrypt_password, #encrypt_passconf").keypress(function (e) {
+            if (e.which === 13) {
+                e.preventDefault();
+                $("#btn_download").click();
+            }
+        });
+
         $("#encrypt").change(function () {
             if ($(this).is(':checked')) {
                 $("#encrypt_opts").removeClass("hidden");
