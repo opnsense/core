@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/radvd</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>Radvd configuration</description>
     <items>
         <entries type="ArrayField">
@@ -127,6 +127,13 @@
                 <NetMaskRequired>Y</NetMaskRequired>
                 <AddressFamily>ipv6</AddressFamily>
             </nat64prefix>
+            <AdvCurHopLimit type="IntegerField">
+                <Default>64</Default>
+                <Required>Y</Required>
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>255</MaximumValue>
+                <ValidationMessage>Hop limit must be between 0 and 255 (inclusive).</ValidationMessage>
+            </AdvCurHopLimit>
         </entries>
     </items>
 </model>
