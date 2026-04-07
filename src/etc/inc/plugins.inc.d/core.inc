@@ -281,9 +281,21 @@ function core_cron()
         $jobs[]['autocron'] = ['/usr/local/etc/rc.syshook.d/backup/20-netflow', '0', '*/' . $config['system']['netflowbackup']];
     }
 
+    global $config;
+
+    $cron_minute = 0;
+    $cron_hour = 2;
+
+    $push_time = $config['system']['backuppushtime'] ?? $config['backuppushtime'] ?? '';
+
+    if (!empty($push_time) && preg_match('/^([0-9]{1,2}):([0-9]{1,2})$/', $push_time, $matches)) {
+        $cron_hour = (int)$matches[1];
+        $cron_minute = (int)$matches[2];
+    }
+
     foreach ((new OPNsense\Backup\BackupFactory())->listProviders() as $classname => $provider) {
         if ($provider['handle']->isEnabled()) {
-            $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d system remote backup 3600', 0, 1];
+            $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d system remote backup 30', $cron_minute, $cron_hour];
             break;
         }
     }
