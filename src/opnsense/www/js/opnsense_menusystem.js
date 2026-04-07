@@ -41,7 +41,7 @@ class MenuItem {
             parent_div = parent_div.parent().closest('div');
         }
         result.reverse()
-        return result.join(' : ');
+        return result.join(': ');
     }
 }
 
