@@ -1605,9 +1605,9 @@ class UIBootgrid {
 
         // both calls trigger an ajax request
         if (inplace) {
-            this.table.setPage(page).then(() => inplace && this._maintainScrollPosition(scrollPos));
+            this.table.setPage(page).then(() => this._maintainScrollPosition(scrollPos));
         } else {
-            this.table.replaceData().then(() => inplace && this._maintainScrollPosition(scrollPos));
+            this.table.replaceData();
         }
     }
 
