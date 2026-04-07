@@ -59,7 +59,7 @@ $result = $db->query('
 // process all sessions
 if ($result !== false) {
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
-        $authFactory = new OPNsense\Auth\AuthenticationFactory();
+        $authFactory = new AuthenticationFactory();
         $authenticator = $authFactory->get($row['authenticated_via']);
         if ($authenticator != null) {
             if ($row['state'] == null) {

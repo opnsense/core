@@ -28,9 +28,6 @@
 
 namespace OPNsense\Core;
 
-use OPNsense\Core\AppConfig;
-use OPNsense\Core\Syslog;
-
 class ConfigMaintenance
 {
     private $modelmap = [];

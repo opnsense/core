@@ -33,7 +33,6 @@ require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
 use OPNsense\Base\FieldTypes\PortField;
-use OPNsense\Firewall\Util;
 
 class PortFieldTest extends Field_Framework_TestCase
 {
