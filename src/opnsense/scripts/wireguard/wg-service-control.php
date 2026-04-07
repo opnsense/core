@@ -72,8 +72,7 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up', $reload = false)
 
     mwexecf('/usr/bin/wg syncconf %s %s', [$server->interface, $server->cnfFilename]);
 
-    /* The tunneladdress can be empty, so array_filter without callback filters empty strings out. */
-    foreach (array_filter(explode(',', (string)$server->tunneladdress)) as $alias) {
+    foreach ($server->tunneladdress->getValues() as $alias) {
         $proto = strpos($alias, ':') === false ? "inet" : "inet6";
         mwexecf('/sbin/ifconfig %s %s %s alias', [$server->interface, $proto, $alias]);
     }
@@ -92,11 +91,11 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up', $reload = false)
          *      In the long run it might make sense to have some sort of pluggable model facility
          *      where these (and maybe other) static routes hook into.
          **/
-        $peers = explode(',', $server->peers);
+        $peers = $server->peers->getValues();
         $routes_to_add = $routes_to_skip = ['inet' => [], 'inet6' => []];
 
         /* calculate subnets to skip because these are automatically attached by instance address */
-        foreach (array_filter(explode(',', (string)$server->tunneladdress)) as $alias) {
+        foreach ($server->tunneladdress->getValues() as $alias) {
             $ipproto = strpos($alias, ':') === false ? 'inet' : 'inet6';
             $alias = explode('/', $alias);
             $alias = ($ipproto == 'inet' ? gen_subnet($alias[0], $alias[1]) :
@@ -108,7 +107,7 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up', $reload = false)
             if (empty((string)$client->enabled) || !in_array($key, $peers)) {
                 continue;
             }
-            foreach (explode(',', (string)$client->tunneladdress) as $address) {
+            foreach ($client->tunneladdress->getValues() as $address) {
                 $ipproto = strpos($address, ":") === false ? "inet" :  "inet6";
                 $address = explode('/', $address);
                 $address = ($ipproto == 'inet' ? gen_subnet($address[0], $address[1]) :
