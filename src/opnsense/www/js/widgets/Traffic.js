@@ -32,7 +32,7 @@ export default class Traffic extends BaseWidget {
             trafficIn: null,
             trafficOut: null
         };
-        this.initialized = false;
+        this.initialized = null;
         this.datasets = {inbytes: [], outbytes: []};
         this.configurable = true;
         this.configChanged = false;
@@ -160,9 +160,9 @@ export default class Traffic extends BaseWidget {
         const data = JSON.parse(event.data);
 
         if (!this.initialized) {
-            await this._initialize(data);
-            this.initialized = true;
+            this.initialized = this._initialize(data);
         }
+        await this.initialized;
 
         let config = null;
         if (this.configChanged) {
