@@ -123,9 +123,10 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
 
     $ifconfig_details = legacy_interfaces_details();
     $radvdconf = "# Automatically generated, do not edit\n";
+    $active = false;
 
-    /* Process all links which need the router advertise daemon */
-    $radvdifs = [];
+    /* process all links which need the router advertise daemon */
+    $manuallist = [];
 
     /* handle manually configured DHCP6 server settings first */
     foreach ($mdl->entries->iterateItems() as $entry) {
@@ -140,33 +141,35 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         }
 
         /* disable for automatic case below */
-        $ignorelist[$dhcpv6if] = '1';
+        $manuallist[$dhcpv6if] = '1';
 
         if ($entry->enabled->isEmpty()) {
             $radvdconf .= "# Skipping unset interface {$dhcpv6if}\n";
             continue;
         }
 
+        $active = true;
+
+        $target_dev = $dhcpv6if;
         $carp_mode = false;
-        $src_addr = false;
-        $ifcfgipv6 = null;
+        $src_addr = null;
+        $stanzas = [];
+
+        if (!$entry->Base6Interface->isEmpty()) {
+            $target_dev = $entry->Base6Interface->getValue();
+            $stanzas[] = 'base6';
+        }
+
+        list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($target_dev, $ifconfig_details);
+        if (is_subnetv6($networkv6) && !count($stanzas)) {
+            $stanzas[] = $networkv6;
+        }
 
         if (!$entry->AdvRASrcAddress->isEmpty()) {
             $ifcfgipv6 = $entry->AdvRASrcAddress->getValue();
-        } elseif (!$entry->Base6Interface->isEmpty()) {
-            $ifcfgipv6 = get_interface_ipv6($entry->Base6Interface->getValue());
-        } else {
-            $ifcfgipv6 = get_interface_ipv6($dhcpv6if);
-        }
-
-        if (!is_ipaddrv6($ifcfgipv6)) {
-            $radvdconf .= "# Skipping addressless interface {$dhcpv6if}\n";
-            continue;
         }
 
         $device = get_real_interface($dhcpv6if, 'inet6');
-        $radvdifs[$device] = 1;
-
         $mtu = legacy_interface_stats($device)['mtu'];
 
         if (isset($config['interfaces'][$dhcpv6if]['track6-interface'])) {
@@ -187,6 +190,7 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
                 log_msg("Skipping AdvLinkMTU configuration since it cannot be applied on {$dhcpv6if}", LOG_WARNING);
             }
         }
+
         $radvdconf .= "# Generated RADVD config for manual assignment on {$dhcpv6if}\n";
         $radvdconf .= "interface {$device} {\n";
         $radvdconf .= "    AdvSendAdvert on;\n";
@@ -213,17 +217,6 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
                 break;
         }
 
-        $stanzas = [];
-
-        if (!$entry->Base6Interface->isEmpty()) {
-            $stanzas[] = 'base6';
-        } else {
-            list (, $networkv6) = interfaces_primary_address6($dhcpv6if, $ifconfig_details);
-            if (is_subnetv6($networkv6)) {
-                $stanzas[] = $networkv6;
-            }
-        }
-
         foreach (config_read_array('virtualip', 'vip', false) as $vip) {
             if ($vip['interface'] != $dhcpv6if || !is_ipaddrv6($vip['subnet'])) {
                 continue;
@@ -232,7 +225,7 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
             if (is_linklocal($vip['subnet'])) {
                 if ($ifcfgipv6 == $vip['subnet']) {
                     $carp_mode = !empty($vip['vhid']);
-                    $src_addr = true;
+                    $src_addr = $ifcfgipv6;
                 }
                 continue;
             }
@@ -249,7 +242,7 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         if ($src_addr) {
             /* inject configured link-local address into the RA message */
             $radvdconf .= "    AdvRASrcAddress {\n";
-            $radvdconf .= "        {$ifcfgipv6};\n";
+            $radvdconf .= "        {$src_addr};\n";
             $radvdconf .= "    };\n";
         }
 
@@ -375,8 +368,11 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
 
     /* handle DHCP-PD prefixes and 6RD dynamic interfaces */
     foreach (array_keys(get_configured_interface_with_descr()) as $if) {
-        if (($config['interfaces'][$if]['ipaddrv6'] ?? 'none') != 'track6' || isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
+        if (isset($manuallist[$if])) {
             /* handled by manual case */
+            continue;
+        } elseif (($config['interfaces'][$if]['ipaddrv6'] ?? 'none') != 'track6' || isset($config['interfaces'][$if]['dhcpd6track6allowoverride'])) {
+            /* not relevant to automatic case */
             continue;
         } elseif (empty($config['interfaces'][$config['interfaces'][$if]['track6-interface']])) {
             $radvdconf .= "# Skipping defunct interface {$if}\n";
@@ -392,11 +388,6 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         $trackif = $config['interfaces'][$if]['track6-interface'];
         $device = get_real_interface($if, 'inet6');
 
-        /* prevent duplicate entries, manual overrides */
-        if (isset($radvdifs[$device])) {
-            continue;
-        }
-
         $autotype = isset($config['interfaces'][$trackif]['ipaddrv6']) ? $config['interfaces'][$trackif]['ipaddrv6'] : 'unknown';
 
         if (!in_array($autotype, ['6rd', '6to4', 'dhcp6'])) {
@@ -404,7 +395,7 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
             continue;
         }
 
-        $radvdifs[$device] = 1;
+        $active = true;
 
         $realtrackif = get_real_interface($trackif, 'inet6');
 
@@ -426,8 +417,8 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
             } else {
                 log_msg("radvd_configure_do(auto) found no suitable IPv6 address on {$if}({$device})", LOG_WARNING);
             }
-        } elseif (!empty($config['system']['dnsserver'])) {
-            foreach ($config['system']['dnsserver'] as $server) {
+        } else {
+            foreach (config_read_array('system', 'dnsserver', false) as $server) {
                 if (!is_ipaddrv6($server)) {
                     continue;
                 }
@@ -481,15 +472,17 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         if (count($dnslist) > 0) {
             $radvdconf .= "    RDNSS " . implode(" ", $dnslist) . " { };\n";
         }
+
         if (!empty($config['system']['domain'])) {
             $radvdconf .= "    DNSSL {$config['system']['domain']} { };\n";
         }
+
         $radvdconf .= "};\n";
     }
 
     file_safe($radvd_conf_file, $radvdconf);
 
-    if (count($radvdifs)) {
+    if ($active) {
         $last_version = @file_get_contents("{$radvd_conf_file}.last");
         $this_version = shell_safe('/bin/cat %s | sha256', $radvd_conf_file);
 
