@@ -111,6 +111,7 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
     $radvd_pid_file = '/var/run/radvd.pid';
     $mdl = new OPNsense\Radvd\Radvd();
 
+    /* XXX avoids rendering radvd.conf in edge cases meaning no debug output either */
     if (!radvd_enabled($mdl)) {
         killbypid($radvd_pid_file);
         @unlink($radvd_conf_file);
