@@ -55,7 +55,7 @@ export default class LiveLog extends BaseTableWidget {
         const logFilesLabel = $('a[href$="_LogFiles"]').first().text().trim();
         for (const item of [...new MenuSystem().walk()].filter((x) => x.href.startsWith(this._logPrefix))) {
             const scope = item.href.slice(this._logPrefix.length).split('/')[0];
-            const parts = item.breadcrumb().split(' : ');
+            const parts = item.breadcrumb().split(': ');
             if (parts.length > 2 && parts[parts.length - 2] === logFilesLabel) {
                 sources[scope] = parts[0] + ': ' + parts[parts.length - 1];
             } else {
