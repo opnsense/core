@@ -701,6 +701,11 @@ class OpenVPN extends BaseModel
                             $options['push'][] = "\"dhcp-option NTP {$opt}\"";
                         }
                     }
+                    if (!$node->adapter_domain_suffix->isEmpty()) {
+                        foreach (explode(',', (string)$node->adapter_domain_suffix) as $opt) {
+                            $options['push'][] = "\"dhcp-option ADAPTER_DOMAIN_SUFFIX {$opt}\"";
+                        }
+                    }
                     if (!$node->push_inactive->isEmpty()) {
                         $options['push'][] = "\"inactive {$node->push_inactive}\"";
                     }

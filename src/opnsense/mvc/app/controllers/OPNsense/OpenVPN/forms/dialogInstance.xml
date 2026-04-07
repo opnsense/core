@@ -645,6 +645,20 @@ Set to 0 to disable, remember to change your client as well.
         </grid_view>
     </field>
     <field>
+        <id>instance.adapter_domain_suffix</id>
+        <label>Adapter Domain Suffix</label>
+        <type>select_multiple</type>
+        <style>tokenize role role_server</style>
+        <allownew>true</allownew>
+        <help>
+            Push ADAPTER_DOMAIN_SUFFIX to clients. Sets the connection-specific DNS suffix on the VPN adapter,
+            required for reliable DNS short name resolution on Windows clients using the DCO (Data Channel Offload) driver.
+        </help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>instance.tun_mtu</id>
         <label>TUN device MTU</label>
         <type>text</type>

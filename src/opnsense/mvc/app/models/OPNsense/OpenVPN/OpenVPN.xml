@@ -407,6 +407,9 @@
                     <NetMaskAllowed>N</NetMaskAllowed>
                     <AsList>Y</AsList>
                 </ntp_servers>
+                <adapter_domain_suffix type="HostnameField">
+                    <AsList>Y</AsList>
+                </adapter_domain_suffix>
                 <tun_mtu type="IntegerField">
                     <MinimumValue>60</MinimumValue>
                     <MaximumValue>65535</MaximumValue>
