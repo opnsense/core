@@ -30,7 +30,6 @@ namespace OPNsense\Interfaces;
 
 use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
-use OPNsense\Firewall\Util;
 
 class Bridge extends BaseModel
 {
@@ -40,12 +39,15 @@ class Bridge extends BaseModel
     public function performValidation($validateFullModel = false)
     {
         $messages = parent::performValidation($validateFullModel);
+
         foreach ($this->bridged->iterateItems() as $bridge) {
             if (!$validateFullModel && !$bridge->isFieldChanged()) {
                 continue;
             }
+
             $key = $bridge->__reference;
             $members = $bridge->members->getValues();
+
             if (!$bridge->span->isEmpty() && in_array($bridge->span->getValue(), $members)) {
                 $messages->appendMessage(
                     new Message(
@@ -54,6 +56,7 @@ class Bridge extends BaseModel
                     )
                 );
             }
+
             foreach (['stp', 'edge', 'autoedge', 'ptp', 'autoptp', 'static', 'private'] as $section) {
                 if ($bridge->$section->isEmpty()) {
                     continue;
@@ -71,6 +74,7 @@ class Bridge extends BaseModel
                 }
             }
         }
+
         return $messages;
     }
 }
