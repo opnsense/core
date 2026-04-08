@@ -29,8 +29,6 @@
 namespace OPNsense\Syslog\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
-use OPNsense\Core\Backend;
-use OPNsense\Core\Config;
 
 /**
  * Class SettingsController Handles settings related API actions for the Syslog module
