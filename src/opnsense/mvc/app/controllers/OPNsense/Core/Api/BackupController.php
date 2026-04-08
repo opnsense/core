@@ -313,9 +313,13 @@ class BackupController extends ApiControllerBase
             require_once("config.inc");
             global $config;
             $config = \parse_config();
-            require_once("interfaces.inc")
-            require_once("console.inc");
+            require_once("util.inc");
+            require_once("interfaces.inc");
             require_once("rrd.inc");
+            require_once("filter.inc");
+            require_once("system.inc");
+            require_once("console.inc");
+            require_once("auth.inc");
 
             if ((new \OPNsense\Core\ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
                 return ['status' => 'failed', 'message' => gettext('You do not have sufficient privileges to restore the configuration.')];
