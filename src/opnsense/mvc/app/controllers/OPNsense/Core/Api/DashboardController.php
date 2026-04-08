@@ -30,8 +30,9 @@ namespace OPNsense\Core\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\ACL;
-use OPNsense\Auth\User;
 use OPNsense\Core\Config;
+use OPNsense\Auth\User;
+use OPNsense\Base\UserException;
 
 class DashboardController extends ApiControllerBase
 {
@@ -162,7 +163,7 @@ class DashboardController extends ApiControllerBase
             $dashboard = json_encode($this->request->getPost());
             if (strlen($dashboard) > (1024 * 1024)) {
                 // prevent saving large blobs of data
-                $result['message'] = 'Dashboard size limit reached';
+                throw new UserException(gettext("Dashboard size limit reached"));
             } elseif (($node = $this->usermdl->getUserByName($this->getUserName())) !== null) {
                 $node->dashboard = base64_encode($dashboard);
                 if ($this->usermdl->serializeToConfig(false, true)) {
