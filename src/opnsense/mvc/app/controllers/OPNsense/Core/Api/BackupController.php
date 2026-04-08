@@ -219,12 +219,12 @@ class BackupController extends ApiControllerBase
 
     public function getSettingsAction()
     {
-        $config = Config::getInstance()->object();
-
+        $mdlBackup = new \OPNsense\Core\Backup();
+        $nodes = $mdlBackup->getNodes();
         return [
             'backup' => [
-                'pushtime' => (string)($config->system->backuppushtime ?? '02:00'),
-                'backupcount' => (string)($config->system->backupcount ?? '15'),
+                'pushtime' => $nodes['pushtime'],
+                'backupcount' => $nodes['backupcount'],
             ]
         ];
     }
@@ -234,11 +234,10 @@ class BackupController extends ApiControllerBase
         $result = ['status' => 'failed'];
         if ($this->request->isPost()) {
             $post = $this->request->getPost('backup');
-
             $mdlBackup = new \OPNsense\Core\Backup();
 
             if (isset($post['pushtime'])) {
-                $mdlBackup->backuppushtime = trim($post['pushtime']);
+                $mdlBackup->pushtime = trim($post['pushtime']);
             }
             if (isset($post['backupcount'])) {
                 $mdlBackup->backupcount = trim($post['backupcount']) === '' ? null : trim($post['backupcount']);
@@ -249,7 +248,7 @@ class BackupController extends ApiControllerBase
                 $validations = [];
                 foreach ($valMsgs as $msg) {
                     $field = $msg->getField();
-                    if ($field === 'backuppushtime') {
+                    if ($field === 'pushtime') {
                         $validations['backup.pushtime'] = $msg->getMessage();
                     } else {
                         $validations['backup.' . $field] = $msg->getMessage();
@@ -258,58 +257,14 @@ class BackupController extends ApiControllerBase
                 return ['status' => 'failed', 'validations' => $validations];
             }
 
-            $config = Config::getInstance()->object();
-            $configChanged = false;
-            $logMessages = [];
-
-            if (isset($post['backupcount'])) {
-                $count = trim($post['backupcount']);
-                if ($count === '') {
-                    if (isset($config->system->backupcount)) {
-                        unset($config->system->backupcount);
-                        $configChanged = true;
-                        $logMessages[] = 'Removed local backup count limits';
-                    }
-                } else {
-                    if (!isset($config->system->backupcount) || (string)$config->system->backupcount !== $count) {
-                        $config->system->backupcount = $count;
-                        $configChanged = true;
-                        $logMessages[] = "Changed local backup count to {$count}";
-                    }
-                }
-            }
-
-            if (isset($post['pushtime'])) {
-                $pushtime = trim($post['pushtime']);
-                if ($pushtime === '') {
-                    if (isset($config->system->backuppushtime)) {
-                        unset($config->system->backuppushtime);
-                        $configChanged = true;
-                        $logMessages[] = 'Removed remote backup push time';
-                    }
-                } else {
-                    if (!isset($config->system->backuppushtime) || (string)$config->system->backuppushtime !== $pushtime) {
-                        $config->system->backuppushtime = $pushtime;
-                        $configChanged = true;
-                        $logMessages[] = "Changed remote backup push time to {$pushtime}";
-                    }
-                }
-            }
-
-            if ($configChanged) {
-                Config::getInstance()->save(implode(', ', $logMessages));
-            }
+            $mdlBackup->serializeToConfig();
+            Config::getInstance()->save('Changed backup settings');
 
             // CRON restart
             if (isset($post['pushtime'])) {
-                require_once("config.inc");
-                require_once("util.inc");
-                require_once("system.inc");
-                require_once("plugins.inc");
-
-                global $config;
-                $config = \parse_config(true);
-                \system_cron_configure();
+                $backend = new \OPNsense\Core\Backend();
+                $backend->configdRun('template reload OPNsense/Cron');
+                $backend->configdRun('cron restart');
             }
 
             $result = ['status' => 'success'];

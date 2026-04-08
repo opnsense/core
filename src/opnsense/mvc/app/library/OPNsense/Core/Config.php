@@ -589,6 +589,26 @@ class Config extends Singleton
     }
 
     /**
+     * Get the total size of all local configuration backups
+     * @return string formatted size (e.g. '15.5 MB')
+     */
+    public function getBackupSize()
+    {
+        $target_dir = dirname($this->config_file) . "/backup/";
+        $baksz = '0B';
+
+        if (is_dir($target_dir)) {
+            $files = glob($target_dir . "config-*.xml");
+            if ($files) {
+                $bytes = array_sum(array_map('filesize', $files));
+                $baksz = round($bytes / 1024 / 1024, 2) . ' MB';
+            }
+        }
+
+        return $baksz;
+    }
+
+    /**
      * return list of config backups
      * @param bool $fetchRevisionInfo fetch revision information and return detailed information. (key/value)
      * @return array list of backups
@@ -685,6 +705,11 @@ class Config extends Singleton
     public function backupCount()
     {
         if (
+            $this->statusIsValid && isset($this->simplexml->system->backup->settings->backupcount)
+            && intval($this->simplexml->system->backup->settings->backupcount) >= 0
+        ) {
+            return intval($this->simplexml->system->backup->settings->backupcount);
+        } elseif (
             $this->statusIsValid && isset($this->simplexml->system->backupcount)
             && intval($this->simplexml->system->backupcount) >= 0
         ) {
