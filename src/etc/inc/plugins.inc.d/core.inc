@@ -293,15 +293,7 @@ function core_cron()
 
     foreach ((new OPNsense\Backup\BackupFactory())->listProviders() as $classname => $provider) {
         if ($provider['handle']->isEnabled()) {
-            $jobs[]['autocron'] = [
-                '/usr/local/sbin/configctl -d system remote backup 30',
-                $cron_minute,
-                $cron_hour,
-                '*',
-                '*',
-                '*',
-                'root'
-            ];
+            $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d system remote backup 30', $cron_minute, $cron_hour, '*', '*', '*'];
             break;
         }
     }
