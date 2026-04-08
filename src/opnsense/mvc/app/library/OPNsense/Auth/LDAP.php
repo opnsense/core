@@ -405,11 +405,12 @@ class LDAP extends Base implements IAuthConnector
             // add $userNameAttribute to search results
             $this->addSearchAttribute($userNameAttribute);
             $result = [];
+            $username_safe = ldap_escape($username, '', LDAP_ESCAPE_FILTER);
             if (empty($extendedQuery)) {
-                $searchResults = $this->search("({$userNameAttribute}={$username})");
+                $searchResults = $this->search("({$userNameAttribute}={$username_safe})");
             } else {
                 // add additional search phrases
-                $searchResults = $this->search("(&({$userNameAttribute}={$username})({$extendedQuery}))");
+                $searchResults = $this->search("(&({$userNameAttribute}={$username_safe})({$extendedQuery}))");
             }
             if ($searchResults !== false) {
                 for ($i = 0; $i < $searchResults["count"]; $i++) {
