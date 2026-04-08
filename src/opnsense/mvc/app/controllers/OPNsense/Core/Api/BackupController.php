@@ -313,6 +313,7 @@ class BackupController extends ApiControllerBase
             require_once("config.inc");
             global $config;
             $config = \parse_config();
+            require_once("interfaces.inc")
             require_once("console.inc");
             require_once("rrd.inc");
 
