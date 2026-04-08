@@ -684,7 +684,9 @@ $.fn.SimpleActionButton = function (params) {
                         setIcon(icon, 'fa fa-check fa-spinner fa-pulse', 'fa fa-spinner fa-pulse');
                     } else {
                         setIcon(icon, 'fa fa-spinner fa-pulse', 'fa fa-check');
+                        $("#" + this_button.data('message-id')).hide();
 
+                        // XXX instead of infamous check mark we could show a success or even failure message
                         hideCheckTimeout = setTimeout(function () {
                             setIcon(icon, 'fa fa-check', '');
                         }, 4000);
