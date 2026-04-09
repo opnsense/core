@@ -48,36 +48,22 @@
 
         $("#btn_save_local").click(function (e) {
             e.preventDefault();
-            let btnIcon = $(this).find('i');
-            if (btnIcon.length === 0) {
-                $$(this).append(" <i></i>");
-                btnIcon = $(this).find('i');
-            }
-            btnIcon.removeClass().addClass("fa fa-spinner fa-pulse");
+            const btnIcon = $(this).find('i').removeClass().addClass("fa fa-spinner fa-pulse");
 
             saveFormToEndpoint("/api/core/backup/setSettings", 'frm_backupSettingsLocal', function () {
                 btnIcon.removeClass().addClass("fa fa-check");
-                setTimeout(function(){ btnIcon.removeClass(); }, 2000);
-            }, true, function() {
-                btnIcon.removeClass();
-            });
+                setTimeout(() => btnIcon.removeClass(), 2000);
+            }, true, () => btnIcon.removeClass());
         });
 
         $("#btn_save_remote").click(function (e) {
             e.preventDefault();
-            let btnIcon = $(this).find('i');
-            if (btnIcon.length === 0) {
-                $(this).append(" <i></i>");
-                btnIcon = $(this).find('i');
-            }
-            btnIcon.removeClass().show().addClass("fa fa-spinner fa-pulse");
+            const btnIcon = $(this).find('i').removeClass().addClass("fa fa-spinner fa-pulse");
 
             saveFormToEndpoint("/api/core/backup/setSettings", 'frm_backupSettingsRemote', function () {
                 btnIcon.removeClass().addClass("fa fa-check");
-                setTimeout(function(){ btnIcon.removeClass(); }, 2000);
-            }, true, function() {
-                btnIcon.removeClass();
-            });
+                setTimeout(() => btnIcon.removeClass(), 2000);
+            }, true, () => btnIcon.removeClass());
         });
 
         $("#btn_download").click(function (e) {

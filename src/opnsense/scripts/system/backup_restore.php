@@ -202,7 +202,7 @@ if (!empty($restoreareas)) {
     }
 
     $cnf = \OPNsense\Core\Config::getInstance();
-    $restore_file = '/tmp/config_restore.xml';
+    $restore_file = tempnam(sys_get_temp_dir(), 'opn_restore_');
     file_put_contents($restore_file, $data);
     if ($cnf->restoreBackup($restore_file)) {
         @unlink($restore_file);
