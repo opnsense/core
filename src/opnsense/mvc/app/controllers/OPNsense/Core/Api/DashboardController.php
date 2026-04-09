@@ -105,7 +105,7 @@ class DashboardController extends ApiControllerBase
         $dashboard = null;
 
         if (($node = $this->usermdl->getUserByName($this->getUserName())) !== null) {
-            $dashboard = json_decode(base64_decode($node->dashboard->getValue()), true);
+            $dashboard = $node->dashboard->deserialize();
         }
 
         if (empty($dashboard)) {
@@ -160,12 +160,10 @@ class DashboardController extends ApiControllerBase
     {
         $result = ['result' => 'failed'];
         if ($this->request->isPost() && $this->request->hasPost('widgets')) {
-            $dashboard = json_encode($this->request->getPost());
-            if (strlen($dashboard) > (1024 * 1024)) {
-                // prevent saving large blobs of data
-                throw new UserException(gettext("Dashboard size limit reached"));
-            } elseif (($node = $this->usermdl->getUserByName($this->getUserName())) !== null) {
-                $node->dashboard = base64_encode($dashboard);
+            if (($node = $this->usermdl->getUserByName($this->getUserName())) !== null) {
+                if (!$node->dashboard->serialize($this->request->getPost())) {
+                    throw new UserException(gettext("Dashboard size limit reached"));
+                }
                 if ($this->usermdl->serializeToConfig(false, true)) {
                     /* selectively save dashboard property, ignoring user-config-readonly when set */
                     Config::getInstance()->save();
@@ -184,7 +182,6 @@ class DashboardController extends ApiControllerBase
         if ($this->request->isPost() && ($node = $this->usermdl->getUserByName($this->getUserName())) !== null) {
             $node->dashboard = '';
             $config = Config::getInstance()->object();
-            $name = $this->getUserName();
             if ($this->usermdl->serializeToConfig(false, true)) {
                 /* selectively reset dashboard property, ignoring user-config-readonly when set */
                 Config::getInstance()->save();

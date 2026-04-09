@@ -639,6 +639,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/IPPortField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/IntegerField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/InterfaceField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/JsonField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/JsonKeyValueStoreField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/LegacyLinkField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/MacAddressField.php
