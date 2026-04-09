@@ -275,34 +275,38 @@ class BackupController extends ApiControllerBase
     public function downloadConfigAction()
     {
         if ($this->request->isPost()) {
-            require_once("rrd.inc");
             $config = Config::getInstance()->object();
             $hostname = "OPNsense";
             if (isset($config->system->hostname)) {
                 $hostname = (string)$config->system->hostname . "." . (string)$config->system->domain;
             }
             $name = "config-" . $hostname . "-" . date("YmdHis") . ".xml";
-            $data = file_get_contents('/conf/config.xml');
+            $tmpfile = tempnam(sys_get_temp_dir(), 'opn_bck_');
+            $rrd_arg = empty($this->request->getPost('donotbackuprrd')) ? "rrd" : "norrd";
+            $backend = new Backend();
+            $response = json_decode(trim($backend->configdpRun('system config export', [$tmpfile, $rrd_arg])), true);
 
-            if (empty($this->request->getPost('donotbackuprrd'))) {
-                $rrd_data_xml = \rrd_export();
-                $data = str_replace("</opnsense>", $rrd_data_xml . "</opnsense>", $data);
+            if ($response !== null && $response['status'] == 'success' && file_exists($tmpfile)) {
+                $data = file_get_contents($tmpfile);
+                @unlink($tmpfile);
+
+                if (!empty($this->request->getPost('encrypt'))) {
+                    $password = $this->request->getPost('encrypt_password');
+                    $crypter = new Local();
+                    $data = $crypter->encrypt($data, $password);
+                }
+
+                $size = strlen($data);
+                $this->response->setContentType('application/octet-stream');
+                $this->response->setRawHeader("Content-Disposition: attachment; filename={$name}");
+                $this->response->setRawHeader("Content-Length: $size");
+                $this->response->setRawHeader("Pragma: private");
+                $this->response->setRawHeader("Cache-Control: private, must-revalidate");
+                $this->response->setContent($data);
+                return null;
+            } else if ($response !== null && isset($response['message'])) {
+                return $response;
             }
-
-            if (!empty($this->request->getPost('encrypt'))) {
-                $password = $this->request->getPost('encrypt_password');
-                $crypter = new Local();
-                $data = $crypter->encrypt($data, $password);
-            }
-
-            $size = strlen($data);
-            $this->response->setContentType('application/octet-stream');
-            $this->response->setRawHeader("Content-Disposition: attachment; filename={$name}");
-            $this->response->setRawHeader("Content-Length: $size");
-            $this->response->setRawHeader("Pragma: private");
-            $this->response->setRawHeader("Cache-Control: private, must-revalidate");
-            $this->response->setContent($data);
-            return null;
         }
         return ['status' => 'failed'];
     }
@@ -310,18 +314,7 @@ class BackupController extends ApiControllerBase
     public function restoreAction()
     {
         if ($this->request->isPost() && isset($_FILES['conffile']) && is_uploaded_file($_FILES['conffile']['tmp_name'])) {
-            require_once("config.inc");
-            global $config;
-            $config = \parse_config();
-            require_once("util.inc");
-            require_once("interfaces.inc");
-            require_once("rrd.inc");
-            require_once("filter.inc");
-            require_once("system.inc");
-            require_once("console.inc");
-            require_once("auth.inc");
-
-            if ((new \OPNsense\Core\ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
+            if ((new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
                 return ['status' => 'failed', 'message' => gettext('You do not have sufficient privileges to restore the configuration.')];
             }
 
@@ -344,82 +337,34 @@ class BackupController extends ApiControllerBase
             $restoreareas = !empty($post['restorearea']) ? $post['restorearea'] : [];
             $do_reboot = !empty($post['rebootafterrestore']);
 
-            if (!empty($restoreareas)) {
-                $ret = $this->restore_config_section($restoreareas, $data);
-                if ($ret === false) {
-                    return ['status' => 'failed', 'message' => gettext('The selected config file could not be parsed.')];
-                } elseif (count($ret)) {
-                    return ['status' => 'failed', 'message' => gettext('At least one requested restore area could not be found.')];
-                } else {
-                    global $config;
-                    if (!empty($config['rrddata'])) {
-                        \rrd_import();
-                        unset($config['rrddata']);
-                        Config::getInstance()->save('Restored configuration area (RRD data imported)');
-                    }
-                    if ($do_reboot) {
-                        (new Backend())->configdRun('system reboot', true);
-                    }
-                    return ['status' => 'success', 'message' => gettext("The configuration area has been restored."), 'reboot' => $do_reboot];
-                }
-            } else {
-                /* full config restore */
-                global $config;
-                $config = \parse_config();
-                $cfieldnames = [
-                    'usevirtualterminal',
-                    'primaryconsole',
-                    'secondaryconsole',
-                    'serialspeed',
-                    'serialusb',
-                    'disableconsolemenu'
-                ];
-                $csettings = [];
-                foreach ($cfieldnames as $fieldname) {
-                    $csettings[$fieldname] = $config['system'][$fieldname] ?? null;
-                }
+            $tmpfile = tempnam(sys_get_temp_dir(), 'opn_bck_');
+            file_put_contents($tmpfile, $data);
 
-                $filename = '/tmp/config_restore.xml';
-                file_put_contents($filename, $data);
-                $cnf = Config::getInstance();
-                if ($cnf->restoreBackup($filename)) {
-                    @unlink($filename);
-                    $config = \parse_config();
-                    $flush = false;
-                    if (!empty($post['keepconsole'])) {
-                        foreach ($csettings as $fieldname => $fieldcontent) {
-                            if ($fieldcontent === null && isset($config[$fieldname])) {
-                                unset($config[$fieldname]);
-                            } else {
-                                $config['system'][$fieldname] = $fieldcontent;
-                            }
-                        }
-                        $flush = true;
-                    }
-                    if (!empty($config['rrddata'])) {
-                        \rrd_import();
-                        unset($config['rrddata']);
-                        $flush = true;
-                    }
-                    if ($flush) {
-                        Config::getInstance()->save('Restored full configuration');
-                    }
-                    if (!empty($post['flush_history'])) {
-                        (new Backend())->configdRun('system flush config_history');
-                        Config::getInstance()->save('System restore flushed local history');
-                    }
-                    if (\is_interface_mismatch(false)) {
-                        $do_reboot = false;
-                        return ['status' => 'success', 'message' => gettext("The interface configuration was restored but physical interfaces could not be matched. No automatic reboot was performed."), 'reboot' => false];
-                    }
-                    if ($do_reboot) {
-                        (new Backend())->configdRun('system reboot', true);
-                    }
-                    return ['status' => 'success', 'message' => gettext("The configuration has been restored."), 'reboot' => $do_reboot];
-                } else {
-                    return ['status' => 'failed', 'message' => gettext("The configuration could not be restored.")];
+            $params = [
+                'conffile' => $tmpfile,
+                'restorearea' => $restoreareas,
+                'rebootafterrestore' => $do_reboot,
+                'keepconsole' => !empty($post['keepconsole']),
+                'flush_history' => !empty($post['flush_history'])
+            ];
+            
+            $paramfile = tempnam(sys_get_temp_dir(), 'opn_bck_par_');
+            file_put_contents($paramfile, json_encode($params));
+
+            $backend = new Backend();
+            $response = json_decode(trim($backend->configdpRun('system config restore', [$paramfile])), true);
+
+            @unlink($tmpfile);
+            @unlink($paramfile);
+
+            if ($response !== null && $response['status'] == 'success') {
+                if (!empty($response['reboot'])) {
+                    $backend->configdRun('system reboot', true);
                 }
+                return $response;
             }
+
+            return $response ?? ['status' => 'failed', 'message' => gettext("The configuration could not be restored.")];
         }
         return ['status' => 'failed', 'message' => 'No files uploaded'];
     }
@@ -427,8 +372,6 @@ class BackupController extends ApiControllerBase
     public function setupProviderAction($providerName)
     {
         if ($this->request->isPost()) {
-            require_once("config.inc");
-
             $backupFactory = new \OPNsense\Backup\BackupFactory();
             $provider = $backupFactory->getProvider($providerName);
             if (!$provider) {
@@ -453,12 +396,9 @@ class BackupController extends ApiControllerBase
             $input_errors = $provider['handle']->setConfiguration($providerSet);
 
             if (count($input_errors) == 0) {
-
-                require_once("system.inc");
-                require_once("plugins.inc");
-                global $config;
-                $config = \parse_config();
-                \system_cron_configure();
+                $backend = new Backend();
+                $backend->configdRun('template reload OPNsense/Cron');
+                $backend->configdRun('cron restart');
 
                 if ($provider['handle']->isEnabled()) {
                     try {
@@ -481,104 +421,5 @@ class BackupController extends ApiControllerBase
         }
         return ['status' => 'failed', 'message' => 'Invalid request'];
     }
-
-    private function restore_config_section($section_sets, $new_contents)
-    {
-        require_once("config.inc");
-        global $config;
-
-        $tmpxml = tempnam(sys_get_temp_dir(), 'opn_backup_');
-        $xml = null;
-
-        try {
-            file_put_contents($tmpxml, $new_contents);
-            $xml = \load_config_from_file($tmpxml);
-        } catch (\Exception $e) {
-            syslog(LOG_ERR, 'Backup restoration failed to parse XML: ' . $e->getMessage());
-        } finally {
-            @unlink($tmpxml);
-        }
-
-    if (!is_array($xml)) {
-        return false;
-    }
-
-        $restored = [];
-        $failed = [];
-
-        foreach ($section_sets as $section_set) {
-            $sections = explode(',', $section_set);
-            $found = [];
-
-            foreach ($sections as $section) {
-                $new = &$xml;
-                $path = explode('.', $section);
-                $target = array_pop($path);
-
-                foreach ($path as $node) {
-                    if (!isset($new[$node])) {
-                        continue 2;
-                    }
-                    $new = &$new[$node];
-                }
-
-                if (isset($new[$target])) {
-                    $found[] = $section;
-                }
-            }
-
-            if (!count($found)) {
-                $failed[] = $section_set;
-                continue;
-            }
-
-            foreach (array_diff($sections, $found) as $section) {
-                $old = &$config;
-                $path = explode('.', $section);
-                $target = array_pop($path);
-
-                foreach ($path as $node) {
-                    if (!isset($old[$node])) {
-                        continue 2;
-                    }
-                    $old = &$old[$node];
-                }
-
-                if (isset($old[$target])) {
-                    unset($old[$target]);
-                    $restored[] = $section;
-                }
-            }
-
-            foreach ($found as $section) {
-                $old = &$config;
-                $new = &$xml;
-                $path = explode('.', $section);
-                $target = array_pop($path);
-
-                foreach ($path as $node) {
-                    if (!isset($new[$node])) {
-                        continue 2;
-                    }
-                    $new = &$new[$node];
-                    if (!isset($old[$node])) {
-                        $old[$node] = [];
-                    }
-                    $old = &$old[$node];
-                }
-
-                if (isset($new[$target])) {
-                    $old[$target] = $new[$target];
-                    $restored[] = $section;
-                }
-            }
-        }
-
-        if (count($restored) && !count($failed)) {
-            \OPNsense\Core\Config::getInstance()->save(sprintf('Restored sections (%s) of config file', join(',', $restored)));
-            \convert_config();
-        }
-
-        return $failed;
-    }
 }
+
