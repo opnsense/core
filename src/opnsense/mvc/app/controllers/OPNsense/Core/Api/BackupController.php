@@ -286,7 +286,7 @@ class BackupController extends ApiControllerBase
             $backend = new Backend();
             $response = json_decode(trim($backend->configdpRun('system config export', [$tmpfile, $rrd_arg])), true);
 
-            if ($response !== null && $response['status'] == 'success' && file_exists($tmpfile)) {
+            if ($response !== null && $response['status'] === 'success' && file_exists($tmpfile)) {
                 $data = file_get_contents($tmpfile);
                 @unlink($tmpfile);
 
@@ -305,6 +305,7 @@ class BackupController extends ApiControllerBase
                 $this->response->setContent($data);
                 return null;
             } else if ($response !== null && isset($response['message'])) {
+                @unlink($tmpfile);
                 return $response;
             }
         }
@@ -347,7 +348,7 @@ class BackupController extends ApiControllerBase
                 'keepconsole' => !empty($post['keepconsole']),
                 'flush_history' => !empty($post['flush_history'])
             ];
-            
+
             $paramfile = tempnam(sys_get_temp_dir(), 'opn_bck_par_');
             file_put_contents($paramfile, json_encode($params));
 
@@ -357,7 +358,7 @@ class BackupController extends ApiControllerBase
             @unlink($tmpfile);
             @unlink($paramfile);
 
-            if ($response !== null && $response['status'] == 'success') {
+            if ($response !== null && $response['status'] === 'success') {
                 if (!empty($response['reboot'])) {
                     $backend->configdRun('system reboot', true);
                 }

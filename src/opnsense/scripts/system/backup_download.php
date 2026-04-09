@@ -32,8 +32,8 @@ try {
     require_once("config.inc");
     require_once("util.inc");
 
-    $filename = isset($argv[1]) ? $argv[1] : null;
-    $include_rrd = isset($argv[2]) && $argv[2] === 'rrd';
+    $filename = $argv[1] ?? null;
+    $include_rrd = ($argv[2] ?? '') === 'rrd';
     if (empty($filename)) {
         echo json_encode(["status" => "failed", "message" => "No target filename provided"]);
         exit(1);

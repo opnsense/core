@@ -595,7 +595,8 @@ class Config extends Singleton
     public function getBackupSize()
     {
         $target_dir = dirname($this->config_file) . "/backup/";
-        $baksz = '0B';
+        clearstatcache();
+        $baksz = '0 MB';
 
         if (is_dir($target_dir)) {
             $files = glob($target_dir . "config-*.xml");
@@ -706,12 +707,12 @@ class Config extends Singleton
     {
         if (
             $this->statusIsValid && isset($this->simplexml->system->backup->settings->backupcount)
-            && intval($this->simplexml->system->backup->settings->backupcount) >= 0
+            && intval($this->simplexml->system->backup->settings->backupcount) >= 1
         ) {
             return intval($this->simplexml->system->backup->settings->backupcount);
         } elseif (
             $this->statusIsValid && isset($this->simplexml->system->backupcount)
-            && intval($this->simplexml->system->backupcount) >= 0
+            && intval($this->simplexml->system->backupcount) >= 1
         ) {
             return intval($this->simplexml->system->backupcount);
         } else {
