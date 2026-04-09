@@ -471,6 +471,15 @@ class LDAP extends Base implements IAuthConnector
     }
 
     /**
+     * unused
+     * @return array mixed named list of authentication properties
+     */
+    public function getLastAuthProperties()
+    {
+        return $this->lastAuthProperties;
+    }
+
+    /**
      * authenticate user against ldap server, implementation as described in Base class
      * @param string $username username to authenticate
      * @param string $password user password
