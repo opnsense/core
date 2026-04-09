@@ -219,6 +219,8 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/SnapshotsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/TunablesController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/backup_local.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/backup_remote.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/hasyncSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/snapshot.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/tunable.xml
@@ -687,6 +689,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Backup.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Backup.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/FieldTypes/TunableField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Firmware.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Firmware.xml
@@ -697,6 +701,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/M1_0_1.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/MHA1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/MHA1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/TUN1_0_2.php
@@ -958,6 +963,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/vouchers.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Core/backup.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/backup_history.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/dashboard.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/defaults.volt
@@ -1415,6 +1421,8 @@
 /usr/local/opnsense/scripts/syslog/queryLog.py
 /usr/local/opnsense/scripts/syslog/streamLog.py
 /usr/local/opnsense/scripts/system/activity.py
+/usr/local/opnsense/scripts/system/backup_download.php
+/usr/local/opnsense/scripts/system/backup_restore.php
 /usr/local/opnsense/scripts/system/bectl.py
 /usr/local/opnsense/scripts/system/cert_fetch_local.py
 /usr/local/opnsense/scripts/system/certctl.py
@@ -2552,7 +2560,6 @@
 /usr/local/www/crash_reporter.php
 /usr/local/www/csrf.inc
 /usr/local/www/diag_authentication.php
-/usr/local/www/diag_backup.php
 /usr/local/www/fbegin.inc
 /usr/local/www/firewall_nat_out.php
 /usr/local/www/firewall_nat_out_edit.php
