@@ -656,6 +656,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UpdateOnlyTextField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/UrlField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/FieldTypes/VirtualIPField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuContainer.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuInitException.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuItem.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Base/Menu/MenuSystem.php
@@ -768,6 +769,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Filter.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Group.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Group.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Menu/Menu.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_0.php
@@ -828,6 +830,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Lagg.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Loopback.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Menu/Menu.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Migrations/SET1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor.php

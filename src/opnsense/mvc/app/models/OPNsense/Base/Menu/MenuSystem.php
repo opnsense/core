@@ -29,6 +29,7 @@
 
 namespace OPNsense\Base\Menu;
 
+use ReflectionClass;
 use OPNsense\Core\AppConfig;
 use OPNsense\Core\Config;
 
@@ -47,6 +48,11 @@ class MenuSystem
      * @var string location to store merged menu xml
      */
     private $menuCacheFilename = null;
+
+    /**
+     * @var array model directories
+     */
+    private $modelDirs = [];
 
     /**
      * @var int time to live for merged menu xml
@@ -106,6 +112,20 @@ class MenuSystem
         @unlink($this->menuCacheFilename);
     }
 
+    private function iterateMenuPaths()
+    {
+        foreach ($this->modelDirs as $modelDir) {
+            foreach (glob(preg_replace('#/+#', '/', "{$modelDir}/*")) as $vendor) {
+                foreach (glob($vendor . '/*') as $module) {
+                    if (is_dir($module . '/Menu')) {
+                        $path = $module . '/Menu/';
+                        yield ['path' => $path, 'base' => substr($path, strlen($modelDir))];
+                    }
+                }
+            }
+        }
+    }
+
     /**
      * Load and persist Menu configuration to disk.
      * @param bool $nowait when the cache is locked, skip waiting for it to become available.
@@ -113,33 +133,19 @@ class MenuSystem
      */
     public function persist($nowait = true)
     {
-        // fetch our model locations
-        $appconfig = new AppConfig();
-        if (!empty($appconfig->application->modelsDir)) {
-            $modelDirs = $appconfig->application->modelsDir;
-            if (!is_array($modelDirs) && !is_object($modelDirs)) {
-                $modelDirs = array($modelDirs);
-            }
-        }
-
         // collect all XML menu definitions into a single file
         $menuXml = new \DOMDocument('1.0');
         $root = $menuXml->createElement('menu');
         $menuXml->appendChild($root);
         // crawl all vendors and modules and add menu definitions
-        foreach ($modelDirs as $modelDir) {
-            foreach (glob(preg_replace('#/+#', '/', "{$modelDir}/*")) as $vendor) {
-                foreach (glob($vendor . '/*') as $module) {
-                    $menu_cfg_xml = $module . '/Menu/Menu.xml';
-                    if (file_exists($menu_cfg_xml)) {
-                        try {
-                            $domNode = dom_import_simplexml($this->addXML($menu_cfg_xml));
-                            $domNode = $root->ownerDocument->importNode($domNode, true);
-                            $root->appendChild($domNode);
-                        } catch (MenuInitException $e) {
-                            error_log($e);
-                        }
-                    }
+        foreach ($this->iterateMenuPaths() as $menu_dir) {
+            if (file_exists($menu_dir['path'] . 'Menu.xml')) {
+                try {
+                    $domNode = dom_import_simplexml($this->addXML($menu_dir['path'] . 'Menu.xml'));
+                    $domNode = $root->ownerDocument->importNode($domNode, true);
+                    $root->appendChild($domNode);
+                } catch (MenuInitException $e) {
+                    error_log($e);
                 }
             }
         }
@@ -179,8 +185,16 @@ class MenuSystem
      */
     public function __construct()
     {
+        $appconfig = new AppConfig();
+        if (!empty($appconfig->application->modelsDir)) {
+            $this->modelDirs = $appconfig->application->modelsDir;
+            if (!is_array($this->modelDirs) && !is_object($this->modelDirs)) {
+                $this->modelDirs = [$this->modelDirs];
+            }
+        }
+
         // set cache location
-        $this->menuCacheFilename = (new AppConfig())->application->tempDir . '/opnsense_menu_cache.xml';
+        $this->menuCacheFilename = $appconfig->application->tempDir . '/opnsense_menu_cache.xml';
 
         // load menu xml's
         $menuxml = null;
@@ -199,47 +213,33 @@ class MenuSystem
             }
         }
 
+        // collect and insert dynamic entries
+        foreach ($this->iterateMenuPaths() as $menu_dir) {
+            if (file_exists($menu_dir['path'] . 'Menu.php')) {
+                $classname = str_replace('/', '\\', $menu_dir['base']) . 'Menu';
+                try {
+                    $cls = new ReflectionClass($classname);
+                    if (!$cls->isInstantiable() || !$cls->isSubclassOf('OPNsense\\Base\\Menu\\MenuContainer')) {
+                        continue; /* ignore, not ours */
+                    }
+                } catch (\ReflectionException) {
+                    continue; /* ignore, can't construct */
+                }
+                $cls->newInstance($this)->collect();
+            }
+        }
+
+        /* XXX: move to ISC plugin */
+        if (!file_exists('/usr/local/www/services_dhcp.php') && !file_exists('/usr/local/www/services_dhcpv6.php')) {
+            return;
+        }
+
         $config = Config::getInstance()->object();
 
         // collect interfaces for dynamic (interface) menu tabs...
-        $iftargets = ['if' => [], 'gr' => [], 'wl' => [], 'fw' => [], 'dhcp4' => [], 'dhcp6' => []];
-        $ifgroups = [];
-        $ifgroups_seq = [];
-
+        $iftargets = ['dhcp4' => [], 'dhcp6' => []];
         if ($config->interfaces->count() > 0) {
-            if ($config->ifgroups->count() > 0) {
-                foreach ($config->ifgroups->children() as $key => $node) {
-                    if (empty($node->members) || !empty($node->nogroup)) {
-                        continue;
-                    }
-                    if (!empty((string)$node->sequence)) {
-                        $ifgroups_seq[(string)$node->ifname] = (int)((string)$node->sequence);
-                    }
-                    /* we need both if and gr reference */
-                    $iftargets['if'][(string)$node->ifname] = (string)$node->ifname;
-                    $iftargets['gr'][(string)$node->ifname] = (string)$node->ifname;
-                    foreach (preg_split('/[ |,]+/', (string)$node->members) as $member) {
-                        if (!array_key_exists($member, $ifgroups)) {
-                            $ifgroups[$member] = [];
-                        }
-                        array_push($ifgroups[$member], (string)$node->ifname);
-                    }
-                }
-            }
-
             foreach ($config->interfaces->children() as $key => $node) {
-                // Interfaces tab
-                if (empty($node->virtual)) {
-                    $iftargets['if'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
-                }
-                // Wireless status tab
-                if (isset($node->wireless)) {
-                    $iftargets['wl'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
-                }
-                // "Firewall: Rules" menu tab...
-                if (isset($node->enable) && $node->if != 'lo0') {
-                    $iftargets['fw'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
-                }
                 // "Services: DHCPv[46]" menu tab:
                 if (empty($node->virtual) && isset($node->enable)) {
                     if (!empty(filter_var($node->ipaddr, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))) {
@@ -256,110 +256,9 @@ class MenuSystem
             natcasesort($iftargets[$tab]);
         }
 
-        // add groups and interfaces to "Interfaces" menu tab...
-        $ordid = count($ifgroups_seq) > 0 ? max($ifgroups_seq) : 0;
-        foreach ($iftargets['if'] as $key => $descr) {
-            if (array_key_exists($key, $iftargets['gr'])) {
-                $this->appendItem('Interfaces', $key, [
-                    'fixedname' => '[' . $descr . ']',
-                    'cssclass' => 'fa fa-sitemap',
-                    'order' => isset($ifgroups_seq[$key]) ? $ifgroups_seq[$key] : $ordid++,
-                ]);
-            } elseif (!array_key_exists($key, $ifgroups)) {
-                $this->appendItem('Interfaces', $key, [
-                    'url' => '/interfaces.php?if=' . $key,
-                    'fixedname' => '[' . $descr . ']',
-                    'cssclass' => 'fa fa-sitemap',
-                    'order' => $ordid++,
-                ]);
-            }
-        }
-
-        foreach ($ifgroups as $key => $groupings) {
-            $first = true;
-            foreach ($groupings as $grouping) {
-                if (empty($iftargets['if'][$key])) {
-                    // referential integrity between ifgroups and interfaces isn't assured, skip when interface doesn't exist
-                    continue;
-                }
-                $this->appendItem('Interfaces.' . $grouping, $key, [
-                    'url' => '/interfaces.php?if=' . $key . '&group=' . $grouping,
-                    'fixedname' => '[' . $iftargets['if'][$key] . ']',
-                    'order' => array_search($key, array_keys($iftargets['if']))
-                ]);
-                if ($first) {
-                    $this->appendItem('Interfaces.' . $grouping . '.' . $key, 'Origin', [
-                        'url' => '/interfaces.php?if=' . $key,
-                        'visibility' => 'hidden',
-                    ]);
-                    $first = false;
-                }
-            }
-        }
-
-        $ordid = 100;
-        foreach ($iftargets['wl'] as $key => $descr) {
-            $this->appendItem('Interfaces.Wireless', $key, [
-                'fixedname' => sprintf(gettext('%s Status'), $descr),
-                'url' => '/status_wireless.php?if=' . $key,
-                'order' => $ordid++,
-            ]);
-        }
-
-        // add interfaces to "Firewall: Rules" menu tab...
-        $has_legacy_fw = !empty($config->filter?->rule?->count());
-        $has_mvc_fw = !empty($config->OPNsense?->Firewall?->Filter?->rules?->count());
-        if ($has_legacy_fw) {
-            $this->appendItem('Firewall.Rules', 'Migration', [
-                    'url' => '/ui/firewall/migration',
-                    'fixedname' => sprintf("<i class='fa fa-fw fa-gears'> </i> %s", gettext('Migration assistant')),
-                    'order' => 0,
-            ]);
-            $iftargets['fw'] = array_merge(['FloatingRules' => gettext('Floating')], $iftargets['fw']);
-        }
-        $ordid = 1;
-        foreach ($iftargets['fw'] as $key => $descr) {
-            if ($has_mvc_fw && !$has_legacy_fw) {
-                /* only search */
-                $this->appendItem('Firewall.Rule', $key, [
-                    'url' => '/ui/firewall/filter/#interface=' . $key,
-                    'fixedname' => $descr,
-                    'order' => $ordid++,
-                ]);
-                continue;
-            }
-            /* legacy rules */
-            $this->appendItem('Firewall.Rules', $key, [
-                'url' => '/firewall_rules.php?if=' . $key,
-                'fixedname' => $descr,
-                'order' => $ordid++,
-            ]);
-            $this->appendItem('Firewall.Rules.' . $key, 'Select' . $key, [
-                'url' => '/firewall_rules.php?if=' . $key . '&*',
-                'visibility' => 'hidden',
-            ]);
-            if ($key == 'FloatingRules') {
-                $this->appendItem('Firewall.Rules.' . $key, 'Top' . $key, [
-                    'url' => '/firewall_rules.php',
-                    'visibility' => 'hidden',
-                ]);
-            }
-            $this->appendItem('Firewall.Rules.' . $key, 'Add' . $key, [
-                'url' => '/firewall_rules_edit.php?if=' . $key,
-                'visibility' => 'hidden',
-            ]);
-            $this->appendItem('Firewall.Rules.' . $key, 'Edit' . $key, [
-                'url' => '/firewall_rules_edit.php?if=' . $key . '&*',
-                'visibility' => 'hidden',
-            ]);
-        }
-
         // add interfaces to "Services: DHCPv[46]" menu tab:
         $ordid = 0;
         foreach ($iftargets['dhcp4'] as $key => $descr) {
-            if (!file_exists('/usr/local/www/services_dhcp.php')) {
-                break;
-            }
             $this->appendItem('Services.ISC_DHCPv4', $key, [
                 'url' => '/services_dhcp.php?if=' . $key,
                 'fixedname' => "[$descr]",
@@ -380,9 +279,6 @@ class MenuSystem
         }
         $ordid = 0;
         foreach ($iftargets['dhcp6'] as $key => $descr) {
-            if (!file_exists('/usr/local/www/services_dhcpv6.php')) {
-                break;
-            }
             $this->appendItem('Services.ISC_DHCPv6', $key, [
                 'url' => '/services_dhcpv6.php?if=' . $key,
                 'fixedname' => "[$descr]",
