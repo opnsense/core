@@ -33,12 +33,67 @@ use OPNsense\Core\File;
 
 class KeaDdns extends BaseModel
 {
+    private function addDdnsDomain(&$domains, $name, $server, $keyname)
+    {
+        if (!isset($domains[$name])) {
+            $domains[$name] = ['name' => $name];
+            if ($keyname) {
+                $domains[$name]['key-name'] = $keyname;
+            }
+            $domains[$name]['dns-servers'] = [];
+        }
+
+        $server_entry = [
+            'ip-address' => $server,
+            'port' => 53,
+        ];
+        if (!in_array($server_entry, $domains[$name]['dns-servers'], true)) {
+            $domains[$name]['dns-servers'][] = $server_entry;
+        }
+    }
+
+    private function getReverseZoneForSubnet($subnet)
+    {
+        if (empty($subnet) || strpos($subnet, '/') === false) {
+            return null;
+        }
+
+        [$address, $prefix_length] = explode('/', $subnet, 2);
+        if (!is_numeric($prefix_length)) {
+            return null;
+        }
+
+        $prefix_length = (int)$prefix_length;
+        if (filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) {
+            if ($prefix_length < 8 || $prefix_length > 32 || $prefix_length % 8 !== 0) {
+                return null;
+            }
+            $octets = explode('.', $address);
+            return implode('.', array_reverse(array_slice($octets, 0, $prefix_length / 8))) . '.in-addr.arpa.';
+        }
+
+        if (filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
+            if ($prefix_length < 4 || $prefix_length > 128 || $prefix_length % 4 !== 0) {
+                return null;
+            }
+            $packed = inet_pton($address);
+            if ($packed === false) {
+                return null;
+            }
+            $nibbles = str_split(substr(bin2hex($packed), 0, $prefix_length / 4));
+            return implode('.', array_reverse($nibbles)) . '.ip6.arpa.';
+        }
+
+        return null;
+    }
+
     public function generateConfig($target = '/usr/local/etc/kea/kea-dhcp-ddns.conf')
     {
         if ($this->general->enabled->isEmpty()) {
             return;
         }
-        $domains = [];
+        $forward_domains = [];
+        $reverse_domains = [];
         $keys = [];
         foreach ([(new KeaDhcpv4())->subnets->subnet4, (new KeaDhcpv6())->subnets->subnet6] as $subnets) {
             foreach ($subnets->iterateItems() as $subnet) {
@@ -55,19 +110,11 @@ class KeaDdns extends BaseModel
                         'secret' => $subnet->ddns_domain_key_secret->getValue(),
                     ];
                 }
-                if (!isset($domains[$forward_zone])) {
-                    $domains[$forward_zone] = ['name' => $forward_zone];
-                    if ($keyname) {
-                        $domains[$forward_zone]['key-name'] = $keyname;
-                    }
-                    $domains[$forward_zone]['dns-servers'] = [];
-                }
-                $server_entry = [
-                    'ip-address' => $server,
-                    'port' => 53,
-                ];
-                if (!in_array($server_entry, $domains[$forward_zone]['dns-servers'], true)) {
-                    $domains[$forward_zone]['dns-servers'][] = $server_entry;
+                $this->addDdnsDomain($forward_domains, $forward_zone, $server, $keyname);
+
+                $reverse_zone = $this->getReverseZoneForSubnet($subnet->subnet->getValue());
+                if ($reverse_zone !== null) {
+                    $this->addDdnsDomain($reverse_domains, $reverse_zone, $server, $keyname);
                 }
             }
         }
@@ -77,7 +124,10 @@ class KeaDdns extends BaseModel
                 'port' => $this->general->server_port->asInt(),
                 'tsig-keys' => array_values($keys),
                 'forward-ddns' => [
-                    'ddns-domains' => array_values($domains)
+                    'ddns-domains' => array_values($forward_domains)
+                ],
+                'reverse-ddns' => [
+                    'ddns-domains' => array_values($reverse_domains)
                 ],
                 'loggers' => [[
                     'name' => 'kea-dhcp-ddns',
