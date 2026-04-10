@@ -142,9 +142,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $direct_networks_list[] = gen_subnetv6($addr['ipaddr'], $addr['subnetbits']) . "/{$addr['subnetbits']}";
         }
     }
-    foreach (get_staticroutes() as $netent) {
-        $direct_networks_list[] = $netent['network'];
-    }
+
+    $direct_networks_list = array_merge($direct_networks_list, get_staticroutes(true));
 
     for ($dnscounter = 1; $dnscounter < 9; $dnscounter++) {
         $dnsname = "dns{$dnscounter}";
