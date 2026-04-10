@@ -33,6 +33,7 @@ use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 use OPNsense\Interface\Autoconf;
 use OPNsense\Base\Messages\Message;
+use OPNsense\Core\Backend;
 
 class Gateways extends BaseModel
 {
@@ -366,6 +367,8 @@ class Gateways extends BaseModel
             $gatewaySeq = 1;
             $i = 0; // sequence used in legacy edit form (item in the list)
             $reservednames = array();
+            $cfg = Config::getInstance()->object();
+            $ifconfig = json_decode((new Backend())->configdRun('interface list ifconfig'), true);
 
             // add loopback, lowest priority
             $this->cached_gateways[$this->newKey(255)] = [
@@ -398,6 +401,38 @@ class Gateways extends BaseModel
                 $gw_arr['if'] = $this->getRealInterface($definedIntf, $gw_arr['interface'], $gw_arr['ipprotocol']);
                 $gw_arr['attribute'] = $i++;
                 if (Util::isIpAddress($gw_arr['gateway'])) {
+
+                    // Check if gateway IP address is outside interface netmask.
+                    // If so, mark it disabled.
+
+                    $proto = $gw_arr['ipprotocol'] === 'inet' ? 'ipaddr' : 'ipaddrv6';
+                    $ip = (string)$cfg->interfaces->{$gw_arr['interface']}->{$proto};
+                    $include = (!empty($ip) && Util::isIpAddress($ip));
+                    $far = $gw_arr['fargw'];
+                    if ($far == 0 && $include && array_key_exists($gw_arr['if'], $ifconfig)) {
+
+                        $ipproto = $gw_arr['ipprotocol'] === 'inet' ? 'ipv4' : 'ipv6';
+                        $subnets = [];
+
+                        foreach ($ifconfig[$gw_arr['if']][$ipproto] as $ip) {
+                            if (!empty($ip['ipaddr']) && !empty($ip['subnetbits'])) {
+                                $subnets[] = $ip['ipaddr'] . '/' . $ip['subnetbits'];
+                            }
+                        }
+
+                        $match = false;
+                        foreach ($subnets as $subnet) {
+                            if (Util::isIPInCIDR($gw_arr['gateway'], $subnet)) {
+                                $match = true;
+                                break;
+                            }
+                        }
+
+                        if (empty($subnets) || !$match) {
+                            $gw_arr['disabled'] = 1;
+                        }
+                    }
+
                     if (empty($gw_arr['monitor_disable']) && empty($gw_arr['monitor'])) {
                         $gw_arr['monitor'] = $gw_arr['gateway'];
                     }
