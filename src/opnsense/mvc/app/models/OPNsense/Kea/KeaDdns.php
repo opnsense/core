@@ -46,8 +46,6 @@ class KeaDdns extends BaseModel
                     continue;
                 }
                 $forward_zone = $subnet->ddns_forward_zone->getValue();
-                $server = $subnet->ddns_dns_server->getValue();
-                $server_port = $subnet->ddns_dns_server_port->isEmpty() ? 53 : $subnet->ddns_dns_server_port->asInt();
                 $keyname = $subnet->ddns_domain_key_name->getValue();
                 if ($keyname && !isset($keys[$keyname])) {
                     $keys[$keyname] = [
