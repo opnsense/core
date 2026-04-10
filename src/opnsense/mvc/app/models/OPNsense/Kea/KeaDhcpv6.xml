@@ -140,6 +140,9 @@
                         </check001>
                     </Constraints>
                 </ddns_dns_server>
+                <ddns_dns_server_port type="PortField">
+                    <Default>53</Default>
+                </ddns_dns_server_port>
                 <ddns_domain_key_name type="TextField">
                     <Constraints>
                         <check001>

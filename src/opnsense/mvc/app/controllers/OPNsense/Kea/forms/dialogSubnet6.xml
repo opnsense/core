@@ -116,6 +116,15 @@
         </grid_view>
     </field>
     <field>
+        <id>subnet6.ddns_dns_server_port</id>
+        <label>DNS server port</label>
+        <type>text</type>
+        <help>Port on the authoritative DNS server receiving dynamic updates.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>subnet6.ddns_domain_key_name</id>
         <label>TSIG key name</label>
         <type>text</type>
