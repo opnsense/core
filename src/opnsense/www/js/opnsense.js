@@ -374,14 +374,22 @@ function download_content(payload, filename, file_type) {
 const ACTIVITY_KEY = 'opn_last_activity';
 let sessionThrottleTimer = null;
 
+let lastPingTime = Date.now();
+
 /**
  * Resets the shared local storage timestamp.
  */
 function resetSessionTimeout() {
     if (!sessionThrottleTimer) {
         sessionThrottleTimer = setTimeout(function() {
-            localStorage.setItem(ACTIVITY_KEY, Date.now().toString());
+            let now = Date.now();
+            localStorage.setItem(ACTIVITY_KEY, now.toString());
             sessionThrottleTimer = null;
+
+            if ((now - lastPingTime) > 300000) {
+                lastPingTime = now;
+                $.post('/api/core/menu/search');
+            }
         }, 1000);
     }
 }
@@ -390,15 +398,6 @@ function resetSessionTimeout() {
  * Initializes the auto-logout tracking mechanism.
  */
 function initSessionTimeout() {
-    if ($('input[name="usernamefld"]').length > 0 || window.location.href.includes('?url=')) {
-        setInterval(function() {
-            if (localStorage.getItem(ACTIVITY_KEY)) {
-                window.location.reload();
-            }
-        }, 3000);
-        return;
-    }
-
     if (typeof window.sessionTimeout !== 'number' || window.sessionTimeout <= 0) {
         return;
     }
@@ -409,8 +408,23 @@ function initSessionTimeout() {
         localStorage.setItem(ACTIVITY_KEY, Date.now().toString());
     }
 
-    $(document).on('mousemove keydown click scroll touchstart', function() {
+    $(document).on('mousemove keydown click scroll touchstart', function(e) {
+        if (e.originalEvent === undefined || e.originalEvent.isTrusted === false) {
+            return;
+        }
         resetSessionTimeout();
+    });
+
+    // Explicit logout synchronization
+    $(document).on('click', 'a[href*="logout"]', function() {
+        localStorage.setItem('opnsense_logout', Date.now().toString());
+        localStorage.removeItem(ACTIVITY_KEY);
+    });
+
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'opnsense_logout' || (e.key === ACTIVITY_KEY && !e.newValue)) {
+            window.location.reload();
+        }
     });
 
     setInterval(function() {
