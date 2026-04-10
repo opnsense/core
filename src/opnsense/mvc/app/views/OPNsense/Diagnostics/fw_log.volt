@@ -377,12 +377,8 @@
             if (!q) return true;
             // Since values are strings, scan them all (partial, case-insensitive)
             const vals = Object.values(item);
-            for (let i = 0; i < vals.length; i++) {
-                // converting this to a String will also implicitly join array values to "a,b,c" (i.e. __spec__)
-                const v = String(vals[i] ?? '').toLowerCase();
-                if (v.includes(q)) return true;
-            }
-            return false;
+            // converting "v" to a String will also implicitly join array values to "a,b,c" (i.e. __spec__)
+            return vals.some(v => String(v ?? '').toLowerCase().includes(q));
         }
 
         _buildFilterFn() {
@@ -550,6 +546,7 @@
             return new Promise((resolve, reject) => {
                 ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': limit}, function(data, status) {
                     if (status == 'error' || data === undefined || data.length === 0) reject();
+                    const decoder = document.createElement("textarea");
                     for (let record of data) {
                         // initial data formatting for front-end purposes
                         record['status'] = map[record['action']];
@@ -557,6 +554,15 @@
                         // make sure the hostname key exists
                         record['srchostname'] = hostnames.get(record.src);
                         record['dsthostname'] = hostnames.get(record.dst);
+
+                        // strings can be html encoded, decode them here to aid the filters
+                        // we skip decoding if "&" is not included in the string as setting innerHTML is very expensive.
+                        for (const key in record) {
+                            if (typeof record[key] === "string" && record[key].indexOf("&") !== -1) {
+                                decoder.innerHTML = record[key];
+                                record[key] = decoder.value;
+                            }
+                        }
                     }
 
                     resolve(data);
