@@ -10,6 +10,19 @@
         </grid_view>
     </field>
     <field>
+        <id>job.description</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>Enter a description to explain what this job is intended for.</help>
+    </field>
+    <field>
+        <id>job.command</id>
+        <label>Command</label>
+        <type>dropdown</type>
+        <size>10</size>
+        <help>Select the command that needs to be executed at given time frame.</help>
+    </field>
+    <field>
         <id>job.minutes</id>
         <label>Minutes</label>
         <type>text</type>
@@ -40,22 +53,12 @@
         <help>Enter the days of the week for the job to act, can also be a comma-separated list, * (each) or a range (ex. 1,2,3 or 1-3)</help>
     </field>
     <field>
-        <id>job.command</id>
-        <label>Command</label>
-        <type>dropdown</type>
-        <size>10</size>
-        <help>Select the command that needs to be executed at given time frame.</help>
-    </field>
-    <field>
         <id>job.parameters</id>
         <label>Parameters</label>
-        <type>text</type>
-        <help>Enter parameters for this job if required.</help>
-    </field>
-    <field>
-        <id>job.description</id>
-        <label>Description</label>
-        <type>text</type>
-        <help>Enter a description to explain what this job is intended for.</help>
+        <type>textbox</type>
+        <help>Enter parameters for this job if required. Each line represents a parameter that will be quoted including whitespaces. An empty parameter is rendered when followed by a newline character.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
 </form>

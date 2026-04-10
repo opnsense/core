@@ -57,7 +57,7 @@
                     <Required>Y</Required>
                 </command>
                 <parameters type="TextField">
-                    <Mask>/^(.){1,255}$/</Mask>
+                    <Mask>/^(.){1,1023}$/s</Mask>
                     <ValidationMessage>Input too long.</ValidationMessage>
                 </parameters>
                 <description type="DescriptionField">
