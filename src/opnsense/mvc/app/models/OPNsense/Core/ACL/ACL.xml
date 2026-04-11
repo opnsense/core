@@ -354,12 +354,6 @@
             <pattern>api/core/initial_setup/*</pattern>
         </patterns>
     </page-wizard-system>
-    <page-services-opendns>
-        <name>Services: DNS Filter</name>
-        <patterns>
-            <pattern>services_opendns.php*</pattern>
-        </patterns>
-    </page-services-opendns>
     <page-status-habackup>
         <name>Status: HA backup</name>
         <patterns>
