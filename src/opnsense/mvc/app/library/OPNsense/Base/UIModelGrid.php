@@ -114,7 +114,7 @@ class UIModelGrid
         $fields,
         $itemsPerPage,
         $currentPage,
-        $sortBy = array(),
+        $sortBy = [],
         $sortDescending = false,
         $search_tokens = [],
         $filter_funct = null,
@@ -132,7 +132,11 @@ class UIModelGrid
 
                 // parse rows, because we may need to convert some (list) items we need to know the actual content
                 // before searching we flatten the resulting array in case of nested containers
-                $row = iterator_to_array($this->flatten(array_merge(['uuid' => $record->getAttributes()['uuid']], $record->getNodeContent())));
+                $row = ['uuid' => $record->getAttributes()['uuid']];
+                $reflen = strlen($record->__reference) + 1;
+                foreach ($record->getFlatNodes() as $key => $val) {
+                    $row[substr($key, $reflen)] = $val->getValue();
+                }
 
                 // if search tokens are provided, use them to search in all requested fields
                 if (!empty($search_tokens)) {
@@ -171,16 +175,5 @@ class UIModelGrid
         $result['current'] = (int)$currentPage;
 
         return $result;
-    }
-
-    private function flatten($node, $path = '')
-    {
-        if (is_array($node)) {
-            foreach ($node as $key => $value) {
-                yield from $this->flatten($value, ltrim($path . '.' . $key, '.'));
-            }
-        } else {
-            yield $path => $node;
-        }
     }
 }
