@@ -49,7 +49,7 @@
             </group_memberships>
             <descr type="DescriptionField"/>
             <dashboard type="JsonField"/>
-            <menu_favorites type="TextField"/>
+            <menu_favorites type="JsonField"/>
         </user>
     </items>
 </model>

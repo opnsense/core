@@ -48,10 +48,7 @@ class Favorites
         $this->usermdl = new User();
 
         if (!empty($username) && ($node = $this->usermdl->getUserByName($username)) !== null) {
-            $decoded = json_decode($node->menu_favorites->getValue(), true);
-            if (is_array($decoded)) {
-                $this->favorites = $decoded;
-            }
+            $this->favorites = $node->menu_favorites->deserialize();
         }
     }
 
@@ -78,7 +75,9 @@ class Favorites
             return false;
         }
 
-        $node->menu_favorites = json_encode(array_values($this->favorites));
+        if (!$node->menu_favorites->serialize(array_values($this->favorites))) {
+            return false;
+        }
         if ($this->usermdl->serializeToConfig(false, true)) {
             Config::getInstance()->save();
             return true;
