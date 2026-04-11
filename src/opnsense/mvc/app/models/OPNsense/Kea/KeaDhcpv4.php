@@ -362,6 +362,14 @@ class KeaDhcpv4 extends BaseModel
                 'server-ip' => $ddns->general->server_ip->getValue(),
                 'server-port' => $ddns->general->server_port->asInt(),
             ];
+            /* Override client FQDN flags to ensure the server performs both
+             * forward and reverse DNS updates, regardless of client preferences.
+             * Without these, many clients (macOS, Windows) set the N or S flags
+             * in the FQDN option to skip reverse updates, leaving PTR records
+             * empty. See RFC 4702 sections 3.1-3.2. */
+            $cnf['Dhcp4']['ddns-override-no-update'] = true;
+            $cnf['Dhcp4']['ddns-override-client-update'] = true;
+            $cnf['Dhcp4']['ddns-update-on-renew'] = true;
         }
         File::file_put_contents($target, json_encode($cnf, JSON_PRETTY_PRINT), 0600);
     }
