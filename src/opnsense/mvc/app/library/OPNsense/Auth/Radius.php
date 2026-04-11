@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,6 +27,8 @@
  */
 
 namespace OPNsense\Auth;
+
+use OPNsense\Firewall\Util;
 
 /**
  * Class Radius connector
@@ -68,6 +70,11 @@ class Radius extends Base implements IAuthConnector
      * @var string calling station id to use, read from preauth config
      */
     private $callingStationId = null;
+
+    /**
+     * @var string ip addess to use for NAS-IP-Address attribute
+     */
+    private $nasIpAddress = null;
 
     /**
      * @var int timeout to use
@@ -158,15 +165,17 @@ class Radius extends Base implements IAuthConnector
     public function setProperties($config)
     {
         // map properties to object
-        $confMap = array('host' => 'radiusHost',
-            'radius_secret' => 'sharedSecret',
-            'radius_timeout' => 'timeout',
-            'radius_auth_port' => 'authPort',
+        $confMap = [
+            'host' => 'radiusHost',
             'radius_acct_port' => 'acctPort',
+            'radius_auth_port' => 'authPort',
+            'radius_nasipaddress' => 'nasIpAddress',
             'radius_protocol' => 'protocol',
+            'radius_secret' => 'sharedSecret',
             'radius_stationid' => 'calledStationId',
-            'refid' => 'nasIdentifier'
-        );
+            'radius_timeout' => 'timeout',
+            'refid' => 'nasIdentifier',
+        ];
 
         // map properties 1-on-1
         foreach ($confMap as $confSetting => $objectProperty) {
@@ -195,6 +204,7 @@ class Radius extends Base implements IAuthConnector
     public function getConfigurationOptions()
     {
         $options = [];
+
         $options['radius_protocol'] = [];
         $options['radius_protocol']['name'] = gettext('Protocol');
         $options['radius_protocol']['type'] = 'dropdown';
@@ -210,6 +220,19 @@ class Radius extends Base implements IAuthConnector
                 return [];
             }
         };
+
+        $options['radius_nasipaddress'] = [];
+        $options['radius_nasipaddress']['name'] = gettext('NAS IP address');
+        $options['radius_nasipaddress']['type'] = 'text';
+        $options['radius_nasipaddress']['default'] = '';
+        $options['radius_nasipaddress']['validate'] = function ($value) {
+            if (!empty($value) && !Util::isIpAddress($value)) {
+                return [gettext('Invalid NAS IP address specified')];
+            } else {
+                return [];
+            }
+        };
+
         return $options;
     }
 
@@ -509,18 +532,20 @@ class Radius extends Base implements IAuthConnector
             $error = radius_strerror($radius);
         } elseif (!radius_put_int($radius, RADIUS_SERVICE_TYPE, RADIUS_LOGIN)) {
             $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_FRAMED_PROTOCOL, RADIUS_ETHERNET)) {
+        } elseif (empty($this->nasIpAddress) && !radius_put_int($radius, RADIUS_FRAMED_PROTOCOL, RADIUS_ETHERNET)) {
             $error = radius_strerror($radius);
         } elseif (!radius_put_string($radius, RADIUS_NAS_IDENTIFIER, $this->nasIdentifier)) {
             $error = radius_strerror($radius);
         } elseif (!radius_put_int($radius, RADIUS_NAS_PORT, 0)) {
             $error = radius_strerror($radius);
-        } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, RADIUS_ETHERNET)) {
+        } elseif (!radius_put_int($radius, RADIUS_NAS_PORT_TYPE, empty($this->nasIpAddress) ? RADIUS_ETHERNET : RADIUS_VIRTUAL)) {
             $error = radius_strerror($radius);
         } elseif (!empty($this->calledStationId) && !radius_put_string($radius, RADIUS_CALLED_STATION_ID, $this->calledStationId)) {
             $error = radius_strerror($radius);
         } elseif (!empty($this->callingStationId) && !radius_put_string($radius, RADIUS_CALLING_STATION_ID, $this->callingStationId)) {
             $error = radius_strerror($radius);
+        } elseif (!empty($this->nasIpAddress) && !radius_put_addr($radius, RADIUS_NAS_IP_ADDRESS, $this->nasIpAddress)) {
+            $error = radius_stderror($radius);
         } else {
             // Implement extra protocols in this section.
             switch ($this->protocol) {
