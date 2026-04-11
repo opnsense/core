@@ -98,6 +98,15 @@
         </grid_view>
     </field>
     <field>
+        <id>subnet6.ddns_reverse_zone</id>
+        <label>DNS reverse zone</label>
+        <type>text</type>
+        <help>Full reverse DNS zone receiving PTR updates (e.g. "8.b.d.0.1.0.0.2.ip6.arpa.").</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>subnet6.ddns_qualifying_suffix</id>
         <label>DNS qualifying suffix</label>
         <type>text</type>

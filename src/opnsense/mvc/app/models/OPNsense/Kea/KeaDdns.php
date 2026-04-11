@@ -52,41 +52,6 @@ class KeaDdns extends BaseModel
         }
     }
 
-    private function getReverseZoneForSubnet($subnet)
-    {
-        if (empty($subnet) || strpos($subnet, '/') === false) {
-            return null;
-        }
-
-        [$address, $prefix_length] = explode('/', $subnet, 2);
-        if (!is_numeric($prefix_length)) {
-            return null;
-        }
-
-        $prefix_length = (int)$prefix_length;
-        if (filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) {
-            if ($prefix_length < 8 || $prefix_length > 32 || $prefix_length % 8 !== 0) {
-                return null;
-            }
-            $octets = explode('.', $address);
-            return implode('.', array_reverse(array_slice($octets, 0, $prefix_length / 8))) . '.in-addr.arpa.';
-        }
-
-        if (filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false) {
-            if ($prefix_length < 4 || $prefix_length > 128 || $prefix_length % 4 !== 0) {
-                return null;
-            }
-            $packed = inet_pton($address);
-            if ($packed === false) {
-                return null;
-            }
-            $nibbles = str_split(substr(bin2hex($packed), 0, $prefix_length / 4));
-            return implode('.', array_reverse($nibbles)) . '.ip6.arpa.';
-        }
-
-        return null;
-    }
-
     public function generateConfig($target = '/usr/local/etc/kea/kea-dhcp-ddns.conf')
     {
         if ($this->general->enabled->isEmpty()) {
@@ -112,8 +77,8 @@ class KeaDdns extends BaseModel
                 }
                 $this->addDdnsDomain($forward_domains, $forward_zone, $server, $keyname);
 
-                $reverse_zone = $this->getReverseZoneForSubnet($subnet->subnet->getValue());
-                if ($reverse_zone !== null) {
+                $reverse_zone = $subnet->ddns_reverse_zone->getValue();
+                if (!empty($reverse_zone)) {
                     $this->addDdnsDomain($reverse_domains, $reverse_zone, $server, $keyname);
                 }
             }
