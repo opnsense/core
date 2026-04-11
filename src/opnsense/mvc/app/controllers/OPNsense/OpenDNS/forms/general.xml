@@ -1,0 +1,32 @@
+<form>
+    <field>
+        <id>opendns.enable</id>
+        <label>Enable OpenDNS</label>
+        <type>checkbox</type>
+        <help><![CDATA[If this option is enabled, DNS requests will be filtered using the DNS servers from <a href="https://www.opendns.com/" target="_blank">OpenDNS.com</a>, unless Standalone mode is enabled. The DNS servers configured under <a href="/system_general.php">System: Settings: General</a> will be overwritten, and any DNS servers learned by DHCP/PPP on WAN will be ignored. The previous DNS settings will be saved, and later restored when OpenDNS is disabled.]]></help>
+    </field>
+    <field>
+        <id>opendns.standalone</id>
+        <label>Standalone mode</label>
+        <type>checkbox</type>
+        <help>If this option is enabled, the system's DNS server settings will not be altered to use the DNS servers from OpenDNS.com. This mode is useful when the OpenDNS servers are used by a different network component but the periodic update behavior is still desired.</help>
+    </field>
+    <field>
+        <id>opendns.username</id>
+        <label>OpenDNS.com username</label>
+        <type>text</type>
+        <help>Login username for the OpenDNS.com dashboard. Used to automatically update the IP address of the registered network.</help>
+    </field>
+    <field>
+        <id>opendns.password</id>
+        <label>OpenDNS.com password</label>
+        <type>password</type>
+        <help>Login password for the OpenDNS.com dashboard.</help>
+    </field>
+    <field>
+        <id>opendns.host</id>
+        <label>OpenDNS.com network label</label>
+        <type>text</type>
+        <help><![CDATA[Network label (or 'friendly name') on the <a href="https://dashboard.opendns.com/settings/" target="_blank">settings dashboard of OpenDNS.com</a>. Used to update the node's IP address whenever the WAN interface changes its IP address.]]></help>
+    </field>
+</form>
