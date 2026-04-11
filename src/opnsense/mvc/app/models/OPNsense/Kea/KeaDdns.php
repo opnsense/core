@@ -101,6 +101,28 @@ class KeaDdns extends BaseModel
                             $reverse_domains[$rev_zone] = $reverse_domain;
                         }
                     }
+                } elseif (!empty($subnet_cidr) && str_contains($subnet_cidr, ':')) {
+                    /* IPv6: derive ip6.arpa zone from subnet prefix.
+                     * Use /48 boundary for the reverse zone since that is the
+                     * standard delegation size for ULA and most ISP allocations.
+                     * Multiple /64 subnets under the same /48 share one reverse zone. */
+                    $parts = explode('/', $subnet_cidr);
+                    $expanded = @inet_pton($parts[0]);
+                    if ($expanded !== false) {
+                        $hex = bin2hex($expanded);
+                        /* Use /48 (12 nibbles) as the reverse zone boundary */
+                        $nibbles = 12;
+                        $prefix_nibbles = substr($hex, 0, $nibbles);
+                        $rev_zone = implode('.', array_reverse(str_split($prefix_nibbles))) . '.ip6.arpa.';
+                        if (!isset($reverse_domains[$rev_zone])) {
+                            $reverse_domain = ['name' => $rev_zone, 'dns-servers' => []];
+                            if ($keyname) {
+                                $reverse_domain['key-name'] = $keyname;
+                            }
+                            $reverse_domain['dns-servers'][] = $server_entry;
+                            $reverse_domains[$rev_zone] = $reverse_domain;
+                        }
+                    }
                 }
             }
         }
