@@ -112,9 +112,7 @@
             <Plain VisibleName="Plain View" url="/ui/diagnostics/log/core/filter"/>
         </LogFiles>
     </Firewall>
-    <Services order="60" cssClass="fa fa-cog">
-        <OpenDNS VisibleName="OpenDNS" url="/services_opendns.php" cssClass="fa fa-tags fa-fw"/>
-    </Services>
+    <Services order="60" cssClass="fa fa-cog"/>
     <VPN order="50" cssClass="fa fa-globe">
         <OpenVPN cssClass="fa fa-lock fa-fw">
             <Instances order="10" url="/ui/openvpn/instances"/>
