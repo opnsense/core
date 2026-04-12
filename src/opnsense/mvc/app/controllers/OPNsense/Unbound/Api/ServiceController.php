@@ -30,6 +30,7 @@
 namespace OPNsense\Unbound\Api;
 
 use OPNsense\Base\ApiMutableServiceControllerBase;
+use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 
 class ServiceController extends ApiMutableServiceControllerBase
@@ -52,6 +53,21 @@ class ServiceController extends ApiMutableServiceControllerBase
         $response = $backend->configdRun(static::$internalServiceName . ' dnsbl');
 
         return ['status' => $response];
+    }
+
+    public function reconfigureAction()
+    {
+        if ($this->request->isPost() && $this->serviceEnabled()) {
+            $result = trim((new Backend())->configdpRun('template reload', ['OPNsense/Unbound/*']));
+            if ($result !== 'OK') {
+                throw new UserException(sprintf(
+                    gettext('Template generation failed for internal service "%s". See backend log for details.'),
+                    static::$internalServiceName
+                ), gettext('Configuration exception'));
+            }
+        }
+
+        return parent::reconfigureAction();
     }
 
     /**
