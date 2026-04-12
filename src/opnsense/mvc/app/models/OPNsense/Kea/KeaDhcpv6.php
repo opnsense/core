@@ -87,12 +87,15 @@ class KeaDhcpv6 extends BaseModel
                 continue;
             }
             $key = $pool->__reference;
-            if ($pool->prefix_len->getValue() >= $pool->delegated_len->getValue()) {
+            if ($pool->prefix_len->asInt() > $pool->delegated_len->asInt()) {
                 $messages->appendMessage(new Message(gettext("Delegated length must be longer than or equal to prefix length"), $key . ".delegated_len"));
             }
             $subnet = $pool->prefix->getValue() . "/" . $pool->prefix_len->getValue();
             $trange = Util::cidrToRange($subnet);
-            if (!Util::isSubnetStrict($subnet)) {
+            if (empty($trange)) {
+                $messages->appendMessage(new Message(gettext("Invalid Prefix specified"), $key . ".prefix"));
+                continue;
+            } elseif (!Util::isSubnetStrict($subnet)) {
                 $messages->appendMessage(new Message(gettext("Invalid Pool boundaries, offered address is not the first address in the prefix."), $key . ".prefix"));
             }
             foreach ($this->pd_pools->pd_pool->iterateItems() as $tmppool) {
