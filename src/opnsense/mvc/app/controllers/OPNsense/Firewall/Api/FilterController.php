@@ -98,36 +98,16 @@ class FilterController extends FilterBaseController
                 }
             }
         }
-
-        /* filter logic for mvc rules */
-        $filter_funct_mvc = function ($record) use ($categories, $interfaces, $show_all) {
-            $is_cat = empty($categories) || array_intersect(explode(',', $record->categories), $categories);
-            $rule_interfaces = $record->interface->getValues();
-
-            // ALL rules, skip interface logic entirely
-            if ($interfaces === null) {
-                return $is_cat;
+        /* extract all mvc records so we can filter and sort all at once */
+        $allrules = [];
+        foreach ($this->getModel()->rules->rule->iterateItems() as $uuid => $record) {
+            $row = ['uuid' => $record->getAttributes()['uuid']];
+            $reflen = strlen($record->__reference) + 1;
+            foreach ($record->getFlatNodes() as $key => $val) {
+                $row[substr($key, $reflen)] = $val->getValue();
             }
-
-            if (!$record->interfacenot->isEmpty()) {
-                $if_intersects = !array_intersect($interfaces, $rule_interfaces); /* All but interface */
-            } else {
-                $if_intersects = array_intersect($interfaces, $rule_interfaces);
-            }
-
-            if (empty($interfaces)) {
-                $is_if = count($rule_interfaces) != 1 || !$record->interfacenot->isEmpty();
-            } elseif ($show_all) {
-                $is_if = $if_intersects || empty($rule_interfaces);
-            } elseif (!$record->interfacenot->isEmpty()) {
-                // Exclude as it should only be returned with show_all
-                $is_if = false;
-            } else {
-                // Include only an exact match, not a partial overlap
-                $is_if = $if_intersects && (count($interfaces) == count($rule_interfaces));
-            }
-            return $is_cat && $is_if;
-        };
+            $allrules[] = $row;
+        }
 
         if ($show_all) {
             /* only query stats when fill info is requested */
@@ -136,39 +116,25 @@ class FilterController extends FilterBaseController
             $rule_stats = [];
         }
 
-
-        $filter_funct_rs  = function (&$record) use ($categories, $interfaces, $rule_stats) {
-            /* always merge stats when found */
-            if (!empty($record['uuid']) && !empty($rule_stats[$record['uuid']])) {
-                $record = array_merge($record, $rule_stats[$record['uuid']]);
-            }
-            /* frontend can format aliases with an alias icon */
-            foreach (['source_net','source_port','destination_net','destination_port'] as $field) {
-                if (!empty($record[$field])) {
-                    $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
-                }
-            }
-
-            /* frontend can format categories with colors */
+        $filter_funct_rs = function (&$record) use ($categories, $interfaces, $rule_stats) {
+            /* Filter criteria */
             $r_categories = !empty($record['categories']) ? array_map('trim', explode(',', $record['categories'])) : [];
-            $record['category_colors'] = $this->getCategoryColors($r_categories);
-
-            if (empty($record['legacy'])) {
-                /* mvc already filtered */
-                return true;
-            }
             $is_cat = empty($categories) || array_intersect($r_categories, $categories);
-
-            if (!empty($record['interfacenot'])) {
-                $is_if = !array_intersect(explode(',', $record['interface'] ?? ''), $interfaces ?? []);
+            $rule_interfaces = array_filter(explode(',', $record['interface'] ?? ''));
+            if ($interfaces === null || empty($record['interface'])) {
+                $is_if = true; // ALL interfaces or floating always matches
+            } elseif (!empty($record['interfacenot'])) {
+                $is_if = !array_intersect($rule_interfaces, $interfaces ?? []);
             } else {
-                $is_if = array_intersect(explode(',', $record['interface'] ?? ''), $interfaces ?? []);
+                $is_if = array_intersect($rule_interfaces, $interfaces ?? []);
             }
-            // ALL interfaces or floating always matches
-            $is_if = $is_if || $interfaces === null || empty($record['interface']);
 
-            if ($is_cat && $is_if) {
-                /* translate/convert legacy fields before returning, similar to mvc handling */
+            if (!$is_cat || !$is_if) {
+                return false; /* not reached */
+            }
+
+            /* translate/convert legacy fields before returning, similar to mvc handling */
+            if (!empty($record['legacy'])) {
                 foreach ($this->getLegacyFieldMap() as $topic => $data) {
                     if (!empty($record[$topic])) {
                         $tmp = [];
@@ -178,41 +144,41 @@ class FilterController extends FilterBaseController
                         $record[$topic] = implode(',', $tmp);
                     }
                 }
-                // Tag legacy rules as "Automatic generated rules" if they have an empty category
-                if (!empty($record['is_automatic'])) {
-                    $label = gettext('Automatically generated rules');
-                    $record['categories'] = $label;  // Grouping key for tree view
-                    $record['category_colors'] = [['name'  => $label]];  // Category formatter metadata
-                }
-
-                return true;
-            } else {
-                return false;
             }
-        };
 
-        /**
-         * XXX: fetch mvc results first, we need to collect all to ensure proper pagination
-         *      as pagination is passed using the request, we need to reset it temporary here as we don't know
-         *      which page we need (yet) and don't want to duplicate large portions of code.
-         **/
-        $ORG_REQ = $_REQUEST;
-        unset($_REQUEST['rowCount']);
-        unset($_REQUEST['current']);
-        if ($show_all) {
-            /* searchBase should not filter here since we later search for IP addresses in aliases */
-            unset($_REQUEST['searchPhrase']);
-        }
-        $filterset = $this->searchBase("rules.rule", null, "sort_order", $filter_funct_mvc)['rows'];
+            /* Formatting */
+
+            /* always merge stats when found */
+            if (!empty($record['uuid']) && !empty($rule_stats[$record['uuid']])) {
+                $record = array_merge($record, $rule_stats[$record['uuid']]);
+            }
+
+            // Tag legacy rules as "Automatic generated rules" if they have an empty category
+            if (!empty($record['is_automatic'])) {
+                $label = gettext('Automatically generated rules');
+                $record['categories'] = $label;  // Grouping key for tree view
+                $record['category_colors'] = [['name'  => $label]];  // Category formatter metadata
+            }
+
+            /* frontend can format aliases with an alias icon */
+            foreach (['source_net','source_port','destination_net','destination_port'] as $field) {
+                if (!empty($record[$field])) {
+                    $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
+                }
+            }
+
+            /* frontend can format categories with colors */
+            $record['category_colors'] = $this->getCategoryColors($r_categories);
+            return true;
+        };
 
         /* only fetch internal and legacy rules when 'show_all' is set */
         if ($show_all) {
-            $otherrules = json_decode((new Backend())->configdRun('filter list non_mvc_rules'), true) ?? [];
-        } else {
-            $otherrules = [];
+            $allrules = array_merge(
+                $allrules,
+                json_decode((new Backend())->configdRun('filter list non_mvc_rules'), true) ?? []
+            );
         }
-
-        $_REQUEST = $ORG_REQ; /* XXX:  fix me ?*/
 
         $search_clauses = [];
         $backend = new Backend();
@@ -229,7 +195,7 @@ class FilterController extends FilterBaseController
             }
         }
         $result = $this->searchRecordsetBase(
-            array_merge($otherrules, $filterset),
+            $allrules,
             null,
             "sort_order",
             $filter_funct_rs,
