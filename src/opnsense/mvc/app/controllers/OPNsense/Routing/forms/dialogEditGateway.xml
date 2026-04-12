@@ -143,7 +143,7 @@
         <label>Weight</label>
         <advanced>true</advanced>
         <type>text</type>
-        <help>Weight for this gateway when used in a gateway group. Specificed as an integer number between 1 and 5. Default equals 1.</help>
+        <help>Weight for this gateway when used in a gateway group. Specificed as an integer number between 1 and 10. Default equals 1.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
