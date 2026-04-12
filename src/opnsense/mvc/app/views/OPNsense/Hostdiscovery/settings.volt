@@ -45,7 +45,11 @@
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             switch (e.target.hash) {
+                case '#settings':
+                    $('#reconfigureAct').closest('.content-box').show();
+                    break;
                 case '#hosts':
+                    $('#reconfigureAct').closest('.content-box').hide();
                     if (!$("#grid-hosts").hasClass('tabulator')) {
                         $("#grid-hosts").UIBootgrid({
                         search:'/api/hostdiscovery/service/search',

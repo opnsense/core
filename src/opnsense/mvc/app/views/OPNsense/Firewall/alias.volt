@@ -630,6 +630,14 @@
 
         $('.nav-tabs a').on('shown.bs.tab', function (e) {
             history.pushState(null, null, e.target.hash);
+            switch (e.target.hash) {
+                case '#actions':
+                    $('#reconfigureAct').closest('.content-box').hide();
+                    break;
+                default:
+                    $('#reconfigureAct').closest('.content-box').show();
+                    break;
+            }
         });
 
         // move filter into action header

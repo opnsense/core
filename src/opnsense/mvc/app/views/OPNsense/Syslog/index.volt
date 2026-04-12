@@ -48,7 +48,10 @@
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             if (e.target.id === 'statistics') {
+                $('#reconfigureAct').closest('.content-box').hide();
                 $("#grid-statistics").bootgrid('reload');
+            } else {
+                $('#reconfigureAct').closest('.content-box').show();
             }
         });
 
@@ -98,7 +101,7 @@
     <li><a data-toggle="tab" id="statistics" href="#tab_statistics">{{ lang._('Statistics') }}</a></li>
 </ul>
 <div class="tab-content content-box">
-    <div id="tab_local" class="tab-pane fade in active __mb">
+    <div id="tab_local" class="tab-pane fade in active">
         <!-- tab page "local" -->
         {{ partial("layout_partials/base_form",['fields':localForm,'id':'frm_local_settings'])}}
     </div>
@@ -121,7 +124,6 @@
             <tbody>
             </tbody>
         </table>
-        <hr/>
     </div>
 </div>
 
