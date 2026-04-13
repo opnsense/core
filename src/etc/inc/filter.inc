@@ -648,20 +648,21 @@ function filter_generate_aliases()
 function filter_rules_legacy(&$FilterIflist)
 {
     global $config;
-    $log = !isset($config['syslog']['nologdefaultblock']) ? "log" : "";
 
-    $ipfrules = "";
+    $log = !isset($config['syslog']['nologdefaultblock']) ? 'log' : '';
     $bridge_interfaces = [];
-    if (!empty($config['bridges']['bridged'])) {
-        foreach ($config['bridges']['bridged'] as $bridge) {
-            $bridge_interfaces = array_merge(explode(',', $bridge['members'] ?? ''), $bridge_interfaces);
-        }
+    $ipfrules = '';
+
+    foreach (config_read_array('bridges', 'bridged', false) as $bridge) {
+        $bridge_interfaces = array_merge(explode(',', $bridge['members'] ?? ''), $bridge_interfaces);
     }
+
     foreach ($FilterIflist as $on => $oc) {
         if (!in_array($on, $bridge_interfaces) && !isset($oc['internal_dynamic']) && $oc['if'] != 'lo0') {
             $ipfrules .= "antispoof {$log} for {$oc['if']} \n";
         }
     }
+
     return $ipfrules;
 }
 

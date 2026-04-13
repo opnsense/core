@@ -188,13 +188,7 @@ function interfaces_wlan_clone($device)
 
 function interfaces_bridge_configure($device)
 {
-    global $config;
-
-    if (!isset($config['bridges']['bridged'])) {
-        return null;
-    }
-
-    foreach ($config['bridges']['bridged'] as $bridge) {
+    foreach (config_read_array('bridges', 'bridged', false) as $bridge) {
         if ($bridge['bridgeif'] == $device) {
             return _interfaces_bridge_configure($bridge);
         }
@@ -3566,7 +3560,7 @@ function interface_parent_devices($device, $as_interface = false)
             }
         }
     } elseif (strstr($device, 'bridge')) {
-        foreach (config_read_array('bridges', 'bridged') as $bridge) {
+        foreach (config_read_array('bridges', 'bridged', false) as $bridge) {
             if ($device == $bridge['bridgeif']) {
                 foreach (explode(',', $bridge['members'] ?? '') as $member) {
                     /* bridge stores members as configured interfaces */
@@ -3674,7 +3668,7 @@ function interfaces_restart_by_device($verbose, $devices, $reconfigure = true)
 
 function link_interface_to_bridge($interface, $attach_device = null, $ifconfig_details = [/* must be set for attach to work */])
 {
-    foreach (config_read_array('bridges', 'bridged') as $bridge) {
+    foreach (config_read_array('bridges', 'bridged', false) as $bridge) {
         if (!in_array($interface, explode(',', $bridge['members'] ?? ''))) {
             continue;
         }
