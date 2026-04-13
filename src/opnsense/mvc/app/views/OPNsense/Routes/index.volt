@@ -36,7 +36,7 @@
             'add':'/api/routes/routes/addroute/',
             'del':'/api/routes/routes/delroute/',
             'toggle':'/api/routes/routes/toggleroute/',
-            'options':{selection:false, multiSelect:false}
+            'options':{selection:true, multiSelect:true, batchDelete:false}
           }
         );
         $("#reconfigureAct").SimpleActionButton();

@@ -761,6 +761,7 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
 
             $cmd[] = exec_safe('%s', $rtent['network']);
 
+            /* XXX: get_staticroutes logic works if field is named enabled or disabled. this may be changed to enabled only later. */
             if (!empty($rtent['disabled'])) {
                 mwexecfm('/sbin/route delete ' . implode(' ', $cmd));
                 continue;

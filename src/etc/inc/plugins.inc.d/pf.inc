@@ -126,6 +126,7 @@ function pf_firewall($fw)
         $GatewaysList = $fw->getGateways()->gatewaysIndexedByName(false, true);
 
         foreach (get_staticroutes() as $route) {
+            /* XXX: get_staticroutes logic works if field is named enabled or disabled. this may be changed to enabled only later. */
             if (!empty($GatewaysList[$route['gateway']]['interface']) && empty($route['disabled'])) {
                 $gw = $GatewaysList[$route['gateway']];
                 $routeent = explode("/", $route['network']);
