@@ -699,9 +699,9 @@ abstract class BaseField
      */
     public function getFlatNodes()
     {
-        $result = array ();
+        $result = [];
         if (count($this->internalChildnodes) == 0) {
-            return array($this);
+            return [$this];
         }
 
         foreach ($this->iterateItems() as $node) {
