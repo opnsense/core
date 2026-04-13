@@ -1208,7 +1208,6 @@
 /usr/local/opnsense/scripts/firmware/register.php
 /usr/local/opnsense/scripts/firmware/reinstall.sh
 /usr/local/opnsense/scripts/firmware/remove.sh
-/usr/local/opnsense/scripts/firmware/repos/FreeBSD.php
 /usr/local/opnsense/scripts/firmware/repos/OPNsense.php
 /usr/local/opnsense/scripts/firmware/repos/README
 /usr/local/opnsense/scripts/firmware/resync.sh

@@ -35,9 +35,10 @@ use OPNsense\Core\Config;
 $config = Config::getInstance()->object();
 $url_sub = '';
 
-/* calculate the effective ABI */
+/* canonically handles OPNsense.conf, OPNsense-aux.conf and FreeBSD.conf */
+
 $frmt = ['/usr/local/sbin/opnsense-update -sd -A %s'];
-$args = [shell_safe('opnsense-version -x')];
+$args = [shell_safe('opnsense-version -x')]; /* calculate the effective ABI */
 
 if (!empty($config->system->firmware->subscription)) {
     /*
