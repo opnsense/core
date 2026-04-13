@@ -148,7 +148,7 @@ function system_sysctl_get()
         $sysctls[$name] = '';
     }
 
-    foreach (config_read_array('sysctl', 'item') as $tunable) {
+    foreach (config_read_array('sysctl', 'item', false) as $tunable) {
         /* get the user specified tunables from the configuration */
         $sysctls[$tunable['tunable']] = $tunable['value'];
     }
