@@ -123,6 +123,19 @@ class DiagnosticsController extends ApiControllerBase
             ]), true);
 
             if (!empty($response)) {
+                $mdl = new \OPNsense\Unbound\Unbound();
+                $policies = $mdl->dnsbl->blocklist->getNodeContent();
+                $types = $mdl->dnsbl->blocklist->getTemplateNode()->type->getNodeData();
+                foreach ($response as $key => $value) {
+                    if (is_array($value)) {
+                        if (isset($value['bl'])) {
+                            $response[$key]['bl'] = $types[$value['bl']]['value'] ?? $value['bl'];
+                        }
+                        if (isset($value['uuid'])) {
+                            $response[$key]['policy'] = $policies[$value['uuid']]['description'] ?? '';
+                        }
+                    }
+                }
                 return $response;
             }
         }
