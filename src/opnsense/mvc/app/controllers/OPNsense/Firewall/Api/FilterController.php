@@ -104,7 +104,12 @@ class FilterController extends FilterBaseController
             $row = ['uuid' => $record->getAttributes()['uuid']];
             $reflen = strlen($record->__reference) + 1;
             foreach ($record->getFlatNodes() as $key => $val) {
-                $row[substr($key, $reflen)] = $val->getValue();
+                $fieldname = substr($key, $reflen);
+                $descr = $val->getDescription();
+                $row[$fieldname] = $val->getValue();
+                if ($row[$fieldname] != $descr) {
+                    $row['%' . $fieldname] = $descr;
+                }
             }
             $allrules[] = $row;
         }
