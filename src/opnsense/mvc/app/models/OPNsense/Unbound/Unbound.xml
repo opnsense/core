@@ -185,7 +185,7 @@
                     <Multiple>Y</Multiple>
                     <OptionValues>
                         <opt1 value="General Blocklists">
-                            <atf>Abuse.ch - ThreatFox IOC database</atf>
+                            <atf>Abuse.ch - ThreatFox IOC</atf>
                             <ag>AdGuard List</ag>
                             <el>EasyList</el>
                             <ep>EasyPrivacy</ep>
@@ -216,7 +216,7 @@
                             <hgz019>Gambling</hgz019>
                             <hgz022>Social Networks</hgz022>
                         </opt4>
-                        <opt5 value="Smaller versions of blocklists for underpowered systems">
+                        <opt5 value="Minimal Hardware Requirements">
                             <hgz004>Multi PRO - Mini </hgz004>
                             <hgz006>Multi PRO++ - Mini</hgz006>
                             <hgz008>Multi ULTIMATE - Mini</hgz008>
