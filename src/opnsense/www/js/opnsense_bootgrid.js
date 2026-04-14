@@ -850,7 +850,7 @@ class UIBootgrid {
                         }
                     }
                 }));
-                pageObserver.observe(pageTarget);
+                //pageObserver.observe(pageTarget);
 
                 const tableObserver = new ResizeObserver(debounce((entries) => {
                     for (let entry of entries) {
@@ -860,7 +860,7 @@ class UIBootgrid {
                         }
                     }
                 }));
-                tableObserver.observe(tableTarget);
+                //tableObserver.observe(tableTarget);
             }
 
             // make sure we redraw the table as it enters the viewport (multiple tabbed grids)
@@ -1443,7 +1443,8 @@ class UIBootgrid {
                 const isEmptyLabel = value == null || String(value).trim() === '';
                 return isEmptyLabel ? true : this.rememberedGroupKeys.has(group.getKey());
             },
-            height: 120, /* represents the "no results found" view */
+            // height: 120, /* represents the "no results found" view */
+            height: false,
             resizable: "header",
             placeholder: this.placeholder[0],
             layout: 'fitColumns',
