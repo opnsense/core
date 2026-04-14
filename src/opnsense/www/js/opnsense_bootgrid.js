@@ -850,7 +850,7 @@ class UIBootgrid {
                         this._onDimensionChange();
                     }
                 }));
-                pageObserver.observe(pageTarget);
+                //pageObserver.observe(pageTarget);
 
                 const tableObserver = new ResizeObserver(this._debounce((entries) => {
                     for (let entry of entries) {
@@ -858,7 +858,7 @@ class UIBootgrid {
                         this._onDimensionChange();
                     }
                 }));
-                tableObserver.observe(tableTarget);
+                //tableObserver.observe(tableTarget);
 
             }
 
@@ -1430,7 +1430,8 @@ class UIBootgrid {
                 const isEmptyLabel = value == null || String(value).trim() === '';
                 return isEmptyLabel ? true : this.rememberedGroupKeys.has(group.getKey());
             },
-            height: 120, /* represents the "no results found" view */
+            // height: 120, /* represents the "no results found" view */
+            height: false,
             resizable: "header",
             placeholder: this.placeholder[0],
             layout: 'fitColumns',
