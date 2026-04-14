@@ -192,11 +192,16 @@ class CPBackgroundProcess(object):
                         self.db.update_client_ip(zoneid, db_client['sessionId'], current_ips[0])
                         self._add_client(zoneid, current_ips[0])
                         db_client['ipAddress'] = current_ips[0]
+                else:
+                    # if authenticated via 'allowed addresses', check if we should update the mac address (for display purposes)
+                    current_arp = self.arp.get_by_ipaddress(db_client['ipAddress'])
+                    if current_arp is not None and current_arp['mac'] != db_client['macAddress']:
+                        self.db.update_client_mac(zoneid, db_client['sessionId'], current_arp['mac'])
 
                 # session should be active, validate its properties
                 if allow_roaming:
-                    # this will add the "primary" IP as well, but both list_session_ips and update_roaming_ips will return a deduplicated set
-                    session_ips = self.db.update_roaming_ips(zoneid, db_client['sessionId'], self.arp.get_all_addresses_by_mac(db_client['macAddress']))
+                    # merge primary IP here, if authenticated via ip, the roaming ips may not contain the statically configured IP if there is no MAC known.
+                    session_ips = {db_client['ipAddress']} | self.db.update_roaming_ips(zoneid, db_client['sessionId'], self.arp.get_all_addresses_by_mac(db_client['macAddress']))
                 else:
                     # may have been updated if primary IP changed
                     session_ips = {db_client['ipAddress']}

@@ -202,6 +202,18 @@ class DB(object):
                     """, {'zoneid': zoneid, 'sessionid': sessionid, 'ip_address': ip_address})
         self._connection.commit()
 
+    def update_client_mac(self, zoneid, sessionid, mac_address):
+        """ change client mac address
+        """
+        cur = self._connection.cursor()
+        cur.execute("""update cp_clients
+                       set    mac_address = :mac_address
+                       where  deleted = 0
+                       and    zoneid = :zoneid
+                       and    sessionid = :sessionid
+                    """, {'zoneid': zoneid, 'sessionid': sessionid, 'mac_address': mac_address})
+        self._connection.commit()
+
     def update_roaming_ips(self, zoneid, sessionid, ip_addresses=[]):
         """Update roaming IP addresses for a session to exactly match the provided list.
         Returns the current set of IP addresses stored in the database.
