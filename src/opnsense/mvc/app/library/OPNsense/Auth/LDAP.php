@@ -479,17 +479,6 @@ class LDAP extends Base implements IAuthConnector
     }
 
     /**
-     * authenticate user against ldap server without Base's timer
-     * @param string $username username to authenticate
-     * @param string $password user password
-     * @return bool authentication status
-     */
-    public function authenticate($username, $password)
-    {
-        return $this->_authenticate($username, $password);
-    }
-
-    /**
      * authenticate user against ldap server, implementation as described in Base class
      * @param string $username username to authenticate
      * @param string $password user password
