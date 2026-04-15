@@ -383,6 +383,9 @@ class KeaDhcpv6 extends BaseModel
                 'server-ip' => $ddns->general->server_ip->getValue(),
                 'server-port' => $ddns->general->server_port->asInt(),
             ];
+            $cnf['Dhcp6']['ddns-override-no-update'] = true;
+            $cnf['Dhcp6']['ddns-override-client-update'] = true;
+            $cnf['Dhcp6']['ddns-update-on-renew'] = true;
         }
         File::file_put_contents($target, json_encode($cnf, JSON_PRETTY_PRINT), 0600);
     }
