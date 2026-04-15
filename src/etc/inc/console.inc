@@ -107,6 +107,7 @@ function _set_networking_interfaces_ports($probe = false)
         echo PHP_EOL . 'Press any key to start the manual interface assignment: ';
         $interactive = !timeout();
         echo PHP_EOL;
+        echo PHP_EOL;
     }
 
     if (!empty($iflist)) {
