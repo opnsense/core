@@ -69,7 +69,7 @@
                 <Default>1</Default>
                 <Required>Y</Required>
                 <MinimumValue>1</MinimumValue>
-                <MaximumValue>5</MaximumValue>
+                <MaximumValue>10</MaximumValue>
             </weight>
             <latencylow type="IntegerField">
                 <MinimumValue>1</MinimumValue>
