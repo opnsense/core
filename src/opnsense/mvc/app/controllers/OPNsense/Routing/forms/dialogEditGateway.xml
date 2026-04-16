@@ -139,6 +139,12 @@
         </grid_view>
     </field>
     <field>
+        <id>gateway_item.nosync</id>
+        <label>Disable HA sync</label>
+        <type>checkbox</type>
+        <help>Ignore this gateway from being updated using HA sync.</help>
+    </field>
+    <field>
         <id>gateway_item.weight</id>
         <label>Weight</label>
         <advanced>true</advanced>
