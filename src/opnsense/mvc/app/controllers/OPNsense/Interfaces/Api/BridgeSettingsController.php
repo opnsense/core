@@ -113,9 +113,9 @@ class BridgeSettingsController extends ApiMutableModelControllerBase
             $cfg = Config::getInstance()->object();
             foreach ($cfg->interfaces->children() as $key => $value) {
                 if ((string)$value->if == (string)$node->bridgeif) {
-                    throw new \OPNsense\Base\UserException(
+                    throw new UserException(
                         sprintf(gettext("Cannot delete bridge. Currently in use by [%s] %s"), $key, $value),
-                        gettext("bridge in use")
+                        gettext('Bridge in use')
                     );
                 }
             }

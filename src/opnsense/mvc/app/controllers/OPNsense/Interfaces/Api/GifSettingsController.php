@@ -130,9 +130,9 @@ class GifSettingsController extends ApiMutableModelControllerBase
             $cfg = Config::getInstance()->object();
             foreach ($cfg->interfaces->children() as $key => $value) {
                 if ((string)$value->if == (string)$node->gifif) {
-                    throw new \OPNsense\Base\UserException(
-                        sprintf(gettext("Cannot delete gif. Currently in use by [%s] %s"), $key, $value),
-                        gettext("gif in use")
+                    throw new UserException(
+                        sprintf(gettext('Cannot delete GIF. Currently in use by [%s] %s'), $key, $value),
+                        gettext('GIF in use')
                     );
                 }
             }

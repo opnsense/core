@@ -130,9 +130,9 @@ class GreSettingsController extends ApiMutableModelControllerBase
             $cfg = Config::getInstance()->object();
             foreach ($cfg->interfaces->children() as $key => $value) {
                 if ((string)$value->if == (string)$node->greif) {
-                    throw new \OPNsense\Base\UserException(
-                        sprintf(gettext("Cannot delete gre. Currently in use by [%s] %s"), $key, $value),
-                        gettext("gre in use")
+                    throw new UserException(
+                        sprintf(gettext('Cannot delete GRE. Currently in use by [%s] %s'), $key, $value),
+                        gettext('GRE in use')
                     );
                 }
             }
