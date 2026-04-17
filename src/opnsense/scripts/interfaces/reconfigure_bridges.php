@@ -33,11 +33,11 @@ require_once 'util.inc';
 require_once 'system.inc';
 
 $ifconfig_details = legacy_interfaces_details();
+
+/* collect all bridge devices */
 $current_bridgeifs = [];
-if (isset($config['bridges']['bridged'])) {
-    foreach ($config['bridges']['bridged'] as $bridge) {
-        $current_bridgeifs[$bridge['bridgeif']] = $bridge;
-    }
+foreach (config_read_array('bridges', 'bridged', false) as $bridge) {
+    $current_bridgeifs[$bridge['bridgeif']] = $bridge;
 }
 
 /* delete before update */
