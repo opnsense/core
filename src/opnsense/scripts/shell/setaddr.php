@@ -60,18 +60,14 @@ function console_prompt_for_yn($prompt_text, $default = '')
 
 function console_get_interface_from_ppp($device)
 {
-    global $config;
-
-    if (isset($config['ppps']['ppp'])) {
-        foreach ($config['ppps']['ppp'] as $ppp) {
-            if ($device == $ppp['if']) {
-                $ifaces = explode(',', $ppp['ports']);
-                return $ifaces[0];
-            }
+    foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
+        if ($device == $ppp['if']) {
+            $ifaces = explode(',', $ppp['ports']);
+            return $ifaces[0];
         }
     }
 
-    return '';
+    return null;
 }
 
 function prompt_for_enable_dhcp_server($version = 4)
@@ -327,7 +323,7 @@ function console_configure_ip_address($version)
         $restart_dhcpd = true;
         echo "\n";
     } elseif (console_prompt_for_yn(sprintf('Configure %s address %s interface via %s?', $label_IPvX, $upperifname, $label_DHCP), $interface == 'wan' ? 'y' : 'n')) {
-        $ifppp = console_get_interface_from_ppp(get_real_interface($interface));
+        $ifppp = console_get_interface_from_ppp($config['interfaces'][$interface]['if']);
         if (!empty($ifppp)) {
             $ifaceassigned = $ifppp;
         }
@@ -415,7 +411,7 @@ function console_configure_ip_address($version)
                     list($gwname, $nameserver) = add_gateway_to_config($interface, $gwip, $inet_type, $is_in_subnet);
                 }
             }
-            $ifppp = console_get_interface_from_ppp(get_real_interface($interface));
+            $ifppp = console_get_interface_from_ppp($config['interfaces'][$interface]['if']);
             if (!empty($ifppp)) {
                 $ifaceassigned = $ifppp;
             }
