@@ -105,14 +105,18 @@ export default class Services extends BaseTableWidget {
                         text-align: center;
                         color: #555;
                     " title="${service.description}">${service.description}</div>
-                    <div style="display: flex; align-items: center; justify-content: center; width: 100%;">
-                        <span class="label label-opnsense label-opnsense-xs label-${statusColor} service-status"
-                              data-toggle="tooltip" title="${statusTitle}"
-                              style="font-size: 10px; margin-right: 8px; padding: 3px 6px;">
-                            <i class="fa fa-${statusIcon} fa-fw"></i>
-                        </span>
-                        <div class="btn-group" role="group">
-                            ${this.serviceControl(actions)}
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 0px; width: 100%;">
+                        <div style="text-align: right; padding-right: 10px;">
+                            <span class="label label-opnsense label-opnsense-xs label-${statusColor} service-status"
+                                data-toggle="tooltip" title="${statusTitle}"
+                                style="font-size: 10px; padding: 3px 6px;">
+                                <i class="fa fa-${statusIcon} fa-fw"></i>
+                            </span>
+                        </div>
+                        <div style="text-align: left;">
+                            <div class="btn-group" role="group">
+                                ${this.serviceControl(actions)}
+                            </div>
                         </div>
                     </div>
                 </div>
