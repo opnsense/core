@@ -102,7 +102,7 @@ export default class Services extends BaseTableWidget {
                         text-align: center;
                         color: #555;
                     " title="${service.description}" data-toggle="tooltip">${service.description}</div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 0px; width: 100%;">
+                    <div style="display: grid; grid-template-columns: 1fr 1.2fr; align-items: center; gap: 0px; width: 100%;">
                         <div style="text-align: right; padding-right: 10px;">
                             <span class="label label-opnsense label-opnsense-xs label-${statusColor} service-status"
                                 data-toggle="tooltip" title="${statusTitle}"
