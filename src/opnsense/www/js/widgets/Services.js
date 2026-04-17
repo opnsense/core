@@ -60,6 +60,8 @@ export default class Services extends BaseTableWidget {
             return;
         }
 
+        $('[data-toggle="tooltip"]').tooltip('hide');
+
         const $container = $('#services-container');
         $container.empty();
 
