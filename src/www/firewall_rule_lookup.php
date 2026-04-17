@@ -30,10 +30,6 @@ require_once("guiconfig.inc");
 require_once("filter.inc");
 require_once("system.inc");
 
-use OPNsense\Firewall\Filter;
-
-$a_filter = &config_read_array('filter', 'rule');
-
 $fw = filter_core_get_initialized_plugin_system();
 filter_core_bootstrap($fw);
 plugins_firewall($fw);
