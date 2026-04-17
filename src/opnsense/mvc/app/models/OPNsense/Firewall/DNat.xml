@@ -11,6 +11,8 @@
                 <Required>Y</Required>
                 <!-- Intentionally no default set as its applied by actionPostLoadingEvent() -->
             </sequence>
+            <enabled type=".\DNatEnabledField" volatile="true"/>
+            <!-- legacy disabled flag -->
             <disabled type="BooleanField"/>
             <nordr type="BooleanField"/>
             <interface type="InterfaceField">
@@ -27,7 +29,6 @@
                 <OptionValues>
                     <inet>IPv4</inet>
                     <inet6>IPv6</inet6>
-                    <inet46>IPv4+IPv6</inet46>
                 </OptionValues>
                 <BlankDesc>any</BlankDesc>
             </ipprotocol>

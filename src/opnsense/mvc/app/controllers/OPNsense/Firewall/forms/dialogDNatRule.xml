@@ -4,10 +4,10 @@
         <label>Organization</label>
     </field>
     <field>
-        <id>rule.disabled</id>
-        <label>Disabled</label>
+        <id>rule.enabled</id>
+        <label>Enabled</label>
         <type>checkbox</type>
-        <help>Disable this rule so it will not be used.</help>
+        <help>Enable this rule so it will be used.</help>
         <grid_view>
             <type>boolean</type>
             <formatter>rowtoggle</formatter>
@@ -77,7 +77,7 @@
         <id>rule.ipprotocol</id>
         <label>Version</label>
         <type>dropdown</type>
-        <help>Select IPv4, IPv6 or both.</help>
+        <help>Select IPv4 or IPv6</help>
         <grid_view>
             <formatter>any</formatter>
             <sequence>30</sequence>
