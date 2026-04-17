@@ -63,9 +63,6 @@ export default class Services extends BaseTableWidget {
         const $container = $('#services-container');
         $container.empty();
 
-        $('.service-status').tooltip('hide');
-        $('.srv_status_act2').tooltip('hide');
-
         data.rows.sort((a, b) => a.description.localeCompare(b.description));
 
         for (const service of data.rows) {
@@ -104,7 +101,7 @@ export default class Services extends BaseTableWidget {
                         width: 100%;
                         text-align: center;
                         color: #555;
-                    " title="${service.description}">${service.description}</div>
+                    " title="${service.description}" data-toggle="tooltip">${service.description}</div>
                     <div style="display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: 0px; width: 100%;">
                         <div style="text-align: right; padding-right: 10px;">
                             <span class="label label-opnsense label-opnsense-xs label-${statusColor} service-status"
@@ -125,8 +122,6 @@ export default class Services extends BaseTableWidget {
             $container.append($tile);
         }
 
-        $('.service-status').tooltip({container: 'body'});
-        $('.srv_status_act2').tooltip({container: 'body'});
 
         $('.srv_status_act2').on('click', async (event) => {
             this.locked = true;
