@@ -140,6 +140,11 @@ class Radius extends Base implements IAuthConnector
         return [$wraps, $lower32];
     }
 
+    private function shouldSendFramedIpAddress($ipAddress)
+    {
+        return filter_var(trim((string)$ipAddress), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
+    }
+
     /**
      * type name in configuration
      * @return string
@@ -370,7 +375,7 @@ class Radius extends Base implements IAuthConnector
                 $error = radius_strerror($radius);
             } elseif (!radius_put_int($radius, 53, $wraps_out)) { /* Acct-Output-Gigawords */
                 $error = radius_strerror($radius);
-            } elseif (!radius_put_addr($radius, RADIUS_FRAMED_IP_ADDRESS, $ip_address)) {
+            } elseif ($this->shouldSendFramedIpAddress($ip_address) && !radius_put_addr($radius, RADIUS_FRAMED_IP_ADDRESS, $ip_address)) {
                 $error = radius_strerror($radius);
             } elseif (!radius_put_int($radius, RADIUS_ACCT_TERMINATE_CAUSE, $this->mapTerminateCause($cause))) {
                 $error = radius_strerror($radius);
@@ -458,7 +463,7 @@ class Radius extends Base implements IAuthConnector
                 $error = radius_strerror($radius);
             } elseif (!radius_put_int($radius, 53, $wraps_out)) { /* Acct-Output-Gigawords */
                 $error = radius_strerror($radius);
-            } elseif (!radius_put_addr($radius, RADIUS_FRAMED_IP_ADDRESS, $ip_address)) {
+            } elseif ($this->shouldSendFramedIpAddress($ip_address) && !radius_put_addr($radius, RADIUS_FRAMED_IP_ADDRESS, $ip_address)) {
                 $error = radius_strerror($radius);
             }
 
