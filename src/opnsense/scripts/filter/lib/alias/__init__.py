@@ -31,7 +31,6 @@ import time
 import syslog
 import xml.etree.cElementTree as ET
 from hashlib import md5
-from dns.exception import DNSException
 from .pf import PF
 from .geoip import GEOIP
 from .uri import UriParser
@@ -214,7 +213,9 @@ class Alias(object):
                                 self._resolve_content.add(address)
                         # resolve hostnames (async) if there are any in the collected set
                         self._resolve_content = self._resolve_content.union(address_parser.resolve_dns())
-                except (IOError, DNSException) as e:
+                except Exception as e:
+                    # Explicit broad exception, although we only expect IOError, DNSException here, programming
+                    # errors in specific types may raise unexpected errors (in which case we rollback)
                     syslog.syslog(syslog.LOG_ERR, 'alias resolve error %s (%s)' % (self._name, e))
                     self._resolve_content = set(undo_content.split("\n")) if undo_content is not False else set()
 
