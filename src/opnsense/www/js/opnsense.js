@@ -370,3 +370,77 @@ function download_content(payload, filename, file_type) {
         }
     });
 }
+
+const ACTIVITY_KEY = 'opn_last_activity';
+let sessionThrottleTimer = null;
+
+let lastPingTime = Date.now();
+
+/**
+ * Resets the shared local storage timestamp.
+ */
+function resetSessionTimeout() {
+    if (!sessionThrottleTimer) {
+        sessionThrottleTimer = setTimeout(function() {
+            let now = Date.now();
+            localStorage.setItem(ACTIVITY_KEY, now.toString());
+            sessionThrottleTimer = null;
+
+            if ((now - lastPingTime) > 300000) {
+                lastPingTime = now;
+                $.post('/api/core/menu/search');
+            }
+        }, 1000);
+    }
+}
+
+/**
+ * Initializes the auto-logout tracking mechanism.
+ */
+function initSessionTimeout() {
+    if (typeof window.sessionTimeout !== 'number' || window.sessionTimeout <= 0) {
+        return;
+    }
+
+    const sessionTimeoutMs = window.sessionTimeout * 1000;
+
+    if (!localStorage.getItem(ACTIVITY_KEY)) {
+        localStorage.setItem(ACTIVITY_KEY, Date.now().toString());
+    }
+
+    $(document).on('mousemove keydown click scroll touchstart', function(e) {
+        if (e.originalEvent === undefined || e.originalEvent.isTrusted === false) {
+            return;
+        }
+        resetSessionTimeout();
+    });
+
+    // Explicit logout synchronization
+    $(document).on('click', 'a[href*="logout"]', function() {
+        localStorage.setItem('opnsense_logout', Date.now().toString());
+        localStorage.removeItem(ACTIVITY_KEY);
+    });
+
+    window.addEventListener('storage', function(e) {
+        if (e.key === 'opnsense_logout' || (e.key === ACTIVITY_KEY && !e.newValue)) {
+            window.location.reload();
+        }
+    });
+
+    setInterval(function() {
+        let activeKeyStr = localStorage.getItem(ACTIVITY_KEY);
+
+        if (!activeKeyStr) {
+            window.location.reload();
+            return;
+        }
+
+        let lastActive = parseInt(activeKeyStr, 10);
+        let timeIdleMs = Date.now() - lastActive;
+
+        if (timeIdleMs > (sessionTimeoutMs + 10000)) {
+            localStorage.removeItem(ACTIVITY_KEY);
+            window.location.reload();
+        }
+    }, 5000);
+}

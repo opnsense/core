@@ -380,7 +380,19 @@ function display_login_form($Login_Error)
     <?php if (get_themed_filename('/js/theme.js', true)) : ?>
     <script src="<?= cache_safe(get_themed_filename('/js/theme.js')) ?>"></script>
     <?php endif ?>
-
+    <script>
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'opnsense_auth_sync' && e.newValue) {
+                let urlParams = new URLSearchParams(window.location.search);
+                let redirectUrl = urlParams.get('url');
+                if (redirectUrl && redirectUrl.startsWith('/')) {
+                    window.location.href = redirectUrl;
+                } else {
+                    window.location.reload();
+                }
+            }
+        });
+    </script>
   </head>
   <body class="page-login">
 
