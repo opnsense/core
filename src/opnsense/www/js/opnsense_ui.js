@@ -853,11 +853,25 @@ $.fn.SimpleFileUploadDlg = function (params) {
                 if (evt.target.files[0]) {
                     var reader = new FileReader();
                     reader.onload = function(readerEvt) {
-                        doinp.data('payload', readerEvt.target.result);
+                        if (params.binary === true) {
+                            let binary = "";
+                            const bytes = new Uint8Array(readerEvt.target.result);
+                            const chunkSize = 0x8000;
+                            for (let i = 0; i < bytes.length; i += chunkSize) {
+                                binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+                            }
+                            doinp.data('payload', btoa(binary));
+                        } else {
+                            doinp.data('payload', readerEvt.target.result);
+                        }
                         doinp.data('filename', fileinp.val().split('\\').pop());
                         doinp.show();
                     };
-                    reader.readAsText(evt.target.files[0]);
+                    if (params.binary === true) {
+                        reader.readAsArrayBuffer(evt.target.files[0]);
+                    } else {
+                        reader.readAsText(evt.target.files[0]);
+                    }
                 }
             });
             let dialog = BootstrapDialog.show({
@@ -879,13 +893,24 @@ $.fn.SimpleFileUploadDlg = function (params) {
                     }
                     if (data.validations && data.validations.length > 0) {
                         let validation_output = data.validations;
+                        dlval.data('validations', validation_output).show();
+                        if (params.binary === true) {
+                            for (let i=0; i < validation_output.length; ++i) {
+                                error_output.append($("<tr/>").append(
+                                    $("<td/>").append($("<i class='fa fa-times'/>")),
+                                    $("<td style='min-width:5px;'/>"),
+                                    $("<td/>").text('[' + validation_output[i].field + '] ' +validation_output[i].message).css('white-space', 'nowrap')
+                                ));
+                            }
+                            return;
+                        }
                         // When validation errors are returned, write to error_output including original data lines.
                         let records = eparams.payload.split('\n');
                         records.shift();
-                        for (r=0; r < records.length; ++r) {
+                        for (let r=0; r < records.length; ++r) {
                             let found = false;
-                            for (i=0; i < data.validations.length ; ++i) {
-                                if (r == data.validations[i].sequence) {
+                            for (let i=0; i < data.validations.length ; ++i) {
+                                if (r === data.validations[i].sequence) {
                                     if (!found) {
                                         error_output.append($("<tr/>").append(
                                             $("<td/>").append($("<i class='fa fa-bars'/>")),
@@ -903,7 +928,6 @@ $.fn.SimpleFileUploadDlg = function (params) {
                                 }
                             }
                         }
-                        dlval.data('validations', validation_output).show();
                     } else {
                         dialog.close();
                     }
