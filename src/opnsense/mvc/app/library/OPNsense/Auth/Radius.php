@@ -36,6 +36,9 @@ use OPNsense\Firewall\Util;
  */
 class Radius extends Base implements IAuthConnector
 {
+    // RFC 3162 Framed-IPv6-Prefix attribute type.
+    private const RADIUS_FRAMED_IPV6_PREFIX = 97;
+
     /**
      * @var null radius hostname / ip
      */
@@ -140,9 +143,46 @@ class Radius extends Base implements IAuthConnector
         return [$wraps, $lower32];
     }
 
-    private function shouldSendFramedIpAddress($ipAddress)
+    private function getFramedAddressAttribute($ipAddress)
     {
-        return filter_var(trim((string)$ipAddress), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
+        $ipAddress = trim((string)$ipAddress);
+        if ($ipAddress === '') {
+            return null;
+        }
+
+        if (filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) {
+            return [
+                'handler' => 'addr',
+                'attribute' => RADIUS_FRAMED_IP_ADDRESS,
+                'value' => $ipAddress,
+            ];
+        }
+
+        $packedAddress = inet_pton($ipAddress);
+        if ($packedAddress !== false && strlen($packedAddress) === 16) {
+            return [
+                'handler' => 'attr',
+                'attribute' => self::RADIUS_FRAMED_IPV6_PREFIX,
+                // RFC 3162 Framed-IPv6-Prefix with a /128 prefix when only the assigned client address is known.
+                'value' => chr(0) . chr(128) . $packedAddress,
+            ];
+        }
+
+        return null;
+    }
+
+    private function addFramedAddressAttribute($radius, $ipAddress)
+    {
+        $attribute = $this->getFramedAddressAttribute($ipAddress);
+        if ($attribute === null) {
+            return true;
+        }
+
+        if ($attribute['handler'] === 'addr') {
+            return radius_put_addr($radius, $attribute['attribute'], $attribute['value']);
+        }
+
+        return radius_put_attr($radius, $attribute['attribute'], $attribute['value']);
     }
 
     /**
@@ -375,7 +415,7 @@ class Radius extends Base implements IAuthConnector
                 $error = radius_strerror($radius);
             } elseif (!radius_put_int($radius, 53, $wraps_out)) { /* Acct-Output-Gigawords */
                 $error = radius_strerror($radius);
-            } elseif ($this->shouldSendFramedIpAddress($ip_address) && !radius_put_addr($radius, RADIUS_FRAMED_IP_ADDRESS, $ip_address)) {
+            } elseif (!$this->addFramedAddressAttribute($radius, $ip_address)) {
                 $error = radius_strerror($radius);
             } elseif (!radius_put_int($radius, RADIUS_ACCT_TERMINATE_CAUSE, $this->mapTerminateCause($cause))) {
                 $error = radius_strerror($radius);
@@ -463,7 +503,7 @@ class Radius extends Base implements IAuthConnector
                 $error = radius_strerror($radius);
             } elseif (!radius_put_int($radius, 53, $wraps_out)) { /* Acct-Output-Gigawords */
                 $error = radius_strerror($radius);
-            } elseif ($this->shouldSendFramedIpAddress($ip_address) && !radius_put_addr($radius, RADIUS_FRAMED_IP_ADDRESS, $ip_address)) {
+            } elseif (!$this->addFramedAddressAttribute($radius, $ip_address)) {
                 $error = radius_strerror($radius);
             }
 

@@ -31,29 +31,65 @@ namespace tests\OPNsense\Auth;
 use OPNsense\Auth\Radius;
 use PHPUnit\Framework\TestCase;
 
+if (!defined('RADIUS_FRAMED_IP_ADDRESS')) {
+    define('RADIUS_FRAMED_IP_ADDRESS', 8);
+}
+
 class RadiusTest extends TestCase
 {
     /**
-     * @dataProvider framedIpAddressProvider
+     * @dataProvider framedAddressProvider
      */
-    public function testShouldSendFramedIpAddress($ipAddress, $expected)
+    public function testGetFramedAddressAttribute($ipAddress, $expected)
     {
         $subject = new Radius();
-        $method = new \ReflectionMethod($subject, 'shouldSendFramedIpAddress');
+        $method = new \ReflectionMethod($subject, 'getFramedAddressAttribute');
         $method->setAccessible(true);
 
-        $this->assertSame($expected, $method->invoke($subject, $ipAddress));
+        $this->assertEquals($expected, $method->invoke($subject, $ipAddress));
     }
 
-    public static function framedIpAddressProvider()
+    public static function framedAddressProvider()
     {
         return [
-            'ipv4' => ['192.0.2.10', true],
-            'trimmed ipv4' => [' 198.51.100.8 ', true],
-            'ipv6' => ['2001:db8::1', false],
-            'link-local ipv6' => ['fe80::1', false],
-            'empty' => ['', false],
-            'invalid' => ['not-an-ip', false],
+            'ipv4' => ['192.0.2.10', [
+                'handler' => 'addr',
+                'attribute' => RADIUS_FRAMED_IP_ADDRESS,
+                'value' => '192.0.2.10',
+            ]],
+            'trimmed ipv4' => [' 198.51.100.8 ', [
+                'handler' => 'addr',
+                'attribute' => RADIUS_FRAMED_IP_ADDRESS,
+                'value' => '198.51.100.8',
+            ]],
+            'ipv6' => ['2001:db8::1', [
+                'handler' => 'attr',
+                'attribute' => 97,
+                'value' => chr(0) . chr(128) . inet_pton('2001:db8::1'),
+            ]],
+            'link-local ipv6' => ['fe80::1', [
+                'handler' => 'attr',
+                'attribute' => 97,
+                'value' => chr(0) . chr(128) . inet_pton('fe80::1'),
+            ]],
+            'empty' => ['', null],
+            'invalid' => ['not-an-ip', null],
         ];
+    }
+
+    public function testIpv6AddressUsesFramedIpv6PrefixPayload()
+    {
+        $subject = new Radius();
+        $method = new \ReflectionMethod($subject, 'getFramedAddressAttribute');
+        $method->setAccessible(true);
+
+        $attribute = $method->invoke($subject, '2001:db8::1');
+
+        $this->assertSame('attr', $attribute['handler']);
+        $this->assertSame(97, $attribute['attribute']);
+        $this->assertSame(18, strlen($attribute['value']));
+        $this->assertSame(0, ord($attribute['value'][0]));
+        $this->assertSame(128, ord($attribute['value'][1]));
+        $this->assertSame(inet_pton('2001:db8::1'), substr($attribute['value'], 2));
     }
 }
