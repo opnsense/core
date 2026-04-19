@@ -295,6 +295,7 @@
                     <HostWildcardAllowed>Y</HostWildcardAllowed>
                     <IsDNSName>Y</IsDNSName>
                     <IpAllowed>N</IpAllowed>
+                    <ValidationMessage>A valid hostname must be specified.</ValidationMessage>
                 </hostname>
                 <domain type="TextField">
                     <Required>Y</Required>

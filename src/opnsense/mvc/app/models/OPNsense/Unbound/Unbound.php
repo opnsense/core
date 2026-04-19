@@ -86,6 +86,16 @@ class Unbound extends BaseModel
                 }
             }
         }
+        foreach ($this->hosts->host->iterateItems() as $node) {
+            if ($node->isFieldChanged() || $validateFullModel) {
+                if (str_ends_with($node->hostname->getValue(), '.')) {
+                    $messages->appendMessage(new Message(
+                        gettext('A valid hostname must be specified.'),
+                        $node->hostname->__reference
+                    ));
+                }
+            }
+        }
 
         return $messages;
     }
