@@ -112,6 +112,29 @@ function get_themed_filename($url, $exists = false)
     return $exists ? false : $url;
 }
 
+/**
+ * read theme configuration from theme.conf
+ * @param string $theme theme name
+ * @return array theme configuration with defaults
+ */
+function get_theme_config($theme = 'opnsense')
+{
+    $defaults = [
+        'menu_system' => 'sidebar',
+        'content_class' => 'col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2',
+    ];
+
+    $conf_file = "/usr/local/opnsense/www/themes/{$theme}/theme.conf";
+    if (is_file($conf_file)) {
+        $conf = @json_decode(file_get_contents($conf_file), true);
+        if (is_array($conf)) {
+            return array_merge($defaults, $conf);
+        }
+    }
+
+    return $defaults;
+}
+
 require_once("authgui.inc");
 
 /* some well knows ports */

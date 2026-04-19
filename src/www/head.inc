@@ -13,6 +13,9 @@ if (isset($extraBreadcrumb)) {
 $pagetitle = html_safe(gentitle(array_reverse($menuBreadcrumbs), ' | '));
 $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $config['system']['domain']));
 
+$theme_name = $config['theme'] ?? 'opnsense';
+$theme_config = get_theme_config($theme_name);
+
 ?><!doctype html>
 <html lang="<?= get_current_lang() ?>" class="no-js">
   <head>

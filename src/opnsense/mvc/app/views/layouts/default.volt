@@ -15,6 +15,9 @@
 
     <title>{{headTitle|default("OPNsense") }} | {{system_hostname}}.{{system_domain}}</title>
     {% set theme_name = ui_theme|default('opnsense') %}
+    {% set menu_system = theme_config.menu_system|default('sidebar') %}
+    {% set menu_partial = menu_system == 'sidebar' ? 'base_menu_system' : 'base_menu_system_' ~ menu_system %}
+    {% set content_class = theme_config.content_class|default('col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2') %}
 
     <!-- Favicon -->
     <link href="{{ cache_safe('/ui/themes/%s/build/images/favicon.png' | format(theme_name)) }}" rel="shortcut icon">
@@ -257,9 +260,14 @@
     </nav>
   </header>
 
-  <main class="page-content col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2">
+  {% if menu_system != 'sidebar' %}
+  {{ partial("layout_partials/" ~ menu_partial) }}
+  {% endif %}
+  <main class="page-content {{ content_class }}">
+      {% if menu_system == 'sidebar' %}
       <!-- menu system -->
-      {{ partial("layout_partials/base_menu_system") }}
+      {{ partial("layout_partials/" ~ menu_partial) }}
+      {% endif %}
       <div class="row">
         <!-- page header -->
         <header class="page-content-head">
