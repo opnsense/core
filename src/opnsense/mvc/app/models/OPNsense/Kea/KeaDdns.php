@@ -33,25 +33,6 @@ use OPNsense\Core\File;
 
 class KeaDdns extends BaseModel
 {
-    private function addDdnsDomain(&$domains, $name, $server, $keyname)
-    {
-        if (!isset($domains[$name])) {
-            $domains[$name] = ['name' => $name];
-            if ($keyname) {
-                $domains[$name]['key-name'] = $keyname;
-            }
-            $domains[$name]['dns-servers'] = [];
-        }
-
-        $server_entry = [
-            'ip-address' => $server,
-            'port' => 53,
-        ];
-        if (!in_array($server_entry, $domains[$name]['dns-servers'], true)) {
-            $domains[$name]['dns-servers'][] = $server_entry;
-        }
-    }
-
     public function generateConfig($target = '/usr/local/etc/kea/kea-dhcp-ddns.conf')
     {
         if ($this->general->enabled->isEmpty()) {
@@ -75,11 +56,36 @@ class KeaDdns extends BaseModel
                         'secret' => $subnet->ddns_domain_key_secret->getValue(),
                     ];
                 }
-                $this->addDdnsDomain($forward_domains, $forward_zone, $server, $keyname);
-
+                if (!isset($forward_domains[$forward_zone])) {
+                    $forward_domains[$forward_zone] = ['name' => $forward_zone];
+                    if ($keyname) {
+                        $forward_domains[$forward_zone]['key-name'] = $keyname;
+                    }
+                    $forward_domains[$forward_zone]['dns-servers'] = [];
+                }
+                $server_entry = [
+                    'ip-address' => $server,
+                    'port' => 53,
+                ];
+                if (!in_array($server_entry, $forward_domains[$forward_zone]['dns-servers'], true)) {
+                    $forward_domains[$forward_zone]['dns-servers'][] = $server_entry;
+                }
                 $reverse_zone = $subnet->ddns_reverse_zone->getValue();
                 if (!empty($reverse_zone)) {
-                    $this->addDdnsDomain($reverse_domains, $reverse_zone, $server, $keyname);
+                    if (!isset($reverse_domains[$reverse_zone])) {
+                        $reverse_domains[$reverse_zone] = ['name' => $reverse_zone];
+                        if ($keyname) {
+                            $reverse_domains[$reverse_zone]['key-name'] = $keyname;
+                        }
+                        $reverse_domains[$reverse_zone]['dns-servers'] = [];
+                    }
+                    $server_entry = [
+                        'ip-address' => $server,
+                        'port' => 53,
+                    ];
+                    if (!in_array($server_entry, $reverse_domains[$reverse_zone]['dns-servers'], true)) {
+                        $reverse_domains[$reverse_zone]['dns-servers'][] = $server_entry;
+                    }
                 }
             }
         }
