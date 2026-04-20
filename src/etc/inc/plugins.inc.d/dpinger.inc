@@ -37,7 +37,7 @@ function dpinger_services()
 
     foreach (dpinger_instances() as $name => $gateway) {
         $pconfig = [];
-        $pconfig['description'] = sprintf(gettext('Gateway monitor (%s)'), $gateway['name']);
+        $pconfig['description'] = sprintf(gettext('Gateway %s'), $gateway['name']);
         $pconfig['php']['restart'] = ['dpinger_configure_do'];
         $pconfig['php']['start'] = ['dpinger_configure_do'];
         $pconfig['pidfile'] = "/var/run/dpinger_{$gateway['name']}.pid";
@@ -50,7 +50,7 @@ function dpinger_services()
 
     if (count($services)) {
         $pconfig = [];
-        $pconfig['description'] = gettext('Gateway monitor watcher');
+        $pconfig['description'] = gettext('Gateway Watcher');
         $pconfig['php']['restart'] = ['dpinger_configure_do'];
         $pconfig['php']['start'] = ['dpinger_configure_do'];
         $pconfig['pidfile'] = '/var/run/gateway_watcher.pid';

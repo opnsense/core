@@ -51,7 +51,7 @@ function openssh_services()
 
     if (openssh_enabled()) {
         $pconfig = [];
-        $pconfig['description'] = gettext('Secure Shell Daemon');
+        $pconfig['description'] = gettext('Secure Shell');
         $pconfig['configd']['restart'] = ['openssh restart'];
         $pconfig['configd']['start'] = ['openssh start'];
         $pconfig['configd']['stop'] = ['openssh stop'];

@@ -297,8 +297,8 @@ class BaseWidget {
         id = this.sanitizeSelector(id);
         let $container = $(`
             <span class="transition-icon-container">
-                <i class="fa fa-spinner fa-spin hide transition-spinner" id="spinner-${id}" style="font-size: 13px;"></i>
-                <i class="fa fa-check checkmark hide transition-check" id="check-${id}" style="font-size: 13px;"></i>
+                <i class="fa fa-fw fa-spinner fa-spin hide transition-spinner" id="spinner-${id}" style="font-size: 13px;"></i>
+                <i class="fa fa-fw fa-check checkmark hide transition-check" id="check-${id}" style="font-size: 13px;"></i>
             </span>
         `);
 

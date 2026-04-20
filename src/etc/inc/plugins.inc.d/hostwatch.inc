@@ -32,7 +32,7 @@ function hostwatch_services()
 
     if (!(new \OPNsense\Hostdiscovery\Hostwatch())->general->enabled->isEmpty()) {
         $services[] = [
-            'description' => gettext('Host discovery service'),
+            'description' => gettext('Hostwatch'),
             /* XXX currently unreliable because too slow */
             //'pidfile' => '/var/run/hostwatch/hostwatch.pid',
             'configd' => [

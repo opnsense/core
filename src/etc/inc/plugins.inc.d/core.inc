@@ -31,7 +31,7 @@ function core_services()
     $services = [];
 
     $services[] = [
-        'description' => gettext('System Configuration Daemon'),
+        'description' => gettext('Configd'),
         'pidfile' => '/var/run/configd.pid',
         'mwexec' => [
             'restart' => ['/usr/local/etc/rc.d/configd restart'],
@@ -80,7 +80,7 @@ function core_services()
     ];
 
     $services[] = [
-        'description' => gettext('Syslog-ng Daemon'),
+        'description' => gettext('Syslog-ng'),
         'php' => [
             'start' => ['system_syslog_start'],
             'restart' => ['system_syslog_start'],

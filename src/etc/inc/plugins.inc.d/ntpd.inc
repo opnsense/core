@@ -47,7 +47,7 @@ function ntpd_services()
 
     $pconfig = [];
     $pconfig['name'] = 'ntpd';
-    $pconfig['description'] = gettext('Network Time Daemon');
+    $pconfig['description'] = gettext('Ntpd');
     $pconfig['php']['restart'] = ['ntpd_configure_do'];
     $pconfig['php']['start'] = ['ntpd_configure_do'];
     /* the pidfile for ntpd is unreliable - DO NOT USE IT */

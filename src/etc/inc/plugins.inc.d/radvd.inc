@@ -75,7 +75,7 @@ function radvd_services()
     if (radvd_enabled($mdl)) {
         $pconfig = [];
         $pconfig['name'] = 'radvd';
-        $pconfig['description'] = gettext('Router Advertisements');
+        $pconfig['description'] = gettext('Radvd');
         $pconfig['php']['restart'] = ['radvd_configure_do'];
         $pconfig['php']['start'] = ['radvd_configure_do'];
         $pconfig['pidfile'] = '/var/run/radvd.pid';
