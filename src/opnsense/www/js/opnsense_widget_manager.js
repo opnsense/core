@@ -29,25 +29,8 @@ class ResizeObserverWrapper {
     _lastHeights = {};
     _observer = null;
 
-    _debounce(f, delay = 50, ensure = true) {
-        // debounce to prevent a flood of calls in a short time
-        let lastCall = Number.NEGATIVE_INFINITY;
-        let wait;
-        let handle;
-        return (...args) => {
-            wait = lastCall + delay - Date.now();
-            clearTimeout(handle);
-            if (wait <= 0 || ensure) {
-                handle = setTimeout(() => {
-                    f(...args);
-                    lastCall = Date.now();
-                }, wait);
-            }
-        };
-    }
-
     observe(elements, onSizeChanged, onInitialize) {
-        this._observer = new ResizeObserver(this._debounce((entries) => {
+        this._observer = new ResizeObserver(debounce((entries) => {
             if (entries != undefined && entries.length > 0) {
                 for (const entry of entries) {
                     const width = entry.contentRect.width;

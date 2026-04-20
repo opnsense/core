@@ -592,23 +592,6 @@
             pollTimeout = null;
         }
 
-        function debounce(f, delay = 50, ensure = true) {
-            // debounce to prevent a flood of calls in a short time
-            let lastCall = Number.NEGATIVE_INFINITY;
-            let wait;
-            let handle;
-            return (...args) => {
-                wait = lastCall + delay - Date.now();
-                clearTimeout(handle);
-                if (wait <= 0 || ensure) {
-                    handle = setTimeout(() => {
-                        f(...args);
-                        lastCall = Date.now();
-                    }, wait);
-                }
-            };
-        }
-
         function renderFilters() {
             $list.empty();
             const entries = Object.entries(filterVM.getFilters());

@@ -370,3 +370,16 @@ function download_content(payload, filename, file_type) {
         }
     });
 }
+
+/**
+ * @param {*} f function to be executed
+ * @param {*} delay delay in ms
+ * @returns wrapper delaying f until delay ms have passed since last invocation.
+ */
+function debounce(f, delay = 50) {
+    let handle;
+    return (...args) => {
+        clearTimeout(handle);
+        handle = setTimeout(() => f(...args), delay);
+    };
+}
