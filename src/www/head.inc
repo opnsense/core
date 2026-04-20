@@ -2,16 +2,13 @@
 
 // link menu system
 $menu = new OPNsense\Base\Menu\MenuSystem();
+$favorites = new \OPNsense\Core\Favorites($_SESSION['Username'] ?? '');
 /* XXX generating breadcrumbs and selected URL require getItems() call */
 $menuSystem = $menu->getItems($_SERVER['REQUEST_URI']);
 $menuBreadcrumbs = $menu->getBreadcrumbs();
 $menuSelectedUrl = $menu->getSelectedUrl();
-
-// per-user favorites - generating requires getItems() call
-$favorites = new \OPNsense\Core\Favorites($_SESSION['Username'] ?? '');
-$menuFavorites = $favorites->buildFavoritesEntries($menuSystem);
-$menuHasFavorites = !empty($menuFavorites);
-$menuSelectedIsFavorite = in_array($menuSelectedUrl, $favorites->getFavorites());
+$menuFavorites = $favorites->getFavorites();
+$menuSelectedIsFavorite = in_array($menuSelectedUrl, $menuFavorites);
 
 if (isset($extraBreadcrumb)) {
     $menuBreadcrumbs[] = array('name' => $extraBreadcrumb);

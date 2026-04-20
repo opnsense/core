@@ -33,8 +33,6 @@ use OPNsense\Auth\User;
 /**
  * Class Favorites
  * @package OPNsense\Core
- *
- * Shared helper for reading and writing per-user menu favorites.
  */
 class Favorites
 {
@@ -107,42 +105,11 @@ class Favorites
     }
 
     /**
-     * build a flat list of favorite entries by matching stored URLs
-     * against menu items. Also prunes stale entries.
-     * @param array $menuItems stdClass menu items from MenuSystem::getItems()
-     * @param string $parentLabel accumulated breadcrumb from parent
-     * @return array list of favorite entry objects
+     * remove favorites not present in the given list of valid URLs
+     * @param array $validUrls
      */
-    public function buildFavoritesEntries($menuItems, $parentLabel = '')
+    public function prune($validUrls)
     {
-        if (empty($this->favorites)) {
-            return [];
-        }
-
-        $items = [];
-        foreach ($menuItems as $item) {
-            $label = $parentLabel !== ''
-                ? $parentLabel . ': ' . strip_tags($item->VisibleName)
-                : strip_tags($item->VisibleName);
-
-            if (!empty($item->Url) && in_array($item->Url, $this->favorites)) {
-                $items[] = (object)[
-                    'Url' => $item->Url,
-                    'Label' => $label,
-                    'IsExternal' => $item->IsExternal ?? 'N',
-                ];
-            }
-
-            if (!empty($item->Children)) {
-                $items = array_merge($items, $this->buildFavoritesEntries($item->Children, $label));
-            }
-        }
-
-        if ($parentLabel === '' && count($items) !== count($this->favorites)) {
-            $this->favorites = array_column($items, 'Url');
-            $this->save();
-        }
-
-        return $items;
+        $this->favorites = array_values(array_intersect($this->favorites, $validUrls));
     }
 }

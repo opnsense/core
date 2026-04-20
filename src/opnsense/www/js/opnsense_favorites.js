@@ -24,166 +24,125 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Menu favorites toggle handler.
- *
- * Expects the following DOM setup before this script runs:
- *   - A container element with id="favorites-config" carrying:
- *       data-add-text="..."   (translated "Add Favorite" string)
- *       data-remove-text="..." (translated "Remove Favorite" string)
- *   - A star icon with class="menu-favorite-star" in the page heading carrying:
- *       data-menu-url="..."   (menu item URL)
- *       data-menu-label="..." (display label for the favorites panel)
- *   - A collapse panel with id="Favorites" for favorite entries
- *   - A header link with id="favorites-header"
- */
 $(document).ready(function () {
     var $cfg = $('#favorites-config');
-    var addToFavText = $cfg.data('add-text') || 'Add Favorite';
-    var removeFromFavText = $cfg.data('remove-text') || 'Remove Favorite';
+    var addText = $cfg.data('add-text') || 'Add Favorite';
+    var removeText = $cfg.data('remove-text') || 'Remove Favorite';
+    var favorites = $cfg.data('favorites') || [];
+    var $favPanel = $('#Favorites');
+    var $favHeader = $('a[href="#Favorites"]');
 
-    // build menu-order index from sidebar links: url -> DOM position
-    // new Favorites entries are inserted in the same order as the main menu
-    var menuOrderIndex = {};
-    $('#mainmenu a[href]').not('#Favorites a').each(function (i) {
-        var href = $(this).attr('href');
-        if (href && href.charAt(0) !== '#') {
-            menuOrderIndex[href] = i;
+    var getRefClass = function ($el) {
+        return ($el.attr('class') || '').split(/\s+/).find(function (c) {
+            return c.indexOf('menu_ref_') === 0;
+        });
+    };
+
+    var findReal = function (refClass) {
+        return $('#mainmenu .' + refClass).not('#Favorites .' + refClass);
+    };
+
+    var menuOrder = {};
+    $('#mainmenu a.list-group-item').not('#Favorites a').each(function (i) {
+        var cls = getRefClass($(this));
+        if (cls) menuOrder[cls] = i;
+    });
+
+    $favPanel.children('a.list-group-item').each(function () {
+        var $entry = $(this), cls = getRefClass($entry), $real = cls ? findReal(cls) : $();
+        $($entry.attr('href')).remove();
+        if (!$real.length) {
+            $entry.remove();
+            return;
+        }
+        $entry.text(new MenuItem($real).breadcrumb()).removeAttr('data-toggle').attr('href', '#');
+    });
+
+    $favPanel.children('a.list-group-item').sort(function (a, b) {
+        return (menuOrder[getRefClass($(a))] || 0) - (menuOrder[getRefClass($(b))] || 0);
+    }).appendTo($favPanel);
+
+    if ($favPanel.children('a.list-group-item').length === 0) {
+        $favHeader.hide();
+    }
+
+    $favPanel.on('click', '.list-group-item', function (e) {
+        e.preventDefault();
+        var cls = getRefClass($(this));
+        if (cls) {
+            $favPanel.collapse('hide');
+            findReal(cls)[0]?.click();
         }
     });
 
-    // Favorites: for same-page clicks, collapse Favorites and expand the correct menu section
-    // use event delegation so dynamically added entries also get this handler
-    $('#Favorites').on('click', '.list-group-item', function (e) {
-        if (this.pathname + this.search == window.location.pathname + window.location.search) {
-            e.preventDefault();
-            $('#Favorites').collapse('hide');
+    var $star = $('header.page-content-head .menu-favorite-star');
+    if (!$star.length) return;
 
-            // switch tab when the hash differs; click the matching tab link
-            // the same way the page's own hashchange handler does
-            if (this.hash && this.hash !== window.location.hash) {
-                $('a[href="' + this.hash + '"]').click();
-            }
+    var refreshStar = function (url) {
+        var fav = favorites.indexOf(url) !== -1;
+        $star.data('menu-url', url).attr('data-menu-url', url)
+             .toggleClass('fas', fav).toggleClass('far', !fav)
+             .attr('data-original-title', fav ? removeText : addText).tooltip('fixTitle');
+    };
 
-            var activeItem = $('#mainmenu .list-group-item.active').not('#Favorites .list-group-item');
-            if (activeItem.length) {
-                activeItem.parents('.collapse').each(function () {
-                    $(this).collapse('show');
-                });
-                var navbar_center = ($(window).height() - $(".collapse.navbar-collapse").height()) / 2;
-                $('html,aside').scrollTop(activeItem.offset().top - navbar_center);
-            }
-        }
-    });
-
-    // handle hash-based tab pages (e.g. Firewall: Shaper with #pipes, #queues, #rules)
-    // the server always picks the first tab; update the star for the actual active tab
-    var $headingStar = $('header.page-content-head .menu-favorite-star');
-    if ($headingStar.length && $headingStar.data('menu-url') && String($headingStar.data('menu-url')).indexOf('#') !== -1) {
-        var baseLabel = $headingStar.data('menu-label'); // e.g. "Firewall: Shaper" (no tab suffix)
-
-        var updateStarForTab = function (hash) {
-            var fullUrl = window.location.pathname + hash;
-            var $sidebarLink = $('#mainmenu a[href="' + fullUrl + '"]').not('#Favorites a');
-            var tabName = $sidebarLink.length ? $sidebarLink.text().trim() : hash.replace('#', '');
-            var label = baseLabel + ': ' + tabName;
-            var $favEntry = $('#Favorites [data-menu-url="' + fullUrl + '"]');
-            var isFavorited = $favEntry.length > 0;
-
-            $headingStar.data('menu-url', fullUrl)
-                 .attr('data-menu-url', fullUrl)
-                 .data('menu-label', label)
-                 .attr('data-menu-label', label);
-
-            if (isFavorited) {
-                $headingStar.removeClass('far').addClass('fas')
-                     .attr('data-original-title', removeFromFavText).tooltip('fixTitle');
-            } else {
-                $headingStar.removeClass('fas').addClass('far')
-                     .attr('data-original-title', addToFavText).tooltip('fixTitle');
-            }
-        };
-
-        // set correct state on page load
-        var initialHash = window.location.hash || '#' + String($headingStar.data('menu-url')).split('#')[1];
-        updateStarForTab(initialHash);
-
-        // update when user switches tabs
+    var initialUrl = String($star.data('menu-url') || '');
+    if (initialUrl.indexOf('#') !== -1) {
+        refreshStar(window.location.pathname + (window.location.hash || '#' + initialUrl.split('#')[1]));
         $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
-            var hash = $(e.target).attr('href');
-            if (hash && hash.charAt(0) === '#') {
-                updateStarForTab(hash);
-            }
+            var href = $(e.target).attr('href');
+            if (href && href.charAt(0) === '#') refreshStar(window.location.pathname + href);
         });
     }
 
-    // handle favorite star click in page heading
-    $headingStar.on('click', function (e) {
+    $star.on('click', function (e) {
         e.stopPropagation();
+        var menuUrl = $(this).data('menu-url');
+        var wasFav = $(this).hasClass('fas'), nowFav = !wasFav;
 
-        var $star = $(this);
-        var menuUrl = $star.data('menu-url');
-        var menuLabel = $star.data('menu-label') || '';
-        var isFavorite = $star.hasClass('fas');
-        var newFavoriteState = !isFavorite;
+        $star.toggleClass('fas far')
+             .attr('data-original-title', nowFav ? removeText : addText)
+             .tooltip('fixTitle').tooltip('show');
 
-        // pre-emptively update star icon and tooltip
-        $star
-            .toggleClass('fas far')
-            .attr('data-original-title', newFavoriteState ? removeFromFavText : addToFavText).tooltip('fixTitle').tooltip('show');
-
-        var revertStar = function () {
-            $star
-                .toggleClass('fas far')
-                .attr('data-original-title', isFavorite ? removeFromFavText : addToFavText).tooltip('fixTitle').tooltip('show');
+        var revert = function () {
+            $star.toggleClass('fas far')
+                 .attr('data-original-title', wasFav ? removeText : addText)
+                 .tooltip('fixTitle').tooltip('show');
         };
 
         $.ajax('/api/core/menu/setFavorite/', {
             type: 'POST',
             dataType: 'json',
-            data: {
-                menuUrl: menuUrl,
-                isFavorite: newFavoriteState ? 'true' : 'false'
-            },
+            data: { menuUrl: menuUrl, isFavorite: nowFav ? 'true' : 'false' },
             success: function (response) {
-                if (response.result === 'saved') {
-                    var $favPanel = $('#Favorites');
-                    var $favHeader = $('#favorites-header');
-                    if (newFavoriteState) {
-                        var $newEntry = $('<a>')
-                            .attr('href', menuUrl)
-                            .addClass('list-group-item')
-                            .attr('data-menu-url', menuUrl)
-                            .text(menuLabel);
-                        // insert at the correct menu-order position
-                        var newOrder = menuOrderIndex[menuUrl];
-                        var $insertBefore = null;
-                        $favPanel.children('[data-menu-url]').each(function () {
-                            if (menuOrderIndex[$(this).data('menu-url')] > newOrder) {
-                                $insertBefore = $(this);
-                                return false;
-                            }
-                        });
-                        if ($insertBefore) {
-                            $insertBefore.before($newEntry);
-                        } else {
-                            $favPanel.append($newEntry);
+                if (response.result !== 'saved') { revert(); return; }
+                var $real = $('#mainmenu a[href="' + menuUrl + '"]');
+                var refClass = $real.length ? getRefClass($real) : null;
+                if (!refClass) return;
+                if (nowFav) {
+                    var $newEntry = $('<a>').attr('href', '#')
+                        .addClass('list-group-item ' + refClass)
+                        .text(new MenuItem($real).breadcrumb());
+                    var $before = null;
+                    $favPanel.children('a.list-group-item').each(function () {
+                        var cls = getRefClass($(this));
+                        if (cls && menuOrder[cls] > menuOrder[refClass]) {
+                            $before = $(this);
+                            return false;
                         }
-                        $favHeader.show();
-                    } else {
-                        $favPanel.find('[data-menu-url="' + menuUrl + '"]').remove();
-                        if ($favPanel.children().length === 0) {
-                            $favPanel.collapse('hide');
-                            $favHeader.hide();
-                        }
-                    }
+                    });
+                    $before ? $before.before($newEntry) : $favPanel.append($newEntry);
+                    $favHeader.show();
+                    favorites.push(menuUrl);
                 } else {
-                    revertStar();
+                    $favPanel.children('.' + refClass).remove();
+                    favorites.splice(favorites.indexOf(menuUrl), 1);
+                    if ($favPanel.children('a.list-group-item').length === 0) {
+                        $favPanel.collapse('hide');
+                        $favHeader.hide();
+                    }
                 }
             },
-            error: function () {
-                revertStar();
-            }
+            error: revert
         });
     });
 });

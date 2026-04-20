@@ -211,11 +211,13 @@ class MenuController extends ApiControllerBase
         $menuItems = $this->getMenu('/');
         $items = [];
         $this->extractMenuLeaves($menuItems, $items);
-        if (!in_array($menuUrl, array_column($items, 'Url'))) {
+        $validUrls = array_column($items, 'Url');
+        if (!in_array($menuUrl, $validUrls)) {
             return ['result' => 'failed'];
         }
 
         $favorites = new Favorites($this->getUserName());
+        $favorites->prune($validUrls);
 
         if ($isFavorite === 'true') {
             $favorites->addFavorite($menuUrl);

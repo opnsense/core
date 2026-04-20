@@ -373,16 +373,17 @@ class ControllerBase extends ControllerRoot
         $this->view->setVar('langcode', str_replace('_', '-', $this->langcode));
 
         $rewrite_uri = explode("?", $_SERVER["REQUEST_URI"])[0];
-        $this->view->menuSystem = $menu->getItems($rewrite_uri);
+        $favorites = new \OPNsense\Core\Favorites($_SESSION['Username'] ?? '');
         /* XXX generating breadcrumbs and selected URL require getItems() call */
+        $this->view->menuSystem = $menu->getItems($rewrite_uri);
         $this->view->menuBreadcrumbs = $menu->getBreadcrumbs();
         $this->view->menuSelectedUrl = $menu->getSelectedUrl();
-
-        // per-user favorites - generating requires getItems() call
-        $favorites = new \OPNsense\Core\Favorites($_SESSION['Username'] ?? '');
-        $this->view->menuFavorites = $favorites->buildFavoritesEntries($this->view->menuSystem);
-        $this->view->menuHasFavorites = !empty($this->view->menuFavorites);
-        $this->view->menuSelectedIsFavorite = in_array($this->view->menuSelectedUrl, $favorites->getFavorites());
+        $menuFavorites = $favorites->getFavorites();
+        $this->view->menuFavorites = json_encode($menuFavorites);
+        $this->view->menuSelectedIsFavorite = in_array(
+            $this->view->menuSelectedUrl,
+            $menuFavorites
+        );
 
         // set theme in ui_theme template var, let template handle its defaults (if there is no theme).
         if (

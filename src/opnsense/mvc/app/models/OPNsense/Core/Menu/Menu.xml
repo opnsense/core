@@ -1,4 +1,5 @@
 <menu>
+    <Favorites order="1" cssClass="fas fa-star"/>
     <Lobby order="10" cssClass="fa fa-laptop">
         <Dashboard order="0" url="/ui/core/dashboard" cssClass="fa fa-dashboard fa-fw">
             <Args url="/index.php*" visibility="hidden"/>
