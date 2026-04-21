@@ -204,6 +204,7 @@
         <grid_view>
             <visible>false</visible>
         </grid_view>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>subnet4.ddns_qualifying_suffix</id>
@@ -216,12 +217,23 @@
     </field>
     <field>
         <id>subnet4.ddns_dns_server</id>
-        <label>DNS server</label>
+        <label>DNS server address</label>
         <type>text</type>
         <help>Authoritative DNS server receiving dynamic updates.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
+    </field>
+    <field>
+        <id>subnet4.ddns_dns_port</id>
+        <label>DNS server port</label>
+        <type>text</type>
+        <help>Port of the authoritative DNS server receiving dynamic updates. Leave empty to use default.</help>
+        <hint>53</hint>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>subnet4.ddns_domain_key_name</id>

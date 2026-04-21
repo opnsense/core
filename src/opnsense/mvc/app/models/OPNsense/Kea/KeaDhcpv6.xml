@@ -143,6 +143,7 @@
                         </check001>
                     </Constraints>
                 </ddns_dns_server>
+                <ddns_dns_port type="PortField"/>
                 <ddns_domain_key_name type="TextField">
                     <Constraints>
                         <check001>

@@ -48,6 +48,7 @@ class KeaDdns extends BaseModel
                 }
                 $forward_zone = $subnet->ddns_forward_zone->getValue();
                 $server = $subnet->ddns_dns_server->getValue();
+                $port = !$subnet->ddns_dns_port->isEmpty() ? $subnet->ddns_dns_port->asInt() : 53;
                 $keyname = $subnet->ddns_domain_key_name->getValue();
                 if ($keyname && !isset($keys[$keyname])) {
                     $keys[$keyname] = [
@@ -65,7 +66,7 @@ class KeaDdns extends BaseModel
                 }
                 $server_entry = [
                     'ip-address' => $server,
-                    'port' => 53,
+                    'port' => $port,
                 ];
                 if (!in_array($server_entry, $domains[$forward_zone]['dns-servers'], true)) {
                     $domains[$forward_zone]['dns-servers'][] = $server_entry;
@@ -81,7 +82,7 @@ class KeaDdns extends BaseModel
                     }
                     $server_entry = [
                         'ip-address' => $server,
-                        'port' => 53,
+                        'port' => $port,
                     ];
                     if (!in_array($server_entry, $reverse_domains[$reverse_zone]['dns-servers'], true)) {
                         $reverse_domains[$reverse_zone]['dns-servers'][] = $server_entry;
