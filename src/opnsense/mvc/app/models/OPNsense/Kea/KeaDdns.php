@@ -67,7 +67,7 @@ class KeaDdns extends BaseModel
                     'ip-address' => $server,
                     'port' => 53,
                 ];
-                if (!in_array($server_entry, $forward_domains[$forward_zone]['dns-servers'], true)) {
+                if (!in_array($server_entry, $domains[$forward_zone]['dns-servers'], true)) {
                     $forward_domains[$forward_zone]['dns-servers'][] = $server_entry;
                 }
                 $reverse_zone = $subnet->ddns_reverse_zone->getValue();
