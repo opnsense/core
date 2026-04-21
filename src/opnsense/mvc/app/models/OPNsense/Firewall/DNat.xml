@@ -12,7 +12,7 @@
                 <!-- Intentionally no default set as its applied by actionPostLoadingEvent() -->
             </sequence>
             <enabled type=".\DNatEnabledField" volatile="true"/>
-            <!-- legacy disabled flag -->
+            <!-- legacy disabled flag for compatibility -->
             <disabled type="BooleanField"/>
             <nordr type="BooleanField"/>
             <interface type="InterfaceField">

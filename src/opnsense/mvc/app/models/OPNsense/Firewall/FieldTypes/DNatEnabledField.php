@@ -37,18 +37,18 @@ class DNatEnabledField extends BooleanField
         if ($value === null) {
             return;
         }
-
         $value = (string)$value;
         $parent = $this->getParentNode();
+        // Set disabled value opposite of enabled value for legacy compatibility.
         if ($parent !== null && isset($parent->disabled) && $value !== '') {
             $parent->disabled = $value === '1' ? '0' : '1';
         }
-
         return parent::setValue($value);
     }
 
     protected function actionPostLoadingEvent()
     {
+        // Only use disabled flag if enabled does not have a value set.
         if ($this->internalInitialValue === false || $this->getValue() === '') {
             $parent = $this->getParentNode();
             if ($parent !== null && isset($parent->disabled)) {
@@ -56,7 +56,6 @@ class DNatEnabledField extends BooleanField
                 $this->setValue($legacyDisabled === '1' ? '0' : '1');
             }
         }
-
         return parent::actionPostLoadingEvent();
     }
 }

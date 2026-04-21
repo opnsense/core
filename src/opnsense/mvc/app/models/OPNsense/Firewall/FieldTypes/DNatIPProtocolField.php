@@ -34,10 +34,10 @@ class DNatIPProtocolField extends OptionField
 {
     public function setValue($value)
     {
+        // Set value to empty (any) if inet46 is selected.
         if ((string)$value === 'inet46') {
             $value = '';
         }
-
         return parent::setValue($value);
     }
 
@@ -46,7 +46,6 @@ class DNatIPProtocolField extends OptionField
         if ((string)$this->getValue() === 'inet46') {
             $this->setValue('');
         }
-
         return parent::actionPostLoadingEvent();
     }
 }
