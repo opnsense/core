@@ -50,9 +50,17 @@
                     }
                 });
                 // propagate ajax error messages
-                $( document ).ajaxError(function( event, request ) {
+                $( document ).ajaxError(function( event, request, ajaxSettings ) {
+                    const filter_uris = ['/api/core/firmware/upgradestatus'];
                     if (request.responseJSON != undefined && request.responseJSON.errorMessage != undefined) {
+                        const url = new URL(ajaxSettings.url, window.location.origin);
+                        if (filter_uris.includes(url.pathname)) {
+                            return; // prevent errors on specific endpoints, specified above
+                        } else if ($("#opnsense-generic-error-dialog").is(':visible')) {
+                            return; // prevent error windows from constantly popping up.
+                        }
                         BootstrapDialog.show({
+                            id: 'opnsense-generic-error-dialog',
                             type: BootstrapDialog.TYPE_DANGER,
                             title: request.responseJSON.errorTitle,
                             message:request.responseJSON.errorMessage,
