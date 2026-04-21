@@ -197,6 +197,15 @@
         </grid_view>
     </field>
     <field>
+        <id>subnet4.ddns_reverse_zone</id>
+        <label>DNS reverse zone</label>
+        <type>text</type>
+        <help>Full reverse DNS zone receiving PTR updates (e.g. "200.10.10.in-addr.arpa.").</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>subnet4.ddns_qualifying_suffix</id>
         <label>DNS qualifying suffix</label>
         <type>text</type>

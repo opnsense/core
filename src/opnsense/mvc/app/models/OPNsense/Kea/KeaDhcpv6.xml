@@ -127,6 +127,18 @@
                         </check001>
                     </Constraints>
                 </ddns_forward_zone>
+                <ddns_reverse_zone type="HostnameField">
+                    <IpAllowed>N</IpAllowed>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Reverse zone requires a DNS server.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>ddns_dns_server</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </ddns_reverse_zone>
                 <ddns_qualifying_suffix type="HostnameField"/>
                 <ddns_dns_server type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
