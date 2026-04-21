@@ -38,7 +38,7 @@ class KeaDdns extends BaseModel
         if ($this->general->enabled->isEmpty()) {
             return;
         }
-        $forward_domains = [];
+        $domains = [];
         $reverse_domains = [];
         $keys = [];
         foreach ([(new KeaDhcpv4())->subnets->subnet4, (new KeaDhcpv6())->subnets->subnet6] as $subnets) {
