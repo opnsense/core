@@ -57,7 +57,7 @@ class KeaDdns extends BaseModel
                     ];
                 }
                 if (!isset($domains[$forward_zone])) {
-                    $forward_domains[$forward_zone] = ['name' => $forward_zone];
+                    $domains[$forward_zone] = ['name' => $forward_zone];
                     if ($keyname) {
                         $domains[$forward_zone]['key-name'] = $keyname;
                     }
