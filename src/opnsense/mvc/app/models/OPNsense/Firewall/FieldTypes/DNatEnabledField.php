@@ -32,9 +32,6 @@ use OPNsense\Base\FieldTypes\BooleanField;
 
 class DNatEnabledField extends BooleanField
 {
-    /**
-     * {@inheritdoc}
-     */
     public function setValue($value)
     {
         if ($value === null) {
