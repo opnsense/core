@@ -95,7 +95,7 @@ class KeaDdns extends BaseModel
                 'port' => $this->general->server_port->asInt(),
                 'tsig-keys' => array_values($keys),
                 'forward-ddns' => [
-                    'ddns-domains' => array_values($forward_domains)
+                    'ddns-domains' => array_values($domains)
                 ],
                 'reverse-ddns' => [
                     'ddns-domains' => array_values($reverse_domains)
