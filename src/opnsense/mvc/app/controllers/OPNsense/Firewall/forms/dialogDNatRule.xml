@@ -7,7 +7,7 @@
         <id>rule.enabled</id>
         <label>Enabled</label>
         <type>checkbox</type>
-        <help>Enable this rule so it will be used.</help>
+        <help>Enable this rule.</help>
         <grid_view>
             <type>boolean</type>
             <formatter>rowtoggle</formatter>
