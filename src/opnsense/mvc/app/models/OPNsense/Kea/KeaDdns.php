@@ -61,7 +61,7 @@ class KeaDdns extends BaseModel
                     if ($keyname) {
                         $domains[$forward_zone]['key-name'] = $keyname;
                     }
-                    $forward_domains[$forward_zone]['dns-servers'] = [];
+                    $domains[$forward_zone]['dns-servers'] = [];
                 }
                 $server_entry = [
                     'ip-address' => $server,
