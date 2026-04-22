@@ -33,6 +33,11 @@ use OPNsense\Core\File;
 
 class KeaDdns extends BaseModel
 {
+    public function isEnabled()
+    {
+        return $this->general->enabled->isEqual('1');
+    }
+
     public function generateConfig($target = '/usr/local/etc/kea/kea-dhcp-ddns.conf')
     {
         if ($this->general->enabled->isEmpty()) {

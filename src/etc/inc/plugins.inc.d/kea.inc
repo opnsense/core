@@ -154,6 +154,7 @@ function kea_configure_do($verbose = false)
 {
     $keaDhcpv4 = new \OPNsense\Kea\KeaDhcpv4();
     $keaDhcpv6 = new \OPNsense\Kea\KeaDhcpv6();
+    $keaDdns = new \OPNsense\Kea\KeaDdns();
 
     killbypid('/var/run/kea_prefix_watcher.pid');
 
@@ -167,9 +168,11 @@ function kea_configure_do($verbose = false)
             /* skip kea-dhcp6.conf when configured manually */
             $keaDhcpv6->generateConfig();
         }
+        if ($keaDdns->isEnabled() && $keaDdns->general->manual_config->isEmpty()) {
+            /* skip kea-dhcp-ddns.conf when configured manually */
+            $keaDdns->generateConfig();
+        }
         (new \OPNsense\Kea\KeaCtrlAgent())->generateConfig();
-        // XXX: No manual DDNS config yet, can be added later
-        (new \OPNsense\Kea\KeaDdns())->generateConfig();
         if ($keaDhcpv6->isEnabled()) {
             mwexecfb(
                 '/usr/local/opnsense/scripts/kea/kea_prefix_watcher.py %s',

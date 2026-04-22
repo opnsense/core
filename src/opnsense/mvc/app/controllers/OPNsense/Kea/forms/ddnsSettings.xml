@@ -6,6 +6,13 @@
         <help>Enable DDNS server. To send updates to an authoritative nameserver, configure Dynamic DNS inside the DHCPv4 and DHCPv6 subnets.</help>
     </field>
     <field>
+        <id>ddns.general.manual_config</id>
+        <label>Manual config</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Disable configuration file generation and manage the file (/usr/local/etc/kea/kea-dhcp-ddns.conf) manually.</help>
+    </field>
+    <field>
         <id>ddns.general.server_ip</id>
         <label>Bind address</label>
         <type>text</type>
