@@ -211,23 +211,15 @@ class SettingsController extends ApiMutableModelControllerBase
                     }
                 }
 
-                $groups = [];
-                foreach ($cfg->gateways->children() as $tag => $gw_group) {
-                    if ($tag == 'gateway_group' && !empty($gw_group)) {
-                        foreach ($gw_group->item as $item) {
-                            $name = explode("|", (string)$item);
-                            if ($name[0] == $gateway->name) {
-                                $groups[] = (string)$gw_group->name;
-                            }
-                        }
-                    }
-                }
-
+                $groups = (new \OPNsense\Routing\GatewayGroups())->gatewayGroupsByGateway($uuid);
                 if (!empty($groups)) {
+                    $names = array_map(function($item) {
+                        return $item->name->getValue();
+                    }, $groups);
                     throw new UserException(sprintf(
                         gettext("Gateway %s cannot be deleted because it is in use on Gateway Group(s) '%s'"),
                         $gateway->name,
-                        implode(', ', $groups)
+                        implode(', ', $names)
                     ));
                 }
 

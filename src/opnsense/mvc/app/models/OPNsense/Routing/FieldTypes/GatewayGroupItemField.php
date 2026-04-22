@@ -1,8 +1,7 @@
-#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (c) 2017 Fabian Franz
+ * Copyright (C) 2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,37 +26,35 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("script/load_phalcon.php");
+namespace OPNsense\Routing\FieldTypes;
 
-use OPNsense\Firewall\Util;
-use OPNsense\Routing\Gateways;
-use OPNsense\Routing\GatewayGroups;
+use OPNsense\Base\FieldTypes\BaseField;
 
-$mdl = new Gateways();
-$gateways = $mdl->gatewaysIndexedByName(true, true, true);
+// XXX: consider BaseList/SetField
+class GatewayGroupItemField extends BaseField
+{
+    protected $internalIsContainer = false;
 
-$ret = [];
+    public function setValue($value)
+    {
+        if (is_a($value, 'SimpleXMLElement') && array_filter((array)$value, fn($v) => strpos((string)$v, '|') !== false)) {
+            $tiers = [];
+            foreach ($value as $item) {
+                list($name, $tier) = explode('|', $item);
+                $tiers[$tier][] = $name;
+            }
 
-foreach ($gateways as $gateway) {
-    if (Util::isIpAddress($gateway['gateway'] ?? '')) {
-        $ret[$gateway['name']] = "{$gateway['name']} - {$gateway['gateway']}";
-    } else {
-        $ret[$gateway['name']] = "{$gateway['name']} - {$gateway['ipprotocol']}";
-    }
-}
-
-$opts = getopt('gh', [], $optind);
-$args = array_slice($argv, $optind);
-
-if (isset($opts['h'])) {
-    echo "Usage: gateways.php [-g] [-h]\n\n";
-    echo "\t-g add gateway groups\n";
-} else {
-    if (isset($opts['g'])) {
-        $groups = new GatewayGroups();
-        foreach ($groups->getGroupNames() as $name) {
-            $ret[$name] = $name;
+            ksort($tiers);
+            foreach ($tiers as $tieridx => $tier) {
+                $property = 'item';
+                if ($tieridx > 1) {
+                    $property .= $tieridx;
+                }
+                $gwnames = implode(',', $tier);
+                $this->getParentNode()->$property->setValue($gwnames);
+            }
+        } elseif (!empty($value)) {
+            return parent::setValue($value);
         }
     }
-    echo json_encode($ret) . PHP_EOL;
 }

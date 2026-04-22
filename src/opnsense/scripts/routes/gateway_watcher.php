@@ -55,6 +55,7 @@ $cache_file = '/tmp/gateways.status';
 @unlink($cache_file);
 
 $mode = [];
+$gwgroups = new \OPNsense\Routing\GatewayGroups();
 
 sleep($wait);
 
@@ -105,19 +106,8 @@ while (1) {
             }
         }
 
-        foreach (config_read_array('gateways', 'gateway_group') as $group) {
-            foreach ($group['item'] as $item) {
-                $itemsplit = explode('|', $item);
-                if ($itemsplit[0] == $report['name']) {
-                    /* consider all state transitions as they depend on individual trigger setting */
-                    if (!empty($rprev) && $rprev != $rcurr) {
-                        /* XXX consider trigger conditions later on */
-                        $ralarm = true;
-                        break;
-                    }
-                }
-            }
-        }
+        /* determine transition based on individual gateway group trigger levels */
+        $ralarm = $gwgroups->gatewayStateChange($report['name'], $rprev, $curr);
 
         if ($ralarm) {
             $alarm_gateways[] = $report['name'];
