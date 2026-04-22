@@ -347,7 +347,11 @@ class Radius extends Base implements IAuthConnector
                 $error = radius_strerror($radius);
             } elseif (!radius_put_int($radius, 53, $wraps_out)) { /* Acct-Output-Gigawords */
                 $error = radius_strerror($radius);
-            } elseif (!radius_put_addr($radius, RADIUS_FRAMED_IP_ADDRESS, $ip_address)) {
+            } elseif (
+                !(Util::isIpv6Address($ip_address)
+                        ? radius_put_attr($radius, 168, inet_pton($ip_address)) /* Framed-IPv6-Address */
+                        : radius_put_addr($radius, RADIUS_FRAMED_IP_ADDRESS, $ip_address))
+            ) {
                 $error = radius_strerror($radius);
             } elseif (!radius_put_int($radius, RADIUS_ACCT_TERMINATE_CAUSE, $this->mapTerminateCause($cause))) {
                 $error = radius_strerror($radius);
@@ -435,7 +439,11 @@ class Radius extends Base implements IAuthConnector
                 $error = radius_strerror($radius);
             } elseif (!radius_put_int($radius, 53, $wraps_out)) { /* Acct-Output-Gigawords */
                 $error = radius_strerror($radius);
-            } elseif (!radius_put_addr($radius, RADIUS_FRAMED_IP_ADDRESS, $ip_address)) {
+            } elseif (
+                !(Util::isIpv6Address($ip_address)
+                        ? radius_put_attr($radius, 168, inet_pton($ip_address)) /* Framed-IPv6-Address */
+                        : radius_put_addr($radius, RADIUS_FRAMED_IP_ADDRESS, $ip_address))
+            ) {
                 $error = radius_strerror($radius);
             }
 
