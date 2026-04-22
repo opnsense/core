@@ -50,15 +50,14 @@ if (file_exists($vfilename) && filesize($vfilename) > 0) {
         flock($handle, LOCK_UN);
     }
 }
+
 /* merge configured vlans */
-if (!empty($config['vlans']['vlan'])) {
-    foreach ($config['vlans']['vlan'] as $vlan) {
-        $all_vlans[$vlan['vlanif']] = $vlan;
-        if (!isset($all_parents[$vlan['if']])) {
-            $all_parents[$vlan['if']] = 0;
-        }
-        $all_parents[$vlan['if']]++;
+foreach (config_read_array('vlans', 'vlan', false) as $vlan) {
+    $all_vlans[$vlan['vlanif']] = $vlan;
+    if (!isset($all_parents[$vlan['if']])) {
+        $all_parents[$vlan['if']] = 0;
     }
+    $all_parents[$vlan['if']]++;
 }
 
 /* handle existing vlans */

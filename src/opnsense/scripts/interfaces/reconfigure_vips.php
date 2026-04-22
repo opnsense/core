@@ -86,15 +86,19 @@ foreach (glob("/tmp/delete_vip_*.todo") as $filename) {
     unlink($filename);
 }
 
+$virtualip_vips = config_read_array('virtualip', 'vip', false);
+
 // diff model and actual ifconfig
-if (!empty($config['virtualip']['vip'])) {
+if (count($virtualip_vips)) {
     $interfaces = [];
+
     foreach (legacy_config_get_interfaces() as $interfaceKey => $itf) {
         if (!empty($itf['if']) && ($itf['type'] ?? '') != 'group') {
             $interfaces[$interfaceKey] = $itf['if'];
         }
     }
-    foreach ($config['virtualip']['vip'] as $vipent) {
+
+    foreach ($virtualip_vips as $vipent) {
         if (!empty($vipent['interface']) && !empty($interfaces[$vipent['interface']])) {
             $if = $interfaces[$vipent['interface']];
             $subnet = $vipent['subnet'];
