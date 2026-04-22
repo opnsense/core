@@ -163,4 +163,40 @@
             <visible>false</visible>
         </grid_view>
     </field>
+    <field>
+        <id>subnet6.ddns_override_no_update</id>
+        <label>Override no update</label>
+        <type>checkbox</type>
+        <help>Ignores the client's wishes for no DDNS updates to be performed.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>subnet6.ddns_override_client_update</id>
+        <label>Override client update</label>
+        <type>checkbox</type>
+        <help>Ignores the client's delegation requests. Causes Kea to perform Dynamic DNS updates even though the client indicated its intention to perform the updates itself.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>subnet6.ddns_update_on_renew</id>
+        <label>Update on renew</label>
+        <type>checkbox</type>
+        <help>Instructs the server to always update the DNS information when a lease is renewed, even if its DNS information has not changed. This allows Kea to self-heal if it was previously unable to add DNS entries or they were somehow lost by the DNS server. May impact performance, especially for servers with numerous clients that renew often.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+        <advanced>true</advanced>
+    </field>
 </form>

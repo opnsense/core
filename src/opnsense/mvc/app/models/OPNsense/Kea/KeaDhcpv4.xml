@@ -216,6 +216,9 @@
                         </check001>
                     </Constraints>
                 </ddns_domain_key_algorithm>
+                <ddns_override_no_update type="BooleanField"/>
+                <ddns_override_client_update type="BooleanField"/>
+                <ddns_update_on_renew type="BooleanField"/>
                 <description type="DescriptionField"/>
             </subnet4>
         </subnets>
