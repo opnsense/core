@@ -244,6 +244,9 @@ class KeaDhcpv4 extends BaseModel
                     $record['ddns-qualifying-suffix'] = $subnet->ddns_qualifying_suffix->getValue();
                 }
                 $record['ddns-send-updates'] = !$subnet->ddns_dns_server->isEmpty();
+                $record['ddns-override-no-update'] = !$subnet->ddns_override_no_update->isEmpty();
+                $record['ddns-override-client-update'] = !$subnet->ddns_override_client_update->isEmpty();
+                $record['ddns-update-on-renew'] = !$subnet->ddns_update_on_renew->isEmpty();
             }
             $result[] = $record;
         }
