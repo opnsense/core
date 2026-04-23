@@ -26,7 +26,6 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 """
-import argparse
 import ipaddress
 import time
 import ujson
@@ -99,14 +98,11 @@ class Hostwatch:
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--interval', help='poll interval in seconds', default=10, type=int)
-    inputargs = parser.parse_args()
     prefixes = {}
     syslog.openlog('kea-dhcp6', facility=syslog.LOG_LOCAL4)
     syslog.syslog(syslog.LOG_NOTICE, "startup kea prefix watcher")
     hostwatch = Hostwatch()
-    for record in yield_lease_records(poll_interval=inputargs.interval):
+    for record in yield_lease_records():
         # IA_PD: guaranteed via "type = IA_PD"
         prefix = "%(address)s/%(prefix_len)d" %  record
         if (prefix not in prefixes or prefixes[prefix].get('hwaddr') != record.get('hwaddr')) \
