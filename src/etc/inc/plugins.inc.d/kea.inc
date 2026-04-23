@@ -175,7 +175,7 @@ function kea_configure_do($verbose = false)
         (new \OPNsense\Kea\KeaCtrlAgent())->generateConfig();
         if ($keaDhcpv6->isEnabled() && $keaDhcpv6->hasPdPools()) {
             mwexecfb(
-                '/usr/local/opnsense/scripts/kea/kea_prefix_watcher.py %s',
+                '/usr/local/opnsense/scripts/kea/kea_prefix_watcher.py --interval %s',
                 ['10'],
                 [
                     'pidfile' => '/var/run/kea_prefix_watcher.pid',
