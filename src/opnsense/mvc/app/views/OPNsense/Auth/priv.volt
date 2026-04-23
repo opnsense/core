@@ -28,6 +28,9 @@
     'use strict';
 
     $( document ).ready(function () {
+        $('button[data-action="add"]').remove();
+        $('button[data-action="deleteSelected"]').remove();
+
         let grid_priv = $("#{{formGridPriv['table_id']}}").UIBootgrid({
             search:'/api/auth/priv/search/',
             get:'/api/auth/priv/get_item/',
@@ -57,9 +60,6 @@
                     }
                 }
             }
-        }).on('loaded.rs.jquery.bootgrid', function() {
-            $('button[data-action="add"]').hide();
-            $('button[data-action="deleteSelected"]').hide();
         });
     });
 
