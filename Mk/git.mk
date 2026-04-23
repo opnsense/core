@@ -155,7 +155,7 @@ vim:
 		FOUND="$$(echo "$${FOUND}" | grep -iF "$$(dirname '${vim_ARG}')")"; \
 	fi; \
 	if [ -n "$${FOUND}" ]; then \
-		MATCH="$$(echo "$${FOUND}" | grep -i "/$$(basename '${vim_ARG}')$$")"; \
+		MATCH="$$(echo "$${FOUND}" | grep -i "/$$(basename '${vim_ARG}')$$"| true)"; \
 		if [ -n "$${MATCH}" ]; then \
 			FOUND="$${MATCH}"; \
 		fi; \
