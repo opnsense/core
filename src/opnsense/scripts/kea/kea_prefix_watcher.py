@@ -105,7 +105,8 @@ if __name__ == '__main__':
     for record in yield_lease_records():
         # IA_PD: guaranteed via "type = IA_PD"
         prefix = "%(address)s/%(prefix_len)d" %  record
-        if (prefix not in prefixes or prefixes[prefix].get('hwaddr') != record.get('hwaddr')):
+        if (prefix not in prefixes or prefixes[prefix].get('hwaddr') != record.get('hwaddr')) \
+                and record.get('state', 0) == 0:
             prefixes[prefix] = record
             ll_addr = hostwatch.get(record.get('hwaddr'))
             if not ll_addr:
