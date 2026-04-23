@@ -29,7 +29,6 @@
 import argparse
 import ipaddress
 import ujson
-import time
 import subprocess
 import syslog
 
@@ -37,7 +36,7 @@ from lib.kea_ctrl import KeaCtrl
 
 
 def yield_lease_records(service='dhcp6', limit=256, poll_interval=10):
-    """ 
+    """
     Poll KEA lease pages and yield records from domain socket
     https://kea.readthedocs.io/en/latest/api.html#lease6-get-page
     Since amount of leases can be large, using get-page is recommended.
@@ -56,8 +55,7 @@ def yield_lease_records(service='dhcp6', limit=256, poll_interval=10):
                         "address": lease.get("ip-address", ""),
                         "prefix_len": lease.get("prefix-len", 128),
                         "hwaddr": lease.get("hw-address", ""),
-                        "valid_lifetime": lease.get("valid-lft", 0),
-                        "expire": lease.get("cltt", 0) + lease.get("valid-lft", 0)
+                        "state": lease.get("state", 0)  # State 0 means active
                     }
 
             last_addr = leases[-1].get("ip-address")
@@ -111,7 +109,7 @@ if __name__ == '__main__':
         # IA_PD: guaranteed via "type = IA_PD"
         prefix = "%(address)s/%(prefix_len)d" %  record
         if (prefix not in prefixes or prefixes[prefix].get('hwaddr') != record.get('hwaddr')) \
-                and record.get('expire', 0) > time.time():
+                and record.get('state', 0) == 0:
             prefixes[prefix] = record
             ll_addr = hostwatch.get(record.get('hwaddr'))
             if not ll_addr:
@@ -122,7 +120,7 @@ if __name__ == '__main__':
                 continue
             # lazy drop
             subprocess.run(['/sbin/route', 'delete', '-inet6', prefix], capture_output=True)
-            if record.get('valid_lifetime', 0) > 0:
+            if record.get('state', 0) == 0:
                 # only add when still valid
                 if subprocess.run(['/sbin/route', 'add', '-inet6', prefix, ll_addr], capture_output=True).returncode:
                     syslog.syslog(syslog.LOG_ERR, "failed adding route %s -> %s" % (prefix, ll_addr))
