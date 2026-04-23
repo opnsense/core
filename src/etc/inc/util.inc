@@ -1158,12 +1158,16 @@ function is_URL($url)
 
 function get_staticroutes($returnsubnetsonly = false)
 {
-    global $aliastable;
-
     $allstaticroutes = [];
     $allsubnets = [];
-    foreach (config_read_array('staticroutes', 'route') as $route) {
+
+    foreach (config_read_array('staticroutes', 'route', false) as $route) {
         if (is_subnet($route['network'])) {
+            /* XXX: compatibility for legacy disabled route option. can be removed after a couple of major releases. */
+            $route_disabled = isset($route['enabled']) ? empty($route['enabled']) : !empty($route['disabled']);
+            $route['enabled'] = $route_disabled ? '0' : '1';
+            $route['disabled'] = $route_disabled ? '1' : '0';
+
             $allstaticroutes[] = $route;
             $allsubnets[] = $route['network'];
         }
