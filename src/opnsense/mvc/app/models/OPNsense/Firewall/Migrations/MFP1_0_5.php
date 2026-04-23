@@ -26,26 +26,23 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Firewall\FieldTypes;
+namespace OPNsense\Firewall\Migrations;
 
-use OPNsense\Base\FieldTypes\OptionField;
+use OPNsense\Base\BaseModelMigration;
+use OPNsense\Core\Config;
+use OPNsense\Firewall\Filter;
 
-class DNatIPProtocolField extends OptionField
+class MFP1_0_5 extends BaseModelMigration
 {
-    public function setValue($value)
-    {
-        // Set value to empty (any) if inet46 is selected.
-        if ((string)$value === 'inet46') {
-            $value = '';
-        }
-        return parent::setValue($value);
-    }
-
-    protected function actionPostLoadingEvent()
-    {
-        if ((string)$this->getValue() === 'inet46') {
-            $this->setValue('');
-        }
-        return parent::actionPostLoadingEvent();
-    }
+	public function run($model)
+	{
+		$cfgObj = Config::getInstance()->object();
+		if ($model instanceof Filter && isset($cfgObj->nat->rule)) {
+			foreach ($cfgObj->nat->rule as $rule) {
+				if ((string)$rule->ipprotocol === 'inet46') {
+					$rule->ipprotocol = '';
+				}
+			}
+		}
+	}
 }

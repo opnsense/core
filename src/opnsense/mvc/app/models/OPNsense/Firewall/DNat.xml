@@ -22,7 +22,7 @@
                 </Filters>
                 <AllowDynamic>Y</AllowDynamic>
             </interface>
-            <ipprotocol type=".\DNatIPProtocolField">
+            <ipprotocol type="OptionField">
                 <!-- XXX: currently optional, need to decide what to do with it -->
                 <!-- <Required>Y</Required>
                 <Default>inet</Default> -->
