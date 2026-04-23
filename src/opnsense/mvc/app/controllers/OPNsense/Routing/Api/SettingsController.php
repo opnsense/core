@@ -193,6 +193,7 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->addBase("gateway_item", "gateway_item");
     }
 
+    /* XXX consider removing $cfg use -- everything should have a model now */
     public function delGatewayAction($uuid)
     {
         $result = ["result" => "failed"];
