@@ -345,6 +345,7 @@ abstract class BaseField
      */
     public function count(): int
     {
+        /* XXX could use count($this->getValues()) if we fix BaseField's version to reject empty */
         return $this->isContainer() ? iterator_count($this->iterateItems()) : 1;
     }
 
