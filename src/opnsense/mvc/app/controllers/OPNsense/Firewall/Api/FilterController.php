@@ -338,8 +338,7 @@ class FilterController extends FilterBaseController
         }
         if ($new_key !== null) {
             $selected_node->sequence = (string)$new_key;
-            $this->getModel()->serializeToConfig(false, true); /* we're only changing sequences, forcefully save */
-            Config::getInstance()->save();
+            $this->save(false, true);  /* only changing sequences, no need to validate */
         }
 
         return ["status" => "ok"];

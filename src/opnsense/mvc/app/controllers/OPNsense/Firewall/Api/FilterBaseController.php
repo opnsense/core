@@ -327,7 +327,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
     {
         if ($this->request->isPost()) {
             // trigger a save, so we know revision->time matches our running config
-            Config::getInstance()->save();
+            $this->save();
             return array(
                 "status" => "ok",
                 "retention" => (string)Config::getInstance()->backupCount(),
@@ -413,8 +413,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
 
         if ($new_key !== null) {
             $selected_node->$sort_key = (string)$new_key;
-            $this->getModel()->serializeToConfig(false, true);
-            Config::getInstance()->save();
+            $this->save(false, true);  /* only changing sequences, no need to validate */
         }
 
         return ["status" => "ok"];
@@ -442,8 +441,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         }
 
         $node->log = $log;
-        $mdl->serializeToConfig();
-        Config::getInstance()->save();
+        $this->save(false, true);  /* only changing log, no need to validate */
 
         return ['status' => 'ok'];
     }
