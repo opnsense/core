@@ -96,7 +96,7 @@ class GatewayGroups extends BaseModel
 
     /**
      * get gateway groups where gateway is configured
-     * @param string $index either gateway UUID or gateway name
+     * @param string $gwname gateway name
      * @return array gateway group nodes
      *
      */
