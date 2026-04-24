@@ -55,7 +55,6 @@ $cache_file = '/tmp/gateways.status';
 @unlink($cache_file);
 
 $mode = [];
-$gwgroups = new \OPNsense\Routing\GatewayGroups();
 
 sleep($wait);
 
@@ -79,6 +78,9 @@ while (1) {
     foreach (array_keys($cleanup) as $stale) {
         unset($mode[$stale]);
     }
+
+    /* reset model before each pass, only instantiate on-demand */
+    $gwgroups = null;
 
     /* run main watcher pass */
     foreach ($status as $report) {
@@ -107,7 +109,7 @@ while (1) {
         }
 
         /* determine transition based on individual gateway group trigger levels */
-        $ralarm = $gwgroups->gatewayStateChange($report['name'], $rprev, $curr);
+        $ralarm = ($gwgroups ??= new \OPNsense\Routing\GatewayGroups())->gatewayStateChange($report['name'], $rprev, $curr);
 
         if ($ralarm) {
             $alarm_gateways[] = $report['name'];

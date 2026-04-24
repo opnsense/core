@@ -57,7 +57,7 @@ class GatewayGroups extends BaseModel
                         $old = $grp->name->getValue();
                         if ($old !== $new) {
                             $messages->appendMessage(
-                                new Message(gettext("Chaning name on a gateway group is not allowed."), $ref . ".name")
+                                new Message(gettext("Changing name on a gateway group is not allowed."), $ref . ".name")
                             );
                         }
                     }
