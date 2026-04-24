@@ -225,10 +225,10 @@ class KeaDhcpv6 extends BaseModel
                     }
                 }
                 if (!$reservation->ip_address->isEmpty()) {
-                    $res['ip-addresses'] = explode(',', $reservation->ip_address->getValue());
+                    $res['ip-addresses'] = $reservation->ip_address->getValues();
                 }
                 if (!$reservation->prefix->isEmpty()) {
-                    $res['prefixes'] = explode(',', $reservation->prefix->getValue());
+                    $res['prefixes'] = $reservation->prefix->getValues();
                 }
                 if (!$reservation->domain_search->isEmpty()) {
                     $res['option-data'][] = [
