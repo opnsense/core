@@ -29,8 +29,6 @@
 
 require_once('script/load_phalcon.php');
 
-use OPNsense\Core\Config;
-
 $classprefix = !empty($argv[1]) ? str_replace('/', '\\', $argv[1]) : '';
 $class_info = new \ReflectionClass("OPNsense\\Base\\BaseModel");
 $model_dir = dirname($class_info->getFileName()) . "/../../";
