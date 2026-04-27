@@ -119,15 +119,6 @@ class KeaDhcpv6 extends BaseModel
     }
 
     /**
-     * only start the kea_prefix_watcher if pd pools are actually configured
-     * @return bool
-     */
-    public function hasPdPools()
-    {
-        return $this->pd_pools->pd_pool->count() > 0;
-    }
-
-    /**
      * should filter rules be enabled
      * @return bool
      */
