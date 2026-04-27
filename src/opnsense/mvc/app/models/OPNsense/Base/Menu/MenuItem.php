@@ -44,7 +44,7 @@ class MenuItem
      * this items id (xml tag name)
      * @var item|string
      */
-    private $id = "";
+    private $id = '';
 
     /**
      * visible name, default same as id
@@ -62,20 +62,19 @@ class MenuItem
      * layout information, icon
      * @var string
      */
-    private $CssClass = "";
+    private $CssClass = '';
 
     /**
      * Classes to add to the link
      * @var string
      */
-    private $LinkClass = "";
-
+    private $LinkClass = '';
 
     /**
      * link to url location
      * @var string
      */
-    private $Url = "";
+    private $Url = '';
 
     /**
      * link to external page
@@ -456,7 +455,7 @@ class MenuItem
         foreach ($this->children as $nodeId => &$node) {
             if ($node->isVisible()) {
                 $node->toggleSelected($url);
-                if ($node->getUrl() != "") {
+                if ($node->getUrl() != '') {
                     // hash part isn't available on server end
                     $menuItemUrl = explode("#", $node->getUrl())[0];
                     $match = str_replace([".", "*","?", "@"], ["\.", ".*","\?", "\@"], $menuItemUrl);

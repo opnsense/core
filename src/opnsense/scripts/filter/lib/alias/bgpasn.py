@@ -96,7 +96,6 @@ class BGPASN(BaseContentParser):
             self._update()
 
     def iter_addresses(self, asn):
-
         if len(self._asn_db) == 0:
             self._asn_fhandle.seek(0)
             for row in csv.reader(self._asn_fhandle, delimiter=',', quotechar='"'):

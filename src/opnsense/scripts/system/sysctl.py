@@ -51,7 +51,7 @@ if __name__ == '__main__':
         sp = subprocess.run(['/sbin/sysctl', '-i'] + params, capture_output=True, text=True)
         for line in sp.stdout.split("\n"):
             # include original oid in output so caller can match back
-            parts = line.strip().split(":", 1)
+            parts = line.strip().split(": ", 1)
             if len(parts) > 1:
                 result[parts[0]] = parts[1].strip()
         output = ujson.dumps(result)

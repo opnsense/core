@@ -59,6 +59,7 @@ class NetworkFieldTest extends Field_Framework_TestCase
         $field = new NetworkField();
         $field->setRequired("Y");
         $field->setValue("");
+        $this->assertEquals(0, $field->count());
         $this->validateThrow($field);
     }
 
@@ -67,6 +68,7 @@ class NetworkFieldTest extends Field_Framework_TestCase
         $field = new NetworkField();
         $field->setRequired("Y");
         $field->setValue("192.168.1.1");
+        $this->assertEquals(1, $field->count());
         $this->assertEmpty($this->validate($field));
     }
 
@@ -89,6 +91,7 @@ class NetworkFieldTest extends Field_Framework_TestCase
         $field->setFieldSeparator("\n");
         $field->setAsList('Y');
         $field->setValue($value);
+        $this->assertEquals(2, $field->count());
         $this->assertEmpty($this->validate($field));
         $this->assertTrue($field->isEqual($value));
         $this->assertEquals(2, count($field->getValues()));

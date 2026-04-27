@@ -340,6 +340,16 @@ abstract class BaseField
     }
 
     /**
+     * count the number of (non virtual) child nodes or the number of
+     * set elements on field types with values
+     * @return int count
+     */
+    public function count(): int
+    {
+        return $this->isContainer() ? iterator_count($this->iterateItems()) : count($this->getValues());
+    }
+
+    /**
      * iterate all nodes recursively.
      * @return Generator
      */
