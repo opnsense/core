@@ -54,8 +54,14 @@ class KeaDhcpv6 extends BaseModel
             if ($subnet_node) {
                 $subnet = $subnet_node->subnet->getValue();
             }
-            if (!Util::isIPInCIDR($reservation->ip_address->getValue(), $subnet)) {
+            if (!Util::isIPInCIDR($reservation->ip_address->getValue(), $subnet) && !$reservation->ip_address->isEmpty()) {
                 $messages->appendMessage(new Message(gettext("Address not in specified subnet"), $key . ".ip_address"));
+            }
+            if (!Util::isIPv6PrefixInPrefix($reservation->prefix->getValue(), $subnet) && !$reservation->prefix->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("Prefix not in specified subnet"), $key . ".prefix"));
+            }
+            if ($reservation->ip_address->isEmpty() && $reservation->prefix->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("Either an IP address or a Prefix should be specified."), $key . ".ip_address"));
             }
             if (!$reservation->duid->isEmpty() && !$reservation->hw_address->isEmpty()) {
                 $messages->appendMessage(new Message(gettext("Either a DUID or an Ether address should be specified, but not both"), $key . ".duid"));
@@ -218,7 +224,12 @@ class KeaDhcpv6 extends BaseModel
                         $res[str_replace('_', '-', $key)] = $reservation->$key->getValue();
                     }
                 }
-                $res['ip-addresses'] = explode(',', $reservation->ip_address->getValue());
+                if (!$reservation->ip_address->isEmpty()) {
+                    $res['ip-addresses'] = $reservation->ip_address->getValues();
+                }
+                if (!$reservation->prefix->isEmpty()) {
+                    $res['prefixes'] = $reservation->prefix->getValues();
+                }
                 if (!$reservation->domain_search->isEmpty()) {
                     $res['option-data'][] = [
                         'name' => 'domain-search',

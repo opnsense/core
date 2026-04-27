@@ -474,6 +474,38 @@ class Util
     }
 
     /**
+     * Returns whether a given IPv6 prefix is contained in another IPv6 prefix.
+     *
+     * Examples:
+     * - fd10::/64 is contained in fd10::/56
+     * - fd10:0:0:1::/64 is not contained in fd10::/56
+     *
+     * @param string $childPrefix IPv6 prefix to test
+     * @param string $parentPrefix containing IPv6 prefix
+     * @return bool true when childPrefix is contained in parentPrefix
+     */
+    public static function isIPv6PrefixInPrefix(string $childPrefix, string $parentPrefix): bool
+    {
+        if (!self::isSubnetStrict($childPrefix) || !self::isSubnetStrict($parentPrefix)) {
+            return false;
+        }
+
+        list($childAddress, $childBits) = explode('/', $childPrefix);
+        list($parentAddress, $parentBits) = explode('/', $parentPrefix);
+
+        if (!self::isIpv6Address($childAddress) || !self::isIpv6Address($parentAddress)) {
+            return false;
+        }
+
+        // Ensure direction is valid
+        if ((int)$childBits < (int)$parentBits) {
+            return false;
+        }
+
+        return self::isIPInCIDR($childAddress, $parentPrefix);
+    }
+
+    /**
      * convert ipv4 cidr to netmask e.g. 24 --> 255.255.255.0
      * @param int $bits ipv4 bits
      * @return string netmask

@@ -101,9 +101,14 @@
                             searchValue = row.hwaddr || '';
                         }
 
+                        const address = row.address || '';
+                        const prefixLen = parseInt(row.prefix_len, 10);
+                        const isPrefix = prefixLen !== 128;
+
                         const searchUrl = `${baseUrl}&search=${encodeURIComponent(searchValue)}`;
                         const addUrlParams = {
-                            ip_address: row.address || '',
+                            ip_address: isPrefix ? '' : address,
+                            prefix: isPrefix ? `${address}/${prefixLen}` : '',
                             duid: row.duid || '',
                             hw_address: row.hwaddr || '',
                             hostname: row.hostname || ''
@@ -171,6 +176,7 @@
             <tr>
                 <th data-column-id="if_descr" data-type="string">{{ lang._('Interface') }}</th>
                 <th data-column-id="address" data-identifier="true" data-type="string" data-formatter="overflowformatter">{{ lang._('IP Address') }}</th>
+                <th data-column-id="prefix_len" data-identifier="true" data-type="string" data-width="4em">{{ lang._('Length') }}</th>
                 <th data-column-id="duid" data-type="string" data-width="9em">{{ lang._('DUID') }}</th>
                 <th data-column-id="hwaddr" data-type="string" data-formatter="macformatter" data-width="9em">{{ lang._('MAC Address') }}</th>
                 <th data-column-id="valid_lifetime" data-type="integer">{{ lang._('Lifetime') }}</th>

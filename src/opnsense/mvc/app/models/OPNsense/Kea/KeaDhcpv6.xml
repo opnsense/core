@@ -219,6 +219,17 @@
                         </check001>
                     </Constraints>
                 </ip_address>
+                <prefix type="NetworkField">
+                    <AddressFamily>ipv6</AddressFamily>
+                    <NetMaskRequired>Y</NetMaskRequired>
+                    <ValidationMessage>The prefix length must be in CIDR format (e.g., fd80::/64).</ValidationMessage>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Duplicate entry exists.</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
+                </prefix>
                 <duid type="TextField">
                     <Mask>/^(?:[0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2})+)$/</Mask>
                     <ValidationMessage>Value must be a colon-separated hexadecimal sequence (e.g., 01:02:f3).</ValidationMessage>

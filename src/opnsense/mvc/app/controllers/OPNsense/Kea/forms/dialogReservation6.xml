@@ -12,6 +12,12 @@
         <help>IP address to offer to the client</help>
     </field>
     <field>
+        <id>reservation.prefix</id>
+        <label>Prefix</label>
+        <type>text</type>
+        <help>Prefix to offer to the client. This is relevant for reserving a prefix delegation, for a simple IP address reservation this is not used.</help>
+    </field>
+    <field>
         <id>reservation.duid</id>
         <label>DUID</label>
         <type>text</type>
