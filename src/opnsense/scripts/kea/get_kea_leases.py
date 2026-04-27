@@ -83,6 +83,7 @@ if __name__ == '__main__':
 
         records.append({
             "address": address,
+            "prefix_len": lease.get("prefix-len", 128),
             "hwaddr": lease.get("hw-address", ""),
             "duid": lease.get("duid", ""),
             "valid_lifetime": lease.get("valid-lft", 0),
