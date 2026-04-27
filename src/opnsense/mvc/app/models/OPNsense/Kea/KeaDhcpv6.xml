@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp6</mount>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <description>Kea DHCPv6 configuration</description>
     <items>
         <general>
@@ -18,6 +18,19 @@
                 <Default>4000</Default>
                 <Required>Y</Required>
             </valid_lifetime>
+            <mac_sources type="OptionField">
+                <Default>ipv6-link-local</Default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <duid>duid</duid>
+                    <ipv6-link-local>ipv6-link-local</ipv6-link-local>
+                    <client-link-addr-option>client-link-addr-option</client-link-addr-option>
+                    <remote-id>remote-id</remote-id>
+                    <docsis-cmts>docsis-cmts</docsis-cmts>
+                    <docsis-modem>docsis-modem</docsis-modem>
+                </OptionValues>
+                <Multiple>Y</Multiple>
+            </mac_sources>
             <fwrules type="BooleanField">
                 <Required>Y</Required>
                 <Default>1</Default>
