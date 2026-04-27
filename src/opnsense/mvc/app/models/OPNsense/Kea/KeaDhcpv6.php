@@ -324,6 +324,7 @@ class KeaDhcpv6 extends BaseModel
         $cnf = [
             'Dhcp6' => [
                 'valid-lifetime' => $this->general->valid_lifetime->asInt(),
+                'mac-sources' => $this->general->mac_sources->getValues(),
                 'interfaces-config' => [
                     'interfaces' => $this->getConfigPhysicalInterfaces(),
                     /* socket retries are on a per-interface basis, failing to open one won't affect others */
