@@ -67,7 +67,7 @@
             The correct format for each DUID type is as follows, all entries to be in hex format "xx" separated by a colon.<br/>
             <b>LLT</b>: 4 bytes "00:01:00:01" followed by 4 bytes Unix time e.g. "00:01:02:03", followed by 6 bytes of a MAC address.<br/>
             <b>LL</b>: 4 bytes "00:03:00:01" followed by 6 bytes of a MAC address.<br/>
-            <b>UUID</b>: 4 bytes "00:00:00:04" followed by 8 bytes of a universally unique identifier.<br/>
+            <b>UUID</b>: 2 bytes "00:04" followed by 16 bytes of a universally unique identifier.<br/>
             <b>EN</b>: 2 bytes "00:02" followed by 4 bytes of the enterprise number e.g. "00:00:00:01", followed by a variable length identifier of hex values up to 122 bytes in length.]]>
         </help>
     </field>
