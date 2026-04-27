@@ -202,6 +202,16 @@
                 <ddns_override_client_update type="BooleanField"/>
                 <ddns_update_on_renew type="BooleanField"/>
                 <description type="DescriptionField"/>
+                <ddns_conflict_resolution_mode type="OptionField">
+                   <Default>check-with-dhcid</Default>
+                   <Required>Y</Required>
+                   <OptionValues>
+                      <check-with-dhcid>check-with-dhcid</check-with-dhcid>
+                      <no-check-with-dhcid>no-check-with-dhcid</no-check-with-dhcid>
+                      <check-exists-with-dhcid>check-exists-with-dhcid</check-exists-with-dhcid>
+                      <no-check-without-dhcid>no-check-without-dhcid</no-check-without-dhcid>
+                   </OptionValues>
+                </ddns_conflict_resolution_mode>
             </subnet6>
         </subnets>
         <reservations>
