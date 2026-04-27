@@ -124,10 +124,7 @@ class KeaDhcpv6 extends BaseModel
      */
     public function hasPdPools()
     {
-        foreach ($this->pd_pools->pd_pool->iterateItems() as $_) {
-            return true;  // found one
-        }
-        return false;
+        return $this->pd_pools->pd_pool->count() > 0;
     }
 
     /**
