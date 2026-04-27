@@ -298,7 +298,8 @@
                             return "";
                         }
                         const value = row[column.id] || "";
-                        const isNegated = (row[column.id.replace('network', 'not')] == 1) ? "! " : "";
+                        // DNAT uses network, SNAT and ONAT uses net
+                        const isNegated = (row[column.id.replace(/network|net/, 'not')] == 1) ? "! " : "";
 
                         if (typeof value !== 'string') {
                             return '';
