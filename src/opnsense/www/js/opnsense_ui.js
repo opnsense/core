@@ -687,7 +687,6 @@ $.fn.SimpleActionButton = function (params) {
                         $("#" + this_button.data('message-id')).hide();
                         this_button.parent('.alert').addClass('content-box').removeClass('alert-info');
 
-                        // XXX instead of infamous check mark we could show a success or even failure message
                         hideCheckTimeout = setTimeout(function () {
                             setIcon(icon, 'fa fa-check', '');
                         }, 4000);
