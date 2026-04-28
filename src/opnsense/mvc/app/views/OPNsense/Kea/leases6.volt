@@ -139,8 +139,6 @@
 
                         const deleteBtn = $(`
                             <button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip"
-                                data-row-id="${row.address}"
-                                data-type="${row.type || ''}"
                                 title="{{ lang._('Delete Lease') }}">
                                 <span class="fa fa-fw fa-trash-o"></span>
                             </button>
@@ -148,6 +146,51 @@
                         return $('<div class="btn-group"></div>').append(reservationBtn).append(deleteBtn)[0];
                     },
                 }
+            },
+            commands: {
+                "delete": {
+                    method: function (event, cell) {
+                        const row = cell.getData();
+                        stdDialogRemoveItem("{{ lang._('Remove selected item(s)?') }}", () => {
+                            ajaxCall('/api/kea/leases6/del_lease/', {
+                                    ip: row.address,
+                                    type: row.type,
+                                },
+                                function () {
+                                    $("#grid-leases").bootgrid("reload");
+                                },
+                                null,
+                                'POST'
+                            );
+                        });
+                    }
+                },
+                "delete-selected": {
+                    method: function () {
+                        const grid = $("#grid-leases");
+                        stdDialogRemoveItem("{{ lang._('Remove selected item(s)?') }}", function () {
+                            const selected = grid.bootgrid("getSelectedRows");
+                            const currentRows = grid.bootgrid("getCurrentRows");
+                            const calls = selected.map(id => {
+                                const row = currentRows.find(r => r.address === id);
+                                if (!row) return;
+
+                                return ajaxCall('/api/kea/leases6/del_lease/', {
+                                        ip: row.address,
+                                        type: row.type,
+                                    },
+                                    null,
+                                    null,
+                                    'POST'
+                                );
+                            });
+
+                            $.when.apply($, calls).done(function () {
+                                grid.bootgrid("reload");
+                            });
+                        });
+                    }
+                },
             }
         });
 

@@ -122,15 +122,24 @@ abstract class LeasesController extends ApiControllerBase
         return $response;
     }
 
-    public function delLeaseAction($ips = null, $type = null)
+    public function delLeaseAction()
     {
         if (!$this->request->isPost()) {
             return ['status' => 'error', 'message' => gettext('Invalid request method')];
-        } elseif (empty($ips)) {
-            return ['status' => 'error', 'message' => gettext('Missing lease IP parameter')];
         }
 
-        $results = json_decode((new Backend())->configdpRun('kea delete lease', [$ips, $type]), true);
+        $ip = $this->request->getPost('ip');
+        $type = $this->request->getPost('type');
+
+        if (empty($ip)) {
+            return ['status' => 'error', 'message' => gettext('Missing lease IP parameter (e.g., fe80::1)')];
+        }
+
+        if (empty($type)) {
+            return ['status' => 'error', 'message' => gettext('Missing lease type parameter (e.g., IA_NA)')];
+        }
+
+        $results = json_decode((new Backend())->configdpRun('kea delete lease', [$ip, $type]), true);
 
         if (!is_array($results) || empty($results)) {
             throw new UserException(gettext('Invalid backend response'));
