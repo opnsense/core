@@ -125,7 +125,6 @@
 
                         const deleteBtn = $(`
                             <button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip"
-                                data-row-id="${row.address}"
                                 title="{{ lang._('Delete Lease') }}">
                                 <span class="fa fa-fw fa-trash-o"></span>
                             </button>

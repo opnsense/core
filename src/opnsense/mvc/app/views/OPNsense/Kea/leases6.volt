@@ -143,6 +143,7 @@
                                 <span class="fa fa-fw fa-trash-o"></span>
                             </button>
                         `);
+
                         return $('<div class="btn-group"></div>').append(reservationBtn).append(deleteBtn)[0];
                     },
                 }
@@ -191,7 +192,7 @@
                         });
                     }
                 },
-            }
+            },
         });
 
         $("#interface-selection-wrapper").detach().insertAfter('#grid-leases-header .search');
