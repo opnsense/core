@@ -189,7 +189,7 @@
         <label>Redirect Target Port</label>
         <type>text</type>
         <style>port_selector</style>
-        <help>The port on the internal host to forward traffic to.</help>
+        <help>The port on the internal host to forward traffic to. For port ranges, enter the first target port; the remaining ports are calculated automatically. Use "any" to preserve the given destination port or port range.</help>
         <grid_view>
             <formatter>alias</formatter>
             <sequence>95</sequence>
