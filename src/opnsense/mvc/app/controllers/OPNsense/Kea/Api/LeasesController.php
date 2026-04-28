@@ -122,7 +122,7 @@ abstract class LeasesController extends ApiControllerBase
         return $response;
     }
 
-    public function delLeaseAction($ips = null)
+    public function delLeaseAction($ips = null, $type = null)
     {
         if (!$this->request->isPost()) {
             return ['status' => 'error', 'message' => gettext('Invalid request method')];
@@ -130,7 +130,7 @@ abstract class LeasesController extends ApiControllerBase
             return ['status' => 'error', 'message' => gettext('Missing lease IP parameter')];
         }
 
-        $results = json_decode((new Backend())->configdpRun("kea delete lease " . $ips), true);
+        $results = json_decode((new Backend())->configdpRun('kea delete lease', [$ips, $type]), true);
 
         if (!is_array($results) || empty($results)) {
             throw new UserException(gettext('Invalid backend response'));
