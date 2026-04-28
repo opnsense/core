@@ -33,8 +33,8 @@ from lib.kea_ctrl import KeaCtrl
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("ip", help="IP address(es) to delete, comma separated")
-    parser.add_argument("--type", dest="lease_type", help="Lease type of IPv6 lease (e.g. IA_PD for prefix delegation)", default=None)
+    parser.add_argument("--ip", required=True, help="IP address(es) to delete, comma separated")
+    parser.add_argument("--type", dest="lease_type", help="Lease type of IPv6 lease (e.g. IA_NA, IA_PD)", default=None)
 
     args = parser.parse_args()
     ips = [ip.strip() for ip in args.ip.split(',') if ip.strip()]
