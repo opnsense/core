@@ -34,7 +34,11 @@ from lib.kea_ctrl import KeaCtrl
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("ip", help="IP address(es) to delete, comma separated")
-    ips = [ip.strip() for ip in parser.parse_args().ip.split(',') if ip.strip()]
+    parser.add_argument("--type", dest="lease_type", help="Lease type of IPv6 lease (e.g. IA_PD for prefix delegation)", default=None)
+
+    args = parser.parse_args()
+    ips = [ip.strip() for ip in args.ip.split(',') if ip.strip()]
+    lease_type = args.lease_type.upper() if args.lease_type else None
 
     results = {
         "failed": [],
@@ -46,9 +50,15 @@ if __name__ == '__main__':
         cmd = "lease6-del" if is_v6 else "lease4-del"
         service = "dhcp6" if is_v6 else "dhcp4"
 
-        result = KeaCtrl.send_command(cmd, {"ip-address": ip}, service)
+        payload = {"ip-address": ip}
+
+        if is_v6 and lease_type:
+            payload["type"] = lease_type
+
+        result = KeaCtrl.send_command(cmd, payload, service)
+
         if result.get("result", 1) > 0:
-            results["failed"].append(f"{ip}: {result.get("text", "unknown error")}")
+            results["failed"].append(f"{ip}: {result.get('text', 'unknown error')}")
         else:
             results["removed"].append(ip)
 

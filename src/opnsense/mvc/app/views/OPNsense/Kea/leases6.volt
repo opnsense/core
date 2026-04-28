@@ -103,7 +103,7 @@
 
                         const address = row.address || '';
                         const prefixLen = parseInt(row.prefix_len, 10);
-                        const isPrefix = prefixLen !== 128;
+                        const isPrefix = row.type === 'IA_PD';
 
                         const searchUrl = `${baseUrl}&search=${encodeURIComponent(searchValue)}`;
                         const addUrlParams = {
@@ -140,11 +140,11 @@
                         const deleteBtn = $(`
                             <button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip"
                                 data-row-id="${row.address}"
+                                data-type="${row.type || ''}"
                                 title="{{ lang._('Delete Lease') }}">
                                 <span class="fa fa-fw fa-trash-o"></span>
                             </button>
                         `);
-
                         return $('<div class="btn-group"></div>').append(reservationBtn).append(deleteBtn)[0];
                     },
                 }
