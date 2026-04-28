@@ -177,6 +177,7 @@
                 <th data-column-id="if_descr" data-type="string">{{ lang._('Interface') }}</th>
                 <th data-column-id="address" data-identifier="true" data-type="string" data-formatter="overflowformatter">{{ lang._('IP Address') }}</th>
                 <th data-column-id="prefix_len" data-identifier="true" data-type="string" data-width="4em">{{ lang._('Length') }}</th>
+                <th data-column-id="type" data-identifier="true" data-type="string" data-width="4em">{{ lang._('Type') }}</th>
                 <th data-column-id="duid" data-type="string" data-width="9em">{{ lang._('DUID') }}</th>
                 <th data-column-id="hwaddr" data-type="string" data-formatter="macformatter" data-width="9em">{{ lang._('MAC Address') }}</th>
                 <th data-column-id="valid_lifetime" data-type="integer">{{ lang._('Lifetime') }}</th>
