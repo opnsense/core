@@ -217,6 +217,9 @@ function setFormData(parent,data) {
                     } else if (targetNode.attr('type') !== 'file') {
                         // regular input type
                         targetNode.val(htmlDecode(node[keypart]));
+                        if (node['%' + keypart] !== undefined) {
+                            targetNode.attr('placeholder', htmlDecode(node['%' + keypart]));
+                        }
                     }
                     targetNode.change();
                 }

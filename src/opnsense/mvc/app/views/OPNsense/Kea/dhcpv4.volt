@@ -28,14 +28,6 @@
     $( document ).ready(function() {
         const data_get_map = {'frm_generalsettings':"/api/kea/dhcpv4/get"};
         mapDataToFormUI(data_get_map).done(function(data){
-            try {
-                $("#dhcpv4\\.ha\\.this_server_name").attr(
-                    "placeholder",
-                    data.frm_generalsettings.dhcpv4.this_hostname
-                );
-            } catch (e) {
-                null;
-            }
             formatTokenizersUI();
             $('.selectpicker').selectpicker('refresh');
             updateServiceControlUI('kea');
