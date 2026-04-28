@@ -49,6 +49,7 @@
  # width       :   width in pixels if applicable
  # allownew    :   allow new items (for list) if applicable
  # readonly    :   if true, input fields will be readonly
+ # type_formatter : when set add type_formatter="" atribute which is used in getFormData() to pipe data before returning
  #}
 
 <tr id="row_{{ id }}" {% if advanced|default(false)=='true' %} data-advanced="true"{% endif %}>
@@ -70,9 +71,10 @@
                     id="{{ id }}"
                     {{ readonly|default(false) ? 'readonly="readonly"' : '' }}
                     {% if hint is defined %}placeholder="{{hint}}"{% endif %}
+                    {% if type_formatter is defined %}type_formatter="{{type_formatter}}"{% endif %}
             >
         {% elseif type == "hidden" %}
-            <input type="hidden" id="{{ id }}" class="{{style|default('')}}" >
+            <input type="hidden" id="{{ id }}" class="{{style|default('')}}" {% if type_formatter is defined %}type_formatter="{{type_formatter}}"{% endif %} >
         {% elseif type == "checkbox" %}
             <input type="checkbox"  class="{{style|default('')}}" id="{{ id }}" aria-label="{{label|safe}}">
         {% elseif type in ["select_multiple", "dropdown"] %}
@@ -114,9 +116,9 @@
         {% elseif type == "password" %}
             <input type="password" autocomplete="new-password" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}">
         {% elseif type == "textbox" %}
-            <textarea class="{{style|default('')}}" rows="{{height|default("5")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}"></textarea>
+            <textarea class="{{style|default('')}}" rows="{{height|default("5")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}" {% if type_formatter is defined %}type_formatter="{{type_formatter}}"{% endif %} ></textarea>
         {% elseif type == "info" %}
-            <span  class="{{style|default('')}}" id="{{ id }}"></span>
+            <span  class="{{style|default('')}}" id="{{ id }}" {% if type_formatter is defined %}type_formatter="{{type_formatter}}"{% endif %}></span>
         {% elseif type == "color" %}
             <input type="color" class="form-control {{style|default('')}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}">
         {% endif %}
