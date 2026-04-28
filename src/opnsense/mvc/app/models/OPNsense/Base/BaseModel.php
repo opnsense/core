@@ -628,8 +628,8 @@ abstract class BaseModel
     {
         // create a wrapped validator and collect all model validations.
         $validation = new \OPNsense\Base\Validation();
-        $validation_data = array();
         $all_nodes = $this->internalData->getFlatNodes();
+        $validation_data = [];
 
         $this->internalValidationSequence++;
 
@@ -645,7 +645,7 @@ abstract class BaseModel
                     }
                 }
                 if (count($node_validators) > 0) {
-                    $validation_data[$key] = (string)$node;
+                    $validation_data[$key] = $node->getValue();
                 }
             }
         }
