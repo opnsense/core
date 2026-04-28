@@ -67,8 +67,12 @@ def main(params):
         # Temporary file used for the profile specified by client-connect
         if len(params.args) > 0:
             os.environ["config_file"] = params.args[0]
+        if params.dns_update:
+            subprocess.run(['/usr/local/opnsense/scripts/filter/dnsupdate.py', 'add', '--syslog'])
         sys.exit(subprocess.run("%s/client_connect.php" % cmd_path).returncode)
     elif params.script_type == 'client-disconnect':
+        if params.dns_update:
+            subprocess.run(['/usr/local/opnsense/scripts/filter/dnsupdate.py', 'delete', '--syslog'])
         sys.exit(subprocess.run("%s/client_disconnect.sh" % cmd_path).returncode)
     elif params.script_type == 'learn-address':
         if os.fork() == 0:
@@ -80,6 +84,8 @@ def main(params):
             dbounce_start = debounce_ref.stat().st_mtime
             time.sleep(2)
             if debounce_ref.stat().st_mtime == dbounce_start:
+                if params.dns_update:
+                    subprocess.run(['/usr/local/opnsense/scripts/filter/dnsupdate.py', 'add', '--syslog'])
                 sys.exit(subprocess.run(
                     ['/usr/local/opnsense/scripts/filter/update_tables.py', '--types', 'authgroup']
                 ).returncode)
@@ -112,6 +118,7 @@ if __name__ == '__main__':
         choices=['via-env', 'via-file']
     )
     parser.add_argument('--defer', help='defer action (when supported)', default=False, action="store_true")
+    parser.add_argument('--dns_update', help='run dns update script', default=False, action="store_true")
     parser.add_argument('server', help='openvpn server id to use, authentication settings are configured per server')
     parser.add_argument('args',  nargs='*',  help='script arguments specified by openvpn')
 
