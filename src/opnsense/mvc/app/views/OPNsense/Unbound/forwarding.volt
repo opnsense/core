@@ -27,46 +27,48 @@
 <script>
 
     $( document ).ready(function() {
-        let this_page = 'Dot';
+        let this_page = 'Forward';
         $('tr[id="row_unbound.forwarding.info"]').addClass('hidden');
-
         /* Handle retrieval and saving of the single system forwarding checkbox */
         let data_get_map = {'frm_ForwardingSettings':"/api/unbound/settings/get"};
         mapDataToFormUI(data_get_map).done(function(data) {
             /* only called on page load */
-            formatTokenizersUI();
-            $('.selectpicker').selectpicker('refresh');
-
-            if (data.frm_ForwardingSettings.unbound.dots.client_https_enabled == "0") {
-                $('tr[id="row_unbound.dots.client_https_port"]').addClass('hidden');
+            if (data.frm_ForwardingSettings.unbound.forwarding.enabled == "1") {
+                toggleNameservers(true);
             }
         });
 
-        $(".client-dnsovertls-enabled").click(function() {
+        $(".forwarding-enabled").click(function() {
             saveFormToEndpoint(url="/api/unbound/settings/set", formid='frm_ForwardingSettings');
-	});
 
-        $(".client-dnsoverhttps-enabled").click(function() {
-            saveFormToEndpoint(url="/api/unbound/settings/set", formid='frm_ForwardingSettings');
             let checked = ($(this).is(':checked'));
+            toggleNameservers(checked);
+        });
+
+        function toggleNameservers(checked) {
             if (checked) {
-                $('tr[id="row_unbound.dots.client_https_port"]').removeClass('hidden');
+                ajaxGet(url="/api/unbound/settings/get_nameservers", {}, callback=function(data, status) {
+                    $('tr[id="row_unbound.forwarding.info"]').removeClass('hidden');
+                    if (data.length && !data.includes('')) {
+                        $('div[id="control_label_unbound.forwarding.info"]').append(
+                            "<span>{{ lang._('The following nameservers are used:') }}</span>"
+                        );
+                        $('span[id="unbound.forwarding.info"]').append(
+                            "<div><b>" + data.join(", ") + "</b></div>"
+                        );
+                    } else {
+                        $('div[id="control_label_unbound.forwarding.info"]').append(
+                            "<span>{{ lang._('There are no system nameservers configured. Please do so in ') }}<a href=\"/system_general.php\">System: Settings: General</a></span>"
+                        );
+                    }
+
+                });
             } else {
-                $('tr[id="row_unbound.dots.client_https_port"]').addClass('hidden');
+                $('tr[id="row_unbound.forwarding.info"]').addClass('hidden');
+                $('div[id="control_label_unbound.forwarding.info"]').children().not(':first').remove();
+                $('span[id="unbound.forwarding.info"]').children().remove();
             }
-	});
-
-        $(".client-dnsoverhttps-port").change(function() {
-           saveFormToEndpoint(url="/api/unbound/settings/set", formid='frm_ForwardingSettings');
-	});
-
-        $(".client-dnsoverquic-enabled").click(function() {
-            saveFormToEndpoint(url="/api/unbound/settings/set", formid='frm_ForwardingSettings');
-	});
-
-        $(".client-dots-cert-selected").change(function() {
-           saveFormToEndpoint(url="/api/unbound/settings/set", formid='frm_ForwardingSettings');
-	});
+        }
 
         $("#{{formGridDot['table_id']}}").UIBootgrid(
                 {   'search':'/api/unbound/settings/search'+this_page+'/',
@@ -108,36 +110,17 @@
     }
 </style>
 
-<ul class="nav nav-tabs" role="tablist" id="maintabs">
-    <li><a data-toggle="tab" class="active" id="client-tab" href="#dots-client"><b>{{ lang._('For local clients') }}</b></a></li>
-    <li><a data-toggle="tab" id="server-tab" href="#dots-server">{{ lang._('To remote DNS servers') }}</a></li>
-</ul>
-
-<div class="content-box tab-content">
-    
-    <div id="dots-client" class="tab-pane fade in active">
-        <div class="col-md-12">
-    	{{ partial("layout_partials/base_form",['fields':clientDotForm,'id':'frm_ForwardingSettings'])}}
-	</div>
-    </div>
-    
-    <div id="dots-server" class="tab-pane fade">
-        <div class="col-md-12">
-	<!-- div class="content-box __mb">
-            {# include base forwarding form #}
-            {{ partial("layout_partials/base_form",['fields':forwardingForm,'id':'frm_ForwardingSettings'])}}
-        </div -->
-        <div class="content-box __mb">
-            {{ partial('layout_partials/base_bootgrid_table', formGridDot)}}
-            <div id="infosection" class="bootgrid-footer container-fluid">
-                {{ lang._('Please note that entries without a specific domain (and thus all domains) specified in both Query Forwarding and DNS over TLS
-                are considered duplicates, DNS over TLS will be preferred. If "Use System Nameservers" is checked, Unbound will use the DNS servers entered
-                in System->Settings->General or those obtained via DHCP or PPP on WAN if the "Allow DNS server list to be overridden by DHCP/PPP on WAN" is checked.') }}
-            </div>
-        </div>
-
-    </div>
-
+<div class="content-box __mb">
+    {# include base forwarding form #}
+    {{ partial("layout_partials/base_form",['fields':forwardingForm,'id':'frm_ForwardingSettings'])}}
 </div>
-
+<div class="content-box __mb">
+    {{ partial('layout_partials/base_bootgrid_table', formGridDot)}}
+    <div id="infosection" class="bootgrid-footer container-fluid">
+        {{ lang._('Please note that entries without a specific domain (and thus all domains) specified in both Query Forwarding and DNS over TLS
+        are considered duplicates, DNS over TLS will be preferred. If "Use System Nameservers" is checked, Unbound will use the DNS servers entered
+        in System->Settings->General or those obtained via DHCP or PPP on WAN if the "Allow DNS server list to be overridden by DHCP/PPP on WAN" is checked.') }}
+    </div>
+</div>
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/unbound/service/reconfigure', 'data_service_widget': 'unbound'}) }}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEdit,'id':formGridDot['edit_dialog_id'],'label':lang._('Edit server')])}}
