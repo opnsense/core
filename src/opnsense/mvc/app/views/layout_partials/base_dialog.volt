@@ -31,6 +31,7 @@
  # id              :   form id, used as unique id for this modal form. inner form to place data is called frm_[id]
  #                     save button is identified by btn_[id]_save
  # label           :   dialog label
+ # save_cancel_id  :   additional save/cancel buttons to hook up using partial ID
  #}
 
 {# Volt templates in php7 have issues with scope sometimes, copy input values to make them more unique #}
@@ -118,26 +119,28 @@
             <col style="width: 35%;" />
         {% endif %}
         </colgroup>
-        <thead style="cursor: pointer;">
-          <tr{% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
+        <thead {% if field['static']|default('false')=='false' %} style="cursor: pointer;"{% endif %}>
+          <tr{% if field['advanced']|default('false')=='true' %} data-advanced="true"{% endif %}>
             <th colspan="3">
                 <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px;">
-                    {% if field['collapse']|default(false)=='true' %}
+                    {% if field['static']|default('false')=='false' %}
+                    {% if field['collapse']|default('false')=='true' %}
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
                     {% else %}
                     <i class="fa fa-angle-down" aria-hidden="true"></i>
                     {% endif %}
                     &nbsp;
+                    {% endif %}
                     <b>{{field['label']}}</b>
                 </div>
             </th>
           </tr>
         </thead>
-        <tbody class="collapsible" {% if field['collapse']|default(false)=='true' %}style="display: none;"{%endif%}>
+        <tbody {%if field['static']|default('false')=='false'%}class="collapsible" {% if field['collapse']|default('false')=='true' %}style="display: none;"{%endif%}{%endif%}>
 {#- endmacro #}
 
                             {% elseif field['type'] == 'subheader' %}
-                                <tr{% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
+                                <tr{% if field['advanced']|default('false') == 'true' %} data-advanced="true"{% endif %}>
                                     <td colspan="3">
                                         <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px; padding-left: 5px;">
                                             <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
@@ -150,6 +153,19 @@
                               {{ partial("layout_partials/form_input_tr",field)}}
                             {% endif %}
                         {% endfor %}
+                          <tr><td>&nbsp;</td><td>
+{% if save_cancel_id|default('') != '' %}
+                            <div id="{{ save_cancel_id }}Btns">
+                                <button type="button" class="btn btn-primary" id="btn_{{ save_cancel_id }}_save">
+                                  {{ lang._('Save') }}
+                                  <i id="btn_{{ save_cancel_id }}_save_progress" class=""></i>
+                                </button>
+                                <button type="button" class="btn btn-default" id="btn_{{ save_cancel_id }}_cancel">
+                                  {{ lang._('Cancel') }}
+                                </button>
+                            </div>
+                          </td><td>&nbsp;</td></tr>
+{% endif %}
                         </tbody>
                     </table>
                   </div>
