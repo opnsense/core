@@ -31,6 +31,18 @@ import ujson
 
 from lib.kea_ctrl import KeaCtrl
 
+
+def get_ipv6_lease_types():
+    lease_map = {}
+    leases = KeaCtrl.send_command('lease6-get-all', None, 'dhcp6').get("arguments", {}).get("leases", [])
+    for lease in leases:
+        addr = lease.get("ip-address")
+        lease_type = lease.get("type")
+        lease_map.setdefault(addr, set()).add(lease_type)
+
+    return lease_map
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument("ip", help="IP address(es) to delete, comma separated")
@@ -41,15 +53,27 @@ if __name__ == '__main__':
         "removed": []
     }
 
+    has_v6 = any(":" in ip for ip in ips)
+    lease_map = get_ipv6_lease_types() if has_v6 else {}
+
     for ip in ips:
         is_v6 = ":" in ip
         cmd = "lease6-del" if is_v6 else "lease4-del"
         service = "dhcp6" if is_v6 else "dhcp4"
 
-        result = KeaCtrl.send_command(cmd, {"ip-address": ip}, service)
-        if result.get("result", 1) > 0:
-            results["failed"].append(f"{ip}: {result.get("text", "unknown error")}")
-        else:
-            results["removed"].append(ip)
+        types = lease_map.get(ip, {None}) if is_v6 else {None}
+
+        # This is a pragmatic assumption since collisions between IA_NA and IA_PD
+        # on the same base address can be considered negligible
+        for lease_type in types:
+            payload = {"ip-address": ip}
+            if is_v6 and lease_type:
+                payload["type"] = lease_type
+
+            result = KeaCtrl.send_command(cmd, payload, service)
+            if result.get("result", 1) > 0:
+                results["failed"].append(f"{ip}: {result.get('text', 'unknown error')}")
+            else:
+                results["removed"].append(ip)
 
     print(ujson.dumps(results))
