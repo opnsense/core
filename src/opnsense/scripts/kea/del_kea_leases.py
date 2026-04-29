@@ -33,33 +33,25 @@ from lib.kea_ctrl import KeaCtrl
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument("--ip", required=True, help="IP address(es) to delete, comma separated")
+    parser.add_argument("--ip", required=True, help="IP address to delete")
     parser.add_argument("--type", dest="lease_type", help="Lease type of IPv6 lease (e.g. IA_NA, IA_PD)", default=None)
 
     args = parser.parse_args()
-    ips = [ip.strip() for ip in args.ip.split(',') if ip.strip()]
+    ip = args.ip.strip()
     lease_type = args.lease_type.upper() if args.lease_type else None
 
-    results = {
-        "failed": [],
-        "removed": []
-    }
+    is_v6 = ":" in ip
+    cmd = "lease6-del" if is_v6 else "lease4-del"
+    service = "dhcp6" if is_v6 else "dhcp4"
 
-    for ip in ips:
-        is_v6 = ":" in ip
-        cmd = "lease6-del" if is_v6 else "lease4-del"
-        service = "dhcp6" if is_v6 else "dhcp4"
+    payload = {"ip-address": ip}
 
-        payload = {"ip-address": ip}
+    if is_v6 and lease_type:
+        payload["type"] = lease_type
 
-        if is_v6 and lease_type:
-            payload["type"] = lease_type
+    result = KeaCtrl.send_command(cmd, payload, service)
 
-        result = KeaCtrl.send_command(cmd, payload, service)
-
-        if result.get("result", 1) > 0:
-            results["failed"].append(f"{ip}: {result.get('text', 'unknown error')}")
-        else:
-            results["removed"].append(ip)
-
-    print(ujson.dumps(results))
+    if result.get("result", 1) > 0:
+        print(ujson.dumps({"failed": [f"{ip}: {result.get('text', 'unknown error')}"], "removed": []}))
+    else:
+        print(ujson.dumps({"failed": [], "removed": [ip]}))
