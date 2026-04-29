@@ -137,7 +137,7 @@ abstract class LeasesController extends ApiControllerBase
 
         $result = json_decode((new Backend())->configdpRun('kea delete lease', [$ip, $type]), true);
 
-        if (empty($result) || !is_array($result)) {
+        if (!is_array($result) || empty($result)) {
             throw new UserException(gettext('Invalid backend response'));
         }
 
