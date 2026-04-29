@@ -129,7 +129,7 @@ abstract class LeasesController extends ApiControllerBase
         }
 
         $ip = $this->request->getPost('ip');
-        $type = $this->request->getPost('type');
+        $type = $this->request->getPost('type') ?: null;
 
         if (empty($ip)) {
             return ['status' => 'error', 'message' => gettext('Missing lease IP parameter')];
