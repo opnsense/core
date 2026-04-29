@@ -153,10 +153,7 @@
                     method: function (event, cell) {
                         const row = cell.getData();
                         stdDialogRemoveItem("{{ lang._('Remove selected item(s)?') }}", () => {
-                            ajaxCall('/api/kea/leases6/del_lease/', {
-                                    ip: row.address,
-                                    type: row.type,
-                                },
+                            ajaxCall('/api/kea/leases6/del_lease/', {ip: row.address, type: row.type},
                                 function () {
                                     $("#grid-leases").bootgrid("reload");
                                 },
@@ -175,17 +172,8 @@
                             const calls = selected.map(id => {
                                 const row = currentRows.find(r => r.address === id);
                                 if (!row) return;
-
-                                return ajaxCall('/api/kea/leases6/del_lease/', {
-                                        ip: row.address,
-                                        type: row.type,
-                                    },
-                                    null,
-                                    null,
-                                    'POST'
-                                );
+                                return ajaxCall('/api/kea/leases6/del_lease/', {ip: row.address, type: row.type}, null, null, 'POST');
                             });
-
                             $.when.apply($, calls).done(function () {
                                 grid.bootgrid("reload");
                             });
