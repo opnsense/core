@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp6</mount>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <description>Kea DHCPv6 configuration</description>
     <items>
         <general>
@@ -128,6 +128,10 @@
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                 </interface>
+                <dynamic_prefix type="BooleanField">
+                    <Required>Y</Required>
+                    <Default>0</Default>
+                </dynamic_prefix>
                 <ddns_forward_zone type="HostnameField">
                     <IpAllowed>N</IpAllowed>
                     <Constraints>

@@ -188,6 +188,7 @@ class KeaDhcpv6 extends BaseModel
             if (!$subnet->description->isEmpty()) {
                 $record['user-context']['description'] = $subnet->description->getValue();
             }
+            $record['user-context']['dynamic_prefix'] = !$subnet->dynamic_prefix->isEmpty();
             /* standard option-data elements */
             foreach ($subnet->option_data->iterateItems() as $key => $value) {
                 $target_fieldname = str_replace('_', '-', $key);
