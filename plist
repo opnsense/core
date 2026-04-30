@@ -2240,6 +2240,7 @@
 /usr/local/opnsense/www/js/widgets/Memory.js
 /usr/local/opnsense/www/js/widgets/Metadata/Core.xml
 /usr/local/opnsense/www/js/widgets/Monit.js
+/usr/local/opnsense/www/js/widgets/Notes.js
 /usr/local/opnsense/www/js/widgets/OpenVPNClients.js
 /usr/local/opnsense/www/js/widgets/OpenVPNServers.js
 /usr/local/opnsense/www/js/widgets/Picture.js
