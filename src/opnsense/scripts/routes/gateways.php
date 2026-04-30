@@ -33,7 +33,6 @@ use OPNsense\Firewall\Util;
 use OPNsense\Routing\Gateways;
 use OPNsense\Routing\GatewayGroups;
 
-
 $opts = getopt('ghl', [], $optind);
 $args = array_slice($argv, $optind);
 
