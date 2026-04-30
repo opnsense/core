@@ -29,11 +29,26 @@
 namespace OPNsense\Routing\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Core\Backend;
+use OPNsense\Routing\GatewayGroups;
 
 class GroupSettingsController extends ApiMutableModelControllerBase
 {
     protected static $internalModelClass = '\OPNsense\Routing\GatewayGroups';
     protected static $internalModelName = 'gateway_group';
+    /* behavior overridden below */
+    protected static $internalModelUseSafeDelete = false;
+
+    public function reconfigureAction()
+    {
+        $result = ["status" => "failed"];
+        if ($this->request->isPost()) {
+            (new Backend())->configdRun('interface routes configure');
+            $result = ["status" => "ok"];
+        }
+
+        return $result;
+    }
 
     public function searchAction()
     {
@@ -57,6 +72,16 @@ class GroupSettingsController extends ApiMutableModelControllerBase
 
     public function delAction($uuids)
     {
+        $groups = new GatewayGroups();
+
+        foreach ((!empty($uuids) ? explode(",", $uuids) : []) as $uuid) {
+            $node = $groups->getNodeByReference('gateway_group.' . $uuid);
+            if ($node != null) {
+                $name = $node->name->getValue();
+                $this->checkAndThrowValueInUse($name, false, false, ['gateways.gateway_group'], sprintf(gettext("Item %s in use by:"), $name));
+            }
+        }
+
         return $this->delBase('gateway_group', $uuids);
     }
 }

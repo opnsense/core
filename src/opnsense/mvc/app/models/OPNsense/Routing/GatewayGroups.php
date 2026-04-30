@@ -128,13 +128,11 @@ class GatewayGroups extends BaseModel
         foreach ($this->gateway_group->iterateItems() as $grp) {
             $name = $grp->name->getValue();
 
-            foreach ($grp->iterateItems() as $prop) {
-                $result[$name] = $prop->getNodeContent();
-            }
+            $result[$name] = $grp->getNodeContent();
 
             $result[$name]['tiers'] = [];
             foreach (['item', 'item2', 'item3', 'item4', 'item5'] as $idx => $property) {
-                $result[$name]['tiers'][$idx + 1] = explode(',',  $result[$name][$property]) ?? null;
+                $result[$name]['tiers'][$idx + 1] = explode(',',  $result[$name][$property] ?? '');
                 unset($result[$name][$property]);
             }
 

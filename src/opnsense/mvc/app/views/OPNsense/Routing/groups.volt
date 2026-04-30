@@ -40,6 +40,9 @@
 
 <div class="tab-content content-box">
     {{ partial('layout_partials/base_bootgrid_table', formGridGatewayGroups)}}
+    <div id="infosection" class="bootgrid-footer container-fluid">
+        {{ lang._('Remember to use these Gateway Groups in firewall rules in order to enable load balancing, failover, or policy-based routing. Without rules directing traffic into the Gateway Groups, they will not be used.') }}
+    </div>
 </div>
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/routing/groupsettings/reconfigure'}) }}
