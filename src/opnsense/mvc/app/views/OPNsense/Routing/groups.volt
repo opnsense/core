@@ -45,5 +45,5 @@
     </div>
 </div>
 
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/routing/groupsettings/reconfigure'}) }}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/routing/group_settings/reconfigure'}) }}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditGatewayGroup,'id':formGridGatewayGroups['edit_dialog_id'],'label':lang._('Edit Gateway Group')])}}
