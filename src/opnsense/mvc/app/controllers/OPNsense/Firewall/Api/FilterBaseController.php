@@ -31,6 +31,7 @@ namespace OPNsense\Firewall\Api;
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\FieldTypes\PortField;
 use OPNsense\Base\UserException;
+use OPNsense\Core\ACL;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Alias;
@@ -299,9 +300,11 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         return $result;
     }
 
+    // XXX: Not directly used by GUI, should be removed at some point
     public function applyAction($rollback_revision = null)
     {
-        if ($this->request->isPost()) {
+        // XXX: Privilege check is a workaround here
+        if ($this->request->isPost() && !(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
             if ($rollback_revision != null) {
                 // background rollback timer
                 (new Backend())->configdpRun('filter rollback_timer', [$rollback_revision], true);
@@ -312,9 +315,11 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         }
     }
 
+    // XXX: Not directly used by GUI, should be removed at some point
     public function cancelRollbackAction($rollback_revision)
     {
-        if ($this->request->isPost()) {
+        // XXX: Privilege check is a workaround here
+        if ($this->request->isPost() && !(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
             return array(
                 "status" => (new Backend())->configdpRun('filter cancel_rollback', [$rollback_revision])
             );
@@ -323,9 +328,11 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         }
     }
 
+    // XXX: Not directly used by GUI, should be removed at some point
     public function savepointAction()
     {
-        if ($this->request->isPost()) {
+        // XXX: Privilege check is a workaround here
+        if ($this->request->isPost() && !(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
             // trigger a save, so we know revision->time matches our running config
             Config::getInstance()->save();
             return array(
@@ -338,9 +345,11 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         }
     }
 
+    // XXX: Not directly used by GUI, should be removed at some point
     public function revertAction($revision)
     {
-        if ($this->request->isPost()) {
+        // XXX: Privilege check is a workaround here
+        if ($this->request->isPost() && !(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
             Config::getInstance()->lock();
             $filename = Config::getInstance()->getBackupFilename($revision);
             if (!$filename) {
@@ -413,8 +422,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
 
         if ($new_key !== null) {
             $selected_node->$sort_key = (string)$new_key;
-            $this->getModel()->serializeToConfig(false, true);
-            Config::getInstance()->save();
+            $this->save();
         }
 
         return ["status" => "ok"];
@@ -442,8 +450,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         }
 
         $node->log = $log;
-        $mdl->serializeToConfig();
-        Config::getInstance()->save();
+        $this->save();
 
         return ['status' => 'ok'];
     }
