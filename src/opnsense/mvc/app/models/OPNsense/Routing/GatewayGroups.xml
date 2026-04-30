@@ -15,12 +15,22 @@
                     </check001>
                 </Constraints>
             </name>
-            <item2 type=".\GatewayGroupItemField"/>
-            <item3 type=".\GatewayGroupItemField"/>
-            <item4 type=".\GatewayGroupItemField"/>
-            <item5 type=".\GatewayGroupItemField"/>
+            <item2 type=".\GatewayGroupItemField">
+                <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
+            </item2>
+            <item3 type=".\GatewayGroupItemField">
+                <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
+            </item3>
+            <item4 type=".\GatewayGroupItemField">
+                <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
+            </item4>
+            <item5 type=".\GatewayGroupItemField">
+                <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
+            </item5>
             <!-- <item> placed last to assist inline migration -->
-            <item type=".\GatewayGroupItemField"/>
+            <item type=".\GatewayGroupItemField">
+                <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
+            </item>
             <trigger type="OptionField">
                 <OptionValues>
                     <down>Member Down</down>

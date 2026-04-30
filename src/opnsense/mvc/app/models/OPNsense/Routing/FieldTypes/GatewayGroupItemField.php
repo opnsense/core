@@ -28,12 +28,12 @@
 
 namespace OPNsense\Routing\FieldTypes;
 
-use OPNsense\Base\FieldTypes\BaseField;
+use OPNsense\Base\FieldTypes\JsonKeyValueStoreField;
 
-// XXX: consider BaseList/SetField
-class GatewayGroupItemField extends BaseField
+class GatewayGroupItemField extends JsonKeyValueStoreField
 {
     protected $internalIsContainer = false;
+    protected $internalMultiSelect = true;
 
     public function setValue($value)
     {
@@ -46,11 +46,18 @@ class GatewayGroupItemField extends BaseField
 
             ksort($tiers);
             foreach ($tiers as $tieridx => $tier) {
-                $property = 'item';
-                if ($tieridx > 1) {
-                    $property .= $tieridx;
-                }
                 $gwnames = implode(',', $tier);
+                if ($tieridx == 1) {
+                    parent::setValue($gwnames);
+                    continue;
+                }
+
+                if ($tieridx > 5) {
+                    /* bad data */
+                    return;
+                }
+
+                $property = 'item' . ($tieridx > 1 ? $tieridx : '');
                 $this->getParentNode()->$property->setValue($gwnames);
             }
         } elseif (!empty($value)) {

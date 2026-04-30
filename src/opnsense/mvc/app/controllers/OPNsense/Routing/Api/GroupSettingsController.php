@@ -1,8 +1,7 @@
-#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (c) 2017 Fabian Franz
+ * Copyright (C) 2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,36 +26,37 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("script/load_phalcon.php");
+namespace OPNsense\Routing\Api;
 
-use OPNsense\Firewall\Util;
-use OPNsense\Routing\Gateways;
-use OPNsense\Routing\GatewayGroups;
+use OPNsense\Base\ApiMutableModelControllerBase;
 
-$mdl = new Gateways();
-$gateways = $mdl->gatewaysIndexedByName(true, true, true);
+class GroupSettingsController extends ApiMutableModelControllerBase
+{
+    protected static $internalModelClass = '\OPNsense\Routing\GatewayGroups';
+    protected static $internalModelName = 'gateway_group';
 
-$ret = [];
-
-foreach ($gateways as $gateway) {
-    if (Util::isIpAddress($gateway['gateway'] ?? '')) {
-        $ret[$gateway['name']] = "{$gateway['name']} - {$gateway['gateway']}";
-    } else {
-        $ret[$gateway['name']] = "{$gateway['name']} - {$gateway['ipprotocol']}";
+    public function searchAction()
+    {
+        return $this->searchBase('gateway_group');
     }
-}
 
-$opts = getopt('gh', [], $optind);
-$args = array_slice($argv, $optind);
-
-if (isset($opts['h'])) {
-    echo "Usage: gateways.php [-g] [-h]\n\n";
-    echo "\t-g add gateway groups\n";
-} else {
-    if (isset($opts['g'])) {
-        foreach ((new GatewayGroups())->getGroupNames() as $name) {
-            $ret[$name] = $name;
-        }
+    public function getAction($uuid = null)
+    {
+        return $this->getBase('gateway_group', 'gateway_group', $uuid);
     }
-    echo json_encode($ret) . PHP_EOL;
+
+    public function setAction($uuid = null)
+    {
+        return $this->setBase('gateway_group', 'gateway_group', $uuid);
+    }
+
+    public function addAction()
+    {
+        return $this->addBase('gateway_group', 'gateway_group');
+    }
+
+    public function delAction($uuids)
+    {
+        return $this->delBase('gateway_group', $uuids);
+    }
 }

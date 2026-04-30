@@ -211,7 +211,7 @@ class SettingsController extends ApiMutableModelControllerBase
                     }
                 }
 
-                $groups = (new \OPNsense\Routing\GatewayGroups())->gatewayGroupsByGateway($uuid);
+                $groups = (new \OPNsense\Routing\GatewayGroups())->gatewayGroupsByGateway($gateway->name->getValue());
                 if (!empty($groups)) {
                     $names = array_map(function($item) {
                         return $item->name->getValue();

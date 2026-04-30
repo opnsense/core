@@ -54,7 +54,7 @@ function get_gateway_error(string $status, string $gwname, array $group)
 $gateways_status = dpinger_status();
 $clean = true;
 
-foreach ((new OPNsense\Routing\GatewayGroups())->getConfigGroups() as $group_name => $group) {
+foreach ((new OPNsense\Routing\GatewayGroups())->getGroupsConfig() as $group_name => $group) {
     $tiers_online = 0;
     foreach ($group['tiers'] as $tier) {
         foreach ($tier as $gwname) {
@@ -73,7 +73,7 @@ foreach ((new OPNsense\Routing\GatewayGroups())->getConfigGroups() as $group_nam
 
     if ($tiers_online == 0) {
         /* Oh dear, we have no members!*/
-        $msg = sprintf(gettext('Gateways status could not be determined, considering all as up/active. (Group: %s)'), $groupname);
+        $msg = sprintf(gettext('Gateways status could not be determined, considering all as up/active. (Group: %s)'), $group_name);
         echo $msg . PHP_EOL;
         $clean = false;
     }

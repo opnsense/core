@@ -68,26 +68,12 @@ class GatewayGroups extends BaseModel
         return $messages;
     }
 
-    public function gatewayGroupByName($name)
-    {
-        foreach ($this->gateway_group->iterateItems() as $grp) {
-            if ($name == $grp->name->getValue()) {
-                return $grp;
-            }
-        }
-
-        return null;
-    }
-
-    public function gatewaysInGroup($groupName)
+    public function gatewaysInGroup($groupNode)
     {
         $result = [];
-        $node = $this->gatewayGroupByName($groupName);
-        if ($node != null) {
-            foreach (['item', 'item2', 'item3', 'item4', 'item5'] as $property) {
-                foreach (explode(',', $node->$property->getValue()) as $gwname) {
-                    $result[] = $gwname;
-                }
+        foreach (['item', 'item2', 'item3', 'item4', 'item5'] as $property) {
+            foreach (explode(',', $groupNode->$property->getValue()) as $gwname) {
+                $result[] = $gwname;
             }
         }
 
@@ -105,7 +91,7 @@ class GatewayGroups extends BaseModel
         $result = [];
 
         foreach ($this->gateway_group->iterateItems() as $grp) {
-            foreach ($this->gatewaysInGroup($grp->name->getValue()) as $gw) {
+            foreach ($this->gatewaysInGroup($grp) as $gw) {
                 if ($gwname === $gw) {
                     $result[] = $grp;
                     break;
@@ -120,26 +106,21 @@ class GatewayGroups extends BaseModel
      * Get gateway groups from persisted config indexed by name,
      * <item> properties are replaced by a single "tiers" array, sorted by index
      */
-    public function getConfigGroups($groupname = null)
+    public function getGroupsConfig()
     {
         $result = [];
 
         foreach ($this->gateway_group->iterateItems() as $grp) {
             $name = $grp->name->getValue();
 
-            if ($groupname !== null && $groupname !== $name) {
-                continue;
-            }
-
             foreach ($grp->iterateItems() as $prop) {
-                $result[$name][$prop->getInternalXMLTagName()] = $prop->getValue();
+                $result[$name] = $prop->getNodeContent();
             }
 
+            $result[$name]['tiers'] = [];
             foreach (['item', 'item2', 'item3', 'item4', 'item5'] as $idx => $property) {
+                $result[$name]['tiers'][$idx + 1] = explode(',',  $result[$name][$property]);
                 unset($result[$name][$property]);
-                foreach (explode(',', $grp->$property->getValue()) as $gw) {
-                    $result[$name]['tiers'][$idx + 1][] = $gw;
-                }
             }
 
             ksort($result[$name]['tiers']);
@@ -222,7 +203,7 @@ class GatewayGroups extends BaseModel
         $all_gateways = $this->getGatewaysModel()->gatewaysIndexedByName();
         $result = [];
 
-        foreach ($this->getConfigGroups() as $group_name => $gw_group) {
+        foreach ($this->getGroupsConfig() as $group_name => $gw_group) {
             $all_tiers = [];
             foreach ($gw_group['tiers'] as $tieridx => $tier) {
                 $all_tiers[$tieridx] = [];
@@ -286,7 +267,7 @@ class GatewayGroups extends BaseModel
     public function getGroupIPProto($name)
     {
         $all_gateways = $this->getGatewaysModel()->gatewaysIndexedByName();
-        foreach ($this->getConfigGroups() as $grp) {
+        foreach ($this->getGroupsConfig() as $grp) {
             if ($grp['name'] !== $name) {
                 continue;
             }
