@@ -37,14 +37,14 @@ import time
 from select import select
 
 all_rules = {
-    '.*Accepted.*': True,
-    '.*Successful login.*': True,
     '.*Web GUI authentication error.*': False,
     '.*Invalid user.*': False,
     '.*Illegal user.*': False,
     '.*Postponed keyboard-interactive for invalid user.*': False,
     '.*authentication error for illegal user.*': False,
-    '.*Authentication error for .*': False
+    '.*Authentication error for .*': False,
+    '.*Successful login.*': True,
+    '.*Accepted.*': True
 }
 
 if __name__ == '__main__':
