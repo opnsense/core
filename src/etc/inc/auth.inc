@@ -359,7 +359,7 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     if (!$force_password) {
         /* read from pw db if not provided (batch mode) */
         if ($userattrs === null) {
-            $fd = popen("/usr/sbin/pw usershow -n {$user_name}", 'r');
+            $fd = popen(exec_safe('/usr/sbin/pw usershow -n %s', $user_name), 'r');
             $pwread = fgets($fd);
             pclose($fd);
             if (substr_count($pwread, ':')) {
@@ -368,9 +368,12 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
         }
     }
 
+    $user_frmt = ['/usr/sbin/pw %s'];
+
     /* determine add or mod */
     if ($userattrs === null || $userattrs[0] != $user['name']) {
-        $user_op = 'useradd -m -k /usr/share/skel -o';
+        $user_frmt[] = '-m -k /usr/share/skel -o';
+        $user_op = 'useradd';
     } elseif (
         $userattrs[0] == $user_name &&
         $userattrs[1] == '*' &&
@@ -387,10 +390,10 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
 
     /* add or mod pw db */
     if ($user_op != null) {
-        $cmd = "/usr/sbin/pw {$user_op} -q -u {$user_uid} -n {$user_name}" .
-          " -g {$user_group} -s {$user_shell} -d {$user_home}" .
-          " -c " . escapeshellarg($comment) . " -H 0 2>&1";
-        $fd = popen($cmd, 'w');
+        $user_frmt[] = '-q -u %s -n %s -g %s -s %s -d %s -c %s -H 0 2>&1';
+        $fd = popen(exec_safe($user_frmt,
+            [$user_op, $user_uid, $user_name, $user_group, $user_shell, $user_home, $comment]
+        ), 'w');
         fwrite($fd, $user_pass);
         pclose($fd);
     }
