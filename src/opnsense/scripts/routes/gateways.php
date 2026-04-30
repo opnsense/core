@@ -33,26 +33,27 @@ use OPNsense\Firewall\Util;
 use OPNsense\Routing\Gateways;
 use OPNsense\Routing\GatewayGroups;
 
-$mdl = new Gateways();
-$gateways = $mdl->gatewaysIndexedByName(true, true, true);
 
-$ret = [];
-
-foreach ($gateways as $gateway) {
-    if (Util::isIpAddress($gateway['gateway'] ?? '')) {
-        $ret[$gateway['name']] = "{$gateway['name']} - {$gateway['gateway']}";
-    } else {
-        $ret[$gateway['name']] = "{$gateway['name']} - {$gateway['ipprotocol']}";
-    }
-}
-
-$opts = getopt('gh', [], $optind);
+$opts = getopt('ghl', [], $optind);
 $args = array_slice($argv, $optind);
 
 if (isset($opts['h'])) {
     echo "Usage: gateways.php [-g] [-h]\n\n";
     echo "\t-g add gateway groups\n";
+    echo "\t-l exclude disabled, localhost, inactive gateways\n";
 } else {
+    $mdl = new Gateways();
+    $gateways = isset($opts['l']) ? $mdl->gatewaysIndexedByName() : $mdl->gatewaysIndexedByName(true, true, true);
+
+    $ret = [];
+
+    foreach ($gateways as $gateway) {
+        if (Util::isIpAddress($gateway['gateway'] ?? '')) {
+            $ret[$gateway['name']] = "{$gateway['name']} - {$gateway['gateway']}";
+        } else {
+            $ret[$gateway['name']] = "{$gateway['name']} - {$gateway['ipprotocol']}";
+        }
+    }
     if (isset($opts['g'])) {
         foreach ((new GatewayGroups())->getGroupNames() as $name) {
             $ret[$name] = $name;

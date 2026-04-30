@@ -29,8 +29,8 @@
 namespace OPNsense\Routing;
 
 use OPNsense\Base\BaseModel;
-use OPNsense\Core\Config;
 use OPNsense\Base\Messages\Message;
+use OPNsense\Core\Config;
 
 class GatewayGroups extends BaseModel
 {
@@ -45,13 +45,14 @@ class GatewayGroups extends BaseModel
     {
         $messages = parent::performValidation($validateFullModel);
         $cfg = Config::getInstance()->object();
+        $gateways = (new Gateways())->gatewaysIndexedByName();
 
         foreach ($this->gateway_group->iterateItems() as $group) {
             if ($validateFullModel || $group->isFieldChanged()) {
-                /* name changed? */
                 $ref = $group->__reference;
-                $new = $group->name->getValue();
 
+                /* name changed? */
+                $new = $group->name->getValue();
                 if (!empty($cfg->gateways) && !empty($cfg->gateways->gateway_group)) {
                     foreach ($cfg->gateways->gateway_group as $grp) {
                         $uuid = (string)$grp->attributes()->uuid;
@@ -71,6 +72,15 @@ class GatewayGroups extends BaseModel
                     foreach (['item', 'item2', 'item3', 'item4', 'item5'] as $property) {
                         $messages->appendMessage(
                             new Message(gettext("At least one tier must be set."), $ref . "." . $property)
+                        );
+                    }
+                }
+
+                /* name overlap with regular gateways? */
+                foreach ($gateways as $gwname => $gateway) {
+                    if ($new === $gwname) {
+                        $messages->appendMessage(
+                            new Message(sprintf(gettext("A gateway group cannot have the same name with a gateway '%s' please choose another name."), $new), $ref . ".name")
                         );
                     }
                 }

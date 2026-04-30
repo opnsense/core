@@ -16,20 +16,20 @@
                 </Constraints>
             </name>
             <item2 type=".\GatewayGroupItemField">
-                <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
+                <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
             </item2>
             <item3 type=".\GatewayGroupItemField">
-                <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
+                <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
             </item3>
             <item4 type=".\GatewayGroupItemField">
-                <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
+                <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
             </item4>
             <item5 type=".\GatewayGroupItemField">
-                <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
+                <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
             </item5>
             <!-- <item> placed last to assist inline migration -->
             <item type=".\GatewayGroupItemField">
-                <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
+                <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
             </item>
             <trigger type="OptionField">
                 <Required>Y</Required>
