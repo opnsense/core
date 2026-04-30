@@ -47,22 +47,35 @@ class GatewayGroups extends BaseModel
         $cfg = Config::getInstance()->object();
 
         foreach ($this->gateway_group->iterateItems() as $group) {
-            $ref = $group->__reference;
-            $new = $group->name->getValue();
+            if ($validateFullModel || $group->isFieldChanged()) {
+                /* name changed? */
+                $ref = $group->__reference;
+                $new = $group->name->getValue();
 
-            if (!empty($cfg->gateways) && !empty($cfg->gateways->gateway_group)) {
-                foreach ($cfg->gateways->gateway_group as $grp) {
-                    $uuid = $grp->attributes()->uuid;
-                    if ($uuid === explode('.', $ref)[1]) {
-                        $old = $grp->name->getValue();
-                        if ($old !== $new) {
-                            $messages->appendMessage(
-                                new Message(gettext("Changing name on a gateway group is not allowed."), $ref . ".name")
-                            );
+                if (!empty($cfg->gateways) && !empty($cfg->gateways->gateway_group)) {
+                    foreach ($cfg->gateways->gateway_group as $grp) {
+                        $uuid = (string)$grp->attributes()->uuid;
+                        if ($uuid === explode('.', $ref)[1]) {
+                            $old = (string)$grp->name;
+                            if ($old !== $new) {
+                                $messages->appendMessage(
+                                    new Message(gettext("Changing name on a gateway group is not allowed."), $ref . ".name")
+                                );
+                            }
                         }
                     }
                 }
+
+                /* at least one gateway selected in a tier? */
+                if (count($this->gatewaysInGroup($group)) == 0) {
+                    foreach (['item', 'item2', 'item3', 'item4', 'item5'] as $property) {
+                        $messages->appendMessage(
+                            new Message(gettext("At least one tier must be set."), $ref . "." . $property)
+                        );
+                    }
+                }
             }
+
         }
 
         return $messages;
@@ -73,7 +86,9 @@ class GatewayGroups extends BaseModel
         $result = [];
         foreach (['item', 'item2', 'item3', 'item4', 'item5'] as $property) {
             foreach (explode(',', $groupNode->$property->getValue()) as $gwname) {
-                $result[] = $gwname;
+                if (!empty($gwname)) {
+                    $result[] = $gwname;
+                }
             }
         }
 
@@ -119,7 +134,7 @@ class GatewayGroups extends BaseModel
 
             $result[$name]['tiers'] = [];
             foreach (['item', 'item2', 'item3', 'item4', 'item5'] as $idx => $property) {
-                $result[$name]['tiers'][$idx + 1] = explode(',',  $result[$name][$property]);
+                $result[$name]['tiers'][$idx + 1] = explode(',',  $result[$name][$property]) ?? null;
                 unset($result[$name][$property]);
             }
 

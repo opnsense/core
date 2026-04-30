@@ -32,6 +32,8 @@
                 <ConfigdPopulateAct>interface gateways list</ConfigdPopulateAct>
             </item>
             <trigger type="OptionField">
+                <Required>Y</Required>
+                <Default>down</Default>
                 <OptionValues>
                     <down>Member Down</down>
                     <downloss>Packet Loss</downloss>
