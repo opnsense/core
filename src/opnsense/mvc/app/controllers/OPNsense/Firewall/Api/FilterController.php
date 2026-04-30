@@ -338,7 +338,7 @@ class FilterController extends FilterBaseController
         }
         if ($new_key !== null) {
             $selected_node->sequence = (string)$new_key;
-            $this->save(false, true);  /* only changing sequences, no need to validate */
+            $this->save();
         }
 
         return ["status" => "ok"];

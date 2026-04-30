@@ -422,7 +422,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
 
         if ($new_key !== null) {
             $selected_node->$sort_key = (string)$new_key;
-            $this->save(false, true);  /* only changing sequences, no need to validate */
+            $this->save();
         }
 
         return ["status" => "ok"];
@@ -450,7 +450,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         }
 
         $node->log = $log;
-        $this->save(false, true);  /* only changing log, no need to validate */
+        $this->save();
 
         return ['status' => 'ok'];
     }
