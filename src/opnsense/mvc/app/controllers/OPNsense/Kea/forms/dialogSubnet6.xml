@@ -12,6 +12,16 @@
         <help>Select which interface this subnet belongs too.</help>
     </field>
     <field>
+        <id>subnet6.dynamic_prefix</id>
+        <label>Dynamic Prefix</label>
+        <type>checkbox</type>
+        <help>Use the prefix of the selected interface and update this subnet automatically when it changes.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
+    </field>
+    <field>
         <id>subnet6.allocator</id>
         <label>Allocator</label>
         <type>dropdown</type>
