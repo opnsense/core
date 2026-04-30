@@ -33,7 +33,6 @@ use OPNsense\Base\FieldTypes\JsonKeyValueStoreField;
 class GatewayGroupItemField extends JsonKeyValueStoreField
 {
     protected $internalIsContainer = false;
-    protected $internalMultiSelect = true;
 
     public function setValue($value)
     {

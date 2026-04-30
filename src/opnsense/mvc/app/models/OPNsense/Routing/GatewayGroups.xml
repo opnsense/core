@@ -17,19 +17,24 @@
             </name>
             <item2 type=".\GatewayGroupItemField">
                 <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
+                <Multiple>Y</Multiple>
             </item2>
             <item3 type=".\GatewayGroupItemField">
                 <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
+                <Multiple>Y</Multiple>
             </item3>
             <item4 type=".\GatewayGroupItemField">
                 <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
+                <Multiple>Y</Multiple>
             </item4>
             <item5 type=".\GatewayGroupItemField">
                 <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
+                <Multiple>Y</Multiple>
             </item5>
             <!-- <item> placed last to assist inline migration -->
             <item type=".\GatewayGroupItemField">
                 <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
+                <Multiple>Y</Multiple>
             </item>
             <trigger type="OptionField">
                 <Required>Y</Required>
