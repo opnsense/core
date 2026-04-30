@@ -176,9 +176,9 @@ class KeaDhcpv4 extends BaseModel
                 'reservations' => []
             ];
             /* add description and other custom keys - not parsed by KEA */
-            $record['user-context'] = new \stdClass();
+            $record['user-context'] = ['uuid' => $subnet->getAttribute('uuid')];
             if (!$subnet->description->isEmpty()) {
-                $record['user-context']->description = $subnet->description->getValue();
+                $record['user-context']['description'] = $subnet->description->getValue();
             }
             /* add pools */
             foreach ($subnet->pools->getValues() as $pool) {
@@ -214,9 +214,9 @@ class KeaDhcpv4 extends BaseModel
                         'always-send' => !$option->force->isEmpty(),
                     ];
                     /* add description and other custom keys - not parsed by KEA */
-                    $entry['user-context'] = new \stdClass();
+                    $entry['user-context'] = ['uuid' => $option->getAttribute('uuid')];
                     if (!$option->description->isEmpty()) {
-                        $entry['user-context']->description = $option->description->getValue();
+                        $entry['user-context']['description'] = $option->description->getValue();
                     }
                     /* only conditionally send the option when a client option matches */
                     if (!$option->match_code->isEmpty()) {
@@ -229,9 +229,9 @@ class KeaDhcpv4 extends BaseModel
                 }
 
                 /* add description and other custom keys - not parsed by KEA */
-                $res['user-context'] = new \stdClass();
+                $res['user-context'] = ['uuid' => $reservation->getAttribute('uuid')];
                 if (!$reservation->description->isEmpty()) {
-                    $res['user-context']->description = $reservation->description->getValue();
+                    $res['user-context']['description'] = $reservation->description->getValue();
                 }
 
                 $record['reservations'][] = $res;
@@ -249,9 +249,9 @@ class KeaDhcpv4 extends BaseModel
                     'always-send' => !$option->force->isEmpty(),
                 ];
                 /* add description and other custom keys - not parsed by KEA */
-                $entry['user-context'] = new \stdClass();
+                $entry['user-context'] = ['uuid' => $option->getAttribute('uuid')];
                 if (!$option->description->isEmpty()) {
-                    $entry['user-context']->description = $option->description->getValue();
+                    $entry['user-context']['description'] = $option->description->getValue();
                 }
                 /* only conditionally send the option when a client option matches */
                 if (!$option->match_code->isEmpty()) {
