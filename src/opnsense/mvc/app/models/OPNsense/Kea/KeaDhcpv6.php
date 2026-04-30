@@ -34,6 +34,7 @@ use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
 use OPNsense\Core\File;
 use OPNsense\Firewall\Util;
+use OPNsense\Interface\Autoconf;
 
 class KeaDhcpv6 extends BaseModel
 {
@@ -188,7 +189,14 @@ class KeaDhcpv6 extends BaseModel
             if (!$subnet->description->isEmpty()) {
                 $record['user-context']['description'] = $subnet->description->getValue();
             }
-            $record['user-context']['dynamic_prefix'] = !$subnet->dynamic_prefix->isEmpty();
+            if (!$subnet->prefix_source->isEmpty()) {
+                $prefix_source = (string)$cfg->interfaces->{$subnet->prefix_source->getValue()}->if;
+                $record['user-context']['prefix_source'] = $prefix_source;
+                $prefix_candidate = Autoconf::getPrefix($prefix_source, 'inet6');
+                if (!empty($prefix_candidate)) {
+                    $record['user-context']['prefix_candidate'] = $prefix_candidate;
+                }
+            }
             /* standard option-data elements */
             foreach ($subnet->option_data->iterateItems() as $key => $value) {
                 $target_fieldname = str_replace('_', '-', $key);

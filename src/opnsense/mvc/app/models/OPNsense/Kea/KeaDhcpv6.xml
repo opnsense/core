@@ -128,10 +128,7 @@
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                 </interface>
-                <dynamic_prefix type="BooleanField">
-                    <Required>Y</Required>
-                    <Default>0</Default>
-                </dynamic_prefix>
+                <prefix_source type="InterfaceField"/>
                 <ddns_forward_zone type="HostnameField">
                     <IpAllowed>N</IpAllowed>
                     <Constraints>
