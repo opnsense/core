@@ -413,8 +413,26 @@ class ACL
             // ACL lock, may only access password page
             return "ui/user_portal";
         } elseif (!empty($this->userDatabase[$username]['landing_page'])) {
-            // remove leading slash, which would result in redirection to //page (without host) after login or auth failure.
-            return ltrim($this->userDatabase[$username]['landing_page'], '/');
+            $landing = trim($this->userDatabase[$username]['landing_page']);
+            $prev = null;
+            $decoded = $landing;
+            while ($decoded !== $prev) {
+                $prev = $decoded;
+                $decoded = urldecode($decoded);
+            }
+            $parts = parse_url((string)$decoded);
+            if (
+                $parts === false ||
+                !empty($parts['scheme']) ||
+                !empty($parts['host']) ||
+                strpos($decoded, '\\') !== false ||
+                strpos($decoded, '//') !== false ||
+                preg_match('/^[\s\x00-\x1f]/', $decoded)
+            ) {
+                return "index.php";
+            }
+            $landing = ltrim($landing, '/\\');
+            return !empty($landing) ? $landing : "index.php";
         } elseif (!empty($this->userDatabase[$username])) {
             // default behaviour, find first accessible location from configured privileges, but prefer /
             if ($this->isPageAccessible($username, '/')) {

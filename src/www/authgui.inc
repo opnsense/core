@@ -206,7 +206,8 @@ function session_auth()
                     $url = $acl->getLandingPage($_SESSION['Username']);
                     header(url_safe("Location: /{$url}"));
                 } else {
-                    header(url_safe("Location: {$_SERVER['REQUEST_URI']}"));
+                    $req_uri = '/' . ltrim($_SERVER['REQUEST_URI'], '/\\');
+                    header(url_safe("Location: {$req_uri}"));
                 }
             }
             exit;
