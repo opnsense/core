@@ -391,7 +391,8 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     /* add or mod pw db */
     if ($user_op != null) {
         $user_frmt[] = '-q -u %s -n %s -g %s -s %s -d %s -c %s -H 0 2>&1';
-        $fd = popen(exec_safe($user_frmt,
+        $fd = popen(exec_safe(
+            $user_frmt,
             [$user_op, $user_uid, $user_name, $user_group, $user_shell, $user_home, $comment]
         ), 'w');
         fwrite($fd, $user_pass);
