@@ -331,7 +331,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         // XXX: Privilege check is a workaround here
         if ($this->request->isPost() && !(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
             // trigger a save, so we know revision->time matches our running config
-            $this->save();
+            Config::getInstance()->save();
             return array(
                 "status" => "ok",
                 "retention" => (string)Config::getInstance()->backupCount(),
