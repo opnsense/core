@@ -300,6 +300,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         return $result;
     }
 
+    // XXX: Not directly used by GUI, should be removed at some point
     public function applyAction($rollback_revision = null)
     {
         // XXX: Privilege check is a workaround here
@@ -314,6 +315,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         }
     }
 
+    // XXX: Not directly used by GUI, should be removed at some point
     public function cancelRollbackAction($rollback_revision)
     {
         // XXX: Privilege check is a workaround here
@@ -326,6 +328,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         }
     }
 
+    // XXX: Not directly used by GUI, should be removed at some point
     public function savepointAction()
     {
         // XXX: Privilege check is a workaround here
@@ -342,6 +345,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         }
     }
 
+    // XXX: Not directly used by GUI, should be removed at some point
     public function revertAction($revision)
     {
         // XXX: Privilege check is a workaround here
