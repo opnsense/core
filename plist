@@ -2567,8 +2567,6 @@
 /usr/local/www/system_advanced_firewall.php
 /usr/local/www/system_advanced_misc.php
 /usr/local/www/system_authservers.php
-/usr/local/www/system_gateway_groups.php
-/usr/local/www/system_gateway_groups_edit.php
 /usr/local/www/system_general.php
 /usr/local/www/system_usermanager_passwordmg.php
 /usr/local/www/system_usermanager_settings_ldapacpicker.php
