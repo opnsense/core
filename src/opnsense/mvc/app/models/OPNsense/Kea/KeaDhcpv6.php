@@ -183,6 +183,11 @@ class KeaDhcpv6 extends BaseModel
             if (!$subnet->allocator->isEmpty()) {
                 $record['allocator'] = $subnet->allocator->getValue();
             }
+            /* add description and other custom keys - not parsed by KEA */
+            $record['user-context'] = ['uuid' => $subnet->getAttribute('uuid')];
+            if (!$subnet->description->isEmpty()) {
+                $record['user-context']['description'] = $subnet->description->getValue();
+            }
             /* standard option-data elements */
             foreach ($subnet->option_data->iterateItems() as $key => $value) {
                 $target_fieldname = str_replace('_', '-', $key);
@@ -207,11 +212,17 @@ class KeaDhcpv6 extends BaseModel
                 if ($pdpool->subnet != $subnet_uuid) {
                     continue;
                 }
-                $record['pd-pools'][] = [
+                $entry = [
                     'prefix' => $pdpool->prefix->getValue(),
                     'prefix-len' => $pdpool->prefix_len->asInt(),
                     'delegated-len' => $pdpool->delegated_len->asInt()
                 ];
+                /* add description and other custom keys - not parsed by KEA */
+                $entry['user-context'] = ['uuid' => $pdpool->getAttribute('uuid')];
+                if (!$pdpool->description->isEmpty()) {
+                    $entry['user-context']['description'] = $pdpool->description->getValue();
+                }
+                $record['pd-pools'][] = $entry;
             }
             /* static reservations */
             foreach ($this->reservations->reservation->iterateItems() as $key => $reservation) {
@@ -248,11 +259,21 @@ class KeaDhcpv6 extends BaseModel
                         'data' => $option->data->encodeValue(),
                         'always-send' => !$option->force->isEmpty(),
                     ];
+                    /* add description and other custom keys - not parsed by KEA */
+                    $entry['user-context'] = ['uuid' => $option->getAttribute('uuid')];
+                    if (!$option->description->isEmpty()) {
+                        $entry['user-context']['description'] = $option->description->getValue();
+                    }
                     /* only conditionally send the option when a client option matches */
                     if (!$option->match_code->isEmpty()) {
                         $entry['client-classes'] = [$uuid];
                     }
                     $res['option-data'][] = $entry;
+                }
+                /* add description and other custom keys - not parsed by KEA */
+                $res['user-context'] = ['uuid' => $reservation->getAttribute('uuid')];
+                if (!$reservation->description->isEmpty()) {
+                    $res['user-context']['description'] = $reservation->description->getValue();
                 }
                 $record['reservations'][] = $res;
             }
@@ -268,6 +289,11 @@ class KeaDhcpv6 extends BaseModel
                     'data' => $option->data->encodeValue(),
                     'always-send' => !$option->force->isEmpty(),
                 ];
+                /* add description and other custom keys - not parsed by KEA */
+                $entry['user-context'] = ['uuid' => $option->getAttribute('uuid')];
+                if (!$option->description->isEmpty()) {
+                    $entry['user-context']['description'] = $option->description->getValue();
+                }
                 /* only conditionally send the option when a client option matches */
                 if (!$option->match_code->isEmpty()) {
                     $entry['client-classes'] = [$uuid];
