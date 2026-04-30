@@ -54,8 +54,14 @@ class KeaDhcpv6 extends BaseModel
             if ($subnet_node) {
                 $subnet = $subnet_node->subnet->getValue();
             }
-            if (!Util::isIPInCIDR($reservation->ip_address->getValue(), $subnet)) {
+            if (!Util::isIPInCIDR($reservation->ip_address->getValue(), $subnet) && !$reservation->ip_address->isEmpty()) {
                 $messages->appendMessage(new Message(gettext("Address not in specified subnet"), $key . ".ip_address"));
+            }
+            if (!Util::isIPv6PrefixInPrefix($reservation->prefix->getValue(), $subnet) && !$reservation->prefix->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("Prefix not in specified subnet"), $key . ".prefix"));
+            }
+            if ($reservation->ip_address->isEmpty() && $reservation->prefix->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("Either an IP address or a Prefix should be specified."), $key . ".ip_address"));
             }
             if (!$reservation->duid->isEmpty() && !$reservation->hw_address->isEmpty()) {
                 $messages->appendMessage(new Message(gettext("Either a DUID or an Ether address should be specified, but not both"), $key . ".duid"));
@@ -177,6 +183,11 @@ class KeaDhcpv6 extends BaseModel
             if (!$subnet->allocator->isEmpty()) {
                 $record['allocator'] = $subnet->allocator->getValue();
             }
+            /* add description and other custom keys - not parsed by KEA */
+            $record['user-context'] = ['uuid' => $subnet->getAttribute('uuid')];
+            if (!$subnet->description->isEmpty()) {
+                $record['user-context']['description'] = $subnet->description->getValue();
+            }
             /* standard option-data elements */
             foreach ($subnet->option_data->iterateItems() as $key => $value) {
                 $target_fieldname = str_replace('_', '-', $key);
@@ -201,11 +212,17 @@ class KeaDhcpv6 extends BaseModel
                 if ($pdpool->subnet != $subnet_uuid) {
                     continue;
                 }
-                $record['pd-pools'][] = [
+                $entry = [
                     'prefix' => $pdpool->prefix->getValue(),
                     'prefix-len' => $pdpool->prefix_len->asInt(),
                     'delegated-len' => $pdpool->delegated_len->asInt()
                 ];
+                /* add description and other custom keys - not parsed by KEA */
+                $entry['user-context'] = ['uuid' => $pdpool->getAttribute('uuid')];
+                if (!$pdpool->description->isEmpty()) {
+                    $entry['user-context']['description'] = $pdpool->description->getValue();
+                }
+                $record['pd-pools'][] = $entry;
             }
             /* static reservations */
             foreach ($this->reservations->reservation->iterateItems() as $key => $reservation) {
@@ -218,7 +235,12 @@ class KeaDhcpv6 extends BaseModel
                         $res[str_replace('_', '-', $key)] = $reservation->$key->getValue();
                     }
                 }
-                $res['ip-addresses'] = explode(',', $reservation->ip_address->getValue());
+                if (!$reservation->ip_address->isEmpty()) {
+                    $res['ip-addresses'] = $reservation->ip_address->getValues();
+                }
+                if (!$reservation->prefix->isEmpty()) {
+                    $res['prefixes'] = $reservation->prefix->getValues();
+                }
                 if (!$reservation->domain_search->isEmpty()) {
                     $res['option-data'][] = [
                         'name' => 'domain-search',
@@ -237,11 +259,21 @@ class KeaDhcpv6 extends BaseModel
                         'data' => $option->data->encodeValue(),
                         'always-send' => !$option->force->isEmpty(),
                     ];
+                    /* add description and other custom keys - not parsed by KEA */
+                    $entry['user-context'] = ['uuid' => $option->getAttribute('uuid')];
+                    if (!$option->description->isEmpty()) {
+                        $entry['user-context']['description'] = $option->description->getValue();
+                    }
                     /* only conditionally send the option when a client option matches */
                     if (!$option->match_code->isEmpty()) {
                         $entry['client-classes'] = [$uuid];
                     }
                     $res['option-data'][] = $entry;
+                }
+                /* add description and other custom keys - not parsed by KEA */
+                $res['user-context'] = ['uuid' => $reservation->getAttribute('uuid')];
+                if (!$reservation->description->isEmpty()) {
+                    $res['user-context']['description'] = $reservation->description->getValue();
                 }
                 $record['reservations'][] = $res;
             }
@@ -257,6 +289,11 @@ class KeaDhcpv6 extends BaseModel
                     'data' => $option->data->encodeValue(),
                     'always-send' => !$option->force->isEmpty(),
                 ];
+                /* add description and other custom keys - not parsed by KEA */
+                $entry['user-context'] = ['uuid' => $option->getAttribute('uuid')];
+                if (!$option->description->isEmpty()) {
+                    $entry['user-context']['description'] = $option->description->getValue();
+                }
                 /* only conditionally send the option when a client option matches */
                 if (!$option->match_code->isEmpty()) {
                     $entry['client-classes'] = [$uuid];
@@ -313,6 +350,7 @@ class KeaDhcpv6 extends BaseModel
         $cnf = [
             'Dhcp6' => [
                 'valid-lifetime' => $this->general->valid_lifetime->asInt(),
+                'mac-sources' => $this->general->mac_sources->getValues(),
                 'interfaces-config' => [
                     'interfaces' => $this->getConfigPhysicalInterfaces(),
                     /* socket retries are on a per-interface basis, failing to open one won't affect others */

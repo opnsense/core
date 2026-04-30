@@ -78,7 +78,7 @@ $result['ll'] = strtoupper($ll . ':' . $system_mac);
 
 // UUID
 $uuid = '';
-$type = "\x00\x00\x00\x04" . random_bytes(16);
+$type = "\x00\x04" . random_bytes(16);
 for ($count = 0; $count < strlen($type);) {
     $uuid .= bin2hex($type[$count]);
     $count++;

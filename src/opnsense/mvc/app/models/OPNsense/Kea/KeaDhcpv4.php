@@ -175,6 +175,11 @@ class KeaDhcpv4 extends BaseModel
                 'pools' => [],
                 'reservations' => []
             ];
+            /* add description and other custom keys - not parsed by KEA */
+            $record['user-context'] = ['uuid' => $subnet->getAttribute('uuid')];
+            if (!$subnet->description->isEmpty()) {
+                $record['user-context']['description'] = $subnet->description->getValue();
+            }
             /* add pools */
             foreach ($subnet->pools->getValues() as $pool) {
                 $record['pools'][] = ['pool' => $pool];
@@ -208,6 +213,11 @@ class KeaDhcpv4 extends BaseModel
                         'data' => $option->data->encodeValue(),
                         'always-send' => !$option->force->isEmpty(),
                     ];
+                    /* add description and other custom keys - not parsed by KEA */
+                    $entry['user-context'] = ['uuid' => $option->getAttribute('uuid')];
+                    if (!$option->description->isEmpty()) {
+                        $entry['user-context']['description'] = $option->description->getValue();
+                    }
                     /* only conditionally send the option when a client option matches */
                     if (!$option->match_code->isEmpty()) {
                         $entry['client-classes'] = [$uuid];
@@ -216,6 +226,12 @@ class KeaDhcpv4 extends BaseModel
                 }
                 if (!empty($optdata)) {
                     $res['option-data'] = $optdata;
+                }
+
+                /* add description and other custom keys - not parsed by KEA */
+                $res['user-context'] = ['uuid' => $reservation->getAttribute('uuid')];
+                if (!$reservation->description->isEmpty()) {
+                    $res['user-context']['description'] = $reservation->description->getValue();
                 }
 
                 $record['reservations'][] = $res;
@@ -232,6 +248,11 @@ class KeaDhcpv4 extends BaseModel
                     'data' => $option->data->encodeValue(),
                     'always-send' => !$option->force->isEmpty(),
                 ];
+                /* add description and other custom keys - not parsed by KEA */
+                $entry['user-context'] = ['uuid' => $option->getAttribute('uuid')];
+                if (!$option->description->isEmpty()) {
+                    $entry['user-context']['description'] = $option->description->getValue();
+                }
                 /* only conditionally send the option when a client option matches */
                 if (!$option->match_code->isEmpty()) {
                     $entry['client-classes'] = [$uuid];

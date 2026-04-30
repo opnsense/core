@@ -50,7 +50,7 @@ class DUIDField extends TextField
         $duid_length = count($values);
         $test1 = hexdec($values[1]);
         $test2 = hexdec($values[3]);
-        if (($test1 == 1 && $test2 == 1 ) || ($test1 == 3 && $test2 == 1 ) || ($test1 == 0 && $test2 == 4 ) || ($test1 == 2)) {
+        if (($test1 == 1 && $test2 == 1 ) || ($test1 == 3 && $test2 == 1 ) || ($test1 == 4) || ($test1 == 2)) {
             $valid_duid = true;
         }
 

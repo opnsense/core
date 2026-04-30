@@ -28,14 +28,6 @@
     $( document ).ready(function() {
         const data_get_map = {'frm_generalsettings':"/api/kea/dhcpv6/get"};
         mapDataToFormUI(data_get_map).done(function(data){
-            try {
-                $("#dhcpv6\\.ha\\.this_server_name").attr(
-                    "placeholder",
-                    data.frm_generalsettings.dhcpv6.this_hostname
-                );
-            } catch (e) {
-                null;
-            }
             formatTokenizersUI();
             $('.selectpicker').selectpicker('refresh');
             updateServiceControlUI('kea');
@@ -177,6 +169,7 @@
                     $('#{{ formGridReservation["edit_dialog_id"] }}').one('opnsense_bootgrid_mapped', () => {
                         if (params.has('hostname')) $('#reservation\\.hostname').val(params.get('hostname'));
                         if (params.has('ip_address')) $('#reservation\\.ip_address').val(params.get('ip_address'));
+                        if (params.has('prefix')) $('#reservation\\.prefix').val(params.get('prefix'));
                         if (params.has('duid')) $('#reservation\\.duid').val(params.get('duid'));
                         if (params.has('hw_address')) $('#reservation\\.hw_address').val(params.get('hw_address'));
                         history.replaceState(null, null, window.location.pathname + '#reservations');

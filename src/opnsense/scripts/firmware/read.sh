@@ -27,5 +27,9 @@
 . /usr/local/opnsense/scripts/firmware/config.sh
 
 if [ -f ${LOCKFILE} ]; then
-	cat ${LOCKFILE} | sed -E 's:/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}/:/${SUBSCRIPTION}/:gi'
+	# XXX Normally output_cmd will scrub the subscription, but
+	# it could be possible the mirror URL leaks from some other
+        # command. Use another replacement string to see if we ever
+	# find this in the wild.
+	cat ${LOCKFILE} | sed -E 's:/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}/:/${SUBSCRIPTION_GUARD}/:gi'
 fi

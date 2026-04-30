@@ -2056,25 +2056,7 @@ class UIBootgrid {
     showSaveAlert(event) {
         let editAlert = this.$compatElement.attr('data-editAlert');
         if (editAlert !== undefined) {
-            const $el = $("#" + editAlert);
-            const rect = $(".page-content-head").first()[0].getBoundingClientRect();
-            const top = $('.navbar').first().outerHeight() + 5;
-            const centerX = rect.left + (rect.width / 2);
-
-            $el.css({
-                position: "fixed",
-                top: top + "px",
-                left: centerX + "px",
-                right: "auto",
-                zIndex: 9999,
-                transform: "translateX(-50%)"
-            });
-
-            $el.slideDown(1000, function () {
-                setTimeout(function () {
-                    $el.not(":animated").slideUp(2000);
-                }, 2000);
-            });
+            $("#" + editAlert).show().parent('.alert').addClass('alert-info').removeClass('content-box');
         }
     }
 

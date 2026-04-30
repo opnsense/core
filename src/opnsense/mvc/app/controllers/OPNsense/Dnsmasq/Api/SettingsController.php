@@ -76,7 +76,8 @@ class SettingsController extends ApiMutableModelControllerBase
     public function getAction()
     {
         $data = parent::getAction();
-        $data[self::$internalModelName]['dhcp']['this_domain'] = (string)Config::getInstance()->object()->system->domain;
+        $data[self::$internalModelName]['dhcp']['%domain'] =
+            (string)Config::getInstance()->object()->system->domain;
 
         return $data;
     }

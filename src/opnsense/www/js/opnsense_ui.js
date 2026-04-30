@@ -684,6 +684,8 @@ $.fn.SimpleActionButton = function (params) {
                         setIcon(icon, 'fa fa-check fa-spinner fa-pulse', 'fa fa-spinner fa-pulse');
                     } else {
                         setIcon(icon, 'fa fa-spinner fa-pulse', 'fa fa-check');
+                        $("#" + this_button.data('message-id')).hide();
+                        this_button.parent('.alert').addClass('content-box').removeClass('alert-info');
 
                         hideCheckTimeout = setTimeout(function () {
                             setIcon(icon, 'fa fa-check', '');

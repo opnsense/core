@@ -104,13 +104,18 @@ class OptionFieldTest extends Field_Framework_TestCase
     {
         $field = new OptionField();
         $field->setOptionValues(['' => 'option0', 'o1' => 'option1', 'o2' => 'option2']);
+        $this->assertEquals(0, $field->count());
         $field->setValue('x1');
+        $this->assertEquals(1, $field->count());
         $this->assertNotEmpty($this->validate($field));
         $field->normalizeValue();
+        $this->assertEquals(0, $field->count());
         $this->assertEmpty($this->validate($field));
         $field->setValue('o1,o2,x2');
+        $this->assertEquals(3, $field->count());
         $this->assertNotEmpty($this->validate($field));
         $field->normalizeValue();
+        $this->assertEquals(2, $field->count());
         $this->assertNotEmpty($this->validate($field));
         $field->setMultiple('Y');
         $field->normalizeValue();

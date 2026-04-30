@@ -1,6 +1,7 @@
 #!/usr/local/bin/python3
 
 """
+    Copyright (c) 2026 Deciso B.V.
     Copyright (c) 2025 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
@@ -25,50 +26,45 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
 """
-import argparse
-import csv
 import ipaddress
-import ujson
-import os
 import time
+import ujson
 import subprocess
 import syslog
-import sys
+
+from lib.kea_ctrl import KeaCtrl
 
 
-def yield_log_records(filename, poll_interval=5):
-    """ Simple log tailer, prepends known kea archive files and tails the active one indefinitely
+def yield_lease_records(service='dhcp6', limit=256, poll_interval=10):
     """
-    # Lease processing after cleanup according to KEA
-    # https://github.com/isc-projects/kea/blob/ef1f878f5272d/src/lib/dhcpsrv/memfile_lease_mgr.h#L1039-L1051
-    if os.path.isfile('%s.completed' % filename):
-        filenames = ['%s.completed' % filename, filename]
-    else:
-        filenames = ['%s.2' % filename, '%s.1' % filename, filename]
-
-    for fn in (x for x in filenames if os.path.exists(x)):
-        fhandle = None
-        lstpos = None
-        header = {}
+    Poll KEA lease pages and yield records from domain socket
+    https://kea.readthedocs.io/en/latest/api.html#lease6-get-page
+    Since amount of leases can be large, using get-page is recommended.
+    """
+    while True:
+        from_addr = "start"
         while True:
-            if lstpos is None or (os.path.isfile(fn) and os.fstat(fhandle.fileno()).st_ino != os.stat(fn).st_ino):
-                fhandle = open(fn, 'r') # open / rotate
-                lstpos = None
-            elif lstpos:
-                fhandle.seek(lstpos)
-            for idx, item in enumerate(csv.reader(fhandle, delimiter=',', quotechar='"')):
-                if idx == 0 and lstpos is None:
-                    header = item
-                elif len(item) == len(header):
-                    result_rec = {}
-                    for i, key in enumerate(header):
-                        result_rec[key] = int(item[i]) if item[i].isdigit() else item[i]
-                    yield result_rec
-            lstpos = fhandle.tell()
-            if fn != filename:
+            response = KeaCtrl.send_command('lease6-get-page', {"from": from_addr, "limit": limit}, service)
+            leases = response.get("arguments", {}).get("leases", [])
+            if not leases:
                 break
-            else:
-                time.sleep(poll_interval)
+
+            for lease in leases:
+                if lease.get("type") == "IA_PD":
+                    yield {
+                        "address": lease.get("ip-address", ""),
+                        "prefix_len": lease.get("prefix-len", 128),
+                        "hwaddr": lease.get("hw-address", ""),
+                        "state": lease.get("state", 0)
+                    }
+
+            last_addr = leases[-1].get("ip-address")
+            if len(leases) < limit or not last_addr:
+                break
+            from_addr = last_addr
+
+        time.sleep(poll_interval)
+
 
 class Hostwatch:
     """
@@ -101,40 +97,31 @@ class Hostwatch:
             return self._def_local_db[mac]
 
 
-
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('filename',
-                        help='filename to watch (including .1,.2, .completed)',
-                        default='/var/db/kea/kea-leases6.csv'
-    )
-    inputargs = parser.parse_args()
     prefixes = {}
     syslog.openlog('kea-dhcp6', facility=syslog.LOG_LOCAL4)
     syslog.syslog(syslog.LOG_NOTICE, "startup kea prefix watcher")
-    if not os.path.isfile(inputargs.filename):
-        syslog.syslog(syslog.LOG_ERR, "lease file does not exist: %s" % inputargs.filename)
-        sys.exit(1)
     hostwatch = Hostwatch()
-    for record in yield_log_records(inputargs.filename):
-        # IA_PD: type 2, prefix_len <= 64 - the delegated prefix
-        if record.get('lease_type', 0) == 2 and record.get('prefix_len', 128) <= 64:
-            prefix = "%(address)s/%(prefix_len)d" %  record
-            if (prefix not in prefixes or prefixes[prefix].get('hwaddr') != record.get('hwaddr')) \
-                    and record.get('expire', 0) > time.time():
-                prefixes[prefix] = record
-                ll_addr = hostwatch.get(record.get('hwaddr'))
-                if not ll_addr:
-                    syslog.syslog(
-                        syslog.LOG_WARNING,
-                        "no LLA found for %s, skipping route %s" % (record.get('hwaddr'), prefix)
-                    )
-                    continue
-                # lazy drop
-                subprocess.run(['/sbin/route', 'delete', '-inet6', prefix], capture_output=True)
-                if record.get('valid_lifetime', 0) > 0:
-                    # only add when still valid
-                    if subprocess.run(['/sbin/route', 'add', '-inet6', prefix, ll_addr], capture_output=True).returncode:
-                        syslog.syslog(syslog.LOG_ERR, "failed adding route %s -> %s" % (prefix, ll_addr))
-                    else:
-                        syslog.syslog(syslog.LOG_NOTICE, "add route %s -> %s" % (prefix, ll_addr))
+    for record in yield_lease_records():
+        # IA_PD: guaranteed via "type = IA_PD"
+        prefix = "%(address)s/%(prefix_len)d" %  record
+        if (prefix not in prefixes or prefixes[prefix].get('hwaddr') != record.get('hwaddr')) \
+                and record.get('state', 0) == 0:
+            prefixes[prefix] = record
+            ll_addr = hostwatch.get(record.get('hwaddr'))
+            if not ll_addr:
+                syslog.syslog(
+                    syslog.LOG_WARNING,
+                    "no LLA found for %s, skipping route %s" % (record.get('hwaddr'), prefix)
+                )
+                continue
+            # lazy drop
+            subprocess.run(['/sbin/route', 'delete', '-inet6', prefix], capture_output=True)
+            # https://kea.readthedocs.io/en/latest/arm/hooks.html#the-lease4-get-by-lease6-get-by-commands
+            # state names (default (or assigned) (0), declined (1), expired-reclaimed (2), released (3), and registered (4))
+            if record.get('state', 0) == 0:
+                # only add when still valid
+                if subprocess.run(['/sbin/route', 'add', '-inet6', prefix, ll_addr], capture_output=True).returncode:
+                    syslog.syslog(syslog.LOG_ERR, "failed adding route %s -> %s" % (prefix, ll_addr))
+                else:
+                    syslog.syslog(syslog.LOG_NOTICE, "add route %s -> %s" % (prefix, ll_addr))

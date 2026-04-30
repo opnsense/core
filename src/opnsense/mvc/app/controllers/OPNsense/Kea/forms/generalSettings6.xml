@@ -49,6 +49,12 @@
         <help>The valid life time of the leases given out by the server in seconds.</help>
     </field>
     <field>
+        <id>dhcpv6.general.mac_sources</id>
+        <label>MAC sources</label>
+        <type>select_multiple</type>
+        <help>The DHCPv6 protocol does not provide any completely reliable way to retrieve hardware addresses of clients. To mitigate that issue, a number of mechanisms are available. Each of these mechanisms works in certain cases, but may not in others. Whether the mechanism works in a particular deployment is somewhat dependent on the network topology and the technologies used. Please note that this influences PD route installation, since the source MAC address of the client is required to target the link-local route. It also influences MAC based reservations.</help>
+    </field>
+    <field>
         <id>dhcpv6.general.fwrules</id>
         <label>Firewall rules</label>
         <type>checkbox</type>

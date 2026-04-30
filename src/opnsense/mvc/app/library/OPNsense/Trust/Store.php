@@ -499,6 +499,19 @@ class Store
                 $result['rfc3280_purpose'] = 'id-kp-OCSPSigning';
             }
 
+            $pk = openssl_pkey_get_public($cert);
+            $pkdetails = openssl_pkey_get_details($pk);
+            if (!empty($pkdetails) && isset($pkdetails['rsa'])) {
+                $result['key_type'] = $pkdetails['bits'];
+            } elseif (!empty($pkdetails) && !empty($pkdetails['ec']) && !empty($pkdetails['ec']['curve_name']))  {
+                $result['key_type'] = $pkdetails['ec']['curve_name'];
+            }
+            if (!empty($crt['signatureTypeSN']) && str_starts_with($crt['signatureTypeSN'], 'RSA-')) {
+                $result['digest'] = strtolower(substr($crt['signatureTypeSN'], 4));
+            } elseif (!empty($crt['signatureTypeSN']) && str_starts_with($crt['signatureTypeSN'], 'ecdsa-with-')) {
+                $result['digest'] = strtolower(substr($crt['signatureTypeSN'], 11));
+            }
+
             return $result;
         }
         return false;
