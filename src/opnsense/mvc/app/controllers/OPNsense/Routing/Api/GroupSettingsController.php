@@ -30,6 +30,7 @@ namespace OPNsense\Routing\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Backend;
+use OPNsense\Core\Config;
 use OPNsense\Routing\GatewayGroups;
 
 class GroupSettingsController extends ApiMutableModelControllerBase
@@ -52,7 +53,22 @@ class GroupSettingsController extends ApiMutableModelControllerBase
 
     public function searchAction()
     {
-        return $this->searchBase('gateway_group');
+        $gateways_status = json_decode((new Backend())->configdRun('interface gateways status'), true) ?? [];
+        $config = (new GatewayGroups())->getGroupsConfig();
+        $result = $this->searchBase('gateway_group');
+
+        foreach ($result['rows'] as $idx => $group) {
+            foreach ($config[$group['name']]['tiers'] as $tieridx => $gws) {
+                $result['rows'][$idx]['gateways'][$tieridx] = [];
+                foreach ($gws as $gwname) {
+                    if (!empty($gwname)) {
+                        $result['rows'][$idx]['gateways'][$tieridx][] = $gateways_status[$gwname];
+                    }
+                }
+            }
+        }
+
+        return $result;
     }
 
     public function getAction($uuid = null)
@@ -72,6 +88,7 @@ class GroupSettingsController extends ApiMutableModelControllerBase
 
     public function delAction($uuids)
     {
+        Config::getInstance()->lock();
         $groups = new GatewayGroups();
 
         foreach ((!empty($uuids) ? explode(",", $uuids) : []) as $uuid) {

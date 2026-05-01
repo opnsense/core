@@ -5,30 +5,53 @@
         <type>text</type>
     </field>
     <field>
+        <id>gateway_group.gateways</id>
+        <type>hidden</type>
+        <label>Gateways</label>
+        <grid_view>
+            <formatter>gateways</formatter>
+        </grid_view>
+    </field>
+    <field>
         <id>gateway_group.item</id>
         <label>Tier 1</label>
         <type>select_multiple</type>
         <style>selectpicker</style>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>gateway_group.item2</id>
         <label>Tier 2</label>
         <type>select_multiple</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>gateway_group.item3</id>
         <label>Tier 3</label>
         <type>select_multiple</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>gateway_group.item4</id>
         <label>Tier 4</label>
         <type>select_multiple</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>gateway_group.item5</id>
         <label>Tier 5</label>
         <type>select_multiple</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>gateway_group.trigger</id>
