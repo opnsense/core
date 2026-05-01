@@ -524,10 +524,11 @@
                         const aliasMetadataList = row["alias_meta_" + column.id] || [];
 
                         const renderedItems = aliasMetadataList.map(aliasInfo => {
+                            const safeText = $('<span>').text(aliasInfo.value || '').html();
                             if (aliasInfo.isAlias) {
-                                const tooltipHtml = aliasInfo.summary || aliasInfo.description || aliasInfo.value || "";
+                                const tooltipHtml = $('<span>').text(aliasInfo.summary || aliasInfo.description || aliasInfo.value || '').html();
                                 return `
-                                    <span data-toggle="tooltip" data-html="true" title="${tooltipHtml}">${aliasInfo.value}&nbsp;</span>
+                                    <span data-toggle="tooltip" data-html="true" title="${tooltipHtml}">${safeText}&nbsp;</span>
                                     <a href="/ui/firewall/alias/index/${encodeURIComponent(aliasInfo.value)}"
                                     data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
                                     <i class="fa fa-fw fa-list"></i>
@@ -535,7 +536,7 @@
                                 `;
                             }
                             // Not an alias, return translated value
-                            return aliasInfo["%value"];
+                            return $('<span>').text(aliasInfo["%value"] || '').html();
                         }).join(", ");
 
                         // There can only be a single negated value

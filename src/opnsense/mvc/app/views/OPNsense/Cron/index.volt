@@ -76,7 +76,7 @@
         );
 
         {% if (selected_uuid|default("") != "") %}
-            openDialog('{{selected_uuid}}');
+            openDialog('{{selected_uuid|safe}}');
         {% endif %}
 
         /*************************************************************************************************************

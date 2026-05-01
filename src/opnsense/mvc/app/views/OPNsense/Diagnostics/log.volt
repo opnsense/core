@@ -37,18 +37,18 @@
       }).get();
 
       if (window.localStorage) {
-          if (localStorage.getItem('log_filter_exact_{{module}}_{{scope}}')) {
-              s_filter_val = localStorage.getItem('log_severity_{{module}}_{{scope}}') ? localStorage.getItem('log_severity_{{module}}_{{scope}}').split(',') : [];
+          if (localStorage.getItem('log_filter_exact_{{module|safe}}_{{scope|safe}}')) {
+              s_filter_val = localStorage.getItem('log_severity_{{module|safe}}_{{scope|safe}}') ? localStorage.getItem('log_severity_{{module|safe}}_{{scope|safe}}').split(',') : [];
               filter_exact = true;
           } else {
-              s_filter_val = localStorage.getItem('log_severity_{{module}}_{{scope}}') ? localStorage.getItem('log_severity_{{module}}_{{scope}}').split(',') : s_filter_val;
+              s_filter_val = localStorage.getItem('log_severity_{{module|safe}}_{{scope|safe}}') ? localStorage.getItem('log_severity_{{module|safe}}_{{scope|safe}}').split(',') : s_filter_val;
           }
-          $("#validFrom_filter").val(localStorage.getItem('log_validFrom_filter_{{module}}_{{scope}}') ? localStorage.getItem('log_validFrom_filter_{{module}}_{{scope}}') : 'day');
+          $("#validFrom_filter").val(localStorage.getItem('log_validFrom_filter_{{module|safe}}_{{scope|safe}}') ? localStorage.getItem('log_validFrom_filter_{{module|safe}}_{{scope|safe}}') : 'day');
       }
       switch_mode(s_filter_val);
 
       let grid_log = $("#grid-log").UIBootgrid({
-          search:'/api/diagnostics/log/{{module}}/{{scope}}',
+          search:'/api/diagnostics/log/{{module|safe}}/{{scope|safe}}',
           options: {
               initialSearchPhrase: getUrlHash('search'),
               sorting:false,
@@ -109,8 +109,8 @@
       $(".filter_act").change(function(event){
           event.stopPropagation();
           if (window.localStorage) {
-              localStorage.setItem('log_severity_{{module}}_{{scope}}', $("#severity_filter").val());
-              localStorage.setItem('log_validFrom_filter_{{module}}_{{scope}}', $("#validFrom_filter").val());
+              localStorage.setItem('log_severity_{{module|safe}}_{{scope|safe}}', $("#severity_filter").val());
+              localStorage.setItem('log_validFrom_filter_{{module|safe}}_{{scope|safe}}', $("#validFrom_filter").val());
           }
           $('#grid-log').bootgrid('reload');
       });
@@ -128,7 +128,7 @@
             }}, {
               label: "{{ lang._('Yes') }}",
               action: function(dialogRef) {
-                  ajaxCall("/api/diagnostics/log/{{module}}/{{scope}}/clear", {}, function(){
+                  ajaxCall("/api/diagnostics/log/{{module|safe}}/{{scope|safe}}/clear", {}, function(){
                       dialogRef.close();
                       $('#grid-log').bootgrid('reload');
                   });
@@ -138,7 +138,7 @@
       });
       // download (filtered) items
       $("#exportbtn").click(function(event){
-          let download_link = "/api/diagnostics/log/{{module}}/{{scope}}/export";
+          let download_link = "/api/diagnostics/log/{{module|safe}}/{{scope|safe}}/export";
           let params = [];
 
           if ($("input.search-field").val() !== "") {
@@ -186,12 +186,12 @@
 
               if (window.localStorage) {
                   if (filter_exact) {
-                      localStorage.setItem('log_filter_exact_{{module}}_{{scope}}', 1);
+                      localStorage.setItem('log_filter_exact_{{module|safe}}_{{scope|safe}}', 1);
                   } else {
-                      localStorage.removeItem('log_filter_exact_{{module}}_{{scope}}');
+                      localStorage.removeItem('log_filter_exact_{{module|safe}}_{{scope|safe}}');
                   }
                   // store user choice
-                  localStorage.setItem('log_severity_{{module}}_{{scope}}', new_val);
+                  localStorage.setItem('log_severity_{{module|safe}}_{{scope|safe}}', new_val);
               }
               switch_mode(new_val);
           });

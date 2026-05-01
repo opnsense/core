@@ -62,8 +62,8 @@
                         BootstrapDialog.show({
                             id: 'opnsense-generic-error-dialog',
                             type: BootstrapDialog.TYPE_DANGER,
-                            title: request.responseJSON.errorTitle,
-                            message:request.responseJSON.errorMessage,
+                            title: $('<span>').text(request.responseJSON.errorTitle || '').html(),
+                            message: $('<div>').text(request.responseJSON.errorMessage),
                             buttons: [{
                                 label: '{{ lang._('Close') }}',
                                 action: function(dialogItself){
