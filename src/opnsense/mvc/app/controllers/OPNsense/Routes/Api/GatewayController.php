@@ -37,6 +37,7 @@ use OPNsense\Core\Backend;
  */
 class GatewayController extends ApiControllerBase
 {
+    /* XXX No callers in core. Deprecate for 26.7? */
     public function statusAction()
     {
         $result = ["items" => [], "status" => "failed"];
