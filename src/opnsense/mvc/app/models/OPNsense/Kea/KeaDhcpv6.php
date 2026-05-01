@@ -309,6 +309,9 @@ class KeaDhcpv6 extends BaseModel
                 $record['ddns-override-no-update'] = !$subnet->ddns_override_no_update->isEmpty();
                 $record['ddns-override-client-update'] = !$subnet->ddns_override_client_update->isEmpty();
                 $record['ddns-update-on-renew'] = !$subnet->ddns_update_on_renew->isEmpty();
+                if (!$subnet->ddns_conflict_resolution_mode->isEmpty()) {
+                    $record['ddns-conflict-resolution-mode'] = $subnet->ddns_conflict_resolution_mode->getValue();
+                }
             }
             $result[] = $record;
         }

@@ -199,4 +199,14 @@
         </grid_view>
         <advanced>true</advanced>
     </field>
+    <field>
+        <id>subnet6.ddns_conflict_resolution_mode</id>
+        <label>Conflict resolution mode</label>
+        <type>dropdown</type>
+        <help>Controls how Kea handles DNS name conflicts when DHCID records are present. Use "no-check-with-dhcid" in dual-stack deployments where the same hostname is registered by both DHCPv4 (DHCID type 01) and DHCPv6 (DHCID type 02): without this setting, the type mismatch triggers conflict resolution and removes the existing record. When empty, Kea defaults to "check-with-dhcid".</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+        <advanced>true</advanced>
+    </field>
 </form>
