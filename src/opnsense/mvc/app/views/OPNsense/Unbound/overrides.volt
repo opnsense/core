@@ -26,6 +26,9 @@
 
 <script>
 $( document ).ready(function() {
+    /* hide tree row in form, only used in grid */
+    $('#row_host\\.tree').hide();
+
     let selectedHostOverride = null;
     const commandOverride = {
         dialog: "DialogHostAlias",
