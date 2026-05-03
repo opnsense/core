@@ -5,6 +5,7 @@
 # /etc/crontab, see the crontab(5) manual page.
 SHELL=/bin/sh
 PATH=/etc:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+MAILTO=""
 {% if helpers.exists('OPNsense.cron.jobs') %}
 #minute	hour	mday	month	wday	command
 {%  for job in helpers.toList('OPNsense.cron.jobs.job') +%}
