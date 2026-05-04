@@ -135,22 +135,32 @@ class KeaDhcpv6 extends BaseModel
                         new Message(gettext("Prefix must be empty when attached to a dynamic prefix subnet."), $key . ".prefix")
                     );
                 }
+
                 if (!$pool->prefix_len->isEmpty()) {
                     $messages->appendMessage(
                         new Message(gettext("Prefix length must be empty when attached to a dynamic prefix subnet."), $key . ".prefix_len")
                     );
                 }
+
                 $cfg = Config::getInstance()->object();
                 $prefix_source = (string)$cfg->interfaces->{$subnet_node->prefix_source->getValue()}->if;
                 $prefix_candidate = Autoconf::getPrefix($prefix_source, 'inet6');
+
                 if (!empty($prefix_candidate)) {
-                    $prefix_len = (int)explode('/', $prefix_candidate, 2)[1];
-                    if ($pool->delegated_len->asInt() < $prefix_len) {
+                    $source_prefix_len = (int)explode('/', $prefix_candidate, 2)[1];
+                    $pd_prefix_len = $source_prefix_len + 1;
+
+                    if ($pd_prefix_len > 64) {
                         $messages->appendMessage(
-                            new Message(gettext("Delegated length must be longer than or equal to dynamic prefix length."), $key . ".delegated_len")
+                            new Message(gettext("Dynamic prefix is too small to create a non-overlapping PD pool."), $key . ".delegated_len")
+                        );
+                    } elseif ($pool->delegated_len->asInt() < $pd_prefix_len) {
+                        $messages->appendMessage(
+                            new Message(gettext("Delegated length must be longer than or equal to dynamic PD pool prefix length."), $key . ".delegated_len")
                         );
                     }
                 }
+
                 continue;
             }
             // static pd_pool validation
