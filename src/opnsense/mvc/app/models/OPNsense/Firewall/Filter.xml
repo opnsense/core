@@ -533,8 +533,20 @@
                     <AddressFamily>ipv6</AddressFamily>
                     <NetMaskRequired>N</NetMaskRequired>
                     <WildcardEnabled>N</WildcardEnabled>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>A value is required when not using a track interface.</ValidationMessage>
+                            <type>SetIfConstraint</type>
+                            <field>trackif</field>
+                        </check001>
+                    </Constraints>
                 </destination_net>
                 <trackif type="InterfaceField">
+                    <Constraints>
+                        <check001>
+                            <reference>destination_net.check001</reference>
+                        </check001>
+                    </Constraints>
                 </trackif>
                 <categories type="ModelRelationField">
                     <Model>
