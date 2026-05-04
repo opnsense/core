@@ -316,6 +316,8 @@ class KeaDhcpv6 extends BaseModel
                 // Allowing configuration in the GUI would be too brittle since KEAs configuration model is too static.
                 // It has no idea about something like "::1000-::2000" or a concept like partial addresses.
                 // This here assumes that Autoconf::getPrefix() always returns something like "2001:db8:1234:1::/64".
+                // XXX: It does not know about prefixes that might already be assigned via identity association by
+                // inside interface configurations (used by firewall itself)
                 $prefix = explode('/', $record['subnet'], 2)[0];
                 $record['pools'][] = ['pool' => "{$prefix}1000-{$prefix}2000"];
             } else {
@@ -335,6 +337,8 @@ class KeaDhcpv6 extends BaseModel
                         // We try to get the largest prefix that does not include the auto configured IA_NA pool
                         // E.g., if the provider supplies a /48 prefix, we subnet to two /49 prefixes.
                         // The first /49 prefix the IA_NA pool, the second /49 prefix the IA_PD pool.
+                        // XXX: It does not know about prefixes that might already be assigned via identity association by
+                        // inside interface configurations (used by firewall itself)
                         'prefix' => $this->getSecondIPv6Prefix($record['subnet'], $pd_prefix_len),
                         'prefix-len' => $pd_prefix_len,
                         'delegated-len' => $pdpool->delegated_len->asInt()
