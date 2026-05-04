@@ -53,6 +53,44 @@ function parse_auth_properties($props)
 }
 
 /**
+ * Check local group membership using the current configuration state
+ * @param string $username username to find
+ * @param string $groupname group name to test
+ * @return bool user is a member of the requested group
+ */
+function user_in_local_group($username, $groupname)
+{
+    $cnf = OPNsense\Core\Config::getInstance()->object();
+    $uid = null;
+
+    if (isset($cnf->system->user)) {
+        foreach ($cnf->system->user as $user) {
+            if ((string)$user->name == $username) {
+                $uid = (string)$user->uid;
+                break;
+            }
+        }
+    }
+
+    if ($uid === null || !isset($cnf->system->group)) {
+        return false;
+    }
+
+    foreach ($cnf->system->group as $group) {
+        if ((string)$group->name == $groupname) {
+            foreach ($group->member as $member) {
+                if (in_array($uid, explode(',', (string)$member))) {
+                    return true;
+                }
+            }
+            break;
+        }
+    }
+
+    return false;
+}
+
+/**
  * perform authentication
  * @param string $common_name certificate common name for this connection
  * @param string $serverid server identifier
@@ -128,7 +166,7 @@ function do_auth($common_name, $serverid, $method, $auth_file)
             }
 
             if ($authenticator->authenticate($username, $password)) {
-                if (!empty($a_server['local_group']) && !in_array($a_server['local_group'], getUserGroups($username))) {
+                if (!empty($a_server['local_group']) && !user_in_local_group($username, $a_server['local_group'])) {
                     return "OpenVPN '$serverid' requires the local group {$a_server['local_group']}. " .
                         "Denying authentication for user {$username}";
                 }
