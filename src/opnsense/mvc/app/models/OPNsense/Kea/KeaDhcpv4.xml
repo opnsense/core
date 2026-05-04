@@ -222,7 +222,6 @@
                 <ddns_conflict_resolution_mode type="OptionField">
                    <hint>check-with-dhcid</hint>
                    <OptionValues>
-                      <check-with-dhcid>check-with-dhcid</check-with-dhcid>
                       <no-check-with-dhcid>no-check-with-dhcid</no-check-with-dhcid>
                       <check-exists-with-dhcid>check-exists-with-dhcid</check-exists-with-dhcid>
                       <no-check-without-dhcid>no-check-without-dhcid</no-check-without-dhcid>
