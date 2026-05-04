@@ -109,20 +109,23 @@ function captiveportal_firewall($fw)
 
                 foreach (['80', '443'] as $to_port) {
                     $rdr_port = $to_port === '443' ? (8000 + (int)$zoneid) : (9000 + (int)$zoneid);
+                    $to = $to_port === '443' ? "(self)" : "<__captiveportal_zone_{$zoneid}>";
+                    $to_not = $to_port === '443' ? false : true;
+                    $proto = $to_port === '443' ? 'HTTPS' : 'HTTP';
 
-                    // forward to localhost if not authenticated (IPv4)
+                    // forward HTTP(S) to localhost if not authenticated (IPv4)
+                    // Only match HTTPS headed to (self) to facilitate RFC 8908
                     $fw->registerForwardRule(
                         2,
                         [
                             'interface' => $intf,
-                            'pass' => true,
                             'nordr' => false,
                             'ipprotocol' => 'inet',
                             'protocol' => 'tcp',
                             'from' => "<__captiveportal_zone_{$zoneid}>",
                             'from_not' => true,
-                            'to' => "<__captiveportal_zone_{$zoneid}>",
-                            'to_not' => true,
+                            'to' => $to,
+                            'to_not' => $to_not,
                             'to_port' => $to_port,
                             'target' => '127.0.0.1',
                             'localport' => $rdr_port,
@@ -137,25 +140,22 @@ function captiveportal_firewall($fw)
                         2,
                         [
                             'interface' => $intf,
-                            'pass' => true,
                             'nordr' => false,
                             'ipprotocol' => 'inet6',
                             'protocol' => 'tcp',
                             'from' => "<__captiveportal_zone_{$zoneid}>",
                             'from_not' => true,
-                            'to' => "<__captiveportal_zone_{$zoneid}>",
-                            'to_not' => true,
+                            'to' => $to,
+                            'to_not' => $to_not,
                             'to_port' => $to_port,
                             'target' => $intf . 'ip',
                             'localport' => $rdr_port,
                             'natreflection' => 'disable',
-                            'log' => true,
                             'descr' => "Redirect to Captive Portal (zone {$zoneid})",
                             '#ref' => "ui/captiveportal#edit={$uuid}"
                         ]
                     );
 
-                    $proto = $to_port === '443' ? 'https' : 'http';
                     $fw->registerFilterRule(
                         2,
                         [
@@ -166,7 +166,7 @@ function captiveportal_firewall($fw)
                             'from' => 'any',
                             'to' => '(self)',
                             'to_port' => $rdr_port,
-                            'descr' => "Allow access to Captive Portal ({$proto}, zone {$zoneid})",
+                            'descr' => "Allow access to Captive Portal over {$proto} (zone {$zoneid})",
                             'log' => !isset($config['syslog']['nologdefaultpass']),
                             '#ref' => "ui/captiveportal#edit={$uuid}",
                         ]

@@ -162,47 +162,50 @@ class AccessController extends ApiControllerBase
             $this->request->isGet() &&
             $this->request->getHeader("accept") == "application/captive+json"
         ) {
-            $result = [];
             $zoneId = $this->request->getHeader("zoneid");
-            $clientSession = $this->clientSession($zoneId);
-            $captive = $clientSession["clientState"] != "AUTHORIZED";
             $host = $this->request->getHeader('X-Forwarded-Host');
 
-            $zone = (new \OPNsense\CaptivePortal\CaptivePortal())->getByZoneId($zoneId);
+            // if zoneid or host headers missing, we are not proxied
+            if ($zoneId !== '' && $host !== '') {
+                $result = [];
+                $clientSession = $this->clientSession($zoneId);
+                $captive = $clientSession["clientState"] != "AUTHORIZED";
+                $zone = (new \OPNsense\CaptivePortal\CaptivePortal())->getByZoneId($zoneId);
 
-            if ($zone != null && !empty($clientSession['startTime'])) {
-                $startTime = (int)$clientSession['startTime'];
-                $secondsPassed = time() - $startTime;
-                $remainingTimes = [];
+                if ($zone != null && !empty($clientSession['startTime'])) {
+                    $startTime = (int)$clientSession['startTime'];
+                    $secondsPassed = time() - $startTime;
+                    $remainingTimes = [];
 
-                if (!$zone->hardtimeout->isEmpty()) {
-                    $timeout = $zone->hardtimeout->asInt() * 60;
-                    if ($secondsPassed < $timeout) {
-                        $remainingTimes[] = $timeout - $secondsPassed;
+                    if (!$zone->hardtimeout->isEmpty()) {
+                        $timeout = $zone->hardtimeout->asInt() * 60;
+                        if ($secondsPassed < $timeout) {
+                            $remainingTimes[] = $timeout - $secondsPassed;
+                        }
+                    }
+
+                    if (!empty($clientSession['acc_session_timeout'])) {
+                        $timeout = (int)$clientSession['acc_session_timeout'];
+                        if ($secondsPassed < $timeout) {
+                            $remainingTimes[] = $timeout - $secondsPassed;
+                        }
+                    }
+
+                    if (!empty($remainingTimes)) {
+                        $result['seconds-remaining'] = min($remainingTimes);
                     }
                 }
 
-                if (!empty($clientSession['acc_session_timeout'])) {
-                    $timeout = (int)$clientSession['acc_session_timeout'];
-                    if ($secondsPassed < $timeout) {
-                        $remainingTimes[] = $timeout - $secondsPassed;
-                    }
-                }
+                $this->response->setRawHeader("Cache-Control: private");
+                $this->response->setContentType("application/captive+json");
 
-                if (!empty($remainingTimes)) {
-                    $result['seconds-remaining'] = min($remainingTimes);
-                }
+                $result["captive"] = $captive;
+                $result["user-portal-url"] = "https://{$host}/index.html";
+
+                $this->response->setContent($result);
+
+                return;
             }
-
-            $this->response->setRawHeader("Cache-Control: private");
-            $this->response->setContentType("application/captive+json");
-
-            $result["captive"] = $captive;
-            $result["user-portal-url"] = "https://{$host}/index.html";
-
-            $this->response->setContent($result);
-
-            return;
         }
 
         $this->response->setStatusCode(400);
