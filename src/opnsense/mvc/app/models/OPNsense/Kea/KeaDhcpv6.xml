@@ -418,8 +418,6 @@
                 <prefix_len type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>128</MaximumValue>
-                    <Default>56</Default>
-                    <Required>Y</Required>
                 </prefix_len>
                 <delegated_len type="IntegerField">
                     <MinimumValue>1</MinimumValue>

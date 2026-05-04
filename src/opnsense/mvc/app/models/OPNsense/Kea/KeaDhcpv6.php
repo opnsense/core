@@ -128,6 +128,36 @@ class KeaDhcpv6 extends BaseModel
                 continue;
             }
             $key = $pool->__reference;
+            // dynamic pd_pool validation
+            if (($subnet_node = $this->getNodeByReference("subnets.subnet6.{$pool->subnet}")) !== null && !$subnet_node->prefix_source->isEmpty()) {
+                if (!$pool->prefix->isEmpty()) {
+                    $messages->appendMessage(
+                        new Message(gettext("Prefix must be empty when attached to a dynamic prefix subnet."), $key . ".prefix")
+                    );
+                }
+                if (!$pool->prefix_len->isEmpty()) {
+                    $messages->appendMessage(
+                        new Message(gettext("Prefix length must be empty when attached to a dynamic prefix subnet."), $key . ".prefix_len")
+                    );
+                }
+                $cfg = Config::getInstance()->object();
+                $prefix_source = (string)$cfg->interfaces->{$subnet_node->prefix_source->getValue()}->if;
+                $prefix_candidate = Autoconf::getPrefix($prefix_source, 'inet6');
+                if (!empty($prefix_candidate)) {
+                    $prefix_len = (int)explode('/', $prefix_candidate, 2)[1];
+                    if ($pool->delegated_len->asInt() < $prefix_len) {
+                        $messages->appendMessage(
+                            new Message(gettext("Delegated length must be longer than or equal to dynamic prefix length."), $key . ".delegated_len")
+                        );
+                    }
+                }
+                continue;
+            }
+            // static pd_pool validation
+            if ($pool->prefix_len->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("Prefix length is required."), $key . ".prefix_len"));
+                continue;
+            }
             if ($pool->prefix_len->asInt() > $pool->delegated_len->asInt()) {
                 $messages->appendMessage(new Message(gettext("Delegated length must be longer than or equal to prefix length"), $key . ".delegated_len"));
             }
@@ -192,6 +222,27 @@ class KeaDhcpv6 extends BaseModel
             $hostname = (string)Config::getInstance()->object()->system->hostname;
         }
         return $hostname;
+    }
+
+    /**
+     * Return the second child prefix for a trusted dynamic IPv6 source prefix.
+     *
+     * Assumptions:
+     * - $source_prefix is a valid IPv6 CIDR string and contains the normalized network address.
+     * - $target_prefix_len is valid and longer than the source prefix length.
+     *
+     * The first child prefix is reserved for the automatically generated IA_NA
+     * pool. The IA_PD pool starts at the second child prefix.
+     */
+    private function getSecondIPv6Prefix($source_prefix, $target_prefix_len)
+    {
+        [$address] = explode('/', $source_prefix, 2);
+        $bytes = array_values(unpack('C*', inet_pton($address)));
+
+        $bit = $target_prefix_len - 1;
+        $bytes[intdiv($bit, 8)] |= 1 << (7 - ($bit % 8));
+
+        return inet_ntop(pack('C*', ...$bytes));
     }
 
     private function getConfigSubnets($ddns_enabled = false)
@@ -268,15 +319,32 @@ class KeaDhcpv6 extends BaseModel
                 if ($pdpool->subnet != $subnet_uuid) {
                     continue;
                 }
-                $entry = [
-                    'prefix' => $pdpool->prefix->getValue(),
-                    'prefix-len' => $pdpool->prefix_len->asInt(),
-                    'delegated-len' => $pdpool->delegated_len->asInt()
-                ];
+                if (!$subnet->prefix_source->isEmpty()) {
+                    $source_prefix_len = (int)explode('/', $record['subnet'], 2)[1];
+                    $pd_prefix_len = $source_prefix_len + 1;
+                    $entry = [
+                        // We try to get the largest prefix that does not include the auto configured IA_NA pool
+                        // E.g., if the provider supplies a /48 prefix, we subnet to two /49 prefixes.
+                        // The first /49 prefix the IA_NA pool, the second /49 prefix the IA_PD pool.
+                        'prefix' => $this->getSecondIPv6Prefix($record['subnet'], $pd_prefix_len),
+                        'prefix-len' => $pd_prefix_len,
+                        'delegated-len' => $pdpool->delegated_len->asInt()
+                    ];
+                } else {
+                    $entry = [
+                        'prefix' => $pdpool->prefix->getValue(),
+                        'prefix-len' => $pdpool->prefix_len->asInt(),
+                        'delegated-len' => $pdpool->delegated_len->asInt()
+                    ];
+                }
                 /* add description and other custom keys - not parsed by KEA */
                 $entry['user-context'] = ['uuid' => $pdpool->getAttribute('uuid')];
                 if (!$pdpool->description->isEmpty()) {
                     $entry['user-context']['description'] = $pdpool->description->getValue();
+                }
+                if (!$subnet->prefix_source->isEmpty() && !empty($prefix_source)) {
+                    // Used by hook script to know which subnets have a dynamic prefix, it reads the running conf from socket
+                    $entry['user-context']['prefix_source'] = $prefix_source;
                 }
                 $record['pd-pools'][] = $entry;
             }
