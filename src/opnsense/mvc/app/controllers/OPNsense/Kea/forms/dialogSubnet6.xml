@@ -205,7 +205,6 @@
        <type>dropdown</type>
        <help>Controls how Kea handles DDNS conflicts with DHCID records. "check-with-dhcid" (default) enforces client ownership via DHCID. "no-check-with-dhcid" skips conflict checking but still writes DHCID records. "check-exists-with-dhcid" allows updates if a DHCID exists regardless of client match, recommended for dual-stack environments. "no-check-without-dhcid" disables both conflict checking and DHCID creation entirely.</help>
        <grid_view>
-            <type>boolean</type>
             <formatter>boolean</formatter>
             <visible>false</visible>
         </grid_view>
