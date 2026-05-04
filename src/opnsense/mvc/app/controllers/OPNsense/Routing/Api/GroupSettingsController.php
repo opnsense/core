@@ -29,6 +29,7 @@
 namespace OPNsense\Routing\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Routing\GatewayGroups;
@@ -37,8 +38,6 @@ class GroupSettingsController extends ApiMutableModelControllerBase
 {
     protected static $internalModelClass = '\OPNsense\Routing\GatewayGroups';
     protected static $internalModelName = 'gateway_group';
-    /* behavior overridden below */
-    protected static $internalModelUseSafeDelete = false;
 
     public function reconfigureAction()
     {
@@ -89,6 +88,7 @@ class GroupSettingsController extends ApiMutableModelControllerBase
     public function delAction($uuids)
     {
         $result = ["result" => "failed"];
+
         if ($this->request->isPost()) {
             Config::getInstance()->lock();
             $groups = new GatewayGroups();
@@ -97,7 +97,26 @@ class GroupSettingsController extends ApiMutableModelControllerBase
                 $node = $groups->getNodeByReference('gateway_group.' . $uuid);
                 if ($node != null) {
                     $name = $node->name->getValue();
-                    $this->checkAndThrowValueInUse($name, false, false, ['gateways.gateway_group'], sprintf(gettext("Item %s in use by:"), $name));
+                    foreach (Config::getInstance()->object()->xpath("//*[text() = '{$name}']") as $node) {
+                        $referring_node = $node->xpath("..")[0];
+                        $descr = "";
+                        foreach (["description", "descr", "name"] as $key) {
+                            if (!empty($referring_node->$key)) {
+                                $descr = (string)$referring_node->$key;
+                                break;
+                            }
+                        }
+
+                        if ($node->getName() == 'gateway') {
+                            $message = sprintf(
+                                gettext("Gateway group %s in use by %s %s (%s)"),
+                                $name, $referring_node->getName(),
+                                $descr,
+                                $referring_node->attributes()['uuid']
+                            );
+                            throw new UserException($message);
+                        }
+                    }
                 }
             }
 
