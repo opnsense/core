@@ -298,4 +298,14 @@
         </grid_view>
         <advanced>true</advanced>
     </field>
+    <field>
+        <id>subnet4.ddns_conflict_resolution_mode</id>
+        <label>Conflict resolution mode</label>
+        <type>dropdown</type>
+        <help>Conflict resolution behavior used by Kea if a DNS entry already exists. Any value other than check-with-dhcid disables overwrite safeguards.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+        <advanced>true</advanced>
+    </field>
 </form>
