@@ -9,12 +9,14 @@
         <id>pd_pool.prefix</id>
         <label>Prefix</label>
         <type>text</type>
+        <style>static_prefix</style>
         <help></help>
     </field>
     <field>
         <id>pd_pool.prefix_len</id>
         <label>Prefix length</label>
         <type>text</type>
+        <style>static_prefix</style>
         <help></help>
     </field>
     <field>

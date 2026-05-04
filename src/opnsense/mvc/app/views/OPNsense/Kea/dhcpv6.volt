@@ -120,11 +120,35 @@
         /**
          *
          */
-        $("#subnet4\\.option_data_autocollect").change(function(){
+        $("#subnet6\\.option_data_autocollect").change(function(){
             if ($(this).is(':checked')) {
                 $(".option_data_autocollect").closest('tr').hide();
             } else {
                 $(".option_data_autocollect").closest('tr').show();
+            }
+        });
+
+        $("#subnet6\\.prefix_source").change(function(){
+            if ($(this).val() !== '') {
+                $(".static_prefix").closest('tr').hide();
+            } else {
+                $(".static_prefix").closest('tr').show();
+            }
+        });
+
+        // Since dynamic pd_pools relate to their dynamic subnet, map them first
+        let dynamic_subnets = {};
+        ajaxGet("/api/kea/dhcpv6/search_subnet", {}, function(data) {
+            dynamic_subnets = {};
+            (data.rows || []).forEach(function(row) {
+                dynamic_subnets[row.uuid] = (row.prefix_source || '') !== '';
+            });
+        });
+        $("#pd_pool\\.subnet").change(function(){
+            if (dynamic_subnets[$(this).val()] === true) {
+                $(".static_prefix").closest('tr').hide();
+            } else {
+                $(".static_prefix").closest('tr').show();
             }
         });
 

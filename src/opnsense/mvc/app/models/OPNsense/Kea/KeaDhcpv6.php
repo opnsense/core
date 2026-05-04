@@ -44,12 +44,12 @@ class KeaDhcpv6 extends BaseModel
     public function performValidation($validateFullModel = false)
     {
         $messages = parent::performValidation($validateFullModel);
+        $cfg = Config::getInstance()->object();
         // validate changed reservations
         foreach ($this->reservations->reservation->iterateItems() as $reservation) {
             if (!$validateFullModel && !$reservation->isFieldChanged()) {
                 continue;
             }
-            $cfg = Config::getInstance()->object();
             $key = $reservation->__reference;
             $subnet = "";
             $subnet_node = $this->getNodeByReference("subnets.subnet6.{$reservation->subnet}");
