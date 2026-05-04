@@ -286,9 +286,7 @@ class Filter extends BaseModel
                             gettext('A track interface is only allowed without an external prefix.'),
                             $rule->trackif->__reference
                         ));
-                    }
-
-                    if (
+                    } elseif (
                         (empty($config->interfaces->{$rule->interface}->ipaddrv6) ||
                         $config->interfaces->{$rule->interface}->ipaddrv6 != 'dhcp6') ||
                         empty($config->interfaces->{$rule->trackif}->{'track6-interface'}) ||
