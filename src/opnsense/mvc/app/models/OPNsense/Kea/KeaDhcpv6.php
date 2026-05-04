@@ -49,6 +49,7 @@ class KeaDhcpv6 extends BaseModel
             if (!$validateFullModel && !$reservation->isFieldChanged()) {
                 continue;
             }
+            $cfg = Config::getInstance()->object();
             $key = $reservation->__reference;
             $subnet = "";
             $subnet_node = $this->getNodeByReference("subnets.subnet6.{$reservation->subnet}");
@@ -113,7 +114,6 @@ class KeaDhcpv6 extends BaseModel
             }
             // This validation is not ideal, but it prevents user error on initial dynamic subnet configuration
             if (!$subnet->prefix_source->isEmpty()) {
-                $cfg = Config::getInstance()->object();
                 $prefix_source = (string)$cfg->interfaces->{$subnet->prefix_source->getValue()}->if;
                 if (empty(Autoconf::getPrefix($prefix_source, 'inet6'))) {
                     $messages->appendMessage(
@@ -142,8 +142,7 @@ class KeaDhcpv6 extends BaseModel
                     );
                 }
 
-                $cfg = Config::getInstance()->object();
-                $prefix_source = (string)$cfg->interfaces->{$subnet_node->prefix_source->getValue()}->if;
+                $prefix_source = (string)$cfg->interfaces->{$subnet->prefix_source->getValue()}->if;
                 $prefix_candidate = Autoconf::getPrefix($prefix_source, 'inet6');
 
                 if (!empty($prefix_candidate)) {
