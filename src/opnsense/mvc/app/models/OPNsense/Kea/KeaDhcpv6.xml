@@ -204,7 +204,6 @@
                 <description type="DescriptionField"/>
                 <ddns_conflict_resolution_mode type="OptionField">
                    <hint>check-with-dhcid</hint>
-                   <Required>Y</Required>
                    <OptionValues>
                       <check-with-dhcid>check-with-dhcid</check-with-dhcid>
                       <no-check-with-dhcid>no-check-with-dhcid</no-check-with-dhcid>
