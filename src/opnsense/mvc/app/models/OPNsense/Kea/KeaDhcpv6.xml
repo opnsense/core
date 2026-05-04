@@ -201,6 +201,7 @@
                 <ddns_override_no_update type="BooleanField"/>
                 <ddns_override_client_update type="BooleanField"/>
                 <ddns_update_on_renew type="BooleanField"/>
+                <reservations_out_of_pool type="BooleanField"/>
                 <description type="DescriptionField"/>
             </subnet6>
         </subnets>

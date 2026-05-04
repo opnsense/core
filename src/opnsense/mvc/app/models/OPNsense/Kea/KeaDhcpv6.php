@@ -300,6 +300,9 @@ class KeaDhcpv6 extends BaseModel
                 }
                 $record['option-data'][] = $entry;
             }
+            if (!$subnet->reservations_out_of_pool->isEmpty()) {
+                $record['reservations-out-of-pool'] = true;
+            }
             /* DDNS per subnet settings */
             if ($ddns_enabled) {
                 if (!$subnet->ddns_qualifying_suffix->isEmpty()) {
