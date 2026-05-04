@@ -54,7 +54,6 @@ class ServiceController extends ApiMutableServiceControllerBase
             }
 
             $status = parent::reconfigureAction();
-
         }
 
         return $status;
