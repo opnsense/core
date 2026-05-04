@@ -15,19 +15,19 @@
                     </check001>
                 </Constraints>
             </name>
-            <item2 type=".\GatewayGroupItemField">
+            <item2 type="JsonKeyValueStoreField">
                 <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
                 <Multiple>Y</Multiple>
             </item2>
-            <item3 type=".\GatewayGroupItemField">
+            <item3 type="JsonKeyValueStoreField">
                 <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
                 <Multiple>Y</Multiple>
             </item3>
-            <item4 type=".\GatewayGroupItemField">
+            <item4 type="JsonKeyValueStoreField">
                 <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
                 <Multiple>Y</Multiple>
             </item4>
-            <item5 type=".\GatewayGroupItemField">
+            <item5 type="JsonKeyValueStoreField">
                 <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
                 <Multiple>Y</Multiple>
             </item5>

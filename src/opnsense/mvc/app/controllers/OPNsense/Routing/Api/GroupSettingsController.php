@@ -88,17 +88,22 @@ class GroupSettingsController extends ApiMutableModelControllerBase
 
     public function delAction($uuids)
     {
-        Config::getInstance()->lock();
-        $groups = new GatewayGroups();
+        $result = ["result" => "failed"];
+        if ($this->request->isPost()) {
+            Config::getInstance()->lock();
+            $groups = new GatewayGroups();
 
-        foreach ((!empty($uuids) ? explode(",", $uuids) : []) as $uuid) {
-            $node = $groups->getNodeByReference('gateway_group.' . $uuid);
-            if ($node != null) {
-                $name = $node->name->getValue();
-                $this->checkAndThrowValueInUse($name, false, false, ['gateways.gateway_group'], sprintf(gettext("Item %s in use by:"), $name));
+            foreach ((!empty($uuids) ? explode(",", $uuids) : []) as $uuid) {
+                $node = $groups->getNodeByReference('gateway_group.' . $uuid);
+                if ($node != null) {
+                    $name = $node->name->getValue();
+                    $this->checkAndThrowValueInUse($name, false, false, ['gateways.gateway_group'], sprintf(gettext("Item %s in use by:"), $name));
+                }
             }
+
+            $result = $this->delBase('gateway_group', $uuids);
         }
 
-        return $this->delBase('gateway_group', $uuids);
+        return $result;
     }
 }
