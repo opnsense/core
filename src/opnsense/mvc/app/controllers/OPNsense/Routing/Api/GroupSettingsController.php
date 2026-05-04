@@ -98,16 +98,15 @@ class GroupSettingsController extends ApiMutableModelControllerBase
                 if ($node != null) {
                     $name = $node->name->getValue();
                     foreach (Config::getInstance()->object()->xpath("//*[text() = '{$name}']") as $node) {
-                        $referring_node = $node->xpath("..")[0];
-                        $descr = "";
-                        foreach (["description", "descr", "name"] as $key) {
-                            if (!empty($referring_node->$key)) {
-                                $descr = (string)$referring_node->$key;
-                                break;
-                            }
-                        }
-
                         if ($node->getName() == 'gateway') {
+                            $referring_node = $node->xpath("..")[0];
+                            $descr = "";
+                            foreach (["description", "descr", "name"] as $key) {
+                                if (!empty($referring_node->$key)) {
+                                    $descr = (string)$referring_node->$key;
+                                    break;
+                                }
+                            }
                             $message = sprintf(
                                 gettext("Gateway group %s in use by %s %s (%s)"),
                                 $name, $referring_node->getName(),
