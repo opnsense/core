@@ -5,6 +5,9 @@
         <type>text</type>
         <style>static_prefix</style>
         <help>Subnet to use, should be large enough to hold the specified pools and reservations</help>
+        <grid_view>
+            <formatter>subnet</formatter>
+        </grid_view>
     </field>
     <field>
         <id>subnet6.interface</id>
@@ -24,6 +27,9 @@
         <type>dropdown</type>
         <advanced>true</advanced>
         <help>Select allocator method to use when offering leases to clients.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>subnet6.pd-allocator</id>
@@ -31,12 +37,9 @@
         <type>dropdown</type>
         <advanced>true</advanced>
         <help>Select allocator method to use when offering prefix delegations to clients</help>
-    </field>
-    <field>
-        <id>subnet6.description</id>
-        <label>Description</label>
-        <type>text</type>
-        <help>You may enter a description here for your reference (not parsed).</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>subnet6.pools</id>
@@ -44,6 +47,15 @@
         <type>textbox</type>
         <style>static_prefix</style>
         <help>List of pools, one per line in range or subnet format (e.g. 2001:db8:1::-2001:db8:1::100, 2001:db8:1::/80</help>
+        <grid_view>
+            <formatter>subnet</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet6.description</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>You may enter a description here for your reference (not parsed).</help>
     </field>
     <field>
         <type>header</type>

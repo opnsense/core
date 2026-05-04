@@ -11,6 +11,9 @@
         <type>text</type>
         <style>static_prefix</style>
         <help></help>
+        <grid_view>
+            <formatter>pd_pool</formatter>
+        </grid_view>
     </field>
     <field>
         <id>pd_pool.prefix_len</id>
@@ -18,6 +21,9 @@
         <type>text</type>
         <style>static_prefix</style>
         <help></help>
+        <grid_view>
+            <formatter>pd_pool</formatter>
+        </grid_view>
     </field>
     <field>
         <id>pd_pool.delegated_len</id>

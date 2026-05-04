@@ -82,8 +82,24 @@
                             },
                             options: {
                                 triggerEditFor: getUrlHash('edit'),
-                                initialSearchPhrase: getUrlHash('search')
-                            }
+                                initialSearchPhrase: getUrlHash('search'),
+                                formatters: {
+                                    subnet: function(column, row) {
+                                        if ((row.prefix_source || '') !== '' && (row[column.id] || '') === '') {
+                                            // XXX: Could somehow dynamically insert current values from running KEA config but thats more glue than this
+                                            //      Also the dialog would also need dynamic hints, there these fields are hidden for this reason.
+                                            return '<span><i class="fa fa-fw fa-random"></i> {{ lang._("dynamic") }}</span>';
+                                        }
+                                        return row["%" + column.id] || row[column.id] || "";
+                                    },
+                                    pd_pool: function(column, row) {
+                                        if ((row.prefix || '') === '' && (row.prefix_len || '') === '') {
+                                            return '<span><i class="fa fa-fw fa-random"></i> {{ lang._("dynamic") }}</span>';
+                                        }
+                                        return row["%" + column.id] || row[column.id] || "";
+                                    },
+                                },
+                            },
                         });
 
                         // Reservation-only commands
