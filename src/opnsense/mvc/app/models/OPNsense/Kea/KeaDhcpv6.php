@@ -142,7 +142,7 @@ class KeaDhcpv6 extends BaseModel
                     );
                 }
 
-                $prefix_source = (string)$cfg->interfaces->{$subnet->prefix_source->getValue()}->if;
+                $prefix_source = (string)$cfg->interfaces->{$subnet_node->prefix_source->getValue()}->if;
                 $prefix_candidate = Autoconf::getPrefix($prefix_source, 'inet6');
 
                 if (!empty($prefix_candidate)) {
