@@ -76,7 +76,6 @@
                 <subnet type="NetworkField">
                     <NetMaskRequired>Y</NetMaskRequired>
                     <AddressFamily>ipv6</AddressFamily>
-                    <Required>Y</Required>
                     <Constraints>
                         <check001>
                             <type>UniqueConstraint</type>
@@ -212,7 +211,9 @@
                         <subnets>
                             <source>OPNsense.Kea.KeaDhcpv6</source>
                             <items>subnets.subnet6</items>
-                            <display>subnet</display>
+                            <!-- XXX: Displays opt1 instead of LAN, since subnet can be empty now we need some identifier here -->
+                            <display>interface,subnet</display>
+                            <display_format>%s - %s</display_format>
                         </subnets>
                     </Model>
                     <ValidationMessage>Related subnet not found.</ValidationMessage>
@@ -396,7 +397,9 @@
                         <subnets>
                             <source>OPNsense.Kea.KeaDhcpv6</source>
                             <items>subnets.subnet6</items>
-                            <display>subnet</display>
+                            <!-- XXX: Displays opt1 instead of LAN, since subnet can be empty now we need some identifier here -->
+                            <display>interface,subnet</display>
+                            <display_format>%s - %s</display_format>
                         </subnets>
                     </Model>
                     <ValidationMessage>Related subnet not found.</ValidationMessage>

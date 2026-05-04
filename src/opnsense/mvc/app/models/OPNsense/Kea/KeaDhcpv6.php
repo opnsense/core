@@ -53,6 +53,12 @@ class KeaDhcpv6 extends BaseModel
             $subnet = "";
             $subnet_node = $this->getNodeByReference("subnets.subnet6.{$reservation->subnet}");
             if ($subnet_node) {
+                if (!$subnet_node->prefix_source->isEmpty()) {
+                    $messages->appendMessage(
+                        new Message(gettext("Reservations cannot be assigned to dynamic prefix subnets."), $key . ".subnet")
+                    );
+                    continue;
+                }
                 $subnet = $subnet_node->subnet->getValue();
             }
             if (!Util::isIPInCIDR($reservation->ip_address->getValue(), $subnet) && !$reservation->ip_address->isEmpty()) {
@@ -82,10 +88,38 @@ class KeaDhcpv6 extends BaseModel
                     new Message(gettext('Interface is not selected in the general settings.'), $key . ".interface")
                 );
             }
-            foreach ($subnet->pools->checkSubnet($subnet->subnet->getValue()) as $pool) {
+            if (!$subnet->prefix_source->isEmpty()) {
+                if (!$subnet->pools->isEmpty()) {
+                    $messages->appendMessage(
+                        new Message(gettext('Pools cannot be configured when a prefix source is selected, they are automatically generated.'), $key . ".pools")
+                    );
+                }
+            } else {
+                foreach ($subnet->pools->checkSubnet($subnet->subnet->getValue()) as $pool) {
+                    $messages->appendMessage(
+                        new Message(sprintf(gettext('Pool "%s" not in specified subnet.'), $pool), $key . ".pools")
+                    );
+                }
+            }
+            if ($subnet->prefix_source->isEmpty() && $subnet->subnet->isEmpty()) {
                 $messages->appendMessage(
-                    new Message(sprintf(gettext('Pool "%s" not in specified subnet.'), $pool), $key . ".pools")
+                    new Message(gettext('Subnet is required when no prefix source is selected.'), $key . ".subnet")
                 );
+            }
+            if (!$subnet->prefix_source->isEmpty() && !$subnet->subnet->isEmpty()) {
+                $messages->appendMessage(
+                    new Message(gettext('Subnet must be empty when a prefix source is selected.'), $key . ".subnet")
+                );
+            }
+            // This validation is not ideal, but it prevents user error on initial dynamic subnet configuration
+            if (!$subnet->prefix_source->isEmpty()) {
+                $cfg = Config::getInstance()->object();
+                $prefix_source = (string)$cfg->interfaces->{$subnet->prefix_source->getValue()}->if;
+                if (empty(Autoconf::getPrefix($prefix_source, 'inet6'))) {
+                    $messages->appendMessage(
+                        new Message(gettext('Prefix source interface has no IPv6 prefix.'), $key . ".prefix_source")
+                    );
+                }
             }
         }
         // validate changed pd_pools
@@ -166,9 +200,17 @@ class KeaDhcpv6 extends BaseModel
         $result = [];
         $subnet_id = 1;
         foreach ($this->subnets->subnet6->iterateItems() as $subnet_uuid => $subnet) {
+            // If subnet is dynamic, seed an initial subnet value so KEA can start
+            $if = $subnet->interface->getValue();
+            $subnet_value = $subnet->subnet->getValue();
+            $prefix_source = null;
+            if (!$subnet->prefix_source->isEmpty()) {
+                $prefix_source = (string)$cfg->interfaces->{$subnet->prefix_source->getValue()}->if;
+                $subnet_value = Autoconf::getPrefix($prefix_source, 'inet6');
+            }
             $record = [
                 'id' => $subnet_id++,
-                'subnet' => $subnet->subnet->getValue(),
+                'subnet' => $subnet_value,
                 'option-data' => [],
                 'pools' => [],
                 'pd-pools' => [],
@@ -189,13 +231,9 @@ class KeaDhcpv6 extends BaseModel
             if (!$subnet->description->isEmpty()) {
                 $record['user-context']['description'] = $subnet->description->getValue();
             }
-            if (!$subnet->prefix_source->isEmpty()) {
-                $prefix_source = (string)$cfg->interfaces->{$subnet->prefix_source->getValue()}->if;
+            if (!empty($prefix_source)) {
+                // Used by hook script to know which subnets have a dynamic prefix, it reads the running conf from socket
                 $record['user-context']['prefix_source'] = $prefix_source;
-                $prefix_candidate = Autoconf::getPrefix($prefix_source, 'inet6');
-                if (!empty($prefix_candidate)) {
-                    $record['user-context']['prefix_candidate'] = $prefix_candidate;
-                }
             }
             /* standard option-data elements */
             foreach ($subnet->option_data->iterateItems() as $key => $value) {
@@ -213,8 +251,17 @@ class KeaDhcpv6 extends BaseModel
                 }
             }
             /* add pools */
-            foreach ($subnet->pools->getValues() as $pool) {
-                $record['pools'][] = ['pool' => $pool];
+            if (!$subnet->prefix_source->isEmpty()) {
+                // We auto generate a default IA_NA pool for dynamic prefixes.
+                // Allowing configuration in the GUI would be too brittle since KEAs configuration model is too static.
+                // It has no idea about something like "::1000-::2000" or a concept like partial addresses.
+                // This here assumes that Autoconf::getPrefix() always returns something like "2001:db8:1234:1::/64".
+                $prefix = explode('/', $record['subnet'], 2)[0];
+                $record['pools'][] = ['pool' => "{$prefix}1000-{$prefix}2000"];
+            } else {
+                foreach ($subnet->pools->getValues() as $pool) {
+                    $record['pools'][] = ['pool' => $pool];
+                }
             }
             /* add pd-pools */
             foreach ($this->pd_pools->pd_pool->iterateItems() as $key => $pdpool) {
