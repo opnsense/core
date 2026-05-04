@@ -127,7 +127,14 @@
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                 </interface>
-                <prefix_source type="InterfaceField"/>
+                <prefix_source type="InterfaceField">
+                    <Constraints>
+                        <check001>
+                            <type>UniqueConstraint</type>
+                            <ValidationMessage>Prefix source interface must be unique per subnet.</ValidationMessage>
+                        </check001>
+                    </Constraints>
+                </prefix_source>
                 <ddns_forward_zone type="HostnameField">
                     <IpAllowed>N</IpAllowed>
                     <Constraints>
