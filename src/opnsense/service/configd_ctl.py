@@ -81,7 +81,7 @@ def exec_config_cmd(exec_command):
 parser = argparse.ArgumentParser()
 parser.add_argument("-d", help="detach the execution of the command and return immediately", action="store_true")
 parser.add_argument("-e", help="use as event handler, execute command on receiving input", action="store_true")
-parser.add_argument("-f", help="fluch the command cache prior to execution", action="store_true")
+parser.add_argument("-f", help="flush the command cache prior to execution", action="store_true")
 parser.add_argument("-q", help="run quietly by muting standard output", action="store_true")
 parser.add_argument(
     "-t",
