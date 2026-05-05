@@ -205,7 +205,7 @@
        <type>dropdown</type>
        <help>Controls how DDNS conflicts with DHCID records are handled. The default enforces client ownership via DHCID.</help>
        <grid_view>
-            <visible>false</visible>
+           <visible>false</visible>
         </grid_view>
         <advanced>true</advanced>
 </field>
