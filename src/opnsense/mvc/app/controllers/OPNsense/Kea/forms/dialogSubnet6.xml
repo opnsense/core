@@ -203,7 +203,7 @@
        <id>subnet6.ddns_conflict_resolution_mode</id>
        <label>DDNS conflict resolution mode</label>
        <type>dropdown</type>
-       <help>Controls how Kea handles DDNS conflicts with DHCID records. "check-with-dhcid" (default) enforces client ownership via DHCID. "no-check-with-dhcid" skips conflict checking but still writes DHCID records. "check-exists-with-dhcid" allows updates if a DHCID exists regardless of client match, recommended for dual-stack environments. "no-check-without-dhcid" disables both conflict checking and DHCID creation entirely.</help>
+       <help>Controls how DDNS conflicts with DHCID records are handled. The default enforces client ownership via DHCID.</help>
        <grid_view>
             <visible>false</visible>
         </grid_view>
