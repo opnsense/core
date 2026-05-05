@@ -100,7 +100,7 @@
             $(this).show();
         });
 
-        $("#ConnectionDialog").change(function(){
+        $("#ConnectionDialog").change(function() {
             if ($("#connection_details").is(':visible')) {
                 $("#tab_connections").click();
                 $("#ConnectionDialog").hide();
@@ -127,6 +127,7 @@
                 ajaxCall('/api/ipsec/connections/toggle/' + enabled,  {}, function (data, status) {
                     $("#enable").removeClass("pending");
                 });
+                $("#change_message_base_form").click();
             }
         });
         ajaxGet('/api/ipsec/connections/is_enabled', {}, function (data, status) {
@@ -136,14 +137,7 @@
             $("#enable").removeClass("pending");
         });
 
-        /**
-         * reconfigure
-         */
-        $("#reconfigureAct").SimpleActionButton({
-            onAction: function(data, status){
-                updateServiceControlUI('ipsec');
-            }
-        });
+        $("#reconfigureAct").SimpleActionButton();
 
         $(".cipher_tooltip").change(function(){
             let sender = $(this);
@@ -198,7 +192,7 @@
 </ul>
 <div class="tab-content content-box">
     <div id="connections" class="tab-pane fade in active">
-      <table id="grid-connections" class="table table-condensed table-hover table-striped" data-editDialog="ConnectionDialog" data-editAlert="ConnectionChangeMessage">
+      <table id="grid-connections" class="table table-condensed table-hover table-striped" data-editDialog="ConnectionDialog">
           <thead>
               <tr>
                 <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
@@ -223,21 +217,8 @@
               </tr>
           </tfoot>
       </table>
-      <div class="col-md-12">
-          <div id="ConnectionChangeMessage" class="alert alert-info" style="display: none" role="alert">
-              {{ lang._('After changing settings, please remember to apply them with the button below') }}
-          </div>
-          <hr/>
-      </div>
       <div class="col-md-12 form-inline __mb">
-        <div class="form-group __mr">
-          <button class="btn btn-primary" id="reconfigureAct"
-                    data-endpoint="/api/ipsec/service/reconfigure"
-                    data-label="{{ lang._('Apply') }}"
-                    data-error-title="{{ lang._('Error reconfiguring IPsec') }}"
-                    type="button"
-          ></button>
-        </div>
+        <hr/>
         <div class="form-group" style="vertical-align: sub">
           <input name="enable" class="pending" type="checkbox" id="enable"/>
           <label for="enable"><strong>{{ lang._('Enable IPsec') }}</strong></label>
@@ -345,7 +326,7 @@
             </div>
           </div>
         </div>
-        <div class="col-md-12">
+        <div class="col-md-12 __mt">
           <div id="ConnectionDialogBtns">
               <button type="button" class="btn btn-primary" id="btn_ConnectionDialog_save">
                 <strong>{{ lang._('Save')}}</strong>
@@ -356,7 +337,7 @@
         </div>
     </div>
     <div id="pools" class="tab-pane fade in">
-      <table id="grid-pools" class="table table-condensed table-hover table-striped" data-editDialog="DialogPool" data-editAlert="PoolChangeMessage">
+      <table id="grid-pools" class="table table-condensed table-hover table-striped" data-editDialog="DialogPool">
           <thead>
               <tr>
                 <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
@@ -377,12 +358,6 @@
               </tr>
           </tfoot>
       </table>
-      <div class="col-md-12">
-          <div id="PoolChangeMessage" class="alert alert-info" style="display: none" role="alert">
-              {{ lang._('After changing settings, please remember to apply them') }}
-          </div>
-          <hr/>
-      </div>
     </div>
 </div>
 
@@ -391,3 +366,4 @@
 {{ partial("layout_partials/base_dialog",['fields':formDialogRemote,'id':'DialogRemote','label':lang._('Edit Remote')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogChild,'id':'DialogChild','label':lang._('Edit Child')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogPool,'id':'DialogPool','label':lang._('Edit Pool')])}}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/ipsec/service/reconfigure', 'data_service_widget': 'ipsec'})}}

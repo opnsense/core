@@ -647,6 +647,10 @@ $.fn.SimpleActionButton = function (params) {
 
         let hideCheckTimeout;
 
+        $("#" + this_button.data('message-id')).on('click', function (e) {
+            $(e.currentTarget).show().parent('.alert').addClass('alert-info').removeClass('content-box');
+        });
+
         this_button.on('click', function () {
             const icon = this_button.find('.reload_progress');
 

@@ -602,6 +602,7 @@
                         $el.SimpleFileUploadDlg({
                             onAction: function () {
                                 $("#{{formGridFilterRule['table_id']}}").bootgrid('reload');
+                                $("#change_message_base_form").click();
                             }
                         });
                     },
@@ -654,7 +655,7 @@
                             function(data, status) {
                                 if (data.status === "ok") {
                                     $("#{{ formGridFilterRule['table_id'] }}").bootgrid("reload");
-                                    $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
+                                    $("#change_message_base_form").click();
                                 }
                             },
                             function(xhr, textStatus, errorThrown) {
@@ -681,7 +682,7 @@
                             function(data) {
                                 if (data.status === "ok") {
                                     $("#{{ formGridFilterRule['table_id'] }}").bootgrid("reload");
-                                    $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
+                                    $("#change_message_base_form").click();
                                 }
                             },
                             function(xhr, textStatus, errorThrown) {

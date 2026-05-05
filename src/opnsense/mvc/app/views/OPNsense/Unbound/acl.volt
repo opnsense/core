@@ -33,11 +33,7 @@ $( document ).ready(function() {
         $("#unbound\\.acls\\.default_action").change(function() {
             saveFormToEndpoint(url="/api/unbound/settings/set", formid="frm_AclSettings", function() {
                 /* Mimic bootgrid behaviour to nudge users towards reconfiguring */
-                $("#AclChangeMessage").slideDown(1000, function() {
-                    setTimeout(function() {
-                        $("#AclChangeMessage").slideUp(2000);
-                    }, 2000);
-                });
+                $("#change_message_base_form").click();
             });
         });
     });

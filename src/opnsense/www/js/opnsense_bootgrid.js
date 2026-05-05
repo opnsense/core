@@ -2055,9 +2055,10 @@ class UIBootgrid {
     */
     showSaveAlert(event) {
         let editAlert = this.$compatElement.attr('data-editAlert');
-        if (editAlert !== undefined) {
-            $("#" + editAlert).show().parent('.alert').addClass('alert-info').removeClass('content-box');
+        if (editAlert === undefined) {
+            editAlert = 'change_message_base_form';
         }
+        $("#" + editAlert).click();
     }
 
     /**
