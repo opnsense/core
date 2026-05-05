@@ -250,7 +250,6 @@ class KeaDhcpv4 extends BaseModel
                 if (!$subnet->ddns_conflict_resolution_mode->isEmpty()) {
                     $record['ddns-conflict-resolution-mode'] = $subnet->ddns_conflict_resolution_mode->getValue();
                 }
-                
             }
             $result[] = $record;
         }
