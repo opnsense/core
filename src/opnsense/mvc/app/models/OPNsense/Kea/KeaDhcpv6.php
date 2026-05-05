@@ -135,16 +135,13 @@ class KeaDhcpv6 extends BaseModel
                 !$this->general->interfaces->isEmpty();
     }
 
-    /**
-     *
-     */
     private function getConfigPhysicalInterfaces()
     {
         $result = [];
-        $cfg = Config::getInstance()->object();
-        foreach ($this->general->interfaces->getValues() as $if) {
-            if (isset($cfg->interfaces->$if) && !empty($cfg->interfaces->$if->if)) {
-                $result[] = (string)$cfg->interfaces->$if->if;
+        foreach ($this->general->interfaces->getValues() as $interface) {
+            $device = Util::getRealInterface($interface, 'inet6');
+            if (!empty($device)) {
+                $result[] = $device;
             }
         }
         return $result;
@@ -161,7 +158,6 @@ class KeaDhcpv6 extends BaseModel
 
     private function getConfigSubnets($ddns_enabled = false)
     {
-        $cfg = Config::getInstance()->object();
         $result = [];
         $subnet_id = 1;
         foreach ($this->subnets->subnet6->iterateItems() as $subnet_uuid => $subnet) {
@@ -173,9 +169,9 @@ class KeaDhcpv6 extends BaseModel
                 'pd-pools' => [],
                 'reservations' => []
             ];
-            $if = $subnet->interface->getValue();
-            if (isset($cfg->interfaces->$if) && !empty($cfg->interfaces->$if->if)) {
-                $record['interface'] = (string)$cfg->interfaces->$if->if;
+            $device = Util::getRealInterface($subnet->interface->getValue(), 'inet6');
+            if (!empty($device)) {
+                $record['interface'] = $device;
             }
             if (!$subnet->{'pd-allocator'}->isEmpty()) {
                 $record['pd-allocator'] = $subnet->{'pd-allocator'}->getValue();
