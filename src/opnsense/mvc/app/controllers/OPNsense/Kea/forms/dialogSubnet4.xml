@@ -306,6 +306,6 @@
        <grid_view>
             <visible>false</visible>
        </grid_view>
-        <advanced>true</advanced>
+       <advanced>true</advanced>
     </field>
 </form>
