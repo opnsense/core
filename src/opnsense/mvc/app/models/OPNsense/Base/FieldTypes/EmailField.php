@@ -58,7 +58,7 @@ class EmailField extends BaseField
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
             $validators[] = new CallbackValidator(["callback" => function ($data) {
-                if (!preg_match('/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/', $data)) {
+                if (!preg_match('/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i', $data)) {
                     return [$this->getValidationMessage()];
                 }
                 return [];
