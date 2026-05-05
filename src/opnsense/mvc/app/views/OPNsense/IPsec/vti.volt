@@ -35,16 +35,6 @@
 
 </script>
 
-<style>
-  div.section_header > hr {
-      margin: 0px;
-  }
-  div.section_header > h2 {
-      padding-left: 5px;
-      margin: 0px;
-  }
-</style>
-
 <div class="content-box">
     {{ partial('layout_partials/base_bootgrid_table', formGridVTI)}}
 </div>
