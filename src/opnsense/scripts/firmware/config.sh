@@ -163,6 +163,20 @@ output_reboot()
 	/usr/local/etc/rc.reboot
 }
 
+output_shutdown()
+{
+	KEEP_LOG=${1}
+
+	echo '***SHUTDOWN***' >> ${LOCKFILE}
+
+	if  [ -n "${KEEP_LOG}" ]; then
+		cp ${LOCKFILE} ${LOGFILE}
+	fi
+
+	sleep 5
+	/usr/local/etc/rc.halt
+}
+
 # if output is requested clear file and set new request right away
 if [ -n "${REQUEST}" ]; then
 	output_request "${REQUEST}"

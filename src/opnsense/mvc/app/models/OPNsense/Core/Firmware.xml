@@ -9,6 +9,7 @@
         <type type="TextField"/>
         <subscription type="TextField"/>
         <reboot type="BooleanField"/>
+        <shutdown type="BooleanField"/>
         <aux type="BooleanField"/>
     </items>
 </model>

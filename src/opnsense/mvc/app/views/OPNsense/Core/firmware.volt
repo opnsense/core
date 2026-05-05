@@ -191,6 +191,17 @@
     }
 
     /**
+     * save power off preference to the backend
+     */
+    function setShutdownPreference(enabled, callback)
+    {
+        var confopt = { 'firmware': { 'shutdown': enabled ? '1' : '0' } };
+        ajaxCall('/api/core/firmware/set', confopt, function () {
+            if (callback) callback();
+        });
+    }
+
+    /**
      * perform package action that requires reboot confirmation
      */
     function action_may_reboot(pkg_act, pkg_name)
@@ -199,14 +210,17 @@
             // reboot required, inform the user.
             BootstrapDialog.show({
                 type:BootstrapDialog.TYPE_WARNING,
-                title: "{{ lang._('Reboot required') }}",
-                message: "{{ lang._('The firewall will reboot directly after this set reinstall.') }}",
+                title: "{{ lang._('Reboot/ Power off required') }}",
+                message: "{{ lang._('The firewall will reboot directly after this set reinstall.') }}" + '<br><br><label><input type="checkbox" id="reinstall_shutdown_cb"> ' + '{{ lang._("Power off instead of reboot") }}</label>',
                 buttons: [{
                     label: "{{ lang._('OK') }}",
                     cssClass: 'btn-warning',
                     action: function(dialogRef){
+                        let doShutdown = $('#reinstall_shutdown_cb').is(':checked');
                         dialogRef.close();
-                        backend(pkg_act + "/" + pkg_name);
+                        setShutdownPreference(doShutdown, function () {
+                            backend(pkg_act + "/" + pkg_name);
+                        });
                     }
                 },{
                     label: "{{ lang._('Cancel') }}",
@@ -241,27 +255,53 @@
     function upgrade_ui(major)
     {
         if (major !== true && $.status_reboot != "1") {
-            backend('update');
+            setShutdownPreference(false, function () {
+                backend('update');
+            });
         } else {
             let reboot_msg = "{{ lang._('The firewall will reboot directly after this firmware update.') }}";
             if (major === true) {
                 reboot_msg = "{{ lang._('The firewall will download all firmware sets and reboot multiple times for this upgrade. All operating system files and packages will be reinstalled as a consequence. This may take several minutes to complete.') }}";
             }
+            reboot_msg += '<br><br><label><input type="checkbox" id="upgrade_shutdown_cb"> ' +
+                '{{ lang._("Shut down instead of reboot") }}</label>';
             // reboot required, inform the user.
+            let countdownSeconds = 30;
+            let countdownTimer = null;
             BootstrapDialog.show({
                 type:BootstrapDialog.TYPE_WARNING,
-                title: "{{ lang._('Reboot required') }}",
+                title: "{{ lang._('Reboot/ Power off required') }}",
                 message: reboot_msg,
+                onshown: function(dialogRef) {
+                    let $btn = dialogRef.getButton('btn-reboot');
+                    countdownTimer = setInterval(function () {
+                        countdownSeconds--;
+                        $btn.text('{{ lang._("Confirm") }} (' + countdownSeconds + ')');
+                        if (countdownSeconds <= 0) {
+                            clearInterval(countdownTimer);
+                            $btn.trigger('click');
+                        }
+                    }, 1000);
+                },
+                onhidden: function() {
+                    if (countdownTimer) clearInterval(countdownTimer);
+                },
                 buttons: [{
-                    label: "{{ lang._('OK') }}",
+                    id: 'btn-reboot',
+                    label: '{{ lang._("Restart") }} (' + countdownSeconds + ')',
                     cssClass: 'btn-warning',
                     action: function(dialogRef){
+                        if (countdownTimer) clearInterval(countdownTimer);
+                        let doShutdown = $('#upgrade_shutdown_cb').is(':checked');
                         dialogRef.close();
-                        backend(major === true ? 'upgrade' : 'update');
+                        setShutdownPreference(doShutdown, function () {
+                            backend(major === true ? 'upgrade' : 'update');
+                        });
                     }
                 },{
                     label: "{{ lang._('Cancel') }}",
                     action: function(dialogRef){
+                        if (countdownTimer) clearInterval(countdownTimer);
                         dialogRef.close();
                     }
                 }]
@@ -313,6 +353,14 @@
                     onshow: function (dialogRef) {
                         setTimeout(rebootWait, 45000);
                     },
+                });
+            } else if (data['status'] == 'shutdown') {
+                BootstrapDialog.show({
+                    type:BootstrapDialog.TYPE_INFO,
+                    title: "{{ lang._('Shutting down after update') }}",
+                    closable: false,
+                    message: "{{ lang._('The system is shutting down. You chose to power off instead of reboot. The system will need to be started manually.') }}" +
+                        ' <i class="fa fa-power-off"></i>',
                 });
             } else {
                 // schedule next poll
@@ -681,6 +729,7 @@
                     $("#firmware_type").find('option').remove();
                     $("#firmware_flavour").find('option').remove();
                     $("#firmware_reboot").prop('checked', fwconf['reboot'] == '1');
+                    $("#firmware_shutdown").prop('checked', fwconf['shutdown'] == '1');
                     $("#firmware_aux").prop('checked', fwconf['aux'] == '1');
 
                     $.each(fwopts.mirrors, function(key, value) {
@@ -732,7 +781,7 @@
                     }
                     $("#firmware_flavour").selectpicker('refresh');
                     $("#firmware_flavour").change();
-                    if (fwconf['flavour'] !== '' || fwconf['reboot'] === '1' || fwconf['aux'] === '1') {
+                    if (fwconf['flavour'] !== '' || fwconf['reboot'] === '1' || fwconf['shutdown'] === '1' || fwconf['aux'] === '1') {
                         $("i.fa-toggle-off#show_advanced_firmware").click();
                     }
 
@@ -779,6 +828,7 @@
             confopt.flavour = $("#firmware_flavour_value").val();
             confopt.type = $("#firmware_type").val();
             confopt.reboot = $("#firmware_reboot").is(":checked") ? '1' : '0';
+            confopt.shutdown = $("#firmware_shutdown").is(":checked") ? '1' : '0';
             confopt.aux = $("#firmware_aux").is(":checked") ? '1' : '0';
             confopt.subscription = $("#firmware_subscription").val();
             ajaxCall('/api/core/firmware/set', { 'firmware': confopt }, function (data, status) {
@@ -1058,6 +1108,17 @@
                                 <td>
                                     <input type="checkbox" id="firmware_reboot">
                                     {{ lang._('Always reboot after a successful update') }}
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr data-advanced="true">
+                                <td style="width: 150px;"><a id="help_for_shutdown" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Power off') }}</td>
+                                <td>
+                                    <input type="checkbox" id="firmware_shutdown">
+                                    {{ lang._('Prefer power off instead of reboot after an update') }}
+                                    <div class="hidden" data-for="help_for_shutdown">
+                                        {{ lang._('When enabled, the system will power off instead of reboot after a firmware update that requires a restart.') }}
+                                    </div>
                                 </td>
                                 <td></td>
                             </tr>

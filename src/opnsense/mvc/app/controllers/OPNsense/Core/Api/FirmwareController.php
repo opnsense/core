@@ -769,6 +769,8 @@ class FirmwareController extends ApiMutableModelControllerBase
             $result['status'] = 'done';
         } elseif (strpos($cmd_result, '***REBOOT***') !== false) {
             $result['status'] = 'reboot';
+        } elseif (strpos($cmd_result, '***SHUTDOWN***') !== false) {
+            $result['status'] = 'shutdown';
         }
 
         return $result;
