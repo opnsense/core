@@ -286,7 +286,7 @@ function core_cron()
 
     $push_time = $config['system']['backup']['settings']['pushtime'] ?? '';
 
-    if (!empty($push_time) && preg_match('/^([0-9]{1,2}):([0-9]{1,2})$/', $push_time, $matches)) {
+    if (!empty($push_time) && preg_match('/^([01]?[0-9]|2[0-3]):([0-5]?[0-9])$/', $push_time, $matches)) {
         $cron_hour = (int)$matches[1];
         $cron_minute = (int)$matches[2];
     }
