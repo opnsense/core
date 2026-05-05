@@ -79,15 +79,16 @@ def exec_config_cmd(exec_command):
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-e", help="use as event handler, execute command on receiving input", action="store_true")
 parser.add_argument("-d", help="detach the execution of the command and return immediately", action="store_true")
+parser.add_argument("-e", help="use as event handler, execute command on receiving input", action="store_true")
+parser.add_argument("-f", help="flush the command cache prior to execution", action="store_true")
 parser.add_argument("-q", help="run quietly by muting standard output", action="store_true")
-parser.add_argument("-w", help="wait specified amount of seconds for socket to become available", type=int, default=0)
 parser.add_argument(
     "-t",
     help="threshold between events,  wait this interval before executing commands, combine input into single events",
     type=float
 )
+parser.add_argument("-w", help="wait specified amount of seconds for socket to become available", type=int, default=0)
 parser.add_argument("command", help="command(s) to execute", nargs="*")
 args = parser.parse_args()
 
@@ -134,6 +135,8 @@ if args.e:
                 syslog_notice("event @ %.2f msg: %s" % (last_message_stamp, line))
             # execute command(s)
             for exec_command in exec_commands:
+                if args.f:
+                    exec_command = '!' + exec_command
                 if args.d:
                     exec_command = '&' + exec_command
                 # we need to fetch the generator's response in order to execute the command, lets return it to the
@@ -144,6 +147,8 @@ if args.e:
 else:
     # normal execution mode
     for exec_command in exec_commands:
+        if args.f:
+            exec_command = '!' + exec_command
         if args.d:
             exec_command = '&' + exec_command
         endmarker = (chr(0), chr(0), chr(0))
