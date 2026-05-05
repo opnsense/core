@@ -87,15 +87,18 @@
 
         $(".hidden_attr").closest('tr').hide();
 
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            if ($(e.relatedTarget).attr('href') == '.edit_connection') {
+                $("#connection_details").hide();
+            }
+        });
+
         $("#ConnectionDialog").click(function(){
             const $tab = $(this);
 
             $("#grid-locals").bootgrid("clear");
             $("#grid-remotes").bootgrid("clear");
             $("#grid-children").bootgrid("clear");
-            if (!$tab.parent('li').hasClass('active')) {
-                $("#connection_details").hide();
-            }
 
             ajaxGet("/api/ipsec/connections/connection_exists/" + $("#connection\\.uuid").val(), {}, function(data){
                 if (data.exists) {
@@ -117,6 +120,7 @@
         $("#btn_ConnectionDialog_cancel").click(function () {
             $("#tab_connections").click();
             $("#ConnectionDialog").hide();
+            $("#connection_details").hide();
         });
 
         $("#connection\\.description").change(function(){
@@ -193,11 +197,20 @@
     max-width: 500px;
     text-align: left;
   }
+  @media (min-width: 992px) {
+    .left-col {
+      padding-right: 0;
+      border-right: 1px solid #E5E5E5; # XXX hardcoded
+    }
+    .right-col {
+      padding-left: 0;
+    }
+}
 </style>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" id="tab_connections" href="#connections">{{ lang._('Connections') }}</a></li>
-    <li><a data-toggle="tab" href="#edit_connection" id="ConnectionDialog" style="display: none;"> </a></li>
+    <li><a data-toggle="tab" href=".edit_connection" id="ConnectionDialog" style="display: none;"> </a></li>
     <li><a data-toggle="tab" href="#pools" id="tab_pools"> {{ lang._('Pools') }} </a></li>
 </ul>
 <div class="tab-content content-box">
@@ -235,13 +248,39 @@
         </div>
       </div>
     </div>
-    <div id="edit_connection" class="tab-pane fade in">
+    <div class="tab-pane fade in edit_connection">
         <div>
           <form id="frm_ConnectionDialog"></form>
         </div>
-        <div id="connection_details" class="__mt">
+    </div>
+    <div id="pools" class="tab-pane fade in">
+      <table id="grid-pools" class="table table-condensed table-hover table-striped" data-editDialog="DialogPool">
+          <thead>
+              <tr>
+                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
+                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+              </tr>
+          </thead>
+          <tbody>
+          </tbody>
+          <tfoot>
+              <tr>
+                  <td></td>
+                  <td>
+                      <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
+                      <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
+                  </td>
+              </tr>
+          </tfoot>
+      </table>
+    </div>
+</div>
+<div id="connection_details" class="tab-content" style="display: none;">
+    <div class="content-box tab-pane fade in edit_connection __mt">
           <div class="row">
-            <div class="col-xs-12 col-md-6 table-responsive">
+            <div class="col-xs-12 col-md-6 table-responsive left-col">
               <table class="table table-striped table-condensed" style="table-layout: fixed; width: 100%;">
                 <tr><td><h3>{{ lang._('Local Authentication')}}</h3></td>
                 <tr><td>
@@ -270,7 +309,7 @@
                 </td></tr>
               </table>
             </div>
-            <div class="col-xs-12 col-md-6 table-responsive">
+            <div class="col-xs-12 col-md-6 table-responsive right-col">
               <table class="table table-striped table-condensed" style="table-layout: fixed; width: 100%;">
                 <tr><td><h3>{{ lang._('Remote Authentication')}}</h3></td>
                 <tr><td>
@@ -300,8 +339,10 @@
               </table>
             </div>
           </div>
+    </div>
+    <div class="content-box tab-pane fade in edit_connection __mt">
           <div class="row">
-            <div class="col-xs-12" table-responsive">
+            <div class="col-xs-12 table-responsive">
               <table class="table table-striped table-condensed" style="table-layout: fixed; width: 100%;">
                 <tr><td><h3>{{ lang._('Children')}}</h3></td>
                 <tr><td>
@@ -332,34 +373,10 @@
               </table>
             </div>
           </div>
-        </div>
-    </div>
-    <div id="pools" class="tab-pane fade in">
-      <table id="grid-pools" class="table table-condensed table-hover table-striped" data-editDialog="DialogPool">
-          <thead>
-              <tr>
-                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
-                <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-              </tr>
-          </thead>
-          <tbody>
-          </tbody>
-          <tfoot>
-              <tr>
-                  <td></td>
-                  <td>
-                      <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                      <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
-                  </td>
-              </tr>
-          </tfoot>
-      </table>
     </div>
 </div>
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogConnection,'id':'DialogConnection','save_cancel_id': 'ConnectionDialog','label':lang._('Edit Connection')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogConnection,'id':'DialogConnection','label':lang._('Edit Connection')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogLocal,'id':'DialogLocal','label':lang._('Edit Local')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogRemote,'id':'DialogRemote','label':lang._('Edit Remote')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogChild,'id':'DialogChild','label':lang._('Edit Child')])}}

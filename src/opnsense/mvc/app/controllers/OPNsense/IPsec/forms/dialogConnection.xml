@@ -253,4 +253,8 @@
         <label>Description</label>
         <type>text</type>
     </field>
+    <field>
+        <type>save_cancel</type>
+        <parent>ConnectionDialog</parent>
+    </field>
 </form>
