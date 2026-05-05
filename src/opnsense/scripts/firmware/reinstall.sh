@@ -30,17 +30,13 @@ REQUEST="REINSTALL"
 . /usr/local/opnsense/scripts/firmware/config.sh
 
 PACKAGE=${1}
-PREFER_SHUTDOWN=$(/usr/local/sbin/pluginctl -g system.firmware.shutdown)
 
 if [ "${PACKAGE}" = "base" ]; then
 	if opnsense-update -Tb; then
 		# force reinstall intended
 		if output_cmd opnsense-update -bf; then
 			if [ "${PREFER_SHUTDOWN}" = "1" ]; then
-				output_shutdown
-			else
-				output_reboot
-			fi
+			output_restart_action
 		fi
 	else
 		# for locked message only
@@ -50,11 +46,7 @@ elif [ "${PACKAGE}" = "kernel" ]; then
 	if opnsense-update -Tk; then
 		# force reinstall intended
 		if output_cmd opnsense-update -kf; then
-			if [ "${PREFER_SHUTDOWN}" = "1" ]; then
-				output_shutdown
-			else
-				output_reboot
-			fi
+			output_restart_action
 		fi
 	else
 		# for locked message only

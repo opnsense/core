@@ -212,9 +212,6 @@
                 type:BootstrapDialog.TYPE_WARNING,
                 title: "{{ lang._('Reboot/ Power off required') }}",
                 message: "{{ lang._('The firewall will reboot directly after this set reinstall.') }}" + '<br><br><label><input type="checkbox" id="reinstall_shutdown_cb"> ' + '{{ lang._("Power off instead of reboot") }}</label>',
-                onshown: function(dialogRef) {
-                    $('#reinstall_shutdown_cb').prop('checked', $.shutdown_pref === true);
-                },
                 buttons: [{
                     label: "{{ lang._('OK') }}",
                     cssClass: 'btn-warning',
@@ -276,7 +273,6 @@
                 title: "{{ lang._('Reboot/ Power off required') }}",
                 message: reboot_msg,
                 onshown: function(dialogRef) {
-                    $('#upgrade_shutdown_cb').prop('checked', $.shutdown_pref === true);
                     let $btn = dialogRef.getButton('btn-reboot');
                     countdownTimer = setInterval(function () {
                         countdownSeconds--;
@@ -733,8 +729,6 @@
                     $("#firmware_type").find('option').remove();
                     $("#firmware_flavour").find('option').remove();
                     $("#firmware_reboot").prop('checked', fwconf['reboot'] == '1');
-                    $("#firmware_shutdown").prop('checked', fwconf['shutdown'] == '1');
-                    $.shutdown_pref = fwconf['shutdown'] == '1';
                     $("#firmware_aux").prop('checked', fwconf['aux'] == '1');
 
                     $.each(fwopts.mirrors, function(key, value) {
@@ -786,7 +780,7 @@
                     }
                     $("#firmware_flavour").selectpicker('refresh');
                     $("#firmware_flavour").change();
-                    if (fwconf['flavour'] !== '' || fwconf['reboot'] === '1' || fwconf['shutdown'] === '1' || fwconf['aux'] === '1') {
+                    if (fwconf['flavour'] !== '' || fwconf['reboot'] === '1' || fwconf['aux'] === '1') {
                         $("i.fa-toggle-off#show_advanced_firmware").click();
                     }
 
@@ -833,7 +827,6 @@
             confopt.flavour = $("#firmware_flavour_value").val();
             confopt.type = $("#firmware_type").val();
             confopt.reboot = $("#firmware_reboot").is(":checked") ? '1' : '0';
-            confopt.shutdown = $("#firmware_shutdown").is(":checked") ? '1' : '0';
             confopt.aux = $("#firmware_aux").is(":checked") ? '1' : '0';
             confopt.subscription = $("#firmware_subscription").val();
             ajaxCall('/api/core/firmware/set', { 'firmware': confopt }, function (data, status) {
@@ -1113,17 +1106,6 @@
                                 <td>
                                     <input type="checkbox" id="firmware_reboot">
                                     {{ lang._('Always reboot after a successful update') }}
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr data-advanced="true">
-                                <td style="width: 150px;"><a id="help_for_shutdown" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Power off') }}</td>
-                                <td>
-                                    <input type="checkbox" id="firmware_shutdown">
-                                    {{ lang._('Prefer power off instead of reboot after an update') }}
-                                    <div class="hidden" data-for="help_for_shutdown">
-                                        {{ lang._('When enabled, the system will power off instead of reboot after a firmware update that requires a restart.') }}
-                                    </div>
                                 </td>
                                 <td></td>
                             </tr>

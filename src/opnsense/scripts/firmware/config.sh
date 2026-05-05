@@ -149,6 +149,21 @@ output_done()
 	exit 0
 }
 
+output_restart_action()
+{
+	KEEP_LOG=${1}
+
+	PREFER_SHUTDOWN=$(/usr/local/sbin/pluginctl -g system.firmware.shutdown)
+
+	/usr/local/sbin/pluginctl -s system.firmware.shutdown 0
+
+	if [ "${PREFER_SHUTDOWN}" = "1" ]; then
+		output_shutdown "${KEEP_LOG}"
+	else
+		output_reboot "${KEEP_LOG}"
+	fi
+}
+
 output_reboot()
 {
 	KEEP_LOG=${1}

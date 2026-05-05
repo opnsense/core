@@ -45,7 +45,6 @@ fi
 
 # read reboot flag and record current package name and version state
 ALWAYS_REBOOT=$(/usr/local/sbin/pluginctl -g system.firmware.reboot)
-PREFER_SHUTDOWN=$(/usr/local/sbin/pluginctl -g system.firmware.shutdown)
 PKGS_HASH=$(${PKG} query %n-%v 2> /dev/null | sha256)
 UPDATE_FAILED=
 
@@ -72,21 +71,13 @@ fi
 # if we can update base, we'll do that as well
 if opnsense-update ${FORCE} -bk -c; then
 	if output_cmd opnsense-update ${FORCE} -bk; then
-		if [ "${PREFER_SHUTDOWN}" = "1" ]; then
-			output_shutdown keep-log
-		else
-			output_reboot keep-log
-		fi
+		output_restart_action keep-log
 	fi
 fi
 
 if [ "${ALWAYS_REBOOT}" = "1" ]; then
 	if [ "${PKGS_HASH}" != "$(${PKG} query %n-%v 2> /dev/null | sha256)" ]; then
-		if [ "${PREFER_SHUTDOWN}" = "1" ]; then
-			output_shutdown keep-log
-		else
-			output_reboot keep-log
-		fi
+		output_restart_action keep-log
 	fi
 fi
 
