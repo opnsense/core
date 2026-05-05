@@ -360,7 +360,7 @@
                             function(data, status) {
                                 if (data.status === "ok") {
                                     $("#{{ formGridRule['table_id'] }}").bootgrid("reload");
-                                    $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
+                                    $(document).trigger("settings-changed");
                                 }
                             },
                             function(xhr, textStatus, errorThrown) {
@@ -387,7 +387,7 @@
                             function(data) {
                                 if (data.status === "ok") {
                                     $("#{{ formGridRule['table_id'] }}").bootgrid("reload");
-                                    $("#change_message_base_form").stop(true, false).slideDown(1000).delay(2000).slideUp(2000);
+                                    $(document).trigger("settings-changed");
                                 }
                             },
                             function(xhr, textStatus, errorThrown) {

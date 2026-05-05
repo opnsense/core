@@ -10,10 +10,9 @@
 {% if data_grid_reload is defined %}
             data-grid-reload="{{ data_grid_reload }}"
 {% endif %}
-            data-message-id="{{ message_id|default('change_message_base_form') }}"
             type="button">
         </button>
-        <div id="{{ message_id|default('change_message_base_form') }}" style="display: none">
+        <div id="change_message_base_form" style="display: none">
             {{ lang._(data_change_message_content | default('After changing settings, please remember to apply them.')) }}
         </div>
     </div>
