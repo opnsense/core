@@ -64,18 +64,24 @@ def main(params):
             os.environ["certificate_depth"] = params.args[0]
         sys.exit(subprocess.run("%s/tls_verify.php" % cmd_path).returncode)
     elif params.script_type == 'client-connect':
-        # Temporary file used for the profile specified by client-connect
-        if len(params.args) > 0:
-            os.environ["config_file"] = params.args[0]
-        if params.dns_update:
-            subprocess.run(['/usr/local/opnsense/scripts/filter/dnsupdate.py', 'add', '--syslog'])
-        sys.exit(subprocess.run("%s/client_connect.php" % cmd_path).returncode)
+        if os.fork() == 0:
+            if params.dns_update:
+                subprocess.Popen(['/usr/local/opnsense/scripts/filter/dnsupdate.py', 'add', '--syslog'])
+        else:
+            # Temporary file used for the profile specified by client-connect
+            if len(params.args) > 0:
+                os.environ["config_file"] = params.args[0]
+            sys.exit(subprocess.run("%s/client_connect.php" % cmd_path).returncode)
     elif params.script_type == 'client-disconnect':
-        if params.dns_update:
-            subprocess.run(['/usr/local/opnsense/scripts/filter/dnsupdate.py', 'delete', '--syslog'])
-        sys.exit(subprocess.run("%s/client_disconnect.sh" % cmd_path).returncode)
+        if os.fork() == 0:
+            if params.dns_update:
+                subprocess.Popen(['/usr/local/opnsense/scripts/filter/dnsupdate.py', 'delete', '--syslog'])
+        else:
+            sys.exit(subprocess.run("%s/client_disconnect.sh" % cmd_path).returncode)
     elif params.script_type == 'learn-address':
         if os.fork() == 0:
+            if params.dns_update:
+                subprocess.Popen(['/usr/local/opnsense/scripts/filter/dnsupdate.py', 'add', '--syslog'])
             # Highly simplified debouncer.
             # Gathers events for 2 seconds, if more are triggered in the same slot, execute the last one.
             # This moves events until we have at least 2 seconds of "silence" to process them
@@ -84,8 +90,6 @@ def main(params):
             dbounce_start = debounce_ref.stat().st_mtime
             time.sleep(2)
             if debounce_ref.stat().st_mtime == dbounce_start:
-                if params.dns_update:
-                    subprocess.run(['/usr/local/opnsense/scripts/filter/dnsupdate.py', 'add', '--syslog'])
                 sys.exit(subprocess.run(
                     ['/usr/local/opnsense/scripts/filter/update_tables.py', '--types', 'authgroup']
                 ).returncode)
