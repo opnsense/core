@@ -36,7 +36,6 @@ if output_cmd opnsense-update -u; then
 		if output_cmd opnsense-update -K -c; then
 			output_cmd opnsense-update -K
 		fi
-		output_reboot keep-log
 		if [ "${PREFER_SHUTDOWN}" = "1" ]; then
 			output_shutdown keep-log
 		else

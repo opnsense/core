@@ -212,6 +212,9 @@
                 type:BootstrapDialog.TYPE_WARNING,
                 title: "{{ lang._('Reboot/ Power off required') }}",
                 message: "{{ lang._('The firewall will reboot directly after this set reinstall.') }}" + '<br><br><label><input type="checkbox" id="reinstall_shutdown_cb"> ' + '{{ lang._("Power off instead of reboot") }}</label>',
+                onshown: function(dialogRef) {
+                    $('#reinstall_shutdown_cb').prop('checked', $.shutdown_pref === true);
+                },
                 buttons: [{
                     label: "{{ lang._('OK') }}",
                     cssClass: 'btn-warning',
@@ -264,7 +267,7 @@
                 reboot_msg = "{{ lang._('The firewall will download all firmware sets and reboot multiple times for this upgrade. All operating system files and packages will be reinstalled as a consequence. This may take several minutes to complete.') }}";
             }
             reboot_msg += '<br><br><label><input type="checkbox" id="upgrade_shutdown_cb"> ' +
-                '{{ lang._("Shut down instead of reboot") }}</label>';
+                '{{ lang._("Power off instead of reboot") }}</label>';
             // reboot required, inform the user.
             let countdownSeconds = 30;
             let countdownTimer = null;
@@ -273,6 +276,7 @@
                 title: "{{ lang._('Reboot/ Power off required') }}",
                 message: reboot_msg,
                 onshown: function(dialogRef) {
+                    $('#upgrade_shutdown_cb').prop('checked', $.shutdown_pref === true);
                     let $btn = dialogRef.getButton('btn-reboot');
                     countdownTimer = setInterval(function () {
                         countdownSeconds--;
@@ -730,6 +734,7 @@
                     $("#firmware_flavour").find('option').remove();
                     $("#firmware_reboot").prop('checked', fwconf['reboot'] == '1');
                     $("#firmware_shutdown").prop('checked', fwconf['shutdown'] == '1');
+                    $.shutdown_pref = fwconf['shutdown'] == '1';
                     $("#firmware_aux").prop('checked', fwconf['aux'] == '1');
 
                     $.each(fwopts.mirrors, function(key, value) {
