@@ -86,7 +86,7 @@
         <label>Preferred landing page</label>
         <type>text</type>
         <help>Preferred landing page after login or authentication failure</help>
-        <hint>/ui/core/firmware#updates</hint>
+        <hint>/ui/component/controller#subpage</hint>
         <grid_view>
             <visible>false</visible>
         </grid_view>
