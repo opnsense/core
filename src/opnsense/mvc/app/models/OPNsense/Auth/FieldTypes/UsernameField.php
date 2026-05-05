@@ -68,7 +68,7 @@ class UsernameField extends BaseField
                         $failed = $matches[0] != $data;
                     }
                 } elseif (strpos($data, '@') !== false) {
-                    /* when an @ is offered, we assume an email addres which has more constraints */
+                    /* when an @ is offered, we assume an email address which has more constraints */
                     $failed = !preg_match('/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i', $data);
                 } elseif (preg_match("/^[a-z0-9\.\-_@]{1,320}$/i", $data, $matches)) {
                     $failed = $matches[0] != $data;
