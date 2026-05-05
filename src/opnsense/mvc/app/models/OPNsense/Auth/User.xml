@@ -33,7 +33,10 @@
             <scrambled_password type="BooleanField" volatile="true"/>
             <!-- password policy constraints store last pwd change timestamp -->
             <pwd_changed_at type="TextField"/>
-            <landing_page type="TextField"/>
+            <landing_page type="TextField">
+                <Mask>/^\/[a-zA-Z0-9_\-\.~\/?=&amp;#+,@!;]*$/</Mask>
+                <ValidationMessage>Must be a valid relative path without backslashes or URL schemes.</ValidationMessage>
+            </landing_page>
             <comment type="TextField"/>
             <email type="TextField"/>
             <apikeys type=".\ApiKeyField"/>
