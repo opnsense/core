@@ -674,4 +674,51 @@ class Util
         /* return a convenient one-entry array to iterate over for our callers */
         return [$lockout_if => $lockout_ports];
     }
+
+    /**
+     * return the device name present in the system for the specific configuration,
+     * almost the same as get_real_interface() in backend code with the exception
+     * that the interface names will not be passed through as device names on failures
+     * @param string $interface name of the interface
+     * @param string $family type: inet/inet6/both
+     * @return null|string|array target device name or null, on both array with all known
+     */
+    public static function getRealInterface(string $interface, string $family = 'inet')
+    {
+        $cfg = Config::getInstance()->object();
+
+        if (!isset($cfg->interfaces->{$interface})) {
+            /* name invalid so return nothing */
+            return $family != 'both' ? null : [];
+        }
+
+        $devices = []; /* store both: 0 => IPv4, 1 = > IPv6 (if different) */
+
+        $devices[0] = (string)$cfg->interfaces->{$interface}->if;
+
+        switch ((string)$cfg->interfaces->{$interface}->ipaddrv6 ?? 'none') {
+            case '6rd':
+            case '6to4':
+                $devices[1] = "{$interface}_stf";
+                break;
+            default:
+                break;
+        }
+
+        switch ($family) {
+            case 'inet6':
+                /* select special IPv6 interface if it exists */
+                $devices = $devices[1] ?? $devices[0];
+                break;
+            case 'both':
+                /* pass array as is */
+                break;
+            case 'inet':
+            default:
+                $devices = $devices[0];
+                break;
+        }
+
+        return $devices;
+    }
 }

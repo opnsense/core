@@ -275,37 +275,6 @@ class Gateways extends BaseModel
     }
 
     /**
-     * return the device name present in the system for the specific configuration
-     * @param string $ifname name of the interface
-     * @param array $definedIntf configuration of interface
-     * @param string $ipproto inet/inet6 type
-     * @return string $device target device name
-     */
-    private function getRealInterface($definedIntf, $ifname, $ipproto = 'inet')
-    {
-        if (empty($definedIntf[$ifname])) {
-            /* name already resolved or invalid */
-            return $ifname;
-        }
-
-        $ifcfg = $definedIntf[$ifname];
-        $device = $ifcfg['if'];
-
-        if ($ipproto == 'inet6') {
-            switch ($ifcfg['ipaddrv6'] ?? 'none') {
-                case '6rd':
-                case '6to4':
-                    $device = "{$ifname}_stf";
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        return $device;
-    }
-
-    /**
      * return the type of the interface, for backwards compatibility
      * @param string $ipproto inet/inet6 type
      * @param array $ifcfg
@@ -395,7 +364,7 @@ class Gateways extends BaseModel
                     );
                 }
                 $reservednames[] = $gw_arr['name'];
-                $gw_arr['if'] = $this->getRealInterface($definedIntf, $gw_arr['interface'], $gw_arr['ipprotocol']);
+                $gw_arr['if'] = Util::getRealInterface($gw_arr['interface'], $gw_arr['ipprotocol']);
                 $gw_arr['attribute'] = $i++;
                 if (Util::isIpAddress($gw_arr['gateway'])) {
                     if (empty($gw_arr['monitor_disable']) && empty($gw_arr['monitor'])) {
@@ -421,7 +390,7 @@ class Gateways extends BaseModel
                 foreach (["inet", "inet6"] as $ipproto) {
                     // filename suffix and interface type as defined in the interface
                     $descr = !empty($ifcfg['descr']) ? $ifcfg['descr'] : $ifname;
-                    $device = $this->getRealInterface($definedIntf, $ifname, $ipproto);
+                    $device = Util::getRealInterface($ifname, $ipproto);
                     $ctype = self::convertType($ipproto, $ifcfg);
                     $ctype = $ctype != null ? $ctype : "GW";
                     // default configuration, when not set in gateway_item
