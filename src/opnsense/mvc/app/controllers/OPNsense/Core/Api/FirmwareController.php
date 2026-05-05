@@ -323,7 +323,7 @@ class FirmwareController extends ApiMutableModelControllerBase
                     $response['status_msg'] = sprintf(
                         '%s %s',
                         $response['status_msg'],
-                        gettext('This update requires a reboot.')
+                        gettext('This update requires a reboot/ power off.')
                     );
                 }
                 $response['status_reboot'] = $active_reboot;

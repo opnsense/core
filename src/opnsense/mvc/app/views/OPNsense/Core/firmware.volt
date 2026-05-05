@@ -288,7 +288,7 @@
                 },
                 buttons: [{
                     id: 'btn-reboot',
-                    label: '{{ lang._("Restart") }} (' + countdownSeconds + ')',
+                    label: '{{ lang._("Confirm") }} (' + countdownSeconds + ')',
                     cssClass: 'btn-warning',
                     action: function(dialogRef){
                         if (countdownTimer) clearInterval(countdownTimer);
