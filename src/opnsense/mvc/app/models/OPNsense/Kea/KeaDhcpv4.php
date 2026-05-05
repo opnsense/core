@@ -109,16 +109,13 @@ class KeaDhcpv4 extends BaseModel
                 !$this->general->interfaces->isEmpty();
     }
 
-    /**
-     *
-     */
     private function getConfigPhysicalInterfaces()
     {
         $result = [];
-        $cfg = Config::getInstance()->object();
-        foreach ($this->general->interfaces->getValues() as $if) {
-            if (isset($cfg->interfaces->$if) && !empty($cfg->interfaces->$if->if)) {
-                $result[] = (string)$cfg->interfaces->$if->if;
+        foreach ($this->general->interfaces->getValues() as $interface) {
+            $device = Util::getRealInterface($interface, 'inet');
+            if (!empty($device)) {
+                $result[] = $device;
             }
         }
         return $result;
