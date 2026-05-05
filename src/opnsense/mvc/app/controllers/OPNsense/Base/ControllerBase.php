@@ -236,6 +236,9 @@ class ControllerBase extends ControllerRoot
 
     /**
      * Extract grid fields from form definition
+     *
+     * XXX $edit_alert_id deprecated
+     *
      * @return array
      */
     public function getFormGrid($formname, $grid_id = null, $edit_alert_id = null, $root = null)
@@ -298,7 +301,6 @@ class ControllerBase extends ControllerRoot
         return [
             'table_id' => $basename,
             'edit_dialog_id' => 'dialog_' . $basename,
-            'edit_alert_id' => $edit_alert_id == null ? 'change_message_base_form' : $edit_alert_id,
             'fields' => array_values($all_data)
         ];
     }

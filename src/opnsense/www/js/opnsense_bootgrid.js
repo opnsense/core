@@ -2038,7 +2038,7 @@ class UIBootgrid {
                         this.expandGroupBy(editDlg);
                         this.expandDataTree();
                         this._reload(true);
-                        this.showSaveAlert(event);
+                        this.showSaveAlert();
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
                     }, true, function () {
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
@@ -2053,12 +2053,18 @@ class UIBootgrid {
     /**
     * animate alert when saved
     */
-    showSaveAlert(event) {
+    showSaveAlert() {
+        $(document).trigger("settings-changed");
+
+        // XXX backwards compatibility
         let editAlert = this.$compatElement.attr('data-editAlert');
-        if (editAlert === undefined) {
-            editAlert = 'change_message_base_form';
+        if (editAlert !== undefined) {
+            $("#" + editAlert).slideDown(1000, function () {
+                setTimeout(function () {
+                    $("#" + editAlert).not(":animated").slideUp(2000);
+                }, 2000);
+            });
         }
-        $("#" + editAlert).click();
     }
 
     /**
@@ -2089,7 +2095,7 @@ class UIBootgrid {
                         this.expandGroupBy(editDlg);
                         this.expandDataTree();
                         this._reload(true);
-                        this.showSaveAlert(event);
+                        this.showSaveAlert();
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
                     }, true, () => {
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
@@ -2113,7 +2119,7 @@ class UIBootgrid {
             ajaxCall(endpoint + uuid, {}, (data, status) => {
                 // reload grid after delete
                 this._reload(true);
-                this.showSaveAlert(event);
+                this.showSaveAlert();
             });
         });
     }
@@ -2133,7 +2139,7 @@ class UIBootgrid {
             const batches = Array.from({ length: Math.ceil(ids.length / size) }, (_, i) => ids.slice(i * size, (i + 1) * size));
 
             $.when.apply(null, batches.map(b => ajaxCall(`${this.crud.del}${b.join(",")}`, {}, null)))
-                .done(() => (this._reload(true), this.showSaveAlert(event)));
+                .done(() => (this._reload(true), this.showSaveAlert()));
         });
     }
 
@@ -2179,7 +2185,7 @@ class UIBootgrid {
                         this.expandGroupBy(editDlg);
                         this.expandDataTree();
                         this._reload(true);
-                        this.showSaveAlert(event);
+                        this.showSaveAlert();
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
                     }, true, function () {
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
@@ -2219,7 +2225,7 @@ class UIBootgrid {
         ajaxCall(endpoint + uuid, {}, (data, status) => {
             // reload grid after delete
             this._reload(true);
-            this.showSaveAlert(event);
+            this.showSaveAlert();
         });
     }
 
@@ -2234,7 +2240,7 @@ class UIBootgrid {
         const batches = Array.from({ length: Math.ceil(ids.length / size) }, (_, i) => ids.slice(i * size, (i + 1) * size));
 
         $.when.apply(null, batches.map(b => ajaxCall(`${this.crud.toggle}${b.join(",")}/${on}`, {}, null)))
-            .done(() => (this._reload(true), this.showSaveAlert(event)));
+            .done(() => (this._reload(true), this.showSaveAlert()));
     }
 
     getTable() {

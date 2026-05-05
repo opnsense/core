@@ -127,7 +127,7 @@
                 ajaxCall('/api/ipsec/connections/toggle/' + enabled,  {}, function (data, status) {
                     $("#enable").removeClass("pending");
                 });
-                $("#change_message_base_form").click();
+                $(document).trigger("settings-changed");
             }
         });
         ajaxGet('/api/ipsec/connections/is_enabled', {}, function (data, status) {
