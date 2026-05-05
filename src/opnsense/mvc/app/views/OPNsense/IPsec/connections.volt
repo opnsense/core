@@ -88,16 +88,27 @@
         $(".hidden_attr").closest('tr').hide();
 
         $("#ConnectionDialog").click(function(){
-            $("#connection_details").hide();
+            const $tab = $(this);
+
+            $("#grid-locals").bootgrid("clear");
+            $("#grid-remotes").bootgrid("clear");
+            $("#grid-children").bootgrid("clear");
+            if (!$tab.parent('li').hasClass('active')) {
+                $("#connection_details").hide();
+            }
+
             ajaxGet("/api/ipsec/connections/connection_exists/" + $("#connection\\.uuid").val(), {}, function(data){
                 if (data.exists) {
                     $("#connection_details").show();
                     $("#grid-locals").bootgrid("reload");
                     $("#grid-remotes").bootgrid("reload");
                     $("#grid-children").bootgrid("reload");
+                } else {
+                    $("#connection_details").hide();
                 }
             });
-            $(this).show();
+
+            $tab.show();
         });
 
         $("#ConnectionDialog").change(function() {
