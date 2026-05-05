@@ -128,6 +128,8 @@ function do_auth($common_name, $serverid, $method, $auth_file)
             }
 
             if ($authenticator->authenticate($username, $password)) {
+                OPNsense\Core\Config::getInstance()->forceReload();
+                $config = parse_config();
                 if (!empty($a_server['local_group']) && !in_array($a_server['local_group'], getUserGroups($username))) {
                     return "OpenVPN '$serverid' requires the local group {$a_server['local_group']}. " .
                         "Denying authentication for user {$username}";
