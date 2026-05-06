@@ -50,7 +50,7 @@ class UnboundInterfaceField extends BaseListField
             }
         }
 
-        foreach ($config->openvpn->children() as $mode => $setting) {
+        foreach ($config->openvpn->children() ?? [] as $mode => $setting) {
             if (!empty($setting)) {
                 $key = 'ovpn' . substr($mode, 8, 1) . (string)$setting->vpnid;
                 $type = substr($mode, 8, 6);
