@@ -35,7 +35,7 @@ if [ "${PACKAGE}" = "base" ]; then
 	if opnsense-update -Tb; then
 		# force reinstall intended
 		if output_cmd opnsense-update -bf; then
-			output_restart_action
+			output_reboot
 		fi
 	else
 		# for locked message only
@@ -45,7 +45,7 @@ elif [ "${PACKAGE}" = "kernel" ]; then
 	if opnsense-update -Tk; then
 		# force reinstall intended
 		if output_cmd opnsense-update -kf; then
-			output_restart_action
+			output_reboot
 		fi
 	else
 		# for locked message only

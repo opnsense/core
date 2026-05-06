@@ -29,6 +29,14 @@ REQUEST="UPDATE"
 
 . /usr/local/opnsense/scripts/firmware/config.sh
 
+PREFER_SHUTDOWN=0
+for arg in "$@"; do
+	if [ "$arg" = "shutdown" ]; then
+		PREFER_SHUTDOWN=1
+		break
+	fi
+done
+
 CMD=${1}
 FORCE=
 
@@ -71,13 +79,13 @@ fi
 # if we can update base, we'll do that as well
 if opnsense-update ${FORCE} -bk -c; then
 	if output_cmd opnsense-update ${FORCE} -bk; then
-		output_restart_action keep-log
+		output_restart_action keep-log ${PREFER_SHUTDOWN}
 	fi
 fi
 
 if [ "${ALWAYS_REBOOT}" = "1" ]; then
 	if [ "${PKGS_HASH}" != "$(${PKG} query %n-%v 2> /dev/null | sha256)" ]; then
-		output_restart_action keep-log
+		output_restart_action keep-log ${PREFER_SHUTDOWN}
 	fi
 fi
 

@@ -461,19 +461,20 @@ class FirmwareController extends ApiMutableModelControllerBase
      */
     public function updateAction()
     {
-        if ($this->request->isPost() && $this->request->getPost('shutdown') === '1') {
-            touch('/tmp/firmware_shutdown.flag');
         $backend = new Backend();
         $response = [];
         if ($this->request->isPost()) {
             $this->getLogger('audit')->notice(sprintf("[Firmware] User %s executed a firmware update", $this->getUserName()));
             $backend->configdRun('firmware flush');
-            $response['msg_uuid'] = trim($backend->configdRun('firmware update', true));
-            $response['status'] = 'ok';
-        } else {
-            $response['status'] = 'failure';
-        }
 
+            $cmd = 'firmware update';
+            if ($this->request->getPost('shutdown') === '1') {
+                $cmd .= ' shutdown';
+            }
+
+            $response['msg_uuid'] = trim($backend->configdRun($cmd, true));
+            $response['status'] = 'ok';
+        }
         return $response;
     }
 
@@ -484,19 +485,20 @@ class FirmwareController extends ApiMutableModelControllerBase
      */
     public function upgradeAction()
     {
-        if ($this->request->isPost() && $this->request->getPost('shutdown') === '1') {
-            touch('/tmp/firmware_shutdown.flag');
         $backend = new Backend();
         $response = [];
         if ($this->request->isPost()) {
             $this->getLogger('audit')->notice(sprintf("[Firmware] User %s executed a firmware upgrade", $this->getUserName()));
             $backend->configdRun('firmware flush');
-            $response['msg_uuid'] = trim($backend->configdRun('firmware upgrade', true));
-            $response['status'] = 'ok';
-        } else {
-            $response['status'] = 'failure';
-        }
 
+            $cmd = 'firmware upgrade';
+            if ($this->request->getPost('shutdown') === '1') {
+                $cmd .= ' shutdown';
+            }
+
+            $response['msg_uuid'] = trim($backend->configdRun($cmd, true));
+            $response['status'] = 'ok';
+        }
         return $response;
     }
 
@@ -572,8 +574,6 @@ class FirmwareController extends ApiMutableModelControllerBase
      */
     public function reinstallAction($pkg_name)
     {
-        if ($this->request->isPost() && $this->request->getPost('shutdown') === '1') {
-            touch('/tmp/firmware_shutdown.flag');
         $backend = new Backend();
         $response = [];
 
@@ -775,7 +775,7 @@ class FirmwareController extends ApiMutableModelControllerBase
             $result['status'] = 'done';
         } elseif (strpos($cmd_result, '***REBOOT***') !== false) {
             $result['status'] = 'reboot';
-        } elseif (strpos($cmd_result, '***SHUTDOWN***') !== false) {
+        } elseif (strpos($cmd_result, '***POWER OFF***') !== false) {
             $result['status'] = 'shutdown';
         }
 

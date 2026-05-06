@@ -152,12 +152,7 @@ output_done()
 output_restart_action()
 {
 	KEEP_LOG=${1}
-	PREFER_SHUTDOWN=0
-
-	if [ -f /tmp/firmware_shutdown.flag ]; then
-		PREFER_SHUTDOWN=1
-		rm -f /tmp/firmware_shutdown.flag
-	fi
+	PREFER_SHUTDOWN=${2:-0}
 
 	if [ "${PREFER_SHUTDOWN}" = "1" ]; then
 		output_shutdown "${KEEP_LOG}"
@@ -184,7 +179,7 @@ output_shutdown()
 {
 	KEEP_LOG=${1}
 
-	echo '***SHUTDOWN***' >> ${LOCKFILE}
+	echo '***POWER OFF***' >> ${LOCKFILE}
 
 	if  [ -n "${KEEP_LOG}" ]; then
 		cp ${LOCKFILE} ${LOGFILE}
