@@ -45,7 +45,7 @@ CORE_GROUP?=		${CORE_USER}
 CORE_GID?=		${CORE_UID}
 
 CORE_DEPENDS_aarch64?=	py${CORE_PYTHON}-duckdb \
-			py${CORE_PYTHON}-numpy \
+			py${CORE_PYTHON}-numpy1 \
 			py${CORE_PYTHON}-pandas \
 			suricata
 
