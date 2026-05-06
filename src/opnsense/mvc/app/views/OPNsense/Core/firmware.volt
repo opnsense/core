@@ -202,15 +202,14 @@
             // reboot required, inform the user.
             BootstrapDialog.show({
                 type:BootstrapDialog.TYPE_WARNING,
-                title: "{{ lang._('Reboot/ Power off required') }}",
-                message: "{{ lang._('The firewall will reboot directly after this set reinstall.') }}" + '<br><br><label><input type="checkbox" id="reinstall_shutdown_cb"> ' + '{{ lang._("Power off instead of reboot") }}</label>',
+                title: "{{ lang._('Reboot required') }}",
+                message: "{{ lang._('The firewall will reboot directly after this set reinstall.') }}",
                 buttons: [{
                     label: "{{ lang._('OK') }}",
                     cssClass: 'btn-warning',
                     action: function(dialogRef){
-                        let doShutdown = $('#reinstall_shutdown_cb').is(':checked') ? '1' : '0';
                         dialogRef.close();
-                        backend(pkg_act + "/" + pkg_name, {'shutdown': doShutdown});
+                        backend(pkg_act + "/" + pkg_name);
                     }
                 },{
                     label: "{{ lang._('Cancel') }}",
