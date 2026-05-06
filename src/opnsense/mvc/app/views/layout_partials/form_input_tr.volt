@@ -50,9 +50,25 @@
  # allownew    :   allow new items (for list) if applicable
  # readonly    :   if true, input fields will be readonly
  # type_formatter : when set add type_formatter="" atribute which is used in getFormData() to pipe data before returning
+ # parent      :   ID reference for the parent form
  #}
 
 <tr id="row_{{ id }}" {% if advanced|default(false)=='true' %} data-advanced="true"{% endif %}>
+{% if type == "save_cancel" %}
+    <td>&nbsp;</td>
+        <td>
+        <div id="{{ parent }}Btns">
+            <button type="button" class="btn btn-primary" id="btn_{{ parent }}_save">
+                {{ lang._('Save') }}
+                <i id="btn_{{ parent }}_save_progress" class=""></i>
+            </button>
+            <button type="button" class="btn btn-default" id="btn_{{ parent }}_cancel">
+                {{ lang._('Cancel') }}
+            </button>
+        </div>
+    </td>
+    <td>&nbsp;</td>
+{% else %}
     <td>
         <div class="control-label" id="control_label_{{ id }}">
             {% if help|default(false) %}
@@ -131,4 +147,5 @@
     <td>
         <span class="help-block" id="help_block_{{ id }}"></span>
     </td>
+{% endif %}
 </tr>
