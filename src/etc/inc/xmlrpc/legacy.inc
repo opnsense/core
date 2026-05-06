@@ -184,7 +184,7 @@ function restore_config_section_xmlrpc($new_config)
                 if (!array_key_exists($vipKey, $vhidVipsInNewConfig)) {
                     unset($config['virtualip']['vip'][$vipindex]);
                 }
-            } elseif (!empty($vip['vhid']) && !empty($vip['nosync'])) {
+            } elseif (!empty($vip['nosync'])) {
                 null; /* merge_config_attributes() will preserve these records */
             } elseif (!isset($vhidVipsInNewConfig[$vipKey])) {
                 $vipbackup[$vipKey] = $vip;
