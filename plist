@@ -555,6 +555,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/SNatRule.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Util.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Interface/Autoconf.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Interface/Idassoc.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Controller.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Dispatcher.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Exceptions/ClassNotFoundException.php

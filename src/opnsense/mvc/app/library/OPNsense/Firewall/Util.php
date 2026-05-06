@@ -506,6 +506,40 @@ class Util
     }
 
     /**
+     * Split an IPv6 parent prefix (e.g., /56) into two child prefixes (e.g., 2x /57).
+     *
+     * @param string $prefix IPv6 CIDR prefix
+     * @return array two child prefixes or empty array
+     */
+    public static function splitIPv6Prefix($prefix): array
+    {
+        if (!self::isSubnetStrict($prefix)) {
+            return [];
+        }
+
+        [$address, $prefix_len] = explode('/', $prefix, 2);
+        if (!self::isIpv6Address($address)) {
+            return [];
+        }
+
+        $child_prefix_len = (int)$prefix_len + 1;
+        if ($child_prefix_len > 128) {
+            return [];
+        }
+
+        $bytes = array_values(unpack('C*', inet_pton($address)));
+        $second = $bytes;
+
+        $bit = $child_prefix_len - 1;
+        $second[intdiv($bit, 8)] |= 1 << (7 - ($bit % 8));
+
+        return [
+            inet_ntop(pack('C*', ...$bytes)) . '/' . $child_prefix_len,
+            inet_ntop(pack('C*', ...$second)) . '/' . $child_prefix_len,
+        ];
+    }
+
+    /**
      * convert ipv4 cidr to netmask e.g. 24 --> 255.255.255.0
      * @param int $bits ipv4 bits
      * @return string netmask
