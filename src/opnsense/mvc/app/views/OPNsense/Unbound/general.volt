@@ -44,7 +44,8 @@
     });
 </script>
 
-<div class="content-box __mb">
+<div class="content-box">
 {{ partial("layout_partials/base_form",['fields':generalForm,'id':'frm_GeneralSettings'])}}
 </div>
+
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/unbound/service/reconfigure_general', 'data_service_widget': 'unbound'}) }}
