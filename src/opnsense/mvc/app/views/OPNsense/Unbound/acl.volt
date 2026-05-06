@@ -32,7 +32,6 @@ $( document ).ready(function() {
 
         $("#unbound\\.acls\\.default_action").change(function() {
             saveFormToEndpoint(url="/api/unbound/settings/set", formid="frm_AclSettings", function() {
-                /* Mimic bootgrid behaviour to nudge users towards reconfiguring */
                 $(document).trigger("settings-changed");
             });
         });
@@ -64,8 +63,9 @@ $( document ).ready(function() {
 <div class="content-box __mb">
     {{ partial("layout_partials/base_form",['fields':aclForm,'id':'frm_AclSettings'])}}
 </div>
-<div class="content-box __mb">
+<div class="content-box">
     {{ partial('layout_partials/base_bootgrid_table', formGridAcl)}}
 </div>
+
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/unbound/service/reconfigure', 'data_service_widget': 'unbound'}) }}
 {{ partial("layout_partials/base_dialog",['fields':formDialogAcl,'id':formGridAcl['edit_dialog_id'],'label':lang._('Edit ACL')])}}

@@ -196,7 +196,7 @@ $( document ).ready(function() {
     }
 </style>
 
-<div class="content-box __mb">
+<div class="content-box">
     {{ partial('layout_partials/base_bootgrid_table', formGridHostOverride + {'hide_delete': true, 'command_width': '120'})}}
     <div id="infosection" class="bootgrid-footer container-fluid">
         {{ lang._('Entries in this section override individual results from the forwarders.') }}
@@ -204,6 +204,7 @@ $( document ).ready(function() {
         {{ lang._('Keep in mind that all resource record types (i.e. A, AAAA, MX, etc. records) of a specified host below are being overwritten.') }}
     </div>
 </div>
+
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/unbound/service/reconfigure', 'data_service_widget': 'unbound'}) }}
 {{ partial("layout_partials/base_dialog",['fields':formDialogHostOverride,'id':formGridHostOverride['edit_dialog_id'],'label':lang._('Edit Host Override')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogHostAlias,'id':'DialogHostAlias','label':lang._('Edit Host Override Alias')])}}
