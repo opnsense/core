@@ -1,5 +1,10 @@
 <form>
     <field>
+        <label>General settings</label>
+        <type>header</type>
+        <static>true</static>
+    </field>
+    <field>
         <id>connection.uuid</id>
         <label>UUID</label>
         <type>text</type>
@@ -247,5 +252,9 @@
         <id>connection.description</id>
         <label>Description</label>
         <type>text</type>
+    </field>
+    <field>
+        <type>save_cancel</type>
+        <parent>ConnectionDialog</parent>
     </field>
 </form>

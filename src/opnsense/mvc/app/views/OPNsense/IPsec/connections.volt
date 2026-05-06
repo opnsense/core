@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2022-2024 Deciso B.V.
+ # Copyright (c) 2022-2026 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -87,33 +87,48 @@
 
         $(".hidden_attr").closest('tr').hide();
 
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            if ($(e.relatedTarget).attr('href') == '.edit_connection') {
+                $("#connection_details").hide();
+            }
+        });
+
         $("#ConnectionDialog").click(function(){
-            $("#connection_details").hide();
+            const $tab = $(this);
+
+            $("#grid-locals").bootgrid("clear");
+            $("#grid-remotes").bootgrid("clear");
+            $("#grid-children").bootgrid("clear");
+
             ajaxGet("/api/ipsec/connections/connection_exists/" + $("#connection\\.uuid").val(), {}, function(data){
                 if (data.exists) {
                     $("#connection_details").show();
                     $("#grid-locals").bootgrid("reload");
                     $("#grid-remotes").bootgrid("reload");
                     $("#grid-children").bootgrid("reload");
+                } else {
+                    $("#connection_details").hide();
                 }
             });
-            $(this).show();
+
+            $tab.show();
         });
 
-        $("#ConnectionDialog").change(function(){
-            if ($("#connection_details").is(':visible')) {
-                $("#tab_connections").click();
-                $("#ConnectionDialog").hide();
-            } else {
-                $("#ConnectionDialog").click();
-            }
+        $("#ConnectionDialog").change(function() {
+            $("#ConnectionDialog").click();
+        });
+        $("#btn_ConnectionDialog_cancel").click(function () {
+            $("#tab_connections").click();
+            $("#ConnectionDialog").hide();
+            $("#connection_details").hide();
         });
 
         $("#connection\\.description").change(function(){
             if ($(this).val() !== '') {
-                $("#ConnectionDialog").text($(this).val());
+                // XXX wrong on clone
+                $("#ConnectionDialog").text('Connections: ' + $(this).val());
             } else {
-                $("#ConnectionDialog").text('-');
+                $("#ConnectionDialog").text('Connections: [new]');
             }
         });
 
@@ -127,6 +142,7 @@
                 ajaxCall('/api/ipsec/connections/toggle/' + enabled,  {}, function (data, status) {
                     $("#enable").removeClass("pending");
                 });
+                $(document).trigger("settings-changed");
             }
         });
         ajaxGet('/api/ipsec/connections/is_enabled', {}, function (data, status) {
@@ -136,13 +152,8 @@
             $("#enable").removeClass("pending");
         });
 
-        /**
-         * reconfigure
-         */
         $("#reconfigureAct").SimpleActionButton({
-            onAction: function(data, status){
-                updateServiceControlUI('ipsec');
-            }
+            onAction: function() { $("#btn_ConnectionDialog_cancel").click(); }
         });
 
         $(".cipher_tooltip").change(function(){
@@ -178,10 +189,7 @@
 </script>
 
 <style>
-  div.section_header > hr {
-      margin: 0px;
-  }
-  div.section_header > h2 {
+  tr > td > h3 {
       padding-left: 5px;
       margin: 0px;
   }
@@ -189,19 +197,28 @@
     max-width: 500px;
     text-align: left;
   }
+  @media (min-width: 992px) {
+    .left-col {
+      padding-right: 0;
+      border-right: 1px solid #e5e5e5;
+    }
+    .right-col {
+      padding-left: 0;
+    }
+}
 </style>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" id="tab_connections" href="#connections">{{ lang._('Connections') }}</a></li>
-    <li><a data-toggle="tab" href="#edit_connection" id="ConnectionDialog" style="display: none;"> </a></li>
+    <li><a data-toggle="tab" href=".edit_connection" id="ConnectionDialog" style="display: none;"> </a></li>
     <li><a data-toggle="tab" href="#pools" id="tab_pools"> {{ lang._('Pools') }} </a></li>
 </ul>
 <div class="tab-content content-box">
     <div id="connections" class="tab-pane fade in active">
-      <table id="grid-connections" class="table table-condensed table-hover table-striped" data-editDialog="ConnectionDialog" data-editAlert="ConnectionChangeMessage">
+      <table id="grid-connections" class="table table-condensed table-hover table-striped" data-editDialog="ConnectionDialog">
           <thead>
               <tr>
-                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('UUID') }}</th>
                 <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                 <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
                 <th data-column-id="local_addrs" data-type="string">{{ lang._('Local') }}</th>
@@ -223,143 +240,24 @@
               </tr>
           </tfoot>
       </table>
-      <div class="col-md-12">
-          <div id="ConnectionChangeMessage" class="alert alert-info" style="display: none" role="alert">
-              {{ lang._('After changing settings, please remember to apply them with the button below') }}
-          </div>
-          <hr/>
-      </div>
       <div class="col-md-12 form-inline __mb">
-        <div class="form-group __mr">
-          <button class="btn btn-primary" id="reconfigureAct"
-                    data-endpoint="/api/ipsec/service/reconfigure"
-                    data-label="{{ lang._('Apply') }}"
-                    data-error-title="{{ lang._('Error reconfiguring IPsec') }}"
-                    type="button"
-          ></button>
-        </div>
+        <hr/>
         <div class="form-group" style="vertical-align: sub">
           <input name="enable" class="pending" type="checkbox" id="enable"/>
           <label for="enable"><strong>{{ lang._('Enable IPsec') }}</strong></label>
         </div>
       </div>
     </div>
-    <div id="edit_connection" class="tab-pane fade in">
-        <div class="section_header">
-          <h2>{{ lang._('General settings')}}</h2>
-          <hr/>
-        </div>
+    <div class="tab-pane fade in edit_connection">
         <div>
-          <form id="frm_ConnectionDialog">
-          </form>
-        </div>
-        <div id="connection_details">
-          <div class="row">
-            <hr/>
-            <div class="col-xs-12 col-md-6">
-              <div class="section_header">
-                <h2>{{ lang._('Local Authentication')}}</h2>
-                <hr/>
-              </div>
-              <table id="grid-locals" class="table table-condensed table-hover table-striped" data-editDialog="DialogLocal">
-                  <thead>
-                      <tr>
-                        <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                        <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                        <th data-column-id="round" data-type="string">{{ lang._('Round') }}</th>
-                        <th data-column-id="auth" data-type="string">{{ lang._('Authentication') }}</th>
-                        <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-                        <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                  </tbody>
-                  <tfoot>
-                      <tr>
-                          <td></td>
-                          <td>
-                              <button data-action="add" type="button" class="btn btn-xs btn-primary pull-right"><span class="fa fa-fw fa-plus"></span></button>
-                          </td>
-                      </tr>
-                  </tfoot>
-              </table>
-            </div>
-            <div class="col-xs-12 col-md-6">
-              <div class="section_header">
-                <h2>{{ lang._('Remote Authentication')}}</h2>
-                <hr/>
-              </div>
-              <table id="grid-remotes" class="table table-condensed table-hover table-striped" data-editDialog="DialogRemote">
-                  <thead>
-                      <tr>
-                        <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                        <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                        <th data-column-id="round" data-type="string">{{ lang._('Round') }}</th>
-                        <th data-column-id="auth" data-type="string">{{ lang._('Authentication') }}</th>
-                        <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-                        <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                  </tbody>
-                  <tfoot>
-                      <tr>
-                          <td></td>
-                          <td>
-                              <button data-action="add" type="button" class="btn btn-xs btn-primary pull-right"><span class="fa fa-fw fa-plus"></span></button>
-                          </td>
-                      </tr>
-                  </tfoot>
-              </table>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-xs-12">
-              <div class="section_header">
-                <h2>{{ lang._('Children')}}</h2>
-                <hr/>
-              </div>
-              <table id="grid-children" class="table table-condensed table-hover table-striped" data-editDialog="DialogChild">
-                  <thead>
-                      <tr>
-                        <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
-                        <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                        <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-                        <th data-column-id="local_ts" data-type="string">{{ lang._('Local Nets') }}</th>
-                        <th data-column-id="remote_ts" data-type="string">{{ lang._('Remote Nets') }}</th>
-                        <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
-                      </tr>
-                  </thead>
-                  <tbody>
-                  </tbody>
-                  <tfoot>
-                      <tr>
-                          <td></td>
-                          <td>
-                              <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
-                              <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
-                          </td>
-                      </tr>
-                  </tfoot>
-              </table>
-            </div>
-          </div>
-        </div>
-        <div class="col-md-12">
-          <div id="ConnectionDialogBtns">
-              <button type="button" class="btn btn-primary" id="btn_ConnectionDialog_save">
-                <strong>{{ lang._('Save')}}</strong>
-                <i id="btn_ConnectionDialog_save_progress" class=""></i>
-              </button>
-          </div>
-          <br/>
+          <form id="frm_ConnectionDialog"></form>
         </div>
     </div>
     <div id="pools" class="tab-pane fade in">
-      <table id="grid-pools" class="table table-condensed table-hover table-striped" data-editDialog="DialogPool" data-editAlert="PoolChangeMessage">
+      <table id="grid-pools" class="table table-condensed table-hover table-striped" data-editDialog="DialogPool">
           <thead>
               <tr>
-                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('UUID') }}</th>
                 <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                 <th data-column-id="name" data-type="string">{{ lang._('Name') }}</th>
                 <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
@@ -377,12 +275,106 @@
               </tr>
           </tfoot>
       </table>
-      <div class="col-md-12">
-          <div id="PoolChangeMessage" class="alert alert-info" style="display: none" role="alert">
-              {{ lang._('After changing settings, please remember to apply them') }}
+    </div>
+</div>
+<div id="connection_details" class="tab-content" style="display: none;">
+    <div class="content-box tab-pane fade in edit_connection __mt">
+          <div class="row">
+            <div class="col-xs-12 col-md-6 table-responsive left-col">
+              <table class="table table-striped table-condensed" style="table-layout: fixed; width: 100%;">
+                <tr><td><h3>{{ lang._('Local Authentication')}}</h3></td>
+                <tr><td>
+                  <table id="grid-locals" class="table table-condensed table-hover table-striped" data-editDialog="DialogLocal">
+                      <thead>
+                          <tr>
+                            <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('UUID') }}</th>
+                            <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                            <th data-column-id="id" data-type="string">{{ lang._('ID') }}</th>
+                            <th data-column-id="round" data-type="string">{{ lang._('Round') }}</th>
+                            <th data-column-id="auth" data-type="string">{{ lang._('Authentication') }}</th>
+                            <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
+                            <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                      <tfoot>
+                          <tr>
+                              <td></td>
+                              <td>
+                                  <button data-action="add" type="button" class="btn btn-xs btn-primary pull-right"><span class="fa fa-fw fa-plus"></span></button>
+                              </td>
+                          </tr>
+                      </tfoot>
+                  </table>
+                </td></tr>
+              </table>
+            </div>
+            <div class="col-xs-12 col-md-6 table-responsive right-col">
+              <table class="table table-striped table-condensed" style="table-layout: fixed; width: 100%;">
+                <tr><td><h3>{{ lang._('Remote Authentication')}}</h3></td>
+                <tr><td>
+                  <table id="grid-remotes" class="table table-condensed table-hover table-striped" data-editDialog="DialogRemote">
+                      <thead>
+                          <tr>
+                            <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                            <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                            <th data-column-id="id" data-type="string">{{ lang._('ID') }}</th>
+                            <th data-column-id="round" data-type="string">{{ lang._('Round') }}</th>
+                            <th data-column-id="auth" data-type="string">{{ lang._('Authentication') }}</th>
+                            <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
+                            <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                      <tfoot>
+                          <tr>
+                              <td></td>
+                              <td>
+                                  <button data-action="add" type="button" class="btn btn-xs btn-primary pull-right"><span class="fa fa-fw fa-plus"></span></button>
+                              </td>
+                          </tr>
+                      </tfoot>
+                  </table>
+                </td></tr>
+              </table>
+            </div>
           </div>
-          <hr/>
-      </div>
+    </div>
+    <div class="content-box tab-pane fade in edit_connection __mt">
+          <div class="row">
+            <div class="col-xs-12 table-responsive">
+              <table class="table table-striped table-condensed" style="table-layout: fixed; width: 100%;">
+                <tr><td><h3>{{ lang._('Children')}}</h3></td>
+                <tr><td>
+                  <table id="grid-children" class="table table-condensed table-hover table-striped" data-editDialog="DialogChild">
+                      <thead>
+                          <tr>
+                            <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
+                            <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                            <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
+                            <th data-column-id="local_ts" data-type="string">{{ lang._('Local Nets') }}</th>
+                            <th data-column-id="remote_ts" data-type="string">{{ lang._('Remote Nets') }}</th>
+                            <th data-column-id="commands" data-width="7em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                      <tfoot>
+                          <tr>
+                              <td></td>
+                              <td>
+                                  <button data-action="add" type="button" class="btn btn-xs btn-primary"><span class="fa fa-fw fa-plus"></span></button>
+                                  <button data-action="deleteSelected" type="button" class="btn btn-xs btn-default"><span class="fa fa-fw fa-trash-o"></span></button>
+                              </td>
+                          </tr>
+                      </tfoot>
+                  </table>
+                </td></tr>
+              </table>
+            </div>
+          </div>
     </div>
 </div>
 
@@ -391,3 +383,4 @@
 {{ partial("layout_partials/base_dialog",['fields':formDialogRemote,'id':'DialogRemote','label':lang._('Edit Remote')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogChild,'id':'DialogChild','label':lang._('Edit Child')])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogPool,'id':'DialogPool','label':lang._('Edit Pool')])}}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/ipsec/service/reconfigure', 'data_service_widget': 'ipsec'})}}
