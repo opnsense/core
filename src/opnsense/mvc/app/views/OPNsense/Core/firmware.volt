@@ -131,8 +131,11 @@
     /**
      * perform backend action and install poller to update status
      */
-    function backend(type) {
+    function backend(type, data) {
         $.upgrade_check = type == 'check';
+        if (data === undefined) {
+            data = {};
+        }
 
         $('#update_status').html('');
         $('#updatelist').hide();
@@ -140,7 +143,7 @@
         $('#updatetab > a').tab('show');
         $('#updatetab_progress').addClass("fa fa-spinner fa-pulse");
 
-        ajaxCall('/api/core/firmware/' + type, {}, function () {
+        ajaxCall('/api/core/firmware/' + type, data, function () {
             setTimeout(trackStatus, 500);
         });
     }
@@ -191,17 +194,6 @@
     }
 
     /**
-     * save power off preference to the backend
-     */
-    function setShutdownPreference(enabled, callback)
-    {
-        var confopt = { 'firmware': { 'shutdown': enabled ? '1' : '0' } };
-        ajaxCall('/api/core/firmware/set', confopt, function () {
-            if (callback) callback();
-        });
-    }
-
-    /**
      * perform package action that requires reboot confirmation
      */
     function action_may_reboot(pkg_act, pkg_name)
@@ -216,11 +208,9 @@
                     label: "{{ lang._('OK') }}",
                     cssClass: 'btn-warning',
                     action: function(dialogRef){
-                        let doShutdown = $('#reinstall_shutdown_cb').is(':checked');
+                        let doShutdown = $('#reinstall_shutdown_cb').is(':checked') ? '1' : '0';
                         dialogRef.close();
-                        setShutdownPreference(doShutdown, function () {
-                            backend(pkg_act + "/" + pkg_name);
-                        });
+                        backend(pkg_act + "/" + pkg_name, {'shutdown': doShutdown});
                     }
                 },{
                     label: "{{ lang._('Cancel') }}",
@@ -255,9 +245,7 @@
     function upgrade_ui(major)
     {
         if (major !== true && $.status_reboot != "1") {
-            setShutdownPreference(false, function () {
-                backend('update');
-            });
+            backend('update');
         } else {
             let reboot_msg = "{{ lang._('The firewall will reboot directly after this firmware update.') }}";
             if (major === true) {
@@ -292,11 +280,9 @@
                     cssClass: 'btn-warning',
                     action: function(dialogRef){
                         if (countdownTimer) clearInterval(countdownTimer);
-                        let doShutdown = $('#upgrade_shutdown_cb').is(':checked');
+                        let doShutdown = $('#upgrade_shutdown_cb').is(':checked') ? '1' : '0';
                         dialogRef.close();
-                        setShutdownPreference(doShutdown, function () {
-                            backend(major === true ? 'upgrade' : 'update');
-                        });
+                        backend(major === true ? 'upgrade' : 'update', {'shutdown': doShutdown});
                     }
                 },{
                     label: "{{ lang._('Cancel') }}",

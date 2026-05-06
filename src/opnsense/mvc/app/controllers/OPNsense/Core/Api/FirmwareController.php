@@ -461,6 +461,8 @@ class FirmwareController extends ApiMutableModelControllerBase
      */
     public function updateAction()
     {
+        if ($this->request->isPost() && $this->request->getPost('shutdown') === '1') {
+            touch('/tmp/firmware_shutdown.flag');
         $backend = new Backend();
         $response = [];
         if ($this->request->isPost()) {
@@ -482,6 +484,8 @@ class FirmwareController extends ApiMutableModelControllerBase
      */
     public function upgradeAction()
     {
+        if ($this->request->isPost() && $this->request->getPost('shutdown') === '1') {
+            touch('/tmp/firmware_shutdown.flag');
         $backend = new Backend();
         $response = [];
         if ($this->request->isPost()) {
@@ -568,6 +572,8 @@ class FirmwareController extends ApiMutableModelControllerBase
      */
     public function reinstallAction($pkg_name)
     {
+        if ($this->request->isPost() && $this->request->getPost('shutdown') === '1') {
+            touch('/tmp/firmware_shutdown.flag');
         $backend = new Backend();
         $response = [];
 

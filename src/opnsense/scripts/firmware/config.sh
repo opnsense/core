@@ -152,10 +152,12 @@ output_done()
 output_restart_action()
 {
 	KEEP_LOG=${1}
+	PREFER_SHUTDOWN=0
 
-	PREFER_SHUTDOWN=$(/usr/local/sbin/pluginctl -g system.firmware.shutdown)
-
-	/usr/local/sbin/pluginctl -s system.firmware.shutdown 0
+	if [ -f /tmp/firmware_shutdown.flag ]; then
+		PREFER_SHUTDOWN=1
+		rm -f /tmp/firmware_shutdown.flag
+	fi
 
 	if [ "${PREFER_SHUTDOWN}" = "1" ]; then
 		output_shutdown "${KEEP_LOG}"
