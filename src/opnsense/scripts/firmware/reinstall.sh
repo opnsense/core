@@ -35,7 +35,6 @@ if [ "${PACKAGE}" = "base" ]; then
 	if opnsense-update -Tb; then
 		# force reinstall intended
 		if output_cmd opnsense-update -bf; then
-			if [ "${PREFER_SHUTDOWN}" = "1" ]; then
 			output_restart_action
 		fi
 	else
