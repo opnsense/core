@@ -896,7 +896,7 @@
                                     <button class='btn btn-warning' id="upgrade_maj"><i class="fa fa-check"></i> {{ lang._('Upgrade') }}</button>
                                     <button class="btn btn-default" id="upgrade_cancel"><i class="fa fa-times"></i> {{ lang._('Cancel') }}</button>
                                 </td>
-                                <td colspan="2" style="vertical-align:middle">
+                                <td colspan="3" style="vertical-align:middle">
                                     <strong><div id="updatestatus"></div></strong>
                                 </td>
                                 <td></td>
