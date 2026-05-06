@@ -85,7 +85,7 @@
                                 initialSearchPhrase: getUrlHash('search'),
                                 formatters: {
                                     subnet: function(column, row) {
-                                        if ((row.prefix_source || '') !== '' && (row[column.id] || '') === '') {
+                                        if ((row.dynamic_prefix || '') !== '' && (row[column.id] || '') === '') {
                                             // XXX: Could somehow dynamically insert current values from running KEA config but thats more glue than this
                                             //      Also the dialog would also need dynamic hints, there these fields are hidden for this reason.
                                             return '<span><i class="fa fa-fw fa-random"></i> {{ lang._("dynamic") }}</span>';
@@ -144,8 +144,8 @@
             }
         });
 
-        $("#subnet6\\.prefix_source").change(function(){
-            if ($(this).val() !== '') {
+        $("#subnet6\\.dynamic_prefix").change(function(){
+            if ($(this).is(':checked')) {
                 $(".static_prefix").closest('tr').hide();
             } else {
                 $(".static_prefix").closest('tr').show();
@@ -153,19 +153,22 @@
         });
 
         // Since dynamic pd_pools relate to their dynamic subnet, map them first
-        let dynamic_subnets = {};
-        ajaxGet("/api/kea/dhcpv6/search_subnet", {}, function(data) {
-            dynamic_subnets = {};
-            (data.rows || []).forEach(function(row) {
-                dynamic_subnets[row.uuid] = (row.prefix_source || '') !== '';
-            });
-        });
         $("#pd_pool\\.subnet").change(function(){
-            if (dynamic_subnets[$(this).val()] === true) {
-                $(".static_prefix").closest('tr').hide();
-            } else {
+            const subnet_uuid = $(this).val();
+            if (subnet_uuid === '') {
                 $(".static_prefix").closest('tr').show();
+                return;
             }
+            ajaxGet("/api/kea/dhcpv6/search_subnet", {}, function(data) {
+                const subnet = (data.rows || []).find(row => row.uuid === subnet_uuid);
+                const is_dynamic = subnet !== undefined &&
+                    (subnet.dynamic_prefix === '1' || subnet.dynamic_prefix === true);
+                if (is_dynamic) {
+                    $(".static_prefix").closest('tr').hide();
+                } else {
+                    $(".static_prefix").closest('tr').show();
+                }
+            });
         });
 
         /* Manual configuration, hide all config elements except the service section*/

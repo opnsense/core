@@ -16,10 +16,10 @@
         <help>Select which interface this subnet belongs too.</help>
     </field>
     <field>
-        <id>subnet6.prefix_source</id>
+        <id>subnet6.dynamic_prefix</id>
         <label>Prefix Source</label>
         <type>dropdown</type>
-        <help>Use the prefix of the selected interface and update this subnet automatically when it changes.</help>
+        <help>Use the identity association prefix allocated to this interface and generate subnet and pools automatically.</help>
     </field>
     <field>
         <id>subnet6.allocator</id>
