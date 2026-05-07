@@ -210,7 +210,7 @@ function kea_newwanip($interfaces, $family)
             $keaDhcpv6->general->manual_config->isEmpty() &&
             $keaDhcpv6->pd_pools->pd_pool->count() > 0
         ) {
-            mwexec('/usr/local/opnsense/scripts/kea/kea_prefix_renew.py');
+            mwexecf('/usr/local/opnsense/scripts/kea/kea_prefix_renew.py');
         }
     }
 }
