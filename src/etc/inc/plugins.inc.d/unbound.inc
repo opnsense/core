@@ -169,6 +169,7 @@ function unbound_service_stop()
 function unbound_generate_config()
 {
     global $config;
+
     $general = config_read_array('OPNsense', 'unboundplus', 'general');
 
     $pythonv = readlink('/usr/local/bin/python3');
@@ -224,7 +225,7 @@ function unbound_generate_config()
         $module_config .= 'iterator';
     }
 
-    $private_addr = "";
+    $private_addr = '';
     if (!isset($config['system']['webgui']['nodnsrebindcheck'])) {
         $advanced = config_read_array('OPNsense', 'unboundplus', 'advanced');
         if (!empty($advanced) && !empty($advanced['privateaddress'])) {
@@ -574,8 +575,8 @@ function unbound_add_host_entries($ifconfig_details)
         $unbound_entries .= "local-data: \"wpad IN CNAME {$system_host_fqdn}\"\n";
         $unbound_entries .= "local-data: '{$domain} IN TXT \"service: wpad:{$webui_protocol}://{$system_host_fqdn}:{$webui_port}/wpad.dat\"'\n";
         // DHCP domains
-        $tmp_known_domains = array($domain);
-        foreach ($config['dhcpd'] as $dhcp_interface) {
+        $tmp_known_domains = [$domain];
+        foreach (config_read_array('dhcpd', false) as $dhcp_interface) {
             if (isset($dhcp_interface['domain']) && !empty($dhcp_interface['domain']) && !in_array($dhcp_interface['domain'], $tmp_known_domains)) {
                 $unbound_entries .= "local-data: \"wpad.{$dhcp_interface['domain']} IN CNAME {$system_host_fqdn}\"\n";
                 $unbound_entries .= "local-data: '{$dhcp_interface['domain']} IN TXT \"service: wpad:{$webui_protocol}://{$system_host_fqdn}:{$webui_port}/wpad.dat\"'\n";
