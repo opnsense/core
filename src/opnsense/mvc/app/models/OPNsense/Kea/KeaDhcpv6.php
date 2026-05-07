@@ -311,6 +311,8 @@ class KeaDhcpv6 extends BaseModel
             if (!$subnet->dynamic_prefix->isEmpty()) {
                 // Used by hook script to know which subnets have a dynamic prefix, it reads the running conf from socket
                 $record['user-context']['dynamic_prefix'] = true;
+                $record['user-context']['prefix_status'] = $idassoc['prefix_status'] ?? 'unknown';
+                $record['user-context']['prefix_source'] = $idassoc['prefix_source'] ?? $if;
             }
             /* standard option-data elements */
             foreach ($subnet->option_data->iterateItems() as $key => $value) {
@@ -364,10 +366,6 @@ class KeaDhcpv6 extends BaseModel
                 $entry['user-context'] = ['uuid' => $pdpool->getAttribute('uuid')];
                 if (!$pdpool->description->isEmpty()) {
                     $entry['user-context']['description'] = $pdpool->description->getValue();
-                }
-                if (!$subnet->dynamic_prefix->isEmpty()) {
-                    // Used by hook script to know which subnets have a dynamic prefix, it reads the running conf from socket
-                    $entry['user-context']['dynamic_prefix'] = true;
                 }
                 $record['pd-pools'][] = $entry;
             }
