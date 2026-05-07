@@ -28,11 +28,13 @@ REQUEST="AUDIT CONNECTIVITY"
 
 . /usr/local/opnsense/scripts/firmware/config.sh
 
-URL=$(opnsense-update -M)
 POPT="-c4 -s1500"
 
-HOST=${URL#*://}
-HOST=${HOST%%/*}
+HOSTS=$(/usr/local/opnsense/scripts/firmware/hostnames.sh)
+
+HOST=$(opnsense-update -M)
+HOST=${HOSTS%%'
+'*}
 
 IPV4=$(host -t A ${HOST} | head -n 1 | cut -d\  -f4)
 IPV6=$(host -t AAAA ${HOST} | head -n 1 | cut -d\  -f5)
@@ -42,28 +44,40 @@ export PKG_DBDIR=/tmp/firmware.repo.check
 rm -rf ${PKG_DBDIR}
 mkdir -p ${PKG_DBDIR}
 
+output_txt
 output_txt "Current repository configuration:"
 output_cmd opnsense-update -O
 
 if [ -n "${IPV4}" -a -z "${IPV4%%*.*}" ]; then
+	output_txt
 	output_txt "Checking connectivity for host: ${HOST} -> ${IPV4}"
 	output_cmd ping -4 ${POPT} "${IPV4}"
-	output_txt "Checking connectivity for repository (IPv4): ${URL}"
+
+	output_txt
+	output_txt -n "Checking connectivity for repository (IPv4): "
+	output_cmd opnsense-update -M
 	output_cmd ${PKG} -4 update -f
 else
+	output_txt
 	output_txt "No IPv4 address could be found for host: ${HOST}"
 fi
 
 if [ -n "${IPV6}" -a -z "${IPV6%%*:*}" ]; then
+	output_txt
 	output_txt "Checking connectivity for host: ${HOST} -> ${IPV6}"
 	output_cmd ping -6 ${POPT} "${IPV6}"
-	output_txt "Checking connectivity for repository (IPv6): ${URL}"
+
+	output_txt
+	output_txt -n "Checking connectivity for repository (IPv6): "
+	output_cmd opnsense-update -M
 	output_cmd ${PKG} -6 update -f
 else
+	output_txt
 	output_txt "No IPv6 address could be found for host: ${HOST}"
 fi
 
-for HOST in $(/usr/local/opnsense/scripts/firmware/hostnames.sh); do
+output_txt
+for HOST in ${HOSTS}; do
 	output_txt "Checking server certificate for host: ${HOST}"
 	# XXX -crl_check and -crl_check_all are possible but -CRL pass is not working
 	echo | output_cmd openssl s_client -quiet -no_ign_eof "${HOST}:443"
