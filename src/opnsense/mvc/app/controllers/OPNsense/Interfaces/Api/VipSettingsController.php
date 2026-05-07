@@ -169,37 +169,46 @@ class VipSettingsController extends ApiMutableModelControllerBase
         return $vip;
     }
 
-    public function delItemAction($uuid)
+    public function delItemAction($uuids)
     {
         Config::getInstance()->lock();
-        $node = $this->getModel()->getNodeByReference('vip.' . $uuid);
-        $validations = $this->getModel()->whereUsed((string)$node->subnet);
-        if (!empty($validations)) {
-            throw new UserException(implode('<br/>', array_slice($validations, 0, 5)), gettext("Item in use by"));
-        }
+        $nodes = [];
 
-        if ($node != null && (string)$node->mode == 'carp') {
-            foreach ($this->getModel()->vip->iterateItems() as $vip) {
-                if ((string)$vip->mode == 'ipalias' && (string)$vip->vhid == (string)$node->vhid) {
-                    $vhid = (string)$node->vhid;
-                    throw new UserException(
-                        sprintf(
-                            gettext("Cannot delete CARP Virtual IP, IP Alias with VHID Group %s still exists."),
-                            $vhid
-                        ),
-                        gettext("Error")
-                    );
+        foreach (!empty($uuids) ? explode(",", $uuids) : [] as $uuid) {
+            $node = $this->getModel()->getNodeByReference('vip.' . $uuid);
+            $validations = $this->getModel()->whereUsed((string)$node->subnet);
+            if (!empty($validations)) {
+                throw new UserException(implode('<br/>', array_slice($validations, 0, 5)), gettext("Item in use by"));
+            }
+
+            if ($node != null && (string)$node->mode == 'carp') {
+                foreach ($this->getModel()->vip->iterateItems() as $vip) {
+                    if ((string)$vip->mode == 'ipalias' && (string)$vip->vhid == (string)$node->vhid) {
+                        $vhid = (string)$node->vhid;
+                        throw new UserException(
+                            sprintf(
+                                gettext("Cannot delete CARP Virtual IP, IP Alias with VHID Group %s still exists."),
+                                $vhid
+                            ),
+                            gettext("Error")
+                        );
+                    }
                 }
+
+                $nodes[$uuid] = $node;
             }
         }
 
-        $response = $this->delBase("vip", $uuid);
+        $response = $this->delBase("vip", $uuids);
         if (($response['result'] ?? '') == 'deleted') {
-            $addr = (string)$node->subnet;
-            if (Util::isLinkLocal($addr)) {
-                $addr .= "@{$node->interface}";
+            foreach ($nodes as $uuid => $node) {
+                $addr = (string)$node->subnet;
+                if (Util::isLinkLocal($addr)) {
+                    $addr .= "@{$node->interface}";
+                }
+                file_put_contents("/tmp/delete_vip_{$uuid}.todo", $addr . PHP_EOL, FILE_APPEND);
             }
-            file_put_contents("/tmp/delete_vip_{$uuid}.todo", $addr . PHP_EOL, FILE_APPEND);
+
         }
         return $response;
     }
