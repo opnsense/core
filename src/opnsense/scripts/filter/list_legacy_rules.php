@@ -34,8 +34,10 @@
 require_once('config.inc');
 require_once('filter.inc');
 
+$filter_rules = config_read_array('filter', 'rule', false);
 $result = [];
-if (!empty($config['filter']['rule'])) {
+
+if (count($filter_rules)) {
     $icmp6types = [
         'unreach' => '1',
         'toobig' => '2',
@@ -55,12 +57,14 @@ if (!empty($config['filter']['rule'])) {
         'niqry' => '139',
         'nirep' => '140',
         'mtraceresp' => '200',
-        'mtrace' => '201'
+        'mtrace' => '201',
     ];
+
     /* sort and make sure uuid's exist */
     filter_rules_sort();
     $sequence = 1;
-    foreach ($config['filter']['rule'] as $rule) {
+
+    foreach ($filter_rules as $rule) {
         $target_rule = [
             '@uuid' => $rule['@attributes']['uuid'],
             'enabled' => empty($rule['disabled']) ? '1' : '0',
@@ -107,9 +111,11 @@ if (!empty($config['filter']['rule'])) {
             'shaper2' => $rule['shaper2'] ?? '',
             'description' => $rule['descr'] ?? '',
         ];
+
         if (!isset($rule['quick'])) {
             $target_rule['quick'] = !empty($rule['floating']) ? '0' : '1';
         }
+
         foreach (['source', 'destination'] as $field) {
             if (!empty($rule[$field])) {
                 $target_rule[$field . '_not'] = isset($rule[$field]['not']) ? "1" : "0";
@@ -125,6 +131,7 @@ if (!empty($config['filter']['rule'])) {
                 $target_rule[$field . '_port'] = str_replace('any-', '1-', $target_rule[$field . '_port']);
             }
         }
+
         if (!empty($rule['icmp6-type'])) {
             $items = [];
             foreach (explode(',', $rule['icmp6-type']) as $item) {
@@ -135,9 +142,9 @@ if (!empty($config['filter']['rule'])) {
             $target_rule['icmp6type'] = implode(',', $items);
         }
 
-
         $result[] = $target_rule;
         $sequence += 10;
     }
 }
+
 echo json_encode($result);
