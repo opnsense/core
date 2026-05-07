@@ -36,23 +36,24 @@
                 formatters: {
                     gateways: function(col, row, onRendered) {
                         const result = `
-                            <table class="table table-striped table-condensed">
+                            <table class="table table-striped table-condensed" style="width: 100%;">
                                 <tbody>
                                     ${Object.entries(row.gateways)
                                         .filter(([tier, gws]) => gws.length)
                                         .map(([tier, gws]) => `
                                             <tr>
-                                                <th>
+                                                <th style="p[adding: 8px 12px; text-align: left; vertical-align: top;">
                                                     Tier ${tier}
                                                 </th>
-                                                <td>
+                                                <td style="text-overflow: ellipsis; overflow: hidden; width: 180px;">
                                                     ${gws.map((gw) => `
-                                                        <div class="label label-${gw.label}" data-toggle="tooltip"
+                                                        <div data-toggle="tooltip"
                                                             title="${gw.status_translated}
                                                                 ({{ lang._('Loss') }} ${gw.loss ?? '~'} | {{ lang._('Delay') }} ${gw.delay ?? '~'} | {{ lang._('stddev') }} ${gw.stddev ?? '~'})">
+                                                            <span class="fa fa-plug text-${gw.label} fa-fw"></span>
                                                             ${gw.name}
                                                         </div>
-                                                    `).join("<br/>")}
+                                                    `).join('<hr style="margin: 4px;"/>')}
                                                 </td>
                                             </tr>
                                         `)
