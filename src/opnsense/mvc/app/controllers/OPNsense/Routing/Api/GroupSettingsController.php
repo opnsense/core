@@ -60,9 +60,28 @@ class GroupSettingsController extends ApiMutableModelControllerBase
             foreach ($config[$group['name']]['tiers'] as $tieridx => $gws) {
                 $result['rows'][$idx]['gateways'][$tieridx] = [];
                 foreach ($gws as $gwname) {
-                    if (!empty($gwname)) {
-                        $result['rows'][$idx]['gateways'][$tieridx][] = $gateways_status[$gwname];
+                    if (empty($gwname)) {
+                        continue;
                     }
+
+                    if (!empty($gateways_status[$gwname])) {
+                        $gateways_status[$gwname]['label'] = 'default';
+                        if (str_contains($gateways_status[$gwname]['status'], 'down')) {
+                            $gateways_status[$gwname]['label'] = 'danger';
+                        } else if (str_contains($gateways_status[$gwname]['status'], 'loss') || str_contains($gateways_status[$gwname]['status'], 'delay')) {
+                            $gateways_status[$gwname]['label'] = 'warning';
+                        } else if (str_contains($gateways_status[$gwname]['status'], 'none')) {
+                            $gateways_status[$gwname]['label'] = 'success';
+                        }
+                    } else {
+                        $gateways_status[$gwname] = [
+                            'name' => $gwname,
+                            'label' => 'danger',
+                            'status_translated' => gettext('Disabled or inactive')
+                        ];
+                    }
+
+                    $result['rows'][$idx]['gateways'][$tieridx][] = $gateways_status[$gwname];
                 }
             }
         }

@@ -32,6 +32,39 @@
             set:'/api/routing/group_settings/set/',
             add:'/api/routing/group_settings/add/',
             del:'/api/routing/group_settings/del/',
+            options: {
+                formatters: {
+                    gateways: function(col, row, onRendered) {
+                        const result = `
+                            <table class="table table-striped table-condensed">
+                                <tbody>
+                                    ${Object.entries(row.gateways)
+                                        .filter(([tier, gws]) => gws.length)
+                                        .map(([tier, gws]) => `
+                                            <tr>
+                                                <th>
+                                                    Tier ${tier}
+                                                </th>
+                                                <td>
+                                                    ${gws.map((gw) => `
+                                                        <div class="label label-${gw.label}" data-toggle="tooltip"
+                                                            title="${gw.status_translated}
+                                                                ({{ lang._('Loss') }} ${gw.loss ?? '~'} | {{ lang._('Delay') }} ${gw.delay ?? '~'} | {{ lang._('stddev') }} ${gw.stddev ?? '~'})">
+                                                            ${gw.name}
+                                                        </div>
+                                                    `).join("<br/>")}
+                                                </td>
+                                            </tr>
+                                        `)
+                                        .join("")}
+                                </tbody>
+                            </table>
+                        `;
+
+                        return result;
+                    }
+                }
+            }
         });
 
         $("#reconfigureAct").SimpleActionButton();
