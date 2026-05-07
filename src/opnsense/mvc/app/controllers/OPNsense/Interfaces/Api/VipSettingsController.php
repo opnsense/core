@@ -212,7 +212,6 @@ class VipSettingsController extends ApiMutableModelControllerBase
                 }
                 file_put_contents("/tmp/delete_vip_{$uuid}.todo", $addr . PHP_EOL, FILE_APPEND);
             }
-
         }
         return $response;
     }
