@@ -19,7 +19,12 @@
         <id>subnet6.dynamic_prefix</id>
         <label>Dynamic Prefix</label>
         <type>checkbox</type>
-        <help>Use the identity association prefix allocated to this interface and generate subnet and pools automatically.</help>
+        <help>Use the identity association prefix allocated to this interface and generate subnet and pools automatically. DHCP options or DDNS settings that use IPv6 addresses are unaffected by prefix changes, they remain static.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>subnet6.allocator</id>

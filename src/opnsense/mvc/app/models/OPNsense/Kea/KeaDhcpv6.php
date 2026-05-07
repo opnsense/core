@@ -112,8 +112,33 @@ class KeaDhcpv6 extends BaseModel
                     new Message(gettext('Subnet must be empty when dynamic prefix is enabled.'), $key . ".subnet")
                 );
             }
-            // This validation is not ideal, but it prevents user error on initial dynamic subnet configuration
             if (!$subnet->dynamic_prefix->isEmpty()) {
+                foreach ($this->subnets->subnet6->iterateItems() as $tmpsubnet) {
+                    if ($key === $tmpsubnet->__reference) {
+                        continue;
+                    }
+                    if (
+                        !$tmpsubnet->dynamic_prefix->isEmpty() &&
+                        $tmpsubnet->interface->isEqual($subnet->interface->getValue())
+                    ) {
+                        $messages->appendMessage(
+                            new Message(gettext('Only one dynamic prefix subnet may be configured per interface.'), $key . ".interface")
+                        );
+                        break;
+                    }
+                }
+                $dynamic_pd_pool_count = 0;
+                foreach ($this->pd_pools->pd_pool->iterateItems() as $tmppool) {
+                    if ($tmppool->subnet->isEqual($subnet->getAttribute('uuid'))) {
+                        $dynamic_pd_pool_count++;
+                    }
+                }
+                if ($dynamic_pd_pool_count > 1) {
+                    $messages->appendMessage(
+                        new Message(gettext('Only one PD pool may be configured for a dynamic prefix subnet.'), $key . ".dynamic_prefix")
+                    );
+                }
+                // This validation is not ideal, but it prevents user error on initial dynamic subnet configuration
                 $idassoc = Idassoc::prefix($subnet->interface->getValue());
                 if (empty($idassoc['prefix_allocated']) || empty($idassoc['prefix_on_link'])) {
                     $messages->appendMessage(
@@ -130,6 +155,17 @@ class KeaDhcpv6 extends BaseModel
             $key = $pool->__reference;
             // dynamic pd_pool validation
             if (($subnet_node = $this->getNodeByReference("subnets.subnet6.{$pool->subnet}")) !== null && !$subnet_node->dynamic_prefix->isEmpty()) {
+                foreach ($this->pd_pools->pd_pool->iterateItems() as $tmppool) {
+                    if ($key === $tmppool->__reference) {
+                        continue;
+                    }
+                    if ($tmppool->subnet->isEqual($pool->subnet->getValue())) {
+                        $messages->appendMessage(
+                            new Message(gettext("Only one PD pool may be configured for a dynamic prefix subnet."), $key . ".subnet")
+                        );
+                        break;
+                    }
+                }
                 if (!$pool->prefix->isEmpty()) {
                     $messages->appendMessage(
                         new Message(gettext("Prefix must be empty when attached to a dynamic prefix subnet."), $key . ".prefix")
@@ -178,8 +214,15 @@ class KeaDhcpv6 extends BaseModel
                 if ($key === $tmppool->__reference) {
                     continue;
                 }
+                $tmpsubnet = $this->getNodeByReference("subnets.subnet6.{$tmppool->subnet}");
+                if ($tmpsubnet !== null && !$tmpsubnet->dynamic_prefix->isEmpty()) {
+                    continue;
+                }
                 $osubnet = $tmppool->prefix->getValue() . "/" . $tmppool->prefix_len->getValue();
                 $orange = Util::cidrToRange($osubnet);
+                if (empty($orange)) {
+                    continue;
+                }
                 if (Util::isIPInCIDR($orange[0], $subnet) || Util::isIPInCIDR($trange[0], $osubnet)) {
                     $messages->appendMessage(new Message(gettext("Pool overlaps with an existing one."), $key . ".prefix"));
                 }

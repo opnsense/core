@@ -85,7 +85,7 @@
                                 initialSearchPhrase: getUrlHash('search'),
                                 formatters: {
                                     subnet: function(column, row) {
-                                        if ((row.dynamic_prefix || '') !== '' && (row[column.id] || '') === '') {
+                                        if ((row.subnet || '') === '') {
                                             // XXX: Could somehow dynamically insert current values from running KEA config but thats more glue than this
                                             //      Also the dialog would also need dynamic hints, there these fields are hidden for this reason.
                                             return '<span><i class="fa fa-fw fa-random"></i> {{ lang._("dynamic") }}</span>';
