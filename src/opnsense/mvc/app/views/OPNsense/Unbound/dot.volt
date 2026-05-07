@@ -25,7 +25,6 @@
  #}
 
 <script>
-
     $( document ).ready(function() {
         let this_page = window.location.href.replace(/[/]/g, '').toLowerCase().endsWith('forward') ? 'Forward' : 'Dot';
         $('tr[id="row_unbound.forwarding.info"]').addClass('hidden');
@@ -114,7 +113,7 @@
     {# include base forwarding form #}
     {{ partial("layout_partials/base_form",['fields':forwardingForm,'id':'frm_ForwardingSettings'])}}
 </div>
-<div class="content-box __mb">
+<div class="content-box">
     {{ partial('layout_partials/base_bootgrid_table', formGridDot)}}
     <div id="infosection" class="bootgrid-footer container-fluid">
         {{ lang._('Please note that entries without a specific domain (and thus all domains) specified in both Query Forwarding and DNS over TLS
@@ -122,5 +121,6 @@
         in System->Settings->General or those obtained via DHCP or PPP on WAN if the "Allow DNS server list to be overridden by DHCP/PPP on WAN" is checked.') }}
     </div>
 </div>
+
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/unbound/service/reconfigure', 'data_service_widget': 'unbound'}) }}
 {{ partial("layout_partials/base_dialog",['fields':formDialogEdit,'id':formGridDot['edit_dialog_id'],'label':lang._('Edit server')])}}
