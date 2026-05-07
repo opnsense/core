@@ -38,6 +38,15 @@
         <help>List of pools, one per line in range or subnet format (e.g. 2001:db8:1::-2001:db8:1::100, 2001:db8:1::/80</help>
     </field>
     <field>
+        <id>subnet6.valid_lifetime</id>
+        <label>Valid lifetime</label>
+        <type>text</type>
+        <help>Valid lifetime for this subnet scope.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <type>header</type>
         <label>DHCP option data</label>
     </field>

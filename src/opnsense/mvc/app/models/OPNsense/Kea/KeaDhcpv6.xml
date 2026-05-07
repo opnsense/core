@@ -84,6 +84,7 @@
                         </check001>
                     </Constraints>
                 </subnet>
+                <valid_lifetime type="IntegerField"/>
                 <allocator type="OptionField">
                     <BlankDesc>Default</BlankDesc>
                     <OptionValues>
