@@ -315,7 +315,7 @@ class KeaDhcpv6 extends BaseModel
                 $record['user-context']['prefix_source'] = $idassoc['prefix_source'] ?? $if;
                 // If the prefix is temporary placeholder, we will not send leases to any client
                 if (empty($idassoc['prefix_valid'])) {
-                    $record['client-classes'] = ['NO_LEASES_PLEASE'];
+                    $record['require-client-classes'] = ['NO_LEASES_PLEASE'];
                 }
             }
             /* standard option-data elements */
@@ -539,11 +539,12 @@ class KeaDhcpv6 extends BaseModel
         ];
         $client_classes = $this->getConfigClientClasses();
 
-        // If this client_class is added to a subnet scope, the test will always be false
-        // Meaning no client will receive a lease since it cannot pass the test
+        // Used by temporary dynamic-prefix placeholder subnets.
+        // The class can never match, and is only evaluated when required by such a subnet.
         $client_classes[] = [
             'name' => 'NO_LEASES_PLEASE',
             'test' => "not member('ALL')",
+            'only-if-required' => true,
         ];
 
         if (!empty($client_classes)) {
