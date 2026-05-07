@@ -139,9 +139,9 @@ class KeaDhcpv6 extends BaseModel
                 }
                 // This validation is not ideal, but it prevents user error on initial dynamic subnet configuration
                 $idassoc = Idassoc::prefix($subnet->interface->getValue());
-                if (empty($idassoc['prefix_allocated']) || empty($idassoc['prefix_on_link'])) {
+                if (empty($idassoc)) {
                     $messages->appendMessage(
-                        new Message(gettext('Interface has no usable identity association prefix.'), $key . ".dynamic_prefix")
+                        new Message(gettext('Interface has no identity association prefix configuration.'), $key . ".dynamic_prefix")
                     );
                 }
             }
