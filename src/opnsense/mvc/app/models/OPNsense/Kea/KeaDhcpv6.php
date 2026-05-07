@@ -344,6 +344,9 @@ class KeaDhcpv6 extends BaseModel
                 }
                 if (!$subnet->dynamic_prefix->isEmpty()) {
                     $pd_prefixes = Util::splitIPv6Prefix($record['subnet']);
+                    if (empty($pd_prefixes[1])) {
+                        continue;
+                    }
                     [$pd_prefix, $pd_prefix_len] = explode('/', $pd_prefixes[1], 2);
                     $entry = [
                         'prefix' => $pd_prefix,
