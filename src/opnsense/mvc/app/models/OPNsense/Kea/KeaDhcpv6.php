@@ -44,7 +44,6 @@ class KeaDhcpv6 extends BaseModel
     public function performValidation($validateFullModel = false)
     {
         $messages = parent::performValidation($validateFullModel);
-        $cfg = Config::getInstance()->object();
         // validate changed reservations
         foreach ($this->reservations->reservation->iterateItems() as $reservation) {
             if (!$validateFullModel && !$reservation->isFieldChanged()) {
@@ -312,7 +311,6 @@ class KeaDhcpv6 extends BaseModel
             if (!$subnet->dynamic_prefix->isEmpty()) {
                 // Used by hook script to know which subnets have a dynamic prefix, it reads the running conf from socket
                 $record['user-context']['dynamic_prefix'] = true;
-                $record['user-context']['prefix_source'] = $if;
             }
             /* standard option-data elements */
             foreach ($subnet->option_data->iterateItems() as $key => $value) {
@@ -367,7 +365,6 @@ class KeaDhcpv6 extends BaseModel
                 if (!$subnet->dynamic_prefix->isEmpty()) {
                     // Used by hook script to know which subnets have a dynamic prefix, it reads the running conf from socket
                     $entry['user-context']['dynamic_prefix'] = true;
-                    $entry['user-context']['prefix_source'] = $if;
                 }
                 $record['pd-pools'][] = $entry;
             }
