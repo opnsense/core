@@ -106,7 +106,7 @@ class Idassoc extends Autoconf
      * - prefix_allocated: the largest usable prefix block starting at prefix_id,
      *   bounded by the next configured prefix ID or the end of the associated prefix.
      * - prefix_associated: the delegated parent prefix received on the tracked source interface (usually WAN).
-     * - prefix_status: tells consumers if the prefix is real, or a temporary bogus one
+     * - prefix_valid: tells consumers if the prefix is real, or a temporary bogus one
      * - prefix_source: shows the original source of the prefix
      *  [
      *       [lan] =>
@@ -115,7 +115,7 @@ class Idassoc extends Autoconf
      *               [prefix_on_link] => 2001:db8:1234::/64
      *               [prefix_allocated] => 2001:db8:1234::/58
      *               [prefix_associated] => 2001:db8:1234::/56
-     *               [prefix_status] => real
+     *               [prefix_valid] => true
      *               [prefix_source] => wan
      *           ]
      *       [opt1] =>
@@ -124,7 +124,7 @@ class Idassoc extends Autoconf
      *               [prefix_on_link] => 2001:db8:1234:68::/64
      *               [prefix_allocated] => 2001:db8:1234:68::/61
      *               [prefix_associated] => 2001:db8:1234::/56
-     *               [prefix_status] => real
+     *               [prefix_valid] => true
      *               [prefix_source] => wan
      *
      *           ]
@@ -148,18 +148,18 @@ class Idassoc extends Autoconf
                 continue;
             }
 
-            $prefix_status = 'real';
+            $prefix_valid = true;
             $prefix_associated = self::getPrefix((string)$cfg->interfaces->{$trackif}->if, 'inet6') ?? '';
 
             if ($prefix_associated === '') {
-                $prefix_status = 'placeholder';
+                $prefix_valid = false;
                 $prefix_associated = self::temporaryPrefix($trackif);
             }
 
             $groups[$prefix_associated][$ifname] = [
                 'prefix_id' => $prefix_id,
                 'trackif' => $trackif,
-                'status' => $prefix_status,
+                'prefix_valid' => $prefix_valid,
             ];
         }
 
@@ -179,7 +179,7 @@ class Idassoc extends Autoconf
                     'prefix_on_link' => self::calculatePrefix($prefix_associated, $prefix_id),
                     'prefix_allocated' => self::calculatePrefix($prefix_associated, $prefix_id, $prefix_usable_len),
                     'prefix_associated' => $prefix_associated,
-                    'prefix_status' => $interfaces[$ifname]['status'],
+                    'prefix_valid' => $interfaces[$ifname]['prefix_valid'],
                     'prefix_source' => $interfaces[$ifname]['trackif'],
                 ];
             }
