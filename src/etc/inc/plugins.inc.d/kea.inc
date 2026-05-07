@@ -203,17 +203,16 @@ function kea_configure_do($verbose = false)
 
 function kea_newwanip($interfaces, $family)
 {
-    if ($family !== 'inet6') {
-        return;
+    if ($family === 'inet6') {
+        $keaDhcpv6 = new \OPNsense\Kea\KeaDhcpv6();
+        if (
+            $keaDhcpv6->isEnabled() &&
+            $keaDhcpv6->general->manual_config->isEmpty() &&
+            $keaDhcpv6->pd_pools->pd_pool->count() > 0
+        ) {
+            mwexec('/usr/local/opnsense/scripts/kea/kea_prefix_renew.py');
+        }
     }
-    $keaDhcpv6 = new \OPNsense\Kea\KeaDhcpv6();
-    if (!$keaDhcpv6->isEnabled() || $keaDhcpv6->general->manual_config->isEmpty() === false) {
-        return;
-    }
-    if ($keaDhcpv6->pd_pools->pd_pool->count() == 0) {
-        return;
-    }
-    mwexec('/usr/local/opnsense/scripts/kea/kea_prefix_renew.py');
 }
 
 function kea_syslog()
