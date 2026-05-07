@@ -99,6 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $pconfig['radius_acct_port'] = $a_server[$id]['radius_acct_port'] ?? '';
             $pconfig['radius_secret'] = $a_server[$id]['radius_secret'] ?? '';
             $pconfig['radius_timeout'] = $a_server[$id]['radius_timeout'] ?? '';
+            $pconfig['radius_max_retries'] = $a_server[$id]['radius_max_retries'] ?? '';
             $pconfig['radius_stationid'] = $a_server[$id]['radius_stationid'] ?? '';
 
             if (!empty($pconfig['radius_auth_port']) &&
@@ -217,6 +218,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       if (($pconfig['type'] == "radius") && isset($pconfig['radius_timeout']) && !empty($pconfig['radius_timeout']) && (!is_numeric($pconfig['radius_timeout']) || (is_numeric($pconfig['radius_timeout']) && ($pconfig['radius_timeout'] <= 0)))) {
           $input_errors[] = gettext("RADIUS Timeout value must be numeric and positive.");
       }
+      if (($pconfig['type'] == "radius") && isset($pconfig['radius_max_retries']) && !empty($pconfig['radius_max_retries']) && (!is_numeric($pconfig['radius_max_retries']) || (is_numeric($pconfig['radius_max_retries']) && ($pconfig['radius_max_retries'] <= 0)))) {
+          $input_errors[] = gettext("RADIUS Max Retries value must be numeric and positive.");
+      }
       if (empty($pconfig['name'])) {
           $input_errors[] = gettext('A server name must be provided.');
       } elseif (strpos($pconfig['name'], ',') !== false) {
@@ -276,6 +280,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                   $server['radius_timeout'] = $pconfig['radius_timeout'];
               } else {
                   $server['radius_timeout'] = 5;
+              }
+
+              if (!empty($pconfig['radius_max_retries'])) {
+                  $server['radius_max_retries'] = $pconfig['radius_max_retries'];
+              } else {
+                  unset($server['radius_max_retries']);
               }
 
               if (!empty($pconfig['radius_stationid'])) {
@@ -368,6 +378,7 @@ $all_authfields = [
     'radius_secret',
     'radius_srvcs',
     'radius_timeout',
+    'radius_max_retries',
     'radius_stationid',
     'sync_create_local_users',
     'sync_memberof',
@@ -861,6 +872,17 @@ endif; ?>
                       <br /><?= gettext("This value controls how long, in seconds, that the RADIUS server may take to respond to an authentication request.") ?>
                       <br /><?= gettext("If left blank, the default value is 5 seconds.") ?>
                       <br /><br /><?= gettext("NOTE: If you are using an interactive two-factor authentication system, increase this timeout to account for how long it will take the user to receive and enter a token.") ?>
+                    </div>
+                  </td>
+                </tr>
+                <tr class="auth_radius auth_options hidden">
+                  <td><a id="help_for_radius_max_retries" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Max Retries");?></td>
+                  <td>
+                    <input name="radius_max_retries" type="text" id="radius_max_retries" size="20" value="<?=$pconfig['radius_max_retries'];?>"/>
+                    <div class="hidden" data-for="help_for_radius_max_retries">
+                      <br /><?= gettext("Maximum number of request attempts to send to the RADIUS server before giving up.") ?>
+                      <br /><?= gettext("If left blank, the default value is 3.") ?>
+                      <br /><br /><?= gettext("NOTE: If you are using an interactive two-factor authentication system, raise this value (and/or Authentication Timeout) to extend the approval window the user has to acknowledge the prompt.") ?>
                     </div>
                   </td>
                 </tr>

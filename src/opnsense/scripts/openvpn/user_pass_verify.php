@@ -156,6 +156,18 @@ function do_auth($common_name, $serverid, $method, $auth_file)
                 }
                 return true;
             }
+            // only cascade on a decisive answer; an upstream that didn't
+            // respond may dedup the next request and suppress new MFA prompts
+            if (
+                method_exists($authenticator, 'getLastResult')
+                && $authenticator->getLastResult() === 'timeout'
+            ) {
+                syslog(
+                    LOG_WARNING,
+                    "auth source '{$authName}' did not respond for user '{$username}', not cascading"
+                );
+                break;
+            }
         }
     }
     return "user '{$username}' could not authenticate.";

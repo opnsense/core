@@ -97,6 +97,11 @@ class Radius extends Base implements IAuthConnector
     private $lastAuthProperties = [];
 
     /**
+     * @var string|null outcome of the last authenticate() call (accept|reject|timeout|error)
+     */
+    private $lastResult = null;
+
+    /**
      * @var boolean when set, synchronize groups defined in memberOf attribute to local database
      */
     private $syncMemberOf = false;
@@ -174,6 +179,7 @@ class Radius extends Base implements IAuthConnector
             'radius_secret' => 'sharedSecret',
             'radius_stationid' => 'calledStationId',
             'radius_timeout' => 'timeout',
+            'radius_max_retries' => 'maxRetries',
             'refid' => 'nasIdentifier',
         ];
 
@@ -243,6 +249,15 @@ class Radius extends Base implements IAuthConnector
     public function getLastAuthProperties()
     {
         return $this->lastAuthProperties;
+    }
+
+    /**
+     * outcome of the last authenticate() call
+     * @return string|null one of accept, reject, timeout, error, or null
+     */
+    public function getLastResult()
+    {
+        return $this->lastResult;
     }
 
     /**
@@ -512,6 +527,7 @@ class Radius extends Base implements IAuthConnector
     public function authenticate($username, $password)
     {
         $this->lastAuthProperties = [];// reset auth properties
+        $this->lastResult = null;
         $radius = radius_auth_open();
 
         $error = null;
@@ -592,6 +608,7 @@ class Radius extends Base implements IAuthConnector
                     break;
                 default:
                     syslog(LOG_ERR, 'Unsupported protocol ' . $this->protocol);
+                    $this->lastResult = 'error';
                     return false;
             }
         }
@@ -601,10 +618,12 @@ class Radius extends Base implements IAuthConnector
 
         // log errors and perform actual authentication request
         if ($error != null) {
+            $this->lastResult = 'error';
             syslog(LOG_ERR, 'RadiusError: ' . $error);
         } else {
             $request = radius_send_request($radius);
             if (!$request) {
+                $this->lastResult = 'timeout';
                 syslog(LOG_ERR, 'RadiusError: ' . radius_strerror($radius));
             } else {
                 switch ($request) {
@@ -652,13 +671,16 @@ class Radius extends Base implements IAuthConnector
                                 $this->syncDefaultGroups
                             );
                         }
+                        $this->lastResult = 'accept';
                         return true;
                         break;
                     case RADIUS_ACCESS_REJECT:
+                        $this->lastResult = 'reject';
                         return false;
                         break;
                     default:
                         // unexpected result, log
+                        $this->lastResult = 'error';
                         syslog(LOG_ERR, 'Radius unexpected response:' . $request);
                 }
             }
