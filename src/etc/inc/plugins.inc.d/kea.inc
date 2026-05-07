@@ -201,7 +201,7 @@ function kea_configure_do($verbose = false)
     }
 }
 
-function kea_newwanip($interfaces = [], $family = null)
+function kea_newwanip($interfaces, $family)
 {
     if ($family !== 'inet6') {
         return;
