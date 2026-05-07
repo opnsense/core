@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,7 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-use OPNsense\Base\Validators\Email;
+use OPNsense\Base\Validators\CallbackValidator;
 
 /**
  * Class EmailField
@@ -57,7 +57,13 @@ class EmailField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            $validators[] = new Email(['message' => $this->getValidationMessage()]);
+            $validators[] = new CallbackValidator(["callback" => function ($data) {
+                if (!preg_match('/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i', $data)) {
+                    return [$this->getValidationMessage()];
+                }
+                return [];
+            }
+            ]);
         }
         return $validators;
     }

@@ -55,7 +55,8 @@
     });
 </script>
 
-<div class="content-box __mb">
+<div class="content-box">
     {{ partial("layout_partials/base_form",['fields':advancedForm,'id':'frm_AdvancedSettings'])}}
 </div>
+
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/unbound/service/reconfigure', 'data_service_widget': 'unbound'}) }}

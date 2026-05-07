@@ -63,14 +63,14 @@ class UsernameField extends BaseField
                 $messages = [];
                 $failed = true;
                 if (!empty((string)$this->getParentNode()->shell)) {
-                    if (preg_match("/^[a-zA-Z0-9\.\-_]{1,32}$/", $data, $matches)) {
+                    if (preg_match("/^[a-z0-9\.\-_]{1,32}$/i", $data, $matches)) {
                         /* same as previous mask handling in TextField */
                         $failed = $matches[0] != $data;
                     }
                 } elseif (strpos($data, '@') !== false) {
-                    /* when an @ is offered, we assume an email addres which has more constraints */
-                    $failed = filter_var($data, FILTER_VALIDATE_EMAIL) === false;
-                } elseif (preg_match("/^[a-zA-Z0-9\.\-_@]{1,320}$/", $data, $matches)) {
+                    /* when an @ is offered, we assume an email address which has more constraints */
+                    $failed = !preg_match('/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i', $data);
+                } elseif (preg_match("/^[a-z0-9\.\-_@]{1,320}$/i", $data, $matches)) {
                     $failed = $matches[0] != $data;
                 }
                 if ($failed) {

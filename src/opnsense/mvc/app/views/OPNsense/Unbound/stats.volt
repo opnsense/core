@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2018 Deciso B.V.
+ # Copyright (c) 2018-2026 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -88,7 +88,7 @@
             {}, function (data, status) {
                 if (status === "success") {
                     // Clear old view
-                    let statsView = $("#statsView");
+                    let statsView = $('#statsView');
                     statsView.html('');
 
                     // Sort the keys - ensure total and time is listed first.
@@ -101,8 +101,7 @@
                         return (indA > -1 ? indA : 999) - (indB > -1 ? indB : 999);
                     });
 
-                    dataKeys.forEach(function(key) {
-                        let value = data['data'][key];
+                    dataKeys.forEach(function (key) {
                         if (key === 'total' || key.substr(0, 6) === 'thread') {
                             let description;
                             if (key === 'total') {
@@ -111,8 +110,29 @@
                                 description = 'Thread ' + key.substr(6);
                             }
 
-                            let title = document.createElement("h2");
+                            let title = document.createElement('h2');
                             title.innerHTML = description;
+
+                            let table = document.createElement('table');
+                            table.classList.add('table');
+                            table.classList.add('table-striped');
+                            table.style.width = 'auto';
+                            let tbody = document.createElement('tbody');
+                            writeDescs(tbody, data['data'][key], descriptionMapThread);
+                            table.append(tbody);
+
+                            let container = document.createElement('div');
+                            container.classList.add('__mb');
+                            container.append(title);
+                            container.append(table);
+                            statsView.append(container);
+                        }
+                    });
+
+                    dataKeys.forEach(function (key) {
+                        if (key === 'time') {
+                            let title = document.createElement('h2');
+                            title.innerHTML = 'Times';
                             statsView.append(title);
 
                             let table = document.createElement('table');
@@ -120,22 +140,14 @@
                             table.classList.add('table-striped');
                             table.style.width = 'auto';
                             let tbody = document.createElement('tbody');
-                            writeDescs(tbody, value, descriptionMapThread);
+                            writeDescs(tbody, data['data'][key], descriptionMapTime);
                             table.append(tbody);
-                            statsView.append(table);
-                        } else if (key === "time") {
-                            let title = document.createElement("h2");
-                            title.innerHTML = "Times";
-                            statsView.append(title);
 
-                            let table = document.createElement('table');
-                            table.classList.add('table');
-                            table.classList.add('table-striped');
-                            table.style.width = 'auto';
-                            let tbody = document.createElement('tbody');
-                            writeDescs(tbody, value, descriptionMapTime);
-                            table.append(tbody);
-                            statsView.append(table);
+                            let container = document.createElement('div');
+                            container.classList.add('__mb');
+                            container.append(title);
+                            container.append(table);
+                            statsView.append(container);
                         }
                     });
                 }
@@ -159,25 +171,24 @@
     });
 </script>
 
+<style>
+    .flex-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0 20px;
+    }
+</style>
+
 <div class="content-box">
     <div class="content-box-main">
+        <div class="col-sm-12 __mt">
+           <label>
+                <input id="auto_refresh" type="checkbox" checked="checked">
+                <span class="fa fa-refresh"></span> {{ lang._('Auto refresh') }}
+            </label>
+        </div>
         <div class="table-responsive">
-            <div class="col-sm-12" id="statsView">
-
-            </div>
-            <div class="col-sm-12">
-                <div class="row">
-                    <div class="col-xs-12">
-                        <div class="pull-right">
-                            <label>
-                                <input id="auto_refresh" type="checkbox" checked="checked">
-                                <span class="fa fa-refresh"></span> {{ lang._('Auto refresh') }}
-                            </label>
-                        </div>
-                    </div>
-                </div>
-                <hr/>
-            </div>
+            <div class="col-sm-12 flex-container" id="statsView"></div>
         </div>
     </div>
 </div>

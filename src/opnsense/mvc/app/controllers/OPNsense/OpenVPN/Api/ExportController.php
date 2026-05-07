@@ -97,21 +97,21 @@ class ExportController extends ApiControllerBase
     private function openvpnServers($active = true)
     {
         $cfg = Config::getInstance()->object();
-        if (isset($cfg->openvpn)) {
-            foreach ($cfg->openvpn->children() as $key => $server) {
-                if ($key == 'openvpn-server' && !empty($server)) {
-                    if (empty($server->disable) || !$active) {
-                        $name = empty($server->description) ? "server" : (string)$server->description;
-                        $name .= " " . $server->protocol . ":" . $server->local_port;
-                        yield [
-                            'name' => $name,
-                            'mode' => (string)$server->mode,
-                            'vpnid' => (string)$server->vpnid
-                        ];
-                    }
+
+        foreach ($cfg->openvpn->children() ?? [] as $key => $server) {
+            if ($key == 'openvpn-server' && !empty($server)) {
+                if (empty($server->disable) || !$active) {
+                    $name = empty($server->description) ? "server" : (string)$server->description;
+                    $name .= " " . $server->protocol . ":" . $server->local_port;
+                    yield [
+                        'name' => $name,
+                        'mode' => (string)$server->mode,
+                        'vpnid' => (string)$server->vpnid
+                    ];
                 }
             }
         }
+
         foreach ((new OpenVPN())->Instances->Instance->iterateItems() as $node_uuid => $node) {
             if (!empty((string)$node->enabled) && $node->role == 'server') {
                 $name = empty($node->description) ? "server" : (string)$node->description;

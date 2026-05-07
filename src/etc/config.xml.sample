@@ -2,7 +2,6 @@
 <opnsense>
   <trigger_initial_wizard/>
   <theme>opnsense</theme>
-  <sysctl/>
   <system>
     <optimization>normal</optimization>
     <hostname>OPNsense</hostname>

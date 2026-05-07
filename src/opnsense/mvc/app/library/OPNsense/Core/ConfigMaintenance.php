@@ -38,9 +38,10 @@ class ConfigMaintenance
     {
         $this->modelmap = $this->loadModels();
         $this->legacyPaths = [
-            'dhcpd' =>  gettext('Services: ISC DHCPv4 [legacy]'),
-            'dhcpdv6' =>  gettext('Services: ISC DHCPv6 [legacy]'),
-            'filter.rule' =>  gettext('Firewall: Rules [legacy]'),
+            'dhcpd' => gettext('Services: ISC DHCPv4 [legacy]'),
+            'dhcpdv6' => gettext('Services: ISC DHCPv6 [legacy]'),
+            'filter.rule' => gettext('Firewall: Rules [legacy]'),
+            'openvpn' => gettext('VPN: OpenVPN [legacy]'),
         ];
     }
 

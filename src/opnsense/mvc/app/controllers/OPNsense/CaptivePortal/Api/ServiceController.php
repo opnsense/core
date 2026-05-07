@@ -29,6 +29,7 @@
 namespace OPNsense\CaptivePortal\Api;
 
 use OPNsense\Base\ApiMutableServiceControllerBase;
+use OPNsense\Core\Backend;
 
 /**
  * Class ServiceController
@@ -39,6 +40,24 @@ class ServiceController extends ApiMutableServiceControllerBase
     protected static $internalServiceClass = '\OPNsense\CaptivePortal\CaptivePortal';
     protected static $internalServiceTemplate = 'OPNsense/Captiveportal';
     protected static $internalServiceName = 'captiveportal';
+
+    public function reconfigureAction()
+    {
+        $status = ['status' => 'failed'];
+
+        if ($this->request->isPost()) {
+            $backend = new Backend();
+            $backend->configdRun('template reload OPNsense/IPFW');
+            $result = trim($backend->configdRun("ipfw reload"));
+            if ($result != "OK") {
+                return ["status" => "error reloading ipfw (" . $result . ")"];
+            }
+
+            $status = parent::reconfigureAction();
+        }
+
+        return $status;
+    }
 
     protected function serviceEnabled()
     {

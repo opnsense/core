@@ -82,7 +82,8 @@
     <li><a data-toggle="tab" href="#blocklists" id="blocklists_tab">{{ lang._('Blocklists') }}</a></li>
     <li><a data-toggle="tab" href="#blocklist_tester" id="blocklist_tester_tab">{{ lang._('Tester') }}</a></li>
 </ul>
-<div class="tab-content content-box __mb">
+
+<div class="tab-content content-box">
     <div id="blocklists" class="tab-pane fade in active">
         {{ partial('layout_partials/base_bootgrid_table', formGridDnsbl)}}
     </div>
@@ -122,5 +123,6 @@
         </table>
     </div>
 </div>
+
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/unbound/service/dnsbl'}) }}
 {{ partial("layout_partials/base_dialog",['fields':formDialogDnsbl,'id':formGridDnsbl['edit_dialog_id'],'label':lang._('Edit Blocklist')])}}

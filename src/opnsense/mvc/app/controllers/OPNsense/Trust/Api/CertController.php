@@ -113,7 +113,6 @@ class CertController extends ApiMutableModelControllerBase
                         }
                     }
                 }
-                $this->getModel()->linkCaRefs($node->refid);
                 break;
             case 'import_csr':
                 /* certificate should be signed by something we trust */
@@ -172,6 +171,8 @@ class CertController extends ApiMutableModelControllerBase
         }
         if ($error !== false) {
             throw new UserException($error, "Certificate error");
+        } else {
+                $this->getModel()->linkCaRefs($node->refid);
         }
     }
 

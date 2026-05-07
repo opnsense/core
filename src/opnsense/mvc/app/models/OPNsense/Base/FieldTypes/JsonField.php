@@ -53,7 +53,7 @@ class JsonField extends BaseField
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
             $validators[] = new CallbackValidator(["callback" => function ($data) {
-                if (!json_validate($data)) {
+                if (!json_validate(base64_decode($data))) {
                     return [$this->getValidationMessage()];
                 } else {
                     return [];

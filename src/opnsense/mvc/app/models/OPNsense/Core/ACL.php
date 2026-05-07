@@ -412,10 +412,12 @@ class ACL
         if (!empty($_SESSION['user_shouldChangePassword'])) {
             // ACL lock, may only access password page
             return "ui/user_portal";
-        } elseif (!empty($this->userDatabase[$username]['landing_page'])) {
-            // remove leading slash, which would result in redirection to //page (without host) after login or auth failure.
-            return ltrim($this->userDatabase[$username]['landing_page'], '/');
-        } elseif (!empty($this->userDatabase[$username])) {
+        } if (!empty($this->userDatabase[$username]['landing_page'])) {
+            $landing = ltrim(rawurldecode(trim($this->userDatabase[$username]['landing_page'])), '/\\');
+            if (!empty($landing) && $this->isPageAccessible($username, '/' . $landing)) {
+                return $landing;
+            }
+        } if (!empty($this->userDatabase[$username])) {
             // default behaviour, find first accessible location from configured privileges, but prefer /
             if ($this->isPageAccessible($username, '/')) {
                 return "index.php";
