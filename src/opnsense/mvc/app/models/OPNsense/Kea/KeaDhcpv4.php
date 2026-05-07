@@ -172,6 +172,10 @@ class KeaDhcpv4 extends BaseModel
                 'pools' => [],
                 'reservations' => []
             ];
+            /* add valid-lifetime at this level if given */
+            if (!$subnet->valid_lifetime->isEmpty()) {
+                $record['valid-lifetime'] = $subnet->valid_lifetime->asInt();
+            }
             /* add description and other custom keys - not parsed by KEA */
             $record['user-context'] = ['uuid' => $subnet->getAttribute('uuid')];
             if (!$subnet->description->isEmpty()) {

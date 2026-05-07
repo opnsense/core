@@ -169,6 +169,10 @@ class KeaDhcpv6 extends BaseModel
                 'pd-pools' => [],
                 'reservations' => []
             ];
+            /* add valid-lifetime at this level if given */
+            if (!$subnet->valid_lifetime->isEmpty()) {
+                $record['valid-lifetime'] = $subnet->valid_lifetime->asInt();
+            }
             $device = Util::getRealInterface($subnet->interface->getValue(), 'inet6');
             if (!empty($device)) {
                 $record['interface'] = $device;
