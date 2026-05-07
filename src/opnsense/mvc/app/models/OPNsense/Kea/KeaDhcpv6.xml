@@ -224,10 +224,10 @@
                             <source>OPNsense.Kea.KeaDhcpv6</source>
                             <items>subnets.subnet6</items>
                             <display>interface,subnet</display>
-                            <!-- XXX: interface does not display its description for some reason -->
                             <display_format>%s %s</display_format>
                         </subnets>
                     </Model>
+                    <DisableCache>Y</DisableCache>
                     <ValidationMessage>Related subnet not found.</ValidationMessage>
                     <Constraints>
                         <check001>
@@ -410,10 +410,10 @@
                             <source>OPNsense.Kea.KeaDhcpv6</source>
                             <items>subnets.subnet6</items>
                             <display>interface,subnet</display>
-                            <!-- XXX: interface does not display its description for some reason -->
                             <display_format>%s %s</display_format>
                         </subnets>
                     </Model>
+                    <DisableCache>Y</DisableCache>
                     <ValidationMessage>Related subnet not found.</ValidationMessage>
                     <Required>Y</Required>
                 </subnet>
