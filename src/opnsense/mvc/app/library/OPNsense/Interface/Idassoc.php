@@ -83,6 +83,22 @@ class Idassoc extends Autoconf
     }
 
     /**
+     * If no prefix exists yet for whatever reason, we protect all consumers by offering them
+     * a calculated temporary prefix instead. A current example is KEA, since it would crash
+     * when the intial config generation fails.
+     */
+    private static function temporaryPrefix($trackif): string
+    {
+        static $prefixes = [];
+
+        if (!isset($prefixes[$trackif])) {
+            $prefixes[$trackif] = sprintf('dead:beef:%x::/48', count($prefixes));
+        }
+
+        return $prefixes[$trackif];
+    }
+
+    /**
      * Collect configured IPv6 identity association prefixes.
      *
      * - prefix_id: hexadecimal prefix ID configured on the tracked interface.
@@ -90,6 +106,8 @@ class Idassoc extends Autoconf
      * - prefix_allocated: the largest usable prefix block starting at prefix_id,
      *   bounded by the next configured prefix ID or the end of the associated prefix.
      * - prefix_associated: the delegated parent prefix received on the tracked source interface (usually WAN).
+     * - prefix_status: tells consumers if the prefix is real, or a temporary bogus one
+     * - prefix_source: shows the original source of the prefix
      *  [
      *       [lan] =>
      *           [
@@ -97,6 +115,8 @@ class Idassoc extends Autoconf
      *               [prefix_on_link] => 2001:db8:1234::/64
      *               [prefix_allocated] => 2001:db8:1234::/58
      *               [prefix_associated] => 2001:db8:1234::/56
+     *               [prefix_status] => real
+     *               [prefix_source] => wan
      *           ]
      *       [opt1] =>
      *           [
@@ -104,6 +124,9 @@ class Idassoc extends Autoconf
      *               [prefix_on_link] => 2001:db8:1234:68::/64
      *               [prefix_allocated] => 2001:db8:1234:68::/61
      *               [prefix_associated] => 2001:db8:1234::/56
+     *               [prefix_status] => real
+     *               [prefix_source] => wan
+     *
      *           ]
      *  ]
      */
@@ -125,23 +148,30 @@ class Idassoc extends Autoconf
                 continue;
             }
 
+            $prefix_status = 'real';
             $prefix_associated = self::getPrefix((string)$cfg->interfaces->{$trackif}->if, 'inet6') ?? '';
+
             if ($prefix_associated === '') {
-                continue;
+                $prefix_status = 'placeholder';
+                $prefix_associated = self::temporaryPrefix($trackif);
             }
 
-            $groups[$prefix_associated][$ifname] = $prefix_id;
+            $groups[$prefix_associated][$ifname] = [
+                'prefix_id' => $prefix_id,
+                'trackif' => $trackif,
+                'status' => $prefix_status,
+            ];
         }
 
         foreach ($groups as $prefix_associated => $interfaces) {
             /* Sort by prefix ID because prefix_allocated depends on the next higher configured ID. */
-            uasort($interfaces, fn($a, $b) => hexdec($a) <=> hexdec($b));
+            uasort($interfaces, fn($a, $b) => hexdec($a['prefix_id']) <=> hexdec($b['prefix_id']));
             $ordered = array_keys($interfaces);
             $source_prefix_len = (int)explode('/', $prefix_associated, 2)[1];
 
             foreach ($ordered as $idx => $ifname) {
-                $prefix_id = $interfaces[$ifname];
-                $next_prefix_id = isset($ordered[$idx + 1]) ? $interfaces[$ordered[$idx + 1]] : null;
+                $prefix_id = $interfaces[$ifname]['prefix_id'];
+                $next_prefix_id = isset($ordered[$idx + 1]) ? $interfaces[$ordered[$idx + 1]]['prefix_id'] : null;
                 $prefix_usable_len = self::calculateUsablePrefixLength($source_prefix_len, $prefix_id, $next_prefix_id);
 
                 $result[$ifname] = [
@@ -149,6 +179,8 @@ class Idassoc extends Autoconf
                     'prefix_on_link' => self::calculatePrefix($prefix_associated, $prefix_id),
                     'prefix_allocated' => self::calculatePrefix($prefix_associated, $prefix_id, $prefix_usable_len),
                     'prefix_associated' => $prefix_associated,
+                    'prefix_status' => $interfaces[$ifname]['status'],
+                    'prefix_source' => $interfaces[$ifname]['trackif'],
                 ];
             }
         }
