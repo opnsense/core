@@ -146,13 +146,18 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
 function kea_configure()
 {
     return [
-        'kea_generate_dhcpv6' => ['kea_generate_dhcpv6'],
+        'kea_generate_dhcpv6' => ['kea_generate_dhcpv6_do'],
         'kea_sync' => ['kea_configure_do'],
         'newwanip' => ['kea_newwanip'],
     ];
 }
 
 // used by kea_prefix_renew hook script to regenerate config when dynamic IPv6 prefix changes
+function kea_generate_dhcpv6_do($verbose = false)
+{
+    kea_generate_dhcpv6();
+}
+
 function kea_generate_dhcpv6($keaDhcpv6 = null)
 {
     if ($keaDhcpv6 === null) {
