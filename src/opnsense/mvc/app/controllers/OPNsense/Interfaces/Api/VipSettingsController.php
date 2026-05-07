@@ -176,12 +176,16 @@ class VipSettingsController extends ApiMutableModelControllerBase
 
         foreach (!empty($uuids) ? explode(",", $uuids) : [] as $uuid) {
             $node = $this->getModel()->getNodeByReference('vip.' . $uuid);
+            if ($node == null) {
+                continue;
+            }
+
             $validations = $this->getModel()->whereUsed((string)$node->subnet);
             if (!empty($validations)) {
                 throw new UserException(implode('<br/>', array_slice($validations, 0, 5)), gettext("Item in use by"));
             }
 
-            if ($node != null && (string)$node->mode == 'carp') {
+            if ((string)$node->mode == 'carp') {
                 foreach ($this->getModel()->vip->iterateItems() as $vip) {
                     if ((string)$vip->mode == 'ipalias' && (string)$vip->vhid == (string)$node->vhid) {
                         $vhid = (string)$node->vhid;
@@ -194,9 +198,9 @@ class VipSettingsController extends ApiMutableModelControllerBase
                         );
                     }
                 }
-
-                $nodes[$uuid] = $node;
             }
+
+            $nodes[$uuid] = $node;
         }
 
         $response = $this->delBase("vip", $uuids);
