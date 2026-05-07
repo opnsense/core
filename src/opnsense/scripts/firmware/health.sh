@@ -234,7 +234,6 @@ fi
 if [ -z "${CMD}" -o "${CMD}" = "repos" ]; then
 	output_txt ">>> Check installed repositories"
 	output_cmd opnsense-verify -l
-	output_cmd opnsense-update -O
 fi
 
 if [ -z "${CMD}" -o "${CMD}" = "plugins" ]; then
