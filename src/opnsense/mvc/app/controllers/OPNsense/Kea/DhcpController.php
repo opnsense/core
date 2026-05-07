@@ -58,13 +58,13 @@ class DhcpController extends \OPNsense\Base\IndexController
         $this->view->formGeneralSettings = $this->getForm("generalSettings4");
 
         $this->view->formDialogSubnet = $this->getForm("dialogSubnet4");
-        $this->view->formGridSubnet = $this->getFormGrid("dialogSubnet4", 'subnet', null, 'subnet4');
+        $this->view->formGridSubnet = $this->getFormGrid("dialogSubnet4", 'subnet', 'subnet4');
 
         $this->view->formDialogReservation = $this->getForm("dialogReservation4");
-        $this->view->formGridReservation = $this->getFormGrid("dialogReservation4", 'reservation', null, 'reservation');
+        $this->view->formGridReservation = $this->getFormGrid("dialogReservation4", 'reservation', 'reservation');
 
         $this->view->formDialogOption = $this->getForm("dialogOption4");
-        $this->view->formGridOption = $this->getFormGrid("dialogOption4", 'option', null, 'option');
+        $this->view->formGridOption = $this->getFormGrid("dialogOption4", 'option', 'option');
 
         $this->view->formDialogPeer = $this->getForm("dialogPeer4");
         $this->view->formGridPeer = $this->getFormGrid("dialogPeer4", 'peer');
@@ -76,13 +76,13 @@ class DhcpController extends \OPNsense\Base\IndexController
         $this->view->formGeneralSettings = $this->getForm("generalSettings6");
 
         $this->view->formDialogSubnet = $this->getForm("dialogSubnet6");
-        $this->view->formGridSubnet = $this->getFormGrid("dialogSubnet6", 'subnet', null, 'subnet6');
+        $this->view->formGridSubnet = $this->getFormGrid("dialogSubnet6", 'subnet', 'subnet6');
 
         $this->view->formDialogReservation = $this->getForm("dialogReservation6");
         $this->view->formGridReservation = $this->getFormGrid("dialogReservation6", 'reservation');
 
         $this->view->formDialogOption = $this->getForm("dialogOption6");
-        $this->view->formGridOption = $this->getFormGrid("dialogOption6", 'option', null, 'option');
+        $this->view->formGridOption = $this->getFormGrid("dialogOption6", 'option', 'option');
 
         $this->view->formDialogPDPool = $this->getForm("dialogPDPool6");
         $this->view->formGridPDPool = $this->getFormGrid("dialogPDPool6", 'pd_pool');

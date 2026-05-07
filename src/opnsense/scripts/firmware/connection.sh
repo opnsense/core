@@ -42,6 +42,9 @@ export PKG_DBDIR=/tmp/firmware.repo.check
 rm -rf ${PKG_DBDIR}
 mkdir -p ${PKG_DBDIR}
 
+output_txt "Current repository configuration:"
+output_cmd opnsense-update -O
+
 if [ -n "${IPV4}" -a -z "${IPV4%%*.*}" ]; then
 	output_txt "Checking connectivity for host: ${HOST} -> ${IPV4}"
 	output_cmd ping -4 ${POPT} "${IPV4}"

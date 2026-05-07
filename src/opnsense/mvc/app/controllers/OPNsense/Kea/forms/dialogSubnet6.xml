@@ -57,6 +57,15 @@
         </grid_view>
     </field>
     <field>
+        <id>subnet6.valid_lifetime</id>
+        <label>Valid lifetime</label>
+        <type>text</type>
+        <help>Valid lifetime for this subnet scope.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>subnet6.description</id>
         <label>Description</label>
         <type>text</type>

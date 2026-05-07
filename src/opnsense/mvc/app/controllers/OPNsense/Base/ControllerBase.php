@@ -238,11 +238,12 @@ class ControllerBase extends ControllerRoot
      * Extract grid fields from form definition
      * @return array
      */
-    public function getFormGrid($formname, $grid_id = null, $edit_alert_id = null, $root = null)
+    public function getFormGrid($formname, $grid_id = null, $root = null)
     {
         /* collect all fields, sort by sequence */
         $all_data = [];
         $idx = 0;
+
         foreach ($this->getFormXML($formname) as $rootkey => $rootnode) {
             if ($rootkey == 'field' && !empty((string)$rootnode->id)) {
                 $record = [
@@ -253,6 +254,7 @@ class ControllerBase extends ControllerRoot
                     'identifier' => 'false',
                     'type' => 'string' /* XXX: convert to type + formatter using source type? */
                 ];
+
                 foreach ($rootnode as $key => $item) {
                     switch ($key) {
                         case 'label':
@@ -268,6 +270,7 @@ class ControllerBase extends ControllerRoot
                             break;
                     }
                 }
+
                 /* iterate field->grid_view items */
                 $this_sequence = '9999999';
                 if (isset($rootnode->grid_view)) {
@@ -282,9 +285,11 @@ class ControllerBase extends ControllerRoot
                         }
                     }
                 }
+
                 $all_data[sprintf("%010d.%03d", $this_sequence, $idx++)] = $record;
             }
         }
+
         /* prepend identifier */
         $all_data[sprintf("%010d.%03d", 0, 0)] = [
             'column-id' => 'uuid',
@@ -294,12 +299,13 @@ class ControllerBase extends ControllerRoot
             'visible' => 'false'
         ];
         ksort($all_data);
+
         $basename = $grid_id ?? $formname;
+
         return [
-            'table_id' => $basename,
             'edit_dialog_id' => 'dialog_' . $basename,
-            'edit_alert_id' => $edit_alert_id == null ? 'change_message_base_form' : $edit_alert_id,
-            'fields' => array_values($all_data)
+            'fields' => array_values($all_data),
+            'table_id' => $basename,
         ];
     }
 

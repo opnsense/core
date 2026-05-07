@@ -79,6 +79,7 @@
                         </check001>
                     </Constraints>
                 </subnet>
+                <valid_lifetime type="IntegerField"/>
                 <next_server type="NetworkField">
                     <NetMaskAllowed>N</NetMaskAllowed>
                     <AddressFamily>ipv4</AddressFamily>
