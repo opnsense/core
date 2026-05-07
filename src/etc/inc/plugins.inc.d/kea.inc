@@ -160,9 +160,7 @@ function kea_generate_dhcpv6_do($verbose = false)
 
 function kea_generate_dhcpv6($keaDhcpv6 = null)
 {
-    if ($keaDhcpv6 === null) {
-        $keaDhcpv6 = new \OPNsense\Kea\KeaDhcpv6();
-    }
+    $keaDhcpv6 ??= new \OPNsense\Kea\KeaDhcpv6();
     if ($keaDhcpv6->isEnabled() && $keaDhcpv6->general->manual_config->isEmpty()) {
         /* skip kea-dhcp6.conf when configured manually */
         $keaDhcpv6->generateConfig();
