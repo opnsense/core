@@ -67,6 +67,107 @@
             }
         }
 
+        function parse_rate(value, unit) {
+            let matches = (value || '').toString().trim().match(/^([0-9]*\.?[0-9]+)\s*([kmg]?)(?:b(?:ps)?)?$/i);
+            if (matches === null) {
+                return null;
+            }
+
+            let suffix = matches[2].toLowerCase();
+            if (suffix === '') {
+                suffix = (unit || 'bps').replace(/bps$/i, '').toLowerCase();
+            }
+
+            let multipliers = {
+                '': 1,
+                'k': 1000,
+                'm': 1000 * 1000,
+                'g': 1000 * 1000 * 1000
+            };
+
+            return Math.round(parseFloat(matches[1]) * multipliers[suffix]);
+        }
+
+        function toggle_rate_controls(direction) {
+            let is_auto = $("#traffic_scale_auto_" + direction).prop("checked");
+            $("#traffic_scale_max_" + direction).prop("disabled", is_auto);
+            $("#traffic_scale_unit_" + direction).prop("disabled", is_auto).selectpicker('refresh');
+            if (is_auto) {
+                $("#traffic_scale_max_" + direction).closest(".traffic-scale-group").removeClass("has-error");
+            }
+        }
+
+        function load_rate_controls() {
+            ['in', 'out'].forEach(function(direction) {
+                let auto_value = window.localStorage ? window.localStorage.getItem("api.diagnostics.traffic.max_rate." + direction + ".auto") : null;
+                let max_value = window.localStorage ? window.localStorage.getItem("api.diagnostics.traffic.max_rate." + direction + ".value") : null;
+                let unit_value = window.localStorage ? window.localStorage.getItem("api.diagnostics.traffic.max_rate." + direction + ".unit") : null;
+
+                if (auto_value !== null) {
+                    $("#traffic_scale_auto_" + direction).prop("checked", auto_value === "1");
+                }
+                if (max_value !== null) {
+                    $("#traffic_scale_max_" + direction).val(max_value);
+                }
+                if (unit_value !== null) {
+                    $("#traffic_scale_unit_" + direction).val(unit_value);
+                }
+                toggle_rate_controls(direction);
+            });
+        }
+
+        function save_rate_control(direction) {
+            if (window.localStorage) {
+                window.localStorage.setItem(
+                    "api.diagnostics.traffic.max_rate." + direction + ".auto",
+                    $("#traffic_scale_auto_" + direction).prop("checked") ? "1" : "0"
+                );
+                window.localStorage.setItem(
+                    "api.diagnostics.traffic.max_rate." + direction + ".value",
+                    $("#traffic_scale_max_" + direction).val()
+                );
+                window.localStorage.setItem(
+                    "api.diagnostics.traffic.max_rate." + direction + ".unit",
+                    $("#traffic_scale_unit_" + direction).val()
+                );
+            }
+        }
+
+        function apply_rate_scale(chart) {
+            if (chart.traffic_direction === undefined) {
+                return;
+            }
+
+            let direction = chart.traffic_direction;
+            let y_scale = chart.config.options.scales.y;
+            y_scale.beginAtZero = true;
+
+            if ($("#traffic_scale_auto_" + direction).prop("checked")) {
+                delete y_scale.max;
+                $("#traffic_scale_max_" + direction).closest(".traffic-scale-group").removeClass("has-error");
+                return;
+            }
+
+            let max_rate = parse_rate(
+                $("#traffic_scale_max_" + direction).val(),
+                $("#traffic_scale_unit_" + direction).val()
+            );
+            if (max_rate !== null && max_rate > 0) {
+                y_scale.max = max_rate;
+                $("#traffic_scale_max_" + direction).closest(".traffic-scale-group").removeClass("has-error");
+            } else {
+                delete y_scale.max;
+                $("#traffic_scale_max_" + direction).closest(".traffic-scale-group").addClass("has-error");
+            }
+        }
+
+        function apply_rate_scales(charts) {
+            charts.forEach(function(chart) {
+                apply_rate_scale(chart);
+                chart.update('quiet');
+            });
+        }
+
         /**
          * create new traffic chart
          */
@@ -126,6 +227,7 @@
                               },
                           },
                           y: {
+                              beginAtZero: true,
                               ticks: {
                                   callback: function (value, index, values) {
                                       return format_field(value);
@@ -349,6 +451,14 @@
 
         // Store references to the charts globally
         let g_charts = {traffic: [], traffic_top: []};
+        load_rate_controls();
+
+        $(".traffic-scale-auto, .traffic-rate-value, .traffic-rate-unit").on("change keyup", function() {
+            let direction = $(this).data("direction");
+            toggle_rate_controls(direction);
+            save_rate_control(direction);
+            apply_rate_scales(g_charts['traffic']);
+        });
 
         $("#intervals").change(function() {
             if (window.localStorage) {
@@ -420,6 +530,8 @@
                 } else {
                     let rxtx = chart.includes('rx') ? '{{ lang._('In (bps)') }}' : '{{ lang._('Out (bps)') }}';
                     let graph = traffic_graph($("#" + chart), rxtx, data);
+                    graph.traffic_direction = chart.includes('rx') ? 'in' : 'out';
+                    apply_rate_scale(graph);
                     g_charts['traffic'].push(graph);
                 }
             });
@@ -511,12 +623,84 @@
       background: navy !important;
   }
 
-  .left {
-    float: left;
+  .traffic-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px 10px;
+    padding: 6px 0;
   }
 
-  .right {
-    float: right;
+  .traffic-filter-controls,
+  .traffic-scale-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 8px;
+  }
+
+  .traffic-filter-controls {
+    border-left: 1px solid #ddd;
+    padding-left: 10px;
+  }
+
+  .traffic-scale-group {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .traffic-scale-group .checkbox-inline {
+    margin: 0;
+    padding-top: 0;
+    white-space: nowrap;
+  }
+
+  .traffic-toolbar .form-control {
+    height: 31px;
+    padding: 5px 8px;
+  }
+
+  .traffic-toolbar .traffic-rate-value {
+    width: 86px !important;
+    min-width: 86px;
+  }
+
+  .traffic-toolbar .traffic-rate-unit {
+    width: 76px !important;
+  }
+
+  .traffic-toolbar .traffic-interval-select {
+    width: 145px !important;
+  }
+
+  .traffic-toolbar .traffic-interface-select {
+    width: 300px !important;
+  }
+
+  @media (max-width: 1200px) {
+    .traffic-toolbar {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .traffic-filter-controls,
+    .traffic-scale-controls,
+    .traffic-scale-group {
+      width: 100%;
+    }
+
+    .traffic-filter-controls {
+      border-left: none;
+      padding-left: 0;
+    }
+
+    .traffic-toolbar .traffic-interface-select {
+      width: 100% !important;
+    }
   }
 
 </style>
@@ -524,24 +708,48 @@
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li class="active"><a data-toggle="tab" id="graph_tab" href="#graph">{{ lang._('Graph') }}</a></li>
     <li><a data-toggle="tab" id="gtid_tab" href="#toptalkers">{{ lang._('Top talkers') }}</a></li>
-    <div class="pull-right">
-        <div class="right">
-            <select class="selectpicker" id="interfaces" multiple=multiple>
+</ul>
+<div class="traffic-toolbar">
+    <div class="traffic-scale-controls">
+        <div class="traffic-scale-group">
+            <label class="checkbox-inline">
+                <input type="checkbox" id="traffic_scale_auto_in" class="traffic-scale-auto" data-direction="in" checked>
+                {{ lang._('Auto Max In') }}
+            </label>
+            <input type="text" id="traffic_scale_max_in" class="form-control input-sm traffic-rate-value" data-direction="in" placeholder="{{ lang._('Max In') }}">
+            <select class="selectpicker traffic-rate-unit" id="traffic_scale_unit_in" data-direction="in" data-width="76px">
+                <option value="bps">bps</option>
+                <option value="Kbps">Kbps</option>
+                <option value="Mbps" selected>Mbps</option>
+                <option value="Gbps">Gbps</option>
             </select>
-            &nbsp;
         </div>
-        <div class="left">
-            <select class="selectpicker" id="intervals" data-width="auto">
-                <option value="500">500 Milliseconds</option>
-                <option value="1000">1 Second</option>
-                <option value="2000">2 Seconds</option>
-                <option value="5000">5 Seconds</option>
-                <option value="10000">10 Seconds</option>
+        <div class="traffic-scale-group">
+            <label class="checkbox-inline">
+                <input type="checkbox" id="traffic_scale_auto_out" class="traffic-scale-auto" data-direction="out" checked>
+                {{ lang._('Auto Max Out') }}
+            </label>
+            <input type="text" id="traffic_scale_max_out" class="form-control input-sm traffic-rate-value" data-direction="out" placeholder="{{ lang._('Max Out') }}">
+            <select class="selectpicker traffic-rate-unit" id="traffic_scale_unit_out" data-direction="out" data-width="76px">
+                <option value="bps">bps</option>
+                <option value="Kbps">Kbps</option>
+                <option value="Mbps" selected>Mbps</option>
+                <option value="Gbps">Gbps</option>
             </select>
-            &nbsp;
         </div>
     </div>
-</ul>
+    <div class="traffic-filter-controls">
+        <select class="selectpicker traffic-interval-select" id="intervals" data-width="145px">
+            <option value="500">500 Milliseconds</option>
+            <option value="1000">1 Second</option>
+            <option value="2000">2 Seconds</option>
+            <option value="5000">5 Seconds</option>
+            <option value="10000">10 Seconds</option>
+        </select>
+        <select class="selectpicker traffic-interface-select" id="interfaces" multiple=multiple data-width="300px">
+        </select>
+    </div>
+</div>
 <div class="tab-content content-box">
     <div id="graph" class="tab-pane fade in active">
         <div class="table-responsive">
