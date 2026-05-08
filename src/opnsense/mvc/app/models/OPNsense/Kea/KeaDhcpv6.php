@@ -315,7 +315,7 @@ class KeaDhcpv6 extends BaseModel
                 $record['user-context']['prefix_source'] = $idassoc['prefix_source'] ?? $if;
                 // If the prefix is temporary placeholder, we will not send leases to any client
                 if (empty($idassoc['prefix_valid'])) {
-                    $record['require-client-classes'] = ['NO_LEASES_PLEASE'];
+                    $record['evaluate-client-classes'] = ['NO_LEASES_PLEASE'];
                 }
             }
             /* standard option-data elements */
@@ -544,7 +544,7 @@ class KeaDhcpv6 extends BaseModel
         $client_classes[] = [
             'name' => 'NO_LEASES_PLEASE',
             'test' => "not member('ALL')",
-            'only-if-required' => true,
+            'only-in-additional-list' => true,
         ];
 
         if (!empty($client_classes)) {
