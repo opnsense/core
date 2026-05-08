@@ -41,7 +41,7 @@ class IPFW(object):
                 parts = line.split()
                 address = parts[0]
                 rulenum = parts[1] if len(parts) > 1 else None
-                # process / 32 nets as single addresses to align better with the rule syntax
+                # process /32 and /128 nets as single addresses to align better with the rule syntax
                 # and local administration.
                 prefix = address.split('/')[-1]
                 if prefix == '32' or prefix == '128':
