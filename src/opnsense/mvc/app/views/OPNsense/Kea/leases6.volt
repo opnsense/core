@@ -87,7 +87,7 @@
                         return moment.unix(row[column.id]).local().format('YYYY-MM-DD HH:mm:ss');
                     },
                     "reservation": function (column, row) {
-                        return row.is_reserved !== ''
+                        return row.is_reserved.length > 0
                             ? "{{ lang._('static') }}"
                             : "{{ lang._('dynamic') }}";
                     },
@@ -95,9 +95,9 @@
                         const baseUrl = `/ui/kea/dhcp/v6#reservations`;
                         let searchValue = '';
 
-                        if (row.is_reserved === 'duid') {
+                        if (row.is_reserved.includes('duid')) {
                             searchValue = row.duid || '';
-                        } else if (row.is_reserved === 'hwaddr') {
+                        } else if (row.is_reserved.includes('hwaddr')) {
                             searchValue = row.hwaddr || '';
                         }
 
@@ -117,7 +117,7 @@
 
                         let reservationBtn;
 
-                        if (row.is_reserved !== '') {
+                        if (row.is_reserved.length > 0) {
                             reservationBtn = $(`
                                 <button type="button" class="btn btn-xs" data-toggle="tooltip"
                                     title="{{ lang._('Find Reservation') }}">
