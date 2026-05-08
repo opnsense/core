@@ -101,14 +101,8 @@ class IPFW(object):
         ipfw_tbl = IPFW.list_table(table_number)
         acc_info = IPFW.list_accounting_info()
 
-        a_present = set()
-        a_missing = set()
-        for address in addresses:
-            if address not in acc_info:
-                a_missing.add(address)
-            else:
-                a_present.add(address)
-
+        a_present = set(addresses) & acc_info.keys()
+        a_missing = set(addresses) - acc_info.keys()
         present_rules = [(acc_info[address]['rule'], address) for address in sorted(a_present)]
         first = present_rules[0] if present_rules else None
         rule_number = None
