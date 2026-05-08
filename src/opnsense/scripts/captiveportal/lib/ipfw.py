@@ -160,10 +160,9 @@ class IPFW(object):
         :return: None
         """
         acc_info = IPFW.list_accounting_info()
-        ipfw_tbl = IPFW.list_table(table_number)
 
         if address in acc_info:
             subprocess.run(['/sbin/ipfw', 'delete', str(acc_info[address]['rule'])], capture_output=True)
         
-        if address in ipfw_tbl:
-            subprocess.run(['/sbin/ipfw', 'table', str(table_number), 'del', address], capture_output=True)
+        # no-op if address not in table
+        subprocess.run(['/sbin/ipfw', 'table', str(table_number), 'del', address], capture_output=True)
