@@ -206,8 +206,7 @@ function kea_newwanip($interfaces, $family)
         $keaDhcpv6 = new \OPNsense\Kea\KeaDhcpv6();
         if (
             $keaDhcpv6->isEnabled() &&
-            $keaDhcpv6->general->manual_config->isEmpty() &&
-            $keaDhcpv6->pd_pools->pd_pool->count() > 0
+            $keaDhcpv6->general->manual_config->isEmpty()
         ) {
             mwexecf('/usr/local/opnsense/scripts/kea/kea_prefix_renew.py');
         }
