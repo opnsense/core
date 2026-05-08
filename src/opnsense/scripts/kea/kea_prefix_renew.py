@@ -35,12 +35,7 @@ from lib.kea_ctrl import KeaCtrl
 
 if __name__ == "__main__":
     syslog.openlog("kea-dhcp6", facility=syslog.LOG_LOCAL4)
-
-    result = {
-        "wiped": [],
-        "generated": False,
-        "reloaded": False
-    }
+    result = {"status": "ok"}
 
     try:
         config = KeaCtrl.send_command("config-get", None, "dhcp6")
@@ -50,23 +45,26 @@ if __name__ == "__main__":
             if subnet.get("id") is not None and subnet.get("user-context", {}).get("dynamic_prefix") is True:
                 subnet_id = int(subnet.get("id"))
                 KeaCtrl.send_command("lease6-wipe", {"subnet-id": subnet_id}, "dhcp6")
-                result["wiped"].append(subnet_id)
-
-        if result["wiped"]:
-            syslog.syslog(syslog.LOG_NOTICE, "wiped dynamic prefix leases for subnet ids %s" % result["wiped"])
 
     except Exception as e:
+        result["status"] = "failed"
         syslog.syslog(syslog.LOG_ERR, "failed wiping dynamic prefix leases: %s" % e)
 
     try:
-        result["generated"] = subprocess.run(["pluginctl", "kea_generate_dhcpv6"], check=False, capture_output=True).returncode == 0
+        failed = subprocess.run(["pluginctl", "kea_generate_dhcpv6"], check=False, capture_output=True).returncode != 0
+
     except Exception as e:
+        failed = True
         syslog.syslog(syslog.LOG_ERR, "failed generating Kea configuration: %s" % e)
+
+    if failed:
+        result["status"] = "failed"
 
     try:
         KeaCtrl.send_command("config-reload", None, "dhcp6")
-        result["reloaded"] = True
+
     except Exception as e:
-        syslog.syslog(syslog.LOG_ERR, "failed reloading Kea DHCPv6 configuration: %s" % e)
+        result["status"] = "failed"
+        syslog.syslog(syslog.LOG_ERR, "failed config-reload of Kea DHCPv6 configuration: %s" % e)
 
     print(ujson.dumps(result))
