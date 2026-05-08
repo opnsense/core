@@ -883,6 +883,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['alias-subnet']) && !is_numeric($pconfig['alias-subnet'])) {
             $input_errors[] = gettext("A valid alias subnet bit count must be specified.");
         }
+        if (!empty($pconfig['dhcphostname']) && !is_hostname($pconfig['dhcphostname'])) {
+            $input_errors[] = gettext("The DHCP hostname may only contain the characters a-z, 0-9 and '-'.");
+        }
 
         if (!empty($pconfig['dhcprejectfrom'])) {
             foreach (explode(',', $pconfig['dhcprejectfrom']) as $addr) {

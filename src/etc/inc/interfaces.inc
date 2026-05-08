@@ -3245,13 +3245,75 @@ function DHCP6_Config_File_Substitutions($wancfg, $wanif, $dhcp6cconf)
     return DHCP_Config_File_Substitutions($wancfg, $wanif, $dhcp6cconf);
 }
 
+function interfaces_dhcp_safe($format, $args = [], $active = true)
+{
+    if (!$active) {
+        return '';
+    }
+
+    if (!is_array($format)) {
+        $format = [$format];
+    }
+
+    if (!is_array($args)) {
+        $args = [$args];
+    }
+
+    foreach ($args as $id => $arg) {
+        /* do not allow escaping, unqouting or end of statement */
+        $args[$id] = str_replace(['\\', '"', ';'], '', $arg);
+    }
+
+    return vsprintf(implode(' ', $format), $args) . PHP_EOL;
+}
+
+function interfaces_dhcp_split($option)
+{
+    if (!strlen($option)) {
+        return [];
+    }
+
+    /* split the option string: some sort of pseudo CSV with inline quoting */
+    $args = array_filter(preg_split('/\s*(?<!\\\),\s*(?=(?:[^"]*"[^"]*")*[^"]*$)/', $option));
+
+    foreach ($args as $id => $arg) {
+        $ret = ['frmt' => [], 'args' => []];
+
+        /* retransform escaped commas so they can be used verbatim */
+        $arg = str_replace('\,', ',', $arg);
+
+        /* make an array of the argument list retaining quotes */
+        preg_match_all('/"[^"]*"|\S+/', $arg, $matches);
+        foreach ($matches[0] as $match) {
+            $format = '%s';
+
+            if (strpos($match, '"') !== 0) {
+                /* unquoted string with $match and $format as is */
+            } elseif (strlen($match) >= 2) {
+                /* quoted string only */
+                $match = substr($match, 1, -1);
+                $format = '"%s"';
+            } else {
+                /* hard pass worst case */
+                unset($args[$id]);
+                continue 2;
+            }
+
+            $ret['frmt'][] = $format;
+            $ret['args'][] = $match;
+        }
+
+        $args[$id] = $ret;
+    }
+
+    return $args;
+}
+
 function interface_dhcp_configure($interface = 'wan')
 {
-    global $config;
-
-    $wancfg = $config['interfaces'][$interface];
+    $wancfg = config_read_array('interfaces', $interface, false);
     if (empty($wancfg)) {
-        log_msg("Interface '{$interface}' does not have a DHCP configuration.", LOG_ERR);
+        log_msg("interface_dhcp_configure: '{$interface}' does not have a configuration.", LOG_ERR);
         return;
     }
 
@@ -3259,74 +3321,44 @@ function interface_dhcp_configure($interface = 'wan')
 
     killbypid("/var/run/dhclient.{$device}.pid");
 
-    $fd = fopen("/var/etc/dhclient.{$device}.conf", 'w');
-    if (!$fd) {
-        log_msg("Error: cannot open dhclient.{$device}.conf in interface_dhcp_configure() for writing.", LOG_ERR);
-        return;
-    }
-
-    if (!empty($wancfg['dhcphostname'])) {
-        $dhclientconf_hostname = "send dhcp-client-identifier \"{$wancfg['dhcphostname']}\";\n";
-        $dhclientconf_hostname .= "\tsend host-name \"{$wancfg['dhcphostname']}\";\n";
-    } else {
-        $dhclientconf_hostname = "";
-    }
-
-    $dhclientconf = <<<EOD
-interface "{$device}" {
-  timeout 60;
-  retry 15;
-  select-timeout 0;
-  initial-interval 1;
-  {$dhclientconf_hostname}
-  script "/usr/local/opnsense/scripts/interfaces/dhclient-script";
-
-EOD;
-
-    if (empty($wancfg['dhcphonourmtu'])) {
-        $dhclientconf .= "  supersede interface-mtu 0;\n";
-    }
-
-    if (!empty($wancfg['dhcprejectfrom'])) {
-        $dhclientconf .= "  reject {$wancfg['dhcprejectfrom']};\n";
-    }
-
-    if (isset($wancfg['dhcpvlanprio'])) {
-        $dhclientconf .= "  vlan-pcp {$wancfg['dhcpvlanprio']};\n";
-    }
-
-    $dhclientconf .= "}\n";
+    $conf  = interfaces_dhcp_safe('interface "%s" {', $device);
+    $conf .= interfaces_dhcp_safe('  timeout 60;');
+    $conf .= interfaces_dhcp_safe('  retry 15;');
+    $conf .= interfaces_dhcp_safe('  select-timeout 0;');
+    $conf .= interfaces_dhcp_safe('  initial-interval 1;');
+    $conf .= interfaces_dhcp_safe('  send dhcp-client-identifier "%s";', $wancfg['dhcphostname'], !empty($wancfg['dhcphostname']));
+    $conf .= interfaces_dhcp_safe('  send host-name "%s";', $wancfg['dhcphostname'], !empty($wancfg['dhcphostname']));
+    $conf .= interfaces_dhcp_safe('  script "%s";', '/usr/local/opnsense/scripts/interfaces/dhclient-script');
+    $conf .= interfaces_dhcp_safe('  supersede interface-mtu %s;', 0, empty($wancfg['dhcphonourmtu']));
+    $conf .= interfaces_dhcp_safe('  reject %s;', $wancfg['dhcprejectfrom'], !empty($wancfg['dhcprejectfrom']));
+    $conf .= interfaces_dhcp_safe('  vlan-pcp %s;', $wancfg['dhcpvlanprio'] ?? '', isset($wancfg['dhcpvlanprio']));
+    $conf .= interfaces_dhcp_safe('}');
 
     // DHCP Config File Advanced
     if (!empty($wancfg['adv_dhcp_config_advanced'])) {
-        $dhclientconf = DHCP_Config_File_Advanced($interface, $wancfg, $device);
+        $conf = DHCP_Config_File_Advanced($interface, $wancfg, $device);
     }
 
     if (!empty($wancfg['alias-address']) && is_ipaddr($wancfg['alias-address'])) {
-        $subnetmask = gen_subnet_mask($wancfg['alias-subnet']);
-        $dhclientconf .= <<<EOD
-alias {
-  interface  "{$device}";
-  fixed-address {$wancfg['alias-address']};
-  option subnet-mask {$subnetmask};
-}
-
-EOD;
+        $conf .= interfaces_dhcp_safe('alias {');
+        $conf .= interfaces_dhcp_safe('  interface "%s"', $device);
+        $conf .= interfaces_dhcp_safe('  fixed-address %s', $wancfg['alias-address']);
+        $conf .= interfaces_dhcp_safe('  option subnet-mask %s;', gen_subnet_mask($wancfg['alias-subnet']));
+        $conf .= interfaces_dhcp_safe('}');
     }
 
     // DHCP Config File Override
     if (!empty($wancfg['adv_dhcp_config_file_override'])) {
         $dhclientfile = $wancfg['adv_dhcp_config_file_override_path'];
         if (file_exists($dhclientfile)) {
-            $dhclientconf = file_get_contents($dhclientfile);
-            $dhclientconf = DHCP_Config_File_Substitutions($wancfg, $device, $dhclientconf);
+            $conf = file_get_contents($dhclientfile);
+            $conf = DHCP_Config_File_Substitutions($wancfg, $device, $conf);
         } else {
             log_msg("DHCP config file override does not exist: '{$dhclientfile}'", LOG_ERR);
         }
     }
 
-    fwrite($fd, $dhclientconf);
-    fclose($fd);
+    file_safe("/var/etc/dhclient.{$device}.conf", $conf);
 
     legacy_interface_flags($device, 'up');
 
@@ -3346,76 +3378,48 @@ EOD;
 
 function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)
 {
-    $hostname = "";
-    if ($wancfg['dhcphostname'] != '') {
-        $hostname = "\tsend host-name \"{$wancfg['dhcphostname']}\";\n";
-    }
+    $pt_mapping = [
+        'adv_dhcp_pt_backoff_cutoff' => 'backoff-cutoff',
+        'adv_dhcp_pt_initial_interval' => 'initial-interval',
+        'adv_dhcp_pt_reboot' => 'reboot',
+        'adv_dhcp_pt_retry' => 'retry',
+        'adv_dhcp_pt_select_timeout' => 'select-timeout',
+        'adv_dhcp_pt_timeout' => 'timeout',
+    ];
 
-    /* DHCP Protocol Timings */
-    $protocol_timings = array ('adv_dhcp_pt_timeout' => "timeout", 'adv_dhcp_pt_retry' => "retry", 'adv_dhcp_pt_select_timeout' => "select-timeout", 'adv_dhcp_pt_reboot' => "reboot", 'adv_dhcp_pt_backoff_cutoff' => "backoff-cutoff", 'adv_dhcp_pt_initial_interval' => "initial-interval");
-    foreach ($protocol_timings as $Protocol_Timing => $PT_Name) {
-        $pt_variable = "{$Protocol_Timing}";
-        ${$pt_variable} = "";
-        if ($wancfg[$Protocol_Timing] != "") {
-            ${$pt_variable} = "\t{$PT_Name} {$wancfg[$Protocol_Timing]};\n";
-        }
+    $conf  = interfaces_dhcp_safe('interface "%s" {', $wanif);
+    $conf .= interfaces_dhcp_safe('  # timing values');
+    foreach ($pt_mapping as $pt_field => $pt_keyword) {
+        $conf .= interfaces_dhcp_safe('  %s %s;', [$pt_keyword, $wancfg[$pt_field]], $wancfg[$pt_field] != '');
     }
+    $conf .= interfaces_dhcp_safe('  # custom options');
+    foreach (interfaces_dhcp_split($wancfg['adv_dhcp_request_options'] ?? '') as $option) {
+        $conf .= interfaces_dhcp_safe(sprintf('  request %s;', implode(' ', $option['frmt'])), $option['args']);
+    }
+    foreach (interfaces_dhcp_split($wancfg['adv_dhcp_required_options'] ?? '') as $option) {
+        $conf .= interfaces_dhcp_safe(sprintf('  require %s;', implode(' ', $option['frmt'])), $option['args']);
+    }
+    foreach (interfaces_dhcp_split($wancfg['adv_dhcp_send_options'] ?? '') as $option) {
+        $conf .= interfaces_dhcp_safe(sprintf('  send %s;', implode(' ', $option['frmt'])), $option['args']);
+    }
+    foreach (interfaces_dhcp_split($wancfg['adv_dhcp_option_modifiers'] ?? '') as $option) {
+        /*
+         * Documentation says 'default', 'supersede', 'prepend',
+         * 'append' only but has been abused since forever, e.g.
+         * https://github.com/opnsense/core/issues/3085 so for now
+         * limit this to 'media' keyword causing special concern.
+         */
+        $conf .= interfaces_dhcp_safe(sprintf('  %s;', implode(' ', $option['frmt'])), $option['args'], !in_array('media', $option['args']));
+    }
+    $conf .= interfaces_dhcp_safe('  # standard settings');
+    $conf .= interfaces_dhcp_safe('  send host-name "%s";', $wancfg['dhcphostname'], !empty($wancfg['dhcphostname']));
+    $conf .= interfaces_dhcp_safe('  script "%s";', '/usr/local/opnsense/scripts/interfaces/dhclient-script');
+    $conf .= interfaces_dhcp_safe('  supersede interface-mtu %s;', 0, empty($wancfg['dhcphonourmtu']));
+    $conf .= interfaces_dhcp_safe('  reject %s;', $wancfg['dhcprejectfrom'], !empty($wancfg['dhcprejectfrom']));
+    $conf .= interfaces_dhcp_safe('  vlan-pcp %s;', $wancfg['dhcpvlanprio'] ?? '', isset($wancfg['dhcpvlanprio']));
+    $conf .= interfaces_dhcp_safe('}');
 
-    $send_options = "";
-    if ($wancfg['adv_dhcp_send_options'] != '') {
-        $options = preg_split('/\s*,\s*(?=(?:[^"]*"[^"]*")*[^"]*$)/', $wancfg['adv_dhcp_send_options']);
-        foreach ($options as $option) {
-            $send_options .= "\tsend " . $option . ";\n";
-        }
-    }
-
-    $request_options = "";
-    if ($wancfg['adv_dhcp_request_options'] != '') {
-        $request_options = "\trequest {$wancfg['adv_dhcp_request_options']};\n";
-    }
-
-    $required_options = "";
-    if ($wancfg['adv_dhcp_required_options'] != '') {
-        $required_options = "\trequire {$wancfg['adv_dhcp_required_options']};\n";
-    }
-
-    $option_modifiers = "";
-    if ($wancfg['adv_dhcp_option_modifiers'] != '') {
-        $modifiers = preg_split('/\s*(?<!\\\),\s*(?=(?:[^"]*"[^"]*")*[^"]*$)/', $wancfg['adv_dhcp_option_modifiers']);
-        foreach ($modifiers as $modifier) {
-            $option_modifiers .= "\t" . str_replace('\,', ',', $modifier) . ";\n";
-        }
-    }
-
-    $dhclientconf = "interface \"{$wanif}\" {\n";
-    $dhclientconf .= "\t# DHCP Protocol Timing Values\n";
-    $dhclientconf .= "{$adv_dhcp_pt_timeout}";
-    $dhclientconf .= "{$adv_dhcp_pt_retry}";
-    $dhclientconf .= "{$adv_dhcp_pt_select_timeout}";
-    $dhclientconf .= "{$adv_dhcp_pt_reboot}";
-    $dhclientconf .= "{$adv_dhcp_pt_backoff_cutoff}";
-    $dhclientconf .= "{$adv_dhcp_pt_initial_interval}";
-    $dhclientconf .= "\n\t# DHCP Protocol Options\n";
-    $dhclientconf .= "{$hostname}";
-    $dhclientconf .= "{$send_options}";
-    $dhclientconf .= "{$request_options}";
-    $dhclientconf .= "{$required_options}";
-    $dhclientconf .= "{$option_modifiers}";
-    $dhclientconf .= "\n\tscript \"/usr/local/opnsense/scripts/interfaces/dhclient-script\";\n";
-    if (empty($wancfg['dhcphonourmtu'])) {
-        $dhclientconf .= "\tsupersede interface-mtu 0;\n";
-    }
-    if (!empty($wancfg['dhcprejectfrom'])) {
-        $dhclientconf .= "\treject {$wancfg['dhcprejectfrom']};\n";
-    }
-    if (isset($wancfg['dhcpvlanprio'])) {
-        $dhclientconf .= "\tvlan-pcp {$wancfg['dhcpvlanprio']};\n";
-    }
-    $dhclientconf .= "}\n";
-
-    $dhclientconf = DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf);
-
-    return $dhclientconf;
+    return DHCP_Config_File_Substitutions($wancfg, $wanif, $conf);
 }
 
 function DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf)
