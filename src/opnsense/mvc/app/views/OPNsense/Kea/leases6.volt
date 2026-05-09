@@ -191,10 +191,10 @@
                 <th data-column-id="duid" data-type="string" data-width="18em">{{ lang._('DUID') }}</th>
                 <th data-column-id="iaid" data-type="string" data-width="4em">{{ lang._('IAID') }}</th>
                 <th data-column-id="hwaddr" data-type="string" data-formatter="macformatter" data-width="9em">{{ lang._('MAC Address') }}</th>
-                <th data-column-id="valid_lifetime" data-width="4em" data-type="integer">{{ lang._('Lifetime') }}</th>
+                <th data-column-id="valid_lifetime" data-width="6em" data-type="integer">{{ lang._('Lifetime') }}</th>
                 <th data-column-id="expire" data-type="string" data-formatter="timestamp">{{ lang._('Expire') }}</th>
                 <th data-column-id="hostname" data-type="string" data-formatter="overflowformatter">{{ lang._('Hostname') }}</th>
-                <th data-column-id="state" data-type="string" data-formatter="state" data-width="6em">{{ lang._('State') }}</th>
+                <th data-column-id="state" data-type="string" data-formatter="state" data-width="8em">{{ lang._('State') }}</th>
                 <th data-column-id="is_reserved" data-type="string" data-formatter="reservation" data-width="6em">{{ lang._('Lease Type') }}</th>
                 <th data-column-id="commands" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
             </tr>
