@@ -6,22 +6,22 @@
         </patterns>
     </page-services-ntpd>
     <page-services-ntp-gps>
-        <name>Status: NTP GPS</name>
+        <name>Services: NTP GPS</name>
         <patterns>
-            <pattern>status_ntpd_gps.php*</pattern>
+            <pattern>services_ntpd_gps.php*</pattern>
         </patterns>
     </page-services-ntp-gps>
     <page-status-ntp>
         <name>Status: NTP</name>
         <patterns>
-            <pattern>/ui/ntpd/status/*</pattern>
-            <pattern>/api/ntpd/service/status</pattern>
+            <pattern>ui/ntpd/status/*</pattern>
+            <pattern>api/ntpd/service/status</pattern>
         </patterns>
     </page-status-ntp>
     <page-services-ntp-pps>
-        <name>Status: NTP PPS</name>
+        <name>Services: NTP PPS</name>
         <patterns>
-            <pattern>status_ntpd_pps.php*</pattern>
+            <pattern>services_ntpd_pps.php*</pattern>
         </patterns>
     </page-services-ntp-pps>
     <page-status-systemlogs-ntpd>
