@@ -350,12 +350,14 @@
         // Store references to the charts globally
         let g_charts = {traffic: [], traffic_top: []};
 
-        $("#intervals").change(function() {
+        $("select.graph-options").change(function() {
             if (window.localStorage) {
-                window.localStorage.setItem("api.diagnostics.traffic.interval", $(this).val());
+                let stored_item = "api.diagnostics.traffic."  + $(this).attr('id');
+                window.localStorage.setItem(stored_item, $(this).val());
             }
 
-            g_charts['interval'] = limit(Number($("#intervals").val()), 500, 10000);
+            /* XXX: interval is a bit weird here as we now can't simply pass the message along anymore */
+            g_charts['interval'] = isNaN(Number($("#interval").val())) ? 2000 : limit(Number($("#interval").val()), 500, 10000) ;
 
             Object.keys(g_charts).forEach(function(key) {
                 if (Array.isArray(g_charts[key])) {
@@ -400,14 +402,19 @@
             });
             $('#interfaces').selectpicker('refresh');
 
-            // XXX: limit the amount of minimum interval that can be set
-            $("#intervals").val(2000);
-            if (window.localStorage && window.localStorage.getItem("api.diagnostics.traffic.interval") !== null) {
-                $("#intervals").val(window.localStorage.getItem("api.diagnostics.traffic.interval"));
-            }
-            $('#intervals').selectpicker('refresh');
+            $("select.graph-options").each(function(){
+                if (!window.localStorage) {
+                    return;
+                }
+                let stored_item = "api.diagnostics.traffic."  + $(this).attr('id');
+                let item = window.localStorage.getItem(stored_item) ?? null;
+                if (item) {
+                    /* only support selectpickers for now */
+                    $(this).val(item).selectpicker('refresh');;
+                }
+            });
+            data.interval = isNaN(Number($("#interval").val())) ? 2000 : limit(Number($("#interval").val()), 500, 10000) ;
 
-            data.interval = limit(Number($("#intervals").val()), 500, 10000);
             g_charts['interval'] = data.interval;
 
             const chart_types = ["rxChart", "txChart", "rxTopChart", "txTopChart"];
@@ -453,6 +460,18 @@
 
         function update_traffic_charts(charts, data) {
             charts.forEach(function(chart) {
+                /* select maximum for Y axis when configured */
+                let c_max = null;
+                if (chart.id == 0) {
+                    c_max = isNaN(Number($("#max_in_bps").val())) ? null : Number($("#max_in_bps").val());
+                } else {
+                    c_max = isNaN(Number($("#max_out_bps").val())) ? null : Number($("#max_out_bps").val());
+                }
+                if (c_max) {
+                    chart.config.options.scales.y.max = c_max;
+                } else if (chart.config.options.scales.y.max) {
+                    delete chart.config.options.scales.y.max;
+                }
                 Object.keys(data.interfaces).forEach(function(intf) {
                     chart.config.data.datasets.forEach(function(dataset) {
                         if (dataset.intf == intf) {
@@ -531,12 +550,44 @@
             &nbsp;
         </div>
         <div class="left">
-            <select class="selectpicker" id="intervals" data-width="auto">
-                <option value="500">500 Milliseconds</option>
-                <option value="1000">1 Second</option>
-                <option value="2000">2 Seconds</option>
-                <option value="5000">5 Seconds</option>
-                <option value="10000">10 Seconds</option>
+            <select class="selectpicker graph-options" id="interval" data-width="200">
+                <option value="500">500 {{ lang._('Milliseconds') }}</option>
+                <option value="1000">1 {{ lang._('Second') }}</option>
+                <option value="2000" selected="selected">2 {{ lang._('Seconds') }}</option>
+                <option value="5000">5 {{ lang._('Seconds') }}</option>
+                <option value="10000">10 {{ lang._('Seconds') }}</option>
+            </select>
+            &nbsp;
+            <select class="selectpicker graph-options" id="max_in_bps" data-width="200">
+                <option value="">{{ lang._('Auto in') }}</option>
+                <option value="10000000">10 Mbps</option>
+                <option value="50000000">50 Mbps</option>
+                <option value="100000000">100 Mbps</option>
+                <option value="250000000">250 Mbps</option>
+                <option value="500000000">500 Mbps</option>
+                <option value="1000000000">1 Gbps</option>
+                <option value="2500000000">2.5 Gbps</option>
+                <option value="5000000000">5 Gbps</option>
+                <option value="10000000000">10 Gbps</option>
+                <option value="25000000000">25 Gbps</option>
+                <option value="50000000000">50 Gbps</option>
+                <option value="100000000000">100 Gbps</option>
+            </select>
+            &nbsp;
+            <select class="selectpicker graph-options" id="max_out_bps" data-width="200">
+                <option value="">{{ lang._('Auto out') }}</option>
+                <option value="10000000">10 Mbps</option>
+                <option value="50000000">50 Mbps</option>
+                <option value="100000000">100 Mbps</option>
+                <option value="250000000">250 Mbps</option>
+                <option value="500000000">500 Mbps</option>
+                <option value="1000000000">1 Gbps</option>
+                <option value="2500000000">2.5 Gbps</option>
+                <option value="5000000000">5 Gbps</option>
+                <option value="10000000000">10 Gbps</option>
+                <option value="25000000000">25 Gbps</option>
+                <option value="50000000000">50 Gbps</option>
+                <option value="100000000000">100 Gbps</option>
             </select>
             &nbsp;
         </div>
