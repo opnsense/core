@@ -87,9 +87,19 @@
                         return moment.unix(row[column.id]).local().format('YYYY-MM-DD HH:mm:ss');
                     },
                     "reservation": function (column, row) {
-                        return row.is_reserved !== ''
+                        return row.is_reserved.length > 0
                             ? "{{ lang._('static') }}"
                             : "{{ lang._('dynamic') }}";
+                    },
+                    "state": function (column, row) {
+                        const states = {
+                            0: "{{ lang._('assigned') }}",
+                            1: "{{ lang._('declined') }}",
+                            2: "{{ lang._('expired reclaimed') }}",
+                            3: "{{ lang._('released') }}",
+                            4: "{{ lang._('registered') }}"
+                        };
+                        return states[row.state] || row.state;
                     },
                     "commands": function (column, row) {
                         const baseUrl = `/ui/kea/dhcp/v4#reservations`;
@@ -103,7 +113,7 @@
 
                         let reservationBtn;
 
-                        if (row.is_reserved !== '') {
+                        if (row.is_reserved.length > 0) {
                             reservationBtn = $(`
                                 <button type="button" class="btn btn-xs" data-toggle="tooltip"
                                     title="{{ lang._('Find Reservation') }}">
@@ -163,9 +173,11 @@
                 <th data-column-id="if_descr" data-type="string">{{ lang._('Interface') }}</th>
                 <th data-column-id="address" data-identifier="true" data-type="string" data-formatter="overflowformatter">{{ lang._('IP Address') }}</th>
                 <th data-column-id="hwaddr" data-type="string" data-formatter="macformatter" data-width="9em">{{ lang._('MAC Address') }}</th>
-                <th data-column-id="valid_lifetime" data-type="integer">{{ lang._('Lifetime') }}</th>
+                <th data-column-id="client_id" data-type="string" data-width="9em">{{ lang._('Client ID') }}</th>
+                <th data-column-id="valid_lifetime" data-width="6em" data-type="integer">{{ lang._('Lifetime') }}</th>
                 <th data-column-id="expire" data-type="string" data-formatter="timestamp">{{ lang._('Expire') }}</th>
                 <th data-column-id="hostname" data-type="string" data-formatter="overflowformatter">{{ lang._('Hostname') }}</th>
+                <th data-column-id="state" data-type="string" data-formatter="state" data-width="8em">{{ lang._('State') }}</th>
                 <th data-column-id="is_reserved" data-type="string" data-formatter="reservation" data-width="6em">{{ lang._('Lease Type') }}</th>
                 <th data-column-id="commands" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
             </tr>
