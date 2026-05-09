@@ -151,6 +151,7 @@ if __name__ == '__main__':
             "valid_lifetime": lease.get("valid-lft", 0),
             "expire": lease.get("cltt", 0) + lease.get("valid-lft", 0),
             "hostname": lease.get("hostname", ""),
+            "state": lease.get("state", 0),
             "if": lease_if,
             "if_descr": "",
             "is_reserved": is_reserved

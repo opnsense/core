@@ -167,6 +167,7 @@
                 <th data-column-id="valid_lifetime" data-type="integer">{{ lang._('Lifetime') }}</th>
                 <th data-column-id="expire" data-type="string" data-formatter="timestamp">{{ lang._('Expire') }}</th>
                 <th data-column-id="hostname" data-type="string" data-formatter="overflowformatter">{{ lang._('Hostname') }}</th>
+                <th data-column-id="state" data-type="string" data-width="4em" data-visible="false">{{ lang._('State') }}</th>
                 <th data-column-id="is_reserved" data-type="string" data-formatter="reservation" data-width="6em">{{ lang._('Lease Type') }}</th>
                 <th data-column-id="commands" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
             </tr>
