@@ -1,0 +1,15 @@
+<model>
+    <mount>:memory:</mount>
+    <version>0.0.1</version>
+    <description>Interface assignments</description>
+    <items>
+        <interface type="ArrayField">
+            <descr type="DescriptionField"/>
+            <identifier type="TextField"/>
+            <if type="JsonKeyValueStoreField">
+                <ConfigdPopulateAct>interface list assign-opts</ConfigdPopulateAct>
+                <Required>Y</Required>
+            </if>
+        </interface>
+    </items>
+</model>
