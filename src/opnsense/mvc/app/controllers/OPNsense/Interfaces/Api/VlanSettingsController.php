@@ -100,6 +100,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
 
     public function setItemAction($uuid)
     {
+        Config::getInstance()->lock();
         $node = $this->getModel()->getNodeByReference('vlan.' . $uuid);
         $old_vlanif = $node != null ? (string)$node->vlanif : null;
         $new_vlanif = $this->generateVlanIfName($node);

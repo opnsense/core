@@ -67,6 +67,7 @@ class LaggSettingsController extends ApiMutableModelControllerBase
      */
     public function setItemAction($uuid)
     {
+        Config::getInstance()->lock();
         $node = $this->getModel()->getNodeByReference('lagg.' . $uuid);
         $overlay = null;
         if (!empty($node)) {

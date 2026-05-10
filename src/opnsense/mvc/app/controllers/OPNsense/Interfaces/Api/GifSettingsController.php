@@ -67,6 +67,7 @@ class GifSettingsController extends ApiMutableModelControllerBase
      */
     public function setItemAction($uuid)
     {
+        Config::getInstance()->lock();
         $node = $this->getModel()->getNodeByReference('gif.' . $uuid);
         $overlay = null;
         if (!empty($node)) {
