@@ -1,0 +1,39 @@
+<form>
+    <field>
+        <id>interface.icon</id>
+        <label>Status</label>
+        <type>hidden</type>
+        <grid_view>
+            <width>5em</width>
+            <formatter>statusformatter</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.descr</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>You may enter a description here for your reference (not parsed).</help>
+    </field>
+    <field>
+        <id>interface.optgroup</id>
+        <label>Type</label>
+        <type>hidden</type>
+        <grid_view>
+            <width>5em</width>
+        </grid_view>
+    </field>
+<!-- XXX: needs implementation
+    <field>
+        <id>interface.identifier</id>
+        <label>Identifier</label>
+        <type>text</type>
+        <help>Technical identifier of the interface, used by hasync for example.</help>
+    </field>
+-->
+    <field>
+        <id>interface.if</id>
+        <label>Interface</label>
+        <type>dropdown</type>
+        <help>Device name to connect this interface to.</help>
+    </field>
+</form>
