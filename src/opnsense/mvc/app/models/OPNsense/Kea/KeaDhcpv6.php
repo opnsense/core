@@ -278,6 +278,10 @@ class KeaDhcpv6 extends BaseModel
             $subnet_value = $subnet->subnet->getValue();
             $idassoc = [];
             if (!$subnet->dynamic_prefix->isEmpty()) {
+                // XXX: If a subnet has been created for an interface that does not exist anymore,
+                // or the interface was removed from the identity association but still exists in the KEA config,
+                // there won't be a prefix and KEA will fail to start. Ideally this should be validated
+                // in the core interface configuration, it cannot be validated inside KEA.
                 $idassoc = Idassoc::prefix($if);
                 $subnet_value = $idassoc['prefix_allocated'] ?? '';
             }
