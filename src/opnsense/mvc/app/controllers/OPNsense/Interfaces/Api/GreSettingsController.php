@@ -67,6 +67,7 @@ class GreSettingsController extends ApiMutableModelControllerBase
      */
     public function setItemAction($uuid)
     {
+        Config::getInstance()->lock();
         $node = $this->getModel()->getNodeByReference('gre.' . $uuid);
         $overlay = null;
         if (!empty($node)) {
