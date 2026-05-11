@@ -91,7 +91,7 @@ class KeaDhcpv4 extends BaseModel
             if (!$reservation->client_id->isEmpty() && !$reservation->hw_address->isEmpty()) {
                 $messages->appendMessage(new Message(gettext("Either a Client ID or a MAC address should be specified, but not both"), $key . ".hw_address"));
             } elseif ($reservation->client_id->isEmpty() && $reservation->hw_address->isEmpty()) {
-                $messages->appendMessage(new Message(gettext("Either a Client ID or a MAC address should be specified."), $key . ".hw_address"));
+                $messages->appendMessage(new Message(gettext("Either a client ID or a MAC address should be specified."), $key . ".hw_address"));
             }
         }
 
