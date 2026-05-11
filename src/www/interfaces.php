@@ -251,12 +251,11 @@ function validate_track6_idassoc6(&$pconfig, $if)
             if ($track6_prefix_id < 0 || $track6_prefix_id >= $ipv6_num_prefix_ids) {
                 $input_errors[] = gettext("You specified an IPv6 prefix ID that is out of range.");
             }
-            $assoc_pd_ref = interface_dhcpv6_id($pconfig["{$pconfig['type6']}-interface"]);
-            if (!empty($pconfig["{$pconfig['type6']}_assoc_pd"]) && ctype_digit($pconfig["{$pconfig['type6']}_assoc_pd"])) {
-                $assoc_pd_ref = $pconfig["{$pconfig['type6']}_assoc_pd"];
-            }
+            $default_id = interface_dhcpv6_id($pconfig["{$pconfig['type6']}-interface"]);
+            $assoc_pd_ref = !empty($pconfig["{$pconfig['type6']}_assoc_pd"]) && ctype_digit($pconfig["{$pconfig['type6']}_assoc_pd"]) ?
+                $pconfig["{$pconfig['type6']}_assoc_pd"] : $default_id;
             foreach (link_interface_to_track6($pconfig["{$pconfig['type6']}-interface"]) as $trackif => $trackcfg) {
-                $assoc_pd_link = !empty($trackcfg['track6_assoc_pd']) ? $trackcfg['track6_assoc_pd'] : '0';
+                $assoc_pd_link = !empty($trackcfg['track6_assoc_pd']) ? $trackcfg['track6_assoc_pd'] : $default_id;
                 if ($trackif != $if && $assoc_pd_ref == $assoc_pd_ref && $trackcfg['track6-prefix-id'] == $track6_prefix_id) {
                     $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
                     break;
@@ -264,7 +263,7 @@ function validate_track6_idassoc6(&$pconfig, $if)
             }
             if (isset($config['interfaces'][$pconfig["{$pconfig['type6']}-interface"]]['dhcp6-prefix-id'])) {
                 $assoc_pd_parent = !empty($config['interfaces'][$pconfig["{$pconfig['type6']}-interface"]]['dhcp6_assoc_pd']) ?
-                    $config['interfaces'][$pconfig["{$pconfig['type6']}-interface"]]['dhcp6_assoc_pd'] : '0';
+                    $config['interfaces'][$pconfig["{$pconfig['type6']}-interface"]]['dhcp6_assoc_pd'] : $default_id;
                 if ($assoc_pd_ref == $assoc_pd_parent && $config['interfaces'][$pconfig["{$pconfig['type6']}-interface"]]['dhcp6-prefix-id'] == $track6_prefix_id) {
                     $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
                 }
@@ -763,12 +762,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                                 $input_errors[] = gettext("You specified an IPv6 prefix ID that is out of range.");
                             }
                         }
-                        $assoc_pd_ref = interface_dhcpv6_id($if);
-                        if (!empty($pconfig['dhcp6_assoc_pd']) && ctype_digit($pconfig['dhcp6_assoc_pd'])) {
-                            $assoc_pd_ref = $pconfig['dhcp6_assoc_pd'];
-                        }
+                        $default_id = interface_dhcpv6_id($if);
+                        $assoc_pd_ref = !empty($pconfig['dhcp6_assoc_pd']) && ctype_digit($pconfig['dhcp6_assoc_pd']) ?
+                            $pconfig['dhcp6_assoc_pd'] : $default_id;
                         foreach (link_interface_to_track6($pconfig['track6-interface']) as $trackif => $trackcfg) {
-                            $assoc_pd_link = !empty($trackcfg['track6_assoc_pd']) ? $trackcfg['track6_assoc_pd'] : '0';
+                            $assoc_pd_link = !empty($trackcfg['track6_assoc_pd']) ? $trackcfg['track6_assoc_pd'] : $default_id;
                             if ($assoc_pd_ref == $assoc_pd_link && $trackcfg['track6-prefix-id'] == $dhcp6_prefix_id) {
                                 $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
                                 break;
