@@ -203,6 +203,8 @@ class KeaDhcpv4 extends BaseModel
                 }
                 if (!$reservation->hw_address->isEmpty()) {
                     $res['hw-address'] = str_replace('-', ':', $reservation->hw_address->getValue());
+                } elseif (!$reservation->client_id->isEmpty()) {
+                    $res['client-id'] = $reservation->client_id->getValue();
                 }
 
                 // Add DHCP option-data elements for reservations
