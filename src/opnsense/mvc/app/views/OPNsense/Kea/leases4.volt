@@ -106,7 +106,7 @@
                         let searchValue = '';
 
                         if (row.is_reserved.includes('client-id')) {
-                            searchValue = row['client-id'] || '';
+                            searchValue = row.client_id|| '';
                         } else if (row.is_reserved.includes('hwaddr')) {
                             searchValue = row.hwaddr || '';
                         }
@@ -114,7 +114,7 @@
                         const addUrlParams = {
                             ip_address: row.address || '',
                             hw_address: row.hwaddr || '',
-                            client_id: row['client-id'] || '',
+                            client_id: row.client_id || '',
                             hostname: row.hostname || ''
                         };
 
