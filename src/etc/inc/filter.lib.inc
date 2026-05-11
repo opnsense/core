@@ -184,13 +184,14 @@ function filter_core_get_default_nat_outbound_networks()
     // Add openvpn networks
     foreach (['server', 'client'] as $section) {
         if (openvpn_legacy($section)) {
-            foreach ($config['openvpn']["openvpn-{$section}"] as $ovpn) {
+            foreach (config_read_array('openvpn', "openvpn-{$section}", false) as $ovpn) {
                 if (!isset($ovpn['disable']) && !empty($ovpn['tunnel_network'])) {
                     $result[] = $ovpn['tunnel_network'];
                 }
             }
         }
     }
+
     // Add ipsec network pool if specified
     if (!empty($config['ipsec']['client']['pool_address']) && !empty($config['ipsec']['client']['pool_netbits'])) {
         $result[] = "{$config['ipsec']['client']['pool_address']}/{$config['ipsec']['client']['pool_netbits']}";
