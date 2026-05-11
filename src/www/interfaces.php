@@ -2413,7 +2413,7 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr class="dhcpv6_basic">
-                          <td><a id="help_for_dhcp6_assoc_pd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Optional IAID') ?></td>
+                          <td><a id="help_for_dhcp6_assoc_pd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Optional prefix IAID') ?></td>
                           <td>
                             <input name="dhcp6_assoc_pd" type="text" id="dhcp6_assoc_pd" placeholder="<?= html_safe(interface_dhcpv6_id($if)) ?>" value="<?= html_safe($pconfig['dhcp6_assoc_pd']) ?>" />
                             <div class="hidden" data-for="help_for_dhcp6_assoc_pd">
@@ -2651,7 +2651,7 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
-                          <td><a id="help_for_idassoc6_assoc_pd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Optional IAID') ?></td>
+                          <td><a id="help_for_idassoc6_assoc_pd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Optional prefix IAID') ?></td>
                           <td>
                             <input name="idassoc6_assoc_pd" type="text" id="idassoc6_assoc_pd" placeholder="<?= html_safe(interface_dhcpv6_id($pconfig['idassoc6-interface'])) ?>" value="<?= html_safe($pconfig['idassoc6_assoc_pd']) ?>" />
                             <div class="hidden" data-for="help_for_idassoc6_assoc_pd">
@@ -2716,7 +2716,7 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
-                          <td><a id="help_for_track6_assoc_pd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Optional IAID') ?></td>
+                          <td><a id="help_for_track6_assoc_pd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Optional prefix IAID') ?></td>
                           <td>
                             <input name="track6_assoc_pd" type="text" id="track6_assoc_pd" placeholder="<?= html_safe(interface_dhcpv6_id($pconfig['track6-interface'])) ?>" value="<?= html_safe($pconfig['track6_assoc_pd']) ?>" />
                             <div class="hidden" data-for="help_for_track6_assoc_pd">
