@@ -103,12 +103,22 @@
                     },
                     "commands": function (column, row) {
                         const baseUrl = `/ui/kea/dhcp/v4#reservations`;
-                        const searchUrl = `${baseUrl}&search=${encodeURIComponent(row.hwaddr || '')}`;
+                        let searchValue = '';
+
+                        if (row.is_reserved.includes('client_id')) {
+                            searchValue = row.client_id || '';
+                        } else if (row.is_reserved.includes('hwaddr')) {
+                            searchValue = row.hwaddr || '';
+                        }
+
                         const addUrlParams = {
                             ip_address: row.address || '',
                             hw_address: row.hwaddr || '',
+                            client_id: row.client_id || '',
                             hostname: row.hostname || ''
                         };
+
+                        const searchUrl = `${baseUrl}&search=${encodeURIComponent(searchValue)}`;
                         const addUrl = `${baseUrl}?${new URLSearchParams(addUrlParams)}`;
 
                         let reservationBtn;

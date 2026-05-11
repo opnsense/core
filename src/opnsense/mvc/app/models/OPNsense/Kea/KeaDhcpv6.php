@@ -64,9 +64,9 @@ class KeaDhcpv6 extends BaseModel
                 $messages->appendMessage(new Message(gettext("Either an IP address or a Prefix should be specified."), $key . ".ip_address"));
             }
             if (!$reservation->duid->isEmpty() && !$reservation->hw_address->isEmpty()) {
-                $messages->appendMessage(new Message(gettext("Either a DUID or an Ether address should be specified, but not both"), $key . ".duid"));
+                $messages->appendMessage(new Message(gettext("Either a DUID or an MAC address should be specified, but not both"), $key . ".duid"));
             } elseif ($reservation->duid->isEmpty() && $reservation->hw_address->isEmpty()) {
-                $messages->appendMessage(new Message(gettext("Either a DUID or an Ether address should be specified."), $key . ".duid"));
+                $messages->appendMessage(new Message(gettext("Either a DUID or an MAC address should be specified."), $key . ".duid"));
             }
         }
         // validate changed subnets
