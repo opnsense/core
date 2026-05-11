@@ -129,7 +129,7 @@ class IPFW(object):
                     break
             if new_rule_id != -1:
                 rule_number = new_rule_id
-        
+
         if rule_number is not None:
             for address in a_missing:
                 subprocess.run(['/sbin/ipfw', 'add', str(rule_number), 'count', 'ip', 'from', address, 'to', 'any'],
@@ -157,6 +157,6 @@ class IPFW(object):
 
         if address in acc_info:
             subprocess.run(['/sbin/ipfw', 'delete', str(acc_info[address]['rule'])], capture_output=True)
-        
+
         # no-op if address not in table
         subprocess.run(['/sbin/ipfw', 'table', str(table_number), 'del', address], capture_output=True)
