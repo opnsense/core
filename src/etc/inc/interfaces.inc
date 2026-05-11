@@ -982,7 +982,7 @@ function interface_ppps_hardware($device)
 {
     $devices = [$device];
 
-    foreach (config_read_array('ppps', 'ppp') as $ppp) {
+    foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
         if ($device == $ppp['if']) {
             $devices = [];
             foreach (explode(',', $ppp['ports']) as $port) {
@@ -3531,7 +3531,7 @@ function interface_parent_devices($device, $as_interface = false)
 
     if (strstr($device, 'vlan') || strstr($device, 'qinq')) {
         /* XXX maybe if we have a qinq type return both parents? */
-        foreach (config_read_array('vlans', 'vlan') as $vlan) {
+        foreach (config_read_array('vlans', 'vlan', false) as $vlan) {
             if ($device == $vlan['vlanif']) {
                 $parents[] = $vlan['if'];
                 break;
@@ -3548,7 +3548,7 @@ function interface_parent_devices($device, $as_interface = false)
             }
         }
     } elseif (strstr($device, 'lagg')) {
-        foreach (config_read_array('laggs', 'lagg') as $lagg) {
+        foreach (config_read_array('laggs', 'lagg', false) as $lagg) {
             if ($device == $lagg['laggif']) {
                 foreach (explode(',', $lagg['members']) as $member) {
                     $parents[] = $member;
@@ -3594,7 +3594,7 @@ function link_interface_to_track6($wanif, $update = false)
         return $list;
     }
 
-    $wancfg = config_read_array('interfaces', $wanif);
+    $wancfg = config_read_array('interfaces', $wanif, false);
 
     if (!isset($wancfg['enable']) || empty($wancfg['ipaddrv6'])) {
         return $list;
@@ -4025,7 +4025,7 @@ function interfaces_addresses($interfaces, $as_subnet = false, $ifconfig_details
 
 function interfaces_has_prefix_only($interface)
 {
-    $interfaces_a = config_read_array('interfaces');
+    $interfaces_a = config_read_array('interfaces', false);
     $ret = false;
 
     switch ($interfaces_a[$interface]['ipaddrv6'] ?? 'none') {
