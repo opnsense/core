@@ -228,6 +228,9 @@
                         <check001>
                             <reference>duid.check001</reference>
                         </check001>
+                        <check002>
+                            <reference>hw_address.check001</reference>
+                        </check002>
                     </Constraints>
                     <Required>Y</Required>
                 </subnet>

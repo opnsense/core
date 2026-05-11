@@ -89,9 +89,9 @@ class KeaDhcpv4 extends BaseModel
                 $messages->appendMessage(new Message(gettext("Address not in specified subnet"), $key . ".ip_address"));
             }
             if (!$reservation->client_id->isEmpty() && !$reservation->hw_address->isEmpty()) {
-                $messages->appendMessage(new Message(gettext("Either a Client ID or an Ether address should be specified, but not both"), $key . ".hw_address"));
+                $messages->appendMessage(new Message(gettext("Either a Client ID or a MAC address should be specified, but not both"), $key . ".hw_address"));
             } elseif ($reservation->client_id->isEmpty() && $reservation->hw_address->isEmpty()) {
-                $messages->appendMessage(new Message(gettext("Either a Client ID or an Ether address should be specified."), $key . ".hw_address"));
+                $messages->appendMessage(new Message(gettext("Either a Client ID or a MAC address should be specified."), $key . ".hw_address"));
             }
         }
 
