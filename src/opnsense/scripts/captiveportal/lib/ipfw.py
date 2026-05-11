@@ -1,5 +1,6 @@
 """
-    Copyright (c) 2025 Deciso B.V.
+    Copyright (c) 2025-2026 Deciso B.V.
+    Copyright (c) 2015-2019 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -24,18 +25,33 @@
     POSSIBILITY OF SUCH DAMAGE.
 
 """
-import os
 import subprocess
-import ipaddress
 
 class IPFW(object):
     @staticmethod
-    def _is_ipv6(address):
-        try:
-            ipaddress.IPv6Address(address)
-            return True
-        except (ValueError, AttributeError):
-            return False
+    def list_table(table_number):
+        """ list ipfw table
+        :param table_number: ipfw table number
+        :return: dict (key value address + rule_number)
+        """
+        result = dict()
+        sp = subprocess.run(['/sbin/ipfw', 'table', str(table_number), 'list'], capture_output=True, text=True)
+        for line in sp.stdout.split('\n'):
+            if line.split(' ')[0].strip() != "":
+                parts = line.split()
+                address = parts[0]
+                rulenum = parts[1] if len(parts) > 1 else None
+                # process /32 and /128 nets as single addresses to align better with the rule syntax
+                # and local administration.
+                prefix = address.split('/')[-1]
+                if prefix == '32' or prefix == '128':
+                    # single IP address
+                    result[address.split('/')[0]] = rulenum
+                elif not line.startswith('-'):
+                    # network
+                    result[address] = rulenum
+
+        return result
 
     @staticmethod
     def list_accounting_info():
@@ -75,43 +91,72 @@ class IPFW(object):
         return result
 
     @staticmethod
-    def add_accounting(address):
-        """ add ip address for accounting
+    def add_accounting(table_number, addresses):
+        """ add ip addresses for accounting
+        this function assumes all addresses passed belong to the same client and will
+        therefore assign the same rule number to these addresses.
         :param address: ip address
         :return: added or known rule number
         """
-        # search for unused rule number
+        ipfw_tbl = IPFW.list_table(table_number)
         acc_info = IPFW.list_accounting_info()
-        if address not in acc_info:
+
+        a_present = set(addresses) & acc_info.keys()
+        a_missing = set(addresses) - acc_info.keys()
+        present_rules = sorted([(acc_info[address]['rule'], address) for address in a_present])
+        first = present_rules[0] if present_rules else None
+        rule_number = None
+
+        if first is not None:
+            # Re-use this rule number, check if the rest use this rule number.
+            # If not, delete those and add to the missing set to sync
+            rule_number = first[0]
+            rest = present_rules[1:]
+            for r_rulenr, addr in rest:
+                if r_rulenr != rule_number:
+                    IPFW.del_accounting(table_number, addr)
+                    a_missing.add(addr)
+        else:
+            # find unused rule number
             rule_ids = list()
             for ip_address in acc_info:
                 if acc_info[ip_address]['rule'] not in rule_ids:
                     rule_ids.append(acc_info[ip_address]['rule'])
-
             new_rule_id = -1
             for ruleId in range(30000, 50000):
                 if ruleId not in rule_ids:
                     new_rule_id = ruleId
                     break
-
-            # add accounting rule
             if new_rule_id != -1:
-                proto = 'ip6' if IPFW._is_ipv6(address) else 'ip'
-                subprocess.run(['/sbin/ipfw', 'add', str(new_rule_id), 'count', proto, 'from', address, 'to', 'any'],
-                               capture_output=True)
-                subprocess.run(['/sbin/ipfw', 'add', str(new_rule_id), 'count', proto, 'from', 'any', 'to', address],
-                               capture_output=True)
+                rule_number = new_rule_id
 
-                return new_rule_id
-        else:
-            return acc_info[address]['rule']
+        if rule_number is not None:
+            for address in a_missing:
+                subprocess.run(['/sbin/ipfw', 'add', str(rule_number), 'count', 'ip', 'from', address, 'to', 'any'],
+                            capture_output=True)
+                subprocess.run(['/sbin/ipfw', 'add', str(rule_number), 'count', 'ip', 'from', 'any', 'to', address],
+                            capture_output=True)
+
+                if address not in ipfw_tbl:
+                    subprocess.run(['/sbin/ipfw', 'table', str(table_number), 'add', address, str(rule_number)], capture_output=True)
+                elif str(ipfw_tbl[address] != str(rule_number)):
+                    # update table when accounting rule mismatches table entry
+                    subprocess.run(['/sbin/ipfw', 'table', str(table_number), 'del', address], capture_output=True)
+                    subprocess.run(['/sbin/ipfw', 'table', str(table_number), 'add', address, str(rule_number)], capture_output=True)
+            if len(a_missing) > 0:
+                # end of accounting block lives at rule number 50000
+                subprocess.run(['/sbin/ipfw', 'add', str(rule_number), 'skipto', '60000', 'ip', 'from', 'any', 'to', 'any'], capture_output=True)
 
     @staticmethod
-    def del_accounting(address):
+    def del_accounting(table_number, address):
         """ remove ip address from accounting rules
         :param address: ip address
         :return: None
         """
         acc_info = IPFW.list_accounting_info()
+
         if address in acc_info:
             subprocess.run(['/sbin/ipfw', 'delete', str(acc_info[address]['rule'])], capture_output=True)
+
+        # no-op if address not in table
+        subprocess.run(['/sbin/ipfw', 'table', str(table_number), 'del', address], capture_output=True)
