@@ -3019,9 +3019,9 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $default_id)
                 /* for backwards compatibility always emit a default PD request */
                 $assoc_pd[$default_id] = '';
             }
-        }
 
-        ksort($assoc_pd, SORT_NUMERIC);
+            ksort($assoc_pd, SORT_NUMERIC);
+        }
 
         $dhcp6cconf .= "interface {$wanif} {\n";
 
