@@ -126,13 +126,11 @@ EOD;
             echo "\n";
         }
 
-        if (isset($config['laggs']['lagg'][0])) {
-            foreach ($config['laggs']['lagg'] as $lagg) {
-                $iflist_lagg[$lagg['laggif']] = $iflist_all[$lagg['laggif']] = [
-                    'descr' => "Link aggregation, member interfaces {$lagg['members']}",
-                    'mac' => '00:00:00:00:00:00',
-                ];
-            }
+        foreach (config_read_array('laggs', 'lagg', false) as $lagg) {
+            $iflist_lagg[$lagg['laggif']] = $iflist_all[$lagg['laggif']] = [
+                'descr' => "Link aggregation, member interfaces {$lagg['members']}",
+                'mac' => '00:00:00:00:00:00',
+            ];
         }
 
         echo <<<EOD
@@ -149,13 +147,11 @@ EOD;
             vlan_setup(array_merge($iflist, $iflist_lagg), $fp);
         }
 
-        if (isset($config['vlans']['vlan'][0])) {
-            foreach ($config['vlans']['vlan'] as $vlan) {
-                $iflist_all[$vlan['vlanif']] = [
-                    'descr' => "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}",
-                    'mac' => '00:00:00:00:00:00',
-                ];
-            }
+        foreach (confgig_read_array('vlans', 'vlan', false) as $vlan) {
+            $iflist_all[$vlan['vlanif']] = [
+                'descr' => "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}",
+                'mac' => '00:00:00:00:00:00',
+            ];
         }
     }
 
