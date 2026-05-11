@@ -212,14 +212,16 @@ class CPBackgroundProcess(object):
 
                 to_add = (session_ips - registered_addresses_pf) | (session_ips - registered_addresses_ipfw)
                 if session_ips and to_add:
-                    self._add_client(zoneid, to_add)
+                    # intentionally add the whole set of IPs so the accounting rules in ipfw sync up properly,
+                    # but only do so if there is a change (to_add is not empty)
+                    self._add_client(zoneid, session_ips)
 
             # remove any address from pf that isn't expected
             expected_addresses = set()
             for db_client in expected_clients:
                 expected_addresses.update(self.db.list_session_ips(zoneid, db_client['sessionId']))
 
-            for registered_address in registered_addresses_pf | registered_addresses_ipfw:
+            for registered_address in registered_addresses_pf:
                 if registered_address not in expected_addresses:
                     self._remove_client(zoneid, registered_address)
 

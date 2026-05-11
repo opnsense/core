@@ -103,7 +103,7 @@ class IPFW(object):
 
         a_present = set(addresses) & acc_info.keys()
         a_missing = set(addresses) - acc_info.keys()
-        present_rules = [(acc_info[address]['rule'], address) for address in sorted(a_present)]
+        present_rules = sorted([(acc_info[address]['rule'], address) for address in a_present])
         first = present_rules[0] if present_rules else None
         rule_number = None
 
@@ -144,7 +144,7 @@ class IPFW(object):
                     subprocess.run(['/sbin/ipfw', 'table', str(table_number), 'del', address], capture_output=True)
                     subprocess.run(['/sbin/ipfw', 'table', str(table_number), 'add', address, str(rule_number)], capture_output=True)
             if len(a_missing) > 0:
-                #end of accounting block lives at rule number 50000
+                # end of accounting block lives at rule number 50000
                 subprocess.run(['/sbin/ipfw', 'add', str(rule_number), 'skipto', '60000', 'ip', 'from', 'any', 'to', 'any'], capture_output=True)
 
     @staticmethod
