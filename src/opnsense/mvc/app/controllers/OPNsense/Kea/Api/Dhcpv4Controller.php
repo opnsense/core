@@ -36,6 +36,7 @@ class Dhcpv4Controller extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'dhcpv4';
     protected static $internalModelClass = 'OPNsense\Kea\KeaDhcpv4';
+    protected static $internalModelUseSafeDelete = true;
 
     /**
      * @inheritdoc
