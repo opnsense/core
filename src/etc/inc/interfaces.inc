@@ -2890,26 +2890,28 @@ function interface_dhcpv6_configure($interface, $wancfg)
     }
 }
 
-function interface_dhcpv6_id($interface)
+function interface_dhcpv6_id($interface): string
 {
-    global $config;
-
-    /* configuration default */
+    $ifkeys = array_keys(config_read_array('interfaces', false));
     $id = 0;
 
-    if (empty($config['interfaces'])) {
-        return $id;
-    }
-
-    /* detect unique index */
-    foreach (array_keys($config['interfaces']) as $key) {
+    /* XXX detect unique index
+     *
+     * The index is unique but not stable.  This needs a better
+     * approach but there's no alid idea yet beyond "please do
+     * not break existing ID scheme".
+     * Making it overridable may be a way forward for custom
+     * setup and multi-pd use but we will have to see.
+     */
+    foreach ($ifkeys as $key) {
         if ($key == $interface) {
-            break;
+            return $id;
         }
+
         $id += 1;
     }
 
-    return $id;
+    return '';
 }
 
 function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
@@ -2919,7 +2921,7 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
     }
 
     $settings = new OPNsense\Interfaces\Settings();
-    $id = interface_dhcpv6_id($interface);
+    $default_id = interface_dhcpv6_id($interface);
     $device = $wancfg['if'];
 
     $dhcp6cconf = "# generated for {$interface} in {$wancfg['ipaddrv6']} mode\n";
@@ -2941,9 +2943,9 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
             log_msg("DHCP6 config file override does not exist: '{$dhcp6cfile}'", LOG_ERR);
         }
     } elseif (!empty($wancfg['adv_dhcp6_config_advanced'])) {
-        $dhcp6cconf .= DHCP6_Config_File_Advanced($interface, $wancfg, $device, $id);
+        $dhcp6cconf .= DHCP6_Config_File_Advanced($interface, $wancfg, $device, $default_id);
     } else {
-        $dhcp6cconf .= DHCP6_Config_File_Basic($interface, $wancfg, $device, $id);
+        $dhcp6cconf .= DHCP6_Config_File_Basic($interface, $wancfg, $device, $default_id);
     }
 
     if (!$cleanup) {
