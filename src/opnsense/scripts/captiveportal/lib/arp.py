@@ -88,7 +88,9 @@ class ARP(object):
                 entry["first_seen"] = datetime.strptime(row[4], "%Y-%m-%d %H:%M:%S")
                 entry["last_seen"]  = datetime.strptime(row[5], "%Y-%m-%d %H:%M:%S")
 
-            self._table[ip] = entry
+            # only first one is relevant
+            if not ip in self._table:
+                self._table[ip] = entry
 
     def get_by_ipaddress(self, address):
         return self._table.get(address, None)
