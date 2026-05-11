@@ -105,8 +105,8 @@
                         const baseUrl = `/ui/kea/dhcp/v4#reservations`;
                         let searchValue = '';
 
-                        if (row.is_reserved.includes('client-id')) {
-                            searchValue = row.client_id|| '';
+                        if (row.is_reserved.includes('client_id')) {
+                            searchValue = row.client_id || '';
                         } else if (row.is_reserved.includes('hwaddr')) {
                             searchValue = row.hwaddr || '';
                         }
