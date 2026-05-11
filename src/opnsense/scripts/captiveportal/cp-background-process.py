@@ -64,13 +64,15 @@ class CPBackgroundProcess(object):
         """
         return self._conf_zone_info.keys()
 
-    def _add_client(self, zoneid, ip):
-        PF.add_to_table(zoneid, ip)
-        IPFW.add_accounting(ip)
+    def _add_client(self, zoneid, ips):
+        # Add a single client, one or more ips
+        for ip in ips:
+            PF.add_to_table(zoneid, ip)
+        IPFW.add_accounting(zoneid, ips)
 
     def _remove_client(self, zoneid, ip):
         PF.remove_from_table(zoneid, ip)
-        IPFW.del_accounting(ip)
+        IPFW.del_accounting(zoneid, ip)
 
     def initialize_fixed(self):
         """ initialize fixed ip / hosts per zone
@@ -186,11 +188,11 @@ class CPBackgroundProcess(object):
                 if db_client['authenticated_via'] != '---ip---':
                     current_ips = self.arp.get_all_addresses_by_mac(db_client['macAddress'])
                     if len(current_ips) > 0 and db_client['ipAddress'] != current_ips[0]:
-                        if db_client['ipAddress'] != '':
-                            # remove old ip
+                        if not allow_roaming and db_client['ipAddress'] != '':
+                            # Remove old ip, but only if non-roaming, otherwise, we're state killing traffic from a different IP which may be valid.
+                            # Unused addresses are cleared through arp/hostwatch automatically when roaming.
                             self._remove_client(zoneid, db_client['ipAddress'])
                         self.db.update_client_ip(zoneid, db_client['sessionId'], current_ips[0])
-                        self._add_client(zoneid, current_ips[0])
                         db_client['ipAddress'] = current_ips[0]
                 else:
                     # if authenticated via 'allowed addresses', check if we should update the mac address (for display purposes)
@@ -205,11 +207,14 @@ class CPBackgroundProcess(object):
                 else:
                     # may have been updated if primary IP changed
                     session_ips = {db_client['ipAddress']}
+                # discard empty IPs (authenticated via MAC, but no IP known)
+                session_ips.discard("")
 
                 to_add = (session_ips - registered_addresses_pf) | (session_ips - registered_addresses_ipfw)
                 if session_ips and to_add:
-                    for ip in to_add:
-                        self._add_client(zoneid, ip)
+                    # intentionally add the whole set of IPs so the accounting rules in ipfw sync up properly,
+                    # but only do so if there is a change (to_add is not empty)
+                    self._add_client(zoneid, session_ips)
 
             # remove any address from pf that isn't expected
             expected_addresses = set()

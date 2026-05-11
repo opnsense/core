@@ -246,6 +246,9 @@
                         <check001>
                             <reference>hw_address.check001</reference>
                         </check001>
+                        <check002>
+                            <reference>client_id.check001</reference>
+                        </check002>
                     </Constraints>
                     <Required>Y</Required>
                 </subnet>
@@ -260,7 +263,6 @@
                     </Constraints>
                 </ip_address>
                 <hw_address type="MacAddressField">
-                    <Required>Y</Required>
                     <Constraints>
                         <check001>
                             <ValidationMessage>Duplicate entry exists.</ValidationMessage>
@@ -272,6 +274,19 @@
                         </check001>
                     </Constraints>
                 </hw_address>
+                <client_id type="TextField">
+                    <Mask>/^(?:[0-9A-Fa-f]{2}(?::[0-9A-Fa-f]{2})+)$/</Mask>
+                    <ValidationMessage>Value must be a colon-separated hexadecimal sequence (e.g., 01:02:f3).</ValidationMessage>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Duplicate entry exists.</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                            <addFields>
+                                <field1>subnet</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </client_id>
                 <hostname type="HostnameField">
                     <IsDNSName>Y</IsDNSName>
                 </hostname>
