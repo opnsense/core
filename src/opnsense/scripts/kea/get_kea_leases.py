@@ -52,9 +52,11 @@ def get_reservation_keys(record, proto):
     subnet_id = record.get('subnet-id')
 
     if subnet_id is not None:
+        # Reservation returns hw-address and duid like this: "01:48:90"...
         hwaddr = record.get('hw-address', '').lower()
         duid = record.get('duid', '').lower()
-        client_id = record.get('client-id', '').lower()
+        # ...but client_id like this: "014890"
+        client_id = record.get('client-id', '').replace(':', '').lower()
 
         if hwaddr:
             keys.append((subnet_id, 'hwaddr', hwaddr))
@@ -88,7 +90,7 @@ def build_reserved_matches(config, leases, proto, dhcp_key, config_key):
             for reservation in subnet.get('reservations', []):
                 hwaddr = reservation.get('hw-address', '').lower()
                 duid = reservation.get('duid', '').lower()
-                client_id = reservation.get('client-id', '').lower()
+                client_id = reservation.get('client-id', '').replace(':', '').lower()
 
                 if hwaddr and (subnet_id, 'hwaddr', hwaddr) in wanted:
                     matches[(subnet_id, 'hwaddr', hwaddr)] = 'hwaddr'

@@ -88,6 +88,11 @@ class KeaDhcpv4 extends BaseModel
             if (!Util::isIPInCIDR($reservation->ip_address->getValue(), $subnet)) {
                 $messages->appendMessage(new Message(gettext("Address not in specified subnet"), $key . ".ip_address"));
             }
+            if (!$reservation->client_id->isEmpty() && !$reservation->hw_address->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("Either a client ID or a MAC address should be specified, but not both"), $key . ".hw_address"));
+            } elseif ($reservation->client_id->isEmpty() && $reservation->hw_address->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("Either a client ID or a MAC address should be specified."), $key . ".hw_address"));
+            }
         }
 
         return $messages;
@@ -198,6 +203,8 @@ class KeaDhcpv4 extends BaseModel
                 }
                 if (!$reservation->hw_address->isEmpty()) {
                     $res['hw-address'] = str_replace('-', ':', $reservation->hw_address->getValue());
+                } elseif (!$reservation->client_id->isEmpty()) {
+                    $res['client-id'] = $reservation->client_id->getValue();
                 }
 
                 // Add DHCP option-data elements for reservations
