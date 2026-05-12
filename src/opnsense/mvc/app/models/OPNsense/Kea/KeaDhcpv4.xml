@@ -23,6 +23,9 @@
                 <Default>4000</Default>
                 <Required>Y</Required>
             </valid_lifetime>
+            <decline_probation_period type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </decline_probation_period>
             <fwrules type="BooleanField">
                 <Required>Y</Required>
                 <Default>1</Default>

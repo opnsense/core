@@ -23,6 +23,9 @@
                 <Default>4000</Default>
                 <Required>Y</Required>
             </valid_lifetime>
+            <decline_probation_period type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </decline_probation_period>
             <mac_sources type="OptionField">
                 <Default>ipv6-link-local</Default>
                 <Required>Y</Required>
