@@ -39,15 +39,14 @@ if (is_install_media()) {
      */
     $root = null;
 
-    if (isset($config['system']['user'])) {
-        foreach ($config['system']['user'] as $user) {
-            if ($user['name'] == 'installer') {
-                $root = null;
-                break;
-            }
-            if ($user['uid'] == 0) {
-                $root = $user;
-            }
+    foreach (config_read_array('system', 'user', false) as $user) {
+        if ($user['name'] == 'installer') {
+            $root = null;
+            break;
+        }
+
+        if ($user['uid'] == 0) {
+            $root = $user;
         }
     }
 
