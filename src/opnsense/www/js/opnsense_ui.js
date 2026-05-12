@@ -102,11 +102,14 @@ function saveFormToEndpoint(url, formid, callback_ok, disable_dialog, callback_f
                     // execute callback function
                     callback_fail(data);
                 }
-            } else if (callback_ok !== undefined) {
+            } else {
                 // trigger base apply button alert
                 $(document).trigger('settings-changed');
-                // execute callback function
-                callback_ok(data);
+
+                if (callback_ok !== undefined) {
+                    // execute callback function
+                    callback_ok(data);
+                }
             }
         } else if (callback_fail !== undefined) {
             callback_fail(data);
