@@ -156,44 +156,6 @@ function captiveportal_firewall($fw)
                         ]
                     );
 
-                    // Restrict authenticated clients to proxy only (IPv4)
-                    $fw->registerForwardRule(
-                        2,
-                        [
-                            'interface' => $intf,
-                            'nordr' => false,
-                            'ipprotocol' => 'inet',
-                            'protocol' => 'tcp',
-                            'from' => "<__captiveportal_zone_{$zoneid}>",
-                            'to' => '(self)',
-                            'to_port' => $to_port,
-                            'target' => '127.0.0.1',
-                            'localport' => $rdr_port,
-                            'natreflection' => 'disable',
-                            'descr' => "Redirect to Captive Portal (zone {$zoneid})",
-                            '#ref' => "ui/captiveportal#edit={$uuid}"
-                        ]
-                    );
-
-                    // Restrict authenticated clients to proxy only (IPv6)
-                    $fw->registerForwardRule(
-                        2,
-                        [
-                            'interface' => $intf,
-                            'nordr' => false,
-                            'ipprotocol' => 'inet6',
-                            'protocol' => 'tcp',
-                            'from' => "<__captiveportal_zone_{$zoneid}>",
-                            'to' => '(self)',
-                            'to_port' => $to_port,
-                            'target' => $intf . 'ip',
-                            'localport' => $rdr_port,
-                            'natreflection' => 'disable',
-                            'descr' => "Redirect to Captive Portal (zone {$zoneid})",
-                            '#ref' => "ui/captiveportal#edit={$uuid}"
-                        ]
-                    );
-
                     $fw->registerFilterRule(
                         2,
                         [
