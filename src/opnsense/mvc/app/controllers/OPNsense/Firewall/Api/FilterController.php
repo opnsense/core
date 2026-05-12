@@ -130,6 +130,8 @@ class FilterController extends FilterBaseController
                 $is_if = true; // ALL interfaces or floating always matches
             } elseif (!empty($record['interfacenot'])) {
                 $is_if = !array_intersect($rule_interfaces, $interfaces ?? []);
+            } elseif (empty($interfaces) && count($rule_interfaces) > 1) {
+                $is_if = true; // floating, multiple interfaces selected
             } else {
                 $is_if = array_intersect($rule_interfaces, $interfaces ?? []);
             }
