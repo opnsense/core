@@ -181,8 +181,7 @@
             <descr type="TextField"/>
         </domainoverrides>
         <dhcp_tags type="ArrayField">
-            <tag type="TextField">
-                <Mask>/^([0-9a-zA-Z$]){1,1024}$/u</Mask>
+            <tag type="DescriptionField">
                 <Constraints>
                     <check001>
                         <type>UniqueConstraint</type>

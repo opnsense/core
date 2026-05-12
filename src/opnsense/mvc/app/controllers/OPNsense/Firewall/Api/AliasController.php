@@ -200,28 +200,30 @@ class AliasController extends ApiMutableModelControllerBase
 
     /**
      * Delete alias by uuid, save contents to tmp for removal on apply
-     * @param string $uuid internal id
+     * @param string $uuids internal ids
      * @return array save status
      * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      * @throws \OPNsense\Base\UserException when unable to delete
      */
-    public function delItemAction($uuid)
+    public function delItemAction($uuids)
     {
         Config::getInstance()->lock();
-        $node = $this->getModel()->getNodeByReference('aliases.alias.' . $uuid);
-        if ($node != null) {
-            $uses = $this->getModel()->whereUsed((string)$node->name);
-            if (!empty($uses)) {
-                $message = "";
-                foreach ($uses as $key => $value) {
-                    $message .= htmlspecialchars(sprintf("\n[%s] %s", $key, $value), ENT_NOQUOTES | ENT_HTML401);
+        foreach (!empty($uuids) ? explode(",", $uuids) : [] as $uuid) {
+            $node = $this->getModel()->getNodeByReference('aliases.alias.' . $uuid);
+            if ($node != null) {
+                $uses = $this->getModel()->whereUsed($node->name->getValue());
+                if (!empty($uses)) {
+                    $message = "";
+                    foreach ($uses as $key => $value) {
+                        $message .= htmlspecialchars(sprintf("\n[%s] %s", $key, $value), ENT_NOQUOTES | ENT_HTML401);
+                    }
+                    $message = sprintf(gettext("Cannot delete alias %s. Currently in use by %s"), $node->name->getValue(), $message);
+                    throw new \OPNsense\Base\UserException($message, gettext("Alias in use"));
                 }
-                $message = sprintf(gettext("Cannot delete alias. Currently in use by %s"), $message);
-                throw new \OPNsense\Base\UserException($message, gettext("Alias in use"));
             }
         }
-        return $this->delBase("aliases.alias", $uuid);
+        return $this->delBase("aliases.alias", $uuids);
     }
 
     /**

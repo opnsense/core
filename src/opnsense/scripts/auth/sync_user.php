@@ -84,7 +84,7 @@ if (isset($opts['h']) || empty($opts['u'])) {
          * In theory there could be other handlers registered to the same event, which is the reason
          * we will signal it here
          */
-        mwexecf('/usr/local/sbin/pluginctl -c user_changed ' . $username);
+        mwexecf('/usr/local/sbin/pluginctl -c user_changed %s', [$username]);
         echo json_encode(["status" => "updated"]);
     } else {
         echo json_encode(["status" => "not_found"]);

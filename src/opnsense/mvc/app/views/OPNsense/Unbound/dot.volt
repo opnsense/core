@@ -38,9 +38,7 @@
         });
 
         $(".forwarding-enabled").click(function() {
-            saveFormToEndpoint(url="/api/unbound/settings/set", formid='frm_ForwardingSettings', function () {
-                $(document).trigger("settings-changed");
-            });
+            saveFormToEndpoint(url="/api/unbound/settings/set", formid='frm_ForwardingSettings');
 
             let checked = ($(this).is(':checked'));
             toggleNameservers(checked);

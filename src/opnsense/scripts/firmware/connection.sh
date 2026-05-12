@@ -31,8 +31,6 @@ REQUEST="AUDIT CONNECTIVITY"
 POPT="-c4 -s1500"
 
 HOSTS=$(/usr/local/opnsense/scripts/firmware/hostnames.sh)
-
-HOST=$(opnsense-update -M)
 HOST=${HOSTS%%'
 '*}
 

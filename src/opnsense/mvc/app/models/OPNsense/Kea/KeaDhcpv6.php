@@ -294,7 +294,7 @@ class KeaDhcpv6 extends BaseModel
                 'reservations' => []
             ];
             /* add valid-lifetime at this level if given */
-            if (!$subnet->valid_lifetime->isEmpty()) {
+            if ($subnet->valid_lifetime->isSet()) {
                 $record['valid-lifetime'] = $subnet->valid_lifetime->asInt();
             }
             $device = Util::getRealInterface($subnet->interface->getValue(), 'inet6');
@@ -506,13 +506,15 @@ class KeaDhcpv6 extends BaseModel
         $cnf = [
             'Dhcp6' => [
                 'valid-lifetime' => $this->general->valid_lifetime->asInt(),
+                'decline-probation-period' => $this->general->decline_probation_period->isSet() ?
+                                              $this->general->decline_probation_period->asInt() : 600,
                 'mac-sources' => $this->general->mac_sources->getValues(),
                 'interfaces-config' => [
                     'interfaces' => $this->getConfigPhysicalInterfaces(),
                     /* socket retries are on a per-interface basis, failing to open one won't affect others */
-                    'service-sockets-max-retries' => !$this->general->service_sockets_max_retries->isEmpty() ?
+                    'service-sockets-max-retries' => $this->general->service_sockets_max_retries->isSet() ?
                                                      $this->general->service_sockets_max_retries->asInt() : 5,
-                    'service-sockets-retry-wait-time' => !$this->general->service_sockets_retry_wait_time->isEmpty() ?
+                    'service-sockets-retry-wait-time' => $this->general->service_sockets_retry_wait_time->isSet() ?
                                                          $this->general->service_sockets_retry_wait_time->asInt() : 5000,
                 ],
                 'lease-database' => [

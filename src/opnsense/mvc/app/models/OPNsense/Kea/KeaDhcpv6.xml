@@ -12,12 +12,20 @@
             <interfaces type="InterfaceField">
                 <Multiple>Y</Multiple>
             </interfaces>
-            <service_sockets_max_retries type="IntegerField"/>
-            <service_sockets_retry_wait_time type="IntegerField"/>
+            <service_sockets_max_retries type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </service_sockets_max_retries>
+            <service_sockets_retry_wait_time type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </service_sockets_retry_wait_time>
             <valid_lifetime type="IntegerField">
+                <MinimumValue>0</MinimumValue>
                 <Default>4000</Default>
                 <Required>Y</Required>
             </valid_lifetime>
+            <decline_probation_period type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </decline_probation_period>
             <mac_sources type="OptionField">
                 <Default>ipv6-link-local</Default>
                 <Required>Y</Required>
@@ -83,7 +91,9 @@
                         </check001>
                     </Constraints>
                 </subnet>
-                <valid_lifetime type="IntegerField"/>
+                <valid_lifetime type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                </valid_lifetime>
                 <allocator type="OptionField">
                     <BlankDesc>Default</BlankDesc>
                     <OptionValues>
