@@ -98,15 +98,17 @@ function saveFormToEndpoint(url, formid, callback_ok, disable_dialog, callback_f
                     });
                 }
 
-                if ( callback_fail !== undefined ) {
+                if (callback_fail !== undefined) {
                     // execute callback function
                     callback_fail(data);
                 }
-            } else if ( callback_ok !== undefined ) {
+            } else if (callback_ok !== undefined) {
+                // trigger base apply button alert
+                $(document).trigger('settings-changed');
                 // execute callback function
                 callback_ok(data);
             }
-        } else if ( callback_fail !== undefined ) {
+        } else if (callback_fail !== undefined) {
             callback_fail(data);
         }
     });
