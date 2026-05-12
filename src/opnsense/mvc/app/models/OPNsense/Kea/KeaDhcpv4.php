@@ -178,7 +178,7 @@ class KeaDhcpv4 extends BaseModel
                 'reservations' => []
             ];
             /* add valid-lifetime at this level if given */
-            if (!$subnet->valid_lifetime->isEmpty()) {
+            if ($subnet->valid_lifetime->isSet()) {
                 $record['valid-lifetime'] = $subnet->valid_lifetime->asInt();
             }
             /* add description and other custom keys - not parsed by KEA */
@@ -324,9 +324,9 @@ class KeaDhcpv4 extends BaseModel
                     'interfaces' => $this->getConfigPhysicalInterfaces(),
                     'dhcp-socket-type' => $this->general->dhcp_socket_type->getValue(),
                     /* socket retries are on a per-interface basis, failing to open one won't affect others */
-                    'service-sockets-max-retries' => !$this->general->service_sockets_max_retries->isEmpty() ?
+                    'service-sockets-max-retries' => $this->general->service_sockets_max_retries->isSet() ?
                                                      $this->general->service_sockets_max_retries->asInt() : 5,
-                    'service-sockets-retry-wait-time' => !$this->general->service_sockets_retry_wait_time->isEmpty() ?
+                    'service-sockets-retry-wait-time' => $this->general->service_sockets_retry_wait_time->isSet() ?
                                                          $this->general->service_sockets_retry_wait_time->asInt() : 5000,
                 ],
                 'lease-database' => [
