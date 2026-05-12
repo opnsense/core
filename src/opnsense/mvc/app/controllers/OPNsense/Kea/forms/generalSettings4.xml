@@ -49,6 +49,14 @@
         <help>The valid life time of the leases given out by the server in seconds.</help>
     </field>
     <field>
+        <id>dhcpv4.general.decline_probation_period</id>
+        <label>Decline Probation Period</label>
+        <type>text</type>
+        <hint>600</hint>
+        <advanced>true</advanced>
+        <help>Defines how long an address that has been detected as duplicate via DHCPDECLINE will be prevented to be given out to other clients.</help>
+    </field>
+    <field>
         <id>dhcpv4.general.fwrules</id>
         <label>Firewall rules</label>
         <type>checkbox</type>
