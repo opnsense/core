@@ -418,24 +418,20 @@ function core_run()
  */
 function core_user_changed_groups($unused, $username)
 {
-    global $config;
+    foreach (config_read_array('system', 'user', false) as $user) {
+        if ($user['name'] == $username && (!empty($user['shell']) || $user['uid'] == 0)) {
+            $output = shell_safe('/usr/bin/groups %s 2> /dev/null', $username);
+            $current_groups = strlen($output) ? explode(' ', $output) : [];
 
-    if (is_array($config['system']['user'])) {
-        foreach ($config['system']['user'] as $user) {
-            if ($user['name'] == $username && (!empty($user['shell']) || $user['uid'] == 0)) {
-                $output = shell_safe('/usr/bin/groups %s 2> /dev/null', $username);
-                $current_groups = strlen($output) ? explode(' ', $output) : [];
-
-                foreach ($config['system']['group'] as $group) {
-                    $in_group = false;
-                    foreach (!empty($group['member']) ? $group['member'] : [] as $grp) {
-                        $in_group = $in_group || in_array($user['uid'], explode(',', $grp));
-                    }
-                    $to_remove = in_array($group['name'], $current_groups) && !$in_group;
-                    $to_add = !in_array($group['name'], $current_groups) && $in_group;
-                    if ($to_remove || $to_add) {
-                        local_group_set($group);
-                    }
+            foreach (config_read_array('system', 'group', false) as $group) {
+                $in_group = false;
+                foreach (!empty($group['member']) ? $group['member'] : [] as $grp) {
+                    $in_group = $in_group || in_array($user['uid'], explode(',', $grp));
+                }
+                $to_remove = in_array($group['name'], $current_groups) && !$in_group;
+                $to_add = !in_array($group['name'], $current_groups) && $in_group;
+                if ($to_remove || $to_add) {
+                    local_group_set($group);
                 }
             }
         }
