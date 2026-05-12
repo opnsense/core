@@ -321,7 +321,7 @@ class KeaDhcpv4 extends BaseModel
             'Dhcp4' => [
                 'valid-lifetime' => $this->general->valid_lifetime->asInt(),
                 'decline-probation-period' => !$this->general->decline_probation_period->isEmpty() ?
-                                            $this->general->service_sockets_max_retries->asInt() : 600,
+                                            $this->general->decline_probation_period->asInt() : 600,
                 'interfaces-config' => [
                     'interfaces' => $this->getConfigPhysicalInterfaces(),
                     'dhcp-socket-type' => $this->general->dhcp_socket_type->getValue(),

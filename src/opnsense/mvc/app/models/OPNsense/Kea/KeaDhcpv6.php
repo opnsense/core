@@ -354,7 +354,7 @@ class KeaDhcpv6 extends BaseModel
             'Dhcp6' => [
                 'valid-lifetime' => $this->general->valid_lifetime->asInt(),
                 'decline-probation-period' => !$this->general->decline_probation_period->isEmpty() ?
-                                            $this->general->service_sockets_max_retries->asInt() : 600,
+                                            $this->general->decline_probation_period->asInt() : 600,
                 'mac-sources' => $this->general->mac_sources->getValues(),
                 'interfaces-config' => [
                     'interfaces' => $this->getConfigPhysicalInterfaces(),
