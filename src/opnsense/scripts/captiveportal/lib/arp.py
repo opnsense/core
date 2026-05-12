@@ -52,7 +52,7 @@ class ARP(object):
             )
 
             out = ujson.loads(p.stdout)
-        except (subprocess.CalledProcessError, ujson.JSONDecodeError) as e:
+        except (FileNotFoundError, subprocess.CalledProcessError, ujson.JSONDecodeError) as e:
             syslog.syslog(syslog.LOG_ERR, f"""
                 unable to parse list_hosts.py output:\n
                 stdout={getattr(e, 'stdout', None)}\n
