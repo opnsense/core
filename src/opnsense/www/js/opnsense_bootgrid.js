@@ -391,7 +391,7 @@ class UIBootgrid {
 
                 // wrap onRendered so we can provide the cell object
                 const cb = (fn) => {
-                    onRendered(fn(cell));
+                    onRendered(() => fn(cell));
                 };
 
                 // always execute _onCellRendered
