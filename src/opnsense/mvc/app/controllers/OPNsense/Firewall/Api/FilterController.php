@@ -62,13 +62,16 @@ class FilterController extends FilterBaseController
                 'pass' => gettext('Pass'),
                 'reject' => gettext('Reject'),
             ];
-
+            $this->legacy_fieldmap['%direction'] = [
+                'in' => gettext('In'),
+                'out' => gettext('Out'),
+                'any' => gettext('Any'),
+            ];
             $this->legacy_fieldmap['%ipprotocol'] = [
                 'inet' => gettext('IPv4'),
                 'inet6' => gettext('IPv6'),
-                'inet46' => gettext('IPv4+IPv6'), /* XXX remove when filter.lib.inc use is removed */
+                'inet46' => '*', /* XXX remove when filter.lib.inc use is removed */
             ];
-
         }
 
         return $this->legacy_fieldmap;
