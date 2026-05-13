@@ -38,6 +38,13 @@
             <pattern>api/diagnostics/activity/*</pattern>
         </patterns>
     </page-diagnostics-system-activity>
+    <page-diagnostics-system-statistics>
+        <name>Diagnostics: System Statistics</name>
+        <patterns>
+            <pattern>ui/diagnostics/system/memory</pattern>
+            <pattern>api/diagnostics/system/memory/*</pattern>
+        </patterns>
+    </page-diagnostics-system-statistics>
     <page-diagnostics-health>
         <name>Diagnostics: System Health</name>
         <patterns>
