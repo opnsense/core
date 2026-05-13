@@ -86,16 +86,6 @@
                 ajax: false,
                 selection: true,
                 multiSelect: true,
-                converters: {
-                    datetime: {
-                        from: function (value) {
-                            return moment(parseInt(value) * 1000);
-                        },
-                        to: function (value) {
-                            return value == 0 ? "" :  value.format("lll");
-                        }
-                    }
-                }
             }
         });
         function updateVoucherList() {
@@ -345,9 +335,9 @@
                 <thead>
                 <tr>
                     <th data-column-id="username" data-type="string" data-identifier="true">{{ lang._('Voucher') }}</th>
-                    <th data-column-id="starttime" data-type="datetime">{{ lang._('Valid from') }}</th>
-                    <th data-column-id="endtime" data-type="datetime">{{ lang._('Valid to') }}</th>
-                    <th data-column-id="expirytime" data-type="datetime">{{ lang._('Expires at') }}</th>
+                    <th data-column-id="starttime" data-formatter="datetime" data-sorter="datetime">{{ lang._('Valid from') }}</th>
+                    <th data-column-id="endtime" data-formatter="datetime" data-sorter="datetime">{{ lang._('Valid to') }}</th>
+                    <th data-column-id="expirytime" data-formatter="datetime" data-sorter="datetime">{{ lang._('Expires at') }}</th>
                     <th data-column-id="state" data-type="string">{{ lang._('State') }}</th>
                 </tr>
                 </thead>

@@ -99,8 +99,8 @@
                         <th data-column-id="USERNAME" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('USERNAME') }}</th>
                         <th data-column-id="PRI" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('PRI') }}</th>
                         <th data-column-id="NICE" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('NICE') }}</th>
-                        <th data-column-id="SIZE" data-type="memsize" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('SIZE') }}</th>
-                        <th data-column-id="RES" data-type="memsize" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('RES') }}</th>
+                        <th data-column-id="SIZE" data-sorter="memsize" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('SIZE') }}</th>
+                        <th data-column-id="RES" data-sorter="memsize" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('RES') }}</th>
                         <th data-column-id="STATE" data-type="string">{{ lang._('STATE') }}</th>
                         <th data-column-id="C" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('C') }}</th>
                         <th data-column-id="TIME" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('TIME') }}</th>
