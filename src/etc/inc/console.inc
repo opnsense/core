@@ -147,7 +147,7 @@ EOD;
             vlan_setup(array_merge($iflist, $iflist_lagg), $fp);
         }
 
-        foreach (confgig_read_array('vlans', 'vlan', false) as $vlan) {
+        foreach (config_read_array('vlans', 'vlan', false) as $vlan) {
             $iflist_all[$vlan['vlanif']] = [
                 'descr' => "VLAN tag {$vlan['tag']}, parent interface {$vlan['if']}",
                 'mac' => '00:00:00:00:00:00',

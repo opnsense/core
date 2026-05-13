@@ -3299,8 +3299,9 @@ function interfaces_dhcp_split($option)
                 continue 2;
             }
 
+            /* sanitize the arguments now so scanning is possible on return */
+            $ret['args'][] = rtrim(interfaces_dhcp_safe('%s', $match), PHP_EOL);
             $ret['frmt'][] = $format;
-            $ret['args'][] = $match;
         }
 
         $args[$id] = $ret;
@@ -3341,8 +3342,8 @@ function interface_dhcp_configure($interface = 'wan')
 
     if (!empty($wancfg['alias-address']) && is_ipaddr($wancfg['alias-address'])) {
         $conf .= interfaces_dhcp_safe('alias {');
-        $conf .= interfaces_dhcp_safe('  interface "%s"', $device);
-        $conf .= interfaces_dhcp_safe('  fixed-address %s', $wancfg['alias-address']);
+        $conf .= interfaces_dhcp_safe('  interface "%s";', $device);
+        $conf .= interfaces_dhcp_safe('  fixed-address %s;', $wancfg['alias-address']);
         $conf .= interfaces_dhcp_safe('  option subnet-mask %s;', gen_subnet_mask($wancfg['alias-subnet']));
         $conf .= interfaces_dhcp_safe('}');
     }
