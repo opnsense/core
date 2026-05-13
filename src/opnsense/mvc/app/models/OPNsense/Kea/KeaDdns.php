@@ -116,6 +116,6 @@ class KeaDdns extends BaseModel
             ]
         ];
 
-        File::file_put_contents($target, json_encode($cnf, JSON_PRETTY_PRINT), 0600);
+        File::file_put_contents($target, json_encode($cnf, JSON_PRETTY_PRINT, JSON_UNESCAPED_UNICODE), 0600);
     }
 }
