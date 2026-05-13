@@ -57,17 +57,18 @@ class FilterController extends FilterBaseController
                 $descr = !empty($ifdetail->descr) ? $ifdetail->descr : strtoupper($key);
                 $this->legacy_fieldmap['interface'][$key] = $descr;
             }
-            $this->legacy_fieldmap['action'] = [
+            $this->legacy_fieldmap['%action'] = [
                 'block' => gettext('Block'),
                 'pass' => gettext('Pass'),
                 'reject' => gettext('Reject'),
             ];
 
-            $this->legacy_fieldmap['ipprotocol'] = [
+            $this->legacy_fieldmap['%ipprotocol'] = [
                 'inet' => gettext('IPv4'),
                 'inet6' => gettext('IPv6'),
-                'inet46' => '', /* XXX remove when filter.lib.inc use is removed */
+                'inet46' => gettext('IPv4+IPv6'), /* XXX remove when filter.lib.inc use is removed */
             ];
+
         }
 
         return $this->legacy_fieldmap;
@@ -165,6 +166,9 @@ class FilterController extends FilterBaseController
                 $label = gettext('Automatically generated rules');
                 $record['categories'] = $label;  // Grouping key for tree view
                 $record['category_colors'] = [['name'  => $label]];  // Category formatter metadata
+            } else {
+                /* frontend can format categories with colors */
+                $record['category_colors'] = $this->getCategoryColors($r_categories);
             }
 
             /* frontend can format aliases with an alias icon */
@@ -174,8 +178,6 @@ class FilterController extends FilterBaseController
                 }
             }
 
-            /* frontend can format categories with colors */
-            $record['category_colors'] = $this->getCategoryColors($r_categories);
             return true;
         };
 
