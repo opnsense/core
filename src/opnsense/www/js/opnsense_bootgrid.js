@@ -321,9 +321,10 @@ class UIBootgrid {
             }
         }
 
-        if (compatOptions?.datakey) {
-            // note: this does not come from the 'options' object
-            this.options.datakey = compatOptions?.datakey;
+        const datakey = compatOptions?.datakey || bootGridOptions?.datakey;
+        if (datakey) {
+            // datakey can come from top-level object for legacy reasons
+            this.options.datakey = datakey;
         }
 
         if (bootGridOptions?.onBeforeRenderDialog) {
