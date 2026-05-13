@@ -433,6 +433,6 @@ class KeaDhcpv6 extends BaseModel
                 'server-port' => $ddns->general->server_port->asInt(),
             ];
         }
-        File::file_put_contents($target, json_encode($cnf, JSON_PRETTY_PRINT), 0600);
+        File::file_put_contents($target, json_encode($cnf, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), 0600);
     }
 }
