@@ -336,7 +336,7 @@
 
                         if (
                             row[column.id] !== undefined &&
-                            !['', 'any', 'None'].includes(row[column.id])
+                            !['', 'any', 'None', 'inet46'].includes(row[column.id])
                         ) {
                             return row["%" + column.id] || row[column.id];
                         } else {
