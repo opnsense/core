@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2015-2023 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2026 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -91,10 +91,14 @@ if len(sys.argv) > 1:
                         for idx, row in enumerate(rra['database']['row']):
                             this_ts = first_ts + (record['step_size'] * idx)
                             for vidx, v in enumerate(row['v'] if type(row['v']) is list else [row['v']]):
+                                if not record['ds'][vidx]['values'] and v in ['NaN', 'inf']:
+                                    # Time slices are sorted first to last, ignore the ones that are not used when
+                                    # at the beginning of the series.
+                                    break
                                 if ds_count >= vidx:
                                     record['ds'][vidx]['values'].append([
                                         this_ts * 1000,
-                                        float(v) if v not in ['NaN', 'inf'] else 0
+                                        float(v) if v not in ['NaN', 'inf'] else None
                                     ])
 
                     result['sets'].append(record)
