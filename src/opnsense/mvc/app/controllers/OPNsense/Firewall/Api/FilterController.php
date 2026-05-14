@@ -121,19 +121,25 @@ class FilterController extends FilterBaseController
             $rule_stats = [];
         }
 
-        $filter_funct_rs = function (&$record) use ($categories, $interfaces, $rule_stats) {
+        $filter_funct_rs = function (&$record) use ($categories, $interfaces, $rule_stats, $show_all) {
             /* Filter criteria */
             $r_categories = !empty($record['categories']) ? array_map('trim', explode(',', $record['categories'])) : [];
             $is_cat = empty($categories) || array_intersect($r_categories, $categories);
             $rule_interfaces = array_filter(explode(',', $record['interface'] ?? ''));
-            if ($interfaces === null || empty($record['interface'])) {
+            if ($interfaces === null || (empty($record['interface']) && $show_all)) {
+                /* ALL interfaces always matches, when inspecting, also show rules that apply to all  */
                 $is_if = true; // ALL interfaces or floating always matches
-            } elseif (!empty($record['interfacenot'])) {
+            } elseif (!empty($record['interfacenot']) && $show_all) {
+                /* Inverted interface, show where applicable when inspecting */
                 $is_if = !array_intersect($rule_interfaces, $interfaces ?? []);
-            } elseif (empty($interfaces) && count($rule_interfaces) > 1) {
-                $is_if = true; // floating, multiple interfaces selected
+            } elseif (empty($interfaces) && (count($rule_interfaces) > 1 || !empty($record['interfacenot']))) {
+                /* Floating, multiple interfaces selected */
+                $is_if = true;
             } else {
-                $is_if = array_intersect($rule_interfaces, $interfaces ?? []);
+                /* Interfaces overlap, when inspecting all overlaps are relevant, otherwise only exact matches */
+                $is_if = array_intersect($rule_interfaces, $interfaces ?? []) && (
+                    count($rule_interfaces) == 1 || $show_all
+                ) && empty($record['interfacenot']);
             }
 
             if (!$is_cat || !$is_if) {
