@@ -138,9 +138,7 @@
             }
         });
 
-        /**
-         *
-         */
+        // XXX: This does not seem to exist for IPv6, but would make sense for the DHCPv6 DNS server and search domain option at least
         $("#subnet6\\.option_data_autocollect").change(function(){
             if ($(this).is(':checked')) {
                 $(".option_data_autocollect").closest('tr').hide();
