@@ -268,7 +268,7 @@ class KeaDhcpv6 extends BaseModel
         return $hostname;
     }
 
-    private function getConfigSubnets($ddns_enabled = false)
+    private function getConfigSubnets($ddns_enabled = false, &$needs_no_leases_class = false)
     {
         $result = [];
         $subnet_id = 1;
@@ -320,6 +320,7 @@ class KeaDhcpv6 extends BaseModel
                 // If the prefix is temporary placeholder, we will not send leases to any client
                 if (empty($idassoc['prefix_valid'])) {
                     $record['client-classes'] = ['NO_LEASES_PLEASE'];
+                    $needs_no_leases_class = true;
                 }
             }
             /* standard option-data elements */
@@ -503,6 +504,7 @@ class KeaDhcpv6 extends BaseModel
     {
         $ddns = new KeaDdns();
         $ddns_enabled = !$ddns->general->enabled->isEmpty();
+        $needs_no_leases_class = false;
         $cnf = [
             'Dhcp6' => [
                 'valid-lifetime' => $this->general->valid_lifetime->asInt(),
@@ -536,7 +538,7 @@ class KeaDhcpv6 extends BaseModel
                         'severity' => 'INFO',
                     ]
                 ],
-                'subnet6' => $this->getConfigSubnets($ddns_enabled),
+                'subnet6' => $this->getConfigSubnets($ddns_enabled, $needs_no_leases_class),
                 'hooks-libraries' => [
                     ['library' => '/usr/local/lib/kea/hooks/libdhcp_lease_cmds.so'],
                     ['library' => '/usr/local/lib/kea/hooks/libdhcp_host_cmds.so']
@@ -547,10 +549,12 @@ class KeaDhcpv6 extends BaseModel
 
         // Used by temporary dynamic-prefix placeholder subnets.
         // The test can never pass, so subnets using it will not hand out leases.
-        $client_classes[] = [
-            'name' => 'NO_LEASES_PLEASE',
-            'test' => "not member('ALL')",
-        ];
+        if ($needs_no_leases_class) {
+            $client_classes[] = [
+                'name' => 'NO_LEASES_PLEASE',
+                'test' => "not member('ALL')",
+            ];
+        }
 
         if (!empty($client_classes)) {
             $cnf['Dhcp6']['client-classes'] = $client_classes;
