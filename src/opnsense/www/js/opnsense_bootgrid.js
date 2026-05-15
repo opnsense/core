@@ -2273,10 +2273,6 @@ class UIBootgrid {
         return this.table.getData();
     }
 
-    getTotalRowCount() {
-        return this.table.getDataCount();
-    }
-
     getCurrentPage() {
         return this.table.getPage();
     }
