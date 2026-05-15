@@ -109,6 +109,10 @@
                         <flq>Free Lease Queue Allocator</flq>
                     </OptionValues>
                 </pd-allocator>
+                <option_data_autocollect type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </option_data_autocollect>
                 <option_data>
                     <dns_servers type="NetworkField">
                         <NetMaskAllowed>N</NetMaskAllowed>

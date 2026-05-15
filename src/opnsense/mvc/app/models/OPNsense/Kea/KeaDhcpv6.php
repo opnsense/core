@@ -273,6 +273,17 @@ class KeaDhcpv6 extends BaseModel
         return $result;
     }
 
+    private function getConfigPrimaryAddress6(string $interface): ?string
+    {
+        $addresses = json_decode((new Backend())->configdpRun('interface address', [$interface]), true);
+        foreach ($addresses[$interface] as $address) {
+            if ($address['family'] === 'inet6') {
+                return $address['address'];
+            }
+        }
+        return null;
+    }
+
     private function getConfigThisServerHostname()
     {
         $hostname = $this->ha->this_server_name->getValue();
@@ -345,10 +356,23 @@ class KeaDhcpv6 extends BaseModel
                         'name' => $target_fieldname,
                         'data' => (string)$value
                     ];
-                } elseif ($key == 'domain_name') {
+                }
+            }
+            /* optionally collect system option-data, helpful for dynamic prefix configurations */
+            if (!$subnet->option_data_autocollect->isEmpty()) {
+                $domain = (string)Config::getInstance()->object()->system->domain;
+                if (!empty($domain)) {
                     $record['option-data'][] = [
-                        'name' => $target_fieldname,
-                        'data' => (string)Config::getInstance()->object()->system->domain
+                        'name' => 'domain-search',
+                        'data' => $domain
+                    ];
+                }
+
+                $primary_address6 = $this->getConfigPrimaryAddress6($subnet->interface->getValue());
+                if ($primary_address6 !== null) {
+                    $record['option-data'][] = [
+                        'name' => 'dns-servers',
+                        'data' => $primary_address6
                     ];
                 }
             }
