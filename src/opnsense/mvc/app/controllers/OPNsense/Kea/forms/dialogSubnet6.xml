@@ -6,16 +6,6 @@
         <help>Select which interface this subnet belongs too.</help>
     </field>
     <field>
-        <id>subnet6.subnet</id>
-        <label>Subnet</label>
-        <type>text</type>
-        <style>static_prefix</style>
-        <help>Subnet to use, should be large enough to hold the specified pools and reservations</help>
-        <grid_view>
-            <formatter>subnet</formatter>
-        </grid_view>
-    </field>
-    <field>
         <id>subnet6.dynamic_prefix</id>
         <label>Dynamic Prefix</label>
         <type>checkbox</type>
@@ -24,6 +14,16 @@
             <type>boolean</type>
             <formatter>boolean</formatter>
             <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet6.subnet</id>
+        <label>Subnet</label>
+        <type>text</type>
+        <style>static_prefix</style>
+        <help>Subnet to use, should be large enough to hold the specified pools and reservations</help>
+        <grid_view>
+            <formatter>subnet</formatter>
         </grid_view>
     </field>
     <field>
