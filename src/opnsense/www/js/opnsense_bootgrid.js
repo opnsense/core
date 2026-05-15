@@ -128,6 +128,8 @@ class UIBootgrid {
         this.rememberedTreeIds = new Set(JSON.parse(localStorage.getItem(this.treeStorageKey) || '[]'));
         this.isVisible = false;
         this.scrollPos = 0;
+        this.addButton = false;
+        this.deleteSelectedButton = false;
 
         // wrapper-specific options
         this.options = {
@@ -161,8 +163,6 @@ class UIBootgrid {
             },
             responsive: false,
             onBeforeRenderDialog: null,
-            addButton: false,
-            deleteSelectedButton: false,
             commands: {}, //additional registered commands
             virtualDOM: false,
             selection: true,
@@ -371,11 +371,11 @@ class UIBootgrid {
         let del = this.$compatElement.find("*[data-action=deleteSelected]");
 
         if (add.length > 0) {
-            this.options.addButton = true;
+            this.addButton = true;
         }
 
         if (del.length > 0) {
-            this.options.deleteSelectedButton = true;
+            this.deleteSelectedButton = true;
         }
 
         // in the same context: check if there are other buttons defined
@@ -1185,12 +1185,12 @@ class UIBootgrid {
         );
 
         for (const [key, command] of Object.entries(commands)) {
-            if (key === 'add' && !this.options.addButton) {
+            if (key === 'add' && !this.addButton) {
                 // special case: not included in the template so don't render it
                 continue;
             }
 
-            if (key === 'delete-selected' && !this.options.deleteSelectedButton) {
+            if (key === 'delete-selected' && !this.deleteSelectedButton) {
                 continue;
             }
 
