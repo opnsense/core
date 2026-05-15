@@ -58,9 +58,12 @@
             if (grid_ids !== null) {
                 grid_ids.forEach(function (grid_id) {
                     if (all_grids[grid_id] === undefined) {
-                        const isGroupedGrid = [
+                        const isGroupedSubnet = [
                             "{{formGridPDPool['table_id']}}",
                             "{{formGridReservation['table_id']}}"
+                        ].includes(grid_id);
+                        const isGroupedInterface = [
+                            "{{formGridSubnet['table_id']}}"
                         ].includes(grid_id);
                         all_grids[grid_id] = $("#" + grid_id).UIBootgrid({
                             search: '/api/kea/dhcpv6/search_' + grid_id,
@@ -69,9 +72,11 @@
                             add:    '/api/kea/dhcpv6/add_' + grid_id + '/',
                             del:    '/api/kea/dhcpv6/del_' + grid_id + '/',
                             tabulatorOptions: {
-                                groupBy: !isGroupedGrid
-                                    ? false
-                                    : "%subnet",
+                                groupBy: isGroupedSubnet
+                                    ? "%subnet"
+                                    : isGroupedInterface
+                                        ? "%interface"
+                                        : false,
                                 groupHeader: (value, count, data, group) => {
                                     const icons = {
                                         subnet: '<i class="fa fa-fw fa-ethernet fa-sm text-info"></i>',
