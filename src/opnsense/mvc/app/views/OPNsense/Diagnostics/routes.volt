@@ -58,7 +58,6 @@
         });
         // update routes
         $("#update").click(function() {
-            $("#grid-routes").bootgrid('clear');
             $('#processing-dialog').modal('show');
             let resolve = '';
             if ($("#resolve").prop("checked")) {
@@ -66,9 +65,7 @@
             }
             ajaxGet("/api/diagnostics/interface/get_routes/", {resolve:resolve}, function (data, status) {
                 if (status == "success") {
-                    $("#grid-routes").bootgrid('append', data).on("loaded.rs.jquery.bootgrid", function () {
-                        $('.bootgrid-tooltip').tooltip();
-                    });
+                    $("#grid-routes").bootgrid('replace', data);
                 }
                 $('#processing-dialog').modal('hide');
             });

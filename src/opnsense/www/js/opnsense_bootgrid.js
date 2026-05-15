@@ -2239,6 +2239,10 @@ class UIBootgrid {
         this.table.addData(rows);
     }
 
+    replace(rows) {
+        this.table.replaceData(rows);
+    }
+
     clear() {
         if (this.tableInitialized) {
             this.table.clearData();
