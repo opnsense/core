@@ -178,15 +178,29 @@ class KeaDhcpv6 extends BaseModel
                 $idassoc = Idassoc::prefix($subnet_node->interface->getValue());
                 if (!empty($idassoc['prefix_allocated'])) {
                     $pd_prefixes = Util::splitIPv6Prefix($idassoc['prefix_allocated']);
-                    if (empty($pd_prefixes[1])) {
-                        $messages->appendMessage(
-                            new Message(gettext("Dynamic prefix is too small to create a non-overlapping PD pool."), $key . ".delegated_len")
-                        );
-                    } else {
+                    if (!empty($pd_prefixes[1])) {
                         $pd_prefix_len = (int)explode('/', $pd_prefixes[1], 2)[1];
-                        if ($pool->delegated_len->asInt() < $pd_prefix_len) {
+                        if ($pd_prefix_len > 64) {
                             $messages->appendMessage(
-                                new Message(gettext("Delegated length must be longer than or equal to dynamic PD pool prefix length."), $key . ".delegated_len")
+                                new Message(
+                                    sprintf(
+                                        gettext('Dynamic prefix "%s" is too small to create a non-overlapping PD pool, split prefix length would be "%d".'),
+                                        $idassoc['prefix_allocated'],
+                                        $pd_prefix_len
+                                    ),
+                                    $key . ".delegated_len"
+                                )
+                            );
+                        } elseif ($pool->delegated_len->asInt() < $pd_prefix_len) {
+                            $messages->appendMessage(
+                                new Message(
+                                    sprintf(
+                                        gettext('Delegated length %d must be longer than or equal to dynamic PD pool prefix length %d.'),
+                                        $pool->delegated_len->asInt(),
+                                        $pd_prefix_len
+                                    ),
+                                    $key . ".delegated_len"
+                                )
                             );
                         }
                     }
