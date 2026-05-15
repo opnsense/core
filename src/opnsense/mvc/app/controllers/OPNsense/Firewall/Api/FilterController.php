@@ -182,6 +182,7 @@ class FilterController extends FilterBaseController
                     $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
                 }
             }
+
             return true;
         };
 
