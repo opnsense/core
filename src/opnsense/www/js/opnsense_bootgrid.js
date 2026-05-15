@@ -2244,6 +2244,10 @@ class UIBootgrid {
     }
 
     replace(rows) {
+        if (!Array.isArray(rows) || rows.length === 0) {
+            throw new Error('Cannot replace without data. Use clear() to clear data, or reload() to refresh');
+        }
+
         this.table.replaceData(rows);
     }
 
