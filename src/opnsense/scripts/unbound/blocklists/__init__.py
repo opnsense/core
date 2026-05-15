@@ -106,8 +106,6 @@ class BaseBlocklistHandler:
             'timeout': 30,
             'stream': True
         }
-        if os.path.exists('/usr/local/etc/ssl/cert.pem'):
-            req_opts['verify'] = '/usr/local/etc/ssl/cert.pem'
         req = requests.get(**req_opts)
         if req.status_code >= 200 and req.status_code <= 299:
             req.raw.decode_content = True
