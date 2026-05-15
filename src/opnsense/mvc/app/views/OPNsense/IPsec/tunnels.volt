@@ -178,7 +178,6 @@
           options: {
               formatters: formatters,
               rowCount: [7, 20, 50, 100, 200, 500, -1],
-              useRequestHandlerOnGet: true,
               requestHandler: function(request) {
                   let ids = $("#grid-phase1").bootgrid("getSelectedRows");
                   request['ikeid'] = ids.length > 0 ? ids[0] : "__not_found__";

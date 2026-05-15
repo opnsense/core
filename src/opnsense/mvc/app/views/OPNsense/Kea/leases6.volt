@@ -50,7 +50,6 @@
             options: {
                 selection: true,
                 multiSelect: true,
-                useRequestHandlerOnGet: true,
                 requestHandler: function(request) {
                     request['selected_interfaces'] = selected_interfaces;
                     return request;

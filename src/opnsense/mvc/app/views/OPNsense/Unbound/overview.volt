@@ -704,7 +704,6 @@
                         rowSelect: false,
                         multiSelect: false,
                         selection: false,
-                        useRequestHandlerOnGet: true,
                         requestHandler: function(request) {
                             if (g_clientFilter != null && g_timeFilter != null) {
                                 let timestamp = g_timeFilter / 1000;
