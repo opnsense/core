@@ -91,8 +91,13 @@
                                 formatters: {
                                     subnet: function(column, row) {
                                         if ((row.subnet || '') === '') {
-                                            // XXX: Could somehow dynamically insert current values from running KEA config but thats more glue than this
-                                            //      Also the dialog would also need dynamic hints, there these fields are hidden for this reason.
+                                            // XXX: Dynamic hints could be a possibility, though more complex than this.
+                                            return '<span><i class="fa fa-fw fa-random"></i> {{ lang._("dynamic") }}</span>';
+                                        }
+                                        return row["%" + column.id] || row[column.id] || "";
+                                    },
+                                    option_data_autocollect: function(column, row) {
+                                        if (row.option_data_autocollect === "1") {
                                             return '<span><i class="fa fa-fw fa-random"></i> {{ lang._("dynamic") }}</span>';
                                         }
                                         return row["%" + column.id] || row[column.id] || "";

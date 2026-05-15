@@ -94,6 +94,7 @@
         <allownew>true</allownew>
         <help>DNS servers to offer to the clients</help>
         <grid_view>
+            <formatter>option_data_autocollect</formatter>
             <visible>false</visible>
         </grid_view>
     </field>
@@ -103,9 +104,9 @@
         <type>select_multiple</type>
         <style>tokenize option_data_autocollect</style>
         <allownew>true</allownew>
-        <separator>,</separator>
         <help>Specifies a search list of Domain Names to be used by the client to locate not-fully-qualified domain names.</help>
         <grid_view>
+            <formatter>option_data_autocollect</formatter>
             <visible>false</visible>
         </grid_view>
     </field>
