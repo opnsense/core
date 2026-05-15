@@ -68,7 +68,6 @@
             options: {
                 selection: false,
                 multiSelect: false,
-                useRequestHandlerOnGet: true,
                 requestHandler: function(request) {
                     request['selected_zones'] = $("#zone-selection").val();
                     return request;
