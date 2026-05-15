@@ -43,15 +43,13 @@
          * fetch system activity
          */
         function updateTop() {
-            $("#grid-top").bootgrid('clear');
-
             setTimeout(function() {
                 $(".no-results, .bootgrid-placeholder").text("{{ lang._('Waiting for data...') }}");
             }, 20);
 
             ajaxGet("/api/diagnostics/activity/get_activity", {}, function (data, status) {
                 if (status == "success") {
-                    $("#grid-top").bootgrid('append', data.details);
+                    $("#grid-top").bootgrid('replace', data.details);
 
                     var header_txt = "";
                     $.each(data['headers'], function (key, value) {
