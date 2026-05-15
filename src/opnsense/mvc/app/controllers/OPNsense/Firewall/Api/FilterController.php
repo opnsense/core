@@ -171,6 +171,9 @@ class FilterController extends FilterBaseController
                 $label = gettext('Automatically generated rules');
                 $record['categories'] = $label;  // Grouping key for tree view
                 $record['category_colors'] = [['name'  => $label]];  // Category formatter metadata
+            } else {
+                /* frontend can format categories with colors */
+                $record['category_colors'] = $this->getCategoryColors($r_categories);
             }
 
             /* frontend can format aliases with an alias icon */
@@ -180,8 +183,6 @@ class FilterController extends FilterBaseController
                 }
             }
 
-            /* frontend can format categories with colors */
-            $record['category_colors'] = $this->getCategoryColors($r_categories);
             return true;
         };
 
