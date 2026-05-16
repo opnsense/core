@@ -28,7 +28,7 @@
 # Python implementation to re-resolve dns entries, for reference see:
 # https://github.com/WireGuard/wireguard-tools/tree/master/contrib/reresolve-dns
 
-from typing import Tuple, Union, List
+from typing import Tuple, Union, List, Optional
 import sys
 import glob
 import os
@@ -36,21 +36,43 @@ import time
 import subprocess
 import logging
 from logging.handlers import RotatingFileHandler
+import syslog
 import argparse
 
 
-def create_logger(log_file: str) -> logging.Logger:
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format="%(asctime)s [%(levelname)s] %(message)s",
-        handlers=[
-            RotatingFileHandler(
-                log_file, encoding="utf-8", maxBytes=10240, backupCount=4
-            ),
-            logging.StreamHandler(),
-        ],
-    )
-    return logging.getLogger()
+class Syslogger:
+    """
+    Abstract for syslog to keep the same syntax as logger
+    """
+
+    def __init__(self):
+        syslog.openlog(facility=syslog.LOG_SYSLOG)
+        self._logger = syslog.syslog
+
+    def info(self, msg):
+        self._logger(syslog.LOG_INFO, msg)
+
+    def error(self, msg):
+        self._logger(syslog.LOG_ERR, msg)
+
+    def debug(self, msg):
+        self._logger(syslog.LOG_DEBUG, msg)
+
+
+def create_logger(log_file: Optional[str] = None) -> syslog.syslog:
+    if log_file:
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format="%(asctime)s [%(levelname)s] %(message)s",
+            handlers=[
+                RotatingFileHandler(
+                    log_file, encoding="utf-8", maxBytes=10240, backupCount=4
+                ),
+                logging.StreamHandler(),
+            ],
+        )
+        return logging.getLogger()
+    return Syslogger()
 
 
 def runner(cmd: Union[List[str], str]) -> Tuple[bool, str]:
@@ -100,7 +122,9 @@ def get_handshakes() -> dict:
     return handshakes
 
 
-def check_recent_handshakes(threshold: int, conf_file_path: str) -> bool:
+def check_recent_handshakes(
+    threshold: int, conf_file_path: str, failure_command: Optional[str] = None
+) -> bool:
     successful_run = True
     handshakes = get_handshakes()
     globs = glob.glob(conf_file_path.rstrip("/") + "/*.conf")
@@ -133,7 +157,7 @@ def check_recent_handshakes(threshold: int, conf_file_path: str) -> bool:
                             )
                         )
                         # skip if there has been a handshake recently
-                        result, _ = runner(
+                        result, output = runner(
                             [
                                 "/usr/bin/wg",
                                 "set",
@@ -146,19 +170,35 @@ def check_recent_handshakes(threshold: int, conf_file_path: str) -> bool:
                         )
                         if not result:
                             logger.error(
-                                "Failed to reset peer {} on interface {}".format(
-                                    this_peer["Endpoint"], ifname
+                                "Failed to reset peer {} on interface {}: {}".format(
+                                    this_peer["Endpoint"], ifname, output
                                 )
                             )
+                            if failure_command:
+                                failure_command = failure_command.replace(
+                                    "__interface__", ifname
+                                )
+                                logger.info(
+                                    "Trying to run failure command {}".format(
+                                        failure_command
+                                    )
+                                )
+                                result, output = runner(failure_command.split())
+                                if not result:
+                                    logger.error(
+                                        "Failed to run failure command {}: {}".format(
+                                            failure_command, output
+                                        )
+                                    )
                             successful_run = False
                     this_peer = {}
     return successful_run
 
 
 if __name__ == "__main__":
-    default_logfile = "/var/log/{}.log".format(os.path.basename(__file__))
     threshold = 135
     configdir = "/usr/local/etc/wireguard"
+    failure_command = None
 
     parser = argparse.ArgumentParser(
         prog=__file__, description="DNS Watchguard script for Wireguard"
@@ -192,7 +232,16 @@ if __name__ == "__main__":
         dest="logfile",
         default=None,
         required=False,
-        help="Path to logfile, defaults to {}".format(default_logfile),
+        help="Optional path to logfile, defaults to syslog",
+    )
+
+    parser.add_argument(
+        "--failure-command",
+        type=str,
+        dest="failure_command",
+        default=None,
+        required=None,
+        help="Command to launch when re-configuring wireguard fails, accepts '__interface__' as placeholder, example --failure-command='systemctl restart wg-quick@__interface__'",
     )
     args = parser.parse_args()
 
@@ -200,18 +249,25 @@ if __name__ == "__main__":
         threshold = args.threshold
     if args.configdir:
         configdir = args.configdir
+    if args.failure_command:
+        failure_command = args.failure_command
 
+    # Create log file based logger if requested, else log to stdout
     if args.logfile:
         logger = create_logger(args.logfile)
     else:
-        logger = create_logger(default_logfile)
+        logger = create_logger()
 
     logger.info(
         "Running wireguard watchdog with a threshhold of {} seconds".format(threshold)
     )
 
     try:
-        sys.exit(0) if check_recent_handshakes(threshold, configdir) else sys.exit(1)
+        (
+            sys.exit(0)
+            if check_recent_handshakes(threshold, configdir, failure_command)
+            else sys.exit(1)
+        )
     except Exception as exc:
         logger.critical("Failed to run: {}".format(exc))
         sys.exit(1)
