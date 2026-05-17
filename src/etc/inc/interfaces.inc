@@ -3394,12 +3394,8 @@ function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)
         $conf .= interfaces_dhcp_safe('  %s %s;', [$pt_keyword, $wancfg[$pt_field]], $wancfg[$pt_field] != '');
     }
     $conf .= interfaces_dhcp_safe('  # custom options');
-    foreach (interfaces_dhcp_split($wancfg['adv_dhcp_request_options'] ?? '') as $option) {
-        $conf .= interfaces_dhcp_safe(sprintf('  request %s;', implode(' ', $option['frmt'])), $option['args']);
-    }
-    foreach (interfaces_dhcp_split($wancfg['adv_dhcp_required_options'] ?? '') as $option) {
-        $conf .= interfaces_dhcp_safe(sprintf('  require %s;', implode(' ', $option['frmt'])), $option['args']);
-    }
+    $conf .= interfaces_dhcp_safe('  request %s;', $wancfg['adv_dhcp_request_options'] ?? '', $wancfg['adv_dhcp_request_options'] != '');
+    $conf .= interfaces_dhcp_safe('  require %s;', $wancfg['adv_dhcp_required_options'] ?? '', $wancfg['adv_dhcp_required_options'] != '');
     foreach (interfaces_dhcp_split($wancfg['adv_dhcp_send_options'] ?? '') as $option) {
         $conf .= interfaces_dhcp_safe(sprintf('  send %s;', implode(' ', $option['frmt'])), $option['args']);
     }
