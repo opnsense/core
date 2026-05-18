@@ -120,6 +120,13 @@
                             return row[column.id].split('.')[0].replace('T', ' ');
                         }
                         return row[column.id];
+                    },
+                    alias_content: function (column, row) {
+                        if (['internal', 'external', 'authgroup'].includes(row.type)) {
+                            return $("<strong/>").append($("<small>").text("{{ lang._('dynamic')}}"))[0];
+                        } else {
+                            return row[column.id];
+                        }
                     }
                 }
             }
@@ -685,7 +692,7 @@
                             <th data-column-id="name" data-width="20em" data-formatter="name">{{ lang._('Name') }}</th>
                             <th data-column-id="type" data-width="12em" data-type="string">{{ lang._('Type') }}</th>
                             <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
-                            <th data-column-id="content" data-type="string">{{ lang._('Content') }}</th>
+                            <th data-column-id="content" data-type="string" data-formatter="alias_content">{{ lang._('Content') }}</th>
                             <th data-column-id="expire" data-type="string">{{ lang._('Expire') }}</th>
                             <th data-column-id="current_items" data-type="string">{{ lang._('Loaded#') }}</th>
                             <th data-column-id="last_updated" data-width="150" data-formatter="timestamp" data-type="string">{{ lang._('Last updated') }}</th>
