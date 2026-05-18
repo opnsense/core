@@ -572,6 +572,7 @@ class UIBootgrid {
                     headerSort: this.options.sorting && field.sortable !== false,
                     cssClass: this.options.responsive ? 'opnsense-bootgrid-responsive' : '',
                     variableHeight: true,
+                    userDefinedHeight: false,
                 };
             }
 
@@ -580,6 +581,7 @@ class UIBootgrid {
                 col['minWidth'] = field.width;
                 col['maxWidth'] = field.width;
             } else if (field.width) {
+                col['userDefinedHeight'] = true;
                 col['width'] = field.width;
             } else {
                 if (field.minWidth) {
@@ -805,6 +807,7 @@ class UIBootgrid {
 
         // Triggers to activate persistence
         this.table.on('columnResized', (column) => {
+            column.getDefinition().userDefinedHeight = true;
             this._setPersistence(true);
         });
         this.table.on('headerClick', (e, column) => {
@@ -1380,6 +1383,7 @@ class UIBootgrid {
 
     tabulatorDefaults() {
         return {
+            debugInvalidOptions:false,
             autoResize: false,
             index: this.options.datakey,
             renderVertical:"basic",
@@ -1391,6 +1395,17 @@ class UIBootgrid {
                 page: false,
                 columns: true,
             },
+            persistenceMode: "local",
+            persistenceWriterFunc: debounce(function(id, type, data) {
+                if (type === 'columns') {
+                    data = data.map((col) => {
+                        if (!col.userDefinedHeight) delete col.width;
+                        return col;
+                    });
+                }
+
+                localStorage.setItem(`${id}-${type}`, JSON.stringify(data));
+            }),
             movableColumns: true,
             persistenceID:this.persistenceID,
             selectableRows: false,
