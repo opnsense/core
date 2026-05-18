@@ -92,12 +92,10 @@
             var voucher_provider = $('#voucher-providers').find("option:selected").val();
             var voucher_group = $('#voucher-groups').find("option:selected").val();
 
-            $("#grid-vouchers").bootgrid('clear');
-
             ajaxGet("/api/captiveportal/voucher/list_vouchers/" + voucher_provider + "/" + voucher_group + "/", {},
                 function (data, status) {
                     if (status == "success") {
-                        $("#grid-vouchers").bootgrid('append', data);
+                        $("#grid-vouchers").bootgrid('replace', data);
                     }
                 }
             );

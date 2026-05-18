@@ -128,6 +128,8 @@ class UIBootgrid {
         this.rememberedTreeIds = new Set(JSON.parse(localStorage.getItem(this.treeStorageKey) || '[]'));
         this.isVisible = false;
         this.scrollPos = 0;
+        this.addButton = false;
+        this.deleteSelectedButton = false;
 
         // wrapper-specific options
         this.options = {
@@ -161,8 +163,6 @@ class UIBootgrid {
             },
             responsive: false,
             onBeforeRenderDialog: null,
-            addButton: false,
-            deleteSelectedButton: false,
             commands: {}, //additional registered commands
             virtualDOM: false,
             selection: true,
@@ -371,11 +371,11 @@ class UIBootgrid {
         let del = this.$compatElement.find("*[data-action=deleteSelected]");
 
         if (add.length > 0) {
-            this.options.addButton = true;
+            this.addButton = true;
         }
 
         if (del.length > 0) {
-            this.options.deleteSelectedButton = true;
+            this.deleteSelectedButton = true;
         }
 
         // in the same context: check if there are other buttons defined
@@ -572,6 +572,7 @@ class UIBootgrid {
                     headerSort: this.options.sorting && field.sortable !== false,
                     cssClass: this.options.responsive ? 'opnsense-bootgrid-responsive' : '',
                     variableHeight: true,
+                    userDefinedHeight: false,
                 };
             }
 
@@ -580,6 +581,7 @@ class UIBootgrid {
                 col['minWidth'] = field.width;
                 col['maxWidth'] = field.width;
             } else if (field.width) {
+                col['userDefinedHeight'] = true;
                 col['width'] = field.width;
             } else {
                 if (field.minWidth) {
@@ -805,6 +807,7 @@ class UIBootgrid {
 
         // Triggers to activate persistence
         this.table.on('columnResized', (column) => {
+            column.getDefinition().userDefinedHeight = true;
             this._setPersistence(true);
         });
         this.table.on('headerClick', (e, column) => {
@@ -1185,12 +1188,12 @@ class UIBootgrid {
         );
 
         for (const [key, command] of Object.entries(commands)) {
-            if (key === 'add' && !this.options.addButton) {
+            if (key === 'add' && !this.addButton) {
                 // special case: not included in the template so don't render it
                 continue;
             }
 
-            if (key === 'delete-selected' && !this.options.deleteSelectedButton) {
+            if (key === 'delete-selected' && !this.deleteSelectedButton) {
                 continue;
             }
 
@@ -1380,6 +1383,7 @@ class UIBootgrid {
 
     tabulatorDefaults() {
         return {
+            debugInvalidOptions:false,
             autoResize: false,
             index: this.options.datakey,
             renderVertical:"basic",
@@ -1391,6 +1395,17 @@ class UIBootgrid {
                 page: false,
                 columns: true,
             },
+            persistenceMode: "local",
+            persistenceWriterFunc: debounce(function(id, type, data) {
+                if (type === 'columns') {
+                    data = data.map((col) => {
+                        if (!col.userDefinedHeight) delete col.width;
+                        return col;
+                    });
+                }
+
+                localStorage.setItem(`${id}-${type}`, JSON.stringify(data));
+            }),
             movableColumns: true,
             persistenceID:this.persistenceID,
             selectableRows: false,
@@ -1439,9 +1454,9 @@ class UIBootgrid {
 
                 if (this.options.ajax) {
                     totalRows = this.paginationTotal;
+                    pageSize = this.curRowCount === true ? this.paginationTotal : this.curRowCount;
                 }
 
-                pageSize = this.curRowCount === true ? this.paginationTotal : this.curRowCount;
                 end = currentPage * pageSize;
                 start = (totalRows === 0) ? 0 : ((currentPage - 1) * pageSize) + 1;
                 end = (totalRows === 0 || end === -1 || end > totalRows) ? totalRows : end;
@@ -2243,6 +2258,14 @@ class UIBootgrid {
         this.table.addData(rows);
     }
 
+    replace(rows) {
+        if (!Array.isArray(rows) || rows.length === 0) {
+            throw new Error('Cannot replace without data. Use clear() to clear data, or reload() to refresh');
+        }
+
+        this.table.replaceData(rows);
+    }
+
     clear() {
         if (this.tableInitialized) {
             this.table.clearData();
@@ -2263,10 +2286,6 @@ class UIBootgrid {
 
     getCurrentRows() {
         return this.table.getData();
-    }
-
-    getTotalRowCount() {
-        return this.table.getDataCount();
     }
 
     getCurrentPage() {

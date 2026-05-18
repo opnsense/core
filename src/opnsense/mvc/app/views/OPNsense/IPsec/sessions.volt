@@ -105,7 +105,6 @@
                         }
                     }
                 },
-                useRequestHandlerOnGet: true,
                 requestHandler: function(request) {
                     let ids = $("#grid-phase1").bootgrid("getSelectedRows");
                     request['id'] = ids.length > 0 ? ids[0] : "__not_found__";
