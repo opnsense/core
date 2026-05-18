@@ -452,9 +452,12 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/Api/RoutesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/IndexController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routes/forms/dialogEditRoute.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Routing/Api/GroupSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routing/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routing/ConfigurationController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Routing/GatewayGroupsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Routing/forms/dialogEditGateway.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Routing/forms/dialogEditGatewayGroup.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Syslog/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Syslog/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Syslog/IndexController.php
@@ -887,6 +890,9 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Routes/Route.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Routing/FieldTypes/GatewayField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Routing/FieldTypes/GatewayGroupItemField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Routing/GatewayGroups.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Routing/GatewayGroups.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Routing/Gateways.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Routing/Gateways.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Routing/Migrations/M1_0_0.php
@@ -1026,6 +1032,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Radvd/settings.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Routes/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Routing/configuration.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Routing/groups.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Syslog/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/TrafficShaper/statistics.volt
@@ -2560,8 +2567,6 @@
 /usr/local/www/system_advanced_firewall.php
 /usr/local/www/system_advanced_misc.php
 /usr/local/www/system_authservers.php
-/usr/local/www/system_gateway_groups.php
-/usr/local/www/system_gateway_groups_edit.php
 /usr/local/www/system_general.php
 /usr/local/www/system_usermanager_passwordmg.php
 /usr/local/www/system_usermanager_settings_ldapacpicker.php

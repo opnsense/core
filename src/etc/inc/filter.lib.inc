@@ -56,6 +56,7 @@ function filter_core_get_initialized_plugin_system()
     $fw = new \OPNsense\Firewall\Plugin();
     $ifdetails = legacy_interfaces_details();
     $gateways = new \OPNsense\Routing\Gateways();
+    $gatewaygroups = new \OPNsense\Routing\GatewayGroups();
     $cnfint = legacy_config_get_interfaces(["enable" => true]);
     foreach ($cnfint as $key => &$value) {
         // to set "reply-to" we need to know the gateway for our interface, let's collect it here and pass it on to
@@ -82,7 +83,7 @@ function filter_core_get_initialized_plugin_system()
     $fw->setInterfaceMapping($cnfint);
     $fw->setGateways($gateways);
     $fw->setIfconfigDetails($ifdetails);
-    $fw->setGatewayGroups($gateways->getGroups(return_gateways_status()));
+    $fw->setGatewayGroups($gatewaygroups->getActiveGroups(return_gateways_status()));
     return $fw;
 }
 

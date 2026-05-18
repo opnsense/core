@@ -1,0 +1,59 @@
+<model>
+    <mount>/gateways/gateway_group+</mount>
+    <version>1.0.0</version>
+    <description>Gateway group configuration</description>
+    <items>
+        <gateway_group type="ArrayField">
+            <name type="TextField">
+                <Required>Y</Required>
+                <ValidationMessage>A valid group name must be specified. The name may only consist of the characters "a-zA-Z0-9_" and must be less than 32 characters long.</ValidationMessage>
+                <Mask>/^[a-zA-Z0-9_\-]{1,32}$/</Mask>
+                <Constraints>
+                    <check001>
+                        <type>UniqueConstraint</type>
+                        <ValidationMessage>Gateway group with this name already exists.</ValidationMessage>
+                    </check001>
+                </Constraints>
+            </name>
+            <item2 type="JsonKeyValueStoreField">
+                <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
+                <Multiple>Y</Multiple>
+            </item2>
+            <item3 type="JsonKeyValueStoreField">
+                <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
+                <Multiple>Y</Multiple>
+            </item3>
+            <item4 type="JsonKeyValueStoreField">
+                <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
+                <Multiple>Y</Multiple>
+            </item4>
+            <item5 type="JsonKeyValueStoreField">
+                <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
+                <Multiple>Y</Multiple>
+            </item5>
+            <!-- <item> placed last to assist inline migration -->
+            <item type=".\GatewayGroupItemField">
+                <ConfigdPopulateAct>interface gateways list -l</ConfigdPopulateAct>
+                <Multiple>Y</Multiple>
+            </item>
+            <trigger type="OptionField">
+                <Required>Y</Required>
+                <Default>down</Default>
+                <OptionValues>
+                    <down>Member Down</down>
+                    <downloss>Packet Loss</downloss>
+                    <downlatency>High Latency</downlatency>
+                    <downlosslatency>Packet Loss and High Latency</downlosslatency>
+                </OptionValues>
+            </trigger>
+            <poolopts type="OptionField">
+                <OptionValues>
+                    <default value="">Default</default>
+                    <roundrobin value="round-robin">Round Robin</roundrobin>
+                    <roundrobinsticky value="round-robin sticky-address">Round Robin with Sticky Address</roundrobinsticky>
+                </OptionValues>
+            </poolopts>
+            <descr type="DescriptionField"/>
+        </gateway_group>
+    </items>
+</model>

@@ -95,18 +95,18 @@ class SettingsController extends ApiMutableModelControllerBase
             $gateways[$idx]['interface_descr'] = (string)$cfg->interfaces->{$gateway['interface']}->descr ?: strtoupper($gateway['interface']);
 
             /* parse gateway and monitoring status */
-            $i = array_search($gateway['name'], array_column($gateways_status, 'name'));
-            $gateways[$idx]['status'] = $i !== false ? $gateways_status[$i]['status_translated'] : 'Pending';
+            $this_gw_status = $gateways_status[$gateway['name']] ?? [];
+            $gateways[$idx]['status'] = $this_gw_status['status_translated'] ?? gettext('Pending');
             foreach (['delay', 'stddev', 'loss'] as $status_kw) {
-                $gateways[$idx][$status_kw] = $i !== false ? $gateways_status[$i][$status_kw] : '~';
+                $gateways[$idx][$status_kw] = $this_gw_status[$status_kw] ?? '~';
             }
             $gateways[$idx]['label_class'] = 'fa fa-plug text-default';
-            if ($i !== false) {
-                if (str_contains($gateways_status[$i]['status'], 'down')) {
+            if (!empty($this_gw_status)) {
+                if (str_contains($this_gw_status['status'], 'down')) {
                     $gateways[$idx]['label_class'] = 'fa fa-plug text-danger';
-                } elseif (str_contains($gateways_status[$i]['status'], 'loss') || str_contains($gateways_status[$i]['status'], 'delay')) {
+                } elseif (str_contains($this_gw_status['status'], 'loss') || str_contains($this_gw_status['status'], 'delay')) {
                     $gateways[$idx]['label_class'] = 'fa fa-plug text-warning';
-                } elseif (str_contains($gateways_status[$i]['status'], 'none')) {
+                } elseif (str_contains($this_gw_status['status'], 'none')) {
                     $gateways[$idx]['label_class'] = 'fa fa-plug text-success';
                 }
             } elseif (empty($gateway['disabled']) && !empty($gateway['monitor_disable'])) {
@@ -211,23 +211,15 @@ class SettingsController extends ApiMutableModelControllerBase
                     }
                 }
 
-                $groups = [];
-                foreach ($cfg->gateways->children() as $tag => $gw_group) {
-                    if ($tag == 'gateway_group' && !empty($gw_group)) {
-                        foreach ($gw_group->item as $item) {
-                            $name = explode("|", (string)$item);
-                            if ($name[0] == $gateway->name) {
-                                $groups[] = (string)$gw_group->name;
-                            }
-                        }
-                    }
-                }
-
+                $groups = (new \OPNsense\Routing\GatewayGroups())->gatewayGroupsByGateway($gateway->name->getValue());
                 if (!empty($groups)) {
+                    $names = array_map(function($item) {
+                        return $item->name->getValue();
+                    }, $groups);
                     throw new UserException(sprintf(
                         gettext("Gateway %s cannot be deleted because it is in use on Gateway Group(s) '%s'"),
                         $gateway->name,
-                        implode(', ', $groups)
+                        implode(', ', $names)
                     ));
                 }
 

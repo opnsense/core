@@ -41,6 +41,7 @@ if ($ostypes == null) {
     $ostypes = array();
 }
 $gateways = new \OPNsense\Routing\Gateways();
+$gwgroups = new \OPNsense\Routing\GatewayGroups();
 $shaper_targets = (new \OPNsense\TrafficShaper\TrafficShaper())->fetchAllTargets();
 
 
@@ -252,7 +253,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext("You can not assign a gateway to a rule that applies to IPv4 and IPv6");
     }
     if (!empty($pconfig['gateway']) && isset($config['gateways']['gateway_group'])) {
-        $family = $gateways->getGroupIPProto($pconfig['gateway']);
+        $family = $gwgroups->getGroupIPProto($pconfig['gateway']);
         if ($family !== null && $pconfig['ipprotocol'] == "inet6" && $pconfig['ipprotocol'] != $family) {
             $input_errors[] = gettext('You can not assign an IPv4 gateway group on an IPv6 rule.');
         }
@@ -1366,7 +1367,7 @@ include("head.inc");
                           </option>
 <?php
                         endforeach;
-                        foreach ($gateways->getGroupNames() as $gwg_name):?>
+                        foreach ($gwgroups->getGroupNames() as $gwg_name):?>
                           <option value="<?=$gwg_name;?>" <?=$gwg_name == $pconfig['gateway'] ? " selected=\"selected\"" : "";?>>
                             <?=$gwg_name;?>
                           </option>
