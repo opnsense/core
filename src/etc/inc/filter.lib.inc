@@ -521,7 +521,7 @@ function filter_core_rules_system($fw, $defaults)
                 break;
             default:
                 $dhcpdv6_enabled = file_exists('/usr/local/www/services_dhcpv6.php') && isset($config['dhcpdv6'][$intf]['enable']);
-                $track6_enabled = isset($intfinfo['track6-interface']);
+                $track6_enabled = ($intfinfo['ipaddrv6'] ?? '') == 'track6' && !empty($intfinfo['track6-interface']);
 
                 if ($dhcpdv6_enabled || $track6_enabled || in_array($intf, $dhcrelay6_interfaces)) {
                     $fw->registerFilterRule(
