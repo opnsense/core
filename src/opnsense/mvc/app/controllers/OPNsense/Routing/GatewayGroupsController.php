@@ -28,7 +28,7 @@
 
 namespace OPNsense\Routing;
 
-use \OPNsense\Base\IndexController;
+use OPNsense\Base\IndexController;
 
 class GatewayGroupsController extends IndexController
 {

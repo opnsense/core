@@ -85,7 +85,6 @@ class GatewayGroups extends BaseModel
                     }
                 }
             }
-
         }
 
         return $messages;
@@ -142,7 +141,7 @@ class GatewayGroups extends BaseModel
 
             $result[$name]['tiers'] = [];
             foreach (['item', 'item2', 'item3', 'item4', 'item5'] as $idx => $property) {
-                $result[$name]['tiers'][$idx + 1] = explode(',',  $result[$name][$property] ?? '');
+                $result[$name]['tiers'][$idx + 1] = explode(',', $result[$name][$property] ?? '');
                 unset($result[$name][$property]);
             }
 

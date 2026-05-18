@@ -68,9 +68,9 @@ class GroupSettingsController extends ApiMutableModelControllerBase
                         $gateways_status[$gwname]['label'] = 'default';
                         if (str_contains($gateways_status[$gwname]['status'], 'down')) {
                             $gateways_status[$gwname]['label'] = 'danger';
-                        } else if (str_contains($gateways_status[$gwname]['status'], 'loss') || str_contains($gateways_status[$gwname]['status'], 'delay')) {
+                        } elseif (str_contains($gateways_status[$gwname]['status'], 'loss') || str_contains($gateways_status[$gwname]['status'], 'delay')) {
                             $gateways_status[$gwname]['label'] = 'warning';
-                        } else if (str_contains($gateways_status[$gwname]['status'], 'none')) {
+                        } elseif (str_contains($gateways_status[$gwname]['status'], 'none')) {
                             $gateways_status[$gwname]['label'] = 'success';
                         }
                     } else {
@@ -128,7 +128,8 @@ class GroupSettingsController extends ApiMutableModelControllerBase
                             }
                             $message = sprintf(
                                 gettext("Gateway group %s in use by %s %s (%s)"),
-                                $name, $referring_node->getName(),
+                                $name,
+                                $referring_node->getName(),
                                 $descr,
                                 $referring_node->attributes()['uuid']
                             );
