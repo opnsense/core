@@ -364,7 +364,8 @@ class Gateways extends BaseModel
                     );
                 }
                 $reservednames[] = $gw_arr['name'];
-                $gw_arr['if'] = Util::getRealInterface($gw_arr['interface'], $gw_arr['ipprotocol']);
+                /* XXX 'interface' can be null */
+                $gw_arr['if'] = Util::getRealInterface($gw_arr['interface'] ?? '', $gw_arr['ipprotocol']);
                 $gw_arr['attribute'] = $i++;
                 if (Util::isIpAddress($gw_arr['gateway'])) {
                     if (empty($gw_arr['monitor_disable']) && empty($gw_arr['monitor'])) {
