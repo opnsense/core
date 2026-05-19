@@ -520,10 +520,10 @@ function filter_core_rules_system($fw, $defaults)
                 );
                 break;
             default:
-                $dhcpdv6_enabled = file_exists('/usr/local/www/services_dhcpv6.php') && isset($config['dhcpdv6'][$intf]['enable']);
-                $track6_enabled = ($intfinfo['ipaddrv6'] ?? '') == 'track6' && !empty($intfinfo['track6-interface']);
+                $legacy_dhcpdv6 = file_exists('/usr/local/www/services_dhcpv6.php') &&
+                    (isset($config['dhcpdv6'][$intf]['enable']) || ($intfinfo['ipaddrv6'] ?? 'none') == 'track6');
 
-                if ($dhcpdv6_enabled || $track6_enabled || in_array($intf, $dhcrelay6_interfaces)) {
+                if ($legacy_dhcpdv6 || in_array($intf, $dhcrelay6_interfaces)) {
                     $fw->registerFilterRule(
                         1,
                         ['protocol' => 'udp','ipprotocol' => 'inet6', 'from' => 'fe80::/10', 'to' => 'fe80::/10,ff02::/16',
