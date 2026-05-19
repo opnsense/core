@@ -277,6 +277,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/packetcapture.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/ping.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/portprobe.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/systemhealth.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/traceroute.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/Api/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/Api/ServiceController.php
@@ -722,6 +723,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Lvtemplate.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Migrations/M1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Netflow.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Netflow.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/PacketCapture.php
@@ -730,6 +732,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Ping.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Portprobe.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Portprobe.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/SystemHealth.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/SystemHealth.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Traceroute.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Traceroute.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/ACL/ACL.xml

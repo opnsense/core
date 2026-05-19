@@ -1,0 +1,12 @@
+<form>
+    <field>
+        <id>systemhealth.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>
+            Enables the RRD graphing backend. Note that if disabled, existing RRD data is not deleted.
+            When enabled, starts a cron job that runs every minute, collecting helpful system metrics
+            to be shown in the graph below.
+        </help>
+    </field>
+</form>

@@ -180,4 +180,29 @@ class NetflowController extends ApiControllerBase
             return array();
         }
     }
+
+    public function resetAction()
+    {
+        $result = ["status" => "failed"];
+
+        if ($this->request->isPost()) {
+            $result["status"] = (new Backend())->configdRun("netflow flush");
+        }
+
+        return $result;
+    }
+
+    public function repairAction()
+    {
+        $result = ["status" => "failed"];
+
+        if ($this->request->isPost()) {
+            $backend = new Backend();
+            $backend->configdRun('netflow aggregate stop');
+            $backend->configdRun('netflow aggregate repair', true);
+            $result["status"] = "OK";
+        }
+
+        return $result;
+    }
 }

@@ -53,5 +53,6 @@ class SystemhealthController extends IndexController
     public function indexAction()
     {
         $this->view->pick('OPNsense/Diagnostics/health');
+        $this->view->systemHealthForm = $this->getForm("systemhealth");
     }
 }
