@@ -161,7 +161,7 @@
                   <OptionValues>
                     <iterative>iterative</iterative>
                     <random>random</random>
-                    <flq>flq</flq>
+                    <flq>Free Lease Queue Allocator</flq>
                   </OptionValues>
                 </allocator>
                 <pools type=".\KeaPoolsField"/>
