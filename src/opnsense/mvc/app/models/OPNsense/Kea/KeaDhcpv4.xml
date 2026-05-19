@@ -159,7 +159,7 @@
                 <allocator type="OptionField">
                   <BlankDesc>Default</BlankDesc>
                   <OptionValues>
-                    <iterative>iterative</iterative>
+                    <iterative>Iterative</iterative>
                     <random>Random</random>
                     <flq>Free Lease Queue</flq>
                   </OptionValues>
