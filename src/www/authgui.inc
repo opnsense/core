@@ -129,9 +129,36 @@ function check_security_http_referer_enforcement()
     return false;
 }
 
+function session_id_cookies_count()
+{
+    // If the browser persisted two PHPSESSID cookies due to scope difference and sends us both,
+    // we're kinda doomed.  That's a real header from Firefox 145.0:
+    // Cookie: \
+    //   PHPSESSID=98f5c2560301e96be907155747cd115c; \
+    //   PHPSESSID=ba361971b66e6d92017f6be6a4f142ee; \
+    //   cookie_test=639b6fea2cbd06002a8d9fb702617a30
+    if (!isset($_COOKIE[session_name()]))
+        return 0;
+    $ret = 0;
+    $cookies = explode(';', $_SERVER['HTTP_COOKIE']);
+    foreach ($cookies as $ckie) {
+        $parts = explode('=', $ckie, 2);
+        if (trim($parts[0]) === session_name())
+            $ret++;
+    }
+    return $ret;
+}
+
 function session_auth()
 {
     global $config;
+
+    // Two+ session_id() cookies confuse _SESSION management. They should go before we continue.
+    // It's hard to reset them from the server-side as we don't know the right scope with confidence.
+    if (($c = session_id_cookies_count()) >= 2) {
+        auth_log(sprintf("%d %s cookies from %s, no way to proceeed", $c, session_name(), $_SERVER['REMOTE_ADDR']), LOG_NOTICE);
+        return false;
+    }
 
     if (session_status() == PHP_SESSION_NONE) {
         // Handle HTTPS httponly and secure flags
@@ -269,7 +296,13 @@ function session_auth()
 /* Authenticate user - exit if failed */
 if (!session_auth()) {
     set_language();
-    display_login_form(!empty($_POST['usernamefld']) ? gettext('Wrong username or password.') : null);
+    if (session_id_cookies_count() >= 2)
+        $err = gettext('Use Private Browsing or clear cookies.');
+    else if (!empty($_POST['usernamefld']))
+        $err = gettext('Wrong username or password.');
+    else
+        $err = null;
+    display_login_form($err);
     exit;
 }
 
