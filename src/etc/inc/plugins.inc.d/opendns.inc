@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2026 Greelan
  * Copyright (C) 2019 Deciso B.V.
  * All rights reserved.
  *
@@ -37,12 +38,17 @@ function opendns_configure()
 
 function opendns_configure_do($verbose = false)
 {
-    global $config;
+    $mdl = new \OPNsense\OpenDNS\OpenDNS();
 
-    if (!empty($config['opendns']['enable'])) {
+    if (!$mdl->enable->isEmpty()) {
         service_log('Configure OpenDNS...', $verbose);
 
-        $result = opendns_register($config['opendns']);
+        $pconfig = [
+            'username' => (string)$mdl->username,
+            'password' => (string)$mdl->password,
+            'host' => (string)$mdl->host,
+        ];
+        $result = opendns_register($pconfig);
         log_msg("opendns response: $result");
 
         service_log("done.\n", $verbose);
@@ -53,7 +59,7 @@ function opendns_xmlrpc_sync()
 {
     return [[
         'description' => gettext('OpenDNS'),
-        'section' => 'opendns',
+        'section' => 'OPNsense.OpenDNS',
         'id' => 'opendns',
     ]];
 }
@@ -64,6 +70,7 @@ function opendns_register($pconfig)
     curl_setopt($ch, CURLOPT_URL, sprintf('https://updates.opendns.com/nic/update?hostname=%s', $pconfig['host']));
     curl_setopt($ch, CURLOPT_USERPWD, sprintf('%s:%s', $pconfig['username'], $pconfig['password']));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 60);
     $output = curl_exec($ch);
     curl_close($ch);
 
