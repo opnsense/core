@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2026 Konstantinos Spartalis <cspartalis@potatonetworks.com>
  * Copyright (C) 2023 Deciso B.V.
  * All rights reserved.
  *
@@ -29,10 +30,12 @@
 namespace OPNsense\Core\Api;
 
 use OPNsense\Base\ApiControllerBase;
+use OPNsense\Base\UserException;
 use OPNsense\Core\ACL;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Core\Shell;
+use OPNsense\Backup\Local;
 
 /**
  * Class BackupController
@@ -213,4 +216,211 @@ class BackupController extends ApiControllerBase
             }
         }
     }
+
+    public function getSettingsAction()
+    {
+        $mdlBackup = new \OPNsense\Core\Backup();
+        $nodes = $mdlBackup->getNodes();
+        return [
+            'backup' => [
+                'pushtime' => $nodes['pushtime'],
+                'backupcount' => $nodes['backupcount'],
+            ]
+        ];
+    }
+
+    public function setSettingsAction()
+    {
+        $result = ['status' => 'failed'];
+        if ($this->request->isPost()) {
+            $post = $this->request->getPost('backup');
+            $mdlBackup = new \OPNsense\Core\Backup();
+
+            if (isset($post['pushtime'])) {
+                $mdlBackup->pushtime = trim($post['pushtime']);
+            }
+            if (isset($post['backupcount'])) {
+                $mdlBackup->backupcount = trim($post['backupcount']) === '' ? null : trim($post['backupcount']);
+            }
+
+            $valMsgs = $mdlBackup->performValidation();
+            if (count($valMsgs) > 0) {
+                $validations = [];
+                foreach ($valMsgs as $msg) {
+                    $field = $msg->getField();
+                    if ($field === 'pushtime') {
+                        $validations['backup.pushtime'] = $msg->getMessage();
+                    } else {
+                        $validations['backup.' . $field] = $msg->getMessage();
+                    }
+                }
+                return ['status' => 'failed', 'validations' => $validations];
+            }
+
+            $mdlBackup->serializeToConfig();
+            Config::getInstance()->save('Changed backup settings');
+
+            // CRON restart
+            if (isset($post['pushtime'])) {
+                $backend = new \OPNsense\Core\Backend();
+                $backend->configdRun('template reload OPNsense/Cron');
+                $backend->configdRun('cron restart');
+            }
+
+            $result = ['status' => 'success'];
+        }
+        return $result;
+    }
+
+    public function downloadConfigAction()
+    {
+        if ($this->request->isPost()) {
+            $config = Config::getInstance()->object();
+            $hostname = "OPNsense";
+            if (isset($config->system->hostname)) {
+                $hostname = (string)$config->system->hostname . "." . (string)$config->system->domain;
+            }
+            $name = "config-" . $hostname . "-" . date("YmdHis") . ".xml";
+            $tmpfile = tempnam(sys_get_temp_dir(), 'opn_bck_');
+            $rrd_arg = empty($this->request->getPost('donotbackuprrd')) ? "rrd" : "norrd";
+            $backend = new Backend();
+            $response = json_decode(trim($backend->configdpRun('system config export', [$tmpfile, $rrd_arg])), true);
+
+            if ($response !== null && $response['status'] === 'success' && file_exists($tmpfile)) {
+                $data = file_get_contents($tmpfile);
+                @unlink($tmpfile);
+
+                if (!empty($this->request->getPost('encrypt'))) {
+                    $password = $this->request->getPost('encrypt_password');
+                    $crypter = new Local();
+                    $data = $crypter->encrypt($data, $password);
+                }
+
+                $size = strlen($data);
+                $this->response->setContentType('application/octet-stream');
+                $this->response->setRawHeader("Content-Disposition: attachment; filename={$name}");
+                $this->response->setRawHeader("Content-Length: $size");
+                $this->response->setRawHeader("Pragma: private");
+                $this->response->setRawHeader("Cache-Control: private, must-revalidate");
+                $this->response->setContent($data);
+                return null;
+            } else if ($response !== null && isset($response['message'])) {
+                @unlink($tmpfile);
+                return $response;
+            }
+        }
+        return ['status' => 'failed'];
+    }
+
+    public function restoreAction()
+    {
+        if ($this->request->isPost() && isset($_FILES['conffile']) && is_uploaded_file($_FILES['conffile']['tmp_name'])) {
+            if ((new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
+                return ['status' => 'failed', 'message' => gettext('You do not have sufficient privileges to restore the configuration.')];
+            }
+
+            $data = file_get_contents($_FILES['conffile']['tmp_name']);
+
+            if (empty($data)) {
+                return ['status' => 'failed', 'message' => sprintf(gettext("Warning, could not read file %s"), $_FILES['conffile']['name'])];
+            }
+
+            if (!empty($this->request->getPost('decrypt'))) {
+                $password = $this->request->getPost('decrypt_password');
+                $crypter = new Local();
+                $data = $crypter->decrypt($data, $password);
+                if (empty($data)) {
+                    return ['status' => 'failed', 'message' => gettext('The uploaded file could not be decrypted.')];
+                }
+            }
+
+            $post = $this->request->getPost();
+            $restoreareas = !empty($post['restorearea']) ? $post['restorearea'] : [];
+            $do_reboot = !empty($post['rebootafterrestore']);
+
+            $tmpfile = tempnam(sys_get_temp_dir(), 'opn_bck_');
+            file_put_contents($tmpfile, $data);
+
+            $params = [
+                'conffile' => $tmpfile,
+                'restorearea' => $restoreareas,
+                'rebootafterrestore' => $do_reboot,
+                'keepconsole' => !empty($post['keepconsole']),
+                'flush_history' => !empty($post['flush_history'])
+            ];
+
+            $paramfile = tempnam(sys_get_temp_dir(), 'opn_bck_par_');
+            file_put_contents($paramfile, json_encode($params));
+
+            $backend = new Backend();
+            $response = json_decode(trim($backend->configdpRun('system config restore', [$paramfile])), true);
+
+            @unlink($tmpfile);
+            @unlink($paramfile);
+
+            if ($response !== null && $response['status'] === 'success') {
+                if (!empty($response['reboot'])) {
+                    $backend->configdRun('system reboot', true);
+                }
+                return $response;
+            }
+
+            return $response ?? ['status' => 'failed', 'message' => gettext("The configuration could not be restored.")];
+        }
+        return ['status' => 'failed', 'message' => 'No files uploaded'];
+    }
+
+    public function setupProviderAction($providerName)
+    {
+        if ($this->request->isPost()) {
+            $backupFactory = new \OPNsense\Backup\BackupFactory();
+            $provider = $backupFactory->getProvider($providerName);
+            if (!$provider) {
+                return ['status' => 'failed', 'message' => 'Provider not found.'];
+            }
+
+            $providerSet = array();
+            $post = $this->request->getPost();
+
+            foreach ($provider['handle']->getConfigurationFields() as $field) {
+                if ($field['type'] == 'file') {
+                    if (isset($_FILES[$field['name']]) && is_uploaded_file($_FILES[$field['name']]['tmp_name'])) {
+                        $providerSet[$field['name']] = file_get_contents($_FILES[$field['name']]['tmp_name']);
+                    } else {
+                        $providerSet[$field['name']] = null;
+                    }
+                } else {
+                    $providerSet[$field['name']] = isset($post[$field['name']]) ? $post[$field['name']] : '';
+                }
+            }
+
+            $input_errors = $provider['handle']->setConfiguration($providerSet);
+
+            if (count($input_errors) == 0) {
+                $backend = new Backend();
+                $backend->configdRun('template reload OPNsense/Cron');
+                $backend->configdRun('cron restart');
+
+                if ($provider['handle']->isEnabled()) {
+                    try {
+                        $filesInBackup = $provider['handle']->backup();
+                    } catch (\Exception $e) {
+                        return ['status' => 'failed', 'message' => $e->getMessage()];
+                    }
+                    if (count($filesInBackup) == 0) {
+                        return ['status' => 'success', 'message' => gettext('Saved settings, but remote backup returned no files.')];
+                    } else {
+                        $msg = gettext("Backup successful. Current file list: ") . implode(", ", $filesInBackup);
+                        return ['status' => 'success', 'message' => $msg];
+                    }
+                }
+
+                return ['status' => 'success', 'message' => gettext("Settings configured.")];
+            } else {
+                return ['status' => 'failed', 'message' => implode(", ", $input_errors)];
+            }
+        }
+        return ['status' => 'failed', 'message' => 'Invalid request'];
+    }
 }
+
