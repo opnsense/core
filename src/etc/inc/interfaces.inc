@@ -2970,7 +2970,7 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
     @file_put_contents('/var/etc/dhcp6c.conf', $dhcp6cconf);
 }
 
-function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
+function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $default_id)
 {
     $dhcp6cconf = '';
 
@@ -2995,7 +2995,7 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
                 }
                 $pd_conf .= "  };\n";
 
-                /* XXX $id from dhcp6_assoc_pd */
+                $id = strlen($wancfg['dhcp6_assoc_pd'] ?? '') ? $wancfg['dhcp6_assoc_pd'] : $default_id;
                 $assoc_pd[$id] = ($assoc_pd[$id] ?? '') . $pd_conf;
             }
 
@@ -3010,25 +3010,26 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
                     }
                     $pd_conf .= "  };\n";
 
-                    /* XXX $id from track6_assoc_pd */
+                    $id = strlen($lancfg['track6_assoc_pd'] ?? '') ? $lancfg['track6_assoc_pd'] : $default_id;
                     $assoc_pd[$id] = ($assoc_pd[$id] ?? '') . $pd_conf;
                 }
             }
-        }
 
-        ksort($assoc_pd, SORT_NUMERIC);
+            if (!count($assoc_pd)) {
+                /* for backwards compatibility always emit a default PD request */
+                $assoc_pd[$default_id] = '';
+            }
 
-        /* for backwards compatibility always emit this PD request */
-        if (!isset($assoc_pd[$id])) {
-            $assoc_pd[$id] = '';
+            ksort($assoc_pd, SORT_NUMERIC);
         }
 
         $dhcp6cconf .= "interface {$wanif} {\n";
 
         if (!isset($wancfg['dhcp6prefixonly'])) {
             /* request non-temporary address */
-            $dhcp6cconf .= "  send ia-na {$id};\n";
+            $dhcp6cconf .= "  send ia-na {$default_id};\n";
         }
+
         if (is_numeric($wancfg['dhcp6-ia-pd-len'])) {
             /* request prefix delegation */
             foreach (array_keys($assoc_pd) as $id) {
@@ -3049,7 +3050,7 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
         $dhcp6cconf .= "};\n";
 
         if (!isset($wancfg['dhcp6prefixonly'])) {
-            $dhcp6cconf .= "id-assoc na {$id} { };\n";
+            $dhcp6cconf .= "id-assoc na {$default_id} { };\n";
         }
 
         foreach ($assoc_pd as $i => $pd_conf) {
@@ -3066,7 +3067,7 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $id = 0)
     return $dhcp6cconf;
 }
 
-function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif, $id = 0)
+function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif, $default_id)
 {
     $send_options = "";
 
@@ -3108,7 +3109,7 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif, $id = 0)
         if (is_numeric($wancfg['adv_dhcp6_id_assoc_statement_address_id'])) {
             $id_assoc_statement_address .= "{$wancfg['adv_dhcp6_id_assoc_statement_address_id']}";
         } else {
-            $id_assoc_statement_address .= $id;
+            $id_assoc_statement_address .= $default_id;
         }
         $id_assoc_statement_address .= " {\n";
 
@@ -3138,7 +3139,7 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif, $id = 0)
         if (is_numeric($wancfg['adv_dhcp6_id_assoc_statement_prefix_id'])) {
             $id_assoc_statement_prefix .= "{$wancfg['adv_dhcp6_id_assoc_statement_prefix_id']}";
         } else {
-            $id_assoc_statement_prefix .= $id;
+            $id_assoc_statement_prefix .= $default_id;
         }
         $id_assoc_statement_prefix .= " {\n";
 
