@@ -131,7 +131,7 @@
         type="button"
 ></button>
 
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/syslog/service/reconfigure', 'data_exclude_scope': 'tab_statistics', 'data_service_widget': 'syslog'}) }}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/syslog/service/reconfigure', 'data_exclude_scope': 'statistics', 'data_service_widget': 'syslog'}) }}
 
 {# include dialogs #}
 {{ partial("layout_partials/base_dialog",['fields':formDialogDestination,'id':formGridDestination['edit_dialog_id'],'label':lang._('Edit destination')])}}
