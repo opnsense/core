@@ -248,21 +248,52 @@ function validate_track6_idassoc6(&$pconfig, $if)
         if ($ipv6_delegation_length >= 0) {
             $ipv6_num_prefix_ids = pow(2, $ipv6_delegation_length);
             $track6_prefix_id = intval($pconfig["{$pconfig['type6']}-prefix-id--hex"], 16);
+            $track6_prefix_range = $pconfig["{$pconfig['type6']}_prefix_range"];
             if ($track6_prefix_id < 0 || $track6_prefix_id >= $ipv6_num_prefix_ids) {
                 $input_errors[] = gettext("You specified an IPv6 prefix ID that is out of range.");
+            } elseif (strlen($track6_prefix_range)) {
+                if (!ctype_digit($track6_prefix_range)) {
+                    $input_errors[] = gettext("You specified an IPv6 prefix range that is not valid.");
+                } elseif ($track6_prefix_range < 1 || $track6_prefix_id + $track6_prefix_range > $ipv6_num_prefix_ids) {
+                    $input_errors[] = gettext("You specified an IPv6 prefix range that is out of range.");
+                }
             }
+            $default_id = interface_dhcpv6_id($pconfig["{$pconfig['type6']}-interface"]);
+            $assoc_pd_ref = !empty($pconfig["{$pconfig['type6']}_assoc_pd"]) && ctype_digit($pconfig["{$pconfig['type6']}_assoc_pd"]) ?
+                $pconfig["{$pconfig['type6']}_assoc_pd"] : $default_id;
             foreach (link_interface_to_track6($pconfig["{$pconfig['type6']}-interface"]) as $trackif => $trackcfg) {
-                if ($trackif != $if && $trackcfg['track6-prefix-id'] == $track6_prefix_id) {
+                if ($trackif == $if) {
+                    continue;
+                }
+                $assoc_pd_link = !empty($trackcfg['track6_assoc_pd']) ? $trackcfg['track6_assoc_pd'] : $default_id;
+                if ($assoc_pd_ref != $assoc_pd_ref) {
+                    continue;
+                }
+                /* the end of non-overlapping intervals needs to specify 0 ... n-1 */
+                $track6_range_end = !empty($track6_prefix_range) ? $track6_prefix_range - 1 : 0;
+                $track6_range_end += $track6_prefix_id;
+                $range_end_link = !empty($trackcfg['track6_prefix_range']) ? $trackcfg['track6_prefix_range'] - 1 : 0;
+                $range_end_link += $trackcfg['track6-prefix-id'];
+                if ($trackcfg['track6-prefix-id'] == $track6_prefix_id) {
                     $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
+                    break;
+                } elseif ($trackcfg['track6-prefix-id'] <= $track6_range_end && $track6_prefix_id <= $range_end_link) {
+                    $input_errors[] = gettext('You specified an IPv6 prefix range that is already in use.');
                     break;
                 }
             }
             if (isset($config['interfaces'][$pconfig["{$pconfig['type6']}-interface"]]['dhcp6-prefix-id'])) {
-                if ($config['interfaces'][$pconfig["{$pconfig['type6']}-interface"]]['dhcp6-prefix-id'] == $track6_prefix_id) {
+                $assoc_pd_parent = !empty($config['interfaces'][$pconfig["{$pconfig['type6']}-interface"]]['dhcp6_assoc_pd']) ?
+                    $config['interfaces'][$pconfig["{$pconfig['type6']}-interface"]]['dhcp6_assoc_pd'] : $default_id;
+                if ($assoc_pd_ref == $assoc_pd_parent && $config['interfaces'][$pconfig["{$pconfig['type6']}-interface"]]['dhcp6-prefix-id'] == $track6_prefix_id) {
                     $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
                 }
             }
         }
+    }
+
+    if (!empty($pconfig["{$pconfig['type6']}_assoc_pd"]) && !ctype_digit($pconfig["{$pconfig['type6']}_assoc_pd"])) {
+        $input_errors[] = gettext('You must enter a valid number for the IPv6 prefix association identity.');
     }
 
     if (isset($pconfig["{$pconfig['type6']}_ifid--hex"]) && $pconfig["{$pconfig['type6']}_ifid--hex"] != '') {
@@ -297,6 +328,12 @@ function store_track6_idassoc6(&$new_config, &$pconfig)
     }
     if (isset($pconfig["{$pconfig['type6']}_ifid--hex"]) && ctype_xdigit($pconfig["{$pconfig['type6']}_ifid--hex"])) {
         $new_config['track6_ifid'] = intval($pconfig["{$pconfig['type6']}_ifid--hex"], 16);
+    }
+    if (!empty($pconfig["{$pconfig['type6']}_prefix_range"])) {
+        $new_config['track6_prefix_range'] = $pconfig["{$pconfig['type6']}_prefix_range"];
+    }
+    if (!empty($pconfig["{$pconfig['type6']}_assoc_pd"])) {
+        $new_config['track6_assoc_pd'] = $pconfig["{$pconfig['type6']}_assoc_pd"];
     }
     if ($pconfig['type6'] == 'track6') {
         /* this is not needed in the new world */
@@ -461,6 +498,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'dhcp6_ifid',
         'dhcp6_norequest_dns',
         'dhcp6_rapid_commit',
+        'dhcp6_assoc_pd',
         'dhcp6vlanprio',
         'dhcphostname',
         'dhcprejectfrom',
@@ -488,7 +526,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         'subnetv6',
         'track6-interface',
         'track6-prefix-id',
+        'track6_assoc_pd',
         'track6_ifid',
+        'track6_prefix_range',
     ];
     foreach ($std_copy_fieldnames as $fieldname) {
         $pconfig[$fieldname] = isset($a_interfaces[$if][$fieldname]) ? $a_interfaces[$if][$fieldname] : null;
@@ -509,7 +549,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dhcpd6track6allowoverride'] = isset($a_interfaces[$if]['dhcpd6track6allowoverride']);
     $pconfig['dhcp6_request_dns'] = empty($pconfig['dhcp6_norequest_dns']);
 
-    foreach(['-interface', '-prefix-id', '-prefix-id--hex', '_ifid', '_ifid--hex'] as $fieldname) {
+    foreach(['-interface', '-prefix-id', '-prefix-id--hex', '_assoc_pd', '_ifid', '_ifid--hex', '_prefix_range'] as $fieldname) {
         /* only for form consistency */
         $pconfig["idassoc6{$fieldname}"] = $pconfig["track6{$fieldname}"];
     }
@@ -747,13 +787,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                                 $input_errors[] = gettext("You specified an IPv6 prefix ID that is out of range.");
                             }
                         }
+                        $default_id = interface_dhcpv6_id($if);
+                        $assoc_pd_ref = !empty($pconfig['dhcp6_assoc_pd']) && ctype_digit($pconfig['dhcp6_assoc_pd']) ?
+                            $pconfig['dhcp6_assoc_pd'] : $default_id;
                         foreach (link_interface_to_track6($pconfig['track6-interface']) as $trackif => $trackcfg) {
-                            if ($trackcfg['track6-prefix-id'] == $dhcp6_prefix_id) {
+                            $assoc_pd_link = !empty($trackcfg['track6_assoc_pd']) ? $trackcfg['track6_assoc_pd'] : $default_id;
+                            if ($assoc_pd_ref == $assoc_pd_link && $trackcfg['track6-prefix-id'] == $dhcp6_prefix_id) {
                                 $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
                                 break;
                             }
                         }
                     }
+                }
+                if (!empty($pconfig['dhcp6_assoc_pd']) && !ctype_digit($pconfig['dhcp6_assoc_pd'])) {
+                    $input_errors[] = gettext('You must enter a valid number for the IPv6 prefix association identity.');
                 }
                 if (isset($pconfig['dhcp6_ifid--hex']) && $pconfig['dhcp6_ifid--hex'] != '') {
                     if (!ctype_xdigit($pconfig['dhcp6_ifid--hex'])) {
@@ -1122,6 +1169,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                     if (!empty($pconfig['dhcp6_rapid_commit'])) {
                         $new_config['dhcp6_rapid_commit'] = true;
+                    }
+                    if (!empty($pconfig['dhcp6_assoc_pd'])) {
+                        $new_config['dhcp6_assoc_pd'] = $pconfig['dhcp6_assoc_pd'];
                     }
                     $new_config['adv_dhcp6_interface_statement_send_options'] = $pconfig['adv_dhcp6_interface_statement_send_options'];
                     $new_config['adv_dhcp6_interface_statement_request_options'] = $pconfig['adv_dhcp6_interface_statement_request_options'];
@@ -1809,7 +1859,7 @@ include("head.inc");
                                   <option value=""><?=gettext('Default (no preference, typically autoselect)');?></option>
 <?php
                                   foreach($mediaopts_list as $mediaopt):?>
-                                    <option value="<?=$mediaopt;?>" <?=$mediaopt == trim($pconfig['media'] . " ". $pconfig['mediaopt']) ? "selected=\"selected\"" : "";?> >
+                                    <option value="<?=$mediaopt;?>" <?=!empty($pconfig['media']) && $mediaopt == trim($pconfig['media'] . " ". $pconfig['mediaopt']) ? "selected=\"selected\"" : "";?> >
                                       <?=$mediaopt;?>
                                     </option>
 <?php
@@ -2390,6 +2440,15 @@ include("head.inc");
                             </div>
                           </td>
                         </tr>
+                        <tr class="dhcpv6_basic">
+                          <td><a id="help_for_dhcp6_assoc_pd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Optional prefix IAID') ?></td>
+                          <td>
+                            <input name="dhcp6_assoc_pd" type="text" id="dhcp6_assoc_pd" placeholder="<?= html_safe(interface_dhcpv6_id($if)) ?>" value="<?= html_safe($pconfig['dhcp6_assoc_pd']) ?>" />
+                            <div class="hidden" data-for="help_for_dhcp6_assoc_pd">
+                              <?= gettext('The ID to use for prefix request identity association if required to be non-standard.') ?>
+                            </div>
+                          </td>
+                        </tr>
                         <tr class="dhcpv6_advanced">
                           <td><a id="help_for_dhcp6_intf_stmt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Interface Statement");?></td>
                           <td>
@@ -2608,6 +2667,16 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
+                          <td><a id="help_for_idassoc6_prefix_range" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Reserved prefix range') ?></td>
+                          <td>
+                            <input name="idassoc6_prefix_range" type="text" class="form-control" id="idassoc6_prefix_range" placeholder="1" value="<?= $pconfig['idassoc6_prefix_range'] ?>" />
+                            </div>
+                            <div class="hidden" data-for="help_for_idassoc6_prefix_range">
+                              <?= gettext('The value in this field is the length of the reserved prefix range for downstream prefix delegation. The range starts at the given prefix ID. The default is to only reserve the given prefix ID.') ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
                           <td><a id="help_for_idassoc6_ifid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Optional interface ID') ?></td>
                           <td>
                             <div class="input-group" style="max-width:348px">
@@ -2616,6 +2685,15 @@ include("head.inc");
                             </div>
                             <div class="hidden" data-for="help_for_idassoc6_ifid">
                               <?= gettext('The value in this field is the numeric IPv6 interface ID used to construct the lower part of the resulting IPv6 prefix address. Setting a hex value will use that fixed value in its lower address part. Please note the maximum usable value is 0x7fffffffffffffff due to a PHP integer restriction.') ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><a id="help_for_idassoc6_assoc_pd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Optional prefix IAID') ?></td>
+                          <td>
+                            <input name="idassoc6_assoc_pd" type="text" id="idassoc6_assoc_pd" placeholder="<?= html_safe(interface_dhcpv6_id($pconfig['idassoc6-interface'])) ?>" value="<?= html_safe($pconfig['idassoc6_assoc_pd']) ?>" />
+                            <div class="hidden" data-for="help_for_idassoc6_assoc_pd">
+                              <?= gettext('The ID to use for prefix request identity association if required to be non-standard.') ?>
                             </div>
                           </td>
                         </tr>
@@ -2664,6 +2742,16 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
+                          <td><a id="help_for_track6_prefix_range" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Reserved prefix range') ?></td>
+                          <td>
+                            <input name="track6_prefix_range" type="text" class="form-control" id="track6_prefix_range" placeholder="1" value="<?= $pconfig['track6_prefix_range'] ?>" />
+                            </div>
+                            <div class="hidden" data-for="help_for_track6_prefix_range">
+                              <?= gettext('The value in this field is the length of the reserved prefix range for downstream prefix delegation. The range starts at the given prefix ID. The default is to only reserve the given prefix ID.') ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
                           <td><a id="help_for_track6_ifid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Optional interface ID') ?></td>
                           <td>
                             <div class="input-group" style="max-width:348px">
@@ -2676,9 +2764,18 @@ include("head.inc");
                           </td>
                         </tr>
                         <tr>
+                          <td><a id="help_for_track6_assoc_pd" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Optional prefix IAID') ?></td>
+                          <td>
+                            <input name="track6_assoc_pd" type="text" id="track6_assoc_pd" placeholder="<?= html_safe(interface_dhcpv6_id($pconfig['track6-interface'])) ?>" value="<?= html_safe($pconfig['track6_assoc_pd']) ?>" />
+                            <div class="hidden" data-for="help_for_track6_assoc_pd">
+                              <?= gettext('The ID to use for prefix request identity association if required to be non-standard.') ?>
+                            </div>
+                          </td>
+                        </tr>
+                        <tr>
                           <td><a id="help_for_dhcpd6_opt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Manual configuration') ?></td>
                           <td>
-                            <input name="dhcpd6track6allowoverride" type="checkbox" value="yes" <?= $pconfig['dhcpd6track6allowoverride'] ? 'checked="checked"' : '' ?>/>
+                            <input name="dhcpd6track6allowoverride" type="checkbox" value="yes" <?= !empty($pconfig['dhcpd6track6allowoverride']) ? 'checked="checked"' : '' ?>/>
                             <?= gettext('Allow manual adjustment of DHCPv6 and Router Advertisements') ?>
                             <div class="hidden" data-for="help_for_dhcpd6_opt">
                               <?= gettext('If this option is set, you will be able to manually set the DHCPv6 and Router Advertisements service for this interface. Use with care.') ?>
