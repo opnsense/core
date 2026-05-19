@@ -135,7 +135,7 @@
 <form id="mainform">
     <div class="content-box tab-content">
         {{ partial("layout_partials/base_tabs_content",['formData':formSettings]) }}
-        <div id="configTab" class="tab-pane fade"/>
+        <div id="configTab" class="tab-pane fade"></div>
     </div>
 </form>
 

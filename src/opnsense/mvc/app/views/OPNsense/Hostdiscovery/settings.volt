@@ -120,4 +120,4 @@
     </div>
 </div>
 
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/hostdiscovery/service/reconfigure', 'data_service_widget': 'hostdiscovery'}) }}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/hostdiscovery/service/reconfigure', 'data_exclude_scope': 'settings_tab', 'data_service_widget': 'hostdiscovery'}) }}
