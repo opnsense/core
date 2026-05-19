@@ -10,6 +10,9 @@
 {% if data_grid_reload is defined %}
             data-grid-reload="{{ data_grid_reload }}"
 {% endif %}
+{% if data_exclude_scope is defined %}
+            data-exclude-scope="{{ data_exclude_scope }}"
+{% endif %}
             type="button">
         </button>
         <div id="change_message_base_form" style="display: none">
