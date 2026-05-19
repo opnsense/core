@@ -37,6 +37,12 @@ use OPNsense\Base\Messages\Message;
  */
 class Radvd extends BaseModel
 {
+    private function isValidSearchDomain(string $domain): bool
+    {
+        return filter_var($domain, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) !== false &&
+            filter_var($domain, FILTER_VALIDATE_IP) === false;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -83,6 +89,27 @@ class Radvd extends BaseModel
                             );
                             break;
                     }
+                }
+            }
+
+            $dnssl = $entry->DNSSL->getValues();
+            if (in_array('.', $dnssl, true) && count($dnssl) > 1) {
+                $messages->appendMessage(
+                    new Message(
+                        gettext('Use "." by itself to disable DNS search domains.'),
+                        $key . '.DNSSL'
+                    )
+                );
+            }
+            foreach ($dnssl as $domain) {
+                if ($domain !== '.' && !$this->isValidSearchDomain($domain)) {
+                    $messages->appendMessage(
+                        new Message(
+                            gettext('A DNS search domain must be a valid hostname.'),
+                            $key . '.DNSSL'
+                        )
+                    );
+                    break;
                 }
             }
 
