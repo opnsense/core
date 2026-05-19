@@ -87,7 +87,7 @@
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li><a data-toggle="tab" href="#settings" id="settings_tab">{{ lang._('Settings') }}</a></li>
-    <li><a data-toggle="tab" href="#hosts">{{ lang._('Discovered Hosts') }}</a></li>
+    <li><a data-toggle="tab" href="#hosts" id="discovered_tab">{{ lang._('Discovered Hosts') }}</a></li>
 </ul>
 <div class="tab-content content-box">
     <!-- Tab: General settings -->
@@ -120,4 +120,4 @@
     </div>
 </div>
 
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/hostdiscovery/service/reconfigure', 'data_service_widget': 'hostdiscovery'}) }}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/hostdiscovery/service/reconfigure', 'data_exclude_scope': 'discovered_tab', 'data_service_widget': 'hostdiscovery'}) }}

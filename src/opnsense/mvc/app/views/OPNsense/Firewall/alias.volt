@@ -747,7 +747,7 @@
         </div>
     </div>
 </div>
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/alias/reconfigure'}) }}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/alias/reconfigure', 'data_exclude_scope': 'actions_tab'}) }}
 
 {# Edit dialog #}
 <div class="modal fade" id="DialogAlias" tabindex="-1" role="dialog" aria-labelledby="DialogAliasLabel">
