@@ -131,8 +131,11 @@
     /**
      * perform backend action and install poller to update status
      */
-    function backend(type) {
+    function backend(type, data) {
         $.upgrade_check = type == 'check';
+        if (data === undefined) {
+            data = {};
+        }
 
         $('#update_status').html('');
         $('#updatelist').hide();
@@ -140,7 +143,7 @@
         $('#updatetab > a').tab('show');
         $('#updatetab_progress').addClass("fa fa-spinner fa-pulse");
 
-        ajaxCall('/api/core/firmware/' + type, {}, function () {
+        ajaxCall('/api/core/firmware/' + type, data, function () {
             setTimeout(trackStatus, 500);
         });
     }
@@ -247,21 +250,43 @@
             if (major === true) {
                 reboot_msg = "{{ lang._('The firewall will download all firmware sets and reboot multiple times for this upgrade. All operating system files and packages will be reinstalled as a consequence. This may take several minutes to complete.') }}";
             }
+            reboot_msg += '<br><br><label><input type="checkbox" id="upgrade_shutdown_cb"> ' +
+                '{{ lang._("Power off instead of reboot") }}</label>';
             // reboot required, inform the user.
+            let countdownSeconds = 30;
+            let countdownTimer = null;
             BootstrapDialog.show({
                 type:BootstrapDialog.TYPE_WARNING,
-                title: "{{ lang._('Reboot required') }}",
+                title: "{{ lang._('Reboot/ Power off required') }}",
                 message: reboot_msg,
+                onshown: function(dialogRef) {
+                    let $btn = dialogRef.getButton('btn-reboot');
+                    countdownTimer = setInterval(function () {
+                        countdownSeconds--;
+                        $btn.text('{{ lang._("Confirm") }} (' + countdownSeconds + ')');
+                        if (countdownSeconds <= 0) {
+                            clearInterval(countdownTimer);
+                            $btn.trigger('click');
+                        }
+                    }, 1000);
+                },
+                onhidden: function() {
+                    if (countdownTimer) clearInterval(countdownTimer);
+                },
                 buttons: [{
-                    label: "{{ lang._('OK') }}",
+                    id: 'btn-reboot',
+                    label: '{{ lang._("Confirm") }} (' + countdownSeconds + ')',
                     cssClass: 'btn-warning',
                     action: function(dialogRef){
+                        if (countdownTimer) clearInterval(countdownTimer);
+                        let doShutdown = $('#upgrade_shutdown_cb').is(':checked') ? '1' : '0';
                         dialogRef.close();
-                        backend(major === true ? 'upgrade' : 'update');
+                        backend(major === true ? 'upgrade' : 'update', {'shutdown': doShutdown});
                     }
                 },{
                     label: "{{ lang._('Cancel') }}",
                     action: function(dialogRef){
+                        if (countdownTimer) clearInterval(countdownTimer);
                         dialogRef.close();
                     }
                 }]
@@ -313,6 +338,14 @@
                     onshow: function (dialogRef) {
                         setTimeout(rebootWait, 45000);
                     },
+                });
+            } else if (data['status'] == 'shutdown') {
+                BootstrapDialog.show({
+                    type:BootstrapDialog.TYPE_INFO,
+                    title: "{{ lang._('Shutting down after update') }}",
+                    closable: false,
+                    message: "{{ lang._('The system is shutting down. You chose to power off instead of reboot. The system will need to be started manually.') }}" +
+                        ' <i class="fa fa-power-off"></i>',
                 });
             } else {
                 // schedule next poll
@@ -848,7 +881,7 @@
                                     <button class='btn btn-warning' id="upgrade_maj"><i class="fa fa-check"></i> {{ lang._('Upgrade') }}</button>
                                     <button class="btn btn-default" id="upgrade_cancel"><i class="fa fa-times"></i> {{ lang._('Cancel') }}</button>
                                 </td>
-                                <td colspan="2" style="vertical-align:middle">
+                                <td colspan="3" style="vertical-align:middle">
                                     <strong><div id="updatestatus"></div></strong>
                                 </td>
                                 <td></td>
