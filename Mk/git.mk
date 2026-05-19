@@ -43,6 +43,7 @@ ${_TARGET}_ARG=		${${_TARGET}_ARGS:[0]}
 diff_ARGS?=	${.CURDIR}
 mlog_ARGS?=	${.CURDIR}
 slog_ARGS?=	${.CURDIR}
+wiff_ARGS?=	${.CURDIR}
 
 ensure-stable:
 	@if ! ${GIT} show-ref --verify --quiet refs/heads/${CORE_STABLE}; then \
@@ -60,6 +61,13 @@ diff: ensure-stable
 		${GIT} diff --stat -p ${diff_ARGS:[1]} ${GIT_PRIVATE}; \
 	else \
 		${GIT} diff --stat -p ${CORE_STABLE} ${diff_ARGS} ${GIT_PRIVATE}; \
+	fi
+
+wiff: ensure-stable
+	@if [ "$$(${GIT} tag -l | grep -cx '${wiff_ARGS:[1]}')" = "1" ]; then \
+		${GIT} diff --stat -p -w ${wiff_ARGS:[1]} ${GIT_PRIVATE}; \
+	else \
+		${GIT} diff --stat -p -w ${CORE_STABLE} ${wiff_ARGS} ${GIT_PRIVATE}; \
 	fi
 
 tag: ensure-stable
