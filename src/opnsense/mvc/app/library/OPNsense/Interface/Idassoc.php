@@ -61,20 +61,24 @@ class Idassoc extends Autoconf
     }
 
     /**
-     * Return the largest aligned prefix length starting at this prefix ID
-     * without crossing into the next configured prefix ID or the associated prefix end.
+     * Return the largest aligned prefix length starting at this track6-prefix-id
+     * within the configured track6_prefix_range.
+     *
+     * If track6_prefix_range is empty, assume one /64 slot.
      */
-    private static function calculateUsablePrefixLength($source_prefix_len, $prefix_id, $next_prefix_id = null): int
+    private static function calculateUsablePrefixLength($source_prefix_len, $track6_prefix_id, $track6_prefix_range = ''): int
     {
         $source_prefix_len = (int)$source_prefix_len;
-        $prefix_id = hexdec((string)$prefix_id);
-        $limit = $next_prefix_id !== null ? hexdec((string)$next_prefix_id) : 1 << (64 - $source_prefix_len);
+        $track6_prefix_id = hexdec((string)$track6_prefix_id);
+        $track6_prefix_range = (string)$track6_prefix_range !== '' ? (int)$track6_prefix_range : 1;
 
-        $available = $limit - $prefix_id;
+        $associated_size = 1 << (64 - $source_prefix_len);
+        $available = min($track6_prefix_range, $associated_size - $track6_prefix_id);
+
         $size = 1;
         $bits = 0;
 
-        while ($size * 2 <= $available && $prefix_id % ($size * 2) === 0) {
+        while ($size * 2 <= $available && $track6_prefix_id % ($size * 2) === 0) {
             $size *= 2;
             $bits++;
         }
@@ -126,14 +130,12 @@ class Idassoc extends Autoconf
      *               [prefix_associated] => 2001:db8:1234::/56
      *               [prefix_valid] => true
      *               [prefix_source] => wan
-     *
      *           ]
      *  ]
      */
     private static function prefixes(): array
     {
         $result = [];
-        $groups = [];
         $cfg = Config::getInstance()->object();
 
         foreach ($cfg->interfaces->children() as $ifname => $ifcfg) {
@@ -141,10 +143,11 @@ class Idassoc extends Autoconf
                 continue;
             }
 
-            $prefix_id = (string)($ifcfg->{'track6-prefix-id'} ?? '');
+            $track6_prefix_id = (string)($ifcfg->{'track6-prefix-id'} ?? '');
+            $track6_prefix_range = (string)($ifcfg->{'track6_prefix_range'} ?? '');
             $trackif = (string)($ifcfg->{'track6-interface'} ?? '');
 
-            if ($prefix_id === '' || $trackif === '' || empty($cfg->interfaces->{$trackif}->if)) {
+            if ($track6_prefix_id === '' || $trackif === '' || empty($cfg->interfaces->{$trackif}->if)) {
                 continue;
             }
 
@@ -156,33 +159,21 @@ class Idassoc extends Autoconf
                 $prefix_associated = self::temporaryPrefix($trackif);
             }
 
-            $groups[$prefix_associated][$ifname] = [
-                'prefix_id' => $prefix_id,
-                'trackif' => $trackif,
-                'prefix_valid' => $prefix_valid,
-            ];
-        }
-
-        foreach ($groups as $prefix_associated => $interfaces) {
-            /* Sort by prefix ID because prefix_allocated depends on the next higher configured ID. */
-            uasort($interfaces, fn($a, $b) => hexdec($a['prefix_id']) <=> hexdec($b['prefix_id']));
-            $ordered = array_keys($interfaces);
             $source_prefix_len = (int)explode('/', $prefix_associated, 2)[1];
+            $prefix_usable_len = self::calculateUsablePrefixLength(
+                $source_prefix_len,
+                $track6_prefix_id,
+                $track6_prefix_range
+            );
 
-            foreach ($ordered as $idx => $ifname) {
-                $prefix_id = $interfaces[$ifname]['prefix_id'];
-                $next_prefix_id = isset($ordered[$idx + 1]) ? $interfaces[$ordered[$idx + 1]]['prefix_id'] : null;
-                $prefix_usable_len = self::calculateUsablePrefixLength($source_prefix_len, $prefix_id, $next_prefix_id);
-
-                $result[$ifname] = [
-                    'prefix_id' => $prefix_id,
-                    'prefix_on_link' => self::calculatePrefix($prefix_associated, $prefix_id),
-                    'prefix_allocated' => self::calculatePrefix($prefix_associated, $prefix_id, $prefix_usable_len),
-                    'prefix_associated' => $prefix_associated,
-                    'prefix_valid' => $interfaces[$ifname]['prefix_valid'],
-                    'prefix_source' => $interfaces[$ifname]['trackif'],
-                ];
-            }
+            $result[$ifname] = [
+                'prefix_id' => $track6_prefix_id,
+                'prefix_on_link' => self::calculatePrefix($prefix_associated, $track6_prefix_id),
+                'prefix_allocated' => self::calculatePrefix($prefix_associated, $track6_prefix_id, $prefix_usable_len),
+                'prefix_associated' => $prefix_associated,
+                'prefix_valid' => $prefix_valid,
+                'prefix_source' => $trackif,
+            ];
         }
 
         return $result;
