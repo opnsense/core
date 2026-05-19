@@ -17,6 +17,9 @@
         <type>dropdown</type>
         <advanced>true</advanced>
         <help>Select allocator method to use when offering leases to clients.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>subnet4.pools</id>
