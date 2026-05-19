@@ -11,6 +11,35 @@
         <help>The TCP/UDP port used for responding to DNS queries.</help>
     </field>
     <field>
+        <id>unbound.general.enable_doh</id>
+        <label>Enable DoH</label>
+        <type>checkbox</type>
+        <help>Only enable this on port 443 when the web-interface is not listening on the same port!</help>
+    </field>
+    <field>
+        <id>unbound.general.port_doh</id>
+        <label>Listen Port for DoH</label>
+        <type>text</type>
+        <help>The TCP/UDP port used for responding to DoH queries.</help>
+    </field>
+    <field>
+        <id>unbound.general.enable_dot</id>
+        <label>Enable DoT</label>
+        <type>checkbox</type>
+    </field>
+    <field>
+        <id>unbound.general.port_dot</id>
+        <label>Listen Port for DoT</label>
+        <type>text</type>
+        <help>The TCP/UDP port used for responding to DoT queries.</help>
+    </field>
+    <field>
+        <id>unbound.general.dohdot_cert</id>
+        <label>Certificate</label>
+        <type>dropdown</type>
+        <help>DoH and DoT Certificate to use</help>
+    </field>
+    <field>
         <id>unbound.general.active_interface</id>
         <label>Network Interfaces</label>
         <type>select_multiple</type>
