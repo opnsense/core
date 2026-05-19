@@ -336,6 +336,12 @@ function display_error_form($text)
 
     <script src="/ui/js/jquery-3.5.1.min.js"></script>
 
+    <!-- Auto Theme Switcher Support -->
+    <?php if (isset($config['theme']) && $config['theme'] === 'opnsense-auto'): ?>
+      <script>window.opnsenseAutoThemeEnabled = true;</script>
+    <?php endif; ?>
+    <script src="<?= cache_safe("/ui/js/opnsense_theme_auto.js") ?>"></script>
+
   </head>
   <body class="page-login">
     <div id=container">
@@ -380,6 +386,12 @@ function display_login_form($Login_Error)
     <?php if (get_themed_filename('/js/theme.js', true)) : ?>
     <script src="<?= cache_safe(get_themed_filename('/js/theme.js')) ?>"></script>
     <?php endif ?>
+
+    <!-- Auto Theme Switcher Support -->
+    <?php if (isset($config['theme']) && $config['theme'] === 'opnsense-auto'): ?>
+      <script>window.opnsenseAutoThemeEnabled = true;</script>
+    <?php endif; ?>
+    <script src="<?= cache_safe("/ui/js/opnsense_theme_auto.js") ?>"></script>
 
   </head>
   <body class="page-login">

@@ -32,6 +32,12 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <!-- include (theme) style -->
     <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename('/css/main.css')) ?>">
 
+    <!-- Auto Theme Switcher Support -->
+    <?php if (isset($config['theme']) && $config['theme'] === 'opnsense-auto'): ?>
+      <script>window.opnsenseAutoThemeEnabled = true;</script>
+    <?php endif; ?>
+    <script src="<?= cache_safe("/ui/js/opnsense_theme_auto.js") ?>"></script>
+
     <!-- TODO: move to theme style -->
     <style>
       .menu-level-3-item {
