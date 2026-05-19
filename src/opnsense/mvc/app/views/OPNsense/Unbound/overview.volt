@@ -725,6 +725,12 @@
                             },
                             "domain": function (column, row) {
                                 return row.domain;
+                            },
+                            "blocklist": function (column, row) {
+                                if (row.provider) {
+                                    return row.blocklist + ' - ' + row.provider;
+                                }
+                                return row.blocklist;
                             }
                         },
                         statusMapping: {
