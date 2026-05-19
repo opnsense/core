@@ -72,6 +72,7 @@ class StatusController extends ApiControllerBase
                 $result['status'] = curl_error($ch);
                 return $result;
             }
+
             $HTTPCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 
             if ($HTTPCode != 200) {
@@ -83,7 +84,7 @@ class StatusController extends ApiControllerBase
                 if ($format == 'xml') {
                     $result['status'] = simplexml_load_string($response);
                 } elseif ($format === 'text') {
-                    $result['status'] = '<div class="alert"><pre>' . $this->bashColorToCSS($response) . '</pre></div>';
+                    $result['status'] = '<div class="alert"><pre>' . $this->bashColorToCSS(strip_tags($response)) . '</pre></div>';
                 }
             }
         } else {
