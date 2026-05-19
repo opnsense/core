@@ -160,7 +160,7 @@
                   <BlankDesc>Default</BlankDesc>
                   <OptionValues>
                     <iterative>iterative</iterative>
-                    <random>random</random>
+                    <random>Random</random>
                     <flq>Free Lease Queue</flq>
                   </OptionValues>
                 </allocator>
