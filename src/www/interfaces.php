@@ -1834,7 +1834,7 @@ include("head.inc");
                                   <option value=""><?=gettext('Default (no preference, typically autoselect)');?></option>
 <?php
                                   foreach($mediaopts_list as $mediaopt):?>
-                                    <option value="<?=$mediaopt;?>" <?=$mediaopt == trim($pconfig['media'] . " ". $pconfig['mediaopt']) ? "selected=\"selected\"" : "";?> >
+                                    <option value="<?=$mediaopt;?>" <?=!empty($pconfig['media']) && $mediaopt == trim($pconfig['media'] . " ". $pconfig['mediaopt']) ? "selected=\"selected\"" : "";?> >
                                       <?=$mediaopt;?>
                                     </option>
 <?php
@@ -2730,7 +2730,7 @@ include("head.inc");
                         <tr>
                           <td><a id="help_for_dhcpd6_opt" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Manual configuration') ?></td>
                           <td>
-                            <input name="dhcpd6track6allowoverride" type="checkbox" value="yes" <?= $pconfig['dhcpd6track6allowoverride'] ? 'checked="checked"' : '' ?>/>
+                            <input name="dhcpd6track6allowoverride" type="checkbox" value="yes" <?= !empty($pconfig['dhcpd6track6allowoverride']) ? 'checked="checked"' : '' ?>/>
                             <?= gettext('Allow manual adjustment of DHCPv6 and Router Advertisements') ?>
                             <div class="hidden" data-for="help_for_dhcpd6_opt">
                               <?= gettext('If this option is set, you will be able to manually set the DHCPv6 and Router Advertisements service for this interface. Use with care.') ?>
