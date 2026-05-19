@@ -8,6 +8,13 @@
             <pattern>diag_backup.php*</pattern>
         </patterns>
     </page-diagnostics-backup-restore>
+    <page-diagnostics-logs-audit>
+        <name>Diagnostics: Logs: Audit</name>
+        <patterns>
+            <pattern>ui/diagnostics/log/core/audit*</pattern>
+            <pattern>api/diagnostics/log/core/audit*</pattern>
+        </patterns>
+    </page-diagnostics-logs-audit>
     <page-system-login-logout>
         <name>Lobby: Dashboard</name>
         <patterns>
