@@ -128,6 +128,9 @@ class DiagnosticsController extends ApiControllerBase
                 $types = $mdl->dnsbl->blocklist->getTemplateNode()->type->getNodeData();
                 foreach ($response as $key => $value) {
                     if (isset($value['bl'])) {
+                        if (isset($types[$value['bl']]['optgroup'])) {
+                            $response[$key]['provider'] = $types[$value['bl']]['optgroup'];
+                        }
                         $response[$key]['bl'] = $types[$value['bl']]['value'] ?? $value['bl'];
                     }
                     if (isset($value['uuid'])) {
