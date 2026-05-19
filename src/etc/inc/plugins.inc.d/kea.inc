@@ -173,7 +173,7 @@ function kea_configure_do($verbose = false)
             $keaDdns->generateConfig();
         }
         (new \OPNsense\Kea\KeaCtrlAgent())->generateConfig();
-        if ($keaDhcpv6->isEnabled() && $keaDhcpv6->pd_pools->pd_pool->count() > 0) {
+        if ($keaDhcpv6->isEnabled()) {
             mwexecfb(
                 '/usr/local/opnsense/scripts/kea/kea_prefix_watcher.py',
                 [],
