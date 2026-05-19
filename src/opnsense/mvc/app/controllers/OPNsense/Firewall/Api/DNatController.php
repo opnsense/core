@@ -85,7 +85,7 @@ class DNatController extends FilterBaseController
                     'ipprotocol' => '', /* renders as asterisk */
                     'protocol' => 'tcp',
                     '%protocol' => 'TCP',
-                    'disabled' => '0',
+                    'enabled' => '1',
                     'nordr' => '1',
                     'interface' => $if,
                     '%interface' => $ifname,
@@ -131,26 +131,9 @@ class DNatController extends FilterBaseController
         return $this->delBase("rule", $uuid);
     }
 
-    /**
-     * opposite toggle (disable instead of enable)
-     */
-    public function toggleRuleAction($uuid, $disabled = null)
+    public function toggleRuleAction($uuid, $enabled = null)
     {
-        $result = ['result' => 'failed'];
-        if ($this->request->isPost() && $uuid != null) {
-            Config::getInstance()->lock();
-            $node = $this->getModel()->getNodeByReference('rule.' . $uuid);
-            if ($node != null) {
-                if (in_array($disabled, ['0', '1'])) {
-                    $node->disabled = (string)$disabled;
-                } else {
-                    $node->disabled = (string)$node->disabled == '1' ? '0' : '1';
-                }
-                $result['result'] = $node->disabled->isEmpty() ? 'Enabled' : 'Disabled';
-                $this->save(false, true);
-            }
-        }
-        return $result;
+        return $this->toggleBase("rule", $uuid, $enabled);
     }
 
     public function moveRuleBeforeAction($selected_uuid, $target_uuid)

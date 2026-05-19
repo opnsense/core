@@ -96,11 +96,7 @@
                     const data = row.getData();
                     const $element = $(row.getElement());
 
-                    // XXX: d_nat model provides a disabled key
-                    if (
-                        ('enabled' in data && data.enabled == "0") ||
-                        ('disabled' in data && data.disabled == "1")
-                    ) {
+                    if ('enabled' in data && data.enabled == "0") {
                         $element.addClass('row-disabled');
                     }
 
@@ -203,10 +199,7 @@
                         if (row.isGroup || !rowId.includes('-')) {
                             return '';
                         }
-                        const isEnabled =
-                            entrypoint === 'd_nat'  /* flag is inverted in model */
-                                ? row[column.id] === "0"
-                                : row[column.id] === "1";
+                        const isEnabled = row[column.id] === "1";
                         return `
                             <span class="fa fa-fw ${isEnabled ? 'fa-check-square-o' : 'fa-square-o text-muted'} bootgrid-tooltip command-toggle"
                                 style="cursor: pointer;"
