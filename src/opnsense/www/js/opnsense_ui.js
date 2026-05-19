@@ -627,7 +627,7 @@ stdDialogRemoveItem.defaults = {
  *      data-label="Apply text"
  *      data-icon="fa fa-icon"
  *      data-service-widget="service" (optional service widget to signal)
- *      data-exclude-scope="tab id" (optional tab id to hide action button in)
+ *      data-exclude-scope="tab id" (optional comma-separated tab ids to hide action button in)
  *      data-error-title="My error message"
  */
 $.fn.SimpleActionButton = function (params) {
@@ -659,7 +659,7 @@ $.fn.SimpleActionButton = function (params) {
 
         if (this_button && this_button.data('exclude-scope')) {
             $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                if (e.target.id === this_button.data('exclude-scope')) {
+                if ((this_button.data('exclude-scope') ?? '').split(',').map(s => s.trim()).includes(e.target.id)) {
                     this_button.closest('.page-content-main').hide();
                 } else {
                     this_button.closest('.page-content-main').show();
