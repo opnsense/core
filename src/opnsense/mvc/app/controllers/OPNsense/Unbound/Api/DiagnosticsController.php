@@ -129,7 +129,7 @@ class DiagnosticsController extends ApiControllerBase
                 foreach ($response as $key => $value) {
                     if (isset($value['bl'])) {
                         if (isset($types[$value['bl']]['optgroup'])) {
-                            $response[$key]['provider'] = $types[$value['bl']]['optgroup'];
+                            $response[$key]['category'] = $types[$value['bl']]['optgroup'];
                         }
                         $response[$key]['bl'] = $types[$value['bl']]['value'] ?? $value['bl'];
                     }

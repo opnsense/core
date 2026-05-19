@@ -101,7 +101,7 @@ class OverviewController extends ApiControllerBase
 
         foreach ($parsed as $idx => $query) {
             if (isset($types[$query['blocklist']]['optgroup'])) {
-                $parsed[$idx]['category'] = $types[$query['blocklist']]['optgroup'];
+                $parsed[$idx]['provider'] = $types[$query['blocklist']]['optgroup'];
             }
             $parsed[$idx]['blocklist'] = $types[$query['blocklist']]['value'] ?? $query['blocklist'];
             $parsed[$idx]['policy'] = $policies[$query['uuid']]['description'] ?? '';

@@ -627,14 +627,6 @@
                     $tbody.append($tr);
                 }
 
-                if (blocklist != "") {
-                    $container = $(`
-                        <div>
-                            {{ lang._('Blocklist match:')}} ${blocklist}
-                        </div>
-                    `);
-                }
-
                 $container.append($table);
                 dialogRef.setMessage($container);
 
