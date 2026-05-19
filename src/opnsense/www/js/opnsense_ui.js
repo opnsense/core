@@ -657,9 +657,10 @@ $.fn.SimpleActionButton = function (params) {
             $('#change_message_base_form').show().parent('.alert').addClass('alert-info').removeClass('content-box');
         });
 
-        if (this_button && this_button.data('exclude-scope')) {
+        const excludeScope = this_button?.data('exclude-scope');
+        if (excludeScope) {
             $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                if ((this_button.data('exclude-scope') ?? '').split(',').map(s => s.trim()).includes(e.target.id)) {
+                if (excludeScope.split(',').map(s => s.trim()).includes(e.target.id)) {
                     this_button.closest('.page-content-main').hide();
                 } else {
                     this_button.closest('.page-content-main').show();
