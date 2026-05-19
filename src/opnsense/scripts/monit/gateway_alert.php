@@ -54,24 +54,26 @@ function get_gateway_error(string $status, string $gwname, array $group)
 $gateways_status = dpinger_status();
 $clean = true;
 
-foreach (config_read_array('gateways', 'gateway_group', false) as $group) {
+foreach ((new OPNsense\Routing\GatewayGroups())->getGroupsConfig() as $group_name => $group) {
     $tiers_online = 0;
-    foreach ($group['item'] as $item) {
-        $gwname = explode("|", $item)[0];
-
-        if (!empty($gateways_status[$gwname])) {
-            $msg = get_gateway_error($gateways_status[$gwname]['status'], $gwname, $group);
-            if (!empty($msg)) {
-                echo $msg . PHP_EOL;
-                $clean = false;
-            } else {
-                $tiers_online++;
+    foreach ($group['tiers'] as $tier) {
+        foreach ($tier as $gwname) {
+            if (!empty($gateways_status[$gwname])) {
+                $msg = get_gateway_error($gateways_status[$gwname]['status'], $gwname, $group);
+                if (!empty($msg)) {
+                    echo $msg . PHP_EOL;
+                    $clean = false;
+                } else {
+                    // XXX this isn't strictly correct but we only consider this if it's 0
+                    $tiers_online++;
+                }
             }
         }
     }
+
     if ($tiers_online == 0) {
         /* Oh dear, we have no members!*/
-        $msg = sprintf(gettext('Gateways status could not be determined, considering all as up/active. (Group: %s)'), $group['name']);
+        $msg = sprintf(gettext('Gateways status could not be determined, considering all as up/active. (Group: %s)'), $group_name);
         echo $msg . PHP_EOL;
         $clean = false;
     }

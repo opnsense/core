@@ -364,7 +364,8 @@ class Gateways extends BaseModel
                     );
                 }
                 $reservednames[] = $gw_arr['name'];
-                $gw_arr['if'] = Util::getRealInterface($gw_arr['interface'], $gw_arr['ipprotocol']);
+                /* XXX 'interface' can be null */
+                $gw_arr['if'] = Util::getRealInterface($gw_arr['interface'] ?? '', $gw_arr['ipprotocol']);
                 $gw_arr['attribute'] = $i++;
                 if (Util::isIpAddress($gw_arr['gateway'])) {
                     if (empty($gw_arr['monitor_disable']) && empty($gw_arr['monitor'])) {
@@ -605,126 +606,6 @@ class Gateways extends BaseModel
                 //      An alternative setup option would be practical here, less fuzzy.
                 if (!$only_configured || $intf_gateway == $gateway['name'] || !empty($gateway['dynamic'])) {
                     return isset($gateway[$property]) ? $gateway[$property] : null;
-                }
-            }
-        }
-        return null;
-    }
-
-    /**
-     * get gateway active groups
-     * @param array $status_info gateway status info (from dpinger)
-     * @return array usable gateway groups
-     */
-    public function getGroups($status_info)
-    {
-        $all_gateways = $this->gatewaysIndexedByName();
-        $result = array();
-        if (isset($this->configHandle->gateways)) {
-            foreach ($this->configHandle->gateways->children() as $tag => $gw_group) {
-                if ($tag == "gateway_group" && !empty($gw_group)) {
-                    $tiers = array();
-                    if (isset($gw_group->item)) {
-                        foreach ($gw_group->item as $item) {
-                            list($gw, $tier) = explode("|", $item);
-                            if (!isset($tiers[$tier])) {
-                                $tiers[$tier] = [];
-                            }
-                            $tiers[$tier][] = $gw;
-                        }
-                    }
-                    ksort($tiers);
-                    $all_tiers = [];
-                    foreach ($tiers as $tieridx => $tier) {
-                        $all_tiers[$tieridx] = array();
-                        if (!isset($result[(string)$gw_group->name])) {
-                            $result[(string)$gw_group->name] = array();
-                        }
-                        // check status for all gateways in this tier
-                        foreach ($tier as $gwname) {
-                            if (!empty($status_info[$gwname])) {
-                                $gateway = $all_gateways[$gwname];
-                                switch ($status_info[$gwname]['status']) {
-                                    case 'down':
-                                    case 'force_down':
-                                        $is_up = false;
-                                        break;
-                                    case 'delay+loss':
-                                        $is_up = stristr($gw_group->trigger, 'latency') === false &&
-                                                    stristr($gw_group->trigger, 'loss') === false;
-                                        break;
-                                    case 'delay':
-                                        $is_up = stristr($gw_group->trigger, 'latency') === false;
-                                        break;
-                                    case 'loss':
-                                        $is_up = stristr($gw_group->trigger, 'loss') === false;
-                                        break;
-                                    default:
-                                        $is_up = true;
-                                }
-                                $gateway_item = [
-                                    'int' => $gateway['if'],
-                                    'gwip' => $gateway['gateway'] ?? '',
-                                    'ipprotocol' => $gateway['ipprotocol'],
-                                    'poolopts' => isset($gw_group->poolopts) ? (string)$gw_group->poolopts : null,
-                                    'weight' => !empty($gateway['weight']) ? $gateway['weight'] : '1',
-                                ];
-                                $all_tiers[$tieridx][] = $gateway_item;
-                                if ($is_up) {
-                                    $result[(string)$gw_group->name][] = $gateway_item;
-                                }
-                            }
-                        }
-                        // exit when tier has usable gateways
-                        if (!empty($result[(string)$gw_group->name])) {
-                            break;
-                        }
-                    }
-                    // XXX: backwards compatibility, when no tiers are up, we seem to select all from the first
-                    //      found tier. not very useful, since we already seem to know these are down.
-                    if (empty($result[(string)$gw_group->name])) {
-                        $result[(string)$gw_group->name] = $all_tiers[array_keys($tiers)[0]];
-                    }
-                }
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * return gateway groups (only names)
-     * @return array list of names
-     */
-    public function getGroupNames()
-    {
-        $result = array();
-        if (isset($this->configHandle->gateways)) {
-            foreach ($this->configHandle->gateways->children() as $tag => $gw_group) {
-                if ($tag == "gateway_group") {
-                    $result[] = (string)$gw_group->name;
-                }
-            }
-        }
-        return $result;
-    }
-
-    /**
-     * return protocol family
-     * @param string $name gateway group name
-     * @return string ipprotocol family (inet, inet6, null when not found)
-     */
-    public function getGroupIPProto($name)
-    {
-        if (isset($this->configHandle->gateways)) {
-            foreach ($this->configHandle->gateways->children() as $tag => $gw_group) {
-                if ($tag == "gateway_group" && (string)$gw_group->name == $name) {
-                    $all_gateways = $this->gatewaysIndexedByName();
-                    foreach ($gw_group->item as $item) {
-                        $gw = explode("|", $item)[0];
-                        if (!empty($all_gateways[$gw])) {
-                            return $all_gateways[$gw]['ipprotocol'];
-                        }
-                    }
                 }
             }
         }

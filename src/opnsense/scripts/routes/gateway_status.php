@@ -76,7 +76,7 @@ foreach ((new \OPNsense\Routing\Gateways())->gatewaysIndexedByName() as $gname =
         $gatewayItem['monitor'] = '~';
     }
 
-    $result[] = $gatewayItem;
+    $result[$gname] = $gatewayItem;
 }
 
 echo json_encode($result) . PHP_EOL;

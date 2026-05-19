@@ -58,7 +58,6 @@
         });
         // update routes
         $("#update").click(function() {
-            $("#grid-routes").bootgrid('clear');
             $('#processing-dialog').modal('show');
             let resolve = '';
             if ($("#resolve").prop("checked")) {
@@ -66,9 +65,7 @@
             }
             ajaxGet("/api/diagnostics/interface/get_routes/", {resolve:resolve}, function (data, status) {
                 if (status == "success") {
-                    $("#grid-routes").bootgrid('append', data).on("loaded.rs.jquery.bootgrid", function () {
-                        $('.bootgrid-tooltip').tooltip();
-                    });
+                    $("#grid-routes").bootgrid('replace', data);
                 }
                 $('#processing-dialog').modal('hide');
             });
@@ -97,7 +94,7 @@
                             <th data-column-id="netif" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Netif') }}</th>
                             <th data-column-id="intf_description" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Netif (name)') }}</th>
                             <th data-column-id="expire" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Expire') }}</th>
-                            <th data-column-id="commands" data-searchable="false" data-width="2em" data-formatter="commands" data-sortable="false">{{ lang._('Action') }}</th>
+                            <th data-column-id="commands" data-searchable="false" data-width="80" data-formatter="commands" data-sortable="false">{{ lang._('Action') }}</th>
                         </tr>
                         </thead>
                         <tbody>

@@ -35,9 +35,11 @@ require_once 'plugins.inc.d/dpinger.inc';
 function signalhandler($signal)
 {
     global $config;
+    global $gwgroups;
 
     OPNsense\Core\Config::getInstance()->forceReload();
     $config = parse_config();
+    $gwgroups = new \OPNsense\Routing\GatewayGroups();
 
     syslog(LOG_NOTICE, 'Reloaded gateway watcher configuration on SIGHUP');
 }
@@ -55,6 +57,7 @@ $cache_file = '/tmp/gateways.status';
 @unlink($cache_file);
 
 $mode = [];
+$gwgroups = new \OPNsense\Routing\GatewayGroups();
 
 sleep($wait);
 
@@ -105,19 +108,8 @@ while (1) {
             }
         }
 
-        foreach (config_read_array('gateways', 'gateway_group') as $group) {
-            foreach ($group['item'] as $item) {
-                $itemsplit = explode('|', $item);
-                if ($itemsplit[0] == $report['name']) {
-                    /* consider all state transitions as they depend on individual trigger setting */
-                    if (!empty($rprev) && $rprev != $rcurr) {
-                        /* XXX consider trigger conditions later on */
-                        $ralarm = true;
-                        break;
-                    }
-                }
-            }
-        }
+        /* determine transition based on individual gateway group trigger levels */
+        $ralarm = $gwgroups->gatewayStateChange($report['name'], $rprev, $rcurr);
 
         if ($ralarm) {
             $alarm_gateways[] = $report['name'];

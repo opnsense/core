@@ -44,10 +44,7 @@
         </Firmware>
         <Gateways cssClass="fa fa-location-arrow fa-fw">
             <Configuration order="10" url="/ui/routing/configuration"/>
-            <Group order="20" url="/system_gateway_groups.php">
-                <List url="/system_gateway_groups.php*" visibility="hidden"/>
-                <Edit url="/system_gateway_groups_edit.php*" visibility="hidden"/>
-            </Group>
+            <Group order="20" url="/ui/routing/gateway_groups"/>
             <LogFile VisibleName="Log File" order="30" url="/ui/diagnostics/log/core/gateways"/>
         </Gateways>
         <HighAvailability VisibleName="High Availability" cssClass="fa fa-refresh fa-fw">

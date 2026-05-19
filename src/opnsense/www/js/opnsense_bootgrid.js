@@ -128,6 +128,8 @@ class UIBootgrid {
         this.rememberedTreeIds = new Set(JSON.parse(localStorage.getItem(this.treeStorageKey) || '[]'));
         this.isVisible = false;
         this.scrollPos = 0;
+        this.addButton = false;
+        this.deleteSelectedButton = false;
 
         // wrapper-specific options
         this.options = {
@@ -161,8 +163,6 @@ class UIBootgrid {
             },
             responsive: false,
             onBeforeRenderDialog: null,
-            addButton: false,
-            deleteSelectedButton: false,
             commands: {}, //additional registered commands
             virtualDOM: false,
             selection: true,
@@ -371,11 +371,11 @@ class UIBootgrid {
         let del = this.$compatElement.find("*[data-action=deleteSelected]");
 
         if (add.length > 0) {
-            this.options.addButton = true;
+            this.addButton = true;
         }
 
         if (del.length > 0) {
-            this.options.deleteSelectedButton = true;
+            this.deleteSelectedButton = true;
         }
 
         // in the same context: check if there are other buttons defined
@@ -424,21 +424,8 @@ class UIBootgrid {
 
         this.options.statusMapping = bootGridOptions?.statusMapping ?? {};
 
-        // convert old-style converters
-        // For context: these converters are relevant to have a notion of sorting or localization for column values
-        // in cases where the backend doesn't do sorting for us (ajax=false).
-        // The only relevant ones seem to be "datetime", "memsize", "string", "numeric".
-        // however, there are some overridden ones (IDS, voucher). For these it should be investigated
-        // whether these require a formatter instead (IDS ajax=true while voucher ajax=false),
-        // "from" function represents loading a retrieved value (from backend) into the table system in a sortable format
-        // "to" function represents converting the "from'ed" internal value back to something human-readable (often what the backend returned).
-        // in all cases where ajax=true, we need to think twice whether we need the converter and should
-        // apply a formatter instead (data-type="datetime" for ca.volt for example)
-        if (this.options.ajax && 'converters' in bootGridOptions) {
-            for (const [key, converter] of Object.entries(bootGridOptions.converters)) {
-                console.error(`Converter "${key}" should be a formatter`);
-            }
-        }
+
+        this.options.sorters = {...this.options.sorters, ...bootGridOptions?.sorters ?? {}};
 
         // Detect if old bootgrid was of 'responsive' type, meaning:
         // - overflow: inherit !important
@@ -497,7 +484,7 @@ class UIBootgrid {
                 }
 
                 if (data.type && data.type in this.options.formatters && data.type !== 'boolean') {
-                    // use formatters instead of converters
+                    // "data-type" set on headers are converted to formatters
                     data.formatter = data.type;
                 }
 
@@ -505,7 +492,7 @@ class UIBootgrid {
                     id: colId,
                     label: val.label,
                     style: data.cssClass ?? '',
-                    type: data.type ?? 'text',
+                    sorter: data.sorter ?? null,
                     formatter: data.formatter ?? null,
                     headerFormatter: data.headerFormatter ||
                                     !(Object.getOwnPropertyNames(Object.prototype).includes(data.columnId)) &&
@@ -576,6 +563,7 @@ class UIBootgrid {
                     editable: field.editable,
                     // XXX passes unsanitized HTML, which may be of concern if the cell is editable in the future
                     formatter: this.options.formatters[field?.formatter] ?? this.options.formatters['default'],
+                    sorter: this.options.sorters[field.sorter] ?? null,
                     title: field.label,
                     titleFormatter: this.options.headerFormatters[field?.headerFormatter] ?? null,
                     field: field.id,
@@ -584,7 +572,7 @@ class UIBootgrid {
                     headerSort: this.options.sorting && field.sortable !== false,
                     cssClass: this.options.responsive ? 'opnsense-bootgrid-responsive' : '',
                     variableHeight: true,
-                    sorter: this.options.sorters[field.type] ?? null,
+                    userDefinedHeight: false,
                 };
             }
 
@@ -593,6 +581,7 @@ class UIBootgrid {
                 col['minWidth'] = field.width;
                 col['maxWidth'] = field.width;
             } else if (field.width) {
+                col['userDefinedHeight'] = true;
                 col['width'] = field.width;
             } else {
                 if (field.minWidth) {
@@ -818,6 +807,7 @@ class UIBootgrid {
 
         // Triggers to activate persistence
         this.table.on('columnResized', (column) => {
+            column.getDefinition().userDefinedHeight = true;
             this._setPersistence(true);
         });
         this.table.on('headerClick', (e, column) => {
@@ -1198,12 +1188,12 @@ class UIBootgrid {
         );
 
         for (const [key, command] of Object.entries(commands)) {
-            if (key === 'add' && !this.options.addButton) {
+            if (key === 'add' && !this.addButton) {
                 // special case: not included in the template so don't render it
                 continue;
             }
 
-            if (key === 'delete-selected' && !this.options.deleteSelectedButton) {
+            if (key === 'delete-selected' && !this.deleteSelectedButton) {
                 continue;
             }
 
@@ -1393,6 +1383,7 @@ class UIBootgrid {
 
     tabulatorDefaults() {
         return {
+            debugInvalidOptions:false,
             autoResize: false,
             index: this.options.datakey,
             renderVertical:"basic",
@@ -1404,6 +1395,17 @@ class UIBootgrid {
                 page: false,
                 columns: true,
             },
+            persistenceMode: "local",
+            persistenceWriterFunc: debounce(function(id, type, data) {
+                if (type === 'columns') {
+                    data = data.map((col) => {
+                        if (!col.userDefinedHeight) delete col.width;
+                        return col;
+                    });
+                }
+
+                localStorage.setItem(`${id}-${type}`, JSON.stringify(data));
+            }),
             movableColumns: true,
             persistenceID:this.persistenceID,
             selectableRows: false,
@@ -1452,9 +1454,9 @@ class UIBootgrid {
 
                 if (this.options.ajax) {
                     totalRows = this.paginationTotal;
+                    pageSize = this.curRowCount === true ? this.paginationTotal : this.curRowCount;
                 }
 
-                pageSize = this.curRowCount === true ? this.paginationTotal : this.curRowCount;
                 end = currentPage * pageSize;
                 start = (totalRows === 0) ? 0 : ((currentPage - 1) * pageSize) + 1;
                 end = (totalRows === 0 || end === -1 || end > totalRows) ? totalRows : end;
@@ -2256,6 +2258,14 @@ class UIBootgrid {
         this.table.addData(rows);
     }
 
+    replace(rows) {
+        if (!Array.isArray(rows) || rows.length === 0) {
+            throw new Error('Cannot replace without data. Use clear() to clear data, or reload() to refresh');
+        }
+
+        this.table.replaceData(rows);
+    }
+
     clear() {
         if (this.tableInitialized) {
             this.table.clearData();
@@ -2276,10 +2286,6 @@ class UIBootgrid {
 
     getCurrentRows() {
         return this.table.getData();
-    }
-
-    getTotalRowCount() {
-        return this.table.getDataCount();
     }
 
     getCurrentPage() {

@@ -181,6 +181,10 @@ class KeaDhcpv4 extends BaseModel
             if ($subnet->valid_lifetime->isSet()) {
                 $record['valid-lifetime'] = $subnet->valid_lifetime->asInt();
             }
+            /* add allocator if selected */
+            if (!$subnet->allocator->isEmpty()) {
+                $record['allocator'] = $subnet->allocator->getValue();
+            }
             /* add description and other custom keys - not parsed by KEA */
             $record['user-context'] = ['uuid' => $subnet->getAttribute('uuid')];
             if (!$subnet->description->isEmpty()) {

@@ -27,22 +27,13 @@
 
 <script>
    $(document).ready(function() {
-        let gridLoaded = false;
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            $('#reconfigureAct').closest('content-box').show();
-            if (e.target.id === 'blocklists_tab' && !gridLoaded) {
-                $("#{{formGridDnsbl['table_id']}}").UIBootgrid({
-                    search:'/api/unbound/settings/searchDnsbl/',
-                    get:'/api/unbound/settings/getDnsbl/',
-                    set:'/api/unbound/settings/setDnsbl/',
-                    add:'/api/unbound/settings/addDnsbl/',
-                    del:'/api/unbound/settings/delDnsbl/',
-                    toggle:'/api/unbound/settings/toggleDnsbl/',
-                });
-                gridLoaded = true;
-            } else if (e.target.id === 'blocklist_tester_tab') {
-                $('#reconfigureAct').closest('content-box').hide();
-            }
+        $("#{{formGridDnsbl['table_id']}}").UIBootgrid({
+            search:'/api/unbound/settings/searchDnsbl/',
+            get:'/api/unbound/settings/getDnsbl/',
+            set:'/api/unbound/settings/setDnsbl/',
+            add:'/api/unbound/settings/addDnsbl/',
+            del:'/api/unbound/settings/delDnsbl/',
+            toggle:'/api/unbound/settings/toggleDnsbl/',
         });
 
         if (window.location.hash != "") {
@@ -124,5 +115,5 @@
     </div>
 </div>
 
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/unbound/service/dnsbl'}) }}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/unbound/service/dnsbl', 'data_exclude_scope': 'blocklist_tester_tab', 'data_change_message_content': 'After changing settings, please remember to apply in order to update the blocklists.'}) }}
 {{ partial("layout_partials/base_dialog",['fields':formDialogDnsbl,'id':formGridDnsbl['edit_dialog_id'],'label':lang._('Edit Blocklist')])}}

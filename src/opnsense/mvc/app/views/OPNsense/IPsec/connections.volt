@@ -61,7 +61,6 @@
                 static: true,
                 navigation: obj_type === 'child' ? 3 : 0,
                 selection: obj_type === 'child' ? true : false,
-                useRequestHandlerOnGet: true,
                 requestHandler: function(request) {
                     request['connection'] = $("#connection\\.uuid").val();
                     if (request.rowCount === undefined) {

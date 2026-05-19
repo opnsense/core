@@ -56,6 +56,7 @@ function filter_core_get_initialized_plugin_system()
     $fw = new \OPNsense\Firewall\Plugin();
     $ifdetails = legacy_interfaces_details();
     $gateways = new \OPNsense\Routing\Gateways();
+    $gatewaygroups = new \OPNsense\Routing\GatewayGroups();
     $cnfint = legacy_config_get_interfaces(["enable" => true]);
     foreach ($cnfint as $key => &$value) {
         // to set "reply-to" we need to know the gateway for our interface, let's collect it here and pass it on to
@@ -82,7 +83,7 @@ function filter_core_get_initialized_plugin_system()
     $fw->setInterfaceMapping($cnfint);
     $fw->setGateways($gateways);
     $fw->setIfconfigDetails($ifdetails);
-    $fw->setGatewayGroups($gateways->getGroups(return_gateways_status()));
+    $fw->setGatewayGroups($gatewaygroups->getActiveGroups(return_gateways_status()));
     return $fw;
 }
 
@@ -519,10 +520,10 @@ function filter_core_rules_system($fw, $defaults)
                 );
                 break;
             default:
-                $dhcpdv6_enabled = isset($config['dhcpdv6'][$intf]['enable']);
-                $track6_enabled = isset($intfinfo['track6-interface']);
+                $legacy_dhcpdv6 = file_exists('/usr/local/www/services_dhcpv6.php') &&
+                    (isset($config['dhcpdv6'][$intf]['enable']) || ($intfinfo['ipaddrv6'] ?? 'none') == 'track6');
 
-                if ($dhcpdv6_enabled || $track6_enabled || in_array($intf, $dhcrelay6_interfaces)) {
+                if ($legacy_dhcpdv6 || in_array($intf, $dhcrelay6_interfaces)) {
                     $fw->registerFilterRule(
                         1,
                         ['protocol' => 'udp','ipprotocol' => 'inet6', 'from' => 'fe80::/10', 'to' => 'fe80::/10,ff02::/16',

@@ -44,7 +44,6 @@
                 selection: false,
                 multiSelect: false,
                 initialSearchPhrase: getUrlHash('search'),
-                useRequestHandlerOnGet: true,
                 requestHandler: function(request) {
                     request['selected_interfaces'] = selected_interfaces;
                     request['selected_protocol'] = selected_protocol;

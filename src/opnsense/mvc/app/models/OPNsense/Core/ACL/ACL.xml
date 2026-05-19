@@ -522,15 +522,10 @@
     <page-system-gatewaygroups>
         <name>System: Gateway Groups</name>
         <patterns>
-            <pattern>system_gateway_groups.php*</pattern>
+            <pattern>ui/routing/groups</pattern>
+            <pattern>api/routing/groupsettings/*</pattern>
         </patterns>
     </page-system-gatewaygroups>
-    <page-system-gateways-editgatewaygroups>
-        <name>System: Gateways: Edit Gateway Groups</name>
-        <patterns>
-            <pattern>system_gateway_groups_edit.php*</pattern>
-        </patterns>
-    </page-system-gateways-editgatewaygroups>
     <page-system-generalsetup>
         <name>System: General Setup</name>
         <patterns>
