@@ -1320,6 +1320,30 @@ EOD;
         @unlink('/var/spool/lock/LCK..' . basename($port));
     }
 
+    /*
+     * In HA mode with disconnectppps enabled, only start PPP when at least
+     * one underlying parent interface is currently CARP MASTER.
+     *
+     * During boot, the CARP hook may already have processed a BACKUP event
+     * before the PPP pseudo-interface exists. Without this guard, the later
+     * normal startup path can still start PPP on a BACKUP node.
+     */
+    if (!empty($config['hasync']['disconnectppps'])) {
+        /* XXX this ignores MLPPP but also reduces complexity */
+        $port_stats = legacy_interface_details($ppp['ports']);
+        foreach ($port_stats['carp'] ?? [] as $carp) {
+            if (in_array($carp['status'], ['BACKUP', 'INIT'])) {
+                log_msg(
+                    "interface_ppps_configure() skipped for {$interface} " .
+                    "(disconnectppps enabled, no parent interface is CARP MASTER)",
+                    LOG_NOTICE
+                );
+
+                return;
+            }
+        }
+    }
+
     /* precaution for post-start 'up' check */
     legacy_interface_flags($ifcfg['if'], 'down', false);
 
