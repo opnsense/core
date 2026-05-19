@@ -1,15 +1,30 @@
 <form>
     <field>
-        <id>subnet6.subnet</id>
-        <label>Subnet</label>
-        <type>text</type>
-        <help>Subnet to use, should be large enough to hold the specified pools and reservations</help>
-    </field>
-    <field>
         <id>subnet6.interface</id>
         <label>Interface</label>
         <type>dropdown</type>
         <help>Select which interface this subnet belongs too.</help>
+    </field>
+    <field>
+        <id>subnet6.dynamic_prefix</id>
+        <label>Dynamic Prefix</label>
+        <type>checkbox</type>
+        <help>Use the identity association prefix allocated to this interface and generate subnet and pools automatically. DHCP options that are not auto collected are unaffected by prefix changes and remain static.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet6.subnet</id>
+        <label>Subnet</label>
+        <type>text</type>
+        <style>static_prefix</style>
+        <help>Subnet to use, should be large enough to hold the specified pools and reservations</help>
+        <grid_view>
+            <formatter>subnet</formatter>
+        </grid_view>
     </field>
     <field>
         <id>subnet6.allocator</id>
@@ -17,6 +32,9 @@
         <type>dropdown</type>
         <advanced>true</advanced>
         <help>Select allocator method to use when offering leases to clients.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>subnet6.pd-allocator</id>
@@ -24,18 +42,19 @@
         <type>dropdown</type>
         <advanced>true</advanced>
         <help>Select allocator method to use when offering prefix delegations to clients</help>
-    </field>
-    <field>
-        <id>subnet6.description</id>
-        <label>Description</label>
-        <type>text</type>
-        <help>You may enter a description here for your reference (not parsed).</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>subnet6.pools</id>
         <label>Pools</label>
         <type>textbox</type>
+        <style>static_prefix</style>
         <help>List of pools, one per line in range or subnet format (e.g. 2001:db8:1::-2001:db8:1::100, 2001:db8:1::/80</help>
+        <grid_view>
+            <formatter>subnet</formatter>
+        </grid_view>
     </field>
     <field>
         <id>subnet6.valid_lifetime</id>
@@ -47,17 +66,35 @@
         </grid_view>
     </field>
     <field>
+        <id>subnet6.description</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>You may enter a description here for your reference (not parsed).</help>
+    </field>
+    <field>
         <type>header</type>
         <label>DHCP option data</label>
+    </field>
+        <field>
+        <id>subnet6.option_data_autocollect</id>
+        <label>Auto collect option data</label>
+        <type>checkbox</type>
+        <help>Automatically update option data for relevant attributes such as dns servers when applying settings from the gui. When using a dynamic prefix in a subnet, this will set the correct primary IP address automatically.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>subnet6.option_data.dns_servers</id>
         <label>DNS servers</label>
         <type>select_multiple</type>
-        <style>tokenize</style>
+        <style>tokenize option_data_autocollect</style>
         <allownew>true</allownew>
         <help>DNS servers to offer to the clients</help>
         <grid_view>
+            <formatter>option_data_autocollect</formatter>
             <visible>false</visible>
         </grid_view>
     </field>
@@ -65,11 +102,11 @@
         <id>subnet6.option_data.domain_search</id>
         <label>Domain search</label>
         <type>select_multiple</type>
-        <style>tokenize</style>
+        <style>tokenize option_data_autocollect</style>
         <allownew>true</allownew>
-        <separator>,</separator>
-        <help>Specifies a ´search list´ of Domain Names to be used by the client to locate not-fully-qualified domain names.</help>
+        <help>Specifies a search list of Domain Names to be used by the client to locate not-fully-qualified domain names.</help>
         <grid_view>
+            <formatter>option_data_autocollect</formatter>
             <visible>false</visible>
         </grid_view>
     </field>
@@ -110,7 +147,7 @@
         <id>subnet6.ddns_reverse_zone</id>
         <label>DNS reverse zone</label>
         <type>text</type>
-        <help>Full reverse DNS zone receiving PTR updates (e.g. "8.b.d.0.1.0.0.2.ip6.arpa.").</help>
+        <help>Full reverse DNS zone receiving PTR updates (e.g. "8.b.d.0.1.0.0.2.ip6.arpa."). This will not be dynamically adjusted if the subnet is configured with a dynamic prefix.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>

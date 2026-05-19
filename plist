@@ -558,6 +558,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/SNatRule.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Firewall/Util.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Interface/Autoconf.php
+/usr/local/opnsense/mvc/app/library/OPNsense/Interface/Idassoc.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Controller.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Dispatcher.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Mvc/Exceptions/ClassNotFoundException.php
@@ -1314,6 +1315,7 @@
 /usr/local/opnsense/scripts/kea/del_kea_leases.py
 /usr/local/opnsense/scripts/kea/get_kea_leases.py
 /usr/local/opnsense/scripts/kea/kea_dhcp_options.py
+/usr/local/opnsense/scripts/kea/kea_prefix_renew.py
 /usr/local/opnsense/scripts/kea/kea_prefix_watcher.py
 /usr/local/opnsense/scripts/kea/lib/__init__.py
 /usr/local/opnsense/scripts/kea/lib/kea_ctrl.py
