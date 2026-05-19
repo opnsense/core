@@ -664,7 +664,7 @@ $.fn.SimpleActionButton = function (params) {
                 } else {
                     this_button.closest('.page-content-main').show();
                 }
-            })
+            });
         }
 
         this_button.on('click', function () {
