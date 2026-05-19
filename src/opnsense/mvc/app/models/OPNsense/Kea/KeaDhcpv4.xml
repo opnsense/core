@@ -156,6 +156,14 @@
                     <Default>1</Default>
                     <Required>Y</Required>
                 </match-client-id>
+                <allocator type="OptionField">
+                  <BlankDesc>Default</BlankDesc>
+                  <OptionValues>
+                    <iterative>Iterative</iterative>
+                    <random>Random</random>
+                    <flq>Free Lease Queue</flq>
+                  </OptionValues>
+                </allocator>
                 <pools type=".\KeaPoolsField"/>
                 <ddns_forward_zone type="HostnameField">
                     <IpAllowed>N</IpAllowed>

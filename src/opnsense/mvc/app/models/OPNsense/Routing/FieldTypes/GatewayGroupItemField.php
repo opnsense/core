@@ -1,8 +1,7 @@
-#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (c) 2017 Fabian Franz
+ * Copyright (C) 2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,36 +26,41 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("script/load_phalcon.php");
+namespace OPNsense\Routing\FieldTypes;
 
-use OPNsense\Firewall\Util;
-use OPNsense\Routing\Gateways;
-use OPNsense\Routing\GatewayGroups;
+use OPNsense\Base\FieldTypes\JsonKeyValueStoreField;
 
-$opts = getopt('ghl', [], $optind);
-$args = array_slice($argv, $optind);
+class GatewayGroupItemField extends JsonKeyValueStoreField
+{
+    protected $internalIsContainer = false;
 
-if (isset($opts['h'])) {
-    echo "Usage: gateways.php [-g] [-h]\n\n";
-    echo "\t-g add gateway groups\n";
-    echo "\t-l exclude disabled, localhost, inactive gateways\n";
-} else {
-    $mdl = new Gateways();
-    $gateways = isset($opts['l']) ? $mdl->gatewaysIndexedByName() : $mdl->gatewaysIndexedByName(true, true, true);
+    public function setValue($value)
+    {
+        if (is_a($value, 'SimpleXMLElement') && array_filter((array)$value, fn($v) => strpos((string)$v, '|') !== false)) {
+            $tiers = [];
+            foreach ($value as $item) {
+                list($name, $tier) = explode('|', $item);
+                $tiers[$tier][] = $name;
+            }
 
-    $ret = [];
+            ksort($tiers);
+            foreach ($tiers as $tieridx => $tier) {
+                $gwnames = implode(',', $tier);
+                if ($tieridx == 1) {
+                    parent::setValue($gwnames);
+                    continue;
+                }
 
-    foreach ($gateways as $gateway) {
-        if (Util::isIpAddress($gateway['gateway'] ?? '')) {
-            $ret[$gateway['name']] = "{$gateway['name']} - {$gateway['gateway']}";
-        } else {
-            $ret[$gateway['name']] = "{$gateway['name']} - {$gateway['ipprotocol']}";
+                if ($tieridx > 5) {
+                    /* bad data */
+                    return;
+                }
+
+                $property = 'item' . ($tieridx > 1 ? $tieridx : '');
+                $this->getParentNode()->$property->setValue($gwnames);
+            }
+        } elseif (!empty($value)) {
+            return parent::setValue($value);
         }
     }
-    if (isset($opts['g'])) {
-        foreach ((new GatewayGroups())->getGroupNames() as $name) {
-            $ret[$name] = $name;
-        }
-    }
-    echo json_encode($ret) . PHP_EOL;
 }
