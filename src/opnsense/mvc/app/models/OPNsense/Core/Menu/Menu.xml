@@ -24,7 +24,7 @@
             <Servers order="30" url="/system_authservers.php">
                 <Edit url="/system_authservers.php*" visibility="hidden"/>
             </Servers>
-            <Tester order="40" url="/diag_authentication.php"/>
+            <Tester order="40" url="/ui/auth/tester"/>
         </Access>
         <Configuration cssClass="fa fa-history fa-fw">
             <Backups url="/diag_backup.php"/>
