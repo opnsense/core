@@ -98,16 +98,17 @@
                 <allocator type="OptionField">
                     <BlankDesc>Default</BlankDesc>
                     <OptionValues>
-                        <iterative>iterative</iterative>
-                        <random>random</random>
+                        <iterative>Iterative</iterative>
+                        <random>Random</random>
+                        <flq>Free Lease Queue</flq>
                     </OptionValues>
                 </allocator>
                 <pd-allocator type="OptionField">
                     <BlankDesc>Default</BlankDesc>
                     <OptionValues>
-                        <iterative>iterative</iterative>
-                        <random>random</random>
-                        <flq>Free Lease Queue Allocator</flq>
+                        <iterative>Iterative</iterative>
+                        <random>Random</random>
+                        <flq>Free Lease Queue</flq>
                     </OptionValues>
                 </pd-allocator>
                 <option_data>
