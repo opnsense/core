@@ -110,10 +110,6 @@
                 });
             }
         });
-
-        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            $('#downloadConfig').toggle(e.target.id === 'config_tab');
-        });
     });
 </script>
 
@@ -125,12 +121,17 @@
 <form id="mainform">
     <div class="content-box tab-content">
         {{ partial("layout_partials/base_tabs_content",['formData':formSettings]) }}
-        <div id="configTab" class="tab-pane fade"></div>
+        <div id="configTab" class="tab-pane fade">
+            <div class="content-box">
+                <div class="col-md-12">
+                    <br/>
+                    <button class="btn btn-primary" id="downloadConfig">{{ lang._('Download') }}</button>
+                    <br/>
+                    <br/>
+                </div>
+            </div>
+        </div>
     </div>
 </form>
-
-<button class="btn btn-primary" id="downloadConfig" style="display: none;">
-    {{ lang._('Download') }}
-</button>
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/ipsec/service/reconfigure', 'data_exclude_scope': 'config_tab'}) }}
