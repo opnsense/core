@@ -110,7 +110,6 @@ foreach ($fw->iterateFilterRules() as $prio => $item) {
         $rule['%action'] = $rule['action'];
         $rule['ipprotocol'] = $rule['ipprotocol'] ?? '';
         $rule['%ipprotocol'] = $rule['ipprotocol'];
-        // This one is "translated" via uppercase
         $rule['protocol'] = $rule['protocol'] ?? '';
         $rule['%protocol'] = strtoupper($rule['protocol']);
 
