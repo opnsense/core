@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp6</mount>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <description>Kea DHCPv6 configuration</description>
     <items>
         <general>
@@ -84,7 +84,6 @@
                 <subnet type="NetworkField">
                     <NetMaskRequired>Y</NetMaskRequired>
                     <AddressFamily>ipv6</AddressFamily>
-                    <Required>Y</Required>
                     <Constraints>
                         <check001>
                             <type>UniqueConstraint</type>
@@ -111,6 +110,10 @@
                         <flq>Free Lease Queue</flq>
                     </OptionValues>
                 </pd-allocator>
+                <option_data_autocollect type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </option_data_autocollect>
                 <option_data>
                     <dns_servers type="NetworkField">
                         <NetMaskAllowed>N</NetMaskAllowed>
@@ -140,6 +143,10 @@
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                 </interface>
+                <dynamic_prefix type="BooleanField">
+                    <Required>Y</Required>
+                    <Default>0</Default>
+                </dynamic_prefix>
                 <ddns_forward_zone type="HostnameField">
                     <IpAllowed>N</IpAllowed>
                     <Constraints>
@@ -231,9 +238,11 @@
                         <subnets>
                             <source>OPNsense.Kea.KeaDhcpv6</source>
                             <items>subnets.subnet6</items>
-                            <display>subnet</display>
+                            <display>interface,subnet</display>
+                            <display_format>%s %s</display_format>
                         </subnets>
                     </Model>
+                    <DisableCache>Y</DisableCache>
                     <ValidationMessage>Related subnet not found.</ValidationMessage>
                     <Constraints>
                         <check001>
@@ -418,9 +427,11 @@
                         <subnets>
                             <source>OPNsense.Kea.KeaDhcpv6</source>
                             <items>subnets.subnet6</items>
-                            <display>subnet</display>
+                            <display>interface,subnet</display>
+                            <display_format>%s %s</display_format>
                         </subnets>
                     </Model>
+                    <DisableCache>Y</DisableCache>
                     <ValidationMessage>Related subnet not found.</ValidationMessage>
                     <Required>Y</Required>
                 </subnet>
@@ -430,8 +441,6 @@
                 <prefix_len type="IntegerField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>128</MaximumValue>
-                    <Default>56</Default>
-                    <Required>Y</Required>
                 </prefix_len>
                 <delegated_len type="IntegerField">
                     <MinimumValue>1</MinimumValue>

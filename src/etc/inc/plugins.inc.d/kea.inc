@@ -146,8 +146,24 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
 function kea_configure()
 {
     return [
-        'kea_sync' => ['kea_configure_do']
+        'kea_generate_dhcpv6' => ['kea_generate_dhcpv6_do'],
+        'kea_sync' => ['kea_configure_do'],
+        'newwanip' => ['kea_newwanip'],
     ];
+}
+
+// used by kea_prefix_renew hook script to regenerate config when dynamic IPv6 prefix changes
+function kea_generate_dhcpv6_do($verbose = false)
+{
+    kea_generate_dhcpv6(new \OPNsense\Kea\KeaDhcpv6());
+}
+
+function kea_generate_dhcpv6($keaDhcpv6)
+{
+    if ($keaDhcpv6->isEnabled() && $keaDhcpv6->general->manual_config->isEmpty()) {
+        /* skip kea-dhcp6.conf when configured manually */
+        $keaDhcpv6->generateConfig();
+    }
 }
 
 function kea_configure_do($verbose = false)
@@ -164,10 +180,7 @@ function kea_configure_do($verbose = false)
             /* skip kea-dhcp4.conf when configured manually */
             $keaDhcpv4->generateConfig();
         }
-        if ($keaDhcpv6->isEnabled() && $keaDhcpv6->general->manual_config->isEmpty()) {
-            /* skip kea-dhcp6.conf when configured manually */
-            $keaDhcpv6->generateConfig();
-        }
+        kea_generate_dhcpv6($keaDhcpv6);
         if ($keaDdns->isEnabled() && $keaDdns->general->manual_config->isEmpty()) {
             /* skip kea-dhcp-ddns.conf when configured manually */
             $keaDdns->generateConfig();
@@ -184,6 +197,19 @@ function kea_configure_do($verbose = false)
             );
         }
         service_log("done.\n", $verbose);
+    }
+}
+
+function kea_newwanip($interfaces, $family)
+{
+    if ($family === 'inet6') {
+        $keaDhcpv6 = new \OPNsense\Kea\KeaDhcpv6();
+        if (
+            $keaDhcpv6->isEnabled() &&
+            $keaDhcpv6->general->manual_config->isEmpty()
+        ) {
+            mwexecf('/usr/local/opnsense/scripts/kea/kea_prefix_renew.py');
+        }
     }
 }
 
