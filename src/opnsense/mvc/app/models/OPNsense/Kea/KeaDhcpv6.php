@@ -147,11 +147,13 @@ class KeaDhcpv6 extends BaseModel
             if (!$subnet->option_data_autocollect->isEmpty()) {
                 if (!$subnet->option_data->dns_servers->isEmpty()) {
                     $messages->appendMessage(
-                        new Message(gettext('DNS servers must be empty when option data autocollect is enabled.'), $key . '.option_data.dns_servers'));
+                        new Message(gettext('DNS servers must be empty when option data autocollect is enabled.'), $key . '.option_data.dns_servers')
+                    );
                 }
                 if (!$subnet->option_data->domain_search->isEmpty()) {
                     $messages->appendMessage(
-                        new Message(gettext('Domain search must be empty when option data autocollect is enabled.'), $key . '.option_data.domain_search'));
+                        new Message(gettext('Domain search must be empty when option data autocollect is enabled.'), $key . '.option_data.domain_search')
+                    );
                 }
             }
         }
