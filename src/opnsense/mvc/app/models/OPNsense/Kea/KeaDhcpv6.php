@@ -34,6 +34,7 @@ use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
 use OPNsense\Core\File;
 use OPNsense\Firewall\Util;
+use OPNsense\Interface\Idassoc;
 
 class KeaDhcpv6 extends BaseModel
 {
@@ -52,6 +53,12 @@ class KeaDhcpv6 extends BaseModel
             $subnet = "";
             $subnet_node = $this->getNodeByReference("subnets.subnet6.{$reservation->subnet}");
             if ($subnet_node) {
+                if (!$subnet_node->dynamic_prefix->isEmpty()) {
+                    $messages->appendMessage(
+                        new Message(gettext("Reservations cannot be assigned to dynamic prefix subnets."), $key . ".subnet")
+                    );
+                    continue;
+                }
                 $subnet = $subnet_node->subnet->getValue();
             }
             if (!Util::isIPInCIDR($reservation->ip_address->getValue(), $subnet) && !$reservation->ip_address->isEmpty()) {
@@ -81,10 +88,71 @@ class KeaDhcpv6 extends BaseModel
                     new Message(gettext('Interface is not selected in the general settings.'), $key . ".interface")
                 );
             }
-            foreach ($subnet->pools->checkSubnet($subnet->subnet->getValue()) as $pool) {
+            if (!$subnet->dynamic_prefix->isEmpty()) {
+                if (!$subnet->pools->isEmpty()) {
+                    $messages->appendMessage(
+                        new Message(gettext('Pools cannot be configured when dynamic prefix is enabled, they are automatically generated.'), $key . ".pools")
+                    );
+                }
+            } else {
+                foreach ($subnet->pools->checkSubnet($subnet->subnet->getValue()) as $pool) {
+                    $messages->appendMessage(
+                        new Message(sprintf(gettext('Pool "%s" not in specified subnet.'), $pool), $key . ".pools")
+                    );
+                }
+            }
+            if ($subnet->dynamic_prefix->isEmpty() && $subnet->subnet->isEmpty()) {
                 $messages->appendMessage(
-                    new Message(sprintf(gettext('Pool "%s" not in specified subnet.'), $pool), $key . ".pools")
+                    new Message(gettext('Subnet is required when dynamic prefix is disabled.'), $key . ".subnet")
                 );
+            }
+            if (!$subnet->dynamic_prefix->isEmpty() && !$subnet->subnet->isEmpty()) {
+                $messages->appendMessage(
+                    new Message(gettext('Subnet must be empty when dynamic prefix is enabled.'), $key . ".subnet")
+                );
+            }
+            if (!$subnet->dynamic_prefix->isEmpty()) {
+                foreach ($this->subnets->subnet6->iterateItems() as $tmpsubnet) {
+                    if ($key === $tmpsubnet->__reference) {
+                        continue;
+                    }
+                    if (
+                        !$tmpsubnet->dynamic_prefix->isEmpty() &&
+                        $tmpsubnet->interface->isEqual($subnet->interface->getValue())
+                    ) {
+                        $messages->appendMessage(
+                            new Message(gettext('Only one dynamic prefix subnet may be configured per interface.'), $key . ".interface")
+                        );
+                        break;
+                    }
+                }
+                $dynamic_pd_pool_count = 0;
+                foreach ($this->pd_pools->pd_pool->iterateItems() as $tmppool) {
+                    if ($tmppool->subnet->isEqual($subnet->getAttribute('uuid'))) {
+                        $dynamic_pd_pool_count++;
+                    }
+                }
+                if ($dynamic_pd_pool_count > 1) {
+                    $messages->appendMessage(
+                        new Message(gettext('Only one PD pool may be configured for a dynamic prefix subnet.'), $key . ".dynamic_prefix")
+                    );
+                }
+                // This validation is not ideal, but it prevents user error on initial dynamic subnet configuration
+                if (empty(Idassoc::prefix($subnet->interface->getValue()))) {
+                    $messages->appendMessage(
+                        new Message(gettext('Interface has no identity association prefix configuration.'), $key . ".dynamic_prefix")
+                    );
+                }
+            }
+            if (!$subnet->option_data_autocollect->isEmpty()) {
+                if (!$subnet->option_data->dns_servers->isEmpty()) {
+                    $messages->appendMessage(
+                        new Message(gettext('DNS servers must be empty when option data autocollect is enabled.'), $key . '.option_data.dns_servers'));
+                }
+                if (!$subnet->option_data->domain_search->isEmpty()) {
+                    $messages->appendMessage(
+                        new Message(gettext('Domain search must be empty when option data autocollect is enabled.'), $key . '.option_data.domain_search'));
+                }
             }
         }
         // validate changed pd_pools
@@ -93,6 +161,66 @@ class KeaDhcpv6 extends BaseModel
                 continue;
             }
             $key = $pool->__reference;
+            // dynamic pd_pool validation
+            if (($subnet_node = $this->getNodeByReference("subnets.subnet6.{$pool->subnet}")) !== null && !$subnet_node->dynamic_prefix->isEmpty()) {
+                foreach ($this->pd_pools->pd_pool->iterateItems() as $tmppool) {
+                    if ($key === $tmppool->__reference) {
+                        continue;
+                    }
+                    if ($tmppool->subnet->isEqual($pool->subnet->getValue())) {
+                        $messages->appendMessage(
+                            new Message(gettext("Only one PD pool may be configured for a dynamic prefix subnet."), $key . ".subnet")
+                        );
+                        break;
+                    }
+                }
+                if (!$pool->prefix->isEmpty()) {
+                    $messages->appendMessage(
+                        new Message(gettext("Prefix must be empty when attached to a dynamic prefix subnet."), $key . ".prefix")
+                    );
+                }
+                if (!$pool->prefix_len->isEmpty()) {
+                    $messages->appendMessage(
+                        new Message(gettext("Prefix length must be empty when attached to a dynamic prefix subnet."), $key . ".prefix_len")
+                    );
+                }
+                $idassoc = Idassoc::prefix($subnet_node->interface->getValue());
+                if (!empty($idassoc['prefix_allocated'])) {
+                    $pd_prefixes = Util::splitIPv6Prefix($idassoc['prefix_allocated']);
+                    if (!empty($pd_prefixes[1])) {
+                        $pd_prefix_len = (int)explode('/', $pd_prefixes[1], 2)[1];
+                        if ($pd_prefix_len > 64) {
+                            $messages->appendMessage(
+                                new Message(
+                                    sprintf(
+                                        gettext('Dynamic prefix "%s" is too small to create a non-overlapping PD pool, split prefix length would be "%d".'),
+                                        $idassoc['prefix_allocated'],
+                                        $pd_prefix_len
+                                    ),
+                                    $key . ".delegated_len"
+                                )
+                            );
+                        } elseif ($pool->delegated_len->asInt() < $pd_prefix_len) {
+                            $messages->appendMessage(
+                                new Message(
+                                    sprintf(
+                                        gettext('Delegated length %d must be longer than or equal to dynamic PD pool prefix length %d.'),
+                                        $pool->delegated_len->asInt(),
+                                        $pd_prefix_len
+                                    ),
+                                    $key . ".delegated_len"
+                                )
+                            );
+                        }
+                    }
+                }
+                continue;
+            }
+            // static pd_pool validation
+            if ($pool->prefix_len->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("Prefix length is required."), $key . ".prefix_len"));
+                continue;
+            }
             if ($pool->prefix_len->asInt() > $pool->delegated_len->asInt()) {
                 $messages->appendMessage(new Message(gettext("Delegated length must be longer than or equal to prefix length"), $key . ".delegated_len"));
             }
@@ -108,8 +236,15 @@ class KeaDhcpv6 extends BaseModel
                 if ($key === $tmppool->__reference) {
                     continue;
                 }
+                $tmpsubnet = $this->getNodeByReference("subnets.subnet6.{$tmppool->subnet}");
+                if ($tmpsubnet !== null && !$tmpsubnet->dynamic_prefix->isEmpty()) {
+                    continue;
+                }
                 $osubnet = $tmppool->prefix->getValue() . "/" . $tmppool->prefix_len->getValue();
                 $orange = Util::cidrToRange($osubnet);
+                if (empty($orange)) {
+                    continue;
+                }
                 if (Util::isIPInCIDR($orange[0], $subnet) || Util::isIPInCIDR($trange[0], $osubnet)) {
                     $messages->appendMessage(new Message(gettext("Pool overlaps with an existing one."), $key . ".prefix"));
                 }
@@ -147,6 +282,17 @@ class KeaDhcpv6 extends BaseModel
         return $result;
     }
 
+    private function getConfigPrimaryAddress6(string $interface): ?string
+    {
+        $addresses = json_decode((new Backend())->configdpRun('interface address', [$interface]), true);
+        foreach ($addresses[$interface] as $address) {
+            if ($address['family'] === 'inet6') {
+                return $address['address'];
+            }
+        }
+        return null;
+    }
+
     private function getConfigThisServerHostname()
     {
         $hostname = $this->ha->this_server_name->getValue();
@@ -156,14 +302,26 @@ class KeaDhcpv6 extends BaseModel
         return $hostname;
     }
 
-    private function getConfigSubnets($ddns_enabled = false)
+    private function getConfigSubnets($ddns_enabled = false, &$needs_no_leases_class = false)
     {
         $result = [];
         $subnet_id = 1;
         foreach ($this->subnets->subnet6->iterateItems() as $subnet_uuid => $subnet) {
+            // If subnet is dynamic, seed an initial subnet value so KEA can start
+            $if = $subnet->interface->getValue();
+            $subnet_value = $subnet->subnet->getValue();
+            $idassoc = [];
+            if (!$subnet->dynamic_prefix->isEmpty()) {
+                // XXX: If a subnet has been created for an interface that does not exist anymore,
+                // or the interface was removed from the identity association but still exists in the KEA config,
+                // there won't be a prefix and KEA will fail to start. Ideally this should be validated
+                // in the core interface configuration, it cannot be validated inside KEA.
+                $idassoc = Idassoc::prefix($if);
+                $subnet_value = $idassoc['prefix_allocated'] ?? '';
+            }
             $record = [
                 'id' => $subnet_id++,
-                'subnet' => $subnet->subnet->getValue(),
+                'subnet' => $subnet_value,
                 'option-data' => [],
                 'pools' => [],
                 'pd-pools' => [],
@@ -188,6 +346,17 @@ class KeaDhcpv6 extends BaseModel
             if (!$subnet->description->isEmpty()) {
                 $record['user-context']['description'] = $subnet->description->getValue();
             }
+            if (!$subnet->dynamic_prefix->isEmpty()) {
+                // Used by hook script to know which subnets have a dynamic prefix, it reads the running conf from socket
+                $record['user-context']['dynamic_prefix'] = true;
+                $record['user-context']['prefix_valid'] = $idassoc['prefix_valid'] ?? false;
+                $record['user-context']['prefix_source'] = $idassoc['prefix_source'] ?? $if;
+                // If the prefix is temporary placeholder, we will not send leases to any client
+                if (empty($idassoc['prefix_valid'])) {
+                    $record['client-classes'] = ['NO_LEASES_PLEASE'];
+                    $needs_no_leases_class = true;
+                }
+            }
             /* standard option-data elements */
             foreach ($subnet->option_data->iterateItems() as $key => $value) {
                 $target_fieldname = str_replace('_', '-', $key);
@@ -196,27 +365,59 @@ class KeaDhcpv6 extends BaseModel
                         'name' => $target_fieldname,
                         'data' => (string)$value
                     ];
-                } elseif ($key == 'domain_name') {
+                }
+            }
+            /* optionally collect system option-data, helpful for dynamic prefix configurations */
+            if (!$subnet->option_data_autocollect->isEmpty()) {
+                $domain = (string)Config::getInstance()->object()->system->domain;
+                if (!empty($domain)) {
                     $record['option-data'][] = [
-                        'name' => $target_fieldname,
-                        'data' => (string)Config::getInstance()->object()->system->domain
+                        'name' => 'domain-search',
+                        'data' => $domain
+                    ];
+                }
+
+                $primary_address6 = $this->getConfigPrimaryAddress6($subnet->interface->getValue());
+                if ($primary_address6 !== null) {
+                    $record['option-data'][] = [
+                        'name' => 'dns-servers',
+                        'data' => $primary_address6
                     ];
                 }
             }
             /* add pools */
-            foreach ($subnet->pools->getValues() as $pool) {
-                $record['pools'][] = ['pool' => $pool];
+            if (!$subnet->dynamic_prefix->isEmpty()) {
+                if (!empty($idassoc['prefix_on_link'])) {
+                    $record['pools'][] = ['pool' => $idassoc['prefix_on_link']];
+                }
+            } else {
+                foreach ($subnet->pools->getValues() as $pool) {
+                    $record['pools'][] = ['pool' => $pool];
+                }
             }
             /* add pd-pools */
             foreach ($this->pd_pools->pd_pool->iterateItems() as $key => $pdpool) {
                 if ($pdpool->subnet != $subnet_uuid) {
                     continue;
                 }
-                $entry = [
-                    'prefix' => $pdpool->prefix->getValue(),
-                    'prefix-len' => $pdpool->prefix_len->asInt(),
-                    'delegated-len' => $pdpool->delegated_len->asInt()
-                ];
+                if (!$subnet->dynamic_prefix->isEmpty()) {
+                    $pd_prefixes = Util::splitIPv6Prefix($record['subnet']);
+                    if (empty($pd_prefixes[1])) {
+                        continue;
+                    }
+                    [$pd_prefix, $pd_prefix_len] = explode('/', $pd_prefixes[1], 2);
+                    $entry = [
+                        'prefix' => $pd_prefix,
+                        'prefix-len' => (int)$pd_prefix_len,
+                        'delegated-len' => $pdpool->delegated_len->asInt()
+                    ];
+                } else {
+                    $entry = [
+                        'prefix' => $pdpool->prefix->getValue(),
+                        'prefix-len' => $pdpool->prefix_len->asInt(),
+                        'delegated-len' => $pdpool->delegated_len->asInt()
+                    ];
+                }
                 /* add description and other custom keys - not parsed by KEA */
                 $entry['user-context'] = ['uuid' => $pdpool->getAttribute('uuid')];
                 if (!$pdpool->description->isEmpty()) {
@@ -350,6 +551,7 @@ class KeaDhcpv6 extends BaseModel
     {
         $ddns = new KeaDdns();
         $ddns_enabled = !$ddns->general->enabled->isEmpty();
+        $needs_no_leases_class = false;
         $cnf = [
             'Dhcp6' => [
                 'valid-lifetime' => $this->general->valid_lifetime->asInt(),
@@ -383,7 +585,7 @@ class KeaDhcpv6 extends BaseModel
                         'severity' => 'INFO',
                     ]
                 ],
-                'subnet6' => $this->getConfigSubnets($ddns_enabled),
+                'subnet6' => $this->getConfigSubnets($ddns_enabled, $needs_no_leases_class),
                 'hooks-libraries' => [
                     ['library' => '/usr/local/lib/kea/hooks/libdhcp_lease_cmds.so'],
                     ['library' => '/usr/local/lib/kea/hooks/libdhcp_host_cmds.so']
@@ -391,6 +593,16 @@ class KeaDhcpv6 extends BaseModel
             ]
         ];
         $client_classes = $this->getConfigClientClasses();
+
+        // Used by temporary dynamic-prefix placeholder subnets.
+        // The test can never pass, so subnets using it will not hand out leases.
+        if ($needs_no_leases_class) {
+            $client_classes[] = [
+                'name' => 'NO_LEASES_PLEASE',
+                'test' => "not member('ALL')",
+            ];
+        }
+
         if (!empty($client_classes)) {
             $cnf['Dhcp6']['client-classes'] = $client_classes;
         }
