@@ -572,7 +572,7 @@ class UIBootgrid {
                     headerSort: this.options.sorting && field.sortable !== false,
                     cssClass: this.options.responsive ? 'opnsense-bootgrid-responsive' : '',
                     variableHeight: true,
-                    userDefinedHeight: false,
+                    userDefinedWidth: false,
                 };
             }
 
@@ -581,7 +581,7 @@ class UIBootgrid {
                 col['minWidth'] = field.width;
                 col['maxWidth'] = field.width;
             } else if (field.width) {
-                col['userDefinedHeight'] = true;
+                col['userDefinedWidth'] = true;
                 col['width'] = field.width;
             } else {
                 if (field.minWidth) {
@@ -807,7 +807,7 @@ class UIBootgrid {
 
         // Triggers to activate persistence
         this.table.on('columnResized', (column) => {
-            column.getDefinition().userDefinedHeight = true;
+            column.getDefinition().userDefinedWidth = true;
             this._setPersistence(true);
         });
         this.table.on('headerClick', (e, column) => {
@@ -1399,7 +1399,7 @@ class UIBootgrid {
             persistenceWriterFunc: debounce(function(id, type, data) {
                 if (type === 'columns') {
                     data = data.map((col) => {
-                        if (!col.userDefinedHeight) delete col.width;
+                        if (!col.userDefinedWidth) delete col.width;
                         return col;
                     });
                 }
