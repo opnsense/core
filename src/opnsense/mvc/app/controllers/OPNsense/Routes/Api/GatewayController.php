@@ -44,7 +44,7 @@ class GatewayController extends ApiControllerBase
         $gw_status = json_decode($backend->configdRun('interface gateways status'), true);
 
         if (!empty($gw_status)) {
-            $result['items'] = array_Values($gw_status);
+            $result['items'] = array_values($gw_status);
             $result['status'] = "ok";
         }
 
