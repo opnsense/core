@@ -136,7 +136,7 @@ class FilterController extends FilterBaseController
             } elseif (!empty($record['interfacenot']) && $show_all) {
                 /* Inverted interface, show where applicable when inspecting */
                 $is_if = !array_intersect($rule_interfaces, $interfaces ?? []);
-            } elseif (empty($interfaces) && (count($rule_interfaces) > 1 || !empty($record['interfacenot']))) {
+            } elseif (empty($interfaces) && (count($rule_interfaces)  != 1 || !empty($record['interfacenot']))) {
                 /* Floating, multiple interfaces selected */
                 $is_if = true;
             } else {
