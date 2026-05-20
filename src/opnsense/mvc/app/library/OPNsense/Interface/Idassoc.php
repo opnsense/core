@@ -120,14 +120,6 @@ class Idassoc extends Autoconf
      *               [prefix_valid] => true
      *               [prefix_source] => wan
      *           ]
-     *       [opt1] =>
-     *           [
-     *               [prefix_on_link] => 2001:db8:1234:68::/64
-     *               [prefix_allocated] => 2001:db8:1234:68::/61
-     *               [prefix_associated] => 2001:db8:1234::/56
-     *               [prefix_valid] => true
-     *               [prefix_source] => wan
-     *           ]
      *  ]
      */
     private static function prefixes(): array
