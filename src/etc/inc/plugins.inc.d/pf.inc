@@ -31,17 +31,17 @@ function pf_services()
 {
     global $config;
 
-    $services = array();
+    $services = [];
 
     if (!isset($config['system']['disablefilter'])) {
-        $services[] = array(
+        $services[] = [
             'description' => gettext('Packet Filter'),
-            'configd' => array(
-                'restart' => array('filter reload'),
-            ),
+            'configd' => [
+                'restart' => ['filter reload'],
+            ],
             'nocheck' => true,
             'name' => 'pf',
-        );
+        ];
     }
 
     return $services;
@@ -89,21 +89,17 @@ function pf_cron()
 
 function pf_interfaces()
 {
-    global $config;
-
-    $interfaces = array();
+    $interfaces = [];
 
     /* add interface groups */
-    if (isset($config['ifgroups']['ifgroupentry'])) {
-        foreach ($config['ifgroups']['ifgroupentry'] as $ifgen) {
-            $oc = array("enable" => true);
-            $oc['networks'] = array();
-            $oc['if'] = $ifgen['ifname'];
-            $oc['descr'] = $ifgen['ifname'];
-            $oc['virtual'] = true;
-            $oc['type'] = 'group';
-            $interfaces[$ifgen['ifname']] = $oc;
-        }
+    foreach (config_read_array('ifgroups', 'ifgroupentry', false) as $ifgen) {
+        $oc = ['enable' => true];
+        $oc['networks'] = [];
+        $oc['if'] = $ifgen['ifname'];
+        $oc['descr'] = $ifgen['ifname'];
+        $oc['virtual'] = true;
+        $oc['type'] = 'group';
+        $interfaces[$ifgen['ifname']] = $oc;
     }
 
     return $interfaces;
@@ -117,8 +113,8 @@ function pf_firewall($fw)
 {
     global $config;
 
-    $defaults = array();
-    $defaults['pass'] = array("type" => "pass", "log" => !isset($config['syslog']['nologdefaultpass']));
+    $defaults = [];
+    $defaults['pass'] = ['type' => 'pass', 'log' => !isset($config['syslog']['nologdefaultpass'])];
 
     /*
      *  pass traffic between statically routed subnets and the subnet on the
@@ -141,26 +137,26 @@ function pf_firewall($fw)
                     continue;
                 }
 
-                $networks = array();
-                $networks[] = array('from' => "({$gw['if']}:network)", 'to' => $route['network']);
-                $networks[] = array('to' => "({$gw['if']}:network)", 'from' => $route['network']);
+                $networks = [];
+                $networks[] = ['from' => "({$gw['if']}:network)", 'to' => $route['network']];
+                $networks[] = ['to' => "({$gw['if']}:network)", 'from' => $route['network']];
                 $proto = strpos($route['network'], ":") !== false ? "inet6" : "inet";
                 foreach ($networks as $network) {
                     $fw->registerFilterRule(
                         10,
-                        array('interface' => $gw['interface'], 'statetype' => 'sloppy', 'ipprotocol' => $proto,
+                        ['interface' => $gw['interface'], 'statetype' => 'sloppy', 'ipprotocol' => $proto,
                             'protocol' => 'tcp','flags' => 'any', 'from' => $network['from'],
                             'to' => $network['to'], 'quick' => false,
                             'descr' => "pass traffic between statically routed subnets",
-                            '#ref' => 'system_advanced_firewall.php#bypassstaticroutes'),
+                            '#ref' => 'system_advanced_firewall.php#bypassstaticroutes'],
                         $defaults['pass']
                     );
                     $fw->registerFilterRule(
                         10,
-                        array('interface' => $gw['interface'], 'statetype' => 'sloppy', 'ipprotocol' => $proto,
+                        ['interface' => $gw['interface'], 'statetype' => 'sloppy', 'ipprotocol' => $proto,
                             'from' => $network['from'],'to' => $network['to'], 'quick' => false,
                             'descr' => "pass traffic between statically routed subnets",
-                            '#ref' => 'system_advanced_firewall.php#bypassstaticroutes'),
+                            '#ref' => 'system_advanced_firewall.php#bypassstaticroutes'],
                         $defaults['pass']
                     );
                 }
@@ -201,52 +197,52 @@ function pf_syslog()
 
 function pf_xmlrpc_sync()
 {
-    $result = array();
+    $result = [];
 
-    $result[] = array(
+    $result[] = [
         'description' => gettext('Firewall Groups'),
         'section' => 'ifgroups.ifgroupentry',
         'id' => 'ifgroups',
         'services' => ['pf'],
-    );
-    $result[] = array(
+    ];
+    $result[] = [
         'description' => gettext('Firewall Rules'),
         'help' => gettext('Synchronize the firewall rules to the other HA host.'),
         'section' => 'filter,OPNsense.Firewall.Filter.rules',
         'id' => 'rules',
         'services' => ['pf'],
-    );
-    $result[] = array(
+    ];
+    $result[] = [
         'description' => gettext('Firewall Schedules'),
         'help' => gettext('Synchronize the firewall schedules to the other HA host.'),
         'section' => 'schedules',
         'id' => 'schedules',
         'services' => ['pf'],
-    );
-    $result[] = array(
+    ];
+    $result[] = [
         'description' => gettext('Firewall Categories'),
         'section' => 'OPNsense.Firewall.Category',
         'id' => 'categories',
-    );
-    $result[] = array(
+    ];
+    $result[] = [
         'description' => gettext('Firewall Log Templates'),
         'section' => 'OPNsense.Firewall.Lvtemplate',
         'id' => 'lvtemplate',
-    );
-    $result[] = array(
+    ];
+    $result[] = [
         'description' => gettext('Aliases'),
         'help' => gettext('Synchronize the aliases over to the other HA host.'),
         'section' => 'aliases,OPNsense.Firewall.Alias',
         'id' => 'aliases',
         'services' => ['pf'],
-    );
-    $result[] = array(
+    ];
+    $result[] = [
         'description' => gettext('NAT'),
         'help' => gettext('Synchronize the NAT rules over to the other HA host.'),
         'section' => 'nat,OPNsense.Firewall.Filter.snatrules,OPNsense.Firewall.Filter.npt,OPNsense.Firewall.Filter.onetoone',
         'id' => 'nat',
         'services' => ['pf'],
-    );
+    ];
 
     return $result;
 }
