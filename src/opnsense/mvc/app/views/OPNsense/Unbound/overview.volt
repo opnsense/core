@@ -627,6 +627,18 @@
                     $tbody.append($tr);
                 }
 
+                if (blocklist != "") {
+                    let display_text = blocklist;
+                    if (provider) {
+                        bl_category += ' - ' + category;
+                    }
+                    $container = $(`
+                        <div>
+                            {{ lang._('Blocklist match:')}} ${bl_category}
+                        </div>
+                    `);
+                }
+
                 $container.append($table);
                 dialogRef.setMessage($container);
 
@@ -719,8 +731,8 @@
                                 return row.domain;
                             },
                             "blocklist": function (column, row) {
-                                if (row.provider) {
-                                    return row.blocklist + ' - ' + row.provider;
+                                if (row.category) {
+                                    return row.blocklist + ' - ' + row.category;
                                 }
                                 return row.blocklist;
                             }
