@@ -408,7 +408,7 @@
                             <i class="fa fa-cogs"></i>
                         </button>
                     `).on('click', function () {
-                        openPoliciesDialog(domain, uuid, action, statObj?.blocklist ?? "");
+                        openPoliciesDialog(domain, uuid, action, statObj);
                     });
 
                     let bl = (uuid && uuid in policies) ? `(${policies[uuid].description})` : '';
@@ -562,6 +562,10 @@
 
         function refreshPoliciesDialog(dialogRef, domain, uuid, appliedAction, blocklist) {
             const cleanDomain = domain.replace(/\.$/, "");
+            const category = blocklist?.category ?? '';
+            const provider = category;
+            blocklist = blocklist?.blocklist ?? blocklist ?? '';
+            let bl_category = blocklist;
 
             ajaxGet('/api/unbound/overview/get_policies', {}, function (data, status) {
                 let $container = $('<div>');
@@ -695,10 +699,9 @@
                                 const uuid = data.uuid;
                                 const domain = data.domain;
                                 const appliedAction = data.action;
-                                const blocklist = data.blocklist;
 
                                 $el.click(function() {
-                                    openPoliciesDialog(domain, uuid, appliedAction, blocklist);
+                                    openPoliciesDialog(domain, uuid, appliedAction, data);
                                 });
                             }
                         }

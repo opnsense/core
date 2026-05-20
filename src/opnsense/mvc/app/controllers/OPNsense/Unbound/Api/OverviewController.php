@@ -72,8 +72,12 @@ class OverviewController extends ApiControllerBase
             return [];
         }
 
+        $types = $this->mdl->dnsbl->blocklist->getTemplateNode()->type->getNodeData();
         foreach ($parsed['top_blocked'] as $domain => $props) {
-            $parsed['top_blocked'][$domain]['blocklist'] ??= $this->getBlocklistDescription($props['blocklist']);
+            if (isset($types[$props['blocklist']]['optgroup'])) {
+                $parsed['top_blocked'][$domain]['category'] = $types[$props['blocklist']]['optgroup'];
+            }
+            $parsed['top_blocked'][$domain]['blocklist'] = $types[$props['blocklist']]['value'] ?? $props['blocklist'];
         }
 
         return $parsed;
