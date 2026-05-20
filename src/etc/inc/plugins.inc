@@ -182,11 +182,9 @@ function plugins_interfaces()
     $changed = false;
 
     // mark previous dynamic registrations stale
-    if (isset($config['interfaces'])) {
-        foreach ($config['interfaces'] as $intf_ref => $intf_data) {
-            if (isset($intf_data[0]['internal_dynamic']) || isset($intf_data['internal_dynamic'])) {
-                $stale_interfaces[$intf_ref] = 1;
-            }
+    foreach (config_read_array('interfaces', false) as $intf_ref => $intf_data) {
+        if (isset($intf_data[0]['internal_dynamic']) || isset($intf_data['internal_dynamic'])) {
+            $stale_interfaces[$intf_ref] = 1;
         }
     }
 
