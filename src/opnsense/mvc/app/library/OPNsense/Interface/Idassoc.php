@@ -105,7 +105,6 @@ class Idassoc extends Autoconf
     /**
      * Collect configured IPv6 identity association prefixes.
      *
-     * - prefix_id: hexadecimal prefix ID configured on the tracked interface.
      * - prefix_on_link: the /64 prefix used directly on this interface.
      * - prefix_allocated: the largest usable prefix block starting at prefix_id,
      *   bounded by the next configured prefix ID or the end of the associated prefix.
@@ -115,7 +114,6 @@ class Idassoc extends Autoconf
      *  [
      *       [lan] =>
      *           [
-     *               [prefix_id] => 0
      *               [prefix_on_link] => 2001:db8:1234::/64
      *               [prefix_allocated] => 2001:db8:1234::/58
      *               [prefix_associated] => 2001:db8:1234::/56
@@ -124,7 +122,6 @@ class Idassoc extends Autoconf
      *           ]
      *       [opt1] =>
      *           [
-     *               [prefix_id] => 68
      *               [prefix_on_link] => 2001:db8:1234:68::/64
      *               [prefix_allocated] => 2001:db8:1234:68::/61
      *               [prefix_associated] => 2001:db8:1234::/56
@@ -167,7 +164,6 @@ class Idassoc extends Autoconf
             );
 
             $result[$ifname] = [
-                'prefix_id' => $track6_prefix_id,
                 'prefix_on_link' => self::calculatePrefix($prefix_associated, $track6_prefix_id),
                 'prefix_allocated' => self::calculatePrefix($prefix_associated, $track6_prefix_id, $prefix_usable_len),
                 'prefix_associated' => $prefix_associated,
