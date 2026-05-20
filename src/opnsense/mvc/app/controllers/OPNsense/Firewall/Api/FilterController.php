@@ -57,13 +57,17 @@ class FilterController extends FilterBaseController
                 $descr = !empty($ifdetail->descr) ? $ifdetail->descr : strtoupper($key);
                 $this->legacy_fieldmap['interface'][$key] = $descr;
             }
-            $this->legacy_fieldmap['action'] = [
+            $this->legacy_fieldmap['%action'] = [
                 'block' => gettext('Block'),
                 'pass' => gettext('Pass'),
                 'reject' => gettext('Reject'),
             ];
-
-            $this->legacy_fieldmap['ipprotocol'] = [
+            $this->legacy_fieldmap['%direction'] = [
+                'in' => gettext('In'),
+                'out' => gettext('Out'),
+                'any' => gettext('Any'),
+            ];
+            $this->legacy_fieldmap['%ipprotocol'] = [
                 'inet' => gettext('IPv4'),
                 'inet6' => gettext('IPv6'),
                 'inet46' => '', /* XXX remove when filter.lib.inc use is removed */

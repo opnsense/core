@@ -336,7 +336,7 @@
 
                         if (
                             row[column.id] !== undefined &&
-                            !['', 'any', 'None'].includes(row[column.id])
+                            !['', 'any', 'None', 'inet46'].includes(row[column.id])
                         ) {
                             return row["%" + column.id] || row[column.id];
                         } else {
@@ -435,28 +435,28 @@
                         }
 
                         // Action
-                        if (row.action.toLowerCase() === "block") {
-                            result += '<i class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="{{ lang._("Block") }}"></i> ';
-                        } else if (row.action.toLowerCase() === "reject") {
-                            result += '<i class="fa fa-times-circle fa-fw text-danger" data-toggle="tooltip" title="{{ lang._("Reject") }}"></i> ';
+                        if (row.action === "block") {
+                            result += `<i class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="${row['%action']}"></i> `;
+                        } else if (row.action === "reject") {
+                            result += `<i class="fa fa-times-circle fa-fw text-danger" data-toggle="tooltip" title="${row['%action']}"></i> `;
                         } else {
-                            result += '<i class="fa fa-play fa-fw text-success" data-toggle="tooltip" title="{{ lang._("Pass") }}"></i> ';
+                            result += `<i class="fa fa-play fa-fw text-success" data-toggle="tooltip" title="${row['%action']}"></i> `;
                         }
 
                         // Direction
-                        if (row.direction.toLowerCase() === "in") {
-                            result += '<i class="fa fa-long-arrow-right fa-fw text-info" data-toggle="tooltip" title="{{ lang._("In") }}"></i> ';
-                        } else if (row.direction.toLowerCase() === "out") {
-                            result += '<i class="fa fa-long-arrow-left fa-fw" data-toggle="tooltip" title="{{ lang._("Out") }}"></i> ';
+                        if (row.direction === "in") {
+                            result += `<i class="fa fa-long-arrow-right fa-fw text-info" data-toggle="tooltip" title="${row['%direction']}"></i> `;
+                        } else if (row.direction === "out") {
+                            result += `<i class="fa fa-long-arrow-left fa-fw" data-toggle="tooltip" title="${row['%direction']}"></i> `;
                         } else {
-                            result += '<i class="fa fa-exchange fa-fw" data-toggle="tooltip" title="{{ lang._("Any") }}"></i> ';
+                            result += `<i class="fa fa-exchange fa-fw" data-toggle="tooltip" title="${row['%direction']}"></i> `;
                         }
 
                         // Quick match
                         if (row.quick == 0) {
-                            result += '<i class="fa fa-flash fa-fw text-muted" data-toggle="tooltip" title="{{ lang._("Last match") }}"></i> ';
+                            result += `<i class="fa fa-flash fa-fw text-muted" data-toggle="tooltip" title="{{ lang._("Last match") }}"></i> `;
                         } else {
-                            result += '<i class="fa fa-flash fa-fw text-warning" data-toggle="tooltip" title="{{ lang._("First match") }}"></i> ';
+                            result += `<i class="fa fa-flash fa-fw text-warning" data-toggle="tooltip" title="{{ lang._("First match") }}"></i> `;
                         }
 
                         // XXX: Advanced fields all have different default values, so it cannot be generalized completely
