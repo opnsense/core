@@ -148,7 +148,7 @@ function kea_configure()
     return [
         'kea_generate_dhcpv6' => ['kea_generate_dhcpv6_do'],
         'kea_sync' => ['kea_configure_do'],
-        'newwanip' => ['kea_newwanip'],
+        'newwanip' => ['kea_newwanip:3'],
     ];
 }
 
@@ -200,7 +200,7 @@ function kea_configure_do($verbose = false)
     }
 }
 
-function kea_newwanip($interfaces, $family)
+function kea_newwanip($verbose, $interfaces, $family)
 {
     if ($family === 'inet6') {
         $keaDhcpv6 = new \OPNsense\Kea\KeaDhcpv6();
