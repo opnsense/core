@@ -131,12 +131,12 @@ class FilterController extends FilterBaseController
             $is_cat = empty($categories) || array_intersect($r_categories, $categories);
             $rule_interfaces = array_filter(explode(',', $record['interface'] ?? ''));
             if ($interfaces === null || (empty($record['interface']) && $show_all)) {
-                /* ALL interfaces always matches, when inspecting, also show rules that apply to all  */
+                /* ALL interfaces always matches, when inspecting, also show rules that apply to all */
                 $is_if = true; // ALL interfaces or floating always matches
             } elseif (!empty($record['interfacenot']) && $show_all) {
                 /* Inverted interface, show where applicable when inspecting */
                 $is_if = !array_intersect($rule_interfaces, $interfaces ?? []);
-            } elseif (empty($interfaces) && (count($rule_interfaces)  != 1 || !empty($record['interfacenot']))) {
+            } elseif (empty($interfaces) && (count($rule_interfaces) != 1 || !empty($record['interfacenot']))) {
                 /* Floating, multiple interfaces selected */
                 $is_if = true;
             } else {
@@ -173,8 +173,8 @@ class FilterController extends FilterBaseController
             // Tag legacy rules as "Automatic generated rules" if they have an empty category
             if (!empty($record['is_automatic'])) {
                 $label = gettext('Automatically generated rules');
-                $record['categories'] = $label;  // Grouping key for tree view
-                $record['category_colors'] = [['name'  => $label]];  // Category formatter metadata
+                $record['categories'] = $label; // Grouping key for tree view
+                $record['category_colors'] = [['name' => $label]]; // Category formatter metadata
             } else {
                 /* frontend can format categories with colors */
                 $record['category_colors'] = $this->getCategoryColors($r_categories);
@@ -444,7 +444,7 @@ class FilterController extends FilterBaseController
             foreach ((new Alias())->aliases->alias->iterateItems() as $key => $alias) {
                 $aliases[$key] = $alias->name->getValue();
             }
-            /* XXX:  as shaper1/2 don't have functional keys, we can only export uuid's here*/
+            /* XXX: as shaper1/2 don't have functional keys, we can only export uuid's here */
             $this->exportCsv($this->getModel()->rules->rule->asRecordSet(
                 false,
                 ['sort_order', 'prio_group'],
