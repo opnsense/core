@@ -404,6 +404,14 @@ class KeaDhcpv4 extends BaseModel
                 'server-port' => $ddns->general->server_port->asInt(),
             ];
         }
+        /* Compatibility flags */
+        if (!$this->general->compatibility->isEmpty()) {
+            $compat = [];
+            foreach (explode(',', (string)$this->general->compatibility) as $opt) {
+                $compat[$opt] = true;
+            }
+            $cnf['Dhcp4']['compatibility'] = $compat;
+        }
         File::file_put_contents($target, json_encode($cnf, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE), 0600);
     }
 }
