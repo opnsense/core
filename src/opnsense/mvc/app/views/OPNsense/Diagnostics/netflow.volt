@@ -97,7 +97,7 @@
     <li><a data-toggle="tab" id="cache_tab" href="#cache">{{ lang._('Cache') }}</a></li>
 </ul>
 <div class="tab-content content-box">
-    <div id="capture" class="tab-pane fade in active"">
+    <div id="capture" class="tab-pane fade in active">
         <!-- tab page capture -->
         {{ partial("layout_partials/base_form",['fields':captureForm,'id':'frm_CaptureSettings'])}}
     </div>
