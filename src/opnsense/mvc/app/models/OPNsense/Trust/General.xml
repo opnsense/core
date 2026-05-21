@@ -62,16 +62,16 @@
         </groups>
         <MinProtocol type="OptionField">
             <OptionValues>
-                <TLSv1>TLSv1</TLSv1>
-                <TLSv1.1>TLSv1.1</TLSv1.1>
-                <TLSv1.2>TLSv1.2</TLSv1.2>
-                <TLSv1.3>TLSv1.3</TLSv1.3>
+                <TLSv1/>
+                <TLSv1.1/>
+                <TLSv1.2/>
+                <TLSv1.3/>
             </OptionValues>
         </MinProtocol>
         <MinProtocol_DTLS type="OptionField">
             <OptionValues>
-                <DTLSv1>DTLSv1</DTLSv1>
-                <DTLSv1.1>DTLSv1.1</DTLSv1.1>
+                <DTLSv1/>
+                <DTLSv1.1/>
             </OptionValues>
         </MinProtocol_DTLS>
     </items>

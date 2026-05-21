@@ -17,9 +17,9 @@
             <fam type="OptionField">
                 <Required>Y</Required>
                 <OptionValues>
-                    <any>any</any>
-                    <ip>IPv4 Only</ip>
-                    <ip6>IPv6 Only</ip6>
+                    <any>Any</any>
+                    <ip>IPv4 only</ip>
+                    <ip6>IPv6 only</ip6>
                     <arp>Arp</arp>
                 </OptionValues>
             </fam>

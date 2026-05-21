@@ -291,10 +291,10 @@
                     <InodeUsage>Inode Usage</InodeUsage>
                     <DiskIO>Disk I/O</DiskIO>
                     <Permisssion>Permission</Permisssion>
-                    <UID>UID</UID>
-                    <GID>GID</GID>
-                    <PID>PID</PID>
-                    <PPID>PPID</PPID>
+                    <UID/>
+                    <GID/>
+                    <PID/>
+                    <PPID/>
                     <Uptime>Uptime</Uptime>
                     <ProgramStatus>Program Status</ProgramStatus>
                     <NetworkInterface>Network Interface</NetworkInterface>

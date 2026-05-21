@@ -20,8 +20,8 @@
                 <Required>Y</Required>
                 <Default>v9</Default>
                 <OptionValues>
-                    <v5>v5</v5>
-                    <v9>v9</v9>
+                    <v5/>
+                    <v9/>
                 </OptionValues>
             </version>
             <targets type="IPPortField">

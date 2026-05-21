@@ -242,19 +242,19 @@
                     <Required>Y</Required>
                     <Default>ip</Default>
                     <OptionValues>
-                        <ip>ip</ip>
-                        <ip4>ipv4</ip4>
-                        <ip6>ipv6</ip6>
-                        <udp>udp</udp>
-                        <tcp>tcp</tcp>
+                        <ip/>
+                        <ip4/>
+                        <ip6/>
+                        <udp/>
+                        <tcp/>
                         <tcp_ack>tcp (ACK packets only)</tcp_ack>
                         <tcp_ack_not>tcp (non-ACK packets)</tcp_ack_not>
-                        <icmp>icmp</icmp>
+                        <icmp/>
                         <ipv6_icmp value="ipv6-icmp">ipv6-icmp</ipv6_icmp>
-                        <igmp>igmp</igmp>
-                        <esp>esp</esp>
-                        <ah>ah</ah>
-                        <gre>gre</gre>
+                        <igmp/>
+                        <esp/>
+                        <ah/>
+                        <gre/>
                     </OptionValues>
                 </proto>
                 <iplen type="IntegerField">
@@ -319,10 +319,10 @@
                     </OptionValues>
                 </dscp>
                 <direction type="OptionField">
-                    <BlankDesc>both</BlankDesc>
+                    <BlankDesc>Both</BlankDesc>
                     <OptionValues>
-                        <in>in</in>
-                        <out>out</out>
+                        <in>In</in>
+                        <out>Out</out>
                     </OptionValues>
                 </direction>
                 <target type="ModelRelationField">
