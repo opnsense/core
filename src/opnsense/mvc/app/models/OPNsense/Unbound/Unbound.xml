@@ -184,36 +184,47 @@
                 <type type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
-                        <atf>Abuse.ch - ThreatFox IOC database</atf>
-                        <ag>AdGuard List</ag>
-                        <el>EasyList</el>
-                        <ep>EasyPrivacy</ep>
-                        <hgz001>[hagezi] Multi LIGHT - Basic protection</hgz001>
-                        <hgz002>[hagezi] Multi NORMAL - All-round protection</hgz002>
-                        <hgz003>[hagezi] Multi PRO - Extended protection</hgz003>
-                        <hgz004>[hagezi] Multi PRO mini </hgz004>
-                        <hgz005>[hagezi] Multi PRO++ - Maximum protection</hgz005>
-                        <hgz006>[hagezi] Multi PRO++ mini</hgz006>
-                        <hgz007>[hagezi] Multi ULTIMATE - Aggressive protection</hgz007>
-                        <hgz008>[hagezi] Multi ULTIMATE mini</hgz008>
-                        <hgz009>[hagezi] Fake - scams / fakes</hgz009>
-                        <hgz010>[hagezi] Pop-Up Ads</hgz010>
-                        <hgz011>[hagezi] Threat Intelligence Feeds</hgz011>
-                        <hgz012>[hagezi] Threat Intelligence Feeds - Medium</hgz012>
-                        <hgz013>[hagezi] Threat Intelligence Feeds - Mini</hgz013>
-                        <hgz014>[hagezi] DoH/VPN/TOR/Proxy Bypass</hgz014>
-                        <hgz015>[hagezi] Safesearch not supported</hgz015>
-                        <hgz016>[hagezi] Dynamic DNS blocking</hgz016>
-                        <hgz017>[hagezi] Badware Hoster blocking</hgz017>
-                        <hgz018>[hagezi] Anti Piracy</hgz018>
-                        <hgz019>[hagezi] Gambling</hgz019>
-                        <hgz020>[hagezi] Gambling - Medium</hgz020>
-                        <hgz021>[hagezi] Gambling - Mini</hgz021>
-                        <oisd0>OISD - Domain Blocklist Ads</oisd0>
-                        <oisd1>OISD - Domain Blocklist Big</oisd1>
-                        <oisd2>OISD - Domain Blocklist NSFW</oisd2>
-                        <sb>Steven Black List</sb>
-                        <yy>YoYo List</yy>
+                        <opt1 value="General Blocklists">
+                            <atf>Abuse.ch - ThreatFox IOC</atf>
+                            <ag>AdGuard List</ag>
+                            <el>EasyList</el>
+                            <ep>EasyPrivacy</ep>
+                            <sb>Steven Black List</sb>
+                            <yy>YoYo List</yy>
+                        </opt1>
+                        <opt2 value="Hagezi Multi - Clean the Internet">
+                            <hgz001>LIGHT - Relaxed Blocking</hgz001>
+                            <hgz002>NORMAL - Relaxed/Balanced Blocking</hgz002>
+                            <hgz003>PRO - Balanced Blocking</hgz003>
+                            <hgz005>PRO++ - Balanced/Aggressive Blocking</hgz005>
+                            <hgz007>ULTIMATE - Aggressive Blocking</hgz007>
+                        </opt2>
+                        <opt3 value="OISD Blocklists">
+                            <oisd0>Ads Blocklist</oisd0>
+                            <oisd1>Big Blocklist (incl. Ads)</oisd1>
+                            <oisd2>NSFW Blocklist</oisd2>
+                        </opt3>
+                        <opt4 value="Hagezi Targeted Lists">
+                            <hgz011>Threat Intelligence Feeds</hgz011>
+                            <hgz009>Fake - scams / fakes</hgz009>
+                            <hgz010>Pop-Up Ads</hgz010>
+                            <hgz014>DoH/VPN/TOR/Proxy Bypass</hgz014>
+                            <hgz015>Safesearch not supported</hgz015>
+                            <hgz016>Dynamic DNS blocking</hgz016>
+                            <hgz017>Badware Hoster blocking</hgz017>
+                            <hgz018>Anti Piracy</hgz018>
+                            <hgz019>Gambling</hgz019>
+                            <hgz022>Social Networks</hgz022>
+                        </opt4>
+                        <opt5 value="Minimal Hardware Requirements">
+                            <hgz004>Multi PRO - Mini </hgz004>
+                            <hgz006>Multi PRO++ - Mini</hgz006>
+                            <hgz008>Multi ULTIMATE - Mini</hgz008>
+                            <hgz012>Threat Intelligence Feeds - Medium</hgz012>
+                            <hgz013>Threat Intelligence Feeds - Mini</hgz013>
+                            <hgz020>Gambling - Medium</hgz020>
+                            <hgz021>Gambling - Mini</hgz021>
+                        </opt5>
                     </OptionValues>
                 </type>
                 <lists type="CSVListField"/>
