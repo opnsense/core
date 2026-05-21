@@ -43,13 +43,13 @@
                 <redirect_gateway type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
-                        <local value="local">local</local>
-                        <autolocal value="autolocal">autolocal</autolocal>
+                        <local/>
+                        <autolocal/>
                         <def1>default</def1>
-                        <bypass_dhcp value="bypass-dhcp">bypass dhcp</bypass_dhcp>
-                        <bypass_dns value="bypass-dns">bypass dns</bypass_dns>
-                        <block_local value="block-local">block local</block_local>
-                        <ipv6 value="ipv6">ipv6 (default)</ipv6>
+                        <bypass-dhcp/>
+                        <bypass-dns/>
+                        <block-local/>
+                        <ipv6>ipv6 (default)</ipv6>
                         <notipv4 value="!ipv4">not ipv4 (default)</notipv4>
                     </OptionValues>
                 </redirect_gateway>
@@ -136,9 +136,9 @@
                     <Required>Y</Required>
                     <Default>subnet</Default>
                     <OptionValues>
-                        <net30>net30</net30>
-                        <p2p>p2p</p2p>
-                        <subnet>subnet</subnet>
+                        <net30/>
+                        <p2p/>
+                        <subnet/>
                     </OptionValues>
                 </topology>
                 <remote type=".\RemoteHostField">
@@ -205,8 +205,8 @@
                     <Required>Y</Required>
                     <Default>require</Default>
                     <OptionValues>
-                        <none>none</none>
-                        <require>required</require>
+                        <none/>
+                        <require/>
                     </OptionValues>
                 </verify_client_cert>
                 <use_ocsp type="BooleanField">
@@ -311,26 +311,26 @@
                 <various_flags type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
-                        <block-ipv6>block-ipv6</block-ipv6>
-                        <client-to-client>client-to-client</client-to-client>
-                        <duplicate-cn>duplicate-cn</duplicate-cn>
-                        <float>float</float>
-                        <passtos>passtos</passtos>
-                        <persist-remote-ip>persist-remote-ip</persist-remote-ip>
-                        <remote-random>remote-random</remote-random>
-                        <route-noexec>route-noexec</route-noexec>
-                        <route-nopull>route-nopull</route-nopull>
-                        <explicit-exit-notify>explicit-exit-notify</explicit-exit-notify>
-                        <fast-io>fast-io</fast-io>
+                        <block-ipv6/>
+                        <client-to-client/>
+                        <duplicate-cn/>
+                        <float/>
+                        <passtos/>
+                        <persist-remote-ip/>
+                        <remote-random/>
+                        <route-noexec/>
+                        <route-nopull/>
+                        <explicit-exit-notify/>
+                        <fast-io/>
                     </OptionValues>
                 </various_flags>
                 <various_push_flags type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
-                        <block-ipv6>push block-ipv6</block-ipv6>
-                        <block-outside-dns>push block-outside-dns</block-outside-dns>
-                        <register-dns>push register-dns</register-dns>
-                        <explicit-exit-notify>explicit-exit-notify</explicit-exit-notify>
+                        <block-ipv6/>
+                        <block-outside-dns/>
+                        <register-dns/>
+                        <explicit-exit-notify/>
                     </OptionValues>
                 </various_push_flags>
                 <push_inactive type="IntegerField"/>
@@ -375,13 +375,13 @@
                 <redirect_gateway type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
-                        <local value="local">local</local>
-                        <autolocal value="autolocal">autolocal</autolocal>
+                        <local/>
+                        <autolocal/>
                         <def1>default</def1>
-                        <bypass_dhcp value="bypass-dhcp">bypass dhcp</bypass_dhcp>
-                        <bypass_dns value="bypass-dns">bypass dns</bypass_dns>
-                        <block_local value="block-local">block local</block_local>
-                        <ipv6 value="ipv6">ipv6 (default)</ipv6>
+                        <bypass-dhcp/>
+                        <bypass-dns/>
+                        <block-local/>
+                        <ipv6>ipv6 (default)</ipv6>
                         <notipv4 value="!ipv4">not ipv4 (default)</notipv4>
                     </OptionValues>
                 </redirect_gateway>
