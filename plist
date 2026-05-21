@@ -503,6 +503,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostAlias.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostOverride.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dnsbl.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dnsreporting.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/forwarding.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/general.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/Api/ClientController.php
@@ -723,7 +724,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Lvtemplate.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Migrations/M1_0_0.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Migrations/M1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Netflow.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Netflow.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/PacketCapture.php
@@ -2563,7 +2563,6 @@
 /usr/local/www/interfaces_wireless.php
 /usr/local/www/interfaces_wireless_edit.php
 /usr/local/www/javascript/opnsense_legacy.js
-/usr/local/www/reporting_settings.php
 /usr/local/www/services_ntpd.php
 /usr/local/www/services_ntpd_gps.php
 /usr/local/www/services_ntpd_pps.php
