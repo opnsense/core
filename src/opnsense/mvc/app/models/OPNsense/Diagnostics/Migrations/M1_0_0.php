@@ -47,6 +47,10 @@ class M1_0_0 extends BaseModelMigration
 
     public function post($model)
     {
+        if (!$model instanceof SystemHealth) {
+            return;
+        }
+
         $config = Config::getInstance()->object();
         if (isset($config?->rrd)) {
             unset($config->rrd);
