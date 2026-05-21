@@ -592,7 +592,6 @@
                 $('#maintabs li:lt(2)').show();
 
                 $('#query_overview_tab').tab('show');
-                // $('.wrapper').show();
             }).fail(function() {
                 $("#maintabs li:lt(2)").hide();
                 $("#query_settings_tab").tab('show');
