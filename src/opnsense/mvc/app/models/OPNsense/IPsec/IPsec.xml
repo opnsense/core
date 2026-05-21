@@ -221,8 +221,8 @@
                     <Required>Y</Required>
                     <Default>PSK</Default>
                     <OptionValues>
-                        <PSK>PSK</PSK>
-                        <EAP>EAP</EAP>
+                        <PSK/>
+                        <EAP/>
                     </OptionValues>
                 </keyType>
                 <Key type="TextField"/>

@@ -45,13 +45,13 @@
                 <level type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
-                        <debug>debug</debug>
-                        <info>info</info>
-                        <notice>notice</notice>
-                        <warn>warn</warn>
+                        <debug/>
+                        <info/>
+                        <notice/>
+                        <warn/>
                         <err>error</err>
                         <crit>critical</crit>
-                        <alert>alert</alert>
+                        <alert/>
                         <emerg>emergency</emerg>
                     </OptionValues>
                 </level>

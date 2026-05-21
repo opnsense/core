@@ -41,10 +41,10 @@
                 </OptionValues>
             </pcp>
             <proto type="OptionField">
-                <BlankDesc>Auto</BlankDesc>
+                <BlankDesc>Automatic</BlankDesc>
                 <OptionValues>
-                    <opt1 value="802.1q">802.1Q</opt1>
-                    <opt2 value="802.1ad">802.1ad</opt2>
+                    <opt1 value="802.1q"/>
+                    <opt2 value="802.1ad"/>
                 </OptionValues>
             </proto>
             <descr type="DescriptionField"/>

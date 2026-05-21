@@ -24,12 +24,12 @@
                 <Required>Y</Required>
                 <Default>lacp</Default>
                 <OptionValues>
-                    <none>None</none>
-                    <lacp>lacp</lacp>
-                    <failover>failover</failover>
-                    <fec>fec</fec>
-                    <loadbalance>loadbalance</loadbalance>
-                    <roundrobin>roundrobin</roundrobin>
+                    <none/>
+                    <lacp/>
+                    <failover/>
+                    <fec/>
+                    <loadbalance/>
+                    <roundrobin/>
                 </OptionValues>
             </proto>
             <lacp_fast_timeout type="BooleanField">

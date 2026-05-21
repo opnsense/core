@@ -278,29 +278,30 @@
                 <Required>Y</Required>
                 <Default>Custom</Default>
                 <OptionValues>
-                    <Existence>Existence</Existence>
-                    <SystemResource>System Resource</SystemResource>
-                    <ProcessResource>Process Resource</ProcessResource>
-                    <ProcessDiskIO>Process Disk I/O</ProcessDiskIO>
-                    <FileChecksum>File Checksum</FileChecksum>
-                    <Timestamp>Timestamp</Timestamp>
-                    <FileSize>File Size</FileSize>
-                    <FileContent>File Content</FileContent>
-                    <FilesystemMountFlags>Filesystem Mount Flags</FilesystemMountFlags>
-                    <SpaceUsage>Space Usage</SpaceUsage>
-                    <InodeUsage>Inode Usage</InodeUsage>
-                    <DiskIO>Disk I/O</DiskIO>
-                    <Permisssion>Permission</Permisssion>
-                    <UID>UID</UID>
-                    <GID>GID</GID>
-                    <PID>PID</PID>
-                    <PPID>PPID</PPID>
-                    <Uptime>Uptime</Uptime>
-                    <ProgramStatus>Program Status</ProgramStatus>
-                    <NetworkInterface>Network Interface</NetworkInterface>
-                    <NetworkPing>Network Ping</NetworkPing>
-                    <Connection>Connection</Connection>
-                    <Custom>Custom</Custom>
+                    <!-- none of these are shown in the GUI because the form field is not rendered -->
+                    <Existence/>
+                    <SystemResource/>
+                    <ProcessResource/>
+                    <ProcessDiskIO/>
+                    <FileChecksum/>
+                    <Timestamp/>
+                    <FileSize/>
+                    <FileContent/>
+                    <FilesystemMountFlags/>
+                    <SpaceUsage/>
+                    <InodeUsage/>
+                    <DiskIO/>
+                    <Permisssion/>
+                    <UID/>
+                    <GID/>
+                    <PID/>
+                    <PPID/>
+                    <Uptime/>
+                    <ProgramStatus/>
+                    <NetworkInterface/>
+                    <NetworkPing/>
+                    <Connection/>
+                    <Custom/>
                 </OptionValues>
             </type>
             <condition type="TextField">
