@@ -69,6 +69,16 @@
         <help>Socket type used for DHCP communication</help>
     </field>
     <field>
+        <id>dhcpv4.general.compatibility</id>
+        <label>Compatibility Options</label>
+        <type>select_multiple</type>
+        <advanced>true</advanced>
+        <help>Enable optional Kea DHCPv4 compatibility flags for non-standard client environments. See Kea ARM § DHCPv4 Compatibility.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <type>header</type>
         <label>Lease Expiration</label>
         <collapse>true</collapse>
