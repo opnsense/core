@@ -50,8 +50,8 @@
                 <proto type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
-                        <IPv4>IPv4</IPv4>
-                        <IPv6>IPv6</IPv6>
+                        <IPv4/>
+                        <IPv6/>
                     </OptionValues>
                 </proto>
                 <interface type="InterfaceField">
@@ -73,9 +73,9 @@
                 <username type="TextField"/>
                 <authtype type="OptionField">
                     <OptionValues>
-                        <Basic>Basic</Basic>
-                        <Bearer>Bearer</Bearer>
-                        <Header>Header</Header>
+                        <Basic/>
+                        <Bearer/>
+                        <Header/>
                     </OptionValues>
                 </authtype>
                 <expire type="IntegerField">
