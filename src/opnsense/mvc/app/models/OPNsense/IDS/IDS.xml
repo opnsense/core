@@ -287,23 +287,23 @@
                         <Required>Y</Required>
                     </sessionResumption>
                     <custom type="OptionField">
-                        <OptionValues>
-                            <subject>subject</subject>
-                            <issuer>issuer</issuer>
-                            <session_resumed>session_resumed</session_resumed>
-                            <serial>serial</serial>
-                            <fingerprint>fingerprint</fingerprint>
-                            <sni>sni</sni>
-                            <version>version</version>
-                            <not_before>not_before</not_before>
-                            <not_after>not_after</not_after>
-                            <certificate>certificate</certificate>
-                            <chain>chain</chain>
-                            <ja3>ja3</ja3>
-                            <ja3s>ja3s</ja3s>
-                            <ja4>ja4</ja4>
-                        </OptionValues>
                         <Multiple>Y</Multiple>
+                        <OptionValues>
+                            <subject/>
+                            <issuer/>
+                            <session_resumed/>
+                            <serial/>
+                            <fingerprint/>
+                            <sni/>
+                            <version/>
+                            <not_before/>
+                            <not_after/>
+                            <certificate/>
+                            <chain/>
+                            <ja3/>
+                            <ja3s/>
+                            <ja4/>
+                        </OptionValues>
                     </custom>
                 </tls>
             </eveLog>
