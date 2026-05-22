@@ -33,6 +33,24 @@
             updateServiceControlUI('kea');
         });
 
+        /* Manual configuration, hide all config elements except the service section*/
+        $("#ddns\\.general\\.manual_config").change(function(){
+            let manual_config = $(this).is(':checked');
+            if (manual_config) {
+                if (!$("#show_advanced_frm_generalsettings").hasClass('fa-toggle-on')) {
+                    /* enforce advanced mode so the user notices the checkbox */
+                    $("#show_advanced_frm_generalsettings").click();
+                }
+            }
+            $("#frm_generalsettings").find('table').each(function(){
+                if (manual_config && $(this).find('#ddns\\.general\\.manual_config').length == 0) {
+                    $(this).hide();
+                } else {
+                    $(this).show();
+                }
+            });
+        });
+
         $("#reconfigureAct").SimpleActionButton({
             onPreAction: function() {
                 const dfObj = new $.Deferred();

@@ -1,5 +1,9 @@
 <form>
     <field>
+        <type>header</type>
+        <label>Service</label>
+    </field>
+    <field>
         <id>ddns.general.enabled</id>
         <label>Enabled</label>
         <type>checkbox</type>
@@ -11,6 +15,10 @@
         <type>checkbox</type>
         <advanced>true</advanced>
         <help>Disable configuration file generation and manage the file (/usr/local/etc/kea/kea-dhcp-ddns.conf) manually.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>General settings</label>
     </field>
     <field>
         <id>ddns.general.server_ip</id>
