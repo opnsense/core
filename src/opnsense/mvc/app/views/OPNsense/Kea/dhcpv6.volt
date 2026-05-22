@@ -237,7 +237,7 @@
     <li><a data-toggle="tab" href="#subnets" id="tab_pools" class="is_managed"> {{ lang._('Subnets') }} </a></li>
     <li><a data-toggle="tab" href="#pdpools" id="tab_reservations" class="is_managed"> {{ lang._('PD Pools') }} </a></li>
     <li><a data-toggle="tab" href="#reservations" id="tab_reservations" class="is_managed"> {{ lang._('Reservations') }} </a></li>
-    <li><a data-toggle="tab" href="#options" id="tab_options">{{ lang._('Options') }}</a></li>
+    <li><a data-toggle="tab" href="#options" id="tab_options" class="is_managed">{{ lang._('Options') }}</a></li>
     <li><a data-toggle="tab" href="#ha-peers" id="tab_ha-peers" class="is_managed"> {{ lang._('HA Peers') }} </a></li>
 </ul>
 <div class="tab-content content-box">
