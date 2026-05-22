@@ -39,6 +39,7 @@
  #                   info               static text (help icon, no input or editing)
  #                   color              color picker for selecting a color
  #                   datetime-local     local time picker
+ #                   buttons            save and cancel buttons
  # label       :   attribute label (visible text)
  # size        :   size (width in characters) attribute if applicable
  # height      :   height (length in characters) attribute if applicable
@@ -51,20 +52,26 @@
  # readonly    :   if true, input fields will be readonly
  # type_formatter : when set add type_formatter="" atribute which is used in getFormData() to pipe data before returning
  # parent      :   ID reference for the parent form
+ # save        :   request save button (default true)
+ # cancel      :   request cancel button (default false)
  #}
 
 <tr id="row_{{ id }}" {% if advanced|default(false)=='true' %} data-advanced="true"{% endif %}>
-{% if type == "save_cancel" %}
+{% if type == "buttons" %}
     <td>&nbsp;</td>
         <td>
         <div id="{{ parent }}Btns">
+{%   if save|default('true')=='true' %}
             <button type="button" class="btn btn-primary" id="btn_{{ parent }}_save">
                 {{ lang._('Save') }}
                 <i id="btn_{{ parent }}_save_progress" class=""></i>
             </button>
+{%   endif %}
+{%   if cancel|default('false')=='true' %}
             <button type="button" class="btn btn-default" id="btn_{{ parent }}_cancel">
                 {{ lang._('Cancel') }}
             </button>
+{%   endif %}
         </div>
     </td>
     <td>&nbsp;</td>
