@@ -1153,8 +1153,7 @@
     </div>
     <!-- grid -->
     <div id="inspect_hint_banner" class="alert alert-info" style="display: none;">
-        <i class="fa fa-info-circle"></i>
-        {{ lang._('Automatic firewall rules are hidden by default. To show them, press the Inspect button.') }}
+        {{ lang._('Automatic firewall rules are hidden by default. Press the %s button to reveal them.') | format('<i class="fa fa-fw fa-eye"></i>&nbsp;' ~ lang._('Inspect')) }}
     </div>
     {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '180'}) }}
 </div>
