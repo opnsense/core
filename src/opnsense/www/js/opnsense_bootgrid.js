@@ -2041,6 +2041,9 @@ class UIBootgrid {
     * animate alert when saved
     */
     showSaveAlert() {
+        $(document).trigger("settings-changed");
+
+        // XXX backwards compatibility
         let editAlert = this.$compatElement.attr('data-editAlert');
         if (editAlert !== undefined) {
             $("#" + editAlert).slideDown(1000, function () {
