@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2019 Deciso B.V.
+ * Copyright (C) 2015-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -45,12 +45,12 @@ class OptionField extends BaseListField
             // copy options to internal structure, make sure we don't copy in array structures
             foreach ($data as $key => $value) {
                 if (!is_array($value)) {
-                    $this->internalOptionList[$key] = gettext($value);
+                    $this->internalOptionList[$key] = strlen($value) ? gettext($value) : $key;
                 } else {
                     foreach ($value as $subkey => $subval) {
                         $this->internalOptionList[$subkey] = [
+                            'value' => strlen($subval) ? gettext($subval) : $key,
                             'optgroup' => gettext($key),
-                            'value' => $subval,
                         ];
                     }
                 }

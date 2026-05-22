@@ -101,6 +101,9 @@ lint-model:
 		(grep '<ValidationMessage>[a-z ]' $${MODEL} || true) | while read LINE; do \
 			echo "$${MODEL}: $${LINE} does not start with an uppercase letter"; \
 		done; \
+		(xmllint $${MODEL} --xpath '//OptionValues/*[(name() = text() and not(@value)) or @value = text()]' 2> /dev/null | grep '^<' || true) | while read LINE; do \
+			echo "$${MODEL}: $${LINE} option key and value are the same"; \
+		done; \
 	done
 .endif
 .endfor
