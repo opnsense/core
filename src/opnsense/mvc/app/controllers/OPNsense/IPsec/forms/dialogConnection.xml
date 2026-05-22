@@ -254,7 +254,8 @@
         <type>text</type>
     </field>
     <field>
-        <type>save_cancel</type>
+        <type>buttons</type>
         <parent>ConnectionDialog</parent>
+        <cancel>true</cancel>
     </field>
 </form>
