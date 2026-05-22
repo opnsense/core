@@ -31,7 +31,9 @@ $( document ).ready(function() {
         $('.selectpicker').selectpicker('refresh');
 
         $("#unbound\\.acls\\.default_action").change(function() {
-            saveFormToEndpoint(url="/api/unbound/settings/set", formid='frm_AclSettings');
+            saveFormToEndpoint(url="/api/unbound/settings/set", formid="frm_AclSettings", function() {
+                $(document).trigger("settings-changed");
+            });
         });
     });
 
