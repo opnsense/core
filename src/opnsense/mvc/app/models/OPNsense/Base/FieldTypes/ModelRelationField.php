@@ -111,12 +111,10 @@ class ModelRelationField extends BaseListField
                 }
 
                 $className = str_replace('.', '\\', $modelData['source']);
-                $groupKey = isset($modelData['group']) ? $modelData['group'] : null;
                 $displayKeys = explode(',', $modelData['display']);
                 $displayFormat = !empty($modelData['display_format']) ? $modelData['display_format'] : "%s";
 
                 $searchItems = $this->getCachedData($className, $modelData['items'], $force);
-                $groups = [];
                 foreach ($searchItems as $uuid => $node) {
                     $descriptions = [];
                     foreach ($displayKeys as $displayKey) {
@@ -129,12 +127,6 @@ class ModelRelationField extends BaseListField
                                 continue 2;
                             }
                         }
-                    }
-                    if (!empty($groupKey)) {
-                        if (!isset($node[$groupKey]) || isset($groups[$node[$groupKey]])) {
-                            continue;
-                        }
-                        $groups[$node[$groupKey]] = 1;
                     }
                     self::$internalCacheOptionList[$this->internalCacheKey][$uuid] = vsprintf(
                         $displayFormat,
