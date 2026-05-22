@@ -41,10 +41,10 @@
             <compatibility type="OptionField">
                 <Multiple>Y</Multiple>
                 <OptionValues>
-                    <exclude-first-last-24>exclude-first-last-24</exclude-first-last-24>
-                    <ignore-dhcp-server-identifier>ignore-dhcp-server-identifier</ignore-dhcp-server-identifier>
-                    <ignore-rai-link-selection>ignore-rai-link-selection</ignore-rai-link-selection>
-                    <lenient-option-parsing>lenient-option-parsing</lenient-option-parsing>
+                    <exclude-first-last-24/>
+                    <ignore-dhcp-server-identifier/>
+                    <ignore-rai-link-selection/>
+                    <lenient-option-parsing/>
                 </OptionValues>
             </compatibility>
         </general>
