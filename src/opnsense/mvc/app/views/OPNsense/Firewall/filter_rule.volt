@@ -57,8 +57,11 @@
         let treeViewEnabled = localStorage.getItem("firewall_rule_tree") === "1";
         $('#toggle_tree_button').toggleClass('active btn-primary', treeViewEnabled);
 
+        const inspectKeyExists = localStorage.getItem("firewall_rule_inspect") !== null;
         let inspectEnabled = localStorage.getItem("firewall_rule_inspect") === "1";
+
         $('#toggle_inspect_button').toggleClass('active btn-primary', inspectEnabled);
+        $('#inspect_hint_banner').toggle(!inspectKeyExists);
 
         function updateStatisticColumns() {
             grid.bootgrid(inspectEnabled ? "setColumns" : "unsetColumns", ['statistics']);
@@ -829,6 +832,7 @@
         $('#toggle_inspect_button').click(function () {
             inspectEnabled = !inspectEnabled;
             localStorage.setItem("firewall_rule_inspect", inspectEnabled ? "1" : "0");
+            $('#inspect_hint_banner').hide();
             $(this).toggleClass('active btn-primary', inspectEnabled);
             updateStatisticColumns();
             grid.bootgrid("reload");
@@ -1148,6 +1152,10 @@
         </div>
     </div>
     <!-- grid -->
+    <div id="inspect_hint_banner" class="alert alert-info" style="display: none;">
+        <i class="fa fa-info-circle"></i>
+        {{ lang._('Automatic firewall rules are hidden by default. To show them, press the Inspect button.') }}
+    </div>
     {{ partial('layout_partials/base_bootgrid_table', formGridFilterRule + {'command_width': '180'}) }}
 </div>
 
