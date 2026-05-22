@@ -211,6 +211,10 @@ class KeaDhcpv4 extends BaseModel
                     $res['client-id'] = $reservation->client_id->getValue();
                 }
 
+                if (!$reservation->next_server->isEmpty()) {
+                    $res['next-server'] = $reservation->next_server->getValue();
+                }
+
                 // Add DHCP option-data elements for reservations
                 $optdata = $this->collectOptionData($reservation->option_data);
                 /* append raw options */
