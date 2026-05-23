@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp4</mount>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <description>Kea DHCPv4 configuration</description>
     <items>
         <general>
@@ -318,6 +318,10 @@
                     <IsDNSName>Y</IsDNSName>
                 </hostname>
                 <description type="DescriptionField"/>
+                <next_server type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                    <AddressFamily>ipv4</AddressFamily>
+                </next_server>
                 <option_data>
                     <domain_name_servers type="NetworkField">
                         <NetMaskAllowed>N</NetMaskAllowed>
