@@ -72,6 +72,11 @@ function wg_start($server, $fhandle, $ifcfgflag = 'up', $reload = false)
 
     mwexecf('/usr/bin/wg syncconf %s %s', [$server->interface, $server->cnfFilename]);
 
+    /* drop leftover/default addresses before re-applying aliases */
+    $details = legacy_interfaces_details((string)$server->interface);
+    interfaces_addresses_flush((string)$server->interface, 4, $details);
+    interfaces_addresses_flush((string)$server->interface, 6, $details);
+
     foreach ($server->tunneladdress->getValues() as $alias) {
         $proto = strpos($alias, ':') === false ? "inet" : "inet6";
         mwexecf('/sbin/ifconfig %s %s %s alias', [$server->interface, $proto, $alias]);
@@ -160,6 +165,25 @@ function wg_stop($server)
     syslog(LOG_NOTICE, "wireguard instance {$server->name} ({$server->interface}) stopped");
 }
 
+
+/* true if any configured tunneladdress is on the device right now */
+function wg_has_tunneladdress($server, $ifdetails)
+{
+    $device = (string)$server->interface;
+    if (empty($ifdetails[$device])) {
+        return false;
+    }
+    $live = array_merge(
+        array_column($ifdetails[$device]['ipv4'] ?? [], 'ipaddr'),
+        array_column($ifdetails[$device]['ipv6'] ?? [], 'ipaddr')
+    );
+    foreach ($server->tunneladdress->getValues() as $alias) {
+        if (in_array(explode('/', $alias, 2)[0], $live, true)) {
+            return true;
+        }
+    }
+    return false;
+}
 
 /**
  * Calculate a hash which determines if we are able to reconfigure without a restart of the tunnel.
@@ -275,11 +299,25 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
                             );
                         }
 
+                        $missing_address = (
+                            !empty($ifdetails[(string)$node->interface]) &&
+                            !wg_has_tunneladdress($node, $ifdetails)
+                        );
+
                         if (
                             @md5_file($node->cnfFilename) != get_stat_hash($statHandle)['file'] ||
-                            empty($ifdetails[(string)$node->interface])
+                            empty($ifdetails[(string)$node->interface]) ||
+                            $missing_address
                         ) {
                             $reload = false;
+
+                            if ($missing_address) {
+                                syslog(
+                                    LOG_NOTICE,
+                                    "wireguard instance {$node->name} ({$node->interface}) " .
+                                    "tunneladdress missing on device, forcing reconfigure."
+                                );
+                            }
 
                             if (get_stat_hash($statHandle)['interface'] != wg_reconfigure_hash($node)) {
                                 // Fluent reloading not supported for this instance, make sure the user is informed
