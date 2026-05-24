@@ -340,6 +340,7 @@ $( document ).ready(function() {
                     }?>
                     <td class="mightOverflow" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 30ch;"><?=implode(', ', $scrubEntryInterfaceDescrs);?></td>
                     <td class="hidden-xs hidden-sm">
+                        <?=!empty($scrubEntry['srcnot']) ? '!' : '';?>
 <?php
                         if (is_alias($scrubEntry['src'])):?>
                         <span title="<?=htmlspecialchars(get_alias_description($scrubEntry['src']));?>" data-toggle="tooltip" data-html="true">
@@ -360,6 +361,7 @@ $( document ).ready(function() {
 
                     </td>
                     <td class="hidden-xs hidden-sm">
+                        <?=!empty($scrubEntry['dstnot']) ? '!' : '';?>
 <?php
                         if (is_alias($scrubEntry['dst'])):?>
                         <span title="<?=htmlspecialchars(get_alias_description($scrubEntry['dst']));?>" data-toggle="tooltip" data-html="true">
