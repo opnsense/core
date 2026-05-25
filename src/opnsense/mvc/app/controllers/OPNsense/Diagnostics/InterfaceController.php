@@ -96,32 +96,32 @@ class InterfaceController extends IndexController
             [
               "name" => "bpf",
               "caption" => gettext("Bpf"),
-              "endpoint" => "/api/diagnostics/interface/getBpfStatistics"
+              "endpoint" => "/api/diagnostics/interface/get_bpf_statistics"
             ],
             [
               "name" => "interfaces",
               "caption" => gettext("Interfaces"),
-              "endpoint" => "/api/diagnostics/interface/getInterfaceStatistics"
+              "endpoint" => "/api/diagnostics/interface/get_interface_statistics"
             ],
             [
               "name" => "memory",
               "caption" => gettext("Memory"),
-              "endpoint" => "/api/diagnostics/interface/getMemoryStatistics"
+              "endpoint" => "/api/diagnostics/interface/get_memory_statistics"
             ],
             [
               "name" => "netisr",
               "caption" => gettext("Netisr"),
-              "endpoint" => "/api/diagnostics/interface/getNetisrStatistics"
+              "endpoint" => "/api/diagnostics/interface/get_netisr_statistics"
             ],
             [
               "name" => "protocol",
               "caption" => gettext("Protocol"),
-              "endpoint" => "/api/diagnostics/interface/getProtocolStatistics"
+              "endpoint" => "/api/diagnostics/interface/get_protocol_statistics"
             ],
             [
               "name" => "sockets",
               "caption" => gettext("Sockets"),
-              "endpoint" => "/api/diagnostics/interface/getSocketStatistics"
+              "endpoint" => "/api/diagnostics/interface/get_socket_statistics"
             ]
         ];
         $this->view->default_tab = "interfaces";

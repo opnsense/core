@@ -22,6 +22,9 @@
             <pattern>api/diagnostics/interface/get_interface_statistics*</pattern>
             <pattern>api/diagnostics/interface/get_protocol_statistics*</pattern>
             <pattern>api/diagnostics/interface/get_socket_statistics*</pattern>
+            <pattern>api/diagnostics/interface/get_bpf_statistics*</pattern>
+            <pattern>api/diagnostics/interface/get_memory_statistics*</pattern>
+            <pattern>api/diagnostics/interface/get_netisr_statistics*</pattern>
         </patterns>
     </page-diagnostics-netstat>
     <page-diagnostics-routingtables>
