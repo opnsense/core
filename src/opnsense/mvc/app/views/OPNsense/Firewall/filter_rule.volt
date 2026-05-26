@@ -58,6 +58,7 @@
         $('#toggle_tree_button').toggleClass('active btn-primary', treeViewEnabled);
 
         let inspectEnabled = localStorage.getItem("firewall_rule_inspect") === "1";
+
         $('#toggle_inspect_button').toggleClass('active btn-primary', inspectEnabled);
 
         function updateStatisticColumns() {
@@ -68,40 +69,60 @@
         let pendingUrlInterface = getUrlHash('interface') || null;
 
         // Lives outside the grid, so the logic of the response handler can be changed after grid initialization
-        function dynamicResponseHandler(resp) {
-            // convert the flat rows into a tree view (if enabled)
+        function dynamicResponseHandler(response) {
+            const makeBucket = function(row, label, uuid) {
+                const bucket = {
+                    // ensure uuid is as unique as possible for persistence handling
+                    uuid           : uuid,
+                    isGroup        : true,
+                    _label         : label,          // internal
+                    children       : []
+                };
+
+                // copy the category info from the first child to use as parent
+                bucket.categories      = label;
+                bucket.category_colors = row.category_colors || [];
+
+                return bucket;
+            };
+
             if (!treeViewEnabled) {
-                return resp;
+                // automatic rules are always collected in a single bucket
+                // non-automatic rows are pushed without children, creating a mixed array of bucket and regular rows
+                const rows = [];
+                let automatic = null;
+                response.rows.forEach(row => {
+                    if (row.is_automatic === true) {
+                        if (automatic === null) {
+                            // readable label used for grouping
+                            const label = (row["%categories"] || row.categories || "");
+                            automatic = makeBucket(row, label, "automaticrules");
+                            rows.push(automatic);
+                        }
+                        automatic.children.push(row);
+                    } else {
+                        rows.push(row);
+                    }
+                });
+
+                return Object.assign({}, response, { rows: rows });
+            } else {
+                // tree view groups all rows into category buckets instead of using mixed top-level rows
+                const buckets = [];
+                let current = null;
+                response.rows.forEach(row => {
+                    // readable label used for grouping
+                    const label = (row["%categories"] || row.categories || "");
+                    // start a new bucket whenever the label changes
+                    if (!current || current._label !== label) {
+                        current = makeBucket(row, label, `${String(row.uuid).replace(/-/g, '')}`);
+                        buckets.push(current);
+                    }
+                    current.children.push(row);
+                });
+
+                return Object.assign({}, response, { rows: buckets });
             }
-
-            const buckets = [];
-            let current = null;
-
-            resp.rows.forEach(r => {
-                // readable label used for grouping
-                const label = (r["%categories"] || r.categories || "");
-
-                // start a new bucket whenever the label changes
-                if (!current || current._label !== label) {
-                    current = {
-                        // ensure uuid is as unique as possible for persistence handling
-                        uuid           : `${String(r.uuid).replace(/-/g, '')}`,
-                        isGroup        : true,
-                        _label         : label,          // internal
-                        children       : []
-                    };
-
-                    // copy the category info from the first child to use as parent
-                    current.categories      = label;
-                    current.category_colors = r.category_colors || [];
-
-                    buckets.push(current);
-                }
-
-                current.children.push(r);
-            });
-
-            return Object.assign({}, resp, { rows: buckets });
         }
 
         $('#download_rules').click(function(e){
@@ -1116,8 +1137,7 @@
                     class="btn btn-default"
                     data-toggle="tooltip"
                     data-placement="bottom"
-                    data-delay='{"show": 1000}'
-                    title="{{ lang._('Show all rules and statistics') }}">
+                    title="{{ lang._('Show statistics and a detailed view of the current ruleset') }}">
                 <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
                 {{ lang._('Inspect') }}
             </button>
@@ -1129,7 +1149,6 @@
                     class="btn btn-default"
                     data-toggle="tooltip"
                     data-placement="bottom"
-                    data-delay='{"show": 1000}'
                     title="{{ lang._('Show all categories in a tree') }}">
                 <i class="fa fa-fw fa-sitemap" aria-hidden="true"></i>
                 {{ lang._('Tree') }}

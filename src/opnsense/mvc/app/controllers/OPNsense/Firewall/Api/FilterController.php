@@ -190,13 +190,11 @@ class FilterController extends FilterBaseController
             return true;
         };
 
-        /* only fetch internal and legacy rules when 'show_all' is set */
-        if ($show_all) {
-            $allrules = array_merge(
-                $allrules,
-                json_decode((new Backend())->configdRun('filter list non_mvc_rules'), true) ?? []
-            );
-        }
+        /* always fetch internal and legacy rules, automatic rules have their own category that is always visible */
+        $allrules = array_merge(
+            $allrules,
+            json_decode((new Backend())->configdRun('filter list non_mvc_rules'), true) ?? []
+        );
 
         $search_clauses = [];
         $backend = new Backend();
