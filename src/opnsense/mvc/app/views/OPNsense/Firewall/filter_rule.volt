@@ -58,7 +58,6 @@
         $('#toggle_tree_button').toggleClass('active btn-primary', treeViewEnabled);
 
         let inspectEnabled = localStorage.getItem("firewall_rule_inspect") === "1";
-
         $('#toggle_inspect_button').toggleClass('active btn-primary', inspectEnabled);
 
         function updateStatisticColumns() {
