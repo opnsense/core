@@ -158,29 +158,34 @@ class VlanSettingsController extends ApiMutableModelControllerBase
         return $this->getBase('vlan', 'vlan', $uuid);
     }
 
-    public function delItemAction($uuid)
+    public function delItemAction($uuids)
     {
         Config::getInstance()->lock();
-        $node = $this->getModel()->getNodeByReference('vlan.' . $uuid);
-        $old_vlanif = $node != null ? (string)$node->vlanif : null;
-        $children = 0;
-        foreach ($this->getModel()->vlan->iterateItems() as $node) {
-            if ((string)$node->if == $old_vlanif) {
-                $children++;
+        $old_vlanifs = [];
+        foreach (!empty($uuids) ? explode(",", $uuids) : [] as $uuid) {
+            $node = $this->getModel()->getNodeByReference('vlan.' . $uuid);
+            $old_vlanif = $node != null ? (string)$node->vlanif : null;
+            $children = 0;
+            foreach ($this->getModel()->vlan->iterateItems() as $node) {
+                if ((string)$node->if == $old_vlanif) {
+                    $children++;
+                }
             }
+            if ($children > 0) {
+                throw new UserException(gettext("This VLAN cannot be deleted because it is used in QinQ interfaces."));
+            } elseif ($old_vlanif != null && $this->interfaceAssigned($old_vlanif)) {
+                throw new UserException(gettext("This VLAN cannot be deleted because it is assigned as an interface."));
+            }
+            $old_vlanifs[] = $old_vlanif;
         }
-        if ($children > 0) {
-            throw new UserException(gettext("This VLAN cannot be deleted because it is used in QinQ interfaces."));
-        } elseif ($old_vlanif != null && $this->interfaceAssigned($old_vlanif)) {
-            throw new UserException(gettext("This VLAN cannot be deleted because it is assigned as an interface."));
-        } else {
-            $result = $this->delBase('vlan', $uuid);
-            /* store interface name for apply action */
-            if ($result['result'] != 'failed') {
+        $result = $this->delBase('vlan', $uuids);
+        /* store interface name for apply action */
+        if ($result['result'] != 'failed') {
+            foreach ($old_vlanifs as $old_vlanif) {
                 file_put_contents("/tmp/.vlans.removed", "{$old_vlanif}\n", FILE_APPEND | LOCK_EX);
             }
-            return $result;
         }
+        return $result;
     }
 
     public function reconfigureAction()
