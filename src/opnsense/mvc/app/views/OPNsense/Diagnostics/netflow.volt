@@ -44,17 +44,10 @@
         });
 
         $("#reconfigureAct").after($("#reset-netflow").detach().show());
-        $("#reset-netflow").after($("#repair-netflow").detach().show());
 
         $("#reset-netflow").click(function(e) {
             stdDialogRemoveItem("{{ lang._('Do you really want to reset the netflow data? This will erase all Insight graph data.') }}", () => {
                 ajaxCall("/api/diagnostics/netflow/reset");
-            });
-        });
-
-        $("#repair-netflow").click(function(e) {
-            stdDialogRemoveItem("{{ lang._('Do you really want to force a repair of the netflow data? This will run in the background and might take a while.') }}", () => {
-                ajaxCall("/api/diagnostics/netflow/repair");
             });
         });
 
@@ -131,4 +124,3 @@
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/diagnostics/netflow/reconfigure', 'data_exclude_scope': 'cache_tab'}) }}
 <button id="reset-netflow" class="btn btn-default __mr" style="display: none;">{{ lang._('Reset Netflow Data') }}</button>
-<button id="repair-netflow" class="btn btn-default __mr" style="display: none;">{{ lang._('Repair Netflow Data') }}</button>
