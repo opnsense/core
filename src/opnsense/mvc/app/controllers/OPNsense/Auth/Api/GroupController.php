@@ -88,22 +88,24 @@ class GroupController extends ApiMutableModelControllerBase
         return $result;
     }
 
-    public function delAction($uuid)
+    public function delAction($uuids)
     {
-        $groupname = null;
+        $groupnames = [];
         if ($this->request->isPost()) {
             Config::getInstance()->lock();
-            $node = $this->getModel()->getNodeByReference('group.' . $uuid);
-            if ($node->scope == 'system') {
-                throw new UserException(sprintf(gettext("Not allowed to delete system group %s"), $node->name));
-            }
-            if (!empty($node)) {
-                $groupname = (string)$node->name;
+            foreach (!empty($uuids) ? explode(",", $uuids) : [] as $uuid) {
+                $node = $this->getModel()->getNodeByReference('group.' . $uuid);
+                if ($node->scope == 'system') {
+                    throw new UserException(sprintf(gettext("Not allowed to delete system group %s"), $node->name));
+                }
+                if (!empty($node)) {
+                    $groupnames[] = (string)$node->name;
+                }
             }
         }
-        $this->setSaveAuditMessage(sprintf('The group "%s" was successfully removed.', $groupname));
-        $result = $this->delBase('group', $uuid);
-        if ($groupname != null) {
+        $this->setSaveAuditMessage(sprintf('The group "%s" was successfully removed.', implode(',', $groupnames)));
+        $result = $this->delBase('group', $uuids);
+        foreach ($groupnames as $groupname) {
             (new Backend())->configdpRun('auth sync group', [$groupname]);
         }
         return $result;
