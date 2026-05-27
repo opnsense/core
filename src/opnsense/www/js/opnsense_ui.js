@@ -653,14 +653,25 @@ $.fn.SimpleActionButton = function (params) {
         });
 
         const excludeScope = this_button?.data('exclude-scope');
+
         if (excludeScope) {
-            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-                if (excludeScope.split(',').map(s => s.trim()).includes(e.target.id)) {
+            const toggleVisiblity = (tabId) => {
+                if (excludeScope.split(',').map(s => s.trim()).includes(tabId)) {
                     this_button.closest('.page-content-main').hide();
                 } else {
                     this_button.closest('.page-content-main').show();
                 }
+            }
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                toggleVisiblity(e.target.id);
             });
+
+            // run once on page load for tab marked active
+            const $initialTab = $('ul.nav-tabs li.active a[data-toggle="tab"]').first();
+            if ($initialTab.length) {
+                toggleVisiblity($initialTab.attr('id'));
+            }
         }
 
         this_button.on('click', function () {
