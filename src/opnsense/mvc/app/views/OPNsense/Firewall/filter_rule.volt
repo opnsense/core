@@ -67,61 +67,113 @@
         // read interface from URL hash once, for the first grid load
         let pendingUrlInterface = getUrlHash('interface') || null;
 
+        const ruleTypeMap = {
+            '0': { label: "{{ lang._('Automatic rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatic Rule') }}", color: "text-secondary" },
+            '1': { label: "{{ lang._('Automatic rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatic Rule') }}", color: "text-secondary" },
+            '2': { label: "{{ lang._('Floating rules') }}",  icon: "fa-layer-group", tooltip: "{{ lang._('Floating Rule') }}", color: "text-primary" },
+            '3': { label: "{{ lang._('Group rules') }}",     icon: "fa-sitemap", tooltip: "{{ lang._('Group Rule') }}", color: "text-warning" },
+            '4': { label: "{{ lang._('Interface rules') }}", icon: "fa-ethernet", tooltip: "{{ lang._('Interface Rule') }}", color: "text-info" },
+            '5': { label: "{{ lang._('Automatic rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatic Rule') }}", color: "text-secondary" },
+        };
+
+        const getRuleTypeDigit = function(row) {
+            const sortOrder = row.sort_order ? row.sort_order.toString() : "";
+            return sortOrder.charAt(0);
+        };
+
+        const getRuleType = function(row) {
+            return ruleTypeMap[getRuleTypeDigit(row)] || null;
+        };
+
         // Lives outside the grid, so the logic of the response handler can be changed after grid initialization
         function dynamicResponseHandler(response) {
-            const makeBucket = function(row, label, uuid) {
-                const bucket = {
+            const getCategoryLabel = function(row) {
+                return row["%categories"] || row.categories || "";
+            };
+
+            const makeBucket = function(label, uuid, categoryColors) {
+                return {
                     // ensure uuid is as unique as possible for persistence handling
                     uuid           : uuid,
                     isGroup        : true,
                     _label         : label,          // internal
+                    categories     : label,
+                    /*
+                    * Bucket rows reuse the category formatter.
+                    * For category buckets, this copies the first child's category metadata
+                    * so the bucket can render the same category icon/color as its rules.
+                    * For rule type buckets, a synthetic categoryColors entry is supplied.
+                    */
+                    category_colors: categoryColors,
                     children       : []
                 };
+            };
 
-                // copy the category info from the first child to use as parent
-                bucket.categories      = label;
-                bucket.category_colors = row.category_colors || [];
+            const createBucket = function(parent, label, uuid, categoryColors) {
+                let bucket = parent.children.find(child => child.isGroup && child._label === label);
+
+                if (!bucket) {
+                    bucket = makeBucket(label, uuid, categoryColors);
+                    parent.children.push(bucket);
+                }
 
                 return bucket;
             };
 
-            if (!treeViewEnabled) {
-                // automatic rules are always collected in a single bucket
-                // non-automatic rows are pushed without children, creating a mixed array of bucket and regular rows
-                const rows = [];
-                let automatic = null;
-                response.rows.forEach(row => {
-                    if (row.is_automatic === true) {
-                        if (automatic === null) {
-                            // readable label used for grouping
-                            const label = (row["%categories"] || row.categories || "");
-                            automatic = makeBucket(row, label, "automaticrules");
-                            rows.push(automatic);
-                        }
-                        automatic.children.push(row);
-                    } else {
-                        rows.push(row);
-                    }
-                });
+            const root = { children: [] };
 
-                return Object.assign({}, response, { rows: rows });
-            } else {
-                // tree view groups all rows into category buckets instead of using mixed top-level rows
-                const buckets = [];
-                let current = null;
-                response.rows.forEach(row => {
-                    // readable label used for grouping
-                    const label = (row["%categories"] || row.categories || "");
-                    // start a new bucket whenever the label changes
-                    if (!current || current._label !== label) {
-                        current = makeBucket(row, label, `${String(row.uuid).replace(/-/g, '')}`);
-                        buckets.push(current);
-                    }
-                    current.children.push(row);
-                });
+            response.rows.forEach(row => {
+                const ruleType = getRuleType(row);
+                const ruleTypeDigit = getRuleTypeDigit(row) || "other";
+                const ruleTypeLabel = ruleType.label || "{{ lang._('Other rules') }}";
+                const categoryLabel = getCategoryLabel(row);
 
-                return Object.assign({}, response, { rows: buckets });
-            }
+                /*
+                * The first tree level is the default view, and always based on the rule priority/type.
+                *
+                * Automatic rules
+                *   rule
+                * Interface rules
+                *   rule
+                */
+                const ruleTypeBucket = createBucket(
+                    root,
+                    ruleTypeLabel,
+                    `ruletype${ruleTypeDigit}`,
+                    [{ name: ruleTypeLabel }]
+                );
+
+                if (treeViewEnabled && row.is_automatic !== true && categoryLabel !== "") {
+                    /*
+                    * When tree view is enabled, categorized non-automatic rules are grouped
+                    * one level deeper by category below their rule priority/type bucket.
+                    *
+                    * Automatic rules and uncategorized rules stay directly below their rule
+                    * priority/type bucket to avoid redundant or low-value nesting.
+                    *
+                    * Automatic rules
+                    *   rule
+                    * Interface rules
+                    *   rule
+                    *   Web (Category)
+                    *     rule
+                    *   Mail (Category)
+                    *     rule
+                    */
+                    const categoryBucket = createBucket(
+                        ruleTypeBucket,
+                        categoryLabel,
+                        `ruletype${ruleTypeDigit}category${String(categoryLabel).replace(/[^a-z0-9]/gi, '')}`,
+                        row.category_colors || []
+                    );
+
+                    categoryBucket.children.push(row);
+                } else {
+                    ruleTypeBucket.children.push(row);
+                }
+            });
+
+            return Object.assign({}, response, { rows: root.children });
         }
 
         $('#download_rules').click(function(e){
@@ -436,22 +488,11 @@
                         let result = "";
 
                         // Rule Type Icons (Determined by first digit of sort_order)
-                        const ruleTypeIcons = {
-                            '0': { icon: "fa-magic", tooltip: "{{ lang._('Automatic Rule') }}", color: "text-secondary" },
-                            '1': { icon: "fa-magic", tooltip: "{{ lang._('Automatic Rule') }}", color: "text-secondary" },
-                            '2': { icon: "fa-layer-group", tooltip: "{{ lang._('Floating Rule') }}", color: "text-primary" },
-                            '3': { icon: "fa-sitemap", tooltip: "{{ lang._('Group Rule') }}", color: "text-warning" },
-                            '4': { icon: "fa-ethernet", tooltip: "{{ lang._('Interface Rule') }}", color: "text-info" },
-                            '5': { icon: "fa-magic", tooltip: "{{ lang._('Automatic Rule') }}", color: "text-secondary" },
-                        };
+                        const ruleType = getRuleType(row);
 
-                        const sortOrder = row.sort_order ? row.sort_order.toString() : "";
-                        if (sortOrder.length > 0) {
-                            const typeDigit = sortOrder.charAt(0);
-                            if (ruleTypeIcons[typeDigit]) {
-                                result += `<i class="fa ${ruleTypeIcons[typeDigit].icon} fa-fw ${ruleTypeIcons[typeDigit].color}"
-                                            data-toggle="tooltip" title="${ruleTypeIcons[typeDigit].tooltip}"></i> `;
-                            }
+                        if (ruleType) {
+                            result += `<i class="fa ${ruleType.icon} fa-fw ${ruleType.color}"
+                                        data-toggle="tooltip" title="${ruleType.tooltip}"></i> `;
                         }
 
                         // Action
