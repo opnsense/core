@@ -191,18 +191,4 @@ class NetflowController extends ApiControllerBase
 
         return $result;
     }
-
-    public function repairAction()
-    {
-        $result = ["status" => "failed"];
-
-        if ($this->request->isPost()) {
-            $backend = new Backend();
-            $backend->configdRun('netflow aggregate stop');
-            $backend->configdRun('netflow aggregate repair', true);
-            $result["status"] = "OK";
-        }
-
-        return $result;
-    }
 }
