@@ -170,15 +170,8 @@ class FilterController extends FilterBaseController
                 $record = array_merge($record, $rule_stats[$record['uuid']]);
             }
 
-            // Tag legacy rules as "Automatic generated rules" if they have an empty category
-            if (!empty($record['is_automatic'])) {
-                $label = gettext('Automatically generated rules');
-                $record['categories'] = $label; // Grouping key for tree view
-                $record['category_colors'] = [['name' => $label]]; // Category formatter metadata
-            } else {
-                /* frontend can format categories with colors */
-                $record['category_colors'] = $this->getCategoryColors($r_categories);
-            }
+            /* frontend can format categories with colors */
+            $record['category_colors'] = $this->getCategoryColors($r_categories);
 
             /* frontend can format aliases with an alias icon */
             foreach (['source_net','source_port','destination_net','destination_port'] as $field) {
