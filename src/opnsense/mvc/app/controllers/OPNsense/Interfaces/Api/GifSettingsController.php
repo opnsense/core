@@ -120,27 +120,33 @@ class GifSettingsController extends ApiMutableModelControllerBase
 
     /**
      * Delete gif by uuid
-     * @param string $uuid internal id
+     * @param string $uuids internal id[s]
      * @return array save status
      */
-    public function delItemAction($uuid)
+    public function delItemAction($uuids)
     {
         Config::getInstance()->lock();
-        $node = $this->getModel()->getNodeByReference('gif.' . $uuid);
-        if ($node != null) {
-            $cfg = Config::getInstance()->object();
-            foreach ($cfg->interfaces->children() as $key => $value) {
-                if ((string)$value->if == (string)$node->gifif) {
-                    throw new UserException(
-                        sprintf(gettext('Cannot delete GIF. Currently in use by [%s] %s'), $key, $value),
-                        gettext('GIF in use')
-                    );
+        $nodes = [];
+        foreach (!empty($uuids) ? explode(",", $uuids) : [] as $uuid) {
+            $node = $this->getModel()->getNodeByReference('gif.' . $uuid);
+            if ($node != null) {
+                $cfg = Config::getInstance()->object();
+                foreach ($cfg->interfaces->children() as $key => $value) {
+                    if ((string)$value->if == (string)$node->gifif) {
+                        throw new UserException(
+                            sprintf(gettext('Cannot delete GIF. Currently in use by [%s] %s'), $key, $value),
+                            gettext('GIF in use')
+                        );
+                    }
                 }
             }
+            $nodes[] = $node;
         }
-        $result = $this->delBase("gif", $uuid);
-        if ($result['result'] != 'failed' && $node != null) {
-            $this->stashUpdate((string)$node->gifif);
+        $result = $this->delBase("gif", $uuids);
+        if ($result['result'] != 'failed' && !empty($nodes)) {
+            foreach ($nodes as $node) {
+                $this->stashUpdate((string)$node->gifif);
+            }
         }
         return $result;
     }
