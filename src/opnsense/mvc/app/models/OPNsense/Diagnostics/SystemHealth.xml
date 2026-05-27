@@ -1,0 +1,11 @@
+<model>
+    <mount>//OPNsense/SystemHealth</mount>
+    <version>1.0.0</version>
+    <description>RRD graphing backend configuration</description>
+    <items>
+        <enabled type="BooleanField">
+            <Default>1</Default>
+            <Required>Y</Required>
+        </enabled>
+    </items>
+</model>

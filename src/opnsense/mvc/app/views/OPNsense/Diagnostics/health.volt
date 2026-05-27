@@ -27,80 +27,181 @@
 <script>
 
 	$(document).ready(function() {
-		const healthGraph = new HealthGraph('health-chart');
-		$('#spinner').show();
-		healthGraph.initialize().then(async () => {
-			const rrdOptions = healthGraph.getRRDList();
-			for (const [category, subitems] of Object.entries(rrdOptions.data)) {
+        let data_get_map = {'frm_HealthSettings':"/api/diagnostics/systemhealth/get"};
+        mapDataToFormUI(data_get_map).done(function(){
+            formatTokenizersUI();
+            $('.selectpicker').selectpicker('refresh');
+        });
 
-                let $select = $('#health-category-select');
-                let $option = $('<option>', {
-                    value: category,
-                    text: category[0].toUpperCase() + category.slice(1)
+        $("#reconfigureAct").SimpleActionButton({
+            onPreAction: function() {
+                const dfObj = new $.Deferred();
+                saveFormToEndpoint("/api/diagnostics/systemhealth/set", 'frm_HealthSettings', function(){
+                    dfObj.resolve();
                 });
-                $option.appendTo($select);
-			}
+                return dfObj;
+            }
+        });
 
-            $('#health-category-select').on('changed.bs.select', async function() {
-                $subselect = $('#health-subcategory-select');
-                $subselect.empty();
-                const selectedCategory = $(this).val();
+        $("#reconfigureAct").after($("#list-rrd").detach().show());
+        $("#list-rrd").after($("#reset-rrd").detach().show());
+        $("#reset-rrd").click(function(e) {
+            stdDialogRemoveItem("{{ lang._('Do you really want to reset the RRD graphs? This will erase all graph data.') }}", () => {
+                ajaxCall("/api/diagnostics/systemhealth/del_rrd");
+            });
+        });
 
-                rrdOptions.data[selectedCategory].forEach((sub) => {
-                    let optionText = sub;
-                    if (sub in rrdOptions.interfaces) {
-                        optionText = rrdOptions.interfaces[sub].descr;
+        $("#list-rrd").click(function(e) {
+            const items = healthGraph.getRRDList().files;
+
+            const listHtml = items.map(item => `
+                <div class="report-row list-group-item"
+                    data-search="${item.key.toLowerCase()}">
+                    <button type="button" data-toggle="tooltip" title="{{ lang._('Delete report' )}}"
+                            class="btn btn-danger btn-xs __mr" id="delete-report"
+                            data-key="${item.filename}">
+                        <i class="fa fa-trash fa-fw"></i>
+                    </button>
+                    <span class="report-label">${item.key}</span>
+                </div>
+            `).join('');
+
+            const messageHtml = `
+                <div class="form-group">
+                    <input type="text"
+                        class="form-control"
+                        id="dialog-search"
+                        placeholder="{{ lang._('Search...') }}">
+                </div>
+
+                <div id="dialog-list" class="list-group">
+                    ${listHtml}
+                </div>
+            `;
+
+            const dialogRef = BootstrapDialog.show({
+                title: "{{ lang._('Collected Reports') }}",
+                message: $(messageHtml),
+                type: BootstrapDialog.TYPE_INFO,
+                draggable: true,
+                buttons: [
+                    {
+                        label: "{{ lang._('Close') }}",
+                        action: function (d) {
+                            d.close();
+                        }
                     }
+                ],
+                onshown: function (dialog) {
+                    const $modal = dialog.getModal();
+
+                    $modal.on('input', '#dialog-search', function () {
+                        const query = $(this).val().toLowerCase();
+
+                        $modal.find('#dialog-list .report-row').each(function () {
+                            const text = $(this).data('search');
+
+                            $(this).toggle(text.includes(query));
+                        });
+                    });
+
+                    $modal.on('click', '#delete-report', function () {
+                        const key = $(this).data('key');
+                        const $row = $(this).closest('.report-row');
+
+                        ajaxCall("/api/diagnostics/systemhealth/del_rrd/" + key, {} , function(data, status) {
+                            $row.remove();
+                            reset();
+                        });
+
+                    });
+                }
+            });
+        });
+
+        const healthGraph = new HealthGraph('health-chart');
+
+        const reset = () => {
+            $('#info-disabled').hide();
+            $('#main').show();
+            $('#health-header').show();
+            $('#spinner').show();
+            healthGraph.initialize().then(async () => {
+                const rrdOptions = healthGraph.getRRDList();
+                for (const [category, subitems] of Object.entries(rrdOptions.data)) {
+
+                    let $select = $('#health-category-select');
                     let $option = $('<option>', {
-                        value: sub,
-                        text: optionText,
-                    }).appendTo($subselect);
+                        value: category,
+                        text: category[0].toUpperCase() + category.slice(1)
+                    });
+                    $option.appendTo($select);
+                }
+
+                $('#health-category-select').on('changed.bs.select', async function() {
+                    $subselect = $('#health-subcategory-select');
+                    $subselect.empty();
+                    const selectedCategory = $(this).val();
+
+                    rrdOptions.data[selectedCategory].forEach((sub) => {
+                        let optionText = sub;
+                        if (sub in rrdOptions.interfaces) {
+                            optionText = rrdOptions.interfaces[sub].descr;
+                        }
+                        let $option = $('<option>', {
+                            value: sub,
+                            text: optionText,
+                        }).appendTo($subselect);
+                    });
+
+                    $('#health-subcategory-select').selectpicker('refresh');
+                    // trigger first selection
+                    $('#health-subcategory-select').val(rrdOptions.data[selectedCategory][0]).trigger('changed.bs.select');
                 });
 
-                $('#health-subcategory-select').selectpicker('refresh');
-                // trigger first selection
-                $('#health-subcategory-select').val(rrdOptions.data[selectedCategory][0]).trigger('changed.bs.select');
+
+                $('#health-subcategory-select').on('changed.bs.select', async function() {
+                    $('#spinner').show();
+                    let sub = $(this).val();
+                    let category = $('#health-category-select').val();
+                    let system = `${sub}-${category}`;
+                    await healthGraph.update(system);
+                    $('#spinner').hide();
+                });
+
+                $('.selectpicker').selectpicker('refresh');
+
+                // trigger event for first category
+                $('#health-category-select').val(Object.keys(rrdOptions.data)[0]).trigger('changed.bs.select');
+
+                $("#reset-zoom").click(function() {
+                    healthGraph.resetZoom();
+                });
+
+                $("#export").click(function() {
+                    healthGraph.exportData();
+                })
+
+                $('#detail-select').change(async function() {
+                    $('#spinner').show();
+                    await healthGraph.update(null, $(this).val());
+                    $('#spinner').hide();
+                });
+
+                $("#stacked-select").change(async function() {
+                    $('#spinner').show();
+                    await healthGraph.update(null, null, $(this).is(':checked'));
+                    $('#spinner').hide();
+                });
+
+            }).catch((err) => {
+                $('#info-disabled').show();
+                $('#main').hide();
+                $('#health-header').hide();
             });
+        };
 
-
-            $('#health-subcategory-select').on('changed.bs.select', async function() {
-                $('#spinner').show();
-                let sub = $(this).val();
-                let category = $('#health-category-select').val();
-                let system = `${sub}-${category}`;
-                await healthGraph.update(system);
-                $('#spinner').hide();
-            });
-
-			$('.selectpicker').selectpicker('refresh');
-
-            // trigger event for first category
-            $('#health-category-select').val(Object.keys(rrdOptions.data)[0]).trigger('changed.bs.select');
-
-			$("#reset-zoom").click(function() {
-				healthGraph.resetZoom();
-			});
-
-            $("#export").click(function() {
-                healthGraph.exportData();
-            })
-
-			$('#detail-select').change(async function() {
-				$('#spinner').show();
-				await healthGraph.update(null, $(this).val());
-				$('#spinner').hide();
-			});
-
-            $("#stacked-select").change(async function() {
-				$('#spinner').show();
-				await healthGraph.update(null, null, $(this).is(':checked'));
-				$('#spinner').hide();
-			});
-
-		}).catch((err) => {
-			$('#info-disabled').show();
-			$('#main').hide();
-		});
+        reset();
 
 	});
 
@@ -134,13 +235,36 @@
 .mb-2 {
     margin-bottom: 0.5rem;
 }
+
+.page-content-main {
+    padding: 15px 0 0;
+}
+
+.report-row {
+    display: flex;
+    align-items: center;
+}
+
+.report-label {
+    flex: 1;
+}
+
+.btn-delete {
+    margin-left: auto;
+}
+
 </style>
 
 <div class="panel panel-default">
-	<div id="info-disabled" class="alert alert-warning" role="alert" style="display: none;">
-		{{ lang._('Local data collection is not enabled. Enable it in Reporting Settings page.') }}
-		<br />
-		<a href="/reporting_settings.php">{{ lang._('Go to the Reporting configuration') }}</a>
+    {{ partial("layout_partials/base_form",['fields':systemHealthForm,'id':'frm_HealthSettings'])}}
+    {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/diagnostics/systemhealth/reconfigure'}) }}
+    <button id="list-rrd" class="btn btn-default __mr" style="display: none;">{{ lang._('Show Collected Reports') }}</button>
+    <button id="reset-rrd" class="btn btn-default __mr" style="display: none;">{{ lang._('Reset RRD Data') }}</button>
+</div>
+
+<div class="panel panel-default">
+	<div id="info-disabled" class="alert alert-warning" role="alert" style="margin-bottom: 0; display: none;">
+		{{ lang._('No local data available.') }}
 	</div>
 
 	<div id="health-header" class="panel-heading centered">

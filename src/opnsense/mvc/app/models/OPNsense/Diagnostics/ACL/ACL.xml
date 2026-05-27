@@ -46,7 +46,6 @@
         <patterns>
             <pattern>ui/diagnostics/systemhealth/*</pattern>
             <pattern>api/diagnostics/systemhealth/*</pattern>
-            <pattern>reporting_settings.php</pattern>
         </patterns>
     </page-diagnostics-health>
     <page-diagnostics-networkinsight>

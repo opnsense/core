@@ -223,7 +223,8 @@ if __name__ == '__main__':
         else:
             Main(cmd_args.single_pass)
     elif cmd_args.repair:
-        # force a database repair, when
+        # force a database repair
+        # XXX currently unused
         try:
             lck = open(Main.config.pid_filename, 'a+')
             fcntl.flock(lck, fcntl.LOCK_EX | fcntl.LOCK_NB)
