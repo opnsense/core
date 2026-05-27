@@ -56,7 +56,9 @@
         $("#reconfigureAct").after($("#reset-dns").detach().show());
         $("#reset-dns").click(function(e) {
             stdDialogRemoveItem("{{ lang._('Do you really want to reset the Unbound statistics data?') }}", () => {
-                ajaxCall("/api/unbound/overview/reset");
+                ajaxCall("/api/unbound/overview/reset", {}, function() {
+                    reset();
+                });
             });
         });
 
