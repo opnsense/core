@@ -39,6 +39,10 @@ class HealthGraph {
     }
 
     async initialize() {
+        if (this.chart) {
+            this.chart.destroy();
+        }
+
         this.rrdList = await this._fetchRRDList();
         if (Object.keys(this.rrdList.data).length === 0) {
             throw new Error('No RRD data available');

@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2016 Deciso B.V.
+ *    Copyright (C) 2016-2026 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -31,7 +31,29 @@
 namespace OPNsense\Diagnostics\Migrations;
 
 use OPNsense\Base\BaseModelMigration;
+use OPNsense\Core\Config;
+use OPNsense\Diagnostics\SystemHealth;
 
 class M1_0_0 extends BaseModelMigration
 {
+    public function run($model)
+    {
+        if (!$model instanceof SystemHealth) {
+            return;
+        }
+        $config = Config::getInstance()->object();
+        $model->enabled = isset($config?->rrd?->enable) ? '1' : '0';
+    }
+
+    public function post($model)
+    {
+        if (!$model instanceof SystemHealth) {
+            return;
+        }
+
+        $config = Config::getInstance()->object();
+        if (isset($config?->rrd)) {
+            unset($config->rrd);
+        }
+    }
 }

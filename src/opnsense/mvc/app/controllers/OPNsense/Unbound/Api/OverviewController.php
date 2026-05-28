@@ -134,4 +134,15 @@ class OverviewController extends ApiControllerBase
     {
         return $this->mdl->dnsbl->blocklist->getNodeContent();
     }
+
+    public function resetAction()
+    {
+        $result = ["status" => "failed"];
+
+        if ($this->request->isPost()) {
+            $result["status"] = (new Backend())->configdRun("unbound qstats reset");
+        }
+
+        return $result;
+    }
 }

@@ -504,7 +504,8 @@ class UIBootgrid {
                     minWidth: data.minWidth || 80,
                     maxWidth: data.maxWidth ?? null,
                     editable: false,
-                    sortable: data.sortable ?? true
+                    sortable: data.sortable ?? true,
+                    selectable: data.selectable ?? true,
                 }
             }
         }
@@ -541,7 +542,7 @@ class UIBootgrid {
                     frozen: true,
                     headerSort: false,
                     headerHozAlign: "center",
-                    // hozAlign:  'center',
+                    selectable: true
                 };
 
                 if (!field.width) {
@@ -573,6 +574,7 @@ class UIBootgrid {
                     cssClass: this.options.responsive ? 'opnsense-bootgrid-responsive' : '',
                     variableHeight: true,
                     userDefinedWidth: false,
+                    selectable: field.selectable,
                 };
             }
 
@@ -1234,7 +1236,7 @@ class UIBootgrid {
         for (let column of columns) {
             let definition = column.getDefinition();
 
-            if (definition?.formatter === "rowSelection") {
+            if (definition?.formatter === "rowSelection" || !definition.selectable) {
                 continue;
             }
 

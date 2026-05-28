@@ -277,6 +277,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/packetcapture.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/ping.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/portprobe.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/systemhealth.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Diagnostics/forms/traceroute.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/Api/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/Api/ServiceController.php
@@ -502,6 +503,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostAlias.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostOverride.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dnsbl.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dnsreporting.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/forwarding.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/general.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Wireguard/Api/ClientController.php
@@ -730,6 +732,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Ping.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Portprobe.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Portprobe.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/SystemHealth.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/SystemHealth.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Traceroute.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Diagnostics/Traceroute.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Dnsmasq/ACL/ACL.xml
@@ -2559,7 +2563,6 @@
 /usr/local/www/interfaces_wireless.php
 /usr/local/www/interfaces_wireless_edit.php
 /usr/local/www/javascript/opnsense_legacy.js
-/usr/local/www/reporting_settings.php
 /usr/local/www/services_ntpd.php
 /usr/local/www/services_ntpd_gps.php
 /usr/local/www/services_ntpd_pps.php

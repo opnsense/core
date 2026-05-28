@@ -29,7 +29,8 @@
 
 namespace OPNsense\Diagnostics\Api;
 
-use OPNsense\Base\ApiControllerBase;
+use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 
@@ -37,8 +38,55 @@ use OPNsense\Core\Config;
  * Class SystemhealthController
  * @package OPNsense\SystemHealth
  */
-class SystemhealthController extends ApiControllerBase
+class SystemhealthController extends ApiMutableModelControllerBase
 {
+    protected static $internalModelName = 'systemhealth';
+    protected static $internalModelClass = 'OPNsense\Diagnostics\SystemHealth';
+
+    public function reconfigureAction()
+    {
+        $result = ["status" => "failed"];
+
+        if ($this->request->isPost()) {
+            $backend = new Backend();
+            $response = trim($backend->configdRun('interface monitor configure'));
+
+            if ($response != "OK") {
+                return ["status" => "error reconfiguring monitor"];
+            }
+
+            // rrd graphs depend on a cronjob
+            $response = trim($backend->configdRun('service restart cron'));
+
+            if ($response != "OK") {
+                return ["status" => "error restarting cron"];
+            }
+
+            $result = ["status" => $response];
+        }
+
+        return $result;
+    }
+
+    public function delRRDAction($report = null)
+    {
+        $result = ["status" => "failed"];
+
+        if ($this->request->isPost()) {
+            if (!empty($report)) {
+                $result["status"] = trim((new Backend())->configdpRun('health flush', [$report]));
+            } else {
+                $result["status"] = trim((new Backend())->configdRun('health flush *'));
+            }
+
+            if ($result["status"] != "OK") {
+                throw new UserException(gettext("failed to flush RRD data"));
+            }
+        }
+
+        return $result;
+    }
+
     /**
      * retrieve descriptive details of rrd
      * @param string $rrd rrd category - item
@@ -76,11 +124,13 @@ class SystemhealthController extends ApiControllerBase
     public function getRrdListAction()
     {
         # Source of data: filelisting of /var/db/rrd/*.rrd
-        $result = ['data' => []];
+        $result = ['data' => [], 'files' => []];
         $healthList = json_decode((new Backend())->configdRun('health list'), true);
         $interfaces = $this->getInterfacesAction();
+        ksort($healthList);
         if (is_array($healthList)) {
             foreach ($healthList as $healthItem => $details) {
+                $result['files'][] = ['key' => $healthItem, 'filename' => $details['filename']];
                 if (!array_key_exists($details['topic'], $result['data'])) {
                     $result['data'][$details['topic']] = [];
                 }

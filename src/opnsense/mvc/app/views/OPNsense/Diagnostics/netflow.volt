@@ -33,15 +33,21 @@
             $('.selectpicker').selectpicker('refresh');
         });
 
-        // link save button to API set action
-        $("#btn_save_capture").click(function () {
-            $("#frm_CaptureSettings_progress").addClass("fa fa-spinner fa-pulse");
-            saveFormToEndpoint("/api/diagnostics/netflow/setconfig", 'frm_CaptureSettings', function () {
-                ajaxCall("/api/diagnostics/netflow/reconfigure", {}, function (data, status) {
-                    $("#frm_CaptureSettings_progress").removeClass("fa fa-spinner fa-pulse");
+        $("#reconfigureAct").SimpleActionButton({
+            onPreAction: function() {
+                const dfObj = new $.Deferred();
+                saveFormToEndpoint("/api/diagnostics/netflow/setconfig", 'frm_CaptureSettings', function(){
+                    dfObj.resolve();
                 });
-	    }, true, function () {
-                $("#frm_CaptureSettings_progress").removeClass("fa fa-spinner fa-pulse");
+                return dfObj;
+            }
+        });
+
+        $("#reconfigureAct").after($("#reset-netflow").detach().show());
+
+        $("#reset-netflow").click(function(e) {
+            stdDialogRemoveItem("{{ lang._('Do you really want to reset the netflow data? This will erase all Insight graph data.') }}", () => {
+                ajaxCall("/api/diagnostics/netflow/reset");
             });
         });
 
@@ -86,7 +92,7 @@
 <div class="tab-content content-box">
     <div id="capture" class="tab-pane fade in active">
         <!-- tab page capture -->
-        {{ partial("layout_partials/base_form",['fields':captureForm,'id':'frm_CaptureSettings', 'apply_btn_id':'btn_save_capture'])}}
+        {{ partial("layout_partials/base_form",['fields':captureForm,'id':'frm_CaptureSettings'])}}
     </div>
     <div id="cache" class="tab-pane fade in">
         <!-- tab page netflow cache -->
@@ -115,3 +121,6 @@
         </table>
     </div>
 </div>
+
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/diagnostics/netflow/reconfigure', 'data_exclude_scope': 'cache_tab'}) }}
+<button id="reset-netflow" class="btn btn-default __mr" style="display: none;">{{ lang._('Reset Netflow Data') }}</button>

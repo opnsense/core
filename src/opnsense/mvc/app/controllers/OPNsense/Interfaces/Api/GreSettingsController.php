@@ -120,27 +120,33 @@ class GreSettingsController extends ApiMutableModelControllerBase
 
     /**
      * Delete gre by uuid
-     * @param string $uuid internal id
+     * @param string $uuids internal id
      * @return array save status
      */
-    public function delItemAction($uuid)
+    public function delItemAction($uuids)
     {
         Config::getInstance()->lock();
-        $node = $this->getModel()->getNodeByReference('gre.' . $uuid);
-        if ($node != null) {
-            $cfg = Config::getInstance()->object();
-            foreach ($cfg->interfaces->children() as $key => $value) {
-                if ((string)$value->if == (string)$node->greif) {
-                    throw new UserException(
-                        sprintf(gettext('Cannot delete GRE. Currently in use by [%s] %s'), $key, $value),
-                        gettext('GRE in use')
-                    );
+        $nodes = [];
+        foreach (!empty($uuids) ? explode(",", $uuids) : [] as $uuid) {
+            $node = $this->getModel()->getNodeByReference('gre.' . $uuid);
+            if ($node != null) {
+                $cfg = Config::getInstance()->object();
+                foreach ($cfg->interfaces->children() as $key => $value) {
+                    if ((string)$value->if == (string)$node->greif) {
+                        throw new UserException(
+                            sprintf(gettext('Cannot delete GRE. Currently in use by [%s] %s'), $key, $value),
+                            gettext('GRE in use')
+                        );
+                    }
                 }
             }
+            $nodes[] = $node;
         }
-        $result = $this->delBase("gre", $uuid);
-        if ($result['result'] != 'failed' && $node != null) {
-            $this->stashUpdate((string)$node->greif);
+        $result = $this->delBase("gre", $uuids);
+        if ($result['result'] != 'failed' && !empty($nodes)) {
+            foreach ($nodes as $node) {
+                $this->stashUpdate((string)$node->greif);
+            }
         }
         return $result;
     }

@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2024 Deciso B.V.
+ * Copyright (C) 2024-206 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -47,8 +47,7 @@ if (isset($opts['h'])) {
     exit(0);
 }
 
-$rrdcnf = OPNsense\Core\Config::getInstance()->object()->rrd;
-if ($rrdcnf === null || !isset($rrdcnf->enable)) {
+if ((new \OPNsense\Diagnostics\SystemHealth())->enabled->isEmpty()) {
     echo "RRD statistics disabled... exit\n";
     exit(0);
 }

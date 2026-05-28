@@ -120,39 +120,45 @@ class LaggSettingsController extends ApiMutableModelControllerBase
 
     /**
      * Delete lagg by uuid
-     * @param string $uuid internal id
+     * @param string $uuids internal id
      * @return array save status
      */
-    public function delItemAction($uuid)
+    public function delItemAction($uuids)
     {
         Config::getInstance()->lock();
-        $node = $this->getModel()->getNodeByReference('lagg.' . $uuid);
-        $laggif = $node != null ? (string)$node->laggif : null;
-        $uses = [];
-        $cfg = Config::getInstance()->object();
-        foreach ($cfg->interfaces->children() as $key => $value) {
-            if ((string)$value->if == $laggif) {
-                $uses['interfaces.' . $key] = !empty($value->descr) ? (string)$value->descr : $key;
-            }
-        }
-        if (isset($cfg->vlans) && isset($cfg->vlans->vlan)) {
-            foreach ($cfg->vlans->children() as $vlan) {
-                if ((string)$vlan->if == $laggif) {
-                    $uses[(string)$vlan->vlanif] = !empty($vlan->descr) ? (string)$vlan->descr : $key;
+        $laggifs = [];
+        foreach (!empty($uuids) ? explode(",", $uuids) : [] as $uuid) {
+            $node = $this->getModel()->getNodeByReference('lagg.' . $uuid);
+            $laggif = $node != null ? (string)$node->laggif : null;
+            $uses = [];
+            $cfg = Config::getInstance()->object();
+            foreach ($cfg->interfaces->children() as $key => $value) {
+                if ((string)$value->if == $laggif) {
+                    $uses['interfaces.' . $key] = !empty($value->descr) ? (string)$value->descr : $key;
                 }
             }
-        }
-        if (!empty($uses)) {
-            $message = "";
-            foreach ($uses as $key => $value) {
-                $message .= htmlspecialchars(sprintf("\n[%s] %s", $key, $value), ENT_NOQUOTES | ENT_HTML401);
+            if (isset($cfg->vlans) && isset($cfg->vlans->vlan)) {
+                foreach ($cfg->vlans->children() as $vlan) {
+                    if ((string)$vlan->if == $laggif) {
+                        $uses[(string)$vlan->vlanif] = !empty($vlan->descr) ? (string)$vlan->descr : $key;
+                    }
+                }
             }
-            $message = sprintf(gettext('Cannot delete LAGG. Currently in use by %s'), $message);
-            throw new UserException($message, gettext('LAGG in use'));
+            if (!empty($uses)) {
+                $message = "";
+                foreach ($uses as $key => $value) {
+                    $message .= htmlspecialchars(sprintf("\n[%s] %s", $key, $value), ENT_NOQUOTES | ENT_HTML401);
+                }
+                $message = sprintf(gettext('Cannot delete LAGG. Currently in use by %s'), $message);
+                throw new UserException($message, gettext('LAGG in use'));
+            }
+            $laggifs[] = $laggif;
         }
-        $result = $this->delBase("lagg", $uuid);
+        $result = $this->delBase("lagg", $uuids);
         if ($result['result'] != 'failed' && !empty($laggif)) {
-            $this->stashUpdate($laggif);
+            foreach ($laggifs as $laggif) {
+                $this->stashUpdate($laggif);
+            }
         }
         return $result;
     }

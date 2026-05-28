@@ -180,4 +180,15 @@ class NetflowController extends ApiControllerBase
             return array();
         }
     }
+
+    public function resetAction()
+    {
+        $result = ["status" => "failed"];
+
+        if ($this->request->isPost()) {
+            $result["status"] = (new Backend())->configdRun("netflow flush");
+        }
+
+        return $result;
+    }
 }
