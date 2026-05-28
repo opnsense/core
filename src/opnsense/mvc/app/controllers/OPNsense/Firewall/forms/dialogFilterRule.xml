@@ -12,7 +12,7 @@
             <width>50</width>
             <type>boolean</type>
             <formatter>rowtoggle</formatter>
-            <sequence>5</sequence>
+            <sequence>1</sequence>
             <align>center</align>
         </grid_view>
     </field>
@@ -47,7 +47,7 @@
         <help>For grouping purposes you may select multiple groups here to organize items.</help>
         <grid_view>
             <formatter>category</formatter>
-            <sequence>1</sequence>
+            <sequence>2</sequence>
             <width>80</width>
         </grid_view>
     </field>
