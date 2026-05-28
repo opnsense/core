@@ -222,7 +222,7 @@
             options: {
                 responsive: true,
                 sorting: false,
-                rowCount: [200,50,100,500,1000,2000,5000,-1],
+                rowCount: [500,20,50,100,200,1000,2000,-1],
                 initialSearchPhrase: getUrlHash('search'),
                 requestHandler: function(request){
                     // Add category selectpicker
