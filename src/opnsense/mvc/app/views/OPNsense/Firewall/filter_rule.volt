@@ -415,26 +415,39 @@
                             return '*';
                         }
                     },
-                    // The category formatter is special as it renders differently for the bucket row
+                    // Bucket rows reuse the category column because Tabulator only renders one
+                    // formatter per cell, so both category buckets and rule type buckets are
+                    // represented here.
                     category: function (column, row) {
                         const isGroup = row.isGroup;
                         const hasCategories = row.categories && Array.isArray(row.category_colors);
 
+                        // Rows without category metadata render nothing in this column.
+                        // This also avoids creating a fake label for rules that
+                        // are intentionally kept directly below their rule type bucket.
                         if (!hasCategories) {
-
-                            return isGroup
-                                ? `<span class="category-icon category-cell">
-                                    <i class="fa fa-fw fa-tag"></i>
-                                    <strong>{{ lang._('Uncategorized') }}</strong>
-                                    <span class="badge chip"
-                                            style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
-                                </span>`
-                                : '';
+                            return '';
                         }
 
                         const categories = row.category_colors || [];
 
                         const icons = categories.map(cat => {
+                            /*
+                            * Top-level tree icons, e.g. automatic/floating/interface rules, are
+                            * resolved here as well because each row can only use one formatter for
+                            * this column. Rule type buckets provide a synthetic category entry
+                            * whose name matches ruleTypeMap, while real category buckets continue
+                            * to render normal category tag icons.
+                            */
+                            const ruleType = Object.values(ruleTypeMap).find(type => type.label === cat.name);
+
+                            if (isGroup && ruleType) {
+                                return `
+                                    <span class="category-icon" data-toggle="tooltip" title="${ruleType.tooltip}">
+                                        <i class="fa ${ruleType.icon} fa-fw ${ruleType.color}"></i>
+                                    </span>`;
+                            }
+
                             const bgColor = cat.color ? ` style="color:${cat.color};"` : '';
 
                             return `
@@ -447,8 +460,6 @@
                             ? `<span class="category-cell">
                                     <span class="category-cell-content">
                                         <strong>${icons} ${categories.map(cat => cat.name).join(', ')}</strong>
-                                        <span class="badge chip"
-                                                style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
                                     </span>
                             </span>`
                             : icons;
