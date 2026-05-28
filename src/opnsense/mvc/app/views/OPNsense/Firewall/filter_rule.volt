@@ -68,12 +68,12 @@
         let pendingUrlInterface = getUrlHash('interface') || null;
 
         const ruleTypeMap = {
-            '0': { label: "{{ lang._('Automatic') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatic Rule') }}", color: "text-secondary" },
-            '1': { label: "{{ lang._('Automatic') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatic Rule') }}", color: "text-secondary" },
-            '2': { label: "{{ lang._('Floating') }}",  icon: "fa-layer-group", tooltip: "{{ lang._('Floating Rule') }}", color: "text-primary" },
-            '3': { label: "{{ lang._('Group') }}",     icon: "fa-sitemap", tooltip: "{{ lang._('Group Rule') }}", color: "text-warning" },
-            '4': { label: "{{ lang._('Interface') }}", icon: "fa-ethernet", tooltip: "{{ lang._('Interface Rule') }}", color: "text-info" },
-            '5': { label: "{{ lang._('Automatic') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatic Rule') }}", color: "text-secondary" },
+            '0': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
+            '1': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
+            '2': { label: "{{ lang._('Floating rules') }}", icon: "fa-layer-group", tooltip: "{{ lang._('Floating rule') }}", color: "text-primary" },
+            '3': { label: "{{ lang._('Group rules') }}", icon: "fa-sitemap", tooltip: "{{ lang._('Group rule') }}", color: "text-warning" },
+            '4': { label: "{{ lang._('Interface rules') }}", icon: "fa-ethernet", tooltip: "{{ lang._('Interface rule') }}", color: "text-info" },
+            '5': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
         };
 
         const getRuleTypeDigit = function(row) {
