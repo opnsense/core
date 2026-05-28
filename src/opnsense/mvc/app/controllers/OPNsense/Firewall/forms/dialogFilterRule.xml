@@ -48,7 +48,7 @@
         <grid_view>
             <formatter>category</formatter>
             <sequence>1</sequence>
-            <width>120</width>
+            <width>65</width>
         </grid_view>
     </field>
     <field>
@@ -153,6 +153,7 @@
         <grid_view>
             <formatter>any</formatter>
             <sequence>35</sequence>
+            <width>80</width>
         </grid_view>
     </field>
     <field>
@@ -162,6 +163,7 @@
         <grid_view>
             <formatter>any</formatter>
             <sequence>40</sequence>
+            <width>80</width>
         </grid_view>
     </field>
     <field>
