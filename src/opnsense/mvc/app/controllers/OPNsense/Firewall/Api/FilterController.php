@@ -93,7 +93,7 @@ class FilterController extends FilterBaseController
             // interface param may be empty
             $interfaces = array_filter(explode(',', (string)$this->request->get('interface')), 'strlen');
 
-            if ($show_all && !empty($interfaces)) {
+            if (!empty($interfaces)) {
                 /* add groups which contain the selected interface when looking at full impact */
                 foreach ((new Group())->ifgroupentry->iterateItems() as $groupItem) {
                     if (array_intersect($interfaces, $groupItem->members->getValues())) {
@@ -125,15 +125,15 @@ class FilterController extends FilterBaseController
             $rule_stats = [];
         }
 
-        $filter_funct_rs = function (&$record) use ($categories, $interfaces, $rule_stats, $show_all) {
+        $filter_funct_rs = function (&$record) use ($categories, $interfaces, $rule_stats) {
             /* Filter criteria */
             $r_categories = !empty($record['categories']) ? array_map('trim', explode(',', $record['categories'])) : [];
             $is_cat = empty($categories) || array_intersect($r_categories, $categories);
             $rule_interfaces = array_filter(explode(',', $record['interface'] ?? ''));
-            if ($interfaces === null || (empty($record['interface']) && $show_all)) {
+            if ($interfaces === null || (empty($record['interface']))) {
                 /* ALL interfaces always matches, when inspecting, also show rules that apply to all */
                 $is_if = true; // ALL interfaces or floating always matches
-            } elseif (!empty($record['interfacenot']) && $show_all) {
+            } elseif (!empty($record['interfacenot'])) {
                 /* Inverted interface, show where applicable when inspecting */
                 $is_if = !array_intersect($rule_interfaces, $interfaces ?? []);
             } elseif (empty($interfaces) && (count($rule_interfaces) != 1 || !empty($record['interfacenot']))) {
@@ -142,7 +142,7 @@ class FilterController extends FilterBaseController
             } else {
                 /* Interfaces overlap, when inspecting all overlaps are relevant, otherwise only exact matches */
                 $is_if = array_intersect($rule_interfaces, $interfaces ?? []) && (
-                    count($rule_interfaces) == 1 || $show_all
+                    count($rule_interfaces) == 1
                 ) && empty($record['interfacenot']);
             }
 
@@ -192,7 +192,7 @@ class FilterController extends FilterBaseController
         $search_clauses = [];
         $backend = new Backend();
         foreach (preg_split('/\s+/', (string)$this->request->getPost('searchPhrase', null, '')) as $token) {
-            if ($show_all && Util::isIpAddress($token)) {
+            if (Util::isIpAddress($token)) {
                 $tmp = json_decode($backend->configdpRun('filter find_table_references', [$token]), true) ?? [];
                 $aliases = [$token];
                 if (is_array($tmp) && !empty($tmp['matches'])) {

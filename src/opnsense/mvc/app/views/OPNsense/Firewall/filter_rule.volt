@@ -1182,7 +1182,7 @@
                     class="btn btn-default"
                     data-toggle="tooltip"
                     data-placement="bottom"
-                    title="{{ lang._('Show statistics and a detailed view of the current ruleset') }}">
+                    title="{{ lang._('Show rule statistics') }}">
                 <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
             </button>
             <input id="all_rules_checkbox" type="checkbox" style="display: none;">
