@@ -906,13 +906,12 @@
             localStorage.setItem("firewall_rule_tree", treeViewEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', treeViewEnabled);
             $("#{{formGridFilterRule['table_id']}}").toggleClass("tree-enabled", treeViewEnabled);
-            $("#tree_expand_container").toggle(treeViewEnabled);
             grid.bootgrid("reload");
         });
 
-        // Visible only when tree view is enabled
         $("#tree_expand_container").detach().insertAfter("#tree_toggle_container");
-        $("#tree_expand_container").toggle(treeViewEnabled);
+        $("#tree_expand_container").show();
+
         $('#expand_tree_button').on('click', function () {
             const $table = $('#{{ formGridFilterRule["table_id"] }}');
 
@@ -1184,7 +1183,6 @@
                     data-placement="bottom"
                     title="{{ lang._('Show statistics and a detailed view of the current ruleset') }}">
                 <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
-                {{ lang._('Inspect') }}
             </button>
             <input id="all_rules_checkbox" type="checkbox" style="display: none;">
         </div>
@@ -1194,9 +1192,8 @@
                     class="btn btn-default"
                     data-toggle="tooltip"
                     data-placement="bottom"
-                    title="{{ lang._('Show all categories in a tree') }}">
-                <i class="fa fa-fw fa-sitemap" aria-hidden="true"></i>
-                {{ lang._('Tree') }}
+                    title="{{ lang._('Group rules by categories') }}">
+                <i class="fa fa-fw fa-tag" aria-hidden="true"></i>
             </button>
         </div>
         <div id="tree_expand_container" class="btn-group">
@@ -1205,7 +1202,6 @@
                     class="btn btn-default"
                     data-toggle="tooltip"
                     data-placement="bottom"
-                    data-delay='{"show": 1000}'
                     title="{{ lang._('Expand/Collapse all') }}">
                 <i class="fa fa-fw fa-angle-double-down" aria-hidden="true"></i>
             </button>
