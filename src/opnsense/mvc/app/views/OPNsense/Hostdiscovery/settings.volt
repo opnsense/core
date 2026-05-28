@@ -57,14 +57,6 @@
                                 }
                                 return params;
                             },
-                            responseHandler: function (response) {
-                                if (response.rows.length > 0 && response.rows[0].source == 'discovery') {
-                                    $("#legacy_alert").hide();
-                                } else {
-                                    $("#legacy_alert").show();
-                                }
-                                return response;
-                            }
                         }
                         });
                     } else {
@@ -96,11 +88,6 @@
     </div>
     <!-- Tab: Hosts -->
     <div id="hosts" class="tab-pane fade in">
-        <div style="padding: 10px;">
-            <div id="legacy_alert" class="alert alert-warning" role="alert" style="display: none;">
-                {{ lang._('Host discovery service is disabled, below the hosts currently known by this firewall via ARP and NDP') }}
-            </div>
-        </div>
         <table id="grid-hosts" class="table table-condensed table-hover table-striped table-responsive">
             <thead>
                 <tr>
