@@ -121,9 +121,6 @@
 /usr/local/etc/rc.subr.d/tmp
 /usr/local/etc/rc.subr.d/var
 /usr/local/etc/rc.syshook
-/usr/local/etc/rc.syshook.d/backup/20-captiveportal
-/usr/local/etc/rc.syshook.d/backup/20-netflow
-/usr/local/etc/rc.syshook.d/backup/20-rrd
 /usr/local/etc/rc.syshook.d/carp/20-dhcrelay
 /usr/local/etc/rc.syshook.d/carp/20-openvpn
 /usr/local/etc/rc.syshook.d/carp/20-openvpn-instances
@@ -132,7 +129,6 @@
 /usr/local/etc/rc.syshook.d/early/05-upgrade
 /usr/local/etc/rc.syshook.d/early/10-configd
 /usr/local/etc/rc.syshook.d/early/15-templates
-/usr/local/etc/rc.syshook.d/early/20-backup
 /usr/local/etc/rc.syshook.d/early/90-carp
 /usr/local/etc/rc.syshook.d/import/20-importer
 /usr/local/etc/rc.syshook.d/monitor/20-recover
@@ -146,7 +142,6 @@
 /usr/local/etc/rc.syshook.d/start/95-beep
 /usr/local/etc/rc.syshook.d/stop/05-beep
 /usr/local/etc/rc.syshook.d/stop/80-freebsd
-/usr/local/etc/rc.syshook.d/stop/90-backup
 /usr/local/etc/rc.syshook.d/stop/99-config
 /usr/local/etc/rc.syshook.d/update/10-refresh.sh
 /usr/local/etc/rc.syshook.d/upgrade/10-sanity.sh

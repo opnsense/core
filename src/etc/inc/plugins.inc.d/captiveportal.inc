@@ -46,23 +46,6 @@ function captiveportal_services()
     return $services;
 }
 
-function captiveportal_cron()
-{
-    global $config;
-
-    $jobs = [];
-
-    if (!empty($config['system']['captiveportalbackup']) && $config['system']['captiveportalbackup'] > 0) {
-        $jobs[]['autocron'] = array(
-            '/usr/local/etc/rc.syshook.d/backup/20-captiveportal',
-            '0',
-            '*/' . $config['system']['captiveportalbackup']
-        );
-    }
-
-    return $jobs;
-}
-
 function captiveportal_syslog()
 {
     $logfacilities = [];
