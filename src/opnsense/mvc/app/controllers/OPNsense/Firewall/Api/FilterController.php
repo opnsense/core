@@ -376,31 +376,15 @@ class FilterController extends FilterBaseController
             ],
         ];
 
-        // Count rules per interface
-        $ruleCounts = [];
-        foreach ((new Filter())->rules->rule->iterateItems() as $rule) {
-            $interfaces = $rule->interface->getValues();
-
-            if (!$rule->interfacenot->isEmpty() || count($interfaces) !== 1) {
-                // floating: empty, multiple, or inverted interface
-                $ruleCounts['floating'] = ($ruleCounts['floating'] ?? 0) + 1;
-            } else {
-                // single interface
-                $ruleCounts[$interfaces[0]] = ($ruleCounts[$interfaces[0]] ?? 0) + 1;
-            }
-        }
-        $totalRules = array_sum($ruleCounts);
-
-        // Helper to build item with label and count
-        $makeItem = fn($value, $label, $count, $type) => [
+        // Helper to build item
+        $makeItem = fn($value, $label, $type) => [
             'value' => $value,
             'label' => $label,
-            'count' => $count,
             'type' => $type
         ];
 
         // Floating
-        $result['floating']['items'][] = $makeItem('__floating', gettext('Floating'), $ruleCounts['floating'] ?? 0, 'floating');
+        $result['floating']['items'][] = $makeItem('__floating', gettext('Floating'), 'floating');
 
         // Groups + Interfaces
         foreach (Config::getInstance()->object()->interfaces->children() as $key => $intf) {
@@ -410,11 +394,11 @@ class FilterController extends FilterBaseController
             }
             $descr = !empty($intf->descr) ? (string)$intf->descr : strtoupper($key);
             $type = (string)$intf->type == 'group' ? 'group' : 'interface';
-            $result["{$type}s"]['items'][] = $makeItem($key, $descr, $ruleCounts[$key] ?? 0, $type);
+            $result["{$type}s"]['items'][] = $makeItem($key, $descr, $type);
         }
 
-        // ALL rules
-        $result['any']['items'][] = $makeItem('__any', gettext('All rules'), $totalRules, 'any');
+        // All rules
+        $result['any']['items'][] = $makeItem('__any', gettext('All rules'), 'any');
 
         foreach ($result as &$section) {
             usort($section['items'], fn($a, $b) => strcasecmp($a['label'], $b['label']));

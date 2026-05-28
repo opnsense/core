@@ -805,7 +805,7 @@
                             label: row.name,
                             id: row.used > 0 ? row.uuid : undefined,
                             'data-content': row.used > 0
-                                ? `<span><span class="label label-sm"${bgColor}>${row.used}</span> ${optVal}</span>`
+                                ? `<span>${optVal} <span class="label label-sm"${bgColor}>${row.used}</span></span>`
                                 : undefined
                         };
                     });
@@ -824,37 +824,31 @@
         // Populate interface selectpicker
         function populateInterfaceSelectpicker() {
             const currentSelection = $("#interface_select").val();
+
             return $('#interface_select').fetch_options(
                 '/api/firewall/filter/get_interface_list',
                 {},
                 function (data) {
                     for (const groupKey in data) {
                         const group = data[groupKey];
-                        group.items = group.items.map(item => {
-                            const count = item.count ?? 0;
-                            const label = (item.label || '');
-                            const subtext = group.label;
+                        const icon = group.icon || '';
 
-                            const bgClassMap = {
-                                floating: 'label-primary',
-                                group: 'label-warning',
-                                interface: 'label-info',
-                                any: 'label-primary',
-                            };
-                            const badgeClass = bgClassMap[item.type] || 'label-info';
+                        group.items = group.items.map(item => {
+                            const label = item.label || '';
 
                             return {
                                 value: item.value,
                                 label: label,
                                 'data-content': `
                                     <span>
-                                        ${count > 0 ? `<span class="label label-sm ${badgeClass}">${count}</span>` : ''}
+                                        ${icon ? `<i class="${icon}"></i>` : ''}
                                         ${label}
                                     </span>
                                 `.trim()
                             };
                         });
                     }
+
                     return data;
                 },
                 false,
@@ -873,7 +867,7 @@
                     interfaceInitialized = true;
                     pendingUrlInterface = null; // consume the hash so it is not used again
                 },
-                true  // render_html to show counts as badges
+                true  // render_html to show icons
             );
         }
 
