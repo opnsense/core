@@ -1192,7 +1192,7 @@
                     class="btn btn-default"
                     data-toggle="tooltip"
                     data-placement="bottom"
-                    title="{{ lang._('Group rules by categories') }}">
+                    title="{{ lang._('Show categories as folders') }}">
                 <i class="fa fa-fw fa-tag" aria-hidden="true"></i>
             </button>
         </div>
