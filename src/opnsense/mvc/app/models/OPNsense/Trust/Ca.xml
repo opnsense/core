@@ -4,7 +4,10 @@
     <description>Certificate authorities</description>
     <items>
         <ca type=".\CAsField">
-            <refid type="TextField"/>
+            <refid type="TextField">
+                <Mask>/^[0-9a-f]{13}$/</Mask>
+                <ValidationMessage>Must match format</ValidationMessage>
+            </refid>
             <descr type="DescriptionField">
                 <Required>Y</Required>
             </descr>

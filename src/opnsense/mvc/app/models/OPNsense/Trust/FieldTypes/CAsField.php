@@ -109,7 +109,12 @@ class CAsField extends ArrayField
                 }
             }
             $node->prv_payload = !empty((string)$node->prv) ? (string)base64_decode($node->prv) : '';
-            $refcount = count(Config::getInstance()->object()->xpath("//*[text() = '{$node->refid}']")) - 1;
+            $refcount = 0;
+            /* determine in use, but validate beforehand */
+            $refid = (string)$node->refid;
+            if (preg_match('/^[0-9a-f]{13}$/', $refid)) {
+                $refcount = count(Config::getInstance()->object()->xpath("//*[text() = '{$refid}']")) - 1;
+            }
             $node->refcount = (string)$refcount;
 
             if (!empty((string)$node->crt_payload)) {

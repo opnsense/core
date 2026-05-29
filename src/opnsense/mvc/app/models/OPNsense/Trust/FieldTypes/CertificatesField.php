@@ -181,17 +181,20 @@ class CertificatesField extends ArrayField
             } elseif (!empty((string)$node->crt_payload)) {
                 $node->action = 'manual';
             }
-            /* determine in use, but skip irrelevant sections */
-            foreach (Config::getInstance()->object()->xpath("//*[text() = '{$node->refid}']") as $xmlnode) {
-                $tmp = [];
-                do {
-                    $xmlnode = $xmlnode[0]->xpath('..');
-                    $tmp[] = $xmlnode[0]->getName();
-                } while ($xmlnode[0]->xpath('../..') != null && count($tmp) < 2);
-                $path = implode(".", array_reverse($tmp));
-                if (!empty($tmp) && !in_array($path, ['system.user', 'cert'])) {
-                    $node->in_use = '1';
-                    break;
+            /* determine in use, but validate beforehand and skip irrelevant sections */
+            $refid = (string)$node->refid;
+            if (preg_match('/^[0-9a-f]{13}$/', $refid)) {
+                foreach (Config::getInstance()->object()->xpath("//*[text() = '{$refid}']") as $xmlnode) {
+                    $tmp = [];
+                    do {
+                        $xmlnode = $xmlnode[0]->xpath('..');
+                        $tmp[] = $xmlnode[0]->getName();
+                    } while ($xmlnode[0]->xpath('../..') != null && count($tmp) < 2);
+                    $path = implode(".", array_reverse($tmp));
+                    if (!empty($tmp) && !in_array($path, ['system.user', 'cert'])) {
+                        $node->in_use = '1';
+                        break;
+                    }
                 }
             }
 
