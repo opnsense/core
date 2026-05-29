@@ -192,7 +192,8 @@ class FilterController extends FilterBaseController
         $search_clauses = [];
         $backend = new Backend();
         foreach (preg_split('/\s+/', (string)$this->request->getPost('searchPhrase', null, '')) as $token) {
-            if (Util::isIpAddress($token)) {
+            // XXX: ideally this should get its own parameter and not reuse show_all
+            if ($show_all && Util::isIpAddress($token)) {
                 $tmp = json_decode($backend->configdpRun('filter find_table_references', [$token]), true) ?? [];
                 $aliases = [$token];
                 if (is_array($tmp) && !empty($tmp['matches'])) {
