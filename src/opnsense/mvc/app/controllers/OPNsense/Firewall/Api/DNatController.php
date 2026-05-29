@@ -94,7 +94,7 @@ class DNatController extends FilterBaseController
                     'alias_meta_destination.port' => $this->getNetworks($port),
                     'alias_meta_destination.network' => $this->getNetworks($if . 'ip'),
                     'descr' => gettext('Anti-Lockout Rule'),
-                    'category' => gettext('Automatically generated rules')
+                    'is_automatic' => true,
                 ]);
             }
         }

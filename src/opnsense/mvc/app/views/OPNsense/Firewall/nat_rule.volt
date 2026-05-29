@@ -50,35 +50,80 @@
         let treeViewEnabled = localStorage.getItem(storageKey) === "1";
         $('#toggle_tree_button').toggleClass('active btn-primary', treeViewEnabled);
 
-        function dynamicResponseHandler(resp) {
-            if (!treeViewEnabled) {
-                return resp;
-            }
-
+        function dynamicResponseHandler(response) {
+            const rows = [];
             const buckets = [];
+            let automatic = null;
             let current = null;
 
-            resp.rows.forEach(r => {
-                const label = r[`%${category_key}`] || r[category_key] || "";
+            response.rows.forEach(row => {
+                const isAutomatic = row.is_automatic === true;
+
+                if (isAutomatic) {
+                    if (automatic === null) {
+                        const label = row[`%${category_key}`] ||
+                            row[category_key] ||
+                            "{{ lang._('Automatically generated rules') }}";
+
+                        automatic = {
+                            uuid             : "automaticrules",
+                            isGroup          : true,
+                            isAutomaticGroup : true,
+                            _label           : label,
+                            children         : []
+                        };
+
+                        automatic[category_key] = label;
+
+                        /*
+                        * Category buckets normally copy the first child's category metadata.
+                        * Automatically generated NAT rules (e.g anti-lockout in DNAT) do not have a category,
+                        * so provide a synthetic entry to let the category formatter
+                        * render a proper bucket label instead of an empty group row.
+                        */
+                        automatic.category_colors = row.category_colors || [{ name: label }];
+
+                        rows.push(automatic);
+                    }
+
+                    automatic.children.push(row);
+                    return;
+                }
+
+                if (!treeViewEnabled) {
+                    rows.push(row);
+                    return;
+                }
+
+                const label = row[`%${category_key}`] || row[category_key] || "";
+
+                /*
+                * Uncategorized rules stay as regular top-level rows.
+                * Only categorized rules are grouped into category buckets.
+                */
+                if (label === "") {
+                    rows.push(row);
+                    return;
+                }
 
                 if (!current || current._label !== label) {
                     current = {
-                        uuid           : `${String(r.uuid).replace(/-/g, '')}`,
+                        uuid           : `${String(row.uuid).replace(/-/g, '')}`,
                         isGroup        : true,
                         _label         : label,
                         children       : []
                     };
 
                     current[category_key] = label;
-                    current.category_colors = r.category_colors || [];
+                    current.category_colors = row.category_colors || [];
 
-                    buckets.push(current);
+                    rows.push(current);
                 }
 
-                current.children.push(r);
+                current.children.push(row);
             });
 
-            return Object.assign({}, resp, { rows: buckets });
+            return Object.assign({}, response, { rows: rows });
         }
 
         const grid = $("#{{ formGridRule['table_id'] }}").UIBootgrid({
@@ -236,20 +281,19 @@
                         const hasCategories = row[category_key] && Array.isArray(row.category_colors);
 
                         if (!hasCategories) {
-
-                            return isGroup
-                                ? `<span class="category-icon category-cell">
-                                    <i class="fa fa-fw fa-tag"></i>
-                                    <strong>{{ lang._('Uncategorized') }}</strong>
-                                    <span class="badge chip"
-                                            style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
-                                </span>`
-                                : '';
+                            return '';
                         }
 
                         const category = row.category_colors || [];
 
                         const icons = category.map(cat => {
+                            if (isGroup && row.isAutomaticGroup) {
+                                return `
+                                    <span class="category-icon" data-toggle="tooltip" title="${row[category_key]}">
+                                        <i class="fa fa-fw fa-magic text-secondary"></i>
+                                    </span>`;
+                            }
+
                             const bgColor = cat.color ? ` style="color:${cat.color};"` : '';
 
                             return `
@@ -262,8 +306,6 @@
                             ? `<span class="category-cell">
                                     <span class="category-cell-content">
                                         <strong>${icons} ${category.map(cat => cat.name).join(', ')}</strong>
-                                        <span class="badge chip"
-                                                style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
                                     </span>
                             </span>`
                             : icons;
@@ -428,7 +470,7 @@
                             label: row.name,
                             id: row.used > 0 ? row.uuid : undefined,
                             'data-content': row.used > 0
-                                ? `<span><span class="label label-sm"${bgColor}>${row.used}</span> ${optVal}</span>`
+                                ? `<span>${optVal} <span class="label label-sm"${bgColor}>${row.used}</span></span>`
                                 : undefined
                         };
                     });
@@ -456,12 +498,11 @@
             localStorage.setItem(storageKey, treeViewEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', treeViewEnabled);
             $("#{{ formGridRule['table_id'] }}").toggleClass("tree-enabled", treeViewEnabled);
-            $("#tree_expand_container").toggle(treeViewEnabled);
             grid.bootgrid("reload");
         });
 
         $("#tree_expand_container").detach().insertAfter("#tree_toggle_container");
-        $("#tree_expand_container").toggle(treeViewEnabled);
+        $("#tree_expand_container").show();
         $('#expand_tree_button').on('click', function () {
             const $table = $('#{{ formGridRule["table_id"] }}');
 
@@ -639,8 +680,8 @@
 
         <div id="tree_toggle_container" class="btn-group">
             <button id="toggle_tree_button" type="button" class="btn btn-default"
-                    data-toggle="tooltip" title="{{ lang._('Show categories in a tree') }}">
-                <i class="fa fa-fw fa-sitemap"></i> {{ lang._('Tree') }}
+                    data-toggle="tooltip" title="{{ lang._('Show categories as folders') }}">
+                <i class="fa fa-fw fa-tag" aria-hidden="true"></i>
             </button>
         </div>
 
