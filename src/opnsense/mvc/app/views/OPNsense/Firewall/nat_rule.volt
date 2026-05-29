@@ -50,80 +50,110 @@
         let treeViewEnabled = localStorage.getItem(storageKey) === "1";
         $('#toggle_tree_button').toggleClass('active btn-primary', treeViewEnabled);
 
+        const ruleTypeMap = {
+            '1': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
+            '4': { label: "{{ lang._('Interface rules') }}", icon: "fa-ethernet", tooltip: "{{ lang._('Interface rule') }}", color: "text-info" },
+            '5': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
+        };
+
+        const getRuleTypeDigit = function(row) {
+            const sortOrder = row.sort_order ? row.sort_order.toString() : "";
+            return sortOrder.charAt(0);
+        };
+
+        const getRuleType = function(row) {
+            return ruleTypeMap[getRuleTypeDigit(row)] || null;
+        };
+
+        // Lives outside the grid, so the logic of the response handler can be changed after grid initialization
         function dynamicResponseHandler(response) {
-            const rows = [];
-            const buckets = [];
-            let automatic = null;
-            let current = null;
+            const getCategoryLabel = function(row) {
+                return row["%categories"] || row.categories || "";
+            };
+
+            const makeBucket = function(label, uuid, categoryColors) {
+                return {
+                    // ensure uuid is as unique as possible for persistence handling
+                    uuid           : uuid,
+                    isGroup        : true,
+                    _label         : label,          // internal
+                    categories     : label,
+                    /*
+                    * Bucket rows reuse the category formatter.
+                    * For category buckets, this copies the first child's category metadata
+                    * so the bucket can render the same category icon/color as its rules.
+                    * For rule type buckets, a synthetic categoryColors entry is supplied.
+                    */
+                    category_colors: categoryColors,
+                    children       : []
+                };
+            };
+
+            const createBucket = function(parent, label, uuid, categoryColors) {
+                let bucket = parent.children.find(child => child.isGroup && child._label === label);
+
+                if (!bucket) {
+                    bucket = makeBucket(label, uuid, categoryColors);
+                    parent.children.push(bucket);
+                }
+
+                return bucket;
+            };
+
+            const root = { children: [] };
 
             response.rows.forEach(row => {
-                const isAutomatic = row.is_automatic === true;
-
-                if (isAutomatic) {
-                    if (automatic === null) {
-                        const label = row[`%${category_key}`] ||
-                            row[category_key] ||
-                            "{{ lang._('Automatically generated rules') }}";
-
-                        automatic = {
-                            uuid             : "automaticrules",
-                            isGroup          : true,
-                            isAutomaticGroup : true,
-                            _label           : label,
-                            children         : []
-                        };
-
-                        automatic[category_key] = label;
-
-                        /*
-                        * Category buckets normally copy the first child's category metadata.
-                        * Automatically generated NAT rules (e.g anti-lockout in DNAT) do not have a category,
-                        * so provide a synthetic entry to let the category formatter
-                        * render a proper bucket label instead of an empty group row.
-                        */
-                        automatic.category_colors = row.category_colors || [{ name: label }];
-
-                        rows.push(automatic);
-                    }
-
-                    automatic.children.push(row);
-                    return;
-                }
-
-                if (!treeViewEnabled) {
-                    rows.push(row);
-                    return;
-                }
-
-                const label = row[`%${category_key}`] || row[category_key] || "";
+                const ruleType = getRuleType(row);
+                const ruleTypeDigit = getRuleTypeDigit(row) || "other";
+                const ruleTypeLabel = ruleType.label || "{{ lang._('Other rules') }}";
+                const categoryLabel = getCategoryLabel(row);
 
                 /*
-                * Uncategorized rules stay as regular top-level rows.
-                * Only categorized rules are grouped into category buckets.
+                * The first tree level is the default view, and always based on the rule priority/type.
+                *
+                * Automatic rules
+                *   rule
+                * Interface rules
+                *   rule
                 */
-                if (label === "") {
-                    rows.push(row);
-                    return;
+                const ruleTypeBucket = createBucket(
+                    root,
+                    ruleTypeLabel,
+                    `ruletype${ruleTypeDigit}`,
+                    [{ name: ruleTypeLabel }]
+                );
+
+                if (treeViewEnabled && row.is_automatic !== true && categoryLabel !== "") {
+                    /*
+                    * When tree view is enabled, categorized non-automatic rules are grouped
+                    * one level deeper by category below their rule priority/type bucket.
+                    *
+                    * Automatic rules and uncategorized rules stay directly below their rule
+                    * priority/type bucket to avoid redundant or low-value nesting.
+                    *
+                    * Automatic rules
+                    *   rule
+                    * Interface rules
+                    *   rule
+                    *   Web (Category)
+                    *     rule
+                    *   Mail (Category)
+                    *     rule
+                    */
+                    const categoryBucket = createBucket(
+                        ruleTypeBucket,
+                        categoryLabel,
+                        `ruletype${ruleTypeDigit}category${String(categoryLabel).replace(/[^a-z0-9]/gi, '')}`,
+                        row.category_colors || []
+                    );
+
+                    categoryBucket.children.push(row);
+                } else {
+                    ruleTypeBucket.children.push(row);
                 }
-
-                if (!current || current._label !== label) {
-                    current = {
-                        uuid           : `${String(row.uuid).replace(/-/g, '')}`,
-                        isGroup        : true,
-                        _label         : label,
-                        children       : []
-                    };
-
-                    current[category_key] = label;
-                    current.category_colors = row.category_colors || [];
-
-                    rows.push(current);
-                }
-
-                current.children.push(row);
             });
 
-            return Object.assign({}, response, { rows: rows });
+            return Object.assign({}, response, { rows: root.children });
         }
 
         const grid = $("#{{ formGridRule['table_id'] }}").UIBootgrid({
@@ -278,19 +308,31 @@
                     },
                     category: function (column, row) {
                         const isGroup = row.isGroup;
-                        const hasCategories = row[category_key] && Array.isArray(row.category_colors);
+                        const hasCategories = row.categories && Array.isArray(row.category_colors);
 
+                        // Rows without category metadata render nothing in this column.
+                        // This also avoids creating a fake label for rules that
+                        // are intentionally kept directly below their rule type bucket.
                         if (!hasCategories) {
                             return '';
                         }
 
-                        const category = row.category_colors || [];
+                        const categories = row.category_colors || [];
 
-                        const icons = category.map(cat => {
-                            if (isGroup && row.isAutomaticGroup) {
+                        const icons = categories.map(cat => {
+                            /*
+                            * Top-level tree icons, e.g. automatic/floating/interface rules, are
+                            * resolved here as well because each row can only use one formatter for
+                            * this column. Rule type buckets provide a synthetic category entry
+                            * whose name matches ruleTypeMap, while real category buckets continue
+                            * to render normal category tag icons.
+                            */
+                            const ruleType = Object.values(ruleTypeMap).find(type => type.label === cat.name);
+
+                            if (isGroup && ruleType) {
                                 return `
-                                    <span class="category-icon" data-toggle="tooltip" title="${row[category_key]}">
-                                        <i class="fa fa-fw fa-magic text-secondary"></i>
+                                    <span class="category-icon" data-toggle="tooltip" title="${ruleType.tooltip}">
+                                        <i class="fa ${ruleType.icon} fa-fw ${ruleType.color}"></i>
                                     </span>`;
                             }
 
@@ -305,7 +347,7 @@
                         return isGroup
                             ? `<span class="category-cell">
                                     <span class="category-cell-content">
-                                        <strong>${icons} ${category.map(cat => cat.name).join(', ')}</strong>
+                                        <strong>${icons} ${categories.map(cat => cat.name).join(', ')}</strong>
                                     </span>
                             </span>`
                             : icons;
