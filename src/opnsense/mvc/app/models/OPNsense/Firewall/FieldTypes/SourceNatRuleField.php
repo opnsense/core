@@ -115,4 +115,19 @@ class SourceNatRuleField extends ArrayField
         $container_node->setParentModel($parentmodel);
         return $container_node;
     }
+
+    protected function actionPostLoadingEvent()
+    {
+        foreach ($this->internalChildnodes as $node) {
+            /*
+             * Source NAT style rules do not have the same priority split as firewall
+             * rules, but should still expose sort_order for tree view grouping.
+             * If automatic rules are added later, they should either be 100000 (start) or 500000 (end of ruleset).
+             */
+            $node->sort_order = sprintf("%d.0%06d", 400000, (string)$node->sequence);
+            $node->prio_group = "400000";
+        }
+
+        return parent::actionPostLoadingEvent();
+    }
 }
