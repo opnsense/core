@@ -67,41 +67,113 @@
         // read interface from URL hash once, for the first grid load
         let pendingUrlInterface = getUrlHash('interface') || null;
 
+        const ruleTypeMap = {
+            '0': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
+            '1': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
+            '2': { label: "{{ lang._('Floating rules') }}", icon: "fa-layer-group", tooltip: "{{ lang._('Floating rule') }}", color: "text-primary" },
+            '3': { label: "{{ lang._('Group rules') }}", icon: "fa-sitemap", tooltip: "{{ lang._('Group rule') }}", color: "text-warning" },
+            '4': { label: "{{ lang._('Interface rules') }}", icon: "fa-ethernet", tooltip: "{{ lang._('Interface rule') }}", color: "text-info" },
+            '5': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
+        };
+
+        const getRuleTypeDigit = function(row) {
+            const sortOrder = row.sort_order ? row.sort_order.toString() : "";
+            return sortOrder.charAt(0);
+        };
+
+        const getRuleType = function(row) {
+            return ruleTypeMap[getRuleTypeDigit(row)] || null;
+        };
+
         // Lives outside the grid, so the logic of the response handler can be changed after grid initialization
-        function dynamicResponseHandler(resp) {
-            // convert the flat rows into a tree view (if enabled)
-            if (!treeViewEnabled) {
-                return resp;
-            }
+        function dynamicResponseHandler(response) {
+            const getCategoryLabel = function(row) {
+                return row["%categories"] || row.categories || "";
+            };
 
-            const buckets = [];
-            let current = null;
+            const makeBucket = function(label, uuid, categoryColors) {
+                return {
+                    // ensure uuid is as unique as possible for persistence handling
+                    uuid           : uuid,
+                    isGroup        : true,
+                    _label         : label,          // internal
+                    categories     : label,
+                    /*
+                    * Bucket rows reuse the category formatter.
+                    * For category buckets, this copies the first child's category metadata
+                    * so the bucket can render the same category icon/color as its rules.
+                    * For rule type buckets, a synthetic categoryColors entry is supplied.
+                    */
+                    category_colors: categoryColors,
+                    children       : []
+                };
+            };
 
-            resp.rows.forEach(r => {
-                // readable label used for grouping
-                const label = (r["%categories"] || r.categories || "");
+            const createBucket = function(parent, label, uuid, categoryColors) {
+                let bucket = parent.children.find(child => child.isGroup && child._label === label);
 
-                // start a new bucket whenever the label changes
-                if (!current || current._label !== label) {
-                    current = {
-                        // ensure uuid is as unique as possible for persistence handling
-                        uuid           : `${String(r.uuid).replace(/-/g, '')}`,
-                        isGroup        : true,
-                        _label         : label,          // internal
-                        children       : []
-                    };
-
-                    // copy the category info from the first child to use as parent
-                    current.categories      = label;
-                    current.category_colors = r.category_colors || [];
-
-                    buckets.push(current);
+                if (!bucket) {
+                    bucket = makeBucket(label, uuid, categoryColors);
+                    parent.children.push(bucket);
                 }
 
-                current.children.push(r);
+                return bucket;
+            };
+
+            const root = { children: [] };
+
+            response.rows.forEach(row => {
+                const ruleType = getRuleType(row);
+                const ruleTypeDigit = getRuleTypeDigit(row) || "other";
+                const ruleTypeLabel = ruleType.label || "{{ lang._('Other rules') }}";
+                const categoryLabel = getCategoryLabel(row);
+
+                /*
+                * The first tree level is the default view, and always based on the rule priority/type.
+                *
+                * Automatic rules
+                *   rule
+                * Interface rules
+                *   rule
+                */
+                const ruleTypeBucket = createBucket(
+                    root,
+                    ruleTypeLabel,
+                    `ruletype${ruleTypeDigit}`,
+                    [{ name: ruleTypeLabel }]
+                );
+
+                if (treeViewEnabled && row.is_automatic !== true && categoryLabel !== "") {
+                    /*
+                    * When tree view is enabled, categorized non-automatic rules are grouped
+                    * one level deeper by category below their rule priority/type bucket.
+                    *
+                    * Automatic rules and uncategorized rules stay directly below their rule
+                    * priority/type bucket to avoid redundant or low-value nesting.
+                    *
+                    * Automatic rules
+                    *   rule
+                    * Interface rules
+                    *   rule
+                    *   Web (Category)
+                    *     rule
+                    *   Mail (Category)
+                    *     rule
+                    */
+                    const categoryBucket = createBucket(
+                        ruleTypeBucket,
+                        categoryLabel,
+                        `ruletype${ruleTypeDigit}category${String(categoryLabel).replace(/[^a-z0-9]/gi, '')}`,
+                        row.category_colors || []
+                    );
+
+                    categoryBucket.children.push(row);
+                } else {
+                    ruleTypeBucket.children.push(row);
+                }
             });
 
-            return Object.assign({}, resp, { rows: buckets });
+            return Object.assign({}, response, { rows: root.children });
         }
 
         $('#download_rules').click(function(e){
@@ -150,6 +222,7 @@
             options: {
                 responsive: true,
                 sorting: false,
+                rowCount: [500,20,50,100,200,1000,2000,-1],
                 initialSearchPhrase: getUrlHash('search'),
                 requestHandler: function(request){
                     // Add category selectpicker
@@ -343,26 +416,39 @@
                             return '*';
                         }
                     },
-                    // The category formatter is special as it renders differently for the bucket row
+                    // Bucket rows reuse the category column because Tabulator only renders one
+                    // formatter per cell, so both category buckets and rule type buckets are
+                    // represented here.
                     category: function (column, row) {
                         const isGroup = row.isGroup;
                         const hasCategories = row.categories && Array.isArray(row.category_colors);
 
+                        // Rows without category metadata render nothing in this column.
+                        // This also avoids creating a fake label for rules that
+                        // are intentionally kept directly below their rule type bucket.
                         if (!hasCategories) {
-
-                            return isGroup
-                                ? `<span class="category-icon category-cell">
-                                    <i class="fa fa-fw fa-tag"></i>
-                                    <strong>{{ lang._('Uncategorized') }}</strong>
-                                    <span class="badge chip"
-                                            style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
-                                </span>`
-                                : '';
+                            return '';
                         }
 
                         const categories = row.category_colors || [];
 
                         const icons = categories.map(cat => {
+                            /*
+                            * Top-level tree icons, e.g. automatic/floating/interface rules, are
+                            * resolved here as well because each row can only use one formatter for
+                            * this column. Rule type buckets provide a synthetic category entry
+                            * whose name matches ruleTypeMap, while real category buckets continue
+                            * to render normal category tag icons.
+                            */
+                            const ruleType = Object.values(ruleTypeMap).find(type => type.label === cat.name);
+
+                            if (isGroup && ruleType) {
+                                return `
+                                    <span class="category-icon" data-toggle="tooltip" title="${ruleType.tooltip}">
+                                        <i class="fa ${ruleType.icon} fa-fw ${ruleType.color}"></i>
+                                    </span>`;
+                            }
+
                             const bgColor = cat.color ? ` style="color:${cat.color};"` : '';
 
                             return `
@@ -375,8 +461,6 @@
                             ? `<span class="category-cell">
                                     <span class="category-cell-content">
                                         <strong>${icons} ${categories.map(cat => cat.name).join(', ')}</strong>
-                                        <span class="badge chip"
-                                                style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
                                     </span>
                             </span>`
                             : icons;
@@ -416,22 +500,11 @@
                         let result = "";
 
                         // Rule Type Icons (Determined by first digit of sort_order)
-                        const ruleTypeIcons = {
-                            '0': { icon: "fa-magic", tooltip: "{{ lang._('Automatic Rule') }}", color: "text-secondary" },
-                            '1': { icon: "fa-magic", tooltip: "{{ lang._('Automatic Rule') }}", color: "text-secondary" },
-                            '2': { icon: "fa-layer-group", tooltip: "{{ lang._('Floating Rule') }}", color: "text-primary" },
-                            '3': { icon: "fa-sitemap", tooltip: "{{ lang._('Group Rule') }}", color: "text-warning" },
-                            '4': { icon: "fa-ethernet", tooltip: "{{ lang._('Interface Rule') }}", color: "text-info" },
-                            '5': { icon: "fa-magic", tooltip: "{{ lang._('Automatic Rule') }}", color: "text-secondary" },
-                        };
+                        const ruleType = getRuleType(row);
 
-                        const sortOrder = row.sort_order ? row.sort_order.toString() : "";
-                        if (sortOrder.length > 0) {
-                            const typeDigit = sortOrder.charAt(0);
-                            if (ruleTypeIcons[typeDigit]) {
-                                result += `<i class="fa ${ruleTypeIcons[typeDigit].icon} fa-fw ${ruleTypeIcons[typeDigit].color}"
-                                            data-toggle="tooltip" title="${ruleTypeIcons[typeDigit].tooltip}"></i> `;
-                            }
+                        if (ruleType) {
+                            result += `<i class="fa ${ruleType.icon} fa-fw ${ruleType.color}"
+                                        data-toggle="tooltip" title="${ruleType.tooltip}"></i> `;
                         }
 
                         // Action
@@ -733,7 +806,7 @@
                             label: row.name,
                             id: row.used > 0 ? row.uuid : undefined,
                             'data-content': row.used > 0
-                                ? `<span><span class="label label-sm"${bgColor}>${row.used}</span> ${optVal}</span>`
+                                ? `<span>${optVal} <span class="label label-sm"${bgColor}>${row.used}</span></span>`
                                 : undefined
                         };
                     });
@@ -752,37 +825,31 @@
         // Populate interface selectpicker
         function populateInterfaceSelectpicker() {
             const currentSelection = $("#interface_select").val();
+
             return $('#interface_select').fetch_options(
                 '/api/firewall/filter/get_interface_list',
                 {},
                 function (data) {
                     for (const groupKey in data) {
                         const group = data[groupKey];
-                        group.items = group.items.map(item => {
-                            const count = item.count ?? 0;
-                            const label = (item.label || '');
-                            const subtext = group.label;
+                        const icon = group.icon || '';
 
-                            const bgClassMap = {
-                                floating: 'label-primary',
-                                group: 'label-warning',
-                                interface: 'label-info',
-                                any: 'label-primary',
-                            };
-                            const badgeClass = bgClassMap[item.type] || 'label-info';
+                        group.items = group.items.map(item => {
+                            const label = item.label || '';
 
                             return {
                                 value: item.value,
                                 label: label,
                                 'data-content': `
                                     <span>
-                                        ${count > 0 ? `<span class="label label-sm ${badgeClass}">${count}</span>` : ''}
+                                        ${icon ? `<i class="${icon}"></i>` : ''}
                                         ${label}
                                     </span>
                                 `.trim()
                             };
                         });
                     }
+
                     return data;
                 },
                 false,
@@ -801,7 +868,7 @@
                     interfaceInitialized = true;
                     pendingUrlInterface = null; // consume the hash so it is not used again
                 },
-                true  // render_html to show counts as badges
+                true  // render_html to show icons
             );
         }
 
@@ -840,13 +907,12 @@
             localStorage.setItem("firewall_rule_tree", treeViewEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', treeViewEnabled);
             $("#{{formGridFilterRule['table_id']}}").toggleClass("tree-enabled", treeViewEnabled);
-            $("#tree_expand_container").toggle(treeViewEnabled);
             grid.bootgrid("reload");
         });
 
-        // Visible only when tree view is enabled
         $("#tree_expand_container").detach().insertAfter("#tree_toggle_container");
-        $("#tree_expand_container").toggle(treeViewEnabled);
+        $("#tree_expand_container").show();
+
         $('#expand_tree_button').on('click', function () {
             const $table = $('#{{ formGridFilterRule["table_id"] }}');
 
@@ -1116,10 +1182,8 @@
                     class="btn btn-default"
                     data-toggle="tooltip"
                     data-placement="bottom"
-                    data-delay='{"show": 1000}'
-                    title="{{ lang._('Show all rules and statistics') }}">
+                    title="{{ lang._('Show rule statistics') }}">
                 <i class="fa fa-fw fa-eye" aria-hidden="true"></i>
-                {{ lang._('Inspect') }}
             </button>
             <input id="all_rules_checkbox" type="checkbox" style="display: none;">
         </div>
@@ -1129,10 +1193,8 @@
                     class="btn btn-default"
                     data-toggle="tooltip"
                     data-placement="bottom"
-                    data-delay='{"show": 1000}'
-                    title="{{ lang._('Show all categories in a tree') }}">
-                <i class="fa fa-fw fa-sitemap" aria-hidden="true"></i>
-                {{ lang._('Tree') }}
+                    title="{{ lang._('Show categories as folders') }}">
+                <i class="fa fa-fw fa-tag" aria-hidden="true"></i>
             </button>
         </div>
         <div id="tree_expand_container" class="btn-group">
@@ -1141,7 +1203,6 @@
                     class="btn btn-default"
                     data-toggle="tooltip"
                     data-placement="bottom"
-                    data-delay='{"show": 1000}'
                     title="{{ lang._('Expand/Collapse all') }}">
                 <i class="fa fa-fw fa-angle-double-down" aria-hidden="true"></i>
             </button>

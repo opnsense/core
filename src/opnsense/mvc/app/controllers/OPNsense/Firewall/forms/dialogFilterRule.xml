@@ -14,6 +14,7 @@
             <formatter>rowtoggle</formatter>
             <sequence>5</sequence>
             <align>center</align>
+            <selectable>false</selectable>
         </grid_view>
     </field>
     <field>
@@ -48,7 +49,8 @@
         <grid_view>
             <formatter>category</formatter>
             <sequence>1</sequence>
-            <width>80</width>
+            <width>65</width>
+            <selectable>false</selectable>
         </grid_view>
     </field>
     <field>
@@ -153,6 +155,7 @@
         <grid_view>
             <formatter>any</formatter>
             <sequence>35</sequence>
+            <width>80</width>
         </grid_view>
     </field>
     <field>
@@ -162,6 +165,7 @@
         <grid_view>
             <formatter>any</formatter>
             <sequence>40</sequence>
+            <width>80</width>
         </grid_view>
     </field>
     <field>

@@ -93,7 +93,7 @@ class FilterController extends FilterBaseController
             // interface param may be empty
             $interfaces = array_filter(explode(',', (string)$this->request->get('interface')), 'strlen');
 
-            if ($show_all && !empty($interfaces)) {
+            if (!empty($interfaces)) {
                 /* add groups which contain the selected interface when looking at full impact */
                 foreach ((new Group())->ifgroupentry->iterateItems() as $groupItem) {
                     if (array_intersect($interfaces, $groupItem->members->getValues())) {
@@ -125,15 +125,15 @@ class FilterController extends FilterBaseController
             $rule_stats = [];
         }
 
-        $filter_funct_rs = function (&$record) use ($categories, $interfaces, $rule_stats, $show_all) {
+        $filter_funct_rs = function (&$record) use ($categories, $interfaces, $rule_stats) {
             /* Filter criteria */
             $r_categories = !empty($record['categories']) ? array_map('trim', explode(',', $record['categories'])) : [];
             $is_cat = empty($categories) || array_intersect($r_categories, $categories);
             $rule_interfaces = array_filter(explode(',', $record['interface'] ?? ''));
-            if ($interfaces === null || (empty($record['interface']) && $show_all)) {
+            if ($interfaces === null || (empty($record['interface']))) {
                 /* ALL interfaces always matches, when inspecting, also show rules that apply to all */
                 $is_if = true; // ALL interfaces or floating always matches
-            } elseif (!empty($record['interfacenot']) && $show_all) {
+            } elseif (!empty($record['interfacenot'])) {
                 /* Inverted interface, show where applicable when inspecting */
                 $is_if = !array_intersect($rule_interfaces, $interfaces ?? []);
             } elseif (empty($interfaces) && (count($rule_interfaces) != 1 || !empty($record['interfacenot']))) {
@@ -142,7 +142,7 @@ class FilterController extends FilterBaseController
             } else {
                 /* Interfaces overlap, when inspecting all overlaps are relevant, otherwise only exact matches */
                 $is_if = array_intersect($rule_interfaces, $interfaces ?? []) && (
-                    count($rule_interfaces) == 1 || $show_all
+                    count($rule_interfaces) == 1
                 ) && empty($record['interfacenot']);
             }
 
@@ -170,15 +170,8 @@ class FilterController extends FilterBaseController
                 $record = array_merge($record, $rule_stats[$record['uuid']]);
             }
 
-            // Tag legacy rules as "Automatic generated rules" if they have an empty category
-            if (!empty($record['is_automatic'])) {
-                $label = gettext('Automatically generated rules');
-                $record['categories'] = $label; // Grouping key for tree view
-                $record['category_colors'] = [['name' => $label]]; // Category formatter metadata
-            } else {
-                /* frontend can format categories with colors */
-                $record['category_colors'] = $this->getCategoryColors($r_categories);
-            }
+            /* frontend can format categories with colors */
+            $record['category_colors'] = $this->getCategoryColors($r_categories);
 
             /* frontend can format aliases with an alias icon */
             foreach (['source_net','source_port','destination_net','destination_port'] as $field) {
@@ -190,17 +183,16 @@ class FilterController extends FilterBaseController
             return true;
         };
 
-        /* only fetch internal and legacy rules when 'show_all' is set */
-        if ($show_all) {
-            $allrules = array_merge(
-                $allrules,
-                json_decode((new Backend())->configdRun('filter list non_mvc_rules'), true) ?? []
-            );
-        }
+        /* always fetch internal and legacy rules, automatic rules have their own category that is always visible */
+        $allrules = array_merge(
+            $allrules,
+            json_decode((new Backend())->configdRun('filter list non_mvc_rules'), true) ?? []
+        );
 
         $search_clauses = [];
         $backend = new Backend();
         foreach (preg_split('/\s+/', (string)$this->request->getPost('searchPhrase', null, '')) as $token) {
+            // XXX: ideally this should get its own parameter and not reuse show_all
             if ($show_all && Util::isIpAddress($token)) {
                 $tmp = json_decode($backend->configdpRun('filter find_table_references', [$token]), true) ?? [];
                 $aliases = [$token];
@@ -385,31 +377,15 @@ class FilterController extends FilterBaseController
             ],
         ];
 
-        // Count rules per interface
-        $ruleCounts = [];
-        foreach ((new Filter())->rules->rule->iterateItems() as $rule) {
-            $interfaces = $rule->interface->getValues();
-
-            if (!$rule->interfacenot->isEmpty() || count($interfaces) !== 1) {
-                // floating: empty, multiple, or inverted interface
-                $ruleCounts['floating'] = ($ruleCounts['floating'] ?? 0) + 1;
-            } else {
-                // single interface
-                $ruleCounts[$interfaces[0]] = ($ruleCounts[$interfaces[0]] ?? 0) + 1;
-            }
-        }
-        $totalRules = array_sum($ruleCounts);
-
-        // Helper to build item with label and count
-        $makeItem = fn($value, $label, $count, $type) => [
+        // Helper to build item
+        $makeItem = fn($value, $label, $type) => [
             'value' => $value,
             'label' => $label,
-            'count' => $count,
             'type' => $type
         ];
 
         // Floating
-        $result['floating']['items'][] = $makeItem('__floating', gettext('Floating'), $ruleCounts['floating'] ?? 0, 'floating');
+        $result['floating']['items'][] = $makeItem('__floating', gettext('Floating'), 'floating');
 
         // Groups + Interfaces
         foreach (Config::getInstance()->object()->interfaces->children() as $key => $intf) {
@@ -419,11 +395,11 @@ class FilterController extends FilterBaseController
             }
             $descr = !empty($intf->descr) ? (string)$intf->descr : strtoupper($key);
             $type = (string)$intf->type == 'group' ? 'group' : 'interface';
-            $result["{$type}s"]['items'][] = $makeItem($key, $descr, $ruleCounts[$key] ?? 0, $type);
+            $result["{$type}s"]['items'][] = $makeItem($key, $descr, $type);
         }
 
-        // ALL rules
-        $result['any']['items'][] = $makeItem('__any', gettext('All rules'), $totalRules, 'any');
+        // All rules
+        $result['any']['items'][] = $makeItem('__any', gettext('All rules'), 'any');
 
         foreach ($result as &$section) {
             usort($section['items'], fn($a, $b) => strcasecmp($a['label'], $b['label']));
