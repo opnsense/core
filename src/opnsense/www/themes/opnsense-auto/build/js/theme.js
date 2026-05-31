@@ -1,28 +1,43 @@
 (function() {
-    function themeSwitcher(){
-        let theme_name = 'opnsense';
-        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-            theme_name = 'opnsense-dark';
-        }
+    function getThemeName() {
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'opnsense-dark' : 'opnsense';
+    }
+
+    function switchLinks(theme_name) {
         let links = document.getElementsByTagName('link');
-        let imgs = document.getElementsByTagName('img');
-        for (let i=0; i < links.length; i++) {
+        for (let i = 0; i < links.length; i++) {
             if (links[i].href && links[i].href.indexOf('/ui/themes/') !== -1) {
                 links[i].href = links[i].href.replace(/\/ui\/themes\/[^\/]+\//, '/ui/themes/' + theme_name + '/');
             }
         }
+    }
 
-        for (let i=0; i < imgs.length; i++) {
+    function switchImages(theme_name) {
+        let imgs = document.getElementsByTagName('img');
+        for (let i = 0; i < imgs.length; i++) {
             if (imgs[i].src && imgs[i].src.indexOf('/ui/themes/') !== -1) {
                 imgs[i].src = imgs[i].src.replace(/\/ui\/themes\/[^\/]+\//, '/ui/themes/' + theme_name + '/');
             }
         }
-        /* D3 needs a resize event, but it likely doesn't harm to fire one in all cases after changing references */
+    }
+
+    function themeSwitcher() {
+        let theme_name = getThemeName();
+        switchLinks(theme_name);
+        switchImages(theme_name);
         window.dispatchEvent(new Event('resize'));
     }
 
     if (window.matchMedia) {
-        document.addEventListener('DOMContentLoaded',themeSwitcher);
+        switchLinks(getThemeName());
+
+        document.addEventListener('DOMContentLoaded', function() {
+            let theme_name = getThemeName();
+            switchLinks(theme_name);
+            switchImages(theme_name);
+            window.dispatchEvent(new Event('resize'));
+        });
+
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', themeSwitcher);
     }
 })();
