@@ -161,6 +161,11 @@ function setFormData(parent,data) {
                                 let opt = $("<option>").val(htmlDecode(node[keypart][i].key)).text(
                                     htmlDecode(node[keypart][i].value)
                                 );
+                                if (node[keypart][i].data !== undefined) {
+                                    $.each(node[keypart][i].data, function(data_idx, data_content) {
+                                        opt.attr('data-'+data_idx, data_content);
+                                    });
+                                }
                                 if (String(node[keypart][i].selected) !== "0") {
                                     opt.attr('selected', 'selected');
                                 }
@@ -174,9 +179,14 @@ function setFormData(parent,data) {
                             // default "dictionary" type select items
                             // (eg node[keypart]['item'] = {selected: 0, value: 'my item'})
                             $.each(node[keypart],function(indxItem, keyItem){
-                                let opt = $("<option>").val(htmlDecode(indxItem)).text(htmlDecode(keyItem["value"]));
+                                let opt = $("<option>").val(htmlDecode(indxItem)).text(htmlDecode(keyItem.value));
+                                if (keyItem.data !== undefined) {
+                                    $.each(keyItem.data, function(data_idx, data_content) {
+                                        opt.attr('data-'+data_idx, data_content);
+                                    });
+                                }
                                 let optgroup = keyItem.optgroup ?? '';
-                                if (String(keyItem["selected"]) !== "0") {
+                                if (String(keyItem.selected) !== "0") {
                                     opt.attr('selected', 'selected');
                                 }
                                 if (optgroups[optgroup] === undefined) {
