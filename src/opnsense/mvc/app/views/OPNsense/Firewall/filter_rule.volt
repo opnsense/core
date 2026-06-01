@@ -68,12 +68,12 @@
         let pendingUrlInterface = getUrlHash('interface') || null;
 
         const ruleTypeMap = {
-            '0': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
-            '1': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
-            '2': { label: "{{ lang._('Floating rules') }}", icon: "fa-layer-group", tooltip: "{{ lang._('Floating rule') }}", color: "text-primary" },
-            '3': { label: "{{ lang._('Group rules') }}", icon: "fa-sitemap", tooltip: "{{ lang._('Group rule') }}", color: "text-warning" },
-            '4': { label: "{{ lang._('Interface rules') }}", icon: "fa-ethernet", tooltip: "{{ lang._('Interface rule') }}", color: "text-info" },
-            '5': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
+            '0': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary", groupType: null },
+            '1': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary", groupType: null },
+            '2': { label: "{{ lang._('Floating rules') }}", icon: "fa-layer-group", tooltip: "{{ lang._('Floating rule') }}", color: "text-primary", groupType: "floating" },
+            '3': { label: "{{ lang._('Group rules') }}", icon: "fa-sitemap", tooltip: "{{ lang._('Group rule') }}", color: "text-warning", groupType: "groups" },
+            '4': { label: "{{ lang._('Interface rules') }}", icon: "fa-ethernet", tooltip: "{{ lang._('Interface rule') }}", color: "text-info", groupType: "interfaces" },
+            '5': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary", groupType: null },
         };
 
         // XXX: The "prio_group.sequence" combination in "sort_order" (300000.0000010) is not always static, e.g. in group rules it could also be (300010.0000010).
@@ -93,29 +93,27 @@
                 return row["%categories"] || row.categories || "";
             };
 
-            const makeBucket = function(label, uuid, categoryColors) {
-                return {
-                    // ensure uuid is as unique as possible for persistence handling
-                    uuid           : uuid,
-                    isGroup        : true,
-                    _label         : label,          // internal
-                    categories     : label,
-                    /*
-                    * Bucket rows reuse the category formatter.
-                    * For category buckets, this copies the first child's category metadata
-                    * so the bucket can render the same category icon/color as its rules.
-                    * For rule type buckets, a synthetic categoryColors entry is supplied.
-                    */
-                    category_colors: categoryColors,
-                    children       : []
-                };
-            };
-
-            const createBucket = function(parent, label, uuid, categoryColors) {
+            const createBucket = function(parent, label, uuid, categoryColors, groupType = null, persistence=true) {
                 let bucket = parent.children.find(child => child.isGroup && child._label === label);
 
                 if (!bucket) {
-                    bucket = makeBucket(label, uuid, categoryColors);
+                    bucket = {
+                        // ensure uuid is as unique as possible for persistence handling
+                        uuid           : uuid,
+                        isGroup        : true,
+                        _label         : label,          // internal
+                        categories     : label,
+                        _persistence   : persistence,    // internal
+                        _groupType     : groupType,      // internal
+                        /*
+                        * Bucket rows reuse the category formatter.
+                        * For category buckets, this copies the first child's category metadata
+                        * so the bucket can render the same category icon/color as its rules.
+                        * For rule type buckets, a synthetic categoryColors entry is supplied.
+                        */
+                        category_colors: categoryColors,
+                        children       : []
+                    };
                     parent.children.push(bucket);
                 }
 
@@ -142,7 +140,9 @@
                     root,
                     ruleTypeLabel,
                     `ruletype${ruleTypeDigit}`,
-                    [{ name: ruleTypeLabel }]
+                    [{ name: ruleTypeLabel }],
+                    ruleType.groupType,
+                    false,
                 );
 
                 if (treeViewEnabled && row.is_automatic !== true && categoryLabel !== "") {
@@ -196,6 +196,32 @@
                 dataTree              : true,
                 dataTreeChildField    : "children",
                 dataTreeElementColumn : "categories",
+                dataTreeStartExpanded : function(row, level) {
+                    const data = row.getData();
+                    if (data._persistence) {
+                        // expansion state determined by user interaction
+                        return false;
+                    }
+
+                    // find group by interface selection value
+                    // note that "group" does not refer to interface groups here,
+                    // but rather the interface selectpicker groups: "floating", "groups", "interfaces"
+                    const interfaceSelection = $("#interface_select").val();
+                    const groupData = $("#interface_select").data();
+                    let found = null;
+                    for (const [groupName, group] of Object.entries(groupData.store)) {
+                        if (group.items?.some(item => item.value === interfaceSelection)) {
+                            found = groupName;
+                            break;
+                        }
+                    }
+
+                    if (found === data._groupType || found === "any") {
+                        return true;
+                    }
+
+                    return false;
+                },
                 rowFormatter: function(row) {
                     const data = row.getData();
                     const $element = $(row.getElement());
@@ -854,7 +880,7 @@
 
                     return data;
                 },
-                false,
+                true,
                 function (data) {  // post_callback, apply the URL hash logic
                     const $select = $('#interface_select');
                     const interfaceCandidate = (!interfaceInitialized && pendingUrlInterface)
