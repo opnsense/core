@@ -207,27 +207,36 @@ class StatusBanner {
     }
 
     update(status) {
+        let bannerSubject = null;
+
         for (let [name, subject] of Object.entries(status.subsystems)) {
             if (subject.status == "OK")
                 continue;
 
             if (subject.isBanner) {
-                if (!this.bannerActive) {
-                    $('.page-content-main > .container-fluid > .row').prepend($(`
-                        <div class="container-fluid">
-                            <div id="notification-banner" class="alert ${this.parseStatusBanner(subject.status)}"
-                                style="padding: 10px; text-align: center;">
-                                ${subject.message}
-                            </div>
-                        </div>
-                    `));
-                    this.bannerActive = true;
-                    break;
-                } else {
-                    $('#notification-banner').text(subject.message);
-                    $('#notification-banner').removeClass().addClass(`alert ${this.parseStatusBanner(subject.status)}`);
-                }
+                bannerSubject = subject;
+                break;
             }
+        }
+
+        if (bannerSubject) {
+            if (!this.bannerActive) {
+                $('.page-content-main > .container-fluid > .row').prepend($(`
+                    <div id="notification-banner-container" class="container-fluid">
+                        <div id="notification-banner" class="alert ${this.parseStatusBanner(bannerSubject.status)}"
+                            style="padding: 10px; text-align: center;">
+                            ${bannerSubject.message}
+                        </div>
+                    </div>
+                `));
+                this.bannerActive = true;
+            } else {
+                $('#notification-banner').text(bannerSubject.message);
+                $('#notification-banner').removeClass().addClass(`alert ${this.parseStatusBanner(bannerSubject.status)}`);
+            }
+        } else if (this.bannerActive) {
+            $('#notification-banner-container').remove();
+            this.bannerActive = false;
         }
     }
 
