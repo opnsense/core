@@ -110,7 +110,7 @@ export default class Certificates extends BaseTableWidget {
                 const row = `
                     <div>
                         <i class="${iconClass} ${colorClass} certificate-tooltip" style="cursor: pointer;"
-                            data-tooltip="${type}-${item.descr}" title="${statusText}">
+                            data-toggle="tooltip" title="${statusText}">
                         </i>
                         &nbsp;
                         <span>${descrContent}</span>
