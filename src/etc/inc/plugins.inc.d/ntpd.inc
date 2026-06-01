@@ -91,34 +91,33 @@ function ntpd_configure()
     ];
 }
 
-function ntpd_configure_gps($serialport)
+function ntpd_configure_gps($port)
 {
     global $config;
-    $gps_device = '/dev/gps0';
-    $serialport = '/dev/' . $serialport;
 
-    if (!file_exists($serialport)) {
+    $gps_device = '/dev/gps0';
+    $serialport = "/dev/{$port}";
+
+    @unlink($gps_device);
+
+    if (empty($port) || !preg_match('/^cua[a-z0-9.,{}]+$/i', $port)) {
+        return false;
+    } elseif (!file_exists($serialport) || filetype($serialport) != 'char') {
         return false;
     }
 
-    // Create symlink that ntpd requires
-    @unlink($gps_device);
     symlink($serialport, $gps_device);
 
-    /* Send the following to the GPS port to initialize the GPS */
-    if (isset($config['ntpd']['gps'])) {
-        $gps_init = base64_decode($config['ntpd']['gps']['initcmd']);
-    } else {
-        $gps_init = base64_decode(
-            'JFBVQlgsNDAsR1NWLDAsMCwwLDAqNTkNCiRQVUJYLDQwLEdMTCwwLDAsMC' .
-            'wwKjVDDQokUFVCWCw0MCxaREEsMCwwLDAsMCo0NA0KJFBVQlgsNDAsVlRH' .
-            'LDAsMCwwLDAqNUUNCiRQVUJYLDQwLEdTViwwLDAsMCwwKjU5DQokUFVCWC' .
-            'w0MCxHU0EsMCwwLDAsMCo0RQ0KJFBVQlgsNDAsR0dBLDAsMCwwLDANCiRQ' .
-            'VUJYLDQwLFRYVCwwLDAsMCwwDQokUFVCWCw0MCxSTUMsMCwwLDAsMCo0Ng' .
-            '0KJFBVQlgsNDEsMSwwMDA3LDAwMDMsNDgwMCwwDQokUFVCWCw0MCxaREEs' .
-            'MSwxLDEsMQ=='
-        );
-    }
+    $gps_init = base64_decode(
+        $config['ntpd']['gps']['initcmd'] ??
+        'JFBVQlgsNDAsR1NWLDAsMCwwLDAqNTkNCiRQVUJYLDQwLEdMTCwwLDAsMC' .
+        'wwKjVDDQokUFVCWCw0MCxaREEsMCwwLDAsMCo0NA0KJFBVQlgsNDAsVlRH' .
+        'LDAsMCwwLDAqNUUNCiRQVUJYLDQwLEdTViwwLDAsMCwwKjU5DQokUFVCWC' .
+        'w0MCxHU0EsMCwwLDAsMCo0RQ0KJFBVQlgsNDAsR0dBLDAsMCwwLDANCiRQ' .
+        'VUJYLDQwLFRYVCwwLDAsMCwwDQokUFVCWCw0MCxSTUMsMCwwLDAsMCo0Ng' .
+        '0KJFBVQlgsNDEsMSwwMDA3LDAwMDMsNDgwMCwwDQokUFVCWCw0MCxaREEs' .
+        'MSwxLDEsMQ=='
+    );
 
     file_put_contents($serialport, $gps_init);
 
@@ -158,11 +157,13 @@ function ntpd_configure_pps($port)
     $serialport = "/dev/{$port}";
 
     @unlink($pps_device);
-    if (empty($port)) {
+
+    if (empty($port) || !preg_match('/^cua[a-z0-9.,{}]+$/i', $port)) {
         return false;
-    } elseif (!file_exists($serialport)) {
+    } elseif (!file_exists($serialport) || filetype($serialport) != 'char') {
         return false;
     }
+
     @symlink($serialport, $pps_device);
 
     return true;
@@ -212,8 +213,7 @@ function ntpd_configure_do($verbose = false)
     }
     $ntpcfg .= "\n";
 
-    /* Add PPS configuration */
-    if (!empty($config['ntpd']['pps']) && ntpd_configure_pps($config['ntpd']['pps']['port'])) {
+    if (ntpd_configure_pps($config['ntpd']['pps']['port'] ?? '')) {
         $ntpcfg .= "\n";
         $ntpcfg .= "# PPS Setup\n";
         $ntpcfg .= 'server 127.127.22.0';
@@ -250,14 +250,8 @@ function ntpd_configure_do($verbose = false)
         }
         $ntpcfg .= "\n";
     }
-    /* End PPS configuration */
 
-    /* Add GPS configuration */
-    if (
-        isset($config['ntpd']['gps']['port'])
-        && file_exists('/dev/' . $config['ntpd']['gps']['port'])
-        && ntpd_configure_gps($config['ntpd']['gps']['port'])
-    ) {
+    if (ntpd_configure_gps($config['ntpd']['gps']['port'] ?? '')) {
         $ntpcfg .= "\n";
         $ntpcfg .= "# GPS Setup\n";
         $ntpcfg .= 'server 127.127.20.0 mode ';
@@ -321,7 +315,6 @@ function ntpd_configure_do($verbose = false)
         }
         $ntpcfg .= "\n";
     }
-    /* End GPS configuration */
 
     $noselect = isset($config['ntpd']['noselect']) ? explode(' ', $config['ntpd']['noselect']) : [];
     $prefer = isset($config['ntpd']['prefer']) ? explode(' ', $config['ntpd']['prefer']) : [];
