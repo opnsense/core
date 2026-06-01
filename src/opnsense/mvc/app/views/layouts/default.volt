@@ -341,6 +341,9 @@
             searchColumns: "{{ lang._('Search columns') }}",
             expand: "{{ lang._('Click to expand/collapse cell') }}"
         });
+
+        $.fn.selectpicker.defaults = $.fn.selectpicker.defaults || {};
+        $.extend($.fn.selectpicker.defaults, {noneSelectedText: '{{ lang._('Nothing selected') }}'});
     </script>
 
   </body>
