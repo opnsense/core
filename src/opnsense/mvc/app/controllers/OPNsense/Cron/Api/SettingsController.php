@@ -29,6 +29,8 @@
 namespace OPNsense\Cron\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\UserException;
+use OPNsense\Core\Backend;
 
 /**
  * Class SettingsController Handles settings related API actions for the Cron
@@ -120,11 +122,20 @@ class SettingsController extends ApiMutableModelControllerBase
     {
         if ($uuid != null) {
             $node = $this->getModel()->getNodeByReference('jobs.job.' . $uuid);
-            if ($node->origin == "cron") {
-                return $this->delBase("jobs.job", $uuid);
+            $may_delete = false;
+            if ($node->origin == 'cron') {
+                $may_delete = true;
+            } else {
+                $result = trim((new Backend())->configdpRun('configd lookup', [$node->command]));
+                $may_delete = $result !== 'OK';
+            }
+            if ($may_delete) {
+                return $this->delBase('jobs.job', $uuid);
+            } else {
+                throw new UserException(gettext('Cannot delete this automatically registered cron job.'));
             }
         }
-        return array("result" => "failed");
+        return ['result' => 'failed'];
     }
 
     /**
