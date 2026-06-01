@@ -179,6 +179,6 @@ class DNatController extends FilterBaseController
 
     public function uploadRulesAction()
     {
-        return $this->downloadRulesBase('rule', ['sort_order', 'prio_group']);
+        return $this->uploadRulesBase('rule', ['sort_order', 'prio_group']);
     }
 }
