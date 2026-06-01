@@ -1030,4 +1030,3 @@
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/unbound/service/reconfigure_general', 'data_service_widget': 'unbound', 'data_exclude_scope': 'query_overview_tab,query_details_tab'}) }}
 <button id="reset-dns" class="btn btn-default __mr" style="display: none;">{{ lang._('Reset DNS Data') }}</button>
-

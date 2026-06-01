@@ -99,7 +99,7 @@ class GroupController extends ApiMutableModelControllerBase
                     throw new UserException(sprintf(gettext("Not allowed to delete system group %s"), $node->name));
                 }
                 if (!empty($node)) {
-                    $groupnames[]= (string)$node->name;
+                    $groupnames[] = (string)$node->name;
                 }
             }
         }
