@@ -193,7 +193,10 @@ class ControllerBase extends ControllerRoot
                 case "help":
                 case "hint":
                 case "label":
-                    $result[$key] = gettext((string)$node);
+                    $text = (string)$node;
+                    if (strlen($text)) {
+                        $result[$key] = gettext($text);
+                    }
                     break;
                 default:
                     // default behavior, copy in value as key/value data
