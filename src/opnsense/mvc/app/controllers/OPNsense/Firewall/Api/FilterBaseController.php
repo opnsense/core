@@ -454,4 +454,110 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
 
         return ['status' => 'ok'];
     }
+
+    /**
+     * Export a rule collection as CSV.
+     *
+     * @param string $node_reference: Model node reference to export, e.g. "rules.rule"
+     * @param array $ignore_fields: List of fields to omit from the exported CSV, e.g. "sort_order" as its a volatile field
+     * @param array $alias_fields: List of fields whose stored value is an alias UUID
+     *                             but should be exported as the alias name instead, e.g. "overload" table
+     * @return void
+     */
+    protected function downloadRulesBase($node_reference, array $ignore_fields = [], array $alias_fields = [])
+    {
+        if (!$this->request->isGet()) {
+            return;
+        }
+
+        /* categories have unique names, export names instead of ids so we can easily map them on other targets */
+        $categories = [];
+        foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
+            $categories[$key] = $category->name->getValue();
+        }
+
+        $aliases = [];
+        if (!empty($alias_fields)) {
+            foreach ((new Alias())->aliases->alias->iterateItems() as $key => $alias) {
+                $aliases[$key] = $alias->name->getValue();
+            }
+        }
+
+        $node = $this->getModel();
+        foreach (explode('.', $node_reference) as $ref) {
+            $node = $node->$ref;
+        }
+
+        $this->exportCsv($node->asRecordSet(
+            false,
+            $ignore_fields,
+            function ($node, $record) use ($categories, $aliases, $alias_fields) {
+                if (!empty($record['categories'])) {
+                    $cats = [];
+                    foreach (explode(',', $record['categories']) as $key) {
+                        if (isset($categories[$key])) {
+                            $cats[] = $categories[$key];
+                        }
+                    }
+                    $record['categories'] = implode(',', $cats);
+                }
+
+                foreach ($alias_fields as $field) {
+                    if (!empty($record[$field]) && isset($aliases[$record[$field]])) {
+                        $record[$field] = $aliases[$record[$field]];
+                    }
+                }
+
+                return array_merge(['@uuid' => $node->getAttribute('uuid')], $record);
+            }
+        ));
+    }
+
+    protected function uploadRulesBase($node_reference, array $ignored_fields = [], array $alias_fields = [])
+    {
+        if (!$this->request->isPost() || !$this->request->hasPost('payload')) {
+            return ['status' => 'failed'];
+        }
+
+        /* categories have unique names, need to map them to uuids */
+        $categories = [];
+        foreach ((new Category())->categories->category->iterateItems() as $key => $category) {
+            $categories[$category->name->getValue()] = $key;
+        }
+
+        $aliases = [];
+        if (!empty($alias_fields)) {
+            foreach ((new Alias())->aliases->alias->iterateItems() as $key => $alias) {
+                $aliases[$alias->name->getValue()] = $key;
+            }
+        }
+
+        return $this->importCsv(
+            $node_reference,
+            $this->request->getPost('payload'),
+            ['@uuid'],
+            function (&$record) use ($categories, $aliases, $alias_fields, $ignored_fields) {
+                if (!empty($record['categories'])) {
+                    /* only map what we know, ignore the rest */
+                    $cats = [];
+                    foreach (explode(',', $record['categories']) as $key) {
+                        if (isset($categories[$key])) {
+                            $cats[] = $categories[$key];
+                        }
+                    }
+                    $record['categories'] = implode(',', $cats);
+                }
+
+                foreach ($alias_fields as $field) {
+                    if (!empty($record[$field]) && isset($aliases[$record[$field]])) {
+                        $record[$field] = $aliases[$record[$field]];
+                    }
+                }
+
+                foreach ($ignored_fields as $field) {
+                    unset($record[$field]);
+                }
+            }
+        );
+    }
 }
