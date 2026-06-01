@@ -70,22 +70,18 @@ foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($model_dir
                 $version_post = $mdl->getVersion();
                 if ($version_pre != $version_post) {
                     if ($mig_performed) {
-                        echo "Migrated " .  $mdl_class_info->getName() .
-                            " from " . $version_pre .
-                            " to " . $version_post . "\n";
+                        echo "Migrated {$mdl_class_info->getName()} from {$version_pre} to {$version_post}\n";
                         $executed_migration = true;
                     } else {
-                        echo "*** {$mdl_class_info->getName()} migration failed from {$version_pre} to {$version_post}, check log for details\n";
+                        echo "Failed {$mdl_class_info->getName()} from {$version_pre} to {$version_post}\n";
                     }
                 } elseif (!empty($version_post)) {
                     if ($mig_performed) {
-                        echo "Migrated " .  $mdl_class_info->getName() . "\n";
+                        echo "Migrated {$mdl_class_info->getName()} to {$version_post}\n";
                         $executed_migration = true;
                     }
-                    /* only relevant for debugging: */
-                    //echo "Keep version " . $mdl_class_info->getName() . " (" . $version_post . ")\n";
                 } else {
-                    echo "Keep unversioned " . $mdl_class_info->getName() . "\n";
+                    echo "Left {$mdl_class_info->getName()} as unversioned.\n";
                 }
             }
         } catch (\ReflectionException $e) {
