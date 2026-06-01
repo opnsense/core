@@ -408,6 +408,7 @@ class FilterController extends FilterBaseController
         return $result;
     }
 
+    // XXX: as shaper1/2 don't have functional keys, we can only export uuid's here
     public function downloadRulesAction()
     {
         return $this->downloadRulesBase('rules.rule', ['sort_order', 'prio_group'], ['overload']);
