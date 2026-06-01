@@ -863,7 +863,7 @@ $( document ).ready(function() {
                       <td class="view-stats" id="<?=$rule->getLabel();?>_packets"><?= gettext('N/A') ?></td>
                       <td class="view-stats" id="<?=$rule->getLabel();?>_bytes"><?= gettext('N/A') ?></td>
                       <td class="rule-description">
-                        <?=$rule->getDescr();?>
+                        <?=html_safe($rule->getDescr());?>
                         <div class="collapse rule_md5_hash">
                             <small><?=$filterent['label'];?></small>
                         </div>
