@@ -51,18 +51,13 @@
         $('#toggle_tree_button').toggleClass('active btn-primary', treeViewEnabled);
 
         const ruleTypeMap = {
-            '1': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
-            '4': { label: "{{ lang._('Interface rules') }}", icon: "fa-ethernet", tooltip: "{{ lang._('Interface rule') }}", color: "text-info" },
-            '5': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
-        };
-
-        const getRuleTypeDigit = function(row) {
-            const sortOrder = row.sort_order ? row.sort_order.toString() : "";
-            return sortOrder.charAt(0);
+            '100000': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
+            '400000': { label: "{{ lang._('Interface rules') }}", icon: "fa-ethernet", tooltip: "{{ lang._('Interface rule') }}", color: "text-info" },
+            '500000': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
         };
 
         const getRuleType = function(row) {
-            return ruleTypeMap[getRuleTypeDigit(row)] || null;
+            return ruleTypeMap[row.prio_group] || null;
         };
 
         // Lives outside the grid, so the logic of the response handler can be changed after grid initialization
@@ -104,8 +99,8 @@
 
             response.rows.forEach(row => {
                 const ruleType = getRuleType(row);
-                const ruleTypeDigit = getRuleTypeDigit(row) || "other";
-                const ruleTypeLabel = ruleType.label || "{{ lang._('Other rules') }}";
+                const ruleTypeKey = row.prio_group || "other";
+                const ruleTypeLabel = ruleType?.label || "{{ lang._('Other rules') }}";
                 const categoryLabel = getCategoryLabel(row);
 
                 /*
@@ -119,7 +114,7 @@
                 const ruleTypeBucket = createBucket(
                     root,
                     ruleTypeLabel,
-                    `ruletype${ruleTypeDigit}`,
+                    `ruletype${ruleTypeKey}`,
                     [{ name: ruleTypeLabel }]
                 );
 
@@ -143,7 +138,7 @@
                     const categoryBucket = createBucket(
                         ruleTypeBucket,
                         categoryLabel,
-                        `ruletype${ruleTypeDigit}category${String(categoryLabel).replace(/[^a-z0-9]/gi, '')}`,
+                        `ruletype${ruleTypeKey}category${String(categoryLabel).replace(/[^a-z0-9]/gi, '')}`,
                         row.category_colors || []
                     );
 
