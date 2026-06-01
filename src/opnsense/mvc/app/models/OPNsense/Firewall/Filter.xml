@@ -417,6 +417,8 @@
                     <Required>Y</Required>
                     <Default>1</Default>
                 </sequence>
+                <sort_order type="TextField" volatile="true"/>
+                <prio_group type="TextField" volatile="true"/>
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                     <Default>lan</Default>
@@ -515,6 +517,8 @@
                     <Required>Y</Required>
                     <Default>1</Default>
                 </sequence>
+                <sort_order type="TextField" volatile="true"/>
+                <prio_group type="TextField" volatile="true"/>
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                     <Default>lan</Default>
@@ -579,6 +583,8 @@
                     <Required>Y</Required>
                     <Default>1</Default>
                 </sequence>
+                <sort_order type="TextField" volatile="true"/>
+                <prio_group type="TextField" volatile="true"/>
                 <interface type="InterfaceField">
                     <Required>Y</Required>
                     <Default>wan</Default>
