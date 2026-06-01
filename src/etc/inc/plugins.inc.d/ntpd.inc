@@ -120,33 +120,33 @@ function ntpd_configure_gps($serialport)
         );
     }
 
-    /* XXX: Why not file_put_contents to the device */
-    @file_put_contents('/tmp/gps.init', $gps_init);
-    `cat /tmp/gps.init > $serialport`;
+    file_put_contents($serialport, $gps_init);
 
-    /* Add /etc/remote entry in case we need to read from the GPS with tip */
-    if (intval(`grep -c '^gps0' /etc/remote`) == 0) {
-        $gpsbaud = '4800';
-        if (is_array($config['ntpd']) && is_array($config['ntpd']['gps']) && !empty($config['ntpd']['gps']['speed'])) {
-            switch ($config['ntpd']['gps']['speed']) {
-                case '16':
-                    $gpsbaud = '9600';
-                    break;
-                case '32':
-                    $gpsbaud = '19200';
-                    break;
-                case '48':
-                    $gpsbaud = '38400';
-                    break;
-                case '64':
-                    $gpsbaud = '57600';
-                    break;
-                case '80':
-                    $gpsbaud = '115200';
-                    break;
-            }
+    /* XXX this is wrong as it only ever appends once with the given speed */
+    if (shell_safe('grep -c "^gps0" /etc/remote') == '0') {
+        switch ($config['ntpd']['gps']['speed'] ?? '') {
+            case '16':
+                $gpsbaud = '9600';
+                break;
+            case '32':
+                $gpsbaud = '19200';
+                break;
+            case '48':
+                $gpsbaud = '38400';
+                break;
+            case '64':
+                $gpsbaud = '57600';
+                break;
+            case '80':
+                $gpsbaud = '115200';
+                break;
+            default:
+                $gpsbaud = '4800';
+                break;
         }
-        @file_put_contents("/etc/remote", "gps0:dv={$serialport}:br#{$gpsbaud}:pa=none:", FILE_APPEND);
+
+        /* add /etc/remote entry in case we need to read from the GPS with tip */
+        file_put_contents('/etc/remote', "gps0:dv={$serialport}:br#{$gpsbaud}:pa=none:", FILE_APPEND);
     }
 
     return true;
