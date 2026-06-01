@@ -75,6 +75,12 @@ class DNatController extends FilterBaseController
                     $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
                 }
             }
+            // Normal DNAT rule priority should be same as firewall interface rules
+            // This is only used for visualization to ensure the tabulator tree renders
+            // rules in the correct order, similar to firewall rules.
+            // It does not influence the processing order of the ruleset by sequence.
+            $record['sort_order'] = sprintf('%d.0%06d', 400000, (int)($record['sequence'] ?? 0));
+            $record['prio_group'] = '400000';
         }
 
         foreach (Util::getAntiLockout() as $if => $ports) {
@@ -94,7 +100,10 @@ class DNatController extends FilterBaseController
                     'alias_meta_destination.port' => $this->getNetworks($port),
                     'alias_meta_destination.network' => $this->getNetworks($if . 'ip'),
                     'descr' => gettext('Anti-Lockout Rule'),
-                    'category' => gettext('Automatically generated rules')
+                    'is_automatic' => true,
+                    // Automatic DNAT rule priority should be same as firewall automatic rules
+                    'sort_order' => sprintf('%d.0%06d', 100000, $idx),
+                    'prio_group' => '100000',
                 ]);
             }
         }

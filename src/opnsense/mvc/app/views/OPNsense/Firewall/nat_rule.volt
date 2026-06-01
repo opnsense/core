@@ -50,35 +50,105 @@
         let treeViewEnabled = localStorage.getItem(storageKey) === "1";
         $('#toggle_tree_button').toggleClass('active btn-primary', treeViewEnabled);
 
-        function dynamicResponseHandler(resp) {
-            if (!treeViewEnabled) {
-                return resp;
-            }
+        const ruleTypeMap = {
+            '100000': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
+            '400000': { label: "{{ lang._('Interface rules') }}", icon: "fa-ethernet", tooltip: "{{ lang._('Interface rule') }}", color: "text-info" },
+            '500000': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
+        };
 
-            const buckets = [];
-            let current = null;
+        const getRuleType = function(row) {
+            return ruleTypeMap[row.prio_group] || null;
+        };
 
-            resp.rows.forEach(r => {
-                const label = r[`%${category_key}`] || r[category_key] || "";
+        // Lives outside the grid, so the logic of the response handler can be changed after grid initialization
+        function dynamicResponseHandler(response) {
+            const getCategoryLabel = function(row) {
+                return row["%categories"] || row.categories || "";
+            };
 
-                if (!current || current._label !== label) {
-                    current = {
-                        uuid           : `${String(r.uuid).replace(/-/g, '')}`,
-                        isGroup        : true,
-                        _label         : label,
-                        children       : []
-                    };
+            const makeBucket = function(label, uuid, categoryColors) {
+                return {
+                    // ensure uuid is as unique as possible for persistence handling
+                    uuid           : uuid,
+                    isGroup        : true,
+                    _label         : label,          // internal
+                    categories     : label,
+                    /*
+                    * Bucket rows reuse the category formatter.
+                    * For category buckets, this copies the first child's category metadata
+                    * so the bucket can render the same category icon/color as its rules.
+                    * For rule type buckets, a synthetic categoryColors entry is supplied.
+                    */
+                    category_colors: categoryColors,
+                    children       : []
+                };
+            };
 
-                    current[category_key] = label;
-                    current.category_colors = r.category_colors || [];
+            const createBucket = function(parent, label, uuid, categoryColors) {
+                let bucket = parent.children.find(child => child.isGroup && child._label === label);
 
-                    buckets.push(current);
+                if (!bucket) {
+                    bucket = makeBucket(label, uuid, categoryColors);
+                    parent.children.push(bucket);
                 }
 
-                current.children.push(r);
+                return bucket;
+            };
+
+            const root = { children: [] };
+
+            response.rows.forEach(row => {
+                const ruleType = getRuleType(row);
+                const ruleTypeKey = row.prio_group || "other";
+                const ruleTypeLabel = ruleType?.label || "{{ lang._('Other rules') }}";
+                const categoryLabel = getCategoryLabel(row);
+
+                /*
+                * The first tree level is the default view, and always based on the rule priority/type.
+                *
+                * Automatic rules
+                *   rule
+                * Interface rules
+                *   rule
+                */
+                const ruleTypeBucket = createBucket(
+                    root,
+                    ruleTypeLabel,
+                    `ruletype${ruleTypeKey}`,
+                    [{ name: ruleTypeLabel }]
+                );
+
+                if (treeViewEnabled && row.is_automatic !== true && categoryLabel !== "") {
+                    /*
+                    * When tree view is enabled, categorized non-automatic rules are grouped
+                    * one level deeper by category below their rule priority/type bucket.
+                    *
+                    * Automatic rules and uncategorized rules stay directly below their rule
+                    * priority/type bucket to avoid redundant or low-value nesting.
+                    *
+                    * Automatic rules
+                    *   rule
+                    * Interface rules
+                    *   rule
+                    *   Web (Category)
+                    *     rule
+                    *   Mail (Category)
+                    *     rule
+                    */
+                    const categoryBucket = createBucket(
+                        ruleTypeBucket,
+                        categoryLabel,
+                        `ruletype${ruleTypeKey}category${String(categoryLabel).replace(/[^a-z0-9]/gi, '')}`,
+                        row.category_colors || []
+                    );
+
+                    categoryBucket.children.push(row);
+                } else {
+                    ruleTypeBucket.children.push(row);
+                }
             });
 
-            return Object.assign({}, resp, { rows: buckets });
+            return Object.assign({}, response, { rows: root.children });
         }
 
         const grid = $("#{{ formGridRule['table_id'] }}").UIBootgrid({
@@ -233,23 +303,34 @@
                     },
                     category: function (column, row) {
                         const isGroup = row.isGroup;
-                        const hasCategories = row[category_key] && Array.isArray(row.category_colors);
+                        const hasCategories = row.categories && Array.isArray(row.category_colors);
 
+                        // Rows without category metadata render nothing in this column.
+                        // This also avoids creating a fake label for rules that
+                        // are intentionally kept directly below their rule type bucket.
                         if (!hasCategories) {
-
-                            return isGroup
-                                ? `<span class="category-icon category-cell">
-                                    <i class="fa fa-fw fa-tag"></i>
-                                    <strong>{{ lang._('Uncategorized') }}</strong>
-                                    <span class="badge chip"
-                                            style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
-                                </span>`
-                                : '';
+                            return '';
                         }
 
-                        const category = row.category_colors || [];
+                        const categories = row.category_colors || [];
 
-                        const icons = category.map(cat => {
+                        const icons = categories.map(cat => {
+                            /*
+                            * Top-level tree icons, e.g. automatic/floating/interface rules, are
+                            * resolved here as well because each row can only use one formatter for
+                            * this column. Rule type buckets provide a synthetic category entry
+                            * whose name matches ruleTypeMap, while real category buckets continue
+                            * to render normal category tag icons.
+                            */
+                            const ruleType = Object.values(ruleTypeMap).find(type => type.label === cat.name);
+
+                            if (isGroup && ruleType) {
+                                return `
+                                    <span class="category-icon" data-toggle="tooltip" title="${ruleType.tooltip}">
+                                        <i class="fa ${ruleType.icon} fa-fw ${ruleType.color}"></i>
+                                    </span>`;
+                            }
+
                             const bgColor = cat.color ? ` style="color:${cat.color};"` : '';
 
                             return `
@@ -261,9 +342,7 @@
                         return isGroup
                             ? `<span class="category-cell">
                                     <span class="category-cell-content">
-                                        <strong>${icons} ${category.map(cat => cat.name).join(', ')}</strong>
-                                        <span class="badge chip"
-                                                style="margin-left:6px;">${(row.children && row.children.length) || 0}</span>
+                                        <strong>${icons} ${categories.map(cat => cat.name).join(', ')}</strong>
                                     </span>
                             </span>`
                             : icons;
@@ -428,7 +507,7 @@
                             label: row.name,
                             id: row.used > 0 ? row.uuid : undefined,
                             'data-content': row.used > 0
-                                ? `<span><span class="label label-sm"${bgColor}>${row.used}</span> ${optVal}</span>`
+                                ? `<span>${optVal} <span class="label label-sm"${bgColor}>${row.used}</span></span>`
                                 : undefined
                         };
                     });
@@ -456,12 +535,11 @@
             localStorage.setItem(storageKey, treeViewEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', treeViewEnabled);
             $("#{{ formGridRule['table_id'] }}").toggleClass("tree-enabled", treeViewEnabled);
-            $("#tree_expand_container").toggle(treeViewEnabled);
             grid.bootgrid("reload");
         });
 
         $("#tree_expand_container").detach().insertAfter("#tree_toggle_container");
-        $("#tree_expand_container").toggle(treeViewEnabled);
+        $("#tree_expand_container").show();
         $('#expand_tree_button').on('click', function () {
             const $table = $('#{{ formGridRule["table_id"] }}');
 
@@ -639,8 +717,8 @@
 
         <div id="tree_toggle_container" class="btn-group">
             <button id="toggle_tree_button" type="button" class="btn btn-default"
-                    data-toggle="tooltip" title="{{ lang._('Show categories in a tree') }}">
-                <i class="fa fa-fw fa-sitemap"></i> {{ lang._('Tree') }}
+                    data-toggle="tooltip" title="{{ lang._('Show categories as folders') }}">
+                <i class="fa fa-fw fa-tag" aria-hidden="true"></i>
             </button>
         </div>
 

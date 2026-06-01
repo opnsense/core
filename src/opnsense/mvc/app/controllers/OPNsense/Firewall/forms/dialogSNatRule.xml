@@ -17,6 +17,16 @@
         </grid_view>
     </field>
     <field>
+        <id>rule.sort_order</id>
+        <label>Sort order</label>
+        <type>ignore</type>
+        <grid_view>
+            <sequence>10</sequence>
+            <visible>false</visible>
+            <order>asc</order>
+        </grid_view>
+    </field>
+    <field>
         <id>rule.sequence</id>
         <label>Sequence</label>
         <type>text</type>
@@ -24,7 +34,6 @@
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
-            <order>asc</order>
         </grid_view>
     </field>
     <field>

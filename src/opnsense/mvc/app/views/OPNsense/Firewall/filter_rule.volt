@@ -76,6 +76,8 @@
             '5': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary" },
         };
 
+        // XXX: The "prio_group.sequence" combination in "sort_order" (300000.0000010) is not always static, e.g. in group rules it could also be (300010.0000010).
+        //      An exact match is not always possible, using the first digit is the best assumption currently.
         const getRuleTypeDigit = function(row) {
             const sortOrder = row.sort_order ? row.sort_order.toString() : "";
             return sortOrder.charAt(0);
