@@ -86,6 +86,14 @@ class Action(BaseAction):
                     return 'OK'
                 else:
                     return 'ERR'
+            elif self.command == 'configd.lookup':
+                from ..processhandler import ActionHandler
+                act_handler = ActionHandler()
+                action_obj, *_ = act_handler.find_action(act_parameters.split())
+                if action_obj is not None:
+                    return 'OK'
+                else:
+                    return 'ERR'
             elif self.command == 'configd.actions':
                 # list all available configd actions
                 from ..processhandler import ActionHandler
