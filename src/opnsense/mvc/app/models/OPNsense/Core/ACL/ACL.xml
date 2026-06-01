@@ -3,7 +3,7 @@
         <name>System: Deny config write</name>
     </user-config-readonly>
     <page-diagnostics-backup-restore>
-        <name>Diagnostics: Backup / Restore</name>
+        <name>System: Configuration: Backups</name>
         <patterns>
             <pattern>diag_backup.php*</pattern>
         </patterns>
