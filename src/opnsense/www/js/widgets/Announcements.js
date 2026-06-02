@@ -49,7 +49,7 @@ export default class Announcements extends BaseTableWidget {
         const data = await this.ajaxCall('/api/core/dashboard/product_info_feed');
 
         if (!data.items.length) {
-            $('#announcements-table').html(`${this.translations.no_feed}`);
+            $('#announcements-table').text(this.translations.no_feed);
             return;
         }
         let rows = [];

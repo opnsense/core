@@ -919,7 +919,7 @@ class UIBootgrid {
 
         if (this.table.getData().length == 0 && !this.loading) {
             this.dataAvailable = false;
-            this._getPlaceholder().html(this.translations.noresultsfound);
+            this._getPlaceholder().text(this.translations.noresultsfound);
         } else {
             this.dataAvailable = true;
         }

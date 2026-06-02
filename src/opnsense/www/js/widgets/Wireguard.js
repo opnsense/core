@@ -50,14 +50,14 @@ export default class Wireguard extends BaseTableWidget {
     async onWidgetTick() {
         const wg = await this.ajaxCall('/api/wireguard/general/get');
         if (!wg.general || !wg.general.enabled) {
-            this.displayError(`${this.translations.unconfigured}`);
+            this.displayError(this.translations.unconfigured);
             return;
         }
 
         const response = await this.ajaxCall('/api/wireguard/service/show');
 
         if (!response || !response.rows || response.rows.length === 0) {
-            this.displayError(`${this.translations.notunnels}`);
+            this.displayError(this.translations.notunnels);
             return;
         }
 
@@ -70,7 +70,7 @@ export default class Wireguard extends BaseTableWidget {
 
     displayError(message) {
         $('#wgTunnelTable').empty().append(
-            $(`<div class="error-message"><a href="/ui/wireguard/general">${message}</a></div>`)
+            $('<div class="error-message"></div>').append('<a href="/ui/wireguard/general"></a>').text(message)
         );
     }
 
