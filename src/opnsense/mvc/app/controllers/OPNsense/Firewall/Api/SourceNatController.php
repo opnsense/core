@@ -29,6 +29,7 @@ namespace OPNsense\Firewall\Api;
 
 use OPNsense\Core\ACL;
 use OPNsense\Core\Config;
+use OPNsense\Firewall\Util;
 
 class SourceNatController extends FilterBaseController
 {
@@ -50,6 +51,134 @@ class SourceNatController extends FilterBaseController
         Config::getInstance()->object()->nat->outbound->mode = $mode;
         Config::getInstance()->save();
         return ['result' => 'ok'];
+    }
+
+    private function getAutomaticOutboundNatRules(): array
+    {
+        $config = Config::getInstance()->object();
+        $source_networks = [];
+        $nat_interfaces = [];
+
+        if (!isset($config->interfaces)) {
+            return [];
+        }
+
+        foreach ($config->interfaces->children() as $if => $ifcfg) {
+            $if = (string)$if;
+            $ipaddr = (string)($ifcfg->ipaddr ?? '');
+            $gateway = (string)($ifcfg->gateway ?? '');
+            $device = (string)($ifcfg->if ?? '');
+            $descr = (string)($ifcfg->descr ?? '');
+
+            if ($descr === '') {
+                $descr = strtoupper($if);
+            }
+
+            /*
+             * Only IPv4 interfaces participate in the automatic outbound NAT preview.
+             * DHCP counts as IPv4 for WAN style interfaces.
+             */
+            $has_ipv4 = $ipaddr === 'dhcp' || Util::isIpv4Address($ipaddr);
+            if (!$has_ipv4) {
+                continue;
+            }
+
+            /*
+             * Raw config does not resolve gateway status like filter_core_getInterfaceMapping().
+             * DHCP WANs usually have no static gateway in the interface node, but should still
+             * be treated as automatic outbound NAT interfaces.
+             */
+            $is_wan_candidate = $ipaddr === 'dhcp' || ($gateway !== '' && $gateway !== 'none');
+
+            if ($is_wan_candidate && substr($device, 0, 4) !== 'ovpn') {
+                $nat_interfaces[] = [
+                    'interface' => $if,
+                    'descr' => $descr,
+                ];
+            } else {
+                $source_networks[] = $if;
+            }
+        }
+
+        $rows = [];
+        $sequence = 1;
+
+        foreach ($nat_interfaces as $natintf) {
+            foreach ($source_networks as $source_net) {
+                $target = $natintf['interface'] . 'ip';
+                $rows[] = [
+                    'uuid' => 'automatic_isakmp_' . $natintf['interface'] . '_' . $source_net,
+                    'enabled' => '1',
+                    'nonat' => '0',
+                    'sequence' => (string)$sequence,
+                    'interface' => $natintf['interface'],
+                    '%interface' => $natintf['descr'],
+                    'ipprotocol' => 'inet',
+                    '%ipprotocol' => 'IPv4',
+                    'protocol' => 'any',
+                    '%protocol' => '*',
+                    'source_net' => $source_net,
+                    'alias_meta_source_net' => $this->getNetworks($source_net),
+                    'source_not' => '0',
+                    'source_port' => '',
+                    'alias_meta_source_port' => $this->getNetworks(''),
+                    'destination_net' => 'any',
+                    'alias_meta_destination_net' => $this->getNetworks('any'),
+                    'destination_not' => '0',
+                    'destination_port' => '500',
+                    'alias_meta_destination_port' => $this->getNetworks('500'),
+                    'target' => $target,
+                    'alias_meta_target' => $this->getNetworks($target),
+                    'target_port' => '',
+                    'alias_meta_target_port' => $this->getNetworks(''),
+                    'staticnatport' => '1',
+                    'log' => '0',
+                    'categories' => '',
+                    'tagged' => '',
+                    'description' => gettext('Auto created rule for ISAKMP'),
+                    'is_automatic' => true,
+                    'sort_order' => sprintf('%d.0%06d', 100000, $sequence),
+                    'prio_group' => '100000',
+                ];
+                $sequence++;
+                $rows[] = [
+                    'uuid' => 'automatic_' . $natintf['interface'] . '_' . $source_net,
+                    'enabled' => '1',
+                    'nonat' => '0',
+                    'sequence' => (string)$sequence,
+                    'interface' => $natintf['interface'],
+                    '%interface' => $natintf['descr'],
+                    'ipprotocol' => 'inet',
+                    '%ipprotocol' => 'IPv4',
+                    'protocol' => 'any',
+                    '%protocol' => '*',
+                    'source_net' => $source_net,
+                    'alias_meta_source_net' => $this->getNetworks($source_net),
+                    'source_not' => '0',
+                    'source_port' => '',
+                    'alias_meta_source_port' => $this->getNetworks(''),
+                    'destination_net' => 'any',
+                    'alias_meta_destination_net' => $this->getNetworks('any'),
+                    'destination_not' => '0',
+                    'destination_port' => '',
+                    'alias_meta_destination_port' => $this->getNetworks(''),
+                    'target' => $target,
+                    'alias_meta_target' => $this->getNetworks($target),
+                    'target_port' => '',
+                    'alias_meta_target_port' => $this->getNetworks(''),
+                    'staticnatport' => '0',
+                    'log' => '0',
+                    'categories' => '',
+                    'tagged' => '',
+                    'description' => gettext('Auto created rule'),
+                    'is_automatic' => true,
+                    'sort_order' => sprintf('%d.0%06d', 100000, $sequence),
+                    'prio_group' => '100000',
+                ];
+                $sequence++;
+            }
+        }
+        return $rows;
     }
 
     public function searchRuleAction()
@@ -76,6 +205,11 @@ class SourceNatController extends FilterBaseController
                     $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
                 }
             }
+        }
+
+        $mode = (string)(Config::getInstance()->object()->nat->outbound->mode ?? 'automatic');
+        if (in_array($mode, ['automatic', 'hybrid'], true)) {
+            $results['rows'] = array_merge($results['rows'], $this->getAutomaticOutboundNatRules());
         }
 
         return $results;
