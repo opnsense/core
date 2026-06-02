@@ -31,5 +31,5 @@ if [ -f ${LOCKFILE} ]; then
 	# it could be possible the mirror URL leaks from some other
 	# command. Use another replacement string to see if we ever
 	# find this in the wild.
-	cat ${LOCKFILE} | sed -E 's:/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}/:/${SUBSCRIPTION_GUARD}/:gi'
+	cat ${LOCKFILE} | sed -uE 's:/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}/:/${SUBSCRIPTION_GUARD}/:gi'
 fi
