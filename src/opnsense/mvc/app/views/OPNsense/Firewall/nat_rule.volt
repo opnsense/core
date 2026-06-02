@@ -32,10 +32,12 @@
         // XXX: Category keys differ in the individual models
         const category_key = '{{ categoryKey }}';
 
+        {% if entrypoint == 'source_nat' %}
         mapDataToFormUI({
             'frm_dialogSNatMode': "/api/firewall/source_nat/get"}).done(function() {
             $('.selectpicker').selectpicker('refresh');
         });
+        {% endif %}
 
         function showDialogAlert(type, title, message) {
             BootstrapDialog.show({
@@ -777,8 +779,9 @@
             </button>
         </div>
     </div>
-    <!-- XXX: Should only show for SNAT entrypoint, and form needs to be saved too -->
-    {{ partial("layout_partials/base_form", ['fields': formSnatMode, 'id': 'frm_dialogSNatMode']) }}
+    {% if entrypoint == 'source_nat' %}
+        {{ partial("layout_partials/base_form", ['fields': formSnatMode, 'id': 'frm_dialogSNatMode']) }}
+    {% endif %}
     {{ partial('layout_partials/base_bootgrid_table', formGridRule + {'command_width':'150'}) }}
 </div>
 
