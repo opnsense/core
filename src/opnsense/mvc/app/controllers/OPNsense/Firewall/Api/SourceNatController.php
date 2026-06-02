@@ -94,4 +94,14 @@ class SourceNatController extends FilterBaseController
     {
         return $this->toggleRuleLogBase($uuid, $log, 'snatrules.rule');
     }
+
+    public function downloadRulesAction()
+    {
+        return $this->downloadRulesBase('snatrules.rule', ['sort_order', 'prio_group']);
+    }
+
+    public function uploadRulesAction()
+    {
+        return $this->uploadRulesBase('snatrules.rule', ['sort_order', 'prio_group']);
+    }
 }

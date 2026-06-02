@@ -171,4 +171,14 @@ class DNatController extends FilterBaseController
     {
         return $this->toggleRuleLogBase($uuid, $log, 'rule');
     }
+
+    public function downloadRulesAction()
+    {
+        return $this->downloadRulesBase('rule', ['sort_order', 'prio_group']);
+    }
+
+    public function uploadRulesAction()
+    {
+        return $this->uploadRulesBase('rule', ['sort_order', 'prio_group']);
+    }
 }
