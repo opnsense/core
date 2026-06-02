@@ -137,8 +137,8 @@ class SourceNatController extends FilterBaseController
                     'tagged' => '',
                     'description' => gettext('Auto created rule for ISAKMP'),
                     'is_automatic' => true,
-                    'sort_order' => sprintf('%d.0%06d', 100000, $sequence),
-                    'prio_group' => '100000',
+                    'sort_order' => sprintf('%d.0%06d', 500000, $sequence),
+                    'prio_group' => '500000',
                 ];
                 $sequence++;
                 $rows[] = [
@@ -172,8 +172,8 @@ class SourceNatController extends FilterBaseController
                     'tagged' => '',
                     'description' => gettext('Auto created rule'),
                     'is_automatic' => true,
-                    'sort_order' => sprintf('%d.0%06d', 100000, $sequence),
-                    'prio_group' => '100000',
+                    'sort_order' => sprintf('%d.0%06d', 500000, $sequence),
+                    'prio_group' => '500000',
                 ];
                 $sequence++;
             }
