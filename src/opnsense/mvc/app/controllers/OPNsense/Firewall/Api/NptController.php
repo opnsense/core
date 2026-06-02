@@ -92,4 +92,14 @@ class NptController extends FilterBaseController
     {
         return $this->toggleRuleLogBase($uuid, $log, 'npt.rule');
     }
+
+    public function downloadRulesAction()
+    {
+        return $this->downloadRulesBase('npt.rule', ['sort_order', 'prio_group']);
+    }
+
+    public function uploadRulesAction()
+    {
+        return $this->uploadRulesBase('npt.rule', ['sort_order', 'prio_group']);
+    }
 }

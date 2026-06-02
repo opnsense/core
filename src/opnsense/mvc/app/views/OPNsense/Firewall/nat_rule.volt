@@ -409,6 +409,33 @@
                 },
             },
             commands: {
+                upload_rules: {
+                    onRendered: function () {
+                        const $el = $(this);
+                        $el.data('title', "{{ lang._('Import rules') }}");
+                        $el.data('endpoint', `/api/firewall/${entrypoint}/upload_rules`);
+                        $el.SimpleFileUploadDlg({
+                            onAction: function () {
+                                $("#{{formGridRule['table_id']}}").bootgrid('reload');
+                                $(document).trigger("settings-changed");
+                            }
+                        });
+                    },
+                    footer: true,
+                    classname: 'fa fa-fw fa-upload',
+                    title: "{{ lang._('Import csv') }}",
+                    sequence: 400
+                },
+                download_rules: {
+                    footer: true,
+                    classname: 'fa fa-fw fa-table',
+                    title: "{{ lang._('Export as csv') }}",
+                    method: function (e) {
+                        e.preventDefault();
+                        window.open(`/api/firewall/${entrypoint}/download_rules`);
+                    },
+                    sequence: 500
+                },
                 move_before: {
                     method: function(event) {
                         const selected = $("#{{ formGridRule['table_id'] }}").bootgrid("getSelectedRows");
