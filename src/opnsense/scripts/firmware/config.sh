@@ -132,7 +132,7 @@ output_cmd()
 
 	# also capture stderr in this case and scrub subscription output
 	eval "(${DO_CMD}) 2>&1" | \
-	    sed -E 's:/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}/:/${SUBSCRIPTION}/:gi' \
+	    sed -uE 's:/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}/:/${SUBSCRIPTION}/:gi' \
 	    > ${PIPEFILE}
 }
 
