@@ -31,7 +31,6 @@ namespace OPNsense\Firewall\FieldTypes;
 use OPNsense\Base\FieldTypes\OptionField;
 use OPNsense\Core\Config;
 
-# XXX: Needs an implementation for saving the config, right now its only reflecting it
 class SNatModeField extends OptionField
 {
     protected function actionPostLoadingEvent()

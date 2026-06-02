@@ -636,7 +636,23 @@
         $("#reconfigureAct").SimpleActionButton({
             onPreAction() {
                 reconfigureActInProgress = true;
-                return $.Deferred().resolve();
+                if (entrypoint !== 'source_nat') {
+                    return $.Deferred().resolve();
+                }
+                const dfObj = new $.Deferred();
+                saveFormToEndpoint(
+                    "/api/firewall/source_nat/set_mode",
+                    "frm_dialogSNatMode",
+                    function() {
+                        dfObj.resolve();
+                    },
+                    true,
+                    function() {
+                        reconfigureActInProgress = false;
+                        dfObj.reject();
+                    }
+                );
+                return dfObj.promise();
             },
             onAction(data, status) {
                 Promise.all([
