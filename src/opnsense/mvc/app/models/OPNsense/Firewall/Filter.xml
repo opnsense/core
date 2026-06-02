@@ -4,6 +4,18 @@
     <migration_prefix>MFP</migration_prefix>
     <description>Firewall rules (new)</description>
     <items>
+        <general>
+            <snat_mode type=".\SNatModeField" volatile="true">
+                <Required>Y</Required>
+                <Default>automatic</Default>
+                <OptionValues>
+                    <automatic>Automatic Source NAT rule generation</automatic>
+                    <hybrid>Hybrid Source NAT rule generation</hybrid>
+                    <advanced>Manual Source NAT rule generation</advanced>
+                    <disabled>Disable Source NAT rule generation</disabled>
+                </OptionValues>
+            </snat_mode>
+        </general>
         <rules>
             <rule type=".\FilterRuleField">
                 <enabled type="BooleanField">

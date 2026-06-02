@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2020-2025 Deciso B.V.
+ * Copyright (C) 2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,25 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OPNsense\Firewall;
 
-class SourceNatController extends \OPNsense\Base\IndexController
+namespace OPNsense\Firewall\FieldTypes;
+
+use OPNsense\Base\FieldTypes\OptionField;
+use OPNsense\Core\Config;
+
+# XXX: Needs an implementation for saving the config, right now its only reflecting it
+class SNatModeField extends OptionField
 {
-    public function indexAction()
+    protected function actionPostLoadingEvent()
     {
-        $this->view->entrypoint = 'source_nat';
-        $this->view->categoryKey = 'categories';
-        $this->view->pick('OPNsense/Firewall/nat_rule');
-        $this->view->formDialogRule = $this->getForm('dialogSNatRule');
-        $this->view->formGridRule = $this->getFormGrid('dialogSNatRule');
-        $this->view->formSnatMode = $this->getForm('dialogSNatMode');
+        $mode = (string)(Config::getInstance()->object()->nat?->outbound?->mode ?? '');
+
+        if (!in_array($mode, ['automatic', 'hybrid', 'advanced', 'disabled'], true)) {
+            $mode = 'automatic';
+        }
+
+        $this->setValue($mode);
+
+        return parent::actionPostLoadingEvent();
     }
 }
