@@ -37,7 +37,7 @@ class SourceNatController extends FilterBaseController
     // Set the SNAT mode (legacy nat.outbound.mode)
     public function setModeAction()
     {
-        if (!$this->request->isPost() && !(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
+        if (!$this->request->isPost() || (new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
             return ['result' => 'failed'];
         }
         $data = $this->request->getPost('filter');
