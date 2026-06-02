@@ -47,7 +47,7 @@ export default class DnsmasqLeases extends BaseTableWidget {
     async onWidgetTick() {
         $('[data-toggle="tooltip"]').tooltip({container: 'body'});
 
-        const settingsResponse = await this.ajaxCall('/api/dnsmasq/settings/get');
+        const settingsResponse = await this.ajaxCall(`/api/dnsmasq/settings/${'get'}`);
         if (settingsResponse?.dnsmasq?.enable !== '1') {
             this.displayError(this.translations.unconfigured, '/ui/dnsmasq/settings#general');
             return;
@@ -58,7 +58,7 @@ export default class DnsmasqLeases extends BaseTableWidget {
         const limit = parseInt(config.leasesToShow ?? '2', 10) || 2;
 
         // furthest expire is assumed to be latest lease
-        const leasesResponse = await this.ajaxCall('/api/dnsmasq/leases/search',
+        const leasesResponse = await this.ajaxCall(`/api/dnsmasq/leases/${'search'}`,
             JSON.stringify({
                 rowCount: Math.max(1, limit),
                 sort: { expire: 'desc' }
