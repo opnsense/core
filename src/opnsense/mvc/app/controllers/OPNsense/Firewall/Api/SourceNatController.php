@@ -27,7 +27,6 @@
  */
 namespace OPNsense\Firewall\Api;
 
-use OPNsense\Core\ACL;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 
