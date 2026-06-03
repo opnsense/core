@@ -32,11 +32,15 @@
         // XXX: Category keys differ in the individual models
         const category_key = '{{ categoryKey }}';
 
-        if (entrypoint === 'source_nat') {
+        function setupSnatModeForm() {
+            if (entrypoint !== 'source_nat') {
+                updateSnatModeUI();
+                return;
+            }
             mapDataToFormUI({
                 'frm_dialogSNatMode': "/api/firewall/source_nat/get"
             }).done(function() {
-                $('.selectpicker').selectpicker('refresh');
+                $('#filter\\.general\\.snat_mode').selectpicker('refresh');
                 updateSnatModeUI();
             });
         }
@@ -681,6 +685,7 @@
             }
         });
 
+        setupSnatModeForm()  // All NAT pages have to call this to unhide the shared grid
         populateCategoriesSelectpicker();
 
     });
