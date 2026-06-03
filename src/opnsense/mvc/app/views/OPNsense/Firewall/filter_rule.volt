@@ -68,114 +68,146 @@
         let pendingUrlInterface = getUrlHash('interface') || null;
 
         const ruleTypeMap = {
-            '0': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary", groupType: null },
-            '1': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary", groupType: null },
-            '2': { label: "{{ lang._('Floating rules') }}", icon: "fa-layer-group", tooltip: "{{ lang._('Floating rule') }}", color: "text-primary", groupType: "floating" },
-            '3': { label: "{{ lang._('Group rules') }}", icon: "fa-sitemap", tooltip: "{{ lang._('Group rule') }}", color: "text-warning", groupType: "groups" },
-            '4': { label: "{{ lang._('Interface rules') }}", icon: "fa-ethernet", tooltip: "{{ lang._('Interface rule') }}", color: "text-info", groupType: "interfaces" },
-            '5': { label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary", groupType: null },
+            '0': { uuid: "auto0", label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary", groupType: null },
+            '1': { uuid: "auto1", label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary", groupType: null },
+            '2': { uuid: "floating", label: "{{ lang._('Floating rules') }}", icon: "fa-layer-group", tooltip: "{{ lang._('Floating rule') }}", color: "text-primary", groupType: "floating" },
+            '3': { uuid: "group", label: "{{ lang._('Group rules') }}", icon: "fa-sitemap", tooltip: "{{ lang._('Group rule') }}", color: "text-warning", groupType: "groups" },
+            '4': { uuid: "interface", label: "{{ lang._('Interface rules') }}", icon: "fa-ethernet", tooltip: "{{ lang._('Interface rule') }}", color: "text-info", groupType: "interfaces" },
+            '5': { uuid: "auto2", label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary", groupType: null },
         };
 
         // XXX: The "prio_group.sequence" combination in "sort_order" (300000.0000010) is not always static, e.g. in group rules it could also be (300010.0000010).
         //      An exact match is not always possible, using the first digit is the best assumption currently.
         const getRuleTypeDigit = function(row) {
             const sortOrder = row.sort_order ? row.sort_order.toString() : "";
-            return sortOrder.charAt(0);
+            return Number(sortOrder.charAt(0));
         };
 
         const getRuleType = function(row) {
-            return ruleTypeMap[getRuleTypeDigit(row)] || null;
+            return buckets[getRuleTypeDigit(row)] || null;
         };
 
-        // Lives outside the grid, so the logic of the response handler can be changed after grid initialization
-        function dynamicResponseHandler(response) {
-            const getCategoryLabel = function(row) {
-                return row["%categories"] || row.categories || "";
+        let buckets = [];
+        function createBucket(props) {
+            return {
+                isGroup: true,
+                children: [],
+                ...props
             };
-
-            const createBucket = function(parent, label, uuid, categoryColors, groupType = null, persistence=true) {
-                let bucket = parent.children.find(child => child.isGroup && child._label === label);
-
-                if (!bucket) {
-                    bucket = {
-                        // ensure uuid is as unique as possible for persistence handling
-                        uuid           : uuid,
-                        isGroup        : true,
-                        _label         : label,          // internal
-                        categories     : label,
-                        _persistence   : persistence,    // internal
-                        _groupType     : groupType,      // internal
-                        /*
-                        * Bucket rows reuse the category formatter.
-                        * For category buckets, this copies the first child's category metadata
-                        * so the bucket can render the same category icon/color as its rules.
-                        * For rule type buckets, a synthetic categoryColors entry is supplied.
-                        */
-                        category_colors: categoryColors,
-                        children       : []
-                    };
-                    parent.children.push(bucket);
+        }
+        
+        function bucketById(buckets, uuid) {
+            for (const bucket of buckets) {
+                if (bucket.uuid === uuid) {
+                    return bucket;
                 }
 
-                return bucket;
-            };
+                if (Array.isArray(bucket.children)) {
+                    const found = bucketById(bucket.children, uuid);
 
-            const root = { children: [] };
+                    if (found) {
+                        return found;
+                    }
+                }
+            }
 
+            return null;
+        }
+
+        function responseHandler(response) {
+            // (re)initialize mising buckets
+            for (const [idx, type] of Object.entries(ruleTypeMap)) {
+                const index = Number(idx);
+
+                const exists = buckets.some(bucket => Number(bucket.idx) === index);
+
+                if (!exists) {
+                    buckets.splice(index, 0, createBucket({
+                        ...type,
+                        idx: index,
+                        _persistence: false,
+                        _expanded: false,
+                        categories: type.label,
+                        category_colors: [{ name: type.label }],
+                        _parent: null
+                    }));
+                }
+            }
+
+            // recursively clear children but keep buckets intact
+            const clear = (buckets) => {
+                for (const bucket of buckets) {
+                    if (Array.isArray(bucket.children)) {
+                        clear(bucket.children);
+                        bucket.children = [];
+                    }
+                }
+            }
+
+            clear(buckets);
+
+            const indexMap = {};
+            let lastBucketId = null;
             response.rows.forEach(row => {
-                const ruleType = getRuleType(row);
-                const ruleTypeDigit = getRuleTypeDigit(row) || "other";
-                const ruleTypeLabel = ruleType.label || "{{ lang._('Other rules') }}";
-                const categoryLabel = getCategoryLabel(row);
+                // Find bucket this row belongs to. If it doesn't exist, create it.
+                let bucket = getRuleType(row);
 
-                /*
-                * The first tree level is the default view, and always based on the rule priority/type.
-                *
-                * Automatic rules
-                *   rule
-                * Interface rules
-                *   rule
-                */
-                const ruleTypeBucket = createBucket(
-                    root,
-                    ruleTypeLabel,
-                    `ruletype${ruleTypeDigit}`,
-                    [{ name: ruleTypeLabel }],
-                    ruleType.groupType,
-                    false,
-                );
-
+                const categoryLabel = row["%categories"] || row.categories || "";
                 if (treeViewEnabled && row.is_automatic !== true && categoryLabel !== "") {
-                    /*
-                    * When tree view is enabled, categorized non-automatic rules are grouped
-                    * one level deeper by category below their rule priority/type bucket.
-                    *
-                    * Automatic rules and uncategorized rules stay directly below their rule
-                    * priority/type bucket to avoid redundant or low-value nesting.
-                    *
-                    * Automatic rules
-                    *   rule
-                    * Interface rules
-                    *   rule
-                    *   Web (Category)
-                    *     rule
-                    *   Mail (Category)
-                    *     rule
-                    */
-                    const categoryBucket = createBucket(
-                        ruleTypeBucket,
-                        categoryLabel,
-                        `ruletype${ruleTypeDigit}category${String(categoryLabel).replace(/[^a-z0-9]/gi, '')}`,
-                        row.category_colors || []
-                    );
+                    // create bucket id based on this row
+                    const bucketId = `${bucket.uuid}category${String(categoryLabel).replace(/[^a-z0-9]/gi, '')}`;
+                    
+                    if (!(bucketId in indexMap)) {
+                        indexMap[bucketId] = 0;
+                    }
 
-                    categoryBucket.children.push(row);
-                } else {
-                    ruleTypeBucket.children.push(row);
+                    if (bucketId !== lastBucketId && lastBucketId !== null) {
+                        // moved to next category
+                        indexMap[lastBucketId]++;
+                    }
+
+                    const id = `${bucketId}${indexMap[bucketId]}`;
+                    
+                    let tmp = bucket.children.find(child => child.uuid === id);
+
+                    if (!tmp) {
+                        const newBucket = createBucket({
+                            uuid: id,
+                            _persistence: true,
+                            categories: categoryLabel,
+                            category_colors: row.category_colors,
+                            _parent: bucket.uuid
+                        });
+                        bucket.children.push(newBucket);
+                        bucket = newBucket;
+                    } else {
+                        bucket = tmp;
+                    }
+
+                    lastBucketId = bucketId;
                 }
+
+                row._parent = bucket.uuid;
+                bucket.children.push(row);
             });
 
-            return Object.assign({}, response, { rows: root.children });
+            const removeEmptyGroups = (items) => {
+                for (let i = items.length - 1; i >= 0; i--) {
+                    const item = items[i];
+
+                    if (Array.isArray(item.children)) {
+                        if (item.children.length === 0) {
+                            items.splice(i, 1);
+                        } else {
+                            removeEmptyGroups(item.children);
+                        }
+                    }
+                }
+            };
+
+            removeEmptyGroups(buckets);
+
+            return Object.assign({}, response, { rows: buckets });
         }
 
         $('#download_rules').click(function(e){
@@ -198,9 +230,14 @@
                 dataTreeElementColumn : "categories",
                 dataTreeStartExpanded : function(row, level) {
                     const data = row.getData();
-                    if (data._persistence) {
+                    if (data._persistence && !data?._expanded) {
                         // expansion state determined by user interaction
                         return false;
+                    }
+
+                    if (data?._expanded) {
+                        // inline reload of data, non-persisted open state
+                        return true;
                     }
 
                     // find group by interface selection value
@@ -216,7 +253,7 @@
                         }
                     }
 
-                    if (found === data._groupType || found === "any") {
+                    if (found === data.groupType || found === "any") {
                         return true;
                     }
 
@@ -275,7 +312,7 @@
                     return request;
                 },
                 // convert the flat rows into a tree view
-                responseHandler: dynamicResponseHandler,
+                responseHandler: responseHandler,
 
                 headerFormatters: {
                     enabled: function (column) {
@@ -468,20 +505,15 @@
                             * whose name matches ruleTypeMap, while real category buckets continue
                             * to render normal category tag icons.
                             */
-                            const ruleType = Object.values(ruleTypeMap).find(type => type.label === cat.name);
+                            const ruleType = Object.values(ruleTypeMap).find(r => r.uuid === row.uuid);
 
-                            if (isGroup && ruleType) {
-                                return `
-                                    <span class="category-icon" data-toggle="tooltip" title="${ruleType.tooltip}">
-                                        <i class="fa ${ruleType.icon} fa-fw ${ruleType.color}"></i>
-                                    </span>`;
-                            }
-
+                            const name = ruleType ? ruleType.tooltip : (cat.name || "");
+                            const icon = ruleType ? ruleType.icon : "fa-fw fa-tag";
+                            const classColor = ruleType? ruleType.color : '';
                             const bgColor = cat.color ? ` style="color:${cat.color};"` : '';
-
                             return `
-                                <span class="category-icon" data-toggle="tooltip" title="${cat.name}">
-                                    <i class="fa fa-fw fa-tag"${bgColor}></i>
+                                <span class="category-icon" data-toggle="tooltip" title="${name}">
+                                    <i class="fa fa-fw ${icon} ${classColor}" ${bgColor}></i>
                                 </span>`;
                         }).join(' ');
 
@@ -803,6 +835,24 @@
             },
 
         });
+
+        // persist expansion state of rule type categories
+        // during the lifetime of the page, resets on page reload
+        const table = grid.bootgrid('getTable');
+        table.on('dataTreeRowExpanded', (row) => {
+            const bucket = bucketById(buckets, row.getData().uuid);
+
+            if ('_expanded' in bucket) {
+                bucket._expanded = true;
+            }
+        })
+        table.on('dataTreeRowCollapsed', (row) => {
+            const bucket = bucketById(buckets, row.getData().uuid);
+
+            if ('_expanded' in bucket) {
+                bucket._expanded = false;
+            }
+        })
 
         grid.on('loaded.rs.jquery.bootgrid', function () {
             updateStatisticColumns(); // ensures inspect columns are consistent after reload
