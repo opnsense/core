@@ -29,15 +29,15 @@
             <mac_sources type="OptionField">
                 <Default>ipv6-link-local</Default>
                 <Required>Y</Required>
-                <OptionValues>
-                    <duid>duid</duid>
-                    <ipv6-link-local>ipv6-link-local</ipv6-link-local>
-                    <client-link-addr-option>client-link-addr-option</client-link-addr-option>
-                    <remote-id>remote-id</remote-id>
-                    <docsis-cmts>docsis-cmts</docsis-cmts>
-                    <docsis-modem>docsis-modem</docsis-modem>
-                </OptionValues>
                 <Multiple>Y</Multiple>
+                <OptionValues>
+                    <duid/>
+                    <ipv6-link-local/>
+                    <client-link-addr-option/>
+                    <remote-id/>
+                    <docsis-cmts/>
+                    <docsis-modem/>
+                </OptionValues>
             </mac_sources>
             <fwrules type="BooleanField">
                 <Required>Y</Required>
@@ -200,12 +200,12 @@
                 </ddns_domain_key_secret>
                 <ddns_domain_key_algorithm type="OptionField">
                     <OptionValues>
-                        <hmac-md5>hmac-md5</hmac-md5>
-                        <hmac-sha1>hmac-sha1</hmac-sha1>
-                        <hmac-sha224>hmac-sha224</hmac-sha224>
-                        <hmac-sha256>hmac-sha256</hmac-sha256>
-                        <hmac-sha384>hmac-sha384</hmac-sha384>
-                        <hmac-sha512>hmac-sha512</hmac-sha512>
+                        <hmac-md5/>
+                        <hmac-sha1/>
+                        <hmac-sha224/>
+                        <hmac-sha256/>
+                        <hmac-sha384/>
+                        <hmac-sha512/>
                     </OptionValues>
                     <Constraints>
                         <check001>
@@ -223,9 +223,9 @@
                 <ddns_conflict_resolution_mode type="OptionField">
                     <BlankDesc>check-with-dhcid (default)</BlankDesc>
                     <OptionValues>
-                        <no-check-with-dhcid>no-check-with-dhcid</no-check-with-dhcid>
-                        <check-exists-with-dhcid>check-exists-with-dhcid</check-exists-with-dhcid>
-                        <no-check-without-dhcid>no-check-without-dhcid</no-check-without-dhcid>
+                        <no-check-with-dhcid/>
+                        <check-exists-with-dhcid/>
+                        <no-check-without-dhcid/>
                     </OptionValues>
                 </ddns_conflict_resolution_mode>
                 <description type="DescriptionField"/>
@@ -336,15 +336,15 @@
                     <Required>Y</Required>
                     <Default>hex</Default>
                     <OptionValues>
-                        <hex>hex</hex>
+                        <hex>Hex</hex>
                         <ipv4-address>IPv4 address</ipv4-address>
                         <ipv6-address>IPv6 address</ipv6-address>
-                        <uint8>uint8</uint8>
-                        <uint16>uint16</uint16>
-                        <uint32>uint32</uint32>
-                        <int32>int32</int32>
-                        <boolean>bool</boolean>
-                        <string>string</string>
+                        <uint8>Uint8</uint8>
+                        <uint16>Uint16</uint16>
+                        <uint32>Uint32</uint32>
+                        <int32>Int32</int32>
+                        <boolean>Boolean</boolean>
+                        <string>String</string>
                         <fqdn>FQDN</fqdn>
                     </OptionValues>
                 </encoding>
@@ -374,15 +374,15 @@
                 </match_code>
                 <match_encoding type="OptionField">
                     <OptionValues>
-                        <hex>hex</hex>
+                        <hex>Hex</hex>
                         <ipv4-address>IPv4 address</ipv4-address>
                         <ipv6-address>IPv6 address</ipv6-address>
-                        <uint8>uint8</uint8>
-                        <uint16>uint16</uint16>
-                        <uint32>uint32</uint32>
-                        <int32>int32</int32>
-                        <boolean>bool</boolean>
-                        <string>string</string>
+                        <uint8>Uint8</uint8>
+                        <uint16>Uint16</uint16>
+                        <uint32>Uint32</uint32>
+                        <int32>Int32</int32>
+                        <boolean>Boolean</boolean>
+                        <string>String</string>
                         <fqdn>FQDN</fqdn>
                     </OptionValues>
                     <Constraints>
@@ -466,8 +466,8 @@
                     <Default>primary</Default>
                     <Required>Y</Required>
                     <OptionValues>
-                        <primary>primary</primary>
-                        <standby>standby</standby>
+                        <primary>Primary</primary>
+                        <standby>Standby</standby>
                     </OptionValues>
                 </role>
                 <url type="UrlField">
