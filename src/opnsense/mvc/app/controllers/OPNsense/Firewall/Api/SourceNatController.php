@@ -204,17 +204,11 @@ class SourceNatController extends FilterBaseController
             $allrules = array_merge($allrules, $this->getAutomaticOutboundNatRules());
         }
 
-        $filter_funct_rs = function ($record) use ($category) {
-            /* categories are indexed by name in the record, but offered as uuid in the selector */
-            $catids = !empty($record['categories']) ? explode(',', $record['categories']) : [];
-            return empty($category) || array_intersect($catids, $category);
-        };
-
         return $this->searchRecordsetBase(
             $allrules,
             null,
             "sort_order",
-            $filter_funct_rs,
+            null,  // Always show the automatic rules, even when a category is selected
             SORT_NATURAL | SORT_FLAG_CASE,
             []
         );
