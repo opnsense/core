@@ -291,7 +291,10 @@ class BackupController extends ApiControllerBase
                 @unlink($tmpfile);
 
                 if (!empty($this->request->getPost('encrypt'))) {
-                    $password = $this->request->getPost('encrypt_password');
+                    $password = (string)$this->request->getPost('encrypt_password');
+                    if (trim($password) === '') {
+                        return ['status' => 'failed', 'message' => gettext('A non-empty encryption password is required.')];
+                    }
                     $crypter = new Local();
                     $data = $crypter->encrypt($data, $password);
                 }
