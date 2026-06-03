@@ -33,12 +33,20 @@ use OPNsense\Core\Config;
 
 class SNatModeField extends OptionField
 {
+    public const DEFAULT_MODE = 'automatic';
+    public const MODES = ['automatic', 'hybrid', 'advanced', 'disabled'];
+
+    public static function isValidMode($mode): bool
+    {
+        return in_array($mode, self::MODES, true);
+    }
+
     protected function actionPostLoadingEvent()
     {
         $mode = (string)(Config::getInstance()->object()->nat?->outbound?->mode ?? '');
 
-        if (!in_array($mode, ['automatic', 'hybrid', 'advanced', 'disabled'], true)) {
-            $mode = 'automatic';
+        if (!self::isValidMode($mode)) {
+            $mode = self::DEFAULT_MODE;
         }
 
         $this->setValue($mode);

@@ -643,7 +643,7 @@
                 }
                 const dfObj = new $.Deferred();
                 saveFormToEndpoint(
-                    "/api/firewall/source_nat/set_mode",
+                    "/api/firewall/source_nat/set",
                     "frm_dialogSNatMode",
                     function() {
                         dfObj.resolve();

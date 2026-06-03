@@ -35,24 +35,8 @@ class SourceNatController extends FilterBaseController
 {
     protected static $categorysource = "snatrules.rule";
 
-    // Set the SNAT mode (legacy nat.outbound.mode)
-    public function setModeAction()
-    {
-        if (!$this->request->isPost() || (new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
-            return ['result' => 'failed'];
-        }
-        $data = $this->request->getPost('filter');
-        $mode = $data['general']['snat_mode'] ?? null;
-        if (!in_array($mode, ['automatic', 'hybrid', 'advanced', 'disabled'], true)) {
-            return ['result' => 'failed'];
-        }
-        Config::getInstance()->lock();
-        // XXX: The nat.outbound.mode node should theoretically always exist already
-        Config::getInstance()->object()->nat->outbound->mode = $mode;
-        Config::getInstance()->save();
-        return ['result' => 'ok'];
-    }
-
+    // XXX: These are synthetic, display only for user convenience.
+    //      The backend should generate them in the same way, but there is no relation to this.
     private function getAutomaticOutboundNatRules(): array
     {
         $config = Config::getInstance()->object();

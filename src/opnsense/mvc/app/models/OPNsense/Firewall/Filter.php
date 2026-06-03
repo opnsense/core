@@ -32,6 +32,7 @@ use OPNsense\Core\Config;
 use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Firewall\Util;
+use OPNsense\Firewall\FieldTypes\SNatModeField;
 use OPNsense\TrafficShaper\TrafficShaper;
 
 class Filter extends BaseModel
@@ -394,5 +395,23 @@ class Filter extends BaseModel
             }
         }
         return false;
+    }
+
+    /**
+     * Persist volatile SNAT model fields into legacy configuration nodes.
+     */
+    public function serializeToConfig($validateFullModel = false, $disable_validation = false)
+    {
+        $result = parent::serializeToConfig($validateFullModel, $disable_validation);
+        $mode = $this->general->snat_mode->getValue();
+        if (!SNatModeField::isValidMode($mode)) {
+            return $result;
+        }
+        if ((string)Config::getInstance()->object()->nat->outbound->mode !== $mode) {
+            // XXX: The nat.outbound.mode node should be already created by the standard system migration
+            Config::getInstance()->object()->nat->outbound->mode = $mode;
+            $result = true;
+        }
+        return $result;
     }
 }
