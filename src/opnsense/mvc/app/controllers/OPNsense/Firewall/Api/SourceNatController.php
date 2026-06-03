@@ -164,37 +164,60 @@ class SourceNatController extends FilterBaseController
         return $rows;
     }
 
+    // Return changes on configured snat_mode
+    // - disabled: ""
+    // - hybrid: automatic and manual rules
+    // - advanced (manual): manual rules
+    // - automatic: automatic rules
     public function searchRuleAction()
     {
         $category = (array)$this->request->get('category');
+        $mode = $this->getModel()->general->snat_mode->getValue();
+        $allrules = [];
 
-        $filter_funct = function ($record) use ($category) {
-            /* categories are indexed by name in the record, but offered as uuid in the selector */
-            $catids = !$record->categories->isEmpty() ? $record->categories->getValues() : [];
-            return empty($category) || array_intersect($catids, $category);
-        };
+        if (in_array($mode, ['hybrid', 'advanced'], true)) {
+            $filter_funct = function ($record) use ($category) {
+                /* categories are indexed by name in the record, but offered as uuid in the selector */
+                $catids = !$record->categories->isEmpty() ? $record->categories->getValues() : [];
+                return empty($category) || array_intersect($catids, $category);
+            };
 
-        $results = $this->searchBase("snatrules.rule", null, "sequence", $filter_funct);
+            $results = $this->searchBase("snatrules.rule", null, "sort_order", $filter_funct);
+            $allrules = $results['rows'];
 
-        /* carry results */
-        foreach ($results['rows'] as &$record) {
-            /* offer list of colors to be used by the frontend */
-            $record['category_colors'] = $this->getCategoryColors(
-                !empty($record['categories']) ? explode(',', $record['categories']) : []
-            );
-            /* format "networks" and ports */
-            foreach (['source_net','source_port','destination_net','destination_port', 'target', 'target_port'] as $field) {
-                if (!empty($record[$field])) {
-                    $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
+            /* carry results */
+            foreach ($allrules as &$record) {
+                /* offer list of colors to be used by the frontend */
+                $record['category_colors'] = $this->getCategoryColors(
+                    !empty($record['categories']) ? explode(',', $record['categories']) : []
+                );
+                /* format "networks" and ports */
+                foreach (['source_net','source_port','destination_net','destination_port', 'target', 'target_port'] as $field) {
+                    if (!empty($record[$field])) {
+                        $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
+                    }
                 }
             }
         }
 
-        if (in_array($this->getModel()->general->snat_mode->getValue(), ['automatic', 'hybrid'], true)) {
-            $results['rows'] = array_merge($results['rows'], $this->getAutomaticOutboundNatRules());
+        if (in_array($mode, ['automatic', 'hybrid'], true)) {
+            $allrules = array_merge($allrules, $this->getAutomaticOutboundNatRules());
         }
 
-        return $results;
+        $filter_funct_rs = function ($record) use ($category) {
+            /* categories are indexed by name in the record, but offered as uuid in the selector */
+            $catids = !empty($record['categories']) ? explode(',', $record['categories']) : [];
+            return empty($category) || array_intersect($catids, $category);
+        };
+
+        return $this->searchRecordsetBase(
+            $allrules,
+            null,
+            "sort_order",
+            $filter_funct_rs,
+            SORT_NATURAL | SORT_FLAG_CASE,
+            []
+        );
     }
 
     public function setRuleAction($uuid)
