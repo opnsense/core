@@ -6703,7 +6703,8 @@ body {
 }
 
 .page-content {
-  height: calc(100% - 62px);
+  background: rgb(26.2, 29.475, 39.3);
+  height: 100%;
   padding-top: 62px;
   position: relative;
   z-index: 1;
@@ -6729,7 +6730,6 @@ body {
 
 .page-content-main {
   background: rgb(26.2, 29.475, 39.3);
-  min-height: calc(100% - 64px);
   padding: 15px 0 73px;
 }
 

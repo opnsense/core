@@ -97,7 +97,8 @@ body{
 }
 
 .page-content{
-  height: calc(100% - 62px);
+  background: map-get($colors, content-background);
+  height: 100%;
   padding-top: 62px;
   position: relative;
   z-index: 1;
@@ -125,7 +126,6 @@ body{
 
 .page-content-main {
   background: map-get($colors, content-background);
-  min-height: calc(100% - 64px);
   padding: 15px 0 (15px + 58px);
 }
 
