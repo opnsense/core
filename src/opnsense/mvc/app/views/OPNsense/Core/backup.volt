@@ -276,7 +276,7 @@
     function show_value(key) {
         $('#show-' + key + '-btn').html('');
         $('#show-' + key + '-val').show();
-        $('#' + key).focus();
+        $("[name='" + key + "']").focus();
     }
 </script>
 

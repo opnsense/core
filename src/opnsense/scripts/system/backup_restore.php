@@ -181,13 +181,7 @@ if (!empty($restoreareas)) {
             unset($config['rrddata']);
             \OPNsense\Core\Config::getInstance()->save('Restored configuration area (RRD data imported)');
         }
-        if (!empty($params['flush_history'])) {
-            mwexecf('/usr/local/opnsense/scripts/system/flush_config_history');
-            \OPNsense\Core\Config::getInstance()->save('System restore flushed local history');
-        }
-        if ($do_reboot && \is_interface_mismatch(false)) {
-            echo json_encode(['status' => 'success', 'message' => gettext("The configuration area was restored, but physical interfaces could not be matched. No automatic reboot was performed."), 'reboot' => false]);
-            exit(0);
+        if ($do_reboot) {
         }
         echo json_encode(['status' => 'success', 'message' => gettext("The configuration area has been restored."), 'reboot' => $do_reboot]);
     }
@@ -210,15 +204,14 @@ if (!empty($restoreareas)) {
     $cnf = \OPNsense\Core\Config::getInstance();
     $restore_file = tempnam(sys_get_temp_dir(), 'opn_restore_');
     file_put_contents($restore_file, $data);
-    $ok = $cnf->restoreBackup($restore_file);
-    @unlink($restore_file);
-    if ($ok) {
+    if ($cnf->restoreBackup($restore_file)) {
+        @unlink($restore_file);
         $config = \parse_config();
         $flush = false;
         if (!empty($params['keepconsole'])) {
             foreach ($csettings as $fieldname => $fieldcontent) {
-                if ($fieldcontent === null && isset($config['system'][$fieldname])) {
-                    unset($config['system'][$fieldname]);
+                if ($fieldcontent === null && isset($config[$fieldname])) {
+                    unset($config[$fieldname]);
                 } else {
                     $config['system'][$fieldname] = $fieldcontent;
                 }
