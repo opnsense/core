@@ -190,8 +190,7 @@ class SourceNatController extends FilterBaseController
             }
         }
 
-        $mode = (string)(Config::getInstance()->object()->nat->outbound->mode ?? 'automatic');
-        if (in_array($mode, ['automatic', 'hybrid'], true)) {
+        if (in_array($this->getModel()->general->snat_mode->getValue(), ['automatic', 'hybrid'], true)) {
             $results['rows'] = array_merge($results['rows'], $this->getAutomaticOutboundNatRules());
         }
 
