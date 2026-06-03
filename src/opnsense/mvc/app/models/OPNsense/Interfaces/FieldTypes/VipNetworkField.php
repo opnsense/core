@@ -30,8 +30,6 @@ namespace OPNsense\Interfaces\FieldTypes;
 
 use OPNsense\Base\FieldTypes\TextField;
 use OPNsense\Base\Validators\CallbackValidator;
-use OPNsense\Core\Backend;
-use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 
 class VipNetworkField extends TextField

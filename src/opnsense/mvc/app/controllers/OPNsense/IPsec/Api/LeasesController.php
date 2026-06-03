@@ -30,7 +30,6 @@ namespace OPNsense\IPsec\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
-use OPNsense\Core\Config;
 
 /**
  * Class LeasesController

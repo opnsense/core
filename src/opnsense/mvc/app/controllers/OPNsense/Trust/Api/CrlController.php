@@ -29,7 +29,6 @@
 namespace OPNsense\Trust\Api;
 
 use OPNsense\Base\ApiControllerBase;
-use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Trust\Store as CertStore;

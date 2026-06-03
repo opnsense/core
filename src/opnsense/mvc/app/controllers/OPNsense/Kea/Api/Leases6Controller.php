@@ -28,10 +28,6 @@
 
 namespace OPNsense\Kea\Api;
 
-use OPNsense\Base\ApiControllerBase;
-use OPNsense\Core\Backend;
-use OPNsense\Core\Config;
-
 class Leases6Controller extends LeasesController
 {
     protected $configd_fetch_leases = 'kea list leases6';

@@ -29,7 +29,6 @@
 namespace OPNsense\Kea\Api;
 
 use OPNsense\Base\ApiMutableServiceControllerBase;
-use OPNsense\Core\Backend;
 use OPNsense\Kea\KeaDhcpv4;
 use OPNsense\Kea\KeaDhcpv6;
 
