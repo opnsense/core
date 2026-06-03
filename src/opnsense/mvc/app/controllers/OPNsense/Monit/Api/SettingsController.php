@@ -31,7 +31,6 @@
 namespace OPNsense\Monit\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
-use OPNsense\Core\Config;
 
 /**
  * Class SettingsController

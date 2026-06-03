@@ -30,7 +30,6 @@ namespace OPNsense\IDS\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Backend;
-use OPNsense\Core\Config;
 use OPNsense\Core\SanitizeFilter;
 
 /**

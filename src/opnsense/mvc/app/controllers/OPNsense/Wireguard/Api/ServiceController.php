@@ -31,7 +31,6 @@ namespace OPNsense\Wireguard\Api;
 
 use OPNsense\Base\ApiMutableServiceControllerBase;
 use OPNsense\Core\Backend;
-use OPNsense\Wireguard\General;
 use OPNsense\Wireguard\Client;
 use OPNsense\Wireguard\Server;
 

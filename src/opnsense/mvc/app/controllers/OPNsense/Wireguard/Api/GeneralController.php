@@ -30,8 +30,6 @@
 namespace OPNsense\Wireguard\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
-use OPNsense\Core\Config;
-use OPNsense\Core\Backend;
 
 class GeneralController extends ApiMutableModelControllerBase
 {

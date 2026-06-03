@@ -31,7 +31,6 @@ namespace OPNsense\Routes\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Backend;
-use OPNsense\Core\Config;
 use OPNsense\Routes\Route;
 
 /**
