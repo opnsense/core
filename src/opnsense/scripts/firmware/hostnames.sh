@@ -60,4 +60,4 @@ for HOST in $( (for URL in ${URLS}; do
 	HOST=${URL#*://}
 	echo ${HOST%%/*}
 
-done) | sort -u); do echo ${HOST}; done
+done) | awk '!_[$0]++'); do echo ${HOST}; done
