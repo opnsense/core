@@ -582,6 +582,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/DiskSpaceStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/DnsmasqOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/FirewallStatus.php
+/usr/local/opnsense/mvc/app/library/OPNsense/System/Status/HostDiscoveryStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/IDSOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/IPsecOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/LiveMediaStatus.php
@@ -2489,6 +2490,7 @@
 /usr/local/opnsense/www/themes/opnsense/build/css/dashboard.css
 /usr/local/opnsense/www/themes/opnsense/build/css/main.css
 /usr/local/opnsense/www/themes/opnsense/build/css/opnsense-bootgrid.css
+/usr/local/opnsense/www/themes/opnsense/build/css/tokenize2.css
 /usr/local/opnsense/www/themes/opnsense/build/fonts/LICENSE.SourceSansPro.txt
 /usr/local/opnsense/www/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.eot
 /usr/local/opnsense/www/themes/opnsense/build/fonts/SourceSansPro-Bold/SourceSansPro-Bold.otf
