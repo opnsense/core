@@ -115,6 +115,18 @@
         }
 
         function responseHandler(response) {
+            // recursively clear children but keep buckets intact
+            const clear = (buckets) => {
+                for (const bucket of buckets) {
+                    if (Array.isArray(bucket.children)) {
+                        clear(bucket.children);
+                        bucket.children = [];
+                    }
+                }
+            }
+
+            clear(buckets);
+
             // (re)initialize mising buckets
             for (const [idx, type] of Object.entries(ruleTypeMap)) {
                 const index = Number(idx);
@@ -129,22 +141,9 @@
                         _expanded: false,
                         categories: type.label,
                         category_colors: [{ name: type.label }],
-                        _parent: null
                     }));
                 }
             }
-
-            // recursively clear children but keep buckets intact
-            const clear = (buckets) => {
-                for (const bucket of buckets) {
-                    if (Array.isArray(bucket.children)) {
-                        clear(bucket.children);
-                        bucket.children = [];
-                    }
-                }
-            }
-
-            clear(buckets);
 
             const indexMap = {};
             let lastBucketId = null;
@@ -154,7 +153,7 @@
 
                 const categoryLabel = row["%categories"] || row.categories || "";
                 if (treeViewEnabled && row.is_automatic !== true && categoryLabel !== "") {
-                    // create bucket id based on this row
+                    // We're dealing with a category, create bucket id based on this row
                     const bucketId = `${bucket.uuid}category${String(categoryLabel).replace(/[^a-z0-9]/gi, '')}`;
                     
                     if (!(bucketId in indexMap)) {
@@ -167,27 +166,22 @@
                     }
 
                     const id = `${bucketId}${indexMap[bucketId]}`;
-                    
-                    let tmp = bucket.children.find(child => child.uuid === id);
+                    let newBucket = bucket.children.find(child => child.uuid === id);
 
-                    if (!tmp) {
-                        const newBucket = createBucket({
+                    if (!newBucket) {
+                        newBucket = createBucket({
                             uuid: id,
                             _persistence: true,
                             categories: categoryLabel,
                             category_colors: row.category_colors,
-                            _parent: bucket.uuid
                         });
                         bucket.children.push(newBucket);
-                        bucket = newBucket;
-                    } else {
-                        bucket = tmp;
                     }
 
+                    bucket = newBucket;
                     lastBucketId = bucketId;
                 }
 
-                row._parent = bucket.uuid;
                 bucket.children.push(row);
             });
 
