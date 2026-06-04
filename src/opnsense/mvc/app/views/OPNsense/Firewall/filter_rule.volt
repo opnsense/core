@@ -95,24 +95,6 @@
                 ...props
             };
         }
-        
-        function bucketById(buckets, uuid) {
-            for (const bucket of buckets) {
-                if (bucket.uuid === uuid) {
-                    return bucket;
-                }
-
-                if (Array.isArray(bucket.children)) {
-                    const found = bucketById(bucket.children, uuid);
-
-                    if (found) {
-                        return found;
-                    }
-                }
-            }
-
-            return null;
-        }
 
         function responseHandler(response) {
             // recursively clear children but keep buckets intact
@@ -156,6 +138,8 @@
                     // We're dealing with a category, create bucket id based on this row
                     const bucketId = `${bucket.uuid}category${String(categoryLabel).replace(/[^a-z0-9]/gi, '')}`;
                     
+                    // categories with the same name may appear multiple times due to ordering,
+                    // indexMap tracks these to uniquely identify them.
                     if (!(bucketId in indexMap)) {
                         indexMap[bucketId] = 0;
                     }
@@ -830,23 +814,36 @@
 
         });
 
+        function onTreeEvent(row, open) {
+            const getBucketById = (buckets, uuid) => {
+                for (const bucket of buckets) {
+                    if (bucket.uuid === uuid) {
+                        return bucket;
+                    }
+
+                    if (Array.isArray(bucket.children)) {
+                        const found = getBucketById(bucket.children, uuid);
+
+                        if (found) {
+                            return found;
+                        }
+                    }
+                }
+
+                return null;
+            }
+
+            const bucket = getBucketById(buckets, row.getData().uuid);
+            if ('_expanded' in bucket) {
+                bucket._expanded = open;
+            }
+        }
+
         // persist expansion state of rule type categories
         // during the lifetime of the page, resets on page reload
         const table = grid.bootgrid('getTable');
-        table.on('dataTreeRowExpanded', (row) => {
-            const bucket = bucketById(buckets, row.getData().uuid);
-
-            if ('_expanded' in bucket) {
-                bucket._expanded = true;
-            }
-        })
-        table.on('dataTreeRowCollapsed', (row) => {
-            const bucket = bucketById(buckets, row.getData().uuid);
-
-            if ('_expanded' in bucket) {
-                bucket._expanded = false;
-            }
-        })
+        table.on('dataTreeRowExpanded', (row) => onTreeEvent(row, true));
+        table.on('dataTreeRowCollapsed', (row) => onTreeEvent(row, false));
 
         grid.on('loaded.rs.jquery.bootgrid', function () {
             updateStatisticColumns(); // ensures inspect columns are consistent after reload
