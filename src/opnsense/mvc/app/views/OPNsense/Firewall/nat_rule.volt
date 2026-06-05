@@ -32,6 +32,8 @@
         // XXX: Category keys differ in the individual models
         const category_key = '{{ categoryKey }}';
 
+        let snatModeLoaded = false;
+
         function setupSnatModeForm() {
             if (entrypoint !== 'source_nat') {
                 updateSnatModeUI();
@@ -42,8 +44,15 @@
             }).done(function() {
                 $('#filter\\.general\\.snat_mode').selectpicker('refresh');
                 updateSnatModeUI();
+                snatModeLoaded = true;
             });
         }
+
+        $('#filter\\.general\\.snat_mode').on('changed.bs.select', function () {
+            if (snatModeLoaded) {
+                $(document).trigger("settings-changed");
+            }
+        });
 
         function updateSnatModeUI() {
             if (entrypoint !== 'source_nat') {
