@@ -32,8 +32,6 @@
         // XXX: Category keys differ in the individual models
         const category_key = '{{ categoryKey }}';
 
-        let snatModeLoaded = false;
-
         function setupSnatModeForm() {
             if (entrypoint !== 'source_nat') {
                 updateSnatModeUI();
