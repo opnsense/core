@@ -56,9 +56,10 @@ class Menu extends MenuContainer
         );
         if ($has_legacy_fw || $has_legacy_outbound_nat) {
             $this->appendItem('Firewall', 'Migration', [
-                    'url' => '/ui/firewall/migration',
-                    'fixedname' => sprintf("<i class='fa fa-fw fa-gears'> </i> %s", gettext('Migration assistant')),
-                    'order' => 0,
+                'url' => '/ui/firewall/migration',
+                'fixedname' => gettext('Migration assistant'),
+                'cssClass' => 'fa fa-gears fa-fw',
+                'order' => 0,
             ]);
         }
         if ($has_legacy_fw) {
