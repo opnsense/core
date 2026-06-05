@@ -102,19 +102,13 @@ class SourceNatController extends FilterBaseController
                     'protocol' => 'any',
                     '%protocol' => '*',
                     'source_net' => $source_net,
-                    'alias_meta_source_net' => $this->getNetworks($source_net),
                     'source_not' => '0',
                     'source_port' => '',
-                    'alias_meta_source_port' => $this->getNetworks(''),
                     'destination_net' => 'any',
-                    'alias_meta_destination_net' => $this->getNetworks('any'),
                     'destination_not' => '0',
                     'destination_port' => '500',
-                    'alias_meta_destination_port' => $this->getNetworks('500'),
                     'target' => $target,
-                    'alias_meta_target' => $this->getNetworks($target),
                     'target_port' => '',
-                    'alias_meta_target_port' => $this->getNetworks(''),
                     'staticnatport' => '1',
                     'log' => '0',
                     'categories' => '',
@@ -139,19 +133,13 @@ class SourceNatController extends FilterBaseController
                     'protocol' => 'any',
                     '%protocol' => '*',
                     'source_net' => $source_net,
-                    'alias_meta_source_net' => $this->getNetworks($source_net),
                     'source_not' => '0',
                     'source_port' => '',
-                    'alias_meta_source_port' => $this->getNetworks(''),
                     'destination_net' => 'any',
-                    'alias_meta_destination_net' => $this->getNetworks('any'),
                     'destination_not' => '0',
                     'destination_port' => '',
-                    'alias_meta_destination_port' => $this->getNetworks(''),
                     'target' => $target,
-                    'alias_meta_target' => $this->getNetworks($target),
                     'target_port' => '',
-                    'alias_meta_target_port' => $this->getNetworks(''),
                     'staticnatport' => '0',
                     'log' => '0',
                     'categories' => '',
@@ -180,27 +168,8 @@ class SourceNatController extends FilterBaseController
         $allrules = [];
 
         if (in_array($mode, ['hybrid', 'advanced'], true)) {
-            $filter_funct = function ($record) use ($category) {
-                /* categories are indexed by name in the record, but offered as uuid in the selector */
-                $catids = !$record->categories->isEmpty() ? $record->categories->getValues() : [];
-                return empty($category) || array_intersect($catids, $category);
-            };
-
-            $results = $this->searchBase("snatrules.rule", null, "sort_order", $filter_funct);
-            $allrules = $results['rows'];
-
-            /* carry results */
-            foreach ($allrules as &$record) {
-                /* offer list of colors to be used by the frontend */
-                $record['category_colors'] = $this->getCategoryColors(
-                    !empty($record['categories']) ? explode(',', $record['categories']) : []
-                );
-                /* format "networks" and ports */
-                foreach (['source_net','source_port','destination_net','destination_port', 'target', 'target_port'] as $field) {
-                    if (!empty($record[$field])) {
-                        $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
-                    }
-                }
+            foreach ($this->getModel()->snatrules->rule->iterateItems() as $key => $node) {
+                $allrules[] = array_merge(['uuid' => $key], $node->getNodeContent());
             }
         }
 
@@ -208,13 +177,30 @@ class SourceNatController extends FilterBaseController
             $allrules = array_merge($allrules, $this->getAutomaticOutboundNatRules());
         }
 
+        $filter_funct = function (&$record) use ($category) {
+            /* categories are indexed by name in the record, but offered as uuid in the selector */
+            $catids = !empty($record['categories']) ? explode(',', $record['categories']) : [];
+
+            /* offer list of colors to be used by the frontend */
+            $record['category_colors'] = $this->getCategoryColors(
+                !empty($record['categories']) ? explode(',', $record['categories']) : []
+            );
+            /* format "networks" and ports */
+            foreach (['source_net','source_port','destination_net','destination_port', 'target', 'target_port'] as $field) {
+                if (!empty($record[$field])) {
+                    $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
+                }
+            }
+            // Always show the automatic rules, even when a category is selected
+            return !empty($record['is_automatic']) || empty($category) || array_intersect($catids, $category);
+        };
+
         return $this->searchRecordsetBase(
             $allrules,
             null,
             "sort_order",
-            null,  // Always show the automatic rules, even when a category is selected
-            SORT_NATURAL | SORT_FLAG_CASE,
-            []
+            $filter_funct,
+            SORT_NATURAL | SORT_FLAG_CASE
         );
     }
 
