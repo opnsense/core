@@ -66,14 +66,23 @@
 
         // read interface from URL hash once, for the first grid load
         let pendingUrlInterface = getUrlHash('interface') || null;
+        let previousGroupType = null;
+        let currentGroupType = null;
 
-        const ruleTypeMap = {
-            '0': { uuid: "auto0", label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary", groupType: null },
-            '2': { uuid: "floating", label: "{{ lang._('Floating rules') }}", icon: "fa-layer-group", tooltip: "{{ lang._('Floating rule') }}", color: "text-primary", groupType: "floating" },
-            '3': { uuid: "group", label: "{{ lang._('Group rules') }}", icon: "fa-sitemap", tooltip: "{{ lang._('Group rule') }}", color: "text-warning", groupType: "groups" },
-            '4': { uuid: "interface", label: "{{ lang._('Interface rules') }}", icon: "fa-ethernet", tooltip: "{{ lang._('Interface rule') }}", color: "text-info", groupType: "interfaces" },
-            '5': { uuid: "auto1", label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary", groupType: null },
-        };
+        $("#interface_select").on('changed.bs.select', function() {
+            const groupData = $(this).data();
+            currentGroupType = Object.entries(groupData.store)
+                                .find(([, group]) => group.items?.some(item => item.value === $("#interface_select").val()))
+                                ?.[0] ?? null;
+        });
+
+        const ruleTypeMap = [
+            { idx: 0, uuid: "auto0", label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary", groupType: null },
+            { idx: 2, uuid: "floating", label: "{{ lang._('Floating rules') }}", icon: "fa-layer-group", tooltip: "{{ lang._('Floating rule') }}", color: "text-primary", groupType: "floating" },
+            { idx: 3, uuid: "group", label: "{{ lang._('Group rules') }}", icon: "fa-sitemap", tooltip: "{{ lang._('Group rule') }}", color: "text-warning", groupType: "groups" },
+            { idx: 4, uuid: "interface", label: "{{ lang._('Interface rules') }}", icon: "fa-ethernet", tooltip: "{{ lang._('Interface rule') }}", color: "text-info", groupType: "interfaces" },
+            { idx: 5, uuid: "auto1", label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary", groupType: null },
+        ];
 
         // XXX: The "prio_group.sequence" combination in "sort_order" (300000.0000010) is not always static, e.g. in group rules it could also be (300010.0000010).
         //      An exact match is not always possible, using the first digit is the best assumption currently.
@@ -108,21 +117,30 @@
 
             clear(buckets);
 
-            // (re)initialize mising buckets
-            for (const [idx, type] of Object.entries(ruleTypeMap)) {
-                const index = Number(idx);
+            // (re)initialize missing buckets
+            for (const type of ruleTypeMap) {
+                let bucket = buckets.some(bucket => bucket.idx === type.idx);
 
-                const exists = buckets.some(bucket => Number(bucket.idx) === index);
-
-                if (!exists) {
-                    buckets.splice(index, 0, createBucket({
+                if (!bucket) {
+                    buckets.push(createBucket({
                         ...type,
-                        idx: index,
                         _persistence: false,
                         _expanded: false,
                         categories: type.label,
                         category_colors: [{ name: type.label }],
                     }));
+                    buckets = buckets.sort((a, b) => a.idx - b.idx);
+                }
+            }
+
+            // determine tree expansion state of top-level buckets
+            for (const bucket of buckets) {
+                if (["auto0", "auto1"].includes(bucket.uuid)) {
+                    bucket._expanded = false;
+                } else if (bucket.groupType === currentGroupType || currentGroupType === "any") {
+                    bucket._expanded = true;
+                } else if (currentGroupType !== previousGroupType) {
+                    bucket._expanded = false;
                 }
             }
 
@@ -183,6 +201,7 @@
             };
 
             removeEmptyGroups(buckets);
+            previousGroupType = currentGroupType;
 
             return Object.assign({}, response, { rows: buckets });
         }
@@ -205,49 +224,7 @@
                 dataTree              : true,
                 dataTreeChildField    : "children",
                 dataTreeElementColumn : "categories",
-                dataTreeStartExpanded : function(row, level) {
-                    const data = row.getData();
-                    if (data._persistence && !data?._expanded) {
-                        // expansion state determined by user interaction
-                        return false;
-                    }
-
-                    if (data?._expanded) {
-                        // inline reload of data, non-persisted open state
-                        return true;
-                    }
-
-                    // always stay collapsed if this tree is for the automatically generated rules
-                    if (data.uuid === "auto0" || data.uuid === "auto1") {
-                        return false;
-                    }
-
-                    const interfaceSelection = $("#interface_select").val();
-
-                    // expand if user selected "all rules"
-                    if (interfaceSelection === "__any") {
-                        return true;
-                    }
-
-                    // find group by interface selection value
-                    // note that "group" does not refer to interface groups here,
-                    // but rather the interface selectpicker groups: "floating", "groups", "interfaces"
-                    const groupData = $("#interface_select").data();
-                    let found = null;
-                    for (const [groupName, group] of Object.entries(groupData.store)) {
-                        if (group.items?.some(item => item.value === interfaceSelection)) {
-                            found = groupName;
-                            break;
-                        }
-                    }
-
-                    // unconditionally expand if the selected interface type matches the group type
-                    if (found === data.groupType || found === "any") {
-                        return true;
-                    }
-
-                    return false;
-                },
+                dataTreeStartExpanded : (row, level) => row.getData()._expanded,
                 rowFormatter: function(row) {
                     const data = row.getData();
                     const $element = $(row.getElement());
@@ -494,7 +471,7 @@
                             * whose name matches ruleTypeMap, while real category buckets continue
                             * to render normal category tag icons.
                             */
-                            const ruleType = Object.values(ruleTypeMap).find(r => r.uuid === row.uuid);
+                            const ruleType = ruleTypeMap.find(r => r.uuid === row.uuid);
 
                             const name = ruleType ? ruleType.tooltip : (cat.name || "");
                             const icon = ruleType ? ruleType.icon : "fa-fw fa-tag";
@@ -855,6 +832,37 @@
         const table = grid.bootgrid('getTable');
         table.on('dataTreeRowExpanded', (row) => onTreeEvent(row, true));
         table.on('dataTreeRowCollapsed', (row) => onTreeEvent(row, false));
+
+        // "selectableRowsCheck" doesn't execute when the header checkbox is used,
+        // work around this by checking on row selection
+        table.on('rowSelected', (row) => {
+            const data = row.getData();
+            if (data.isGroup) {
+                // "select all" triggered, deselect current row since it's a group, but select any nested row that isn't a group recursively
+                row.deselect();
+                const children = row.getTreeChildren();
+                const getAllRows = (rows) => {
+                    const result = [];
+
+                    for (const row of rows) {
+                        const rowData = row.getData();
+                        // do not select rows that aren't visible to avoid confusion (_expanded == false)
+                        if (!rowData.isGroup && rowData.uuid.includes("-") && row.getTreeParent().getData()._expanded) {
+                            result.push(row);
+                            continue;
+                        }
+
+                        result.push(...getAllRows(row.getTreeChildren() || []));
+                    }
+
+                    return result;
+                };
+
+                for (const selectableRow of getAllRows(children)) {
+                    selectableRow.select();
+                }
+            }
+        });
 
         grid.on('loaded.rs.jquery.bootgrid', function () {
             updateStatisticColumns(); // ensures inspect columns are consistent after reload
