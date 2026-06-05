@@ -105,6 +105,7 @@ if (count($nat_rules)) {
             '@uuid' => '',
             'enabled' => empty($rule['disabled']) ? '1' : '0',
             'nonat' => !empty($rule['nonat']) ? '1' : '0',
+            'nosync' => !empty($rule['nosync']) ? '1' : '0',
             'sequence' => $sequence,
             'interface' => $rule['interface'] ?? 'lan',
             'ipprotocol' => $rule['ipprotocol'] ?? 'inet',
@@ -120,6 +121,7 @@ if (count($nat_rules)) {
             'staticnatport' => !empty($rule['staticnatport']) ? '1' : '0',
             'log' => !empty($rule['log']) ? '1' : '0',
             'categories' => $rule['category'] ?? '',
+            'tag' => $rule['tag'] ?? '',
             'tagged' => $rule['tagged'] ?? '',
             'description' => $rule['descr'] ?? '',
         ];
