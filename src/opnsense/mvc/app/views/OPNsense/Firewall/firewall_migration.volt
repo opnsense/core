@@ -48,6 +48,28 @@
               }]
           });
         });
+        $("#remove_outbound").click(function(){
+            BootstrapDialog.show({
+                type:BootstrapDialog.TYPE_WARNING,
+                title: "{{ lang._('Flush') }}",
+                message: "{{ lang._('Are you sure you want to remove all legacy outbound NAT rules.') }}",
+                buttons: [{
+                    label: "{{ lang._('Yes') }}",
+                    action: function(dialogRef){
+                        dialogRef.close();
+                        $("#flushAct_progress").addClass("fa fa-spinner fa-pulse");
+                        ajaxCall("/api/firewall/migration/flush_outbound", {}, function(data,status) {
+                                window.location = '/ui/firewall/source_nat/';
+                        });
+                    }
+                }, {
+                    label: "{{ lang._('No') }}",
+                    action: function(dialogRef){
+                        dialogRef.close();
+                    }
+                }]
+            });
+        });
     });
 </script>
 <style>
@@ -134,7 +156,7 @@
             </div>
             <div>
                 <i class="fa fa-fw fa-trash"></i>
-                <a id="remove_rules" style="cursor: pointer;">{{ lang._('Remove all legacy rules') }}</a>
+                <a id="remove_rules" style="cursor: pointer;">{{ lang._('Remove all legacy firewall rules') }}</a>
                 <i id="flushAct_progress" class=""></i>
             </div>
         </div>
@@ -175,6 +197,11 @@
             <div>
                 <i class="fa fa-fw fa-upload"></i>
                 <a target="_new" href="/ui/firewall/source_nat/">{{ lang._('Import rules using the button in the grid footer') }}</a>
+            </div>
+            <div>
+                <i class="fa fa-fw fa-trash"></i>
+                <a id="remove_outbound" style="cursor: pointer;">{{ lang._('Remove all legacy outbound NAT rules') }}</a>
+                <i id="flushAct_progress" class=""></i>
             </div>
         </div>
     </div>

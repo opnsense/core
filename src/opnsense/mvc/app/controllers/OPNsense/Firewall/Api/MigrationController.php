@@ -28,6 +28,7 @@
 namespace OPNsense\Firewall\Api;
 
 use OPNsense\Base\ApiControllerBase;
+use OPNsense\Core\ACL;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Core\ConfigMaintenance;
@@ -45,7 +46,7 @@ class MigrationController extends ApiControllerBase
 
     public function flushAction()
     {
-        if ($this->request->isPost()) {
+        if ($this->request->isPost() && !(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
             (new ConfigMaintenance())->delItem('filter.rule');
             Config::getInstance()->save();
             return ["status" => "ok"];
@@ -60,6 +61,17 @@ class MigrationController extends ApiControllerBase
         if ($this->request->isGet()) {
             $data = json_decode((new Backend())->configdRun('filter list legacy_outbound_nat') ?? '', true) ?? [];
             $this->exportCsv($data);
+        }
+    }
+
+    public function flushOutboundAction()
+    {
+        if ($this->request->isPost() && !(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
+            (new ConfigMaintenance())->delItem('nat.outbound.rule');
+            Config::getInstance()->save();
+            return ["status" => "ok"];
+        } else {
+            return ['status' => 'failed'];
         }
     }
 }
