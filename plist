@@ -1181,6 +1181,7 @@
 /usr/local/opnsense/scripts/filter/lib/alias/uri.py
 /usr/local/opnsense/scripts/filter/lib/states.py
 /usr/local/opnsense/scripts/filter/list_divert_sockets.php
+/usr/local/opnsense/scripts/filter/list_legacy_outbound_nat.php
 /usr/local/opnsense/scripts/filter/list_legacy_rules.php
 /usr/local/opnsense/scripts/filter/list_non_mvc_rules.php
 /usr/local/opnsense/scripts/filter/list_osfp.py

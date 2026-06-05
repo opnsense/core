@@ -39,7 +39,6 @@
                       ajaxCall("/api/firewall/migration/flush", {}, function(data,status) {
                             window.location = '/ui/firewall/filter/';
                       });
-
                   }
               },{
                   label: '{{ lang._('No') }}',
@@ -56,6 +55,7 @@
         counter-reset: list-number;
         margin:10px;
     }
+
     div.miglist div:before {
         counter-increment: list-number;
         content: counter(list-number);
@@ -72,8 +72,24 @@
         border-radius:50%;
         color:#fff;
     }
- </style>
-<pre>
+</style>
+
+<ul class="nav nav-tabs" role="tablist">
+    <li class="active">
+        <a href="#filter-rules-migration" data-toggle="tab">
+            {{ lang._('Firewall rules') }}
+        </a>
+    </li>
+    <li>
+        <a href="#source-nat-migration" data-toggle="tab">
+            {{ lang._('Outbound NAT rules') }}
+        </a>
+    </li>
+</ul>
+
+<div class="tab-content content-box">
+    <div id="filter-rules-migration" class="tab-pane fade in active">
+        <pre class="migration-text">
 {{ lang._('
     To switch from the legacy rules to the new rules interface, a migration is needed.
     As this can be a risky operation, manual intervention is required.
@@ -81,7 +97,7 @@
     This module assists you in moving your rules to the new application and offers pointers to
     various components available to guide you through the process.
 
-    When using a ZFS based setup, you can use snapshots to revert back to the old situation when accidents happen,
+    When using a ZFS based setup, you can use snapshots to revert back to the old situation when accidents happen.
     The other option is to use configuration history to undo changes or backup your configuration [1].
 
     To prevent being locked out during the process, do not disable the anti-lockout rule and access the machine
@@ -96,28 +112,70 @@
     After validating the rules are as expected, you can remove all legacy rules via [5] which forwards you to the new rules page after completion.
 
 ') }}
-</pre>
-<div class="tab-content content-box">
-    <div class="miglist">
-        <div> <i class="fa fa-fw fa-book"></i>
-              <a target="_new" href="https://docs.opnsense.org/manual/snapshots.html">{{ lang._('Snapshots')}} /
-              <a target="_new" href="https://docs.opnsense.org/manual/backups.html#history">{{ lang._('Configuration history')}}</a>
+        </pre>
+
+        <div class="miglist">
+            <div>
+                <i class="fa fa-fw fa-book"></i>
+                <a target="_new" href="https://docs.opnsense.org/manual/snapshots.html">{{ lang._('Snapshots') }}</a> /
+                <a target="_new" href="https://docs.opnsense.org/manual/backups.html#history">{{ lang._('Configuration history') }}</a>
+            </div>
+            <div>
+                <i class="fa fa-fw fa-check"></i>
+                <a target="_new" href="/system_advanced_firewall.php">{{ lang._('Do not disable anti-lockout in advanced settings') }}</a>
+            </div>
+            <div>
+                <i class="fa fa-fw fa-file-csv"></i>
+                <a href="/api/firewall/migration/download_rules">{{ lang._('Export current rules') }}</a>
+            </div>
+            <div>
+                <i class="fa fa-fw fa-upload"></i>
+                <a target="_new" href="/ui/firewall/filter/">{{ lang._('Import rules using the button in the grid footer') }}</a>
+            </div>
+            <div>
+                <i class="fa fa-fw fa-trash"></i>
+                <a id="remove_rules" style="cursor: pointer;">{{ lang._('Remove all legacy rules') }}</a>
+                <i id="flushAct_progress" class=""></i>
+            </div>
         </div>
-        <div>
-            <i class="fa fa-fw fa-check"></i>
-            <a target="_new" href="/system_advanced_firewall.php">{{ lang._('Do not disable anti-lockout in advanced settings')}}</a>
-        </div>
-        <div>
-            <i class="fa fa-fw fa-file-csv"></i>
-            <a href="/api/firewall/migration/download_rules" >{{ lang._('Export current rules')}}</a>
-        </div>
-        <div>
-            <i class="fa fa-fw fa-upload"></i>
-            <a target="_new" href="/ui/firewall/filter/" >{{ lang._('Import rules using the button in the grid footer')}}</a>
-        </div>
-        <div>
-            <i class="fa fa-fw fa-trash"></i>
-            <a id="remove_rules" style="cursor: pointer;">{{ lang._('Remove all legacy rules')}}</a>
+    </div>
+
+    <div id="source-nat-migration" class="tab-pane fade">
+        <pre class="migration-text">
+{{ lang._('
+    To switch from the legacy outbound NAT rules to the new Source NAT rules interface, a migration is needed.
+    As this can be a risky operation, manual intervention is required.
+
+    This module assists you in exporting legacy outbound NAT rules into a format the new Source NAT rules interface understands.
+
+    When using a ZFS based setup, you can use snapshots to revert back to the old situation when accidents happen.
+    The other option is to use configuration history to undo changes or backup your configuration [1].
+
+    With all preparations in place, you can export the legacy outbound NAT rules [2].
+
+    {tip} Use a tool like Microsoft Excel to inspect and modify rules in the CSV file before importing them or when certain validations fail.
+
+    Now you can import the exported rules into the new Source NAT user interface [3].
+
+    After validating the imported rules, review the configured Source NAT mode in the new interface and apply the firewall configuration.
+
+') }}
+        </pre>
+
+        <div class="miglist">
+            <div>
+                <i class="fa fa-fw fa-book"></i>
+                <a target="_new" href="https://docs.opnsense.org/manual/snapshots.html">{{ lang._('Snapshots') }}</a> /
+                <a target="_new" href="https://docs.opnsense.org/manual/backups.html#history">{{ lang._('Configuration history') }}</a>
+            </div>
+            <div>
+                <i class="fa fa-fw fa-file-csv"></i>
+                <a href="/api/firewall/migration/download_outbound">{{ lang._('Export legacy outbound NAT rules') }}</a>
+            </div>
+            <div>
+                <i class="fa fa-fw fa-upload"></i>
+                <a target="_new" href="/ui/firewall/source_nat/">{{ lang._('Import rules using the button in the grid footer') }}</a>
+            </div>
         </div>
     </div>
 </div>
