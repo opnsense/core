@@ -42,17 +42,13 @@
             mapDataToFormUI({
                 'frm_dialogSNatMode': "/api/firewall/source_nat/get"
             }).done(function() {
-                $('#filter\\.general\\.snat_mode').selectpicker('refresh');
+                $('.selectpicker').selectpicker('refresh');
                 updateSnatModeUI();
-                snatModeLoaded = true;
+                $('#filter\\.general\\.snat_mode').change(function () {
+                    $(document).trigger("settings-changed");
+                });
             });
         }
-
-        $('#filter\\.general\\.snat_mode').on('changed.bs.select', function () {
-            if (snatModeLoaded) {
-                $(document).trigger("settings-changed");
-            }
-        });
 
         function updateSnatModeUI() {
             if (entrypoint !== 'source_nat') {
