@@ -694,7 +694,7 @@
             }
         });
 
-        setupSnatModeForm()  // All NAT pages have to call this to unhide the shared grid
+        setupSnatModeForm();  // All NAT pages have to call this to unhide the shared grid
         populateCategoriesSelectpicker();
 
     });
