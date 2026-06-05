@@ -102,7 +102,7 @@ if (count($nat_rules)) {
         $destination = $rule['destination'] ?? [];
 
         $target_rule = [
-            '@uuid' => $rule['@attributes']['uuid'] ?? bin2hex(random_bytes(16)),
+            '@uuid' => '',
             'enabled' => empty($rule['disabled']) ? '1' : '0',
             'nonat' => !empty($rule['nonat']) ? '1' : '0',
             'sequence' => $sequence,
