@@ -217,10 +217,21 @@
                         return true;
                     }
 
+                    // always stay collapsed if this tree is for the automatically generated rules
+                    if (data.uuid === "auto0" || data.uuid === "auto1") {
+                        return false;
+                    }
+
+                    const interfaceSelection = $("#interface_select").val();
+
+                    // expand if user selected "all rules"
+                    if (interfaceSelection === "__any") {
+                        return true;
+                    }
+
                     // find group by interface selection value
                     // note that "group" does not refer to interface groups here,
                     // but rather the interface selectpicker groups: "floating", "groups", "interfaces"
-                    const interfaceSelection = $("#interface_select").val();
                     const groupData = $("#interface_select").data();
                     let found = null;
                     for (const [groupName, group] of Object.entries(groupData.store)) {
@@ -230,6 +241,7 @@
                         }
                     }
 
+                    // unconditionally expand if the selected interface type matches the group type
                     if (found === data.groupType || found === "any") {
                         return true;
                     }
