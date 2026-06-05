@@ -29,9 +29,8 @@
 
 require_once("script/load_phalcon.php");
 require_once("plugins.inc");
-require_once("system.inc");
 
-$applications = array();
+$applications = [];
 foreach (plugins_syslog() as $plugin_name => $plugin_details) {
     if (!empty($plugin_details['facility'])) {
         foreach ($plugin_details['facility'] as $facility) {
