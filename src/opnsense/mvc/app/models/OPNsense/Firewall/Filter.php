@@ -32,7 +32,6 @@ use OPNsense\Core\Config;
 use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Firewall\Util;
-use OPNsense\Firewall\FieldTypes\SNatModeField;
 use OPNsense\TrafficShaper\TrafficShaper;
 
 class Filter extends BaseModel
@@ -404,13 +403,9 @@ class Filter extends BaseModel
     {
         $result = parent::serializeToConfig($validateFullModel, $disable_validation);
         $mode = $this->general->snat_mode->getValue();
-        if (!SNatModeField::isValidMode($mode)) {
-            return $result;
-        }
         if ((string)Config::getInstance()->object()->nat->outbound->mode !== $mode) {
-            // XXX: The nat.outbound.mode node should be already created by the standard system migration
+            /* SimpleXML will create the node when not there */
             Config::getInstance()->object()->nat->outbound->mode = $mode;
-            $result = true;
         }
         return $result;
     }
