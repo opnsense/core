@@ -34,6 +34,15 @@ class SourceNatController extends FilterBaseController
 {
     protected static $categorysource = "snatrules.rule";
 
+    public function setGeneralAction()
+    {
+        if ($this->request->isPost()) {
+            $this->getModel()->general->setNodes($this->request->getPost('filter')['general'] ?? []);
+            return $this->save();
+        }
+        return ['result' => 'failed'];
+    }
+
     // XXX: These are synthetic, display only for user convenience.
     //      The backend should generate them in the same way, but there is no relation to this.
     private function getAutomaticOutboundNatRules(): array
