@@ -36,11 +36,17 @@ class SourceNatController extends FilterBaseController
 
     public function setGeneralAction()
     {
+        $result = ['result' => 'failed'];
         if ($this->request->isPost()) {
-            $this->getModel()->general->setNodes($this->request->getPost('filter')['general'] ?? []);
-            return $this->save();
+            Config::getInstance()->lock();
+            $mdl = $this->getModel();
+            $mdl->general->setNodes($this->request->getPost('filter')['general'] ?? []);
+            $result = $this->validate($mdl->general, 'filter.general');
+            if (empty($result['result'])) {
+                return $this->save(false, true);
+            }
         }
-        return ['result' => 'failed'];
+        return $result;
     }
 
     // XXX: These are synthetic, display only for user convenience.
