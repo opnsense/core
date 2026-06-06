@@ -30,7 +30,6 @@
 
 namespace OPNsense\Base;
 
-use OPNsense\Core\ACL;
 use OPNsense\Core\Config;
 use OPNsense\Core\Type;
 
@@ -319,22 +318,16 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     protected function save($validateFullModel = false, $disable_validation = false)
     {
-        if (!(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
-            if ($this->getModel()->serializeToConfig($validateFullModel, $disable_validation)) {
-                if ($this->internalAuditMessage) {
-                    Config::getInstance()->save(['description' => $this->internalAuditMessage]);
-                } else {
-                    /* default "endpoint made changes" message */
-                    Config::getInstance()->save();
-                }
+        $this->throwReadOnly();
+        if ($this->getModel()->serializeToConfig($validateFullModel, $disable_validation)) {
+            if ($this->internalAuditMessage) {
+                Config::getInstance()->save(['description' => $this->internalAuditMessage]);
+            } else {
+                /* default "endpoint made changes" message */
+                Config::getInstance()->save();
             }
-            return ["result" => "saved"];
-        } else {
-            // XXX remove user-config-readonly in some future release
-            throw new UserException(
-                sprintf("User %s denied for write access (user-config-readonly set)", $this->getUserName())
-            );
         }
+        return ["result" => "saved"];
     }
 
     /**

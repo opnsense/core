@@ -37,7 +37,9 @@
                       dialogRef.close();
                       $("#flushAct_progress").addClass("fa fa-spinner fa-pulse");
                       ajaxCall("/api/firewall/migration/flush", {}, function(data,status) {
-                            window.location = '/ui/firewall/filter/';
+                            if (data.status === 'ok') {
+                                window.location = '/ui/firewall/filter/';
+                            }
                       });
                   }
               },{
@@ -59,7 +61,9 @@
                         dialogRef.close();
                         $("#flushAct_progress").addClass("fa fa-spinner fa-pulse");
                         ajaxCall("/api/firewall/migration/flush_outbound", {}, function(data,status) {
+                            if (data.status === 'ok') {
                                 window.location = '/ui/firewall/source_nat/';
+                            }
                         });
                     }
                 }, {
