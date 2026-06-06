@@ -41,7 +41,6 @@ class ConfigMaintenance
             'dhcpd' => gettext('Services: ISC DHCPv4 [legacy]'),
             'dhcpdv6' => gettext('Services: ISC DHCPv6 [legacy]'),
             'filter.rule' => gettext('Firewall: Rules [legacy]'),
-            // XXX: NAT Outbound is currently noop, the nested node is never reached
             'nat.outbound.rule' => gettext('Firewall: NAT: Outbound [legacy]'),
             'openvpn' => gettext('VPN: OpenVPN [legacy]'),
         ];
