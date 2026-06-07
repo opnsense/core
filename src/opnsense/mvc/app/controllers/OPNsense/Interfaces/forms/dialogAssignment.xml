@@ -35,7 +35,7 @@
 -->
     <field>
         <id>interface.if</id>
-        <label>Interface</label>
+        <label>Device</label>
         <type>dropdown</type>
         <help>Device name to connect this interface to.</help>
     </field>
