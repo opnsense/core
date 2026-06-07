@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2014-2025 Deciso B.V.
+ # Copyright (c) 2014-2026 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -35,89 +35,78 @@
 
 {# Find if there are help supported or advanced field on this page #}
 {% set base_form_id=id %}
-{% set help=false %}
-{% set advanced=false %}
-{% for field in fields|default({})%}
-{%     for name,element in field %}
-{%         if name=='help' %}
-{%             set help=true %}
-{%         endif %}
-{%         if name=='advanced' %}
-{%             set advanced=true %}
-{%         endif %}
-{%     endfor %}
-{%     if help|default(false) and advanced|default(false) %}
-{%         break %}
-{%     endif %}
-{% endfor %}
+
 <form id="{{base_form_id}}" class="form-inline" data-title="{{data_title|default('')}}">
-  <div class="table-responsive">
-    <table class="table table-striped table-condensed" style="table-layout: fixed; width: 100%;">
-        <colgroup>
-            <col style="width: 25%;" />
-            <col style="width: 40%;" />
-            <col style="width: 35%;" />
-        </colgroup>
-        <tbody>
-{% if advanced|default(false) or help|default(false) %}
-        <tr>
-            <td style="text-align:left">{% if advanced|default(false) %}<a href="#"><i class="fa fa-toggle-off text-danger" id="show_advanced_{{base_form_id}}"></i></a> <small>{{ lang._('advanced mode') }}</small>{% endif %}</td>
-            <td colspan="2" style="text-align:right">
-                {% if help|default(false) %}<small>{{ lang._('full help') }}</small> <a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_{{base_form_id}}"></i></a>{% endif %}
-            </td>
-        </tr>
-{% endif %}
-        {% for field in fields|default({})%}
-            {% if field['type'] == 'ignore' %}
-            {% elseif field['type'] == 'header' %}
-              {# close table and start new one with header #}
-
-{#- macro base_dialog_header(field) #}
-      </tbody>
-      <tfoot><tr><td colspan="3" style="padding: 0px;"></td></tr></tfoot>
-    </table>
-  </div>
-  <div class="table-responsive {{field['style']|default('')}}">
-    <table class="table table-striped table-condensed" style="table-layout: fixed; width: 100%;">
-        <colgroup>
-            <col style="width: 25%;" />
-            <col style="width: 40%;" />
-            <col style="width: 35%;" />
-        </colgroup>
-        <thead {% if field['static']|default('false')=='false' %} style="cursor: pointer;"{% endif %} class="{{field['style']|default('')}}">
-          <tr {% if field['advanced']|default('false')=='true' %} data-advanced="true"{% endif %}>
-            <th colspan="3">
-                <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px;">
-                    {% if field['static']|default('false')=='false' %}
-                    {% if field['collapse']|default('false')=='true' %}
-                    <i class="fa fa-angle-right" aria-hidden="true"></i>
-                    {% else %}
-                    <i class="fa fa-angle-down" aria-hidden="true"></i>
-                    {% endif %}
-                    &nbsp;
-                    {% endif %}
-                    <b>{{field['label']}}</b>
-                </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody {%if field['static']|default('false')=='false'%}class="collapsible" {% if field['collapse']|default('false')=='true' %}style="display: none;"{%endif%}{%endif%}>
-{#- endmacro #}
-
+    {% for section in fields['sections'] %}
+        <div class="table-responsive {{section['style']|default('')}}">
+        <table class="table table-striped table-condensed" style="table-layout: fixed; width: 100%;">
+            <colgroup>
+            {% if msgzone_width is defined %}
+                <col class="col-md-3"/>
+                <col class="col-md-{{ 12 - 3 - msgzone_width }}"/>
+                <col class="col-md-{{ msgzone_width }}"/>
             {% else %}
-              {{ partial("layout_partials/form_input_tr",field)}}
+                <col style="width: 25%;" />
+                <col style="width: 40%;" />
+                <col style="width: 35%;" />
             {% endif %}
-        {% endfor %}
-        {% if apply_btn_id|default('') != '' %}
-        <tr>
-            <td colspan="3"><button class="btn btn-primary" id="{{apply_btn_id}}" type="button"><b>{{ lang._('Apply') }}</b> <i id="{{base_form_id}}_progress" class=""></i></button></td>
-        </tr>
-        {% endif %}
-        </tbody>
-        <tfoot><tr><td colspan="3" style="padding: 0px;"></td></tr></tfoot>
-    </table>
-  </div>
+            </colgroup>
+            {% if section['type'] %}
+            <thead {% if section['static']|default('false')=='false' %} style="cursor: pointer;"{% endif %}>
+            <tr{% if section['advanced']|default('false')=='true' %} data-advanced="true"{% endif %}>
+                <th colspan="3">
+                    <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px;">
+                        {% if section['static']|default('false')=='false' %}
+                        {% if section['collapse']|default('false')=='true' %}
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                        {% else %}
+                        <i class="fa fa-angle-down" aria-hidden="true"></i>
+                        {% endif %}
+                        &nbsp;
+                        {% endif %}
+                        <b>{{section['label']}}</b>
+                    </div>
+                </th>
+            </tr>
+            </thead>
+            {% endif %}
+            <tbody class="collapsible">
+            {%  if not section['type'] and (fields['advanced']|default(false) or fields['help']|default(false)) %}
+            <tr>
+                <td>{% if fields['advanced']|default(false) %}<a href="#"><i class="fa fa-toggle-off text-danger" id="show_advanced_formDialog{{base_dialog_id}}"></i></a> <small>{{ lang._('advanced mode') }}</small>{% endif %}</td>
+                <td colspan="2" style="text-align:right;">
+                    {% if fields['help']|default(false) %}<small>{{ lang._('full help') }}</small> <a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_formDialog{{base_dialog_id}}"></i></a>{% endif %}
+                </td>
+            </tr>
+            {% endif %}
+            {% for field in section['children']%}
+                {% if field['type'] == 'subheader' %}
+                    <tr{% if field['advanced']|default('false') == 'true' %} data-advanced="true"{% endif %}>
+                        <td colspan="3">
+                            <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px; padding-left: 5px;">
+                                <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                                &nbsp;
+                                <b>{{ field['label'] }}</b>
+                            </div>
+                        </td>
+                    </tr>
+                {% elseif field['type'] != 'ignore' %}
+                    {{ partial("layout_partials/form_input_tr", field)}}
+                {% endif %}
+            {% endfor %}
+            {% if loop.last and apply_btn_id|default('') != '' %}
+                    <tr>
+                        <td colspan="3">
+                            <button class="btn btn-primary" id="{{apply_btn_id}}" type="button"><b>{{ lang._('Apply') }}</b> <i id="{{base_form_id}}_progress" class=""></i></button>
+                        </td>
+                    </tr>
+            {% endif %}
+            </tbody>
+        </table>
+        </div>
+    {% endfor %}
 </form>
+
 
 {# Ensure all fields stay the same width relative to each other inside the modal #}
 <style>
