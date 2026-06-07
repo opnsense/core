@@ -1,0 +1,8 @@
+<form>
+    <field>
+        <id>filter.general.snat_mode</id>
+        <label>Mode</label>
+        <type>dropdown</type>
+        <help>Choose how source NAT rules are handled. Automatic mode generates rules for you, hybrid mode combines manual and automatic rules, manual mode only uses configured rules, and disabled mode turns source NAT off.</help>
+    </field>
+</form>

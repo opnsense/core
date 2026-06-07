@@ -34,6 +34,7 @@ use OPNsense\Core\ConfigMaintenance;
 
 class MigrationController extends ApiControllerBase
 {
+    // Firewall rules
     public function downloadRulesAction()
     {
         if ($this->request->isGet()) {
@@ -45,7 +46,29 @@ class MigrationController extends ApiControllerBase
     public function flushAction()
     {
         if ($this->request->isPost()) {
+            $this->throwReadOnly();
             (new ConfigMaintenance())->delItem('filter.rule');
+            Config::getInstance()->save();
+            return ["status" => "ok"];
+        } else {
+            return ['status' => 'failed'];
+        }
+    }
+
+    // Outbound NAT rules
+    public function downloadOutboundAction()
+    {
+        if ($this->request->isGet()) {
+            $data = json_decode((new Backend())->configdRun('filter list legacy_outbound_nat') ?? '', true) ?? [];
+            $this->exportCsv($data);
+        }
+    }
+
+    public function flushOutboundAction()
+    {
+        if ($this->request->isPost()) {
+            $this->throwReadOnly();
+            (new ConfigMaintenance())->delItem('nat.outbound.rule');
             Config::getInstance()->save();
             return ["status" => "ok"];
         } else {

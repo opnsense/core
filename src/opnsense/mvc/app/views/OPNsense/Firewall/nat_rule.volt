@@ -32,6 +32,32 @@
         // XXX: Category keys differ in the individual models
         const category_key = '{{ categoryKey }}';
 
+        function setupSnatModeForm() {
+            if (entrypoint !== 'source_nat') {
+                updateSnatModeUI();
+                return;
+            }
+            mapDataToFormUI({
+                'frm_dialogSNatMode': "/api/firewall/source_nat/get"
+            }).done(function() {
+                $('.selectpicker').selectpicker('refresh');
+                updateSnatModeUI();
+                $('#filter\\.general\\.snat_mode').change(function () {
+                    $(document).trigger("settings-changed");
+                });
+            });
+        }
+
+        function updateSnatModeUI() {
+            if (entrypoint !== 'source_nat') {
+                $('#rule_grid_container').removeClass('snat-mode-hidden');
+                return;
+            }
+            const snatMode = $('#filter\\.general\\.snat_mode').val();
+            const isDisabled = snatMode === 'disabled';
+            $('#rule_grid_container').toggleClass('snat-mode-hidden', isDisabled);
+        }
+
         function showDialogAlert(type, title, message) {
             BootstrapDialog.show({
                 type: type,
@@ -631,7 +657,23 @@
         $("#reconfigureAct").SimpleActionButton({
             onPreAction() {
                 reconfigureActInProgress = true;
-                return $.Deferred().resolve();
+                if (entrypoint !== 'source_nat') {
+                    return $.Deferred().resolve();
+                }
+                const dfObj = new $.Deferred();
+                saveFormToEndpoint(
+                    "/api/firewall/source_nat/set_general",
+                    "frm_dialogSNatMode",
+                    function() {
+                        dfObj.resolve();
+                    },
+                    true,
+                    function() {
+                        reconfigureActInProgress = false;
+                        dfObj.reject();
+                    }
+                );
+                return dfObj.promise();
             },
             onAction(data, status) {
                 Promise.all([
@@ -639,10 +681,14 @@
                 ])
                 .finally(() => {
                     reconfigureActInProgress = false;
+                    // The search endpoint has different responses based on selected snat_mode
+                    updateSnatModeUI();
+                    $("#{{formGridRule['table_id']}}").bootgrid('reload');
                 });
             }
         });
 
+        setupSnatModeForm();  // All NAT pages have to call this to unhide the shared grid
         populateCategoriesSelectpicker();
 
     });
@@ -732,6 +778,9 @@
             margin: 0;
         }
     }
+    .snat-mode-hidden {
+        display: none;
+    }
 </style>
 
 <div class="tab-content content-box">
@@ -756,8 +805,12 @@
             </button>
         </div>
     </div>
-
-    {{ partial('layout_partials/base_bootgrid_table', formGridRule + {'command_width':'150'}) }}
+    {% if entrypoint == 'source_nat' %}
+        {{ partial("layout_partials/base_form", ['fields': formSnatMode, 'id': 'frm_dialogSNatMode']) }}
+    {% endif %}
+    <div id="rule_grid_container" class="snat-mode-hidden">
+        {{ partial('layout_partials/base_bootgrid_table', formGridRule + {'command_width':'150'}) }}
+    </div>
 </div>
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/' ~ entrypoint ~ '/apply'}) }}

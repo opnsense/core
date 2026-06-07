@@ -104,18 +104,8 @@ class FilterController extends FilterBaseController
         }
         /* extract all mvc records so we can filter and sort all at once */
         $allrules = [];
-        foreach ($this->getModel()->rules->rule->iterateItems() as $uuid => $record) {
-            $row = ['uuid' => $record->getAttributes()['uuid']];
-            $reflen = strlen($record->__reference) + 1;
-            foreach ($record->getFlatNodes() as $key => $val) {
-                $fieldname = substr($key, $reflen);
-                $descr = $val->getDescription();
-                $row[$fieldname] = $val->getValue();
-                if ($row[$fieldname] != $descr) {
-                    $row['%' . $fieldname] = $descr;
-                }
-            }
-            $allrules[] = $row;
+        foreach ($this->getModel()->rules->rule->iterateItems() as $key => $node) {
+            $allrules[] = array_merge(['uuid' => $key], $node->getNodeContent());
         }
 
         if ($show_all) {

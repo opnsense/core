@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2020-2025 Deciso B.V.
+ * Copyright (C) 2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -25,17 +25,32 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-namespace OPNsense\Firewall;
 
-class SourceNatController extends \OPNsense\Base\IndexController
+namespace OPNsense\Firewall\FieldTypes;
+
+use OPNsense\Base\FieldTypes\OptionField;
+use OPNsense\Core\Config;
+
+class SNatModeField extends OptionField
 {
-    public function indexAction()
+    public const DEFAULT_MODE = 'automatic';
+    public const MODES = ['automatic', 'hybrid', 'advanced', 'disabled'];
+
+    public static function isValidMode($mode): bool
     {
-        $this->view->entrypoint = 'source_nat';
-        $this->view->categoryKey = 'categories';
-        $this->view->pick('OPNsense/Firewall/nat_rule');
-        $this->view->formDialogRule = $this->getForm('dialogSNatRule');
-        $this->view->formGridRule = $this->getFormGrid('dialogSNatRule');
-        $this->view->formSnatMode = $this->getForm('dialogSNatMode');
+        return in_array($mode, self::MODES, true);
+    }
+
+    protected function actionPostLoadingEvent()
+    {
+        $mode = (string)(Config::getInstance()->object()->nat?->outbound?->mode ?? '');
+
+        if (!self::isValidMode($mode)) {
+            $mode = self::DEFAULT_MODE;
+        }
+
+        $this->setValue($mode);
+
+        return parent::actionPostLoadingEvent();
     }
 }
