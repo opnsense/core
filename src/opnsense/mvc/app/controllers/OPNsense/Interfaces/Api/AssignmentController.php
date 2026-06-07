@@ -33,7 +33,6 @@ use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 
-
 class AssignmentController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'interface';
@@ -89,7 +88,8 @@ class AssignmentController extends ApiMutableModelControllerBase
                     !empty(Config::getInstance()->object()->interfaces->$ifname->lock)
                 ) {
                     throw new UserException(
-                        gettext("Interface locked, unset lock first before removal"), gettext('locked')
+                        gettext("Interface locked, unset lock first before removal"),
+                        gettext('locked')
                     );
                 }
             }

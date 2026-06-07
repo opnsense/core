@@ -33,7 +33,6 @@ use OPNsense\Base\Messages\Message;
 use OPNsense\Core\Config;
 use OPNsense\Core\FileObject;
 
-
 class NetInterface extends BaseModel
 {
     var $todo_file = '/tmp/.interfaces.todo';
@@ -136,7 +135,7 @@ class NetInterface extends BaseModel
 
         foreach ($interfaces as $key => $intf) {
             if (!isset(Config::getInstance()->object()->interfaces->$key)) {
-                $newif = Config::getInstance()->object()->interfaces->addChild('opt'.$next_if);
+                $newif = Config::getInstance()->object()->interfaces->addChild('opt' . $next_if);
                 $newif->if = $intf['if'];
                 $newif->descr = $intf['descr'];
                 $next_if++;
