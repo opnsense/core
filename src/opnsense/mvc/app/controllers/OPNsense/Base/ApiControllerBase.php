@@ -40,6 +40,19 @@ use OPNsense\Mvc\Security;
  */
 class ApiControllerBase extends ControllerRoot
 {
+    /**
+     * When the user-config-readonly privilege is set, raise an error
+     */
+    protected function throwReadOnly()
+    {
+        if ((new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
+            throw new UserException(
+                sprintf("User %s denied for write access (user-config-readonly set)", $this->getUserName()),
+                gettext("General access")
+            );
+        }
+    }
+
     /***
      * Recordset (array in array) search wrapper
      * @param string $path path to search, relative to this model

@@ -266,6 +266,13 @@ include("head.inc");
             print_info_box($savemsg);
         if (is_subsystem_dirty('natconf'))
             print_info_box_apply(gettext("The NAT configuration has been changed.")."<br />".gettext("You must apply the changes in order for them to take effect."));
+        print_info_box(
+            gettext("This legacy outbound NAT page is deprecated and will be replaced by the new Source NAT rules interface.") . "<br />" .
+            gettext("Use the migration assistant to export existing legacy outbound NAT rules and import them into the new interface.") . "<br /><br />" .
+            '<a class="btn btn-primary" href="/ui/firewall/migration">' .
+                '<i class="fa fa-external-link fa-fw"></i> ' . gettext("Open migration assistant") .
+            '</a> '
+        );
 ?>
         <form method="post" name="iform" id="iform">
           <input type="hidden" id="id" name="id" value="" />

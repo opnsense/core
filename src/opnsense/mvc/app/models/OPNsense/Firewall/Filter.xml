@@ -1,9 +1,21 @@
 <model>
     <mount>//OPNsense/Firewall/Filter</mount>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <migration_prefix>MFP</migration_prefix>
     <description>Firewall rules (new)</description>
     <items>
+        <general>
+            <snat_mode type=".\SNatModeField" volatile="true">
+                <Required>Y</Required>
+                <Default>automatic</Default>
+                <OptionValues>
+                    <automatic>Automatic Source NAT rule generation</automatic>
+                    <hybrid>Hybrid Source NAT rule generation</hybrid>
+                    <advanced>Manual Source NAT rule generation</advanced>
+                    <disabled>Disable Source NAT rule generation</disabled>
+                </OptionValues>
+            </snat_mode>
+        </general>
         <rules>
             <rule type=".\FilterRuleField">
                 <enabled type="BooleanField">
@@ -410,6 +422,10 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </nonat>
+                <nosync type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </nosync>
                 <sequence type=".\FilterSequenceField">
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>999999</MaximumValue>
@@ -494,6 +510,9 @@
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
+                <tag type="TextField">
+                    <Mask>/^([0-9a-zA-Z.,_\-]){0,512}$/u</Mask>
+                </tag>
                 <tagged type="TextField">
                     <Mask>/^([0-9a-zA-Z.,_\-]){0,512}$/u</Mask>
                 </tagged>

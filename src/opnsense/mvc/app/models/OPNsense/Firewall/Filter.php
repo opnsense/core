@@ -395,4 +395,18 @@ class Filter extends BaseModel
         }
         return false;
     }
+
+    /**
+     * Persist volatile SNAT model fields into legacy configuration nodes.
+     */
+    public function serializeToConfig($validateFullModel = false, $disable_validation = false)
+    {
+        $result = parent::serializeToConfig($validateFullModel, $disable_validation);
+        $mode = $this->general->snat_mode->getValue();
+        if ((string)Config::getInstance()->object()->nat->outbound->mode !== $mode) {
+            /* SimpleXML will create the node when not there */
+            Config::getInstance()->object()->nat->outbound->mode = $mode;
+        }
+        return $result;
+    }
 }

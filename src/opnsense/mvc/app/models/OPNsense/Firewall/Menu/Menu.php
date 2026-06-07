@@ -48,11 +48,20 @@ class Menu extends MenuContainer
         natcasesort($iftargets);
 
         // add interfaces to "Firewall: Rules" menu tab...
-        $this->appendItem('Firewall.Rules', 'Migration', [
+        $has_legacy_fw = !empty($config->filter?->rule?->count());
+        $has_mvc_fw = !empty($config->OPNsense?->Firewall?->Filter?->rules?->count());
+        $has_legacy_outbound_nat = (
+            !empty($config->nat?->outbound?->rule?->count()) &&
+            !in_array((string)($config->nat?->outbound?->mode), ['automatic', 'disabled'], true)
+        );
+        if ($has_legacy_fw || $has_legacy_outbound_nat) {
+            $this->appendItem('Firewall', 'Migration', [
                 'url' => '/ui/firewall/migration',
-                'fixedname' => sprintf("<i class='fa fa-fw fa-gears'> </i> %s", gettext('Migration assistant')),
+                'fixedname' => gettext('Migration assistant'),
+                'cssClass' => 'fa fa-gears fa-fw',
                 'order' => 0,
-        ]);
+            ]);
+        }
         $iftargets = array_merge(['FloatingRules' => gettext('Floating')], $iftargets);
         $ordid = 1;
         foreach ($iftargets as $key => $descr) {
@@ -78,6 +87,14 @@ class Menu extends MenuContainer
             $this->appendItem('Firewall.Rules.' . $key, 'Edit' . $key, [
                 'url' => '/firewall_rules_edit.php?if=' . $key . '&*',
                 'visibility' => 'hidden',
+            ]);
+        }
+        /* legacy Outbound NAT rules */
+        if ($has_legacy_outbound_nat) {
+            $this->appendItem('Firewall.NAT', 'Outbound', [
+                'url' => '/firewall_nat_out.php',
+                'fixedname' => gettext('Outbound'),
+                'order' => 300,
             ]);
         }
     }

@@ -29,7 +29,6 @@
 namespace OPNsense\Core\Api;
 
 use OPNsense\Base\ApiControllerBase;
-use OPNsense\Core\ACL;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Core\Shell;
@@ -40,18 +39,6 @@ use OPNsense\Core\Shell;
  */
 class BackupController extends ApiControllerBase
 {
-    /**
-     * when the user-config-readonly privilege is set, raise an error
-     */
-    private function throwReadOnly()
-    {
-        if ((new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
-            throw new UserException(
-                sprintf("User %s denied for write access (user-config-readonly set)", $this->getUserName())
-            );
-        }
-    }
-
     /**
      * return available providers and their backup locations
      * @return array

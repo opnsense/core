@@ -31,7 +31,6 @@ namespace OPNsense\Firewall\Api;
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\FieldTypes\PortField;
 use OPNsense\Base\UserException;
-use OPNsense\Core\ACL;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Alias;
@@ -304,7 +303,8 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
     public function applyAction($rollback_revision = null)
     {
         // XXX: Privilege check is a workaround here
-        if ($this->request->isPost() && !(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
+        if ($this->request->isPost()) {
+            $this->throwReadOnly();
             if ($rollback_revision != null) {
                 // background rollback timer
                 (new Backend())->configdpRun('filter rollback_timer', [$rollback_revision], true);
@@ -319,7 +319,8 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
     public function cancelRollbackAction($rollback_revision)
     {
         // XXX: Privilege check is a workaround here
-        if ($this->request->isPost() && !(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
+        if ($this->request->isPost()) {
+            $this->throwReadOnly();
             return array(
                 "status" => (new Backend())->configdpRun('filter cancel_rollback', [$rollback_revision])
             );
@@ -332,7 +333,8 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
     public function savepointAction()
     {
         // XXX: Privilege check is a workaround here
-        if ($this->request->isPost() && !(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
+        if ($this->request->isPost()) {
+            $this->throwReadOnly();
             // trigger a save, so we know revision->time matches our running config
             Config::getInstance()->save();
             return array(
@@ -349,7 +351,8 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
     public function revertAction($revision)
     {
         // XXX: Privilege check is a workaround here
-        if ($this->request->isPost() && !(new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
+        if ($this->request->isPost()) {
+            $this->throwReadOnly();
             Config::getInstance()->lock();
             $filename = Config::getInstance()->getBackupFilename($revision);
             if (!$filename) {

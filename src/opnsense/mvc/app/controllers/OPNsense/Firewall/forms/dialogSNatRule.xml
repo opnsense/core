@@ -48,6 +48,18 @@
         </grid_view>
     </field>
     <field>
+        <id>rule.nosync</id>
+        <label>No XMLRPC Sync</label>
+        <type>checkbox</type>
+        <help>Exclude this item from the HA synchronization process. An already existing item with the same UUID on the synchronization target will not be altered or deleted as long as this is active.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
+    </field>
+    <field>
         <id>rule.description</id>
         <label>Description</label>
         <type>text</type>
@@ -232,6 +244,17 @@
         <help>Log packets that are handled by this rule</help>
         <grid_view>
             <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.tag</id>
+        <label>Set local tag</label>
+        <type>text</type>
+        <help>You can mark a packet matching this rule and use this mark to match on other NAT/filter rules.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
