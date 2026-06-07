@@ -363,6 +363,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogSPD.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/dialogVTI.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/IPsec/forms/settings.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/AssignmentController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/BridgeSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/GifSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/GreSettingsController.php
@@ -374,6 +375,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VipSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VlanSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VxlanSettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/AssignmentController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/BridgeController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/GifController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/GreController.php
@@ -385,6 +387,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VipController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VlanController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VxlanController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogAssignment.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogBridge.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogGif.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogGre.xml
@@ -817,6 +820,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Bridge.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Bridge.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/BridgeMemberField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/DeviceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/DUIDField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/LaggInterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/LinkAddressField.php
@@ -839,6 +843,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor/README
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/NetInterface.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/NetInterface.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Settings.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Settings.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vip.php
@@ -1006,6 +1012,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/spd.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/tunnels.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IPsec/vti.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Interface/assignment.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/bridge.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/gif.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/gre.volt
@@ -1265,6 +1272,7 @@
 /usr/local/opnsense/scripts/health/library/OPNsense/RRD/Types/Wireless.php
 /usr/local/opnsense/scripts/health/listReports.py
 /usr/local/opnsense/scripts/health/updaterrd.php
+/usr/local/opnsense/scripts/interfaces/apply_pending_if_changes.php
 /usr/local/opnsense/scripts/interfaces/capture.py
 /usr/local/opnsense/scripts/interfaces/carp_global_status.php
 /usr/local/opnsense/scripts/interfaces/carp_set_status.php
@@ -1274,6 +1282,7 @@
 /usr/local/opnsense/scripts/interfaces/ifctl.sh
 /usr/local/opnsense/scripts/interfaces/lib/__init__.py
 /usr/local/opnsense/scripts/interfaces/list_arp.py
+/usr/local/opnsense/scripts/interfaces/list_assign_options.php
 /usr/local/opnsense/scripts/interfaces/list_hosts.py
 /usr/local/opnsense/scripts/interfaces/list_macdb.py
 /usr/local/opnsense/scripts/interfaces/list_ndp.py
@@ -2553,7 +2562,6 @@
 /usr/local/www/head.inc
 /usr/local/www/index.php
 /usr/local/www/interfaces.php
-/usr/local/www/interfaces_assign.php
 /usr/local/www/interfaces_ppps.php
 /usr/local/www/interfaces_ppps_edit.php
 /usr/local/www/interfaces_wireless.php

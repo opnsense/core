@@ -434,7 +434,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $if = $_GET['if'];
     } else {
         // no interface provided, redirect to interface assignments
-        header(url_safe('Location: /interfaces_assign.php'));
+        header(url_safe('Location: /ui/interfaces/assignment'));
         exit;
     }
 

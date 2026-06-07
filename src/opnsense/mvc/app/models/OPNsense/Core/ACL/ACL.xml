@@ -284,7 +284,8 @@
     <page-interfaces-assignnetworkports>
         <name>Interfaces: Assign network ports</name>
         <patterns>
-            <pattern>interfaces_assign.php*</pattern>
+            <pattern>ui/interfaces/assignment</pattern>
+            <pattern>api/interfaces/assignment/*</pattern>
         </patterns>
     </page-interfaces-assignnetworkports>
     <page-interfaces-bridge-edit>

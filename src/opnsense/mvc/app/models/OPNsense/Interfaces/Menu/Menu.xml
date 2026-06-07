@@ -1,6 +1,6 @@
 <menu>
     <Interfaces>
-        <Assignments order="200" url="/interfaces_assign.php" cssClass="fa fa-pencil fa-fw"/>
+        <Assignments order="200" url="/ui/interfaces/assignment" cssClass="fa fa-pencil fa-fw"/>
         <Devices order="210" cssClass="fa fa-archive fa-fw">
             <Bridge url="/ui/interfaces/bridge"/>
             <GIF url="/ui/interfaces/gif"/>

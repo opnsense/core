@@ -353,7 +353,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     gettext(
                         "Interfaces do not seem to match, please check the %sassignments%s now for missing devices."
                     ),
-                    '<a href="/interfaces_assign.php">',
+                    '<a href="/ui/interfaces/assignment">',
                     '</a>'
                 );
                 if ($do_reboot) {
