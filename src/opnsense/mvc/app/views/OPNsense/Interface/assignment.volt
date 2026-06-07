@@ -37,6 +37,13 @@
                         statusformatter: function (column, row) {
                             return $("<div/>").addClass(row[column.id])[0];
                         },
+                        descrformatter: function (column, row) {
+                            if (row[column.id] != '') {
+                                return row[column.id];
+                            } else {
+                                return row.uuid.toUpperCase();
+                            }
+                        },
                     }
                 }
             }
