@@ -402,15 +402,17 @@
                         if (row.isGroup) {
                             return "";
                         }
+
                         const value = row[column.id] || "";
                         // DNAT uses network, SNAT and ONAT uses net
                         const isNegated = (row[column.id.replace(/network|net/, 'not')] == 1) ? "! " : "";
 
                         if (typeof value !== 'string') {
                             return '';
-                        }
-
-                        if (!value || value === "any") {
+                        } else if (column.id === "local-port") {
+                            // DNAT: mirror destination port into local-port for better visibility
+                            return (!row["local-port"] ? row["destination.port"] : row["local-port"]) || "*";
+                        } else if (!value || value === "any") {
                             return isNegated + '*';
                         }
 
