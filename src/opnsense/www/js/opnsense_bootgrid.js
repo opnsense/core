@@ -745,11 +745,14 @@ class UIBootgrid {
         });
 
         const rememberTree = (row, open) => {
-            const id = row.getData()[this.options.datakey];
-            if (!id) return;
+            const data = row.getData();
+            const id = data[this.options.datakey];
+            // maintain scroll position regardless of persistence state
+            this._maintainScrollPosition(this.scrollPos);
+            if (!data._persistence || !id) return;
             open ? this.rememberedTreeIds.add(id) : this.rememberedTreeIds.delete(id);
             localStorage.setItem(this.treeStorageKey, JSON.stringify([...this.rememberedTreeIds]));
-            this._maintainScrollPosition(this.scrollPos);
+            this._setPersistence(true);
         };
 
         this.table.on('dataTreeRowExpanded',  (row) => rememberTree(row, true));

@@ -623,7 +623,7 @@ function filter_core_rules_system($fw, $defaults)
                                 // only try to add gateway rules for traffic leaving this interface
                                 // when the correct protocol is assigned to the interface
                                 $fw->registerFilterRule(
-                                    100000,
+                                    10000,
                                     ['from' => "({$ifcfg['if']})", 'direction' => 'out', 'gateway' => $gwname,
                                     'destination' => ['network' => $ifdescr, "not" => true],
                                     'statetype' => 'keep',
