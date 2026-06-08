@@ -46,7 +46,9 @@ use PHPUnit\Framework\TestCase;
  * $track6_prefix_id:
  *   Configuration value:
  *   interfaces.<ifname>.track6-prefix-id
- *   Format: hexadecimal string, for example "0", "a", "10", "ff"
+ *   Format: decimal string, for example "0", "10", "16", "255"
+ *   The prefix ID is stored as decimal string in the config, even though the GUI overlays it as hex.
+ *   https://github.com/opnsense/core/blob/fb514217bae6525f36834ebd7279a02ad8626f0f/src/www/interfaces.php#L327
  *
  * $track6_prefix_range:
  *   Configuration value:
@@ -113,22 +115,23 @@ class IdassocTest extends TestCase
 
         $this->assertCalculatedPrefix($track6_interface_prefix, '0', '2001:db8:1234:ab00::/64');
         $this->assertCalculatedPrefix($track6_interface_prefix, '1', '2001:db8:1234:ab01::/64');
-        $this->assertCalculatedPrefix($track6_interface_prefix, 'a', '2001:db8:1234:ab0a::/64');
-        $this->assertCalculatedPrefix($track6_interface_prefix, 'f', '2001:db8:1234:ab0f::/64');
+        $this->assertCalculatedPrefix($track6_interface_prefix, '10', '2001:db8:1234:ab0a::/64');
+        $this->assertCalculatedPrefix($track6_interface_prefix, '15', '2001:db8:1234:ab0f::/64');
 
-        // Prefix IDs are configured as hexadecimal strings, so "10" means 0x10.
-        $this->assertCalculatedPrefix($track6_interface_prefix, '10', '2001:db8:1234:ab10::/64');
-        $this->assertCalculatedPrefix($track6_interface_prefix, 'ff', '2001:db8:1234:abff::/64');
+        // Configuration stores decimal 16; GUI may display this as hexadecimal "10".
+        $this->assertCalculatedPrefix($track6_interface_prefix, '16', '2001:db8:1234:ab10::/64');
+
+        $this->assertCalculatedPrefix($track6_interface_prefix, '255', '2001:db8:1234:abff::/64');
     }
 
     public function testDelegationSize()
     {
         // /52 leaves 12 bits for the subnet ID until /64.
-        $this->assertCalculatedPrefix('2001:db8:1234:a000::/52', '10', '2001:db8:1234:a010::/64');
+        $this->assertCalculatedPrefix('2001:db8:1234:a000::/52', '16', '2001:db8:1234:a010::/64');
 
         // /48 leaves 16 bits for the subnet ID until /64.
-        $this->assertCalculatedPrefix('2001:db8:1234::/48', '10', '2001:db8:1234:10::/64');
-        $this->assertCalculatedPrefix('2001:db8:1234::/48', 'beef', '2001:db8:1234:beef::/64');
+        $this->assertCalculatedPrefix('2001:db8:1234::/48', '16', '2001:db8:1234:10::/64');
+        $this->assertCalculatedPrefix('2001:db8:1234::/48', '48879', '2001:db8:1234:beef::/64');
     }
 
     public function testPrefixLength()
@@ -142,10 +145,10 @@ class IdassocTest extends TestCase
         $this->assertUsablePrefixLength(56, '0', '4', 62);
         $this->assertUsablePrefixLength(56, '0', '16', 60);
 
-        // Prefix ID "10" is hexadecimal 0x10 and aligned to a /60-sized block.
-        $this->assertUsablePrefixLength(56, '10', '16', 60);
+        // Configuration stores decimal 16; GUI displays this as hexadecimal 10.
+        $this->assertUsablePrefixLength(56, '16', '16', 60);
 
-        // Prefix ID "a" is hexadecimal 0x0a and only aligned to 2 slots.
-        $this->assertUsablePrefixLength(56, 'a', '16', 63);
+        // Decimal 10 is hexadecimal 0x0a and only aligned to 2 slots.
+        $this->assertUsablePrefixLength(56, '10', '16', 63);
     }
 }
