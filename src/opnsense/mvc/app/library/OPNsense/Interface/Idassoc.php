@@ -69,7 +69,7 @@ class Idassoc extends Autoconf
     private static function calculateUsablePrefixLength($source_prefix_len, $track6_prefix_id, $track6_prefix_range = ''): int
     {
         $source_prefix_len = (int)$source_prefix_len;
-        $track6_prefix_id = (string)$track6_prefix_id;
+        $track6_prefix_id = (int)$track6_prefix_id;
         $track6_prefix_range = (string)$track6_prefix_range !== '' ? (int)$track6_prefix_range : 1;
 
         $associated_size = 1 << (64 - $source_prefix_len);
