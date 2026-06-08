@@ -45,7 +45,7 @@ class Idassoc extends Autoconf
         $bytes = array_values(unpack('C*', inet_pton($address)));
 
         $source_prefix_len = (int)$source_prefix_len;
-        $prefix_id = hexdec((string)$prefix_id);
+        $prefix_id = (int)$prefix_id;
         $id_bits = 64 - $source_prefix_len;
 
         for ($i = 0; $i < $id_bits; $i++) {
@@ -69,7 +69,7 @@ class Idassoc extends Autoconf
     private static function calculateUsablePrefixLength($source_prefix_len, $track6_prefix_id, $track6_prefix_range = ''): int
     {
         $source_prefix_len = (int)$source_prefix_len;
-        $track6_prefix_id = hexdec((string)$track6_prefix_id);
+        $track6_prefix_id = (int)$track6_prefix_id;
         $track6_prefix_range = (string)$track6_prefix_range !== '' ? (int)$track6_prefix_range : 1;
 
         $associated_size = 1 << (64 - $source_prefix_len);
