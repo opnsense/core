@@ -234,7 +234,7 @@
                  * grid installed rules
                  */
                 if (!$("#grid-installedrules").hasClass('tabulator')) {
-                    $("#grid-installedrules").UIBootgrid(
+                    let grid_installedrules = $("#grid-installedrules").UIBootgrid(
                         {   search:'/api/ids/settings/searchinstalledrules',
                             get:'/api/ids/settings/get_rule_info/',
                             set:'/api/ids/settings/set_rule/',
@@ -287,6 +287,25 @@
                             },
                         }
                     );
+                    grid_installedrules.on("loaded.rs.jquery.bootgrid", function(){;
+                        $("#dropSelectedRules").unbind('click').click(function(){
+                            $("#dropSelectedRules > span").removeClass("fa-check-square-o").addClass("fa-spinner fa-pulse");
+                            let ids = grid_installedrules.bootgrid('getSelectedRows').join(',');
+                            ajaxCall('/api/ids/settings/toggle_rule/'+ids+"/drop", {}, function(){
+                                $("#dropSelectedRules > span").removeClass("fa-spinner fa-pulse").addClass("fa-check-square-o");
+                                grid_installedrules.bootgrid("reload");
+                            });
+                        });
+                        $("#alertSelectedRules").unbind('click').click(function(){
+                            $("#alertSelectedRules > span").addClass("fa-spinner fa-pulse");
+                            let ids = grid_installedrules.bootgrid('getSelectedRows').join(',');
+                            ajaxCall('/api/ids/settings/toggle_rule/'+ids+"/alert", {}, function(){
+                                $("#alertSelectedRules > span").removeClass("fa-spinner fa-pulse").addClass("fa-check-square-o");
+                                grid_installedrules.bootgrid("reload");
+                            });
+                        });
+                    });
+
                 } else {
                     $('#grid-installedrules').bootgrid('reload');
                 }
