@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2021-2023 Deciso B.V.
+ * Copyright (C) 2021-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,14 +43,9 @@ class Firmware extends BaseModel
      */
     public function getRepositoryOptions()
     {
-        $families = [];
-        $families_has_subscription = [];
-        $flavours = [];
-        $flavours_allow_custom = false;
-        $flavours_has_subscription = [];
-        $mirrors = [];
-        $mirrors_allow_custom = false;
-        $mirrors_has_subscription = [];
+        $families = $families_has_subscription = [];
+        $flavours = $flavours_has_subscription = [];
+        $mirrors = $mirrors_has_subscription = [];
 
         foreach (glob(__DIR__ . "/repositories/*.xml") as $xml) {
             $repositoryXml = simplexml_load_file($xml);
@@ -58,9 +53,6 @@ class Firmware extends BaseModel
                 syslog(LOG_ERR, 'unable to parse firmware file ' . $xml);
             } else {
                 if (isset($repositoryXml->mirrors->mirror)) {
-                    if (isset($repositoryXml->mirrors->attributes()->allow_custom)) {
-                        $mirrors_allow_custom = (strtolower($repositoryXml->mirrors->attributes()->allow_custom) == "true");
-                    }
                     foreach ($repositoryXml->mirrors->mirror as $mirror) {
                         $mirrors[(string)$mirror->url] = (string)$mirror->description;
                         $attr = $mirror->attributes();
@@ -70,9 +62,6 @@ class Firmware extends BaseModel
                     }
                 }
                 if (isset($repositoryXml->flavours->flavour)) {
-                    if (isset($repositoryXml->flavours->attributes()->allow_custom)) {
-                        $flavours_allow_custom = (strtolower($repositoryXml->flavours->attributes()->allow_custom) == "true");
-                    }
                     foreach ($repositoryXml->flavours->flavour as $flavour) {
                         $flavours[(string)$flavour->name] = (string)$flavour->description;
                         $attr = $flavour->attributes();
@@ -95,13 +84,10 @@ class Firmware extends BaseModel
         return [
             /* provide a full set of data even though the frontend does not use it */
             'families' => $families,
-            'families_allow_custom' => 0,
             'families_has_subscription' => $families_has_subscription,
             'flavours' => $flavours,
-            'flavours_allow_custom' => $flavours_allow_custom,
             'flavours_has_subscription' => $flavours_has_subscription,
             'mirrors' => $mirrors,
-            'mirrors_allow_custom' => $mirrors_allow_custom,
             'mirrors_has_subscription' => $mirrors_has_subscription,
         ];
     }
@@ -113,36 +99,44 @@ class Firmware extends BaseModel
     {
         $validOptions = $this->getRepositoryOptions();
 
-        /* standard model validations */
         $messages = parent::performValidation($validateFullModel);
 
-        /* extended validations */
-        if (!$validOptions['mirrors_allow_custom'] && !isset($validOptions['mirrors'][(string)$this->mirror])) {
-            $messages->appendMessage(new Message(gettext('Unable to set invalid firmware mirror'), 'mirror'));
-        }
-        if (!$validOptions['flavours_allow_custom'] && !isset($validOptions['flavours'][(string)$this->flavour])) {
-            $messages->appendMessage(new Message(gettext('Unable to set invalid firmware flavour'), 'flavour'));
-        }
-        if (!isset($validOptions['families'][(string)$this->type])) {
+        if (!isset($validOptions['families'][$this->type->getValue()])) {
             $messages->appendMessage(new Message(gettext('Unable to set invalid firmware release type'), 'type'));
         }
-        if (in_array((string)$this->mirror, $validOptions['mirrors_has_subscription'])) {
-            if (!preg_match('/^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}$/i', (string)$this->subscription) && 'FILL-IN-YOUR-LICENSE-HERE' != (string)$this->subscription) {
+
+        /* in custom mirrors we emulate has_subscription="true" but make it optional */
+        $validate_subscription = !isset($validOptions['mirrors'][$this->mirror->getValue()]);
+        $require_subscription = false;
+
+        /* subscription is required, but fall through to actual validation */
+        if (in_array($this->mirror->getValue(), $validOptions['mirrors_has_subscription'])) {
+            if ($this->subscription->isEmpty()) {
+                $messages->appendMessage(new Message(gettext('A valid subscription is required for this firmware mirror'), 'subscription'));
+            } else {
+                $validate_subscription = true;
+                $require_subscription = true;
+            }
+        }
+
+        if ($validate_subscription && !$this->subscription->isEmpty()) {
+            if (
+                /* technically correct subscription key */
+                !preg_match('/^[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}$/i', $this->subscription->getValue()) &&
+                /* mocked subscription key to prompt the user to input the right one */
+                'FILL-IN-YOUR-LICENSE-HERE' != $this->subscription->getValue() &&
+                /* the special key to unlock local mirroring */
+                'local' != $this->subscription->getValue()
+            ) {
                 $messages->appendMessage(new Message(gettext('A valid subscription is required for this firmware mirror'), 'subscription'));
             }
-            if (!preg_match('/\//', (string)$this->flavour)) {
-                /* error when flat flavour is used, but not when directory location was selected for development and testing */
-                if (!in_array((string)$this->flavour, $validOptions['flavours_has_subscription'])) {
-                    $messages->appendMessage(new Message(sprintf(gettext('Subscription requires the following flavour: %s'), $validOptions['flavours'][$validOptions['flavours_has_subscription'][0]]), 'flavour'));
-                }
-                if (!in_array((string)$this->type, $validOptions['families_has_subscription'])) {
+            if (!preg_match('/\//', $this->flavour->getValue())) {
+                if (!in_array($this->type->getValue(), $validOptions['families_has_subscription'])) {
                     $messages->appendMessage(new Message(sprintf(gettext('Subscription requires the following type: %s'), $validOptions['families'][$validOptions['families_has_subscription'][0]]), 'type'));
                 }
             }
-        } else {
-            if (!empty((string)$this->subscription)) {
-                $messages->appendMessage(new Message(gettext('Subscription cannot be set for non-subscription firmware mirror'), 'subscription'));
-            }
+        } elseif (!$require_subscription && !$this->subscription->isEmpty()) {
+            $messages->appendMessage(new Message(gettext('Subscription cannot be set for non-subscription firmware mirror'), 'subscription'));
         }
 
         return $messages;

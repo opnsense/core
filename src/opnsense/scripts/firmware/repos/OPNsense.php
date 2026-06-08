@@ -40,10 +40,12 @@ $url_sub = '';
 $frmt = ['/usr/local/sbin/opnsense-update -sd -A %s'];
 $args = [shell_safe('opnsense-version -x')]; /* calculate the effective ABI */
 
-if (!empty($config->system->firmware->subscription)) {
+if (strpos((string)$config->system->firmware->subscription, '-') !== false) {
     /*
-     * Append the url now that it is not in the mirror anymore.
-     * This only ever works if the mirror is set to a non-default.
+     * Append the subscription to the URL here since it is not part
+     * of the mirror selection.  This only ever works if the mirror
+     * is set to a non-default.  Also check for a "viable" candidate
+     * with a dash as special values could also be the case.
      */
     $url_sub = '/' . $config->system->firmware->subscription;
 } else {

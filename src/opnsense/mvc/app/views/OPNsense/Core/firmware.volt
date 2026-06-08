@@ -695,14 +695,12 @@
                                 .prop('selected', selected)
                         );
                     });
-                    if (fwopts['mirrors_allow_custom']) {
-                        $("#firmware_mirror :first-child").after($("<option/>")
-                            .attr("value", fwconf['mirror'])
-                            .text("(custom)")
-                            .data("custom", 1)
-                            .prop('selected', custom_selected)
-                        );
-                    }
+                    $("#firmware_mirror :first-child").after($("<option/>")
+                        .attr("value", fwconf['mirror'])
+                        .text("(custom)")
+                        .data("custom", 1)
+                        .prop('selected', custom_selected)
+                    );
 
                     $("#firmware_subscription").val(fwconf['subscription']);
 
@@ -722,14 +720,13 @@
                                 .prop('selected', selected)
                         );
                     });
-                    if (fwopts['flavours_allow_custom']) {
-                        $("#firmware_flavour :first-child").after($("<option/>")
-                            .attr("value", fwconf['flavour'])
-                            .text("(custom)")
-                            .data("custom", 1)
-                            .prop('selected', custom_selected)
-                        );
-                    }
+                    $("#firmware_flavour :first-child").after($("<option/>")
+                        .attr("value", fwconf['flavour'])
+                        .text("(custom)")
+                        .data("custom", 1)
+                        .prop('selected', custom_selected)
+                    );
+
                     $("#firmware_flavour").selectpicker('refresh');
                     $("#firmware_flavour").change();
                     if (fwconf['flavour'] !== '' || fwconf['reboot'] === '1' || fwconf['aux'] === '1') {
