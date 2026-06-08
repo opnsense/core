@@ -289,6 +289,8 @@ class WidgetManager  {
 
                     // load a known layout based on the current column count
                     this.grid.load(Object.values({...this.widgetConfigurations, ...this.layouts[this.curColCount]}));
+                } else {
+                    this.grid.compact();
                 }
             }
         })
