@@ -38,25 +38,17 @@ class DNatEnabledField extends BooleanField
             return;
         }
         $value = (string)$value;
-        $parent = $this->getParentNode();
         // Set disabled value opposite of enabled value for legacy compatibility.
-        if ($parent !== null && isset($parent->disabled) && $value !== '') {
-            $parent->disabled = $value === '1' ? '0' : '1';
-        }
+        $this->getParentNode()->disabled = $value === '1' ? '0' : '1';
         return parent::setValue($value);
     }
 
     public function getValue(): string
     {
-        $value = parent::getValue();
-        $isNotInitialized = $this->internalInitialValue === false;
-        // Get value from disabled flag if enabled does not have a value set.
-        if ($isNotInitialized || $value === '') {
-            $parent = $this->getParentNode();
-            if ($parent !== null && isset($parent->disabled)) {
-                return (string)$parent->disabled === '1' ? '0' : '1';
-            }
+        $parent = $this->getParentNode();
+        if ($parent !== null && isset($parent->disabled)) {
+            return (string)$parent->disabled === '1' ? '0' : '1';
         }
-        return $value;
+        return parent::getValue();
     }
 }

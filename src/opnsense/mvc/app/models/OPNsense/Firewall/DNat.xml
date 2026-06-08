@@ -11,9 +11,9 @@
                 <Required>Y</Required>
                 <!-- Intentionally no default set as its applied by actionPostLoadingEvent() -->
             </sequence>
-            <enabled type=".\DNatEnabledField" volatile="true"/>
             <!-- legacy disabled flag for compatibility -->
             <disabled type="BooleanField"/>
+            <enabled type=".\DNatEnabledField" volatile="true"/>
             <nordr type="BooleanField"/>
             <interface type="InterfaceField">
                 <Multiple>Y</Multiple>
