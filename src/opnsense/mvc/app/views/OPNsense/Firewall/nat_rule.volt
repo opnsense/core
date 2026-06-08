@@ -50,12 +50,16 @@
 
         function updateSnatModeUI() {
             if (entrypoint !== 'source_nat') {
-                $('#rule_grid_container').removeClass('snat-mode-hidden');
+                $('#rule_grid_container').removeClass('snat-mode-hidden snat-mode-readonly');
                 return;
             }
+
             const snatMode = $('#filter\\.general\\.snat_mode').val();
             const isDisabled = snatMode === 'disabled';
+            const isReadonly = snatMode === 'automatic';
+
             $('#rule_grid_container').toggleClass('snat-mode-hidden', isDisabled);
+            $('#rule_grid_container').toggleClass('snat-mode-readonly', isReadonly);
         }
 
         function showDialogAlert(type, title, message) {
@@ -781,6 +785,9 @@
         }
     }
     .snat-mode-hidden {
+        display: none;
+    }
+    .snat-mode-readonly [class*="command-"] {
         display: none;
     }
 </style>
