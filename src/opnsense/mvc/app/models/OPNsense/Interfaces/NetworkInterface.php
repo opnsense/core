@@ -33,7 +33,7 @@ use OPNsense\Base\Messages\Message;
 use OPNsense\Core\Config;
 use OPNsense\Core\FileObject;
 
-class NetInterface extends BaseModel
+class NetworkInterface extends BaseModel
 {
     var $todo_file = '/tmp/.interfaces.todo';
 

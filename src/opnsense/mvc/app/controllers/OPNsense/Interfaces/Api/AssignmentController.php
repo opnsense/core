@@ -36,7 +36,7 @@ use OPNsense\Core\Config;
 class AssignmentController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'interface';
-    protected static $internalModelClass = 'OPNsense\Interfaces\NetInterface';
+    protected static $internalModelClass = 'OPNsense\Interfaces\NetworkInterface';
 
     public function searchItemAction()
     {
