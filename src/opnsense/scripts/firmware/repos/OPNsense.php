@@ -40,7 +40,7 @@ $url_sub = '';
 $frmt = ['/usr/local/sbin/opnsense-update -sd -A %s'];
 $args = [shell_safe('opnsense-version -x')]; /* calculate the effective ABI */
 
-if (!empty($config->system->firmware->subscription)) {
+if (!empty($config->system->firmware->subscription) && (string)$config->system->firmware->subscription != 'local') {
     /*
      * Append the url now that it is not in the mirror anymore.
      * This only ever works if the mirror is set to a non-default.

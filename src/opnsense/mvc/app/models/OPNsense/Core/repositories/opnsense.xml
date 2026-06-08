@@ -1,5 +1,5 @@
 <firmware>
-    <mirrors allow_custom="true">
+    <mirrors>
         <mirror>
             <url/>
             <description>(default)</description>
@@ -81,7 +81,7 @@
             <description>Ventura Systems (HTTP, Medellin, CO)</description>
         </mirror>
     </mirrors>
-    <flavours allow_custom="true">
+    <flavours>
         <flavour has_subscription="true">
             <name/>
             <description>(default)</description>
