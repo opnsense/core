@@ -185,6 +185,7 @@ class DashboardController extends ApiControllerBase
             if ($this->usermdl->serializeToConfig(false, true)) {
                 /* selectively reset dashboard property, ignoring user-config-readonly when set */
                 Config::getInstance()->save();
+                $result['result'] = 'saved';
             }
         }
 
