@@ -45,8 +45,7 @@ class Idassoc extends Autoconf
         $bytes = array_values(unpack('C*', inet_pton($address)));
 
         $source_prefix_len = (int)$source_prefix_len;
-        // XXX: The prefix ID is stored as decimal string in the config, even though the GUI overlays it as hex.
-        $prefix_id = (string)$prefix_id;
+        $prefix_id = (int)$prefix_id;
         $id_bits = 64 - $source_prefix_len;
 
         for ($i = 0; $i < $id_bits; $i++) {
