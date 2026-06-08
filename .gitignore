@@ -8,6 +8,12 @@
 /src/etc/php/**
 /src/etc/pkg.conf
 /src/etc/pkg/**
+!/src/etc/pkg/fingerprints
+!/src/etc/pkg/fingerprints/OPNsense
+!/src/etc/pkg/fingerprints/OPNsense/**
+!/src/etc/pkg/repos
+!/src/etc/pkg/repos/*.shadow
+!/src/etc/pkg/repos/*.shadow.in
 /src/etc/ssh/**
 /src/lib/**
 /src/opnsense/changelog
