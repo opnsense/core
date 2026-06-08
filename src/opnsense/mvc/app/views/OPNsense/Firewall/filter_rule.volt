@@ -154,7 +154,7 @@
                 if (treeViewEnabled && row.is_automatic !== true && categoryLabel !== "") {
                     // We're dealing with a category, create bucket id based on this row
                     const bucketId = `${bucket.uuid}category${String(categoryLabel).replace(/[^a-z0-9]/gi, '')}`;
-                    
+
                     // categories with the same name may appear multiple times due to ordering,
                     // indexMap tracks these to uniquely identify them.
                     if (!(bucketId in indexMap)) {
