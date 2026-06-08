@@ -700,6 +700,15 @@ $( document ).ready(function() {
           $config['interfaces'][$selected_if]['descr'] : strtoupper($selected_if))) ?>
 <?php endif ?>
 <?php endif ?>
+<?php
+        print_info_box(
+            gettext("This legacy firewall page is deprecated and will be replaced by the new firewall rules interface.") . "<br />" .
+            gettext("Use the migration assistant to export existing legacy firewall rules and import them into the new interface.") . "<br /><br />" .
+            '<a class="btn btn-primary" href="/ui/firewall/migration">' .
+                '<i class="fa fa-external-link fa-fw"></i> ' . gettext("Open migration assistant") .
+            '</a> '
+        );
+?>
         <section class="col-xs-12">
           <div class="content-box">
             <form action="firewall_rules.php?if=<?=$selected_if;?>" method="post" name="iform" id="iform">
