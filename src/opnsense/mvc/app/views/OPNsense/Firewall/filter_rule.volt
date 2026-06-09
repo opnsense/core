@@ -866,6 +866,28 @@
 
         grid.on('loaded.rs.jquery.bootgrid', function () {
             updateStatisticColumns(); // ensures inspect columns are consistent after reload
+
+            // remove empty ruleset message banner if applicable
+            $('#{{formGridFilterRule["table_id"]}}-banner').remove();
+
+            // check if interface/group type is selected, and if so, display an in-table message if there are no rules defined
+            if ((currentGroupType === "groups" || currentGroupType === "interfaces") && !buckets.find(b => b.groupType === currentGroupType)) {
+                let ifLabel = '';
+                for (const group of Object.values($('#interface_select').data().store)) {
+                    const item = group.items.find(item => item.value === $('#interface_select').val());
+                    if (item) {
+                        ifLabel = item.label;
+                        break;
+                    }
+                }
+                $("#{{formGridFilterRule['table_id']}}-header")
+                    .after($('<div id="{{formGridFilterRule["table_id"]}}-banner" class="alert alert-info text-center __ml __mr" style="font-weight: 400;">')
+                    .text(`
+                        {{ lang._('No %s rules have been defined. ') | format('${ifLabel}') }}
+                        {{ lang._('All incoming connections on this interface will be blocked until you add a pass rule. ') }}
+                        {{ lang._('Exceptions for automatically generated or floating rules may apply.') }}
+                    `));
+            }
         });
 
         // Track if user has actually changed a dropdown, or it was the controller
