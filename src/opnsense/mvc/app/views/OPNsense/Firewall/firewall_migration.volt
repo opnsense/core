@@ -74,6 +74,24 @@
                 }]
             });
         });
+        ajaxCall("/api/firewall/migration/count_rules", {}, function(data) {
+            if (data.status === "ok" && data.count > 0) {
+                $("#legacy_rules_count").text(data.count);
+                $("#migration_rules_tab").removeClass("hidden");
+                $("#filter-rules-migration").removeClass("hidden");
+                $("#migration_rules_tab_link").tab("show");
+            }
+        });
+        ajaxCall("/api/firewall/migration/count_outbound", {}, function(data) {
+            if (data.status === "ok" && data.count > 0) {
+                $("#legacy_outbound_count").text(data.count);
+                $("#migration_outbound_tab").removeClass("hidden");
+                $("#source-nat-migration").removeClass("hidden");
+                if ($("#migration_rules_tab").hasClass("hidden")) {
+                    $("#migration_outbound_tab_link").tab("show");
+                }
+            }
+        });
     });
 </script>
 <style>
@@ -98,23 +116,28 @@
         border-radius:50%;
         color:#fff;
     }
+
+    .badge {
+        background-color: #31708f;
+    }
+
 </style>
 
 <ul class="nav nav-tabs" role="tablist">
-    <li class="active">
-        <a href="#filter-rules-migration" data-toggle="tab">
+    <li id="migration_rules_tab" class="hidden">
+        <a id="migration_rules_tab_link" href="#filter-rules-migration" data-toggle="tab">
             {{ lang._('Firewall rules') }}
         </a>
     </li>
-    <li>
-        <a href="#source-nat-migration" data-toggle="tab">
+    <li id="migration_outbound_tab" class="hidden">
+        <a id="migration_outbound_tab_link" href="#source-nat-migration" data-toggle="tab">
             {{ lang._('Outbound NAT rules') }}
         </a>
     </li>
 </ul>
 
 <div class="tab-content content-box">
-    <div id="filter-rules-migration" class="tab-pane fade in active">
+    <div id="filter-rules-migration" class="tab-pane fade hidden">
         <pre class="migration-text">
 {{ lang._('
     To switch from the legacy rules to the new rules interface, a migration is needed.
@@ -153,6 +176,7 @@
             <div>
                 <i class="fa fa-fw fa-file-csv"></i>
                 <a href="/api/firewall/migration/download_rules">{{ lang._('Export current rules') }}</a>
+                <span id="legacy_rules_count" class="badge"></span>
             </div>
             <div>
                 <i class="fa fa-fw fa-upload"></i>
@@ -166,7 +190,7 @@
         </div>
     </div>
 
-    <div id="source-nat-migration" class="tab-pane fade">
+    <div id="source-nat-migration" class="tab-pane fade hidden">
         <pre class="migration-text">
 {{ lang._('
     To switch from the legacy outbound NAT rules to the new Source NAT rules interface, a migration is needed.
@@ -197,6 +221,7 @@
             <div>
                 <i class="fa fa-fw fa-file-csv"></i>
                 <a href="/api/firewall/migration/download_outbound">{{ lang._('Export legacy outbound NAT rules') }}</a>
+                <span id="legacy_outbound_count" class="badge"></span>
             </div>
             <div>
                 <i class="fa fa-fw fa-upload"></i>
