@@ -69,7 +69,7 @@ export default class LiveLog extends BaseTableWidget {
     async onMarkupRendered() {
         const [, config] = await Promise.all([
             this._fetchSources(),
-            this.getWidgetConfig().then(() => this.config?.widget ?? {})
+            this.getWidgetConfig()
         ]);
         this._startLog(config);
     }
