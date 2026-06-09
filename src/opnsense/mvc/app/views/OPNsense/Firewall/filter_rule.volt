@@ -105,9 +105,6 @@
         }
 
         function responseHandler(response) {
-            // remove empty ruleset message banner if applicable
-            $('#{{formGridFilterRule["table_id"]}}-banner').remove();
-
             // recursively clear children but keep buckets intact
             const clear = (buckets) => {
                 for (const bucket of buckets) {
@@ -870,7 +867,10 @@
         grid.on('loaded.rs.jquery.bootgrid', function () {
             updateStatisticColumns(); // ensures inspect columns are consistent after reload
 
-            // check if interface/group type is selected, and if so, display an in-table message if there are no interface rules defined
+            // remove empty ruleset message banner if applicable
+            $('#{{formGridFilterRule["table_id"]}}-banner').remove();
+
+            // check if interface/group type is selected, and if so, display an in-table message if there are no rules defined
             if ((currentGroupType === "groups" || currentGroupType === "interfaces") && !buckets.find(b => b.groupType === currentGroupType)) {
                 let ifLabel = '';
                 for (const group of Object.values($('#interface_select').data().store)) {
@@ -887,7 +887,6 @@
                         {{ lang._('All incoming connections on this interface will be blocked until you add a pass rule. ') }}
                         {{ lang._('Exceptions for automatically generated or floating rules may apply.') }}
                     `));
-
             }
         });
 
