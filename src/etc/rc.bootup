@@ -101,6 +101,4 @@ plugins_configure('monitor', true);
 plugins_configure('vpn', true);
 plugins_configure('bootup', true);
 
-system_powerd_configure(true); /* XXX this seems misplaced */
-
 exit(0);
