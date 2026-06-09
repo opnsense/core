@@ -794,6 +794,15 @@ class WidgetManager  {
                     $option.append($(`<div><b>${value.title}</b></div>`));
                     $option.append($select);
                     break;
+                case 'text':
+                    let $textInput = $(`<input type="text" class="form-control" id="${value.id}">`);
+                    $textInput.val(config[key] ?? '');
+                    if (value.placeholder) {
+                        $textInput.attr('placeholder', value.placeholder);
+                    }
+                    $option.append($(`<div><b>${value.title}</b></div>`));
+                    $option.append($textInput);
+                    break;
                 case 'textarea':
                     let $textarea = $(`<textarea
                                      id="${value.id}"
@@ -838,6 +847,9 @@ class WidgetManager  {
                                 if (values[key].count === 0) {
                                     values[key] = value.default;
                                 }
+                                break;
+                            case 'text':
+                                values[key] = $(`#${value.id}`).val() ?? value.default;
                                 break;
                             case 'textarea':
                                 values[key] = $(`#${value.id}`).val() ?? value.default;
