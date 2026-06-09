@@ -34,13 +34,30 @@ use OPNsense\Core\ConfigMaintenance;
 
 class MigrationController extends ApiControllerBase
 {
+    private function getLegacyRules(): array
+    {
+        return json_decode((new Backend())->configdRun('filter list legacy_rules') ?? '', true) ?? [];
+    }
+
+    private function getLegacyOutboundRules(): array
+    {
+        return json_decode((new Backend())->configdRun('filter list legacy_outbound_nat') ?? '', true) ?? [];
+    }
+
     // Firewall rules
     public function downloadRulesAction()
     {
         if ($this->request->isGet()) {
-            $data = json_decode((new Backend())->configdRun('filter list legacy_rules') ?? '', true) ?? [];
-            $this->exportCsv($data);
+            $this->exportCsv($this->getLegacyRules());
         }
+    }
+
+    public function countRulesAction()
+    {
+        return [
+            'status' => 'ok',
+            'count' => count($this->getLegacyRules())
+        ];
     }
 
     public function flushAction()
@@ -59,9 +76,16 @@ class MigrationController extends ApiControllerBase
     public function downloadOutboundAction()
     {
         if ($this->request->isGet()) {
-            $data = json_decode((new Backend())->configdRun('filter list legacy_outbound_nat') ?? '', true) ?? [];
-            $this->exportCsv($data);
+            $this->exportCsv($this->getLegacyOutboundRules());
         }
+    }
+
+    public function countOutboundAction()
+    {
+        return [
+            'status' => 'ok',
+            'count' => count($this->getLegacyOutboundRules())
+        ];
     }
 
     public function flushOutboundAction()
