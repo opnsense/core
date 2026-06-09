@@ -246,7 +246,7 @@
             <severityinformational>Informational</severityinformational>
             <severitydebug>Debug</severitydebug>
             <searchfilter>Search filter</searchfilter>
-            <searchfilterplaceholder>dhcp error</searchfilterplaceholder>
+            <searchfilterplaceholder>e.g. dhcp error</searchfilterplaceholder>
             <linecount>Lines to show</linecount>
             <sourcelabel>Source</sourcelabel>
             <thresholdlabel>Threshold</thresholdlabel>

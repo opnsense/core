@@ -103,9 +103,9 @@ export default class LiveLog extends BaseTableWidget {
             return;
         }
 
-        const lineCount = parseInt(config.lineCount ?? '25', 10);
-        const severity = config.severity ?? 'Notice';
-        const searchFilter = config.searchFilter ?? '';
+        const lineCount = parseInt(config.lineCount, 10);
+        const severity = config.severity;
+        const searchFilter = config.searchFilter;
         const severityFilter = this._severityLevels
             .slice(0, this._severityLevels.indexOf(severity) + 1)
             .join(',');
@@ -192,10 +192,10 @@ export default class LiveLog extends BaseTableWidget {
     }
 
     onVisibilityChanged(visible) {
+        super.onVisibilityChanged(visible);
         if (!visible) {
             this._hasData = false;
         }
-        super.onVisibilityChanged(visible);
     }
 
     async onWidgetOptionsChanged(options) {
