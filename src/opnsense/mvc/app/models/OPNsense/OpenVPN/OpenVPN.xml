@@ -82,6 +82,7 @@
             <Instance type=".\InstanceField">
                 <vpnid type=".\VPNIdField">
                     <Required>Y</Required>
+                    <MinimumValue>1</MinimumValue>
                 </vpnid>
                 <enabled type="BooleanField">
                     <Default>1</Default>
