@@ -2,7 +2,7 @@
     <field>
         <id>interface.icon</id>
         <label>Status</label>
-        <type>hidden</type>
+        <type>ignore</type>
         <grid_view>
             <width>5em</width>
             <formatter>statusformatter</formatter>
@@ -20,7 +20,7 @@
     <field>
         <id>interface.optgroup</id>
         <label>Type</label>
-        <type>hidden</type>
+        <type>ignore</type>
         <grid_view>
             <width>5em</width>
         </grid_view>
