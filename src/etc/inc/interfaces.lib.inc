@@ -251,22 +251,14 @@ function legacy_interface_stats($ifs = null)
  */
 function legacy_interfaces_details($intf = null)
 {
+    $cmd = '/sbin/ifconfig -Lmv';
     $result = [];
+
     if (!empty($intf)) {
-        $tmp_intf = escapeshellarg($intf);
-    } else {
-        $tmp_intf = '';
+        $cmd = implode(' ', [$cmd, escapeshellarg($intf)]);
     }
 
-    $cmd = '/sbin/ifconfig -Lmv ' . $tmp_intf;
-    exec($cmd . ' 2>&1', $ifconfig_data, $ret);
-    if ($ret) {
-        /* only error if no explicit interface was chosen */
-        if (empty($intf)) {
-            legacy_interface_error($cmd, implode(' ', $ifconfig_data));
-        }
-        return $result;
-    }
+    exec($cmd . ' 2> /dev/null', $ifconfig_data, $ret);
 
     $vfaces = interfaces_virtual_patterns();
     $current_interface = null;
