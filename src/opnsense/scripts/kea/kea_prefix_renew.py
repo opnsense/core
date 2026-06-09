@@ -51,7 +51,7 @@ if __name__ == "__main__":
         syslog.syslog(syslog.LOG_ERR, "failed wiping dynamic prefix leases: %s" % e)
 
     try:
-        failed = subprocess.run(["pluginctl", "kea_generate_dhcpv6"], check=False, capture_output=True).returncode != 0
+        failed = subprocess.run(["pluginctl", "-c", "kea_generate_dhcpv6"], check=False, capture_output=True).returncode != 0
 
     except Exception as e:
         failed = True
