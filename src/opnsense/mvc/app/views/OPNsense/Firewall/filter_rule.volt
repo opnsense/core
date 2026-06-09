@@ -105,6 +105,9 @@
         }
 
         function responseHandler(response) {
+            // remove empty ruleset message banner if applicable
+            $('#{{formGridFilterRule["table_id"]}}-banner').remove();
+
             // recursively clear children but keep buckets intact
             const clear = (buckets) => {
                 for (const bucket of buckets) {
@@ -256,8 +259,6 @@
                 rowCount: [500,20,50,100,200,1000,2000,-1],
                 initialSearchPhrase: getUrlHash('search'),
                 requestHandler: function(request){
-                    // remove empty ruleset message banner if applicable
-                    $('#{{formGridFilterRule["table_id"]}}-banner').remove();
                     // Add category selectpicker
                     if ( $('#category_filter').val().length > 0) {
                         request['category'] = $('#category_filter').val();
