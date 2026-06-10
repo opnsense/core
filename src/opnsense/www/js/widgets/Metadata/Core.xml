@@ -229,8 +229,7 @@
     <livelog>
         <filename>LiveLog.js</filename>
         <link>/ui/diagnostics/log/core/system</link>
-        <endpoints>
-        </endpoints>
+        <skipaclcheck>true</skipaclcheck>
         <translations>
             <title>Live Log</title>
             <noaccess>No access</noaccess>
