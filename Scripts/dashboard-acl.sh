@@ -42,6 +42,26 @@ for WIDGET in ${WIDGETS}; do
 		continue
 	fi
 
+    REGISTERED=
+    SKIP=false
+
+	for METAFILE in ${METADATA}; do
+        if xmllint "${METAFILE}" --xpath 'boolean(//*[filename="'"${FILENAME}"'" and skiplint="true"])' 2>/dev/null | grep -q true; then
+            SKIP=true
+            break
+        fi
+
+		if grep -q "<filename>${FILENAME}</filename>" ${METAFILE}; then
+			REGISTERED=$(xmllint ${METAFILE} --xpath '//*[filename="'"${FILENAME}"'"]//endpoints//endpoint' | \
+			    sed -e 's:^[^>]*>::' -e 's:<[^<]*$::' | sort)
+			break
+		fi
+	done
+
+    if [ "${SKIP}" = true ]; then
+        continue
+    fi
+
 	ENDPOINTS=$( (grep -o 'this\.ajaxCall([^,)]*' ${WIDGET} | cut -c 15-; \
 	    grep -o 'super\.openEventSource([^,)]*' ${WIDGET} | cut -c 23-) | \
 	    tr -d "'" | tr -d '`' | sed 's:\$.*:*:' | sort -u)
@@ -50,16 +70,6 @@ for WIDGET in ${WIDGETS}; do
 		echo "No endpoints found for ${WIDGET}"
 		continue
 	fi
-
-	REGISTERED=
-
-	for METAFILE in ${METADATA}; do
-		if grep -q "<filename>${FILENAME}</filename>" ${METAFILE}; then
-			REGISTERED=$(xmllint ${METAFILE} --xpath '//*[filename="'"${FILENAME}"'"]//endpoints//endpoint' | \
-			    sed -e 's:^[^>]*>::' -e 's:<[^<]*$::' | sort)
-			break
-		fi
-	done
 
 	if [ -z "${REGISTERED}" ]; then
 		echo "Did not find metadata for ${WIDGET}"
