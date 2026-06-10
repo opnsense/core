@@ -85,7 +85,7 @@ class KeaDhcpv4 extends BaseModel
             if ($subnet_node) {
                 $subnet = $subnet_node->subnet->getValue();
             }
-            if (!Util::isIPInCIDR($reservation->ip_address->getValue(), $subnet)) {
+            if (!$reservation->ip_address->isEmpty() && !Util::isIPInCIDR($reservation->ip_address->getValue(), $subnet)) {
                 $messages->appendMessage(new Message(gettext("Address not in specified subnet"), $key . ".ip_address"));
             }
             if (!$reservation->client_id->isEmpty() && !$reservation->hw_address->isEmpty()) {
@@ -192,7 +192,11 @@ class KeaDhcpv4 extends BaseModel
             }
             /* add pools */
             foreach ($subnet->pools->getValues() as $pool) {
-                $record['pools'][] = ['pool' => $pool];
+                $pool_entry = ['pool' => $pool];
+                if (!$subnet->deny_unknown_clients->isEmpty()) {
+                    $pool_entry['client-class'] = 'KNOWN';
+                }
+                $record['pools'][] = $pool_entry;
             }
             /* static reservations */
             foreach ($this->reservations->reservation->iterateItems() as $key => $reservation) {

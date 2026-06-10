@@ -9,7 +9,7 @@
         <id>reservation.ip_address</id>
         <label>IP address</label>
         <type>text</type>
-        <help>IP address to offer to the client</help>
+        <help>IP address to offer to the client. Leave empty to create a reservation without a fixed IP (useful for deny unknown clients).</help>
     </field>
     <field>
         <id>reservation.hw_address</id>
