@@ -46,11 +46,11 @@ for WIDGET in ${WIDGETS}; do
     SKIP=false
 
 	for METAFILE in ${METADATA}; do
-        if xmllint "${METAFILE}" --xpath 'boolean(//*[filename="'"${FILENAME}"'" and skipaclcheck="true"])' 2>/dev/null | grep -q true; then
+        if xmllint "${METAFILE}" --xpath 'boolean(//*[filename="'"${FILENAME}"'" and skiplint="true"])' 2>/dev/null | grep -q true; then
             SKIP=true
             break
         fi
-q
+
 		if grep -q "<filename>${FILENAME}</filename>" ${METAFILE}; then
 			REGISTERED=$(xmllint ${METAFILE} --xpath '//*[filename="'"${FILENAME}"'"]//endpoints//endpoint' | \
 			    sed -e 's:^[^>]*>::' -e 's:<[^<]*$::' | sort)
