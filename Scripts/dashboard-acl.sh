@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2024 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2024-2026 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -42,24 +42,32 @@ for WIDGET in ${WIDGETS}; do
 		continue
 	fi
 
+	REGISTERED=
+
+	for METAFILE in ${METADATA}; do
+		if ! grep -q "<filename>${FILENAME}</filename>" ${METAFILE}; then
+			continue
+		fi
+
+		if [ "$(xmllint "${METAFILE}" --xpath 'count(//*[filename="'"${FILENAME}"'"]/endpoints/independent)')" != "0" ]; then
+			continue 2
+		fi
+
+		if [ "$(xmllint ${METAFILE} --xpath 'count(//*[filename="'"${FILENAME}"'"]/endpoints/endpoint)')" != "0" ]; then
+			REGISTERED=$(xmllint ${METAFILE} --xpath '//*[filename="'"${FILENAME}"'"]/endpoints/endpoint' | \
+			    sed -e 's:^[^>]*>::' -e 's:<[^<]*$::' | sort)
+			break
+		fi
+	done
+
 	ENDPOINTS=$( (grep -o 'this\.ajaxCall([^,)]*' ${WIDGET} | cut -c 15-; \
 	    grep -o 'super\.openEventSource([^,)]*' ${WIDGET} | cut -c 23-) | \
 	    tr -d "'" | tr -d '`' | sed 's:\$.*:*:' | sort -u)
 
 	if [ -z "${ENDPOINTS}" ]; then
 		echo "No endpoints found for ${WIDGET}"
-		continue
+		exit 1
 	fi
-
-	REGISTERED=
-
-	for METAFILE in ${METADATA}; do
-		if grep -q "<filename>${FILENAME}</filename>" ${METAFILE}; then
-			REGISTERED=$(xmllint ${METAFILE} --xpath '//*[filename="'"${FILENAME}"'"]//endpoints//endpoint' | \
-			    sed -e 's:^[^>]*>::' -e 's:<[^<]*$::' | sort)
-			break
-		fi
-	done
 
 	if [ -z "${REGISTERED}" ]; then
 		echo "Did not find metadata for ${WIDGET}"
