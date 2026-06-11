@@ -84,22 +84,24 @@
             <col style="width: 40%;" />
             <col style="width: 35%;" />
         </colgroup>
-        <thead style="cursor: pointer;" class="{{field['style']|default('')}}">
-          <tr {% if field['advanced']|default(false)=='true' %} data-advanced="true"{% endif %}>
+        <thead {% if field['static']|default('false')=='false' %} style="cursor: pointer;"{% endif %} class="{{field['style']|default('')}}">
+          <tr {% if field['advanced']|default('false')=='true' %} data-advanced="true"{% endif %}>
             <th colspan="3">
                 <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px;">
-                    {% if field['collapse']|default(false)=='true' %}
+                    {% if field['static']|default('false')=='false' %}
+                    {% if field['collapse']|default('false')=='true' %}
                     <i class="fa fa-angle-right" aria-hidden="true"></i>
                     {% else %}
                     <i class="fa fa-angle-down" aria-hidden="true"></i>
                     {% endif %}
                     &nbsp;
+                    {% endif %}
                     <b>{{field['label']}}</b>
                 </div>
             </th>
           </tr>
         </thead>
-        <tbody class="collapsible" {% if field['collapse']|default(false)=='true' %}style="display: none;"{%endif%}>
+        <tbody {%if field['static']|default('false')=='false'%}class="collapsible" {% if field['collapse']|default('false')=='true' %}style="display: none;"{%endif%}{%endif%}>
 {#- endmacro #}
 
             {% else %}
