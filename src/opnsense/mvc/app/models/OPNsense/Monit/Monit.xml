@@ -35,8 +35,8 @@
                 <MaximumValue>65535</MaximumValue>
                 <ValidationMessage>Port needs to be an integer value between 0 and 65535.</ValidationMessage>
             </port>
-            <username type="TextField"/>
-            <password type="TextField"/>
+            <username type="StrictTextField"/>
+            <password type="StrictTextField"/>
             <ssl type="BooleanField">
                 <Default>0</Default>
                 <Required>Y</Required>
@@ -56,15 +56,15 @@
                 <Required>Y</Required>
                 <Default>1</Default>
             </sslverify>
-            <logfile type="TextField">
+            <logfile type="StrictTextField">
                 <Mask>/^(\/[^\/ ]*)+\/?|syslog.*$/</Mask>
                 <ValidationMessage>Should be a valid absolute path to the log file or the keyword "syslog".</ValidationMessage>
             </logfile>
-            <statefile type="TextField">
+            <statefile type="StrictTextField">
                 <Mask>/^(\/[^\/ ]*)+\/?$/</Mask>
                 <ValidationMessage>Should be a valid absolute path to the state file.</ValidationMessage>
             </statefile>
-            <eventqueuePath type="TextField">
+            <eventqueuePath type="StrictTextField">
                 <Mask>/^(\/[^\/ ]*)+\/?$/</Mask>
                 <ValidationMessage>Should be a valid absolute path to the eventqueue directory.</ValidationMessage>
             </eventqueuePath>
@@ -80,11 +80,11 @@
                     </check002>
                 </Constraints>
             </httpdEnabled>
-            <httpdUsername type="TextField">
+            <httpdUsername type="StrictTextField">
                 <Default>root</Default>
                 <Required>Y</Required>
             </httpdUsername>
-            <httpdPassword type="TextField">
+            <httpdPassword type="StrictTextField">
                 <Constraints>
                     <check001>
                         <ValidationMessage>A value is required.</ValidationMessage>
@@ -101,8 +101,11 @@
                 <MaximumValue>65535</MaximumValue>
                 <ValidationMessage>Local Monit Port needs to be an integer value between 0 and 65535.</ValidationMessage>
             </httpdPort>
-            <httpdAllow type="CSVListField"/>
-            <mmonitUrl type="TextField"/>
+            <httpdAllow type="CSVListField">
+                <Mask>/\A[^\r\n]*\z/</Mask>
+                <MaskPerItem>Y</MaskPerItem>
+            </httpdAllow>
+            <mmonitUrl type="StrictTextField"/>
             <mmonitTimeout type="IntegerField">
                 <Default>5</Default>
                 <Required>Y</Required>
@@ -163,7 +166,7 @@
                     <uptime>Uptime failed</uptime>
                 </OptionValues>
             </events>
-            <format type="TextField"/>
+            <format type="StrictTextField"/>
             <reminder type="IntegerField">
                 <MinimumValue>0</MinimumValue>
                 <MaximumValue>86400</MaximumValue>
@@ -176,7 +179,7 @@
                 <Default>0</Default>
                 <Required>Y</Required>
             </enabled>
-            <name type="TextField">
+            <name type="StrictTextField">
                 <Required>Y</Required>
                 <Mask>/^([0-9a-zA-Z\._\-\$]){1,255}$/u</Mask>
                 <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as underscore, minus, dot and the dollar sign.</ValidationMessage>
@@ -202,12 +205,12 @@
                     <network>Network</network>
                 </OptionValues>
             </type>
-            <pidfile type="TextField">
+            <pidfile type="StrictTextField">
                 <Mask>/^(\/[^\/ ]*)+\/?$/</Mask>
                 <ValidationMessage>Should be a valid absolute path to the PID file of the process.</ValidationMessage>
             </pidfile>
-            <match type="TextField"/>
-            <path type="TextField">
+            <match type="StrictTextField"/>
+            <path type="StrictTextField">
                 <Mask>/^(\/[^\/ ]*)+\/?.*$/</Mask>
                 <ValidationMessage>Should be a valid absolute file or folder path.</ValidationMessage>
             </path>
@@ -233,11 +236,11 @@
                     <ipaddr>/^((?!dhcp).)*$/</ipaddr>
                 </filters>
             </interface>
-            <start type="TextField">
+            <start type="StrictTextField">
                 <Mask>/^(\/[^\/ ]*)+\/? .*$/</Mask>
                 <ValidationMessage>Should be a valid absolute path to the executable with its arguments.</ValidationMessage>
             </start>
-            <stop type="TextField">
+            <stop type="StrictTextField">
                 <Mask>/^(\/[^\/ ]*)+\/? .*$/</Mask>
                 <ValidationMessage>Should be a valid absolute path to the executable with its arguments.</ValidationMessage>
             </stop>
@@ -263,13 +266,13 @@
                 <ValidationMessage>Related item not found.</ValidationMessage>
                 <Multiple>Y</Multiple>
             </depends>
-            <polltime type="TextField">
+            <polltime type="StrictTextField">
                 <Mask>/^([0-9a-zA-Z\*\-\, ]){1,255}$/u</Mask>
                 <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as asterisk, hyphen, comma and space.</ValidationMessage>
             </polltime>
         </service>
         <test type="ArrayField">
-            <name type="TextField">
+            <name type="StrictTextField">
                 <Required>Y</Required>
                 <Mask>/^([0-9a-zA-Z\._\- ]){1,255}$/u</Mask>
                 <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as underscore, minus, dot and space.</ValidationMessage>
@@ -304,7 +307,7 @@
                     <Custom/>
                 </OptionValues>
             </type>
-            <condition type="TextField">
+            <condition type="StrictTextField">
                 <Required>Y</Required>
                 <Mask>/^.{1,255}$/u</Mask>
                 <ValidationMessage>Should be a string between 1 and 255 characters.</ValidationMessage>
@@ -320,7 +323,7 @@
                     <unmonitor>Unmonitor</unmonitor>
                 </OptionValues>
             </action>
-            <path type="TextField">
+            <path type="StrictTextField">
                 <Mask>/^(\/[^\/ ]*)+\/?.*$/</Mask>
                 <ValidationMessage>Should be a valid absolute file path.</ValidationMessage>
             </path>

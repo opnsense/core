@@ -34,6 +34,7 @@ require_once("interfaces.inc");
 
 $all_intf_details = legacy_interfaces_details();
 $a_gateways = (new \OPNsense\Routing\Gateways())->gatewaysIndexedByName();
+$a_zoneinfo = get_zoneinfo();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['getpic'])) {
@@ -130,6 +131,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("A search domain may only contain the characters a-z, 0-9, '-' and '.'.");
             }
         }
+    }
+    if (!in_array($pconfig['timezone'], $a_zoneinfo)) {
+        $input_errors[] = gettext('The selected time zone is invalid.');
     }
 
     /* collect direct attached networks and static routes */
@@ -353,13 +357,11 @@ $( document ).ready(function() {
               <td><a id="help_for_timezone" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Time zone"); ?></td>
               <td>
                 <select name="timezone" id="timezone" data-size="10" class="selectpicker" data-style="btn-default" data-live-search="true">
-<?php
-                  foreach (get_zoneinfo() as $value): ?>
-                  <option value="<?=htmlspecialchars($value);?>" <?= $value == $pconfig['timezone'] ? 'selected="selected"' : '' ?>>
-                    <?=htmlspecialchars($value);?>
+<?php foreach ($a_zoneinfo as $value): ?>
+                  <option value="<?= html_safe($value) ?>" <?= $value == $pconfig['timezone'] ? 'selected="selected"' : '' ?>>
+                    <?= html_safe($value) ?>
                   </option>
-<?php
-                  endforeach; ?>
+<?php endforeach ?>
                 </select>
                 <div class="hidden" data-for="help_for_timezone">
                   <?=gettext("Select the location closest to you"); ?>

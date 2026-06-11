@@ -183,8 +183,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($pconfig['provider']) && !is_domain($pconfig['provider'])) {
         $input_errors[] = gettext("The Service name contains invalid characters.");
     }
-    if (($pconfig['idletimeout'] != "") && !is_numericint($pconfig['idletimeout'])) {
+    if ($pconfig['idletimeout'] != '' && !is_numericint($pconfig['idletimeout'])) {
         $input_errors[] = gettext("The idle timeout value must be an integer.");
+    }
+    if ($pconfig['username'] != '' && strpbrk($pconfig['username'], "\n\r") !== false) {
+        $input_errors[] = gettext('The username contains invalid characters.');
     }
 
     foreach ($pconfig['ports'] as $iface_idx => $iface) {

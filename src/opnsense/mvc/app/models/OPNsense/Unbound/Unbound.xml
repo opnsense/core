@@ -103,19 +103,25 @@
                     <opt3 value="2">Level 2</opt3>
                 </OptionValues>
             </valloglevel>
-            <privatedomain type="CSVListField"/>
+            <privatedomain type="CSVListField">
+                <Mask>/\A[^\r\n]*\z/</Mask>
+                <MaskPerItem>Y</MaskPerItem>
+            </privatedomain>
             <privateaddress type="NetworkField">
                 <Required>Y</Required>
                 <WildcardEnabled>N</WildcardEnabled>
                 <Default>0.0.0.0/8,10.0.0.0/8,100.64.0.0/10,169.254.0.0/16,172.16.0.0/12,192.0.2.0/24,192.168.0.0/16,198.18.0.0/15,198.51.100.0/24,203.0.113.0/24,233.252.0.0/24,::1/128,2001:db8::/32,fc00::/8,fd00::/8,fe80::/10</Default>
                 <AsList>Y</AsList>
             </privateaddress>
-            <insecuredomain type="CSVListField"/>
-            <msgcachesize type="TextField">
+            <insecuredomain type="CSVListField">
+                <Mask>/\A[^\r\n]*\z/</Mask>
+                <MaskPerItem>Y</MaskPerItem>
+            </insecuredomain>
+            <msgcachesize type="StrictTextField">
                 <Mask>/[0-9]+[kmg]?/i</Mask>
                 <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'.</ValidationMessage>
             </msgcachesize>
-            <rrsetcachesize type="TextField">
+            <rrsetcachesize type="StrictTextField">
                 <Mask>/[0-9]+[kmg]?/i</Mask>
                 <ValidationMessage>The cache size should be numeric, optionally appended with 'k', 'm', or 'g'.</ValidationMessage>
             </rrsetcachesize>
@@ -148,7 +154,7 @@
                     <Default>1</Default>
                     <Required>Y</Required>
                 </enabled>
-                <name type="TextField">
+                <name type="StrictTextField">
                     <Required>Y</Required>
                     <ValidationMessage>An Access list name is required.</ValidationMessage>
                 </name>
@@ -227,11 +233,20 @@
                         </opt5>
                     </OptionValues>
                 </type>
-                <lists type="CSVListField"/>
-                <allowlists type="CSVListField"/>
-                <blocklists type="CSVListField"/>
+                <lists type="CSVListField">
+                    <Mask>/\A[^\r\n]*\z/</Mask>
+                    <MaskPerItem>Y</MaskPerItem>
+                </lists>
+                <allowlists type="CSVListField">
+                    <Mask>/\A[^\r\n]*\z/</Mask>
+                    <MaskPerItem>Y</MaskPerItem>
+                </allowlists>
+                <blocklists type="CSVListField">
+                    <Mask>/\A[^\r\n]*\z/</Mask>
+                    <MaskPerItem>Y</MaskPerItem>
+                </blocklists>
                 <wildcards type="CSVListField">
-                    <Mask>/^((?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.){1,})(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])$/i</Mask>
+                    <Mask>/\A((?:(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\.){1,})(?:[a-z0-9]|[a-z0-9][a-z0-9\-]*[a-z0-9])\z/i</Mask>
                     <ValidationMessage>A valid domain must be specified.</ValidationMessage>
                     <MaskPerItem>Y</MaskPerItem>
                 </wildcards>

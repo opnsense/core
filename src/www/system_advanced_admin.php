@@ -126,6 +126,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $input_errors[] = gettext('Inactivity timeout must be an integer value.');
     }
 
+    if (!empty($pconfig['compression']) && !in_array($pconfig['compression'], ['1', '5', '9'])) {
+        $input_errors[] = gettext('Invalid compression value.');
+    }
+
     if (!empty($pconfig['authmode'])) {
         foreach ($pconfig['authmode'] as $auth_mode) {
             if (!isset($a_authmode[$auth_mode])) {

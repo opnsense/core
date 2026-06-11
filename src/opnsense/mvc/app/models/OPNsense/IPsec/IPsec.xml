@@ -112,9 +112,9 @@
                         <AsList>Y</AsList>
                     </split-include>
                     <!-- UNITY_DEF_DOMAIN -->
-                    <x_28674 type="TextField"/>
-                    <x_28675 type="TextField"/>
-                    <x_28672 type="TextField"/>
+                    <x_28674 type="StrictTextField"/>
+                    <x_28675 type="StrictTextField"/>
+                    <x_28672 type="StrictTextField"/>
                     <x_28673 type="BooleanField"/>
                     <x_28679 type="OptionField">
                         <OptionValues>
