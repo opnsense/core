@@ -59,6 +59,7 @@
             toggle:'/api/ipsec/connections/toggle_' + obj_type + '/',
             options:{
                 static: true,
+                disableScroll: true,
                 navigation: obj_type === 'child' ? 3 : 0,
                 selection: obj_type === 'child' ? true : false,
                 requestHandler: function(request) {
