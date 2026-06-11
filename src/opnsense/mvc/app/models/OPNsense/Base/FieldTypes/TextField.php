@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,6 +28,7 @@
 
 namespace OPNsense\Base\FieldTypes;
 
+use OPNsense\Base\Validators\CallbackValidator;
 use OPNsense\Base\Validators\Regex;
 
 /**
@@ -47,12 +48,51 @@ class TextField extends BaseField
     protected $internalMask = null;
 
     /**
+     * @var bool allow spaces and tabs
+     */
+    protected $internalAllowSpaces = true;
+
+    /**
+     * @var bool allow newlines
+     */
+    protected $internalAllowNewlines = true;
+
+    /**
+     * @var bool allow special control characters
+     */
+    protected $internalAllowSpecial = true;
+
+    /**
      * set validation mask
      * @param string $value regexp validation mask
      */
     public function setMask($value)
     {
         $this->internalMask = $value;
+    }
+
+    /**
+     * @param string $value Y/N
+     */
+    public function setAllowSpaces($value): void
+    {
+        $this->internalAllowSpaces = strtoupper(trim($value)) === 'Y';
+    }
+
+    /**
+     * @param string $value Y/N
+     */
+    public function setAllowNewlines($value): void
+    {
+        $this->internalAllowNewlines = strtoupper(trim($value)) === 'Y';
+    }
+
+    /**
+     * @param string $value Y/N
+     */
+    public function setAllowSpecial($value): void
+    {
+        $this->internalAllowSpecial = strtoupper(trim($value)) === 'Y';
     }
 
     /**
@@ -71,13 +111,32 @@ class TextField extends BaseField
     {
         $validators = parent::getValidators();
         if ($this->internalValue != null) {
-            if ($this->internalValue != null && $this->internalMask != null) {
+            $validators[] = new CallbackValidator([
+                "callback" => function ($value) {
+                    if (!$this->internalAllowSpaces && strpbrk($value, " \t") !== false) {
+                        return [gettext("Text may not contain spaces or tabs.")];
+                    }
+
+                    if (!$this->internalAllowNewlines && strpbrk($value, "\n\r") !== false) {
+                        return [gettext("Text may not contain newlines.")];
+                    }
+
+                    if (!$this->internalAllowSpecial && strpbrk($value, "\0\v\f") !== false) {
+                        return [gettext("Text may not contain special control characters.")];
+                    }
+
+                    return [];
+                }
+            ]);
+
+            if ($this->internalMask != null) {
                 $validators[] = new Regex([
                     'message' => $this->getValidationMessage(),
                     'pattern' => trim($this->internalMask),
                 ]);
             }
         }
+
         return $validators;
     }
 }

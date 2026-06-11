@@ -356,4 +356,86 @@ class TextFieldTest extends Field_Framework_TestCase
 
         $this->assertContains('Regex', $this->validate($field));
     }
+
+    /**
+     * spaces and tabs pass validation by default
+     * no mask (TextField default)
+     * not required (BaseField default)
+     */
+    public function testAllowSpacesDefault()
+    {
+        $field = new TextField();
+        $field->setValue("foo bar\tbaz");
+
+        $this->assertEmpty($this->validate($field));
+    }
+
+    /**
+     * spaces and tabs fail validation when AllowSpaces=N
+     * no mask (TextField default)
+     * not required (BaseField default)
+     */
+    public function testAllowSpacesDisabled()
+    {
+        $field = new TextField();
+        $field->setAllowSpaces('N');
+        $field->setValue("foo bar\tbaz");
+
+        $this->assertNotEmpty($this->validate($field));
+    }
+
+    /**
+     * newlines pass validation by default
+     * no mask (TextField default)
+     * not required (BaseField default)
+     */
+    public function testAllowNewlinesDefault()
+    {
+        $field = new TextField();
+        $field->setValue("foo\nbar\rbaz");
+
+        $this->assertEmpty($this->validate($field));
+    }
+
+    /**
+     * newlines fail validation when AllowNewlines=N
+     * no mask (TextField default)
+     * not required (BaseField default)
+     */
+    public function testAllowNewlinesDisabled()
+    {
+        $field = new TextField();
+        $field->setAllowNewlines('N');
+        $field->setValue("foo\nbar\rbaz");
+
+        $this->assertNotEmpty($this->validate($field));
+    }
+
+    /**
+     * special control characters pass validation by default
+     * no mask (TextField default)
+     * not required (BaseField default)
+     */
+    public function testAllowSpecialDefault()
+    {
+        $field = new TextField();
+        $field->setValue("foo\0bar\vbaz\fqux");
+
+        $this->assertEmpty($this->validate($field));
+    }
+
+    /**
+     * special control characters fail validation when AllowSpecial=N
+     * no mask (TextField default)
+     * not required (BaseField default)
+     */
+    public function testAllowSpecialDisabled()
+    {
+        $field = new TextField();
+        $field->setAllowSpecial('N');
+        $field->setValue("foo\0bar\vbaz\fqux");
+
+        $this->assertNotEmpty($this->validate($field));
+    }
+
 }
