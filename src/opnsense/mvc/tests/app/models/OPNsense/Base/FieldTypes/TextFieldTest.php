@@ -437,5 +437,4 @@ class TextFieldTest extends Field_Framework_TestCase
 
         $this->assertNotEmpty($this->validate($field));
     }
-
 }
