@@ -323,7 +323,9 @@
                     </tag>
                 </Model>
             </set_tag>
-            <value type="TextField"/>
+            <value type="StrictTextField">
+                <AllowSpaces>Y</AllowSpaces>
+            </value>
             <force type="BooleanField"/>
             <description type="DescriptionField"/>
         </dhcp_options>
@@ -346,11 +348,11 @@
                 </Model>
                 <Multiple>Y</Multiple>
             </tag>
-            <filename type="TextField">
+            <filename type="StrictTextField">
                 <Required>Y</Required>
             </filename>
-            <servername type="TextField"/>
-            <address type="TextField"/>
+            <servername type="StrictTextField"/>
+            <address type="StrictTextField"/>
             <description type="DescriptionField"/>
         </dhcp_boot>
     </items>

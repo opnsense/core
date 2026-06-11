@@ -3093,7 +3093,7 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif, $default_id)
 
     $script = "  script \"/usr/local/opnsense/scripts/interfaces/dhcp6c_script.sh\";\n";
     if ($wancfg['adv_dhcp6_interface_statement_script'] != '') {
-        $script = "  script \"{$wancfg['adv_dhcp6_interface_statement_script']}\";\n";
+        $script = interfaces_dhcp_safe('  script "%s";', $wancfg['adv_dhcp6_interface_statement_script']);
     }
 
     $interface_statement  = "interface {$wanif} {\n";

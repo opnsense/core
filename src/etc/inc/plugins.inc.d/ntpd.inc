@@ -322,9 +322,11 @@ function ntpd_configure_do($verbose = false)
     $ispool = isset($config['ntpd']['ispool']) ? explode(' ', $config['ntpd']['ispool']) : [];
 
     $ntpcfg .= "\n\n# Upstream Servers\n";
-    /* foreach through ntp servers and write out to ntpd.conf */
+
     foreach (explode(' ', $config['system']['timeservers']) as $ts) {
-        /* Determine if Network Time Server is a pool or not */
+        /* do not allow newline injection */
+        $ts = str_replace(["\n", "\r"], '', $ts);
+
         if (in_array($ts, $ispool) || preg_match("/\.pool\.ntp\.org$/", $ts)) {
             $ntpcfg .= "pool {$ts}";
         } else {

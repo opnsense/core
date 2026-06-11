@@ -140,10 +140,10 @@
                         <eap_radius value="eap-radius">EAP RADIUS</eap_radius>
                     </OptionValues>
                 </auth>
-                <id type="TextField">
+                <id type="StrictTextField">
                     <Mask>/^([0-9a-zA-Z\.\-,_\:\=\@\%\*\s]){0,1024}$/u</Mask>
                 </id>
-                <eap_id type="TextField">
+                <eap_id type="StrictTextField">
                     <Mask>/^([0-9a-zA-Z\.\-,_\:\=\@\%\*\s]){0,1024}$/u</Mask>
                 </eap_id>
                 <certs type="CertificateField">
@@ -196,10 +196,10 @@
                         <eap_radius value="eap-radius">EAP RADIUS</eap_radius>
                     </OptionValues>
                 </auth>
-                <id type="TextField">
+                <id type="StrictTextField">
                     <Mask>/^([0-9a-zA-Z\.\-,_\:\=\@\%\*\s]){0,1024}$/u</Mask>
                 </id>
-                <eap_id type="TextField">
+                <eap_id type="StrictTextField">
                     <Mask>/^([0-9a-zA-Z\.\-,_\:\=\@\%\*\s]){0,1024}$/u</Mask>
                 </eap_id>
                 <groups type="AuthGroupField">

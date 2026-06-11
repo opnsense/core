@@ -90,8 +90,8 @@
             <!-- internal mapper to translate category to a comma seperated list of uuids  -->
             <categories type=".\CategoryMapField" volatile="true"/>
             <descr type="DescriptionField"/>
-            <tag type="TextField"/>
-            <tagged type="TextField"/>
+            <tag type="StrictTextField"/>
+            <tagged type="StrictTextField"/>
             <nosync type="BooleanField"/>
             <natreflection type="OptionField">
                 <BlankDesc>Use system default</BlankDesc>

@@ -321,10 +321,10 @@
                         <opt7 value="7">Network Control (7, highest)</opt7>
                     </OptionValues>
                 </set-prio-low>
-                <tag type="TextField">
+                <tag type="StrictTextField">
                     <Mask>/^([0-9a-zA-Z.,_\-]){0,512}$/u</Mask>
                 </tag>
-                <tagged type="TextField">
+                <tagged type="StrictTextField">
                     <Mask>/^([0-9a-zA-Z.,_\-]){0,512}$/u</Mask>
                 </tagged>
                 <tcpflags1 type="OptionField">
@@ -507,10 +507,10 @@
                     <Multiple>Y</Multiple>
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
-                <tag type="TextField">
+                <tag type="StrictTextField">
                     <Mask>/^([0-9a-zA-Z.,_\-]){0,512}$/u</Mask>
                 </tag>
-                <tagged type="TextField">
+                <tagged type="StrictTextField">
                     <Mask>/^([0-9a-zA-Z.,_\-]){0,512}$/u</Mask>
                 </tagged>
                 <description type="DescriptionField"/>

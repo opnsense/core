@@ -368,7 +368,7 @@
                 <auth-gen-token-renewal type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                 </auth-gen-token-renewal>
-                <auth-gen-token-secret type="TextField"/>
+                <auth-gen-token-secret type="StrictTextField"/>
                 <provision_exclusive type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
@@ -427,7 +427,7 @@
                 <http-proxy type="IPPortField">
                     <HostnameAllowed>Y</HostnameAllowed>
                 </http-proxy>
-                <verify-x509-name type="TextField"/>
+                <verify-x509-name type="StrictTextField"/>
             </Instance>
         </Instances>
         <StaticKeys>
@@ -441,7 +441,7 @@
                         <crypt-v2>crypt-v2 (Encrypt and authenticate all control channel packets)</crypt-v2>
                     </OptionValues>
                 </mode>
-                <key type="TextField">
+                <key type="StrictTextField">
                     <Required>Y</Required>
                     <ValidationMessage>A key is required; generate one with the button.</ValidationMessage>
                 </key>
