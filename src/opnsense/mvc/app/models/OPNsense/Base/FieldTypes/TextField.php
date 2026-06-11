@@ -60,7 +60,7 @@ class TextField extends BaseField
     /**
      * @var bool allow special control characters
      */
-    protected $internalAllowSpecial = false;
+    protected $internalAllowSpecial = true;
 
     /**
      * set validation mask

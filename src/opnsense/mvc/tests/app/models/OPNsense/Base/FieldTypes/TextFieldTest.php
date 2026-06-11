@@ -412,7 +412,7 @@ class TextFieldTest extends Field_Framework_TestCase
     }
 
     /**
-     * special control characters fail validation by default
+     * special control characters pass validation by default
      * no mask (TextField default)
      * not required (BaseField default)
      */
@@ -421,21 +421,21 @@ class TextFieldTest extends Field_Framework_TestCase
         $field = new TextField();
         $field->setValue("foo\0bar\vbaz\fqux");
 
-        $this->assertNotEmpty($this->validate($field));
+        $this->assertEmpty($this->validate($field));
     }
 
     /**
-     * special control characters pass validation when AllowSpecial=Y
+     * special control characters fail validation when AllowSpecial=N
      * no mask (TextField default)
      * not required (BaseField default)
      */
-    public function testAllowSpecialEnabled()
+    public function testAllowSpecialDisabled()
     {
         $field = new TextField();
-        $field->setAllowSpecial('Y');
+        $field->setAllowSpecial('N');
         $field->setValue("foo\0bar\vbaz\fqux");
 
-        $this->assertEmpty($this->validate($field));
+        $this->assertNotEmpty($this->validate($field));
     }
 
 }
