@@ -653,51 +653,62 @@ class UIBootgrid {
     }
 
     _onDimensionChange() {
-        if (this._isScrolling) return;
-        const scrollbarGutterOffset = 16;
-        const defaultHeight = 120;
+    if (this._isScrolling) {
+        clearTimeout(this._resizeAfterScrollTimer);
+        this._resizeAfterScrollTimer = setTimeout(() => this._onDimensionChange(), 150);
+        return;
+    }
 
-        const tableEl = document.getElementById(this.id);
-        const holderEl = tableEl?.querySelector(".tabulator-tableholder");
+    const scrollbarGutterOffset = 16;
+    const defaultHeight = 120;
 
-        if (!tableEl || !holderEl) return;
+    const tableEl = document.getElementById(this.id);
+    const holderEl = tableEl?.querySelector(".tabulator-tableholder");
 
-        const currentTotalHeight = tableEl.offsetHeight;
-        const holderHeight = holderEl.offsetHeight;
+    if (!tableEl || !holderEl) return;
 
-        let nextContentHeight;
+    const currentTotalHeight = tableEl.offsetHeight;
+    const holderHeight = holderEl.offsetHeight;
 
-        let minHeightLimit = defaultHeight;
-        const rows = this.table.getRows("visible");
-        if (rows.length > 0) {
-            let rowsHeight = 0;
-            const limit = Math.min(rows.length, 10);
-            for (let i = 0; i < limit; i++) {
-                const rowEl = rows[i].getElement();
-                if (rowEl) {
-                    rowsHeight += rowEl.offsetHeight;
-                }
+    let nextContentHeight;
+
+    let minHeightLimit = defaultHeight;
+    const rows = this.table.getRows("visible");
+    if (rows.length > 0) {
+        let rowsHeight = 0;
+        const limit = Math.min(rows.length, 10);
+        for (let i = 0; i < limit; i++) {
+            const rowEl = rows[i].getElement();
+            if (rowEl) {
+                rowsHeight += rowEl.offsetHeight;
             }
-            const headerHeight = tableEl.querySelector(".tabulator-header")?.offsetHeight || 0;
-            const footerHeight = tableEl.querySelector(".tabulator-footer")?.offsetHeight || 0;
-            minHeightLimit = rowsHeight;
         }
+        //const headerHeight = tableEl.querySelector(".tabulator-header")?.offsetHeight || 0;
+        //const footerHeight = tableEl.querySelector(".tabulator-footer")?.offsetHeight || 0;
+        minHeightLimit = rowsHeight;
+    }
 
-        if (!this.dataAvailable && !this.loading && holderHeight > this.tableHeight) {
-            nextContentHeight = minHeightLimit;
-        } else {
-            const adjustedHeight = currentTotalHeight + (this.tableHeight - holderHeight);
-            nextContentHeight = Math.min(adjustedHeight, this.pageHeight);
-            nextContentHeight = Math.max(minHeightLimit, nextContentHeight);
-        }
+    if (!this.dataAvailable && !this.loading && holderHeight > this.tableHeight) {
+        nextContentHeight = minHeightLimit;
+    } else {
+        const adjustedHeight = currentTotalHeight + (this.tableHeight - holderHeight);
+        nextContentHeight = Math.min(adjustedHeight, this.pageHeight);
+        nextContentHeight = Math.max(minHeightLimit, nextContentHeight);
+    }
 
-        const nextHeight = nextContentHeight + scrollbarGutterOffset;
+    const nextHeight = nextContentHeight + scrollbarGutterOffset;
 
-        if (Math.abs(currentTotalHeight - nextHeight) > 1) {
-            this.table.setHeight(nextHeight);
-            this.table.redraw();
+    if (Math.abs(currentTotalHeight - nextHeight) > 1) {
+        const savedScrollPos = this.scrollPos;
+        this.table.setHeight(nextHeight);
+        this.table.redraw();
+        if (savedScrollPos > 0) {
+            requestAnimationFrame(() => {
+                this._maintainScrollPosition(savedScrollPos);
+            });
         }
     }
+}
 
     _registerEvents() {
         this.table.on('dataLoading', () => {
