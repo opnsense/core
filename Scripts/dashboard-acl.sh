@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2024 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2024-2026 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -42,25 +42,23 @@ for WIDGET in ${WIDGETS}; do
 		continue
 	fi
 
-    REGISTERED=
-    SKIP=false
+	REGISTERED=
 
 	for METAFILE in ${METADATA}; do
-        if xmllint "${METAFILE}" --xpath 'boolean(//*[filename="'"${FILENAME}"'" and skiplint="true"])' 2>/dev/null | grep -q true; then
-            SKIP=true
-            break
-        fi
+		if ! grep -q "<filename>${FILENAME}</filename>" ${METAFILE}; then
+			continue
+		fi
 
-		if grep -q "<filename>${FILENAME}</filename>" ${METAFILE}; then
-			REGISTERED=$(xmllint ${METAFILE} --xpath '//*[filename="'"${FILENAME}"'"]//endpoints//endpoint' | \
+		if [ "$(xmllint "${METAFILE}" --xpath 'count(//*[filename="'"${FILENAME}"'"]/endpoints/independent)')" != "0" ]; then
+			continue 2
+		fi
+
+		if [ "$(xmllint ${METAFILE} --xpath 'count(//*[filename="'"${FILENAME}"'"]/endpoints/endpoint)')" != "0" ]; then
+			REGISTERED=$(xmllint ${METAFILE} --xpath '//*[filename="'"${FILENAME}"'"]/endpoints/endpoint' | \
 			    sed -e 's:^[^>]*>::' -e 's:<[^<]*$::' | sort)
 			break
 		fi
 	done
-
-    if [ "${SKIP}" = true ]; then
-        continue
-    fi
 
 	ENDPOINTS=$( (grep -o 'this\.ajaxCall([^,)]*' ${WIDGET} | cut -c 15-; \
 	    grep -o 'super\.openEventSource([^,)]*' ${WIDGET} | cut -c 23-) | \
@@ -68,7 +66,7 @@ for WIDGET in ${WIDGETS}; do
 
 	if [ -z "${ENDPOINTS}" ]; then
 		echo "No endpoints found for ${WIDGET}"
-		continue
+		exit 1
 	fi
 
 	if [ -z "${REGISTERED}" ]; then

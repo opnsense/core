@@ -229,7 +229,9 @@
     <livelog>
         <filename>LiveLog.js</filename>
         <link>/ui/diagnostics/log/core/system</link>
-        <skiplint>true</skiplint>
+        <endpoints>
+            <independent/>
+        </endpoints>
         <translations>
             <title>Live Log</title>
             <noaccess>No access</noaccess>
@@ -401,6 +403,9 @@
     </dnsmasqleases>
     <notes>
         <filename>Notes.js</filename>
+        <endpoints>
+            <independent/>
+        </endpoints>
         <translations>
             <title>Notes</title>
             <titleedit>Note editor</titleedit>
