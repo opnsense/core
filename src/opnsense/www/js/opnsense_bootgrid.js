@@ -652,6 +652,7 @@ class UIBootgrid {
     }
 
     _onDimensionChange() {
+        if (this._isScrolling) return;
         const scrollbarGutterOffset = 16;
         const defaultHeight = 120;
 
@@ -665,12 +666,28 @@ class UIBootgrid {
 
         let nextContentHeight;
 
+        let minHeightLimit = defaultHeight;
+        const rows = this.table.getRows("visible");
+        if (rows.length > 0) {
+            let rowsHeight = 0;
+            const limit = Math.min(rows.length, 8);
+            for (let i = 0; i < limit; i++) {
+                const rowEl = rows[i].getElement();
+                if (rowEl) {
+                    rowsHeight += rowEl.offsetHeight;
+                }
+            }
+            const headerHeight = tableEl.querySelector(".tabulator-header")?.offsetHeight || 0;
+            const footerHeight = tableEl.querySelector(".tabulator-footer")?.offsetHeight || 0;
+            minHeightLimit = rowsHeight + headerHeight + footerHeight;
+        }
+
         if (!this.dataAvailable && !this.loading && holderHeight > this.tableHeight) {
-            nextContentHeight = defaultHeight;
+            nextContentHeight = minHeightLimit;
         } else {
             const adjustedHeight = currentTotalHeight + (this.tableHeight - holderHeight);
             nextContentHeight = Math.min(adjustedHeight, this.pageHeight);
-            nextContentHeight = Math.max(defaultHeight, nextContentHeight);
+            nextContentHeight = Math.max(minHeightLimit, nextContentHeight);
         }
 
         const nextHeight = nextContentHeight + scrollbarGutterOffset;
@@ -877,6 +894,11 @@ class UIBootgrid {
 
         this.table.on('scrollVertical', (top) => {
             this.scrollPos = top;
+            this._isScrolling = true;
+            clearTimeout(this._scrollEndTimer);
+            this._scrollEndTimer = setTimeout(() => {
+                this._isScrolling = false;
+            }, 100);
         });
     }
 
