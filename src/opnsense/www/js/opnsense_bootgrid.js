@@ -652,62 +652,58 @@ class UIBootgrid {
     }
 
     _onDimensionChange() {
-    if (this._isScrolling) {
-        clearTimeout(this._resizeAfterScrollTimer);
-        this._resizeAfterScrollTimer = setTimeout(() => this._onDimensionChange(), 150);
-        return;
-    }
+        if (this._isScrolling) {
+            clearTimeout(this._resizeAfterScrollTimer);
+            this._resizeAfterScrollTimer = setTimeout(() => this._onDimensionChange(), 150);
+            return;
+        }
 
-    const scrollbarGutterOffset = 16;
-    const defaultHeight = 120;
+        const scrollbarGutterOffset = 16;
+        const defaultHeight = 120;
 
-    const tableEl = document.getElementById(this.id);
-    const holderEl = tableEl?.querySelector(".tabulator-tableholder");
+        const tableEl = document.getElementById(this.id);
+        const holderEl = tableEl?.querySelector(".tabulator-tableholder");
 
-    if (!tableEl || !holderEl) return;
+        if (!tableEl || !holderEl) return;
 
-    const currentTotalHeight = tableEl.offsetHeight;
-    const holderHeight = holderEl.offsetHeight;
+        const currentTotalHeight = tableEl.offsetHeight;
+        const holderHeight = holderEl.offsetHeight;
 
-    let nextContentHeight;
+        let nextContentHeight;
 
-    let minHeightLimit = defaultHeight;
-    const rows = this.table.getRows("visible");
-    if (rows.length > 0) {
-        let rowsHeight = 0;
-        const limit = Math.min(rows.length, 10);
-        for (let i = 0; i < limit; i++) {
-            const rowEl = rows[i].getElement();
-            if (rowEl) {
-                rowsHeight += rowEl.offsetHeight;
+        let minHeightLimit = defaultHeight;
+        const rows = this.table.getRows("visible");
+        if (rows.length > 0) {
+            let rowsHeight = 0;
+            const limit = Math.min(rows.length, 10);
+            for (let i = 0; i < limit; i++) {
+                const rowEl = rows[i].getElement();
+                if (rowEl) {
+                    rowsHeight += rowEl.offsetHeight;
+                }
             }
+            const headerHeight = tableEl.querySelector(".tabulator-header")?.offsetHeight || 0;
+            const footerHeight = tableEl.querySelector(".tabulator-footer")?.offsetHeight || 0;
+            minHeightLimit = rowsHeight + headerHeight + footerHeight;
         }
-        const headerHeight = tableEl.querySelector(".tabulator-header")?.offsetHeight || 0;
-        const footerHeight = tableEl.querySelector(".tabulator-footer")?.offsetHeight || 0;
-        minHeightLimit = rowsHeight + headerHeight + footerHeight;
-    }
 
-    if (!this.dataAvailable && !this.loading && holderHeight > this.tableHeight) {
-        nextContentHeight = minHeightLimit;
-    } else {
-        const adjustedHeight = currentTotalHeight + (this.tableHeight - holderHeight);
-        nextContentHeight = Math.min(adjustedHeight, this.pageHeight);
-        nextContentHeight = Math.max(minHeightLimit, nextContentHeight);
-    }
+        if (!this.dataAvailable && !this.loading && holderHeight > this.tableHeight) {
+            nextContentHeight = minHeightLimit;
+        } else {
+            const adjustedHeight = currentTotalHeight + (this.tableHeight - holderHeight);
+            nextContentHeight = Math.min(adjustedHeight, this.pageHeight);
+            nextContentHeight = Math.max(minHeightLimit, nextContentHeight);
+        }
 
-    const nextHeight = nextContentHeight + scrollbarGutterOffset;
+        const nextHeight = nextContentHeight + scrollbarGutterOffset;
 
-    if (Math.abs(currentTotalHeight - nextHeight) > 1) {
-        const savedScrollPos = this.scrollPos;
-        this.table.setHeight(nextHeight);
-        this.table.redraw();
-        if (savedScrollPos > 0) {
-            requestAnimationFrame(() => {
-                this._maintainScrollPosition(savedScrollPos);
-            });
+        if (Math.abs(currentTotalHeight - nextHeight) > 1) {
+            this._suppressTableObserver = true;
+            this.table.setHeight(nextHeight);
+            this.table.redraw();
+            this._suppressTableObserver = false;
         }
     }
-}
 
     _registerEvents() {
         this.table.on('dataLoading', () => {
@@ -877,6 +873,7 @@ class UIBootgrid {
                 pageObserver.observe(pageTarget);
 
                 const tableObserver = new ResizeObserver(debounce((entries) => {
+                    if (this._suppressTableObserver) return;
                     for (let entry of entries) {
                         this.tableHeight = entry.contentRect.height;
                         this._onDimensionChange();
