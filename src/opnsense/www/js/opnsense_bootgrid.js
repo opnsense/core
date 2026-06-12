@@ -128,6 +128,7 @@ class UIBootgrid {
         this.rememberedTreeIds = new Set(JSON.parse(localStorage.getItem(this.treeStorageKey) || '[]'));
         this.isVisible = false;
         this.scrollPos = 0;
+        this._suppressScrollPosUpdate = false;
         this.addButton = false;
         this.deleteSelectedButton = false;
 
@@ -652,10 +653,10 @@ class UIBootgrid {
         }
     }
 
-    _onDimensionChange() {
-        if (this._isScrolling) {
+    _onDimensionChange(force = false) {
+        if (!force && this._isScrolling) {
             clearTimeout(this._resizeAfterScrollTimer);
-            this._resizeAfterScrollTimer = setTimeout(() => this._onDimensionChange(), 150);
+            this._resizeAfterScrollTimer = setTimeout(() => this._onDimensionChange(force), 150);
             return;
         }
 
@@ -700,9 +701,13 @@ class UIBootgrid {
 
         if (Math.abs(currentTotalHeight - nextHeight) > 1) {
             this._suppressTableObserver = true;
+            this._suppressScrollPosUpdate = true;
+            const prevScrollPos = this.scrollPos;
             this.table.setHeight(nextHeight);
             this.table.redraw();
+            this._maintainScrollPosition(prevScrollPos);
             this._suppressTableObserver = false;
+            this._suppressScrollPosUpdate = false;
         }
     }
 
@@ -868,7 +873,7 @@ class UIBootgrid {
                         if (this.options.bottomReserveElement) {
                             this.pageHeight -= this.options.bottomReserveElement.getBoundingClientRect().height;
                         }
-                        this._onDimensionChange();
+                        this._onDimensionChange(true);
                     }
                 }));
                 pageObserver.observe(pageTarget);
@@ -902,6 +907,7 @@ class UIBootgrid {
         });
 
         this.table.on('scrollVertical', (top) => {
+            if (this._suppressScrollPosUpdate) return;
             this.scrollPos = top;
             this._isScrolling = true;
             clearTimeout(this._scrollEndTimer);
