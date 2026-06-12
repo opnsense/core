@@ -657,10 +657,9 @@ $.fn.SimpleActionButton = function (params) {
         if (excludeScope) {
             const toggleVisiblity = (tabId) => {
                 if (excludeScope.split(',').map(s => s.trim()).includes(tabId)) {
-                    this_button.closest('.js-apply-scope').hide();
-
+                    this_button.closest('section').hide();
                 } else {
-                    this_button.closest('.js-apply-scope').show();
+                    this_button.closest('section').show();
                 }
             }
 
