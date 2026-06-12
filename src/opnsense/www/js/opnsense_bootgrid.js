@@ -671,7 +671,7 @@ class UIBootgrid {
         const rows = this.table.getRows("visible");
         if (rows.length > 0) {
             let rowsHeight = 0;
-            const limit = Math.min(rows.length, 10);
+            const limit = Math.min(rows.length, 8);
             for (let i = 0; i < limit; i++) {
                 const rowEl = rows[i].getElement();
                 if (rowEl) {
@@ -680,6 +680,7 @@ class UIBootgrid {
             }
             const headerHeight = tableEl.querySelector(".tabulator-header")?.offsetHeight || 0;
             const footerHeight = tableEl.querySelector(".tabulator-footer")?.offsetHeight || 0;
+            minHeightLimit = rowsHeight + headerHeight + footerHeight;
         }
 
         if (!this.dataAvailable && !this.loading && holderHeight > this.tableHeight) {
