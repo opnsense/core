@@ -455,6 +455,7 @@ class UIBootgrid {
 
         if (bootGridOptions?.disableScroll ?? false) {
             this.options.disableScroll = true;
+            this.compatOptions['height'] = false;
         }
 
         this.tabulatorOptions = compatOptions.tabulatorOptions ??= {};
