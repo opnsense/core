@@ -1,4 +1,4 @@
-<section class="page-content-main grid-bottom-reserve">
+<section class="grid-bottom-reserve __mt js-apply-scope">
     <div class="alert content-box" style="display: flex; align-items: center; margin-bottom: 0;">
         <button class="btn btn-primary __mr" id="{{ button_id|default('reconfigureAct') }}"
             data-endpoint="{{ data_endpoint }}"
