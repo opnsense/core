@@ -113,7 +113,7 @@
          */
         $("#reconfigureAct").SimpleActionButton();
 
-        $('<button class="btn btn-primary pull-right" id="flushAct" type="button"><b>{{ lang._("Reset") }}</b> <i id="flushAct_progress" class=""></i></button>')
+        $('<button class="btn btn-primary __mr" id="flushAct" type="button"><b>{{ lang._("Reset") }}</b> <i id="flushAct_progress" class=""></i></button>')
         .insertAfter('#reconfigureAct');
 
         $("#flushAct").click(function(){

@@ -124,7 +124,7 @@
     </div>
 </div>
 
-<button class="btn pull-right" id="resetAct" style="display: none;"
+<button class="btn btn-primary __mr" id="resetAct" style="display: none;"
         data-endpoint='/api/syslog/service/reset'
         data-label="{{ lang._('Reset Log Files') }}"
         data-error-title="{{ lang._('Error resetting Syslog') }}"
