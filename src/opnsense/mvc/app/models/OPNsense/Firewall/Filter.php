@@ -353,31 +353,6 @@ class Filter extends BaseModel
         return $messages;
     }
 
-    /**
-     * Rollback this model to a previous version.
-     * Make sure to remove this object afterwards, since its contents won't be updated.
-     * @param $revision float|string revision number
-     * @return bool action performed (backup revision existed)
-     */
-    public function rollback($revision)
-    {
-        $filename = Config::getInstance()->getBackupFilename($revision);
-        if ($filename) {
-            // fiddle with the dom, copy OPNsense->Firewall->Filter from backup to current config
-            $sourcexml = simplexml_load_file($filename);
-            if ($sourcexml->OPNsense->Firewall->Filter) {
-                $sourcedom = dom_import_simplexml($sourcexml->OPNsense->Firewall->Filter);
-                $targetxml = Config::getInstance()->object();
-                $targetdom = dom_import_simplexml($targetxml->OPNsense->Firewall->Filter);
-                $node = $targetdom->ownerDocument->importNode($sourcedom, true);
-                $targetdom->parentNode->replaceChild($node, $targetdom);
-                Config::getInstance()->save();
-                return true;
-            }
-        }
-        return false;
-    }
-
     public function hasSchedule()
     {
         foreach ($this->rules->rule->iterateItems() as $rule) {
