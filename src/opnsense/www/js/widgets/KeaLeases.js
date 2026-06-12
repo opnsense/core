@@ -61,17 +61,14 @@ export default class KeaLeases extends BaseTableWidget {
         }
 
         const config = await this.getWidgetConfig();
-        const limit = parseInt(config.leasesToShow ?? '2');
+        const limit = parseInt(config.leasesToShow);
 
-        const statsRequestBody = JSON.stringify({});
         const leasesRequestBody = JSON.stringify({
             rowCount: limit,
             sort: { expire: 'desc' }
         });
 
-        const [stats4Response, stats6Response, leases4Response, leases6Response] = await Promise.all([
-            this.ajaxCall(`/api/kea/leases4/stats`, statsRequestBody, 'GET'),
-            this.ajaxCall(`/api/kea/leases6/stats`, statsRequestBody, 'GET'),
+        const [leases4Response, leases6Response] = await Promise.all([
             this.ajaxCall(`/api/kea/leases4/search`, leasesRequestBody, 'POST'),
             this.ajaxCall(`/api/kea/leases6/search`, leasesRequestBody, 'POST')
         ]);
@@ -88,9 +85,9 @@ export default class KeaLeases extends BaseTableWidget {
 
         // combine v4 and v6 lease counts
         const stats = {
-            activeCount: (stats4Response?.active ?? 0) + (stats6Response?.active ?? 0),
-            inactiveCount: (stats4Response?.inactive ?? 0) + (stats6Response?.inactive ?? 0),
-            totalCount: (stats4Response?.total ?? 0) + (stats6Response?.total ?? 0)
+            activeCount: (leases4Response?.stats?.active ?? 0) + (leases6Response?.stats?.active ?? 0),
+            inactiveCount: (leases4Response?.stats?.inactive ?? 0) + (leases6Response?.stats?.inactive ?? 0),
+            totalCount: (leases4Response?.stats?.total ?? 0) + (leases6Response?.stats?.total ?? 0)
         };
 
         if (stats.totalCount === 0) {

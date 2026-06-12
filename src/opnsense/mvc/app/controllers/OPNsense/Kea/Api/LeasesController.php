@@ -41,9 +41,15 @@ abstract class LeasesController extends ApiControllerBase
     {
         $selected_interfaces = $this->request->get('selected_interfaces');
 
-        $records = $this->getLeaseRecords();
-
         $backend = new Backend();
+
+        if (empty($this->configd_fetch_leases)) {
+            $records = [];
+        } else {
+            $leases = json_decode($backend->configdpRun($this->configd_fetch_leases), true) ?? [];
+            $records = $leases['records'] ?? [];
+        }
+
         $interfaces = [];
 
         $mac_db = json_decode($backend->configdRun('interface list macdb'), true) ?? [];
@@ -56,8 +62,18 @@ abstract class LeasesController extends ApiControllerBase
             ];
         }
 
+        $stats = [
+            'active' => 0,
+            'inactive' => 0,
+            'total' => 0,
+        ];
 
         foreach ($records as &$record) {
+            // Stats
+            $stats['total']++;
+            $isActive = $record['state'] === 0;
+            $stats[$isActive ? 'active' : 'inactive']++;
+
             // Interface
             $record['if_descr'] = '';
             $record['if_name'] = '';
@@ -75,6 +91,7 @@ abstract class LeasesController extends ApiControllerBase
             return empty($selected_interfaces) || in_array($key['if_name'], $selected_interfaces);
         });
 
+        $response['stats'] = $stats;
         $response['interfaces'] = $interfaces;
         return $response;
     }
@@ -101,38 +118,5 @@ abstract class LeasesController extends ApiControllerBase
         }
 
         return ['status' => 'ok'];
-    }
-
-    public function statsAction()
-    {
-        $records = $this->getLeaseRecords();
-
-        $stats = [
-            'active' => 0,
-            'inactive' => 0,
-            'total' => 0,
-        ];
-
-        foreach ($records as $record) {
-            $stats['total']++;
-            if ($record['state'] === 0) {
-                $stats['active']++;
-            } else {
-                $stats['inactive']++;
-            }
-        }
-
-        return $stats;
-    }
-
-    protected function getLeaseRecords()
-    {
-        if (empty($this->configd_fetch_leases)) {
-            return [];
-        }
-
-        $backend = new Backend();
-        $leases = json_decode($backend->configdpRun($this->configd_fetch_leases), true) ?? [];
-        return $leases['records'] ?? [];
     }
 }
