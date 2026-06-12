@@ -98,7 +98,7 @@ body{
 
 .page-content{
   background: map-get($colors, content-background);
-  height: 100%;
+  height: calc(100% - 55px);
   padding-top: 62px;
   position: relative;
   z-index: 1;

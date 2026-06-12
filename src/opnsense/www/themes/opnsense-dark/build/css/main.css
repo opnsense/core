@@ -6704,7 +6704,7 @@ body {
 
 .page-content {
   background: rgb(26.2, 29.475, 39.3);
-  height: 100%;
+  height: calc(100% - 55px);
   padding-top: 62px;
   position: relative;
   z-index: 1;
@@ -6759,6 +6759,10 @@ body {
 .content-box {
   background: #101218;
   border: 1px solid #E5E5E5;
+}
+.content-box-main {
+  padding-bottom: 15px;
+  padding-top: 15px;
 }
 
 .tab-content {
