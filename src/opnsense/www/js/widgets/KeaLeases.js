@@ -48,44 +48,52 @@ export default class KeaLeases extends BaseTableWidget {
         $('[data-toggle="tooltip"]').tooltip({container: 'body'});
 
         const [settingsV4Response, settingsV6Response] = await Promise.all([
-            this.ajaxCall(`/api/kea/dhcpv4/${'get'}`),
-            this.ajaxCall(`/api/kea/dhcpv6/${'get'}`)
+            this.ajaxCall(`/api/kea/dhcpv4/get`),
+            this.ajaxCall(`/api/kea/dhcpv6/get`)
         ]);
+
         const dhcpv4Enabled = settingsV4Response?.dhcpv4?.general?.enabled === '1';
         const dhcpv6Enabled = settingsV6Response?.dhcpv6?.general?.enabled === '1';
+
         if (!dhcpv4Enabled && !dhcpv6Enabled) {
             this.displayError(this.translations.unconfigured, '/ui/kea/dhcp/v4#settings');
             return;
         }
 
-        const config = await this.getWidgetConfig() || {};
-        const limit = parseInt(config.leasesToShow ?? '2', 10) || 2;
+        const config = await this.getWidgetConfig();
+        const limit = parseInt(config.leasesToShow ?? '2');
 
-        const requestBody = JSON.stringify({
-            rowCount: Math.max(1, limit),
+        const statsRequestBody = JSON.stringify({});
+        const leasesRequestBody = JSON.stringify({
+            rowCount: limit,
             sort: { expire: 'desc' }
         });
 
-        const [leases4Response, leases6Response] = await Promise.all([
-            this.ajaxCall(`/api/kea/leases4/${'search'}`, requestBody, 'POST'),
-            this.ajaxCall(`/api/kea/leases6/${'search'}`, requestBody, 'POST')
+        const [stats4Response, stats6Response, leases4Response, leases6Response] = await Promise.all([
+            this.ajaxCall(`/api/kea/leases4/stats`, statsRequestBody, 'GET'),
+            this.ajaxCall(`/api/kea/leases6/stats`, statsRequestBody, 'GET'),
+            this.ajaxCall(`/api/kea/leases4/search`, leasesRequestBody, 'POST'),
+            this.ajaxCall(`/api/kea/leases6/search`, leasesRequestBody, 'POST')
         ]);
 
         const leases4Rows = leases4Response?.rows ?? [];
         const leases6Rows = leases6Response?.rows ?? [];
 
-        const leases4Tag = leases4Rows.map(row => Object.assign({}, row, { leaseFamily: 'v4' }));
-        const leases6Tag = leases6Rows.map(row => Object.assign({}, row, { leaseFamily: 'v6' }));
+        // tag leasefamily for each lease
+        leases4Rows.forEach(row => row.leaseFamily = 'v4');
+        leases6Rows.forEach(row => row.leaseFamily = 'v6');
 
-        const expireValue = n => Number(n?.expire) || 0;
-        // combine v4 and v6 leases, sort by expire time and limit to the configured number of leases to show
-        const leaseRows = leases4Tag.concat(leases6Tag).sort((a, b) => expireValue(b) - expireValue(a)).slice(0, Math.max(1, limit));
+        // combine v4 and v6 leases and sort by expire time
+        const leaseRows = leases4Rows.concat(leases6Rows).sort((a, b) => b.expire - a.expire);
 
-        const leases4TotalCount = Number.isFinite(leases4Response?.total) ? leases4Response.total : leases4Rows.length;
-        const leases6TotalCount = Number.isFinite(leases6Response?.total) ? leases6Response.total : leases6Rows.length;
-        const leaseTotalCount = leases4TotalCount + leases6TotalCount;
+        // combine v4 and v6 lease counts
+        const stats = {
+            activeCount: (stats4Response?.active ?? 0) + (stats6Response?.active ?? 0),
+            inactiveCount: (stats4Response?.inactive ?? 0) + (stats6Response?.inactive ?? 0),
+            totalCount: (stats4Response?.total ?? 0) + (stats6Response?.total ?? 0)
+        };
 
-        if (leaseTotalCount === 0) {
+        if (stats.totalCount === 0) {
             this.displayError(this.translations.noleases, '/ui/kea/dhcp/leases4');
             return;
         }
@@ -96,7 +104,7 @@ export default class KeaLeases extends BaseTableWidget {
         this.configChanged = false;
 
         $('#keaLeasesTable').empty();
-        this.processLeases(leaseRows.slice(0, Math.max(1, limit)));
+        this.processLeases(leaseRows, stats);
         $('[data-toggle="tooltip"]').tooltip('hide');
     }
 
@@ -106,65 +114,42 @@ export default class KeaLeases extends BaseTableWidget {
         );
     }
 
-    processLeases(leaseRows) {
-        const stateLabels = ['assigned', 'declined', 'assigned expired', 'declined expired', 'expired-reclaimed'];
-        const normalizeState = row => {
-            const rawState = row?.state ?? '';
-            const numericState = Number(rawState);
-            if (Number.isInteger(numericState) && stateLabels[numericState]) {
-                return stateLabels[numericState];
-            }
-            return String(rawState);
-        };
-
-        let activeCount = 0;
-        let inactiveCount = 0
-
-        leaseRows.forEach(row => {
-            const state = normalizeState(row);
-            if (state === 'assigned') {
-                activeCount++;
-            } else {
-                inactiveCount++;
-            }
-        });
-
+    processLeases(leaseRows, stats) {
         const summaryRow = `
             <div>
                 <span>
-                    Active: ${activeCount} |
-                    Inactive: ${inactiveCount} |
-                    Total: ${leaseRows.length}
+                    Active: ${stats.activeCount} |
+                    Inactive: ${stats.inactiveCount} |
+                    Total: ${stats.totalCount}
                 </span>
             </div>
         `;
 
         super.updateTable('keaLeasesTable', [[summaryRow, '']], 'kea-summary');
 
-        leaseRows
-            .map(row => ({
-                hostname: row.hostname || this.translations.notavailable,
-                ipAddress: row.address || this.translations.notavailable,
-                hwaddr: row.hwaddr || this.translations.notavailable,
-                leaseFamily: row.leaseFamily || (String(row.address || '').includes(':') ? 'v6' : 'v4')
-            }))
-            .forEach(lease => {
-                const hostname = (lease.hostname === '*') ? this.translations.notavailable : lease.hostname;
-                const header = `
-                    <div style="display:flex;align-items:center;">
-                        <i class="fa fa-laptop fa-fw text-primary"
-                           style="margin-right:5px;"
-                           data-toggle="tooltip"
-                           title="${lease.hwaddr}"></i>
-                        <span style="font-weight:bold;">${hostname}</span>
-                    </div>
-                `;
-                const leasesPath = lease.leaseFamily === 'v6' ? 'leases6' : 'leases4';
-                const link = `/ui/kea/dhcp/${leasesPath}#search=${encodeURIComponent(lease.ipAddress)}`;
-                const row = `<div><a href="${link}">${lease.ipAddress}</a></div><div></div>`;
-                super.updateTable('keaLeasesTable', [[header, row]], `${lease.leaseFamily}-${lease.ipAddress}`);
-            });
+        const notAvailable = this.translations.notavailable;
 
+        leaseRows.forEach(lease => {
+            const hostname = (lease.hostname === '*' || !lease.hostname) ? notAvailable : lease.hostname;
+            const ipAddress = lease.address || notAvailable;
+            const hwaddr = lease.hwaddr || notAvailable;
+            const leaseFamily = lease.leaseFamily;
+
+            const header = `
+                <div style="display:flex;align-items:center;">
+                    <i class="fa fa-laptop fa-fw text-primary"
+                        style="margin-right:5px;"
+                        data-toggle="tooltip"
+                        title="${hwaddr}"></i>
+                    <span style="font-weight:bold;">${hostname}</span>
+                </div>
+            `;
+
+            const leasesPath = leaseFamily === 'v4' ? 'leases4' : 'leases6';
+            const link = `/ui/kea/dhcp/${leasesPath}#search=${encodeURIComponent(ipAddress)}`;
+            const row = `<div><a href="${link}">${ipAddress}</a></div><div></div>`;
+            super.updateTable('keaLeasesTable', [[header, row]], `${leaseFamily}-${ipAddress}`);
+        });
     }
 
     async getWidgetOptions() {

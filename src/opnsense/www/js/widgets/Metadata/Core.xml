@@ -405,8 +405,8 @@
         <filename>KeaLeases.js</filename>
         <link>/ui/kea/dhcp/v4#settings</link>
         <endpoints>
-            <endpoint>/api/kea/dhcpv4/*</endpoint>
-            <endpoint>/api/kea/dhcpv6/*</endpoint>
+            <endpoint>/api/kea/dhcpv4/get</endpoint>
+            <endpoint>/api/kea/dhcpv6/get</endpoint>
             <endpoint>/api/kea/leases4/*</endpoint>
             <endpoint>/api/kea/leases6/*</endpoint>
         </endpoints>

@@ -39,15 +39,13 @@ abstract class LeasesController extends ApiControllerBase
 
     public function searchAction()
     {
-        if (empty($this->configd_fetch_leases)) {
-            return [];
-        }
-
         $selected_interfaces = $this->request->get('selected_interfaces');
+
+        $records = $this->getLeaseRecords();
+
         $backend = new Backend();
         $interfaces = [];
 
-        $leases = json_decode($backend->configdpRun($this->configd_fetch_leases), true) ?? [];
         $mac_db = json_decode($backend->configdRun('interface list macdb'), true) ?? [];
 
         $ifmap = [];
@@ -58,23 +56,19 @@ abstract class LeasesController extends ApiControllerBase
             ];
         }
 
-        if (!empty($leases) && isset($leases['records'])) {
-            $records = $leases['records'];
-            foreach ($records as &$record) {
-                // Interface
-                $record['if_descr'] = '';
-                $record['if_name'] = '';
-                if (!empty($record['if']) && isset($ifmap[$record['if']])) {
-                    $record['if_descr'] = $ifmap[$record['if']]['descr'];
-                    $record['if_name'] = $ifmap[$record['if']]['key'];
-                    $interfaces[$ifmap[$record['if']]['key']] = $ifmap[$record['if']]['descr'];
-                }
-                // Vendor
-                $mac = strtoupper(substr(str_replace(':', '', $record['hwaddr']), 0, 6));
-                $record['mac_info'] = isset($mac_db[$mac]) ? $mac_db[$mac] : '';
+
+        foreach ($records as &$record) {
+            // Interface
+            $record['if_descr'] = '';
+            $record['if_name'] = '';
+            if (!empty($record['if']) && isset($ifmap[$record['if']])) {
+                $record['if_descr'] = $ifmap[$record['if']]['descr'];
+                $record['if_name'] = $ifmap[$record['if']]['key'];
+                $interfaces[$ifmap[$record['if']]['key']] = $ifmap[$record['if']]['descr'];
             }
-        } else {
-            $records = [];
+            // Vendor
+            $mac = strtoupper(substr(str_replace(':', '', $record['hwaddr']), 0, 6));
+            $record['mac_info'] = isset($mac_db[$mac]) ? $mac_db[$mac] : '';
         }
 
         $response = $this->searchRecordsetBase($records, null, 'address', function ($key) use ($selected_interfaces) {
@@ -107,5 +101,38 @@ abstract class LeasesController extends ApiControllerBase
         }
 
         return ['status' => 'ok'];
+    }
+
+    public function statsAction()
+    {
+        $records = $this->getLeaseRecords();
+
+        $stats = [
+            'active' => 0,
+            'inactive' => 0,
+            'total' => 0,
+        ];
+
+        foreach ($records as $record) {
+            $stats['total']++;
+            if ($record['state'] === 0) {
+                $stats['active']++;
+            } else {
+                $stats['inactive']++;
+            }
+        }
+
+        return $stats;
+    }
+
+    protected function getLeaseRecords()
+    {
+        if (empty($this->configd_fetch_leases)) {
+            return [];
+        }
+
+        $backend = new Backend();
+        $leases = json_decode($backend->configdpRun($this->configd_fetch_leases), true) ?? [];
+        return $leases['records'] ?? [];
     }
 }
