@@ -671,7 +671,7 @@ class UIBootgrid {
         const rows = this.table.getRows("visible");
         if (rows.length > 0) {
             let rowsHeight = 0;
-            const limit = Math.min(rows.length, 8);
+            const limit = Math.min(rows.length, 10);
             for (let i = 0; i < limit; i++) {
                 const rowEl = rows[i].getElement();
                 if (rowEl) {
