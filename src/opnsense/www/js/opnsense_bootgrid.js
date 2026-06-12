@@ -680,7 +680,7 @@ class UIBootgrid {
             }
             const headerHeight = tableEl.querySelector(".tabulator-header")?.offsetHeight || 0;
             const footerHeight = tableEl.querySelector(".tabulator-footer")?.offsetHeight || 0;
-            minHeightLimit = rowsHeight + headerHeight + footerHeight;
+            minHeightLimit = rowsHeight;
         }
 
         if (!this.dataAvailable && !this.loading && holderHeight > this.tableHeight) {
