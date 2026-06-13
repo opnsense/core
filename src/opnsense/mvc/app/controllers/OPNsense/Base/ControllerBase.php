@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015 Deciso B.V.
+ * Copyright (C) 2015-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -162,7 +162,17 @@ class ControllerBase extends ControllerRoot
      */
     private function parseFormNode($xmlNode)
     {
-        $result = [];
+        /* set defaults, always a root section (also used for advanced toggle) */
+        $result = [
+            'sections' => [
+                [
+                    'children' => [],
+                    'type'=> false
+                ]
+            ],
+            'advanced' => false,
+            'help' => false
+        ];
         foreach ($xmlNode as $key => $node) {
             switch ($key) {
                 case "tab":
@@ -188,7 +198,22 @@ class ControllerBase extends ControllerRoot
                     break;
                 case "field":
                     // field type, containing attributes
-                    $result[] = $this->parseFormNode($node);
+                    $field = $this->parseFormNode($node);
+                    foreach ([
+                        'advanced', 'help', 'hint', 'style', 'maxheight', 'width', 'allownew', 'readonly', 'type'
+                    ] as $f){
+                        if (!isset($field[$f])) {
+                            $field[$f] = false;
+                        } elseif (!empty($field[$f]) && in_array($f, ['advanced', 'help'])) {
+                            $result[$f] = true; /* top level booleans */
+                        }
+                    }
+                    if ($field['type'] == 'header') {
+                        $field['children'] = [];
+                        $result['sections'][] = $field;
+                    } else {
+                        $result['sections'][count($result['sections'])-1]['children'][] = $field;
+                    }
                     break;
                 case "help":
                 case "hint":
@@ -197,6 +222,9 @@ class ControllerBase extends ControllerRoot
                     if (strlen($text)) {
                         $result[$key] = gettext($text);
                     }
+                    break;
+                case "grid_view":
+                    // skip grid properties
                     break;
                 default:
                     // default behavior, copy in value as key/value data

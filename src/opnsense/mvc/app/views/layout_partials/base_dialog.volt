@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2014-2025 Deciso B.V.
+ # Copyright (c) 2014-2026 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -33,27 +33,7 @@
  # label           :   dialog label
  #}
 
-{# Volt templates in php7 have issues with scope sometimes, copy input values to make them more unique #}
 {% set base_dialog_id=id %}
-{% set base_dialog_fields=fields %}
-{% set base_dialog_label=label %}
-
-{# Find if there are help supported or advanced field on this page #}
-{% set base_dialog_help=false %}
-{% set base_dialog_advanced=false %}
-{% for field in base_dialog_fields|default({})%}
-    {% for name,element in field %}
-        {% if name=='help' %}
-            {% set base_dialog_help=true %}
-        {% endif %}
-        {% if name=='advanced' %}
-            {% set base_dialog_advanced=true %}
-        {% endif %}
-    {% endfor %}
-    {% if base_dialog_help|default(false) and base_dialog_advanced|default(false) %}
-        {% break %}
-    {% endif %}
-{% endfor %}
 
 <div class="modal fade" id="{{base_dialog_id}}" tabindex="-1" role="dialog" aria-labelledby="{{base_dialog_id}}Label">
     <div class="modal-backdrop fade in"></div>
@@ -61,11 +41,12 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="{{ lang._('Close') }}"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="{{base_dialog_id}}Label">{{base_dialog_label}}</h4>
+                <h4 class="modal-title" id="{{base_dialog_id}}Label">{{label}}</h4>
             </div>
             <div class="modal-body">
                 <form id="frm_{{base_dialog_id}}">
-                  <div class="table-responsive">
+                {% for section in fields['sections'] %}
+                  <div class="table-responsive {{section['style']|default('')}}">
                     <table class="table table-striped table-condensed" style="table-layout: fixed; width: 100%;">
                         <colgroup>
                         {% if msgzone_width is defined %}
@@ -78,67 +59,36 @@
                             <col style="width: 35%;" />
                         {% endif %}
                         </colgroup>
-                        <tbody>
-                        {%  if base_dialog_advanced|default(false) or base_dialog_help|default(false) %}
+                        {% if section['type'] %}
+                        <thead {% if section['static']|default('false')=='false' %} style="cursor: pointer;"{% endif %}>
+                        <tr{% if section['advanced']|default('false')=='true' %} data-advanced="true"{% endif %}>
+                            <th colspan="3">
+                                <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px;">
+                                    {% if section['static']|default('false')=='false' %}
+                                    {% if section['collapse']|default('false')=='true' %}
+                                    <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                    {% else %}
+                                    <i class="fa fa-angle-down" aria-hidden="true"></i>
+                                    {% endif %}
+                                    &nbsp;
+                                    {% endif %}
+                                    <b>{{section['label']}}</b>
+                                </div>
+                            </th>
+                        </tr>
+                        </thead>
+                        {% endif %}
+                        <tbody class="collapsible">
+                        {%  if not section['type'] and (fields['advanced']|default(false) or fields['help']|default(false)) %}
                         <tr>
-                            <td>{% if base_dialog_advanced|default(false) %}<a href="#"><i class="fa fa-toggle-off text-danger" id="show_advanced_formDialog{{base_dialog_id}}"></i></a> <small>{{ lang._('advanced mode') }}</small>{% endif %}</td>
+                            <td>{% if fields['advanced']|default(false) %}<a href="#"><i class="fa fa-toggle-off text-danger" id="show_advanced_formDialog{{base_dialog_id}}"></i></a> <small>{{ lang._('advanced mode') }}</small>{% endif %}</td>
                             <td colspan="2" style="text-align:right;">
-                                {% if base_dialog_help|default(false) %}<small>{{ lang._('full help') }}</small> <a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_formDialog{{base_dialog_id}}"></i></a>{% endif %}
+                                {% if fields['help']|default(false) %}<small>{{ lang._('full help') }}</small> <a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_formDialog{{base_dialog_id}}"></i></a>{% endif %}
                             </td>
                         </tr>
                         {% endif %}
-                        {% for field in base_dialog_fields|default({})%}
-                            {# looks a bit buggy in the volt templates, field parameters won't reset properly here #}
-                            {% set advanced=false %}
-                            {% set help=false %}
-                            {% set hint=false %}
-                            {% set style=false %}
-                            {% set maxheight=false %}
-                            {% set width=false %}
-                            {% set allownew=false %}
-                            {% set readonly=false %}
-                            {% if field['type'] == 'ignore' %}
-                            {% elseif field['type'] == 'header' %}
-                              {# close table and start new one with header #}
-
-{#- macro base_dialog_header(field) #}
-      </tbody>
-    </table>
-  </div>
-  <div class="table-responsive {{field['style']|default('')}}">
-    <table class="table table-striped table-condensed" style="table-layout: fixed; width: 100%;">
-        <colgroup>
-        {% if msgzone_width is defined %}
-            <col class="col-md-3"/>
-            <col class="col-md-{{ 12 - 3 - msgzone_width }}"/>
-            <col class="col-md-{{ msgzone_width }}"/>
-        {% else %}
-            <col style="width: 25%;" />
-            <col style="width: 40%;" />
-            <col style="width: 35%;" />
-        {% endif %}
-        </colgroup>
-        <thead {% if field['static']|default('false')=='false' %} style="cursor: pointer;"{% endif %}>
-          <tr{% if field['advanced']|default('false')=='true' %} data-advanced="true"{% endif %}>
-            <th colspan="3">
-                <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px;">
-                    {% if field['static']|default('false')=='false' %}
-                    {% if field['collapse']|default('false')=='true' %}
-                    <i class="fa fa-angle-right" aria-hidden="true"></i>
-                    {% else %}
-                    <i class="fa fa-angle-down" aria-hidden="true"></i>
-                    {% endif %}
-                    &nbsp;
-                    {% endif %}
-                    <b>{{field['label']}}</b>
-                </div>
-            </th>
-          </tr>
-        </thead>
-        <tbody {%if field['static']|default('false')=='false'%}class="collapsible" {% if field['collapse']|default('false')=='true' %}style="display: none;"{%endif%}{%endif%}>
-{#- endmacro #}
-
-                            {% elseif field['type'] == 'subheader' %}
+                        {% for field in section['children']%}
+                            {% if field['type'] == 'subheader' %}
                                 <tr{% if field['advanced']|default('false') == 'true' %} data-advanced="true"{% endif %}>
                                     <td colspan="3">
                                         <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px; padding-left: 5px;">
@@ -148,13 +98,14 @@
                                         </div>
                                     </td>
                                 </tr>
-                            {% else %}
-                              {{ partial("layout_partials/form_input_tr",field)}}
+                            {% elseif field['type'] != 'ignore' %}
+                              {{ partial("layout_partials/form_input_tr", field)}}
                             {% endif %}
                         {% endfor %}
                         </tbody>
                     </table>
                   </div>
+                {% endfor %}
                 </form>
             </div>
             <div class="modal-footer">

@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2014-2015 Deciso B.V.
+ # Copyright (c) 2014-2026 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -102,7 +102,7 @@
             <input type="checkbox"  class="{{style|default('')}}" id="{{ id }}" aria-label="{{label|safe}}">
         {% elseif type in ["select_multiple", "dropdown"] %}
             <div id="select_{{ id }}">
-            <select aria-label="{{label|safe}}" {% if type == 'select_multiple' %}multiple="multiple"{% endif %}
+            <select aria-label="{{label|safe}}" {% if type == 'select_multiple' %}multiple="multiple" title="{{ lang._('Nothing selected') }}"{% endif %}
                     data-size="{{size|default(10)}}"
                     id="{{ id }}"
                     class="{{style|default('selectpicker')}}"
