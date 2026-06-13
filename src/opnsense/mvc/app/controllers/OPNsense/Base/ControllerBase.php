@@ -167,7 +167,7 @@ class ControllerBase extends ControllerRoot
             'sections' => [
                 [
                     'children' => [],
-                    'type'=> false
+                    'type' => false
                 ]
             ],
             'advanced' => false,
@@ -199,9 +199,11 @@ class ControllerBase extends ControllerRoot
                 case "field":
                     // field type, containing attributes
                     $field = $this->parseFormNode($node);
-                    foreach ([
+                    foreach (
+                        [
                         'advanced', 'help', 'hint', 'style', 'maxheight', 'width', 'allownew', 'readonly', 'type'
-                    ] as $f){
+                        ] as $f
+                    ) {
                         if (!isset($field[$f])) {
                             $field[$f] = false;
                         } elseif (!empty($field[$f]) && in_array($f, ['advanced', 'help'])) {
@@ -212,7 +214,7 @@ class ControllerBase extends ControllerRoot
                         $field['children'] = [];
                         $result['sections'][] = $field;
                     } else {
-                        $result['sections'][count($result['sections'])-1]['children'][] = $field;
+                        $result['sections'][count($result['sections']) - 1]['children'][] = $field;
                     }
                     break;
                 case "help":
