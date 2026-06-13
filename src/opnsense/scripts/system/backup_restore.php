@@ -138,7 +138,7 @@ function restore_config_section($section_sets, $new_contents)
     }
 
     if (count($restored) && !count($failed)) {
-        \OPNsense\Core\Config::getInstance()->save(sprintf('Restored sections (%s) of config file', join(',', $restored)));
+        write_config(sprintf('Restored sections (%s) of config file', join(',', $restored)));
         \convert_config();
     }
 
@@ -179,11 +179,11 @@ if (!empty($restoreareas)) {
         if (!empty($config['rrddata'])) {
             \rrd_import();
             unset($config['rrddata']);
-            \OPNsense\Core\Config::getInstance()->save('Restored configuration area (RRD data imported)');
+            write_config('Restored configuration area (RRD data imported)');
         }
         if (!empty($params['flush_history'])) {
             mwexecf('/usr/local/opnsense/scripts/system/flush_config_history');
-            \OPNsense\Core\Config::getInstance()->save('System restore flushed local history');
+            write_config('System restore flushed local history');
         }
         if ($do_reboot && \is_interface_mismatch(false)) {
             echo json_encode(['status' => 'success', 'message' => gettext("The configuration area was restored, but physical interfaces could not be matched. No automatic reboot was performed."), 'reboot' => false]);
@@ -231,11 +231,11 @@ if (!empty($restoreareas)) {
             $flush = true;
         }
         if ($flush) {
-            \OPNsense\Core\Config::getInstance()->save('Restored full configuration');
+            write_config('Restored full configuration');
         }
         if (!empty($params['flush_history'])) {
             mwexecf('/usr/local/opnsense/scripts/system/flush_config_history');
-            \OPNsense\Core\Config::getInstance()->save('System restore flushed local history');
+            write_config('System restore flushed local history');
         }
         if (\is_interface_mismatch(false)) {
             $do_reboot = false;
