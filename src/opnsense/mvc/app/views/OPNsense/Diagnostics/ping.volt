@@ -84,18 +84,19 @@
             }
         });
 
-        $("#btn_start_new").click(function () {
-            if (!$("#frm_PingSettings_progress").hasClass("fa-spinner")) {
-                $("#frm_PingSettings_progress").addClass("fa fa-spinner fa-pulse");
+        $("#btn_start_new").SimpleActionButton({
+            onPreAction: function() {
+                const dfObj = new $.Deferred();
                 let callb = function (data) {
-                    $("#frm_PingSettings_progress").removeClass("fa fa-spinner fa-pulse");
                     if (data.result && data.result === 'ok') {
                         ajaxCall("/api/diagnostics/ping/start/" + data.uuid, {}, function(){
                             $("#ping_jobs_tab").click();
                         });
                     }
+                    dfObj.reject(); /* do not execute regular data_endpoint */
                 }
                 saveFormToEndpoint("/api/diagnostics/ping/set", 'frm_PingSettings', callb, true, callb);
+                return dfObj;
             }
         });
     });
@@ -110,7 +111,8 @@
 <div class="tab-content content-box">
     <div id="ping" class="tab-pane fade in active">
       <div id="ping">
-          {{ partial("layout_partials/base_form",['fields':pingForm,'id':'frm_PingSettings', 'apply_btn_id':'btn_start_new'])}}
+          {{ partial("layout_partials/base_form",['fields':pingForm,'id':'frm_PingSettings'])}}
+          {{ partial('layout_partials/base_apply_button', {'button_id': 'btn_start_new', 'data_endpoint': '', 'data_label': lang._('Start')}) }}
       </div>
     </div>
      <div id="ping_jobs" class="tab-pane fade in">

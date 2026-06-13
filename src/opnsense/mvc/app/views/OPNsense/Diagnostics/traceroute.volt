@@ -32,12 +32,10 @@
             $('.selectpicker').selectpicker('refresh');
         });
 
-        $("#btn_query").click(function () {
-            if (!$("#frm_TracerouteSettings_progress").hasClass("fa-spinner")) {
-                $("#traceroute_results").hide();
-                $("#frm_TracerouteSettings_progress").addClass("fa fa-spinner fa-pulse");
+        $("#btn_query").SimpleActionButton({
+            onPreAction: function() {
+                const dfObj = new $.Deferred();
                 let callb = function (data) {
-                    $("#frm_TracerouteSettings_progress").removeClass("fa fa-spinner fa-pulse");
                     if (data.result === 'ok') {
                           $("#traceroute_results").show();
                           if (data.response.notice){
@@ -63,17 +61,19 @@
                             $("#traceroute_results > tbody").append($tr);
                           }
                     }
+                    dfObj.reject(); /* do not execute regular data_endpoint */
                 }
                 saveFormToEndpoint("/api/diagnostics/traceroute/set", 'frm_TracerouteSettings', callb, true, callb);
+                return dfObj;
             }
         });
-
     });
 </script>
 
 <div class="tab-content content-box col-xs-12 __mb">
     <div id="traceroute">
-        {{ partial("layout_partials/base_form",['fields':tracerouteForm,'id':'frm_TracerouteSettings', 'apply_btn_id':'btn_query'])}}
+        {{ partial("layout_partials/base_form",['fields':tracerouteForm,'id':'frm_TracerouteSettings'])}}
+        {{ partial('layout_partials/base_apply_button', {'button_id': 'btn_query', 'data_endpoint': '', 'data_label': lang._('Start')}) }}
     </div>
 </div>
 <div class="tab-content content-box col-xs-12 __mb">

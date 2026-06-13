@@ -32,12 +32,10 @@
             $('.selectpicker').selectpicker('refresh');
         });
 
-        $("#btn_query").click(function () {
-            if (!$("#frm_PortprobeSettings_progress").hasClass("fa-spinner")) {
-                $("#portprobe_results").hide();
-                $("#frm_PortprobeSettings_progress").addClass("fa fa-spinner fa-pulse");
+        $("#btn_query").SimpleActionButton({
+            onPreAction: function() {
+                const dfObj = new $.Deferred();
                 let callb = function (data) {
-                    $("#frm_PortprobeSettings_progress").removeClass("fa fa-spinner fa-pulse");
                     if (data.result === 'ok') {
                           $("#portprobe_results").show();
                           if (data.response.message){
@@ -50,11 +48,12 @@
                             $("#portprobe_results > tbody").append($tr);
                           }
                     }
+                    dfObj.reject(); /* do not execute regular data_endpoint */
                 }
                 saveFormToEndpoint("/api/diagnostics/portprobe/set", 'frm_PortprobeSettings', callb, true, callb);
+                return dfObj;
             }
         });
-
     });
 </script>
 
@@ -66,8 +65,9 @@
 
 <div class="tab-content content-box col-xs-12 __mb">
     <div id="portprobe">
-        {{ partial("layout_partials/base_form",['fields':portprobeForm,'id':'frm_PortprobeSettings', 'apply_btn_id':'btn_query'])}}
+        {{ partial("layout_partials/base_form",['fields':portprobeForm,'id':'frm_PortprobeSettings'])}}
     </div>
+    {{ partial('layout_partials/base_apply_button', {'button_id': 'btn_query', 'data_endpoint': ''}) }}
 </div>
 <div class="tab-content content-box col-xs-12 __mb">
   <table class="table table-condensed" id="portprobe_results" style="display:none;">

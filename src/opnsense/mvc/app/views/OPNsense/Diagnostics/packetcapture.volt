@@ -189,26 +189,25 @@
             $('.selectpicker').selectpicker('refresh');
         });
 
-        $("#btn_start_new").click(function () {
-            if (!$("#frm_CaptureSettings_progress").hasClass("fa-spinner")) {
-                $("#frm_CaptureSettings_progress").addClass("fa fa-spinner fa-pulse");
+        $("#btn_start_new").SimpleActionButton({
+            onPreAction: function() {
+                const dfObj = new $.Deferred();
                 let callb = function (data) {
-                    $("#frm_CaptureSettings_progress").removeClass("fa fa-spinner fa-pulse");
                     if (data.result && data.result === 'ok') {
                         ajaxCall("/api/diagnostics/packet_capture/start/" + data.uuid, {}, function(){
                             $("#capture_jobs_tab").click();
                         });
                     }
+                    dfObj.reject(); /* do not execute regular data_endpoint */
                 }
                 saveFormToEndpoint("/api/diagnostics/packet_capture/set", 'frm_CaptureSettings', callb, true, callb);
+                return dfObj;
             }
         });
-
 
         /**
          *   Reformat static form items
          */
-        $("#btn_start_new > b").text("{{ lang._('Start') }}");
         // (de)select all interfaces
         $("select.interface_select").closest("td").css("white-space", "nowrap").find('a,br').remove();;
         let btn_toggle_all = $('<button id="select_all" type="button" class="btn btn-default">');
@@ -232,7 +231,8 @@
 <div class="tab-content content-box">
     <div id="capture" class="tab-pane fade in active">
       <div id="capture">
-          {{ partial("layout_partials/base_form",['fields':captureForm,'id':'frm_CaptureSettings', 'apply_btn_id':'btn_start_new'])}}
+          {{ partial("layout_partials/base_form",['fields':captureForm,'id':'frm_CaptureSettings'])}}
+          {{ partial('layout_partials/base_apply_button', {'button_id': 'btn_start_new', 'data_endpoint': '', 'data_label': lang._('Start')}) }}
       </div>
     </div>
      <div id="capture_jobs" class="tab-pane fade in">
