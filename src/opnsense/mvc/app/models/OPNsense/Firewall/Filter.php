@@ -286,14 +286,22 @@ class Filter extends BaseModel
                             gettext('A track interface is only allowed without an external prefix.'),
                             $rule->trackif->__reference
                         ));
+                    } elseif ($config->interfaces->{$rule->interface}->ipaddrv6 != 'dhcp6') {
+                        $messages->appendMessage(new Message(
+                            gettext('The rule interface is not in set to DHCPv6 mode.'),
+                            $rule->trackif->__reference
+                        ));
+                    } elseif ($rule->trackif->isEqual($rule->interface) && !strlen($config->interfaces->{$rule->interface}->{'dhcp6-prefix-id'})) {
+                        $messages->appendMessage(new Message(
+                            gettext('The rule interface requires a prefix ID for association.'),
+                            $rule->trackif->__reference
+                        ));
                     } elseif (
-                        (empty($config->interfaces->{$rule->interface}->ipaddrv6) ||
-                        $config->interfaces->{$rule->interface}->ipaddrv6 != 'dhcp6') ||
-                        empty($config->interfaces->{$rule->trackif}->{'track6-interface'}) ||
-                        $config->interfaces->{$rule->trackif}->{'track6-interface'} != (string)$rule->interface
+                        !$rule->trackif->isEqual($rule->interface) && (empty($config->interfaces->{$rule->trackif}->{'track6-interface'}) ||
+                        $config->interfaces->{$rule->trackif}->{'track6-interface'} != (string)$rule->interface)
                     ) {
                         $messages->appendMessage(new Message(
-                            gettext('This interface is not tracking the current rule interface.'),
+                            gettext('This interface is not associated with the current rule interface.'),
                             $rule->trackif->__reference
                         ));
                     }

@@ -96,7 +96,7 @@
     </field>
     <field>
         <id>rule.trackif</id>
-        <label>Track interface</label>
+        <label>Associated interface</label>
         <type>dropdown</type>
         <help>Use prefix defined on the selected interface instead of the interface this rule applies to when target prefix is not provided.</help>
         <grid_view>
