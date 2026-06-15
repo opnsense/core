@@ -168,17 +168,15 @@ class AliasController extends ApiMutableModelControllerBase
     public function getItemAction($uuid = null)
     {
         $response = $this->getBase("alias", "aliases.alias", $uuid);
-        if (!empty($response['alias'])) {
-            $selected_aliases = array_keys($response['alias']['content']);
-            foreach ($this->getModel()->aliasIterator() as $alias) {
-                if (!in_array($alias['name'], $selected_aliases)) {
-                    $response['alias']['content'][$alias['name']] = [
-                      "selected" => 0, "value" => $alias['name']
-                    ];
-                }
-                // append descriptions
-                $response['alias']['content'][$alias['name']]['description'] = $alias['description'];
+        $selected_aliases = array_keys($response['alias']['content'] ?? []);
+        foreach ($this->getModel()->aliasIterator() as $alias) {
+            if (!in_array($alias['name'], $selected_aliases)) {
+                $response['alias']['content'][$alias['name']] = [
+                  "selected" => 0, "value" => $alias['name']
+                ];
             }
+            // append descriptions
+            $response['alias']['content'][$alias['name']]['description'] = $alias['description'];
         }
         return $response;
     }
