@@ -9,7 +9,7 @@
         <id>reservation.ip_address</id>
         <label>IP address</label>
         <type>text</type>
-        <help>IP address to offer to the client</help>
+        <help>IP address to offer to the client. Leave empty for a hostname-only reservation (dynamic IP).</help>
     </field>
     <field>
         <id>reservation.prefix</id>
@@ -33,7 +33,7 @@
         <id>reservation.hostname</id>
         <label>Hostname</label>
         <type>text</type>
-        <help>Offer a hostname to the client</help>
+        <help>Hostname to associate with this client. When set without an IP address or prefix, Kea assigns a dynamic address from the pool and stamps this hostname on the lease record.</help>
     </field>
     <field>
         <id>reservation.domain_search</id>
