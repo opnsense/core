@@ -106,20 +106,27 @@ class TrafficShaper extends BaseModel
     public function fetchAllTargets()
     {
         $result = [];
+
         foreach ($this->pipes->pipe->iterateItems() as $uuid => $pipe) {
             if (!empty((string)$pipe->enabled)) {
                 $result[$uuid] = [
-                    'id' => (string)$pipe->number ,'type' => 'dnpipe', 'description' => (string)$pipe->description
+                    'description' => (string)$pipe->description,
+                    'id' => (string)$pipe->number,
+                    'type' => 'dnpipe',
                 ];
             }
         }
+
         foreach ($this->queues->queue->iterateItems() as $uuid => $queue) {
-            if (!empty((string)$pipe->enabled)) {
+            if (!empty((string)$queue->enabled)) {
                 $result[$uuid] = [
-                    'id' => (string)$queue->number ,'type' => 'dnqueue', 'description' => (string)$queue->description
+                    'description' => (string)$queue->description,
+                    'id' => (string)$queue->number,
+                    'type' => 'dnqueue',
                 ];
             }
         }
+
         return $result;
     }
 
