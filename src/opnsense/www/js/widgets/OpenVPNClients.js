@@ -132,7 +132,7 @@ export default class OpenVPNClients extends BaseTableWidget {
 
                                 <span class="ovpn-client-command ovpn-command-kill"
                                   data-row-id="${client.id}"
-                                  data-common-name="${client.common_name}"
+                                  data-common-name="${htmlSafe(client.common_name)}"
                                   style="cursor: pointer; float:right; margin-left: auto;"
                                   data-toggle="tooltip"
                                   title="${this.translations.kill}">

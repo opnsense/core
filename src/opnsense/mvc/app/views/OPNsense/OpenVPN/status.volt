@@ -36,7 +36,7 @@
                 formatters:{
                     commands: function (column, row) {
                         if (row.is_client) {
-                            return '<button type="button" class="btn btn-xs btn-default ovpn-command command-kill" data-toggle="tooltip" title="{{ lang._('Kill') }}" data-common_name="'+row.common_name+'" data-row-id="' + row.id + '"><span class="fa fa-times fa-fw"></span></button>';
+                            return '<button type="button" class="btn btn-xs btn-default ovpn-command command-kill" data-toggle="tooltip" title="{{ lang._('Kill') }}" data-common_name="'+htmlSafe(row.common_name)+'" data-row-id="' + row.id + '"><span class="fa fa-times fa-fw"></span></button>';
                         } else if (row.status === null) {
                             return '<button type="button" class="btn btn-xs btn-default ovpn-command command-start" data-toggle="tooltip" title="{{ lang._('Start') }}" data-row-id="' + row.id + '"><span class="fa fa-play fa-fw"></span></button>';
                         } else {
