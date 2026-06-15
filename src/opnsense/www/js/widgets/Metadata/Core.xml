@@ -387,7 +387,7 @@
     </certificates>
     <dnsmasqleases>
         <filename>DnsmasqLeases.js</filename>
-        <link>/ui/dnsmasq/settings</link>
+        <link>/ui/dnsmasq/leases</link>
         <endpoints>
             <endpoint>/api/dnsmasq/settings/*</endpoint>
             <endpoint>/api/dnsmasq/leases/*</endpoint>
