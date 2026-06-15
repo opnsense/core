@@ -9,7 +9,7 @@
         <id>reservation.ip_address</id>
         <label>IP address</label>
         <type>text</type>
-        <help>IP address to offer to the client</help>
+        <help>IP address to offer to the client. Leave empty for a hostname-only reservation (dynamic IP, fixed DNS name via DDNS).</help>
     </field>
     <field>
         <id>reservation.hw_address</id>

@@ -85,8 +85,11 @@ class KeaDhcpv4 extends BaseModel
             if ($subnet_node) {
                 $subnet = $subnet_node->subnet->getValue();
             }
-            if (!Util::isIPInCIDR($reservation->ip_address->getValue(), $subnet)) {
+            if (!$reservation->ip_address->isEmpty() && !Util::isIPInCIDR($reservation->ip_address->getValue(), $subnet)) {
                 $messages->appendMessage(new Message(gettext("Address not in specified subnet"), $key . ".ip_address"));
+            }
+            if ($reservation->ip_address->isEmpty() && $reservation->hostname->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("A hostname is required when no IP address is specified."), $key . ".hostname"));
             }
             if (!$reservation->client_id->isEmpty() && !$reservation->hw_address->isEmpty()) {
                 $messages->appendMessage(new Message(gettext("Either a client ID or a MAC address should be specified, but not both"), $key . ".hw_address"));
