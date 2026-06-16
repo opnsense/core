@@ -44,7 +44,7 @@ class File
         mixed $data,
         int $permissions = 0640,
         int $flags = 0,
-        string $chown = null
+        ?string $chown = null
     ) {
         @touch($filename);
         @chmod($filename, $permissions);
@@ -72,7 +72,7 @@ class File
         mixed $data,
         int $permissions = 0640,
         int $flags = 0,
-        string $chown = null
+        ?string $chown = null
     ) {
         if (!file_exists($filename) || hash('sha256', $data) !== hash_file('sha256', $filename)) {
             return self::file_put_contents($filename, $data, $permissions, $flags, $chown);
