@@ -33,7 +33,7 @@ function map_ifs($ifs, $data)
 {
     $result = ["interfaces" => []];
     $temp = gettimeofday();
-    $result['time'] = (double)$temp["sec"] + (double)$temp["usec"] / 1000000.0;
+    $result['time'] = (float)$temp['sec'] + (float)$temp['usec'] / 1000000.0;
 
     foreach ($ifs as $interfaceKey => $itf) {
         if (array_key_exists($itf['if'], $data)) {
@@ -89,7 +89,7 @@ if (isset($argv[1])) {
     $result = array("interfaces" => array());
     $interfaces = legacy_interface_stats();
     $temp = gettimeofday();
-    $result['time'] = (double)$temp["sec"] + (double)$temp["usec"] / 1000000.0;
+    $result['time'] = (float)$temp["sec"] + (float)$temp["usec"] / 1000000.0;
     // collect user friendly interface names
     foreach (legacy_config_get_interfaces(array("virtual" => false)) as $interfaceKey => $itf) {
         if (array_key_exists($itf['if'], $interfaces)) {

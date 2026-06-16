@@ -72,7 +72,7 @@ class IXR_Value
         if (is_integer($this->data)) {
             return 'int';
         }
-        if (is_double($this->data)) {
+        if (is_float($this->data)) {
             return 'double';
         }
 
@@ -271,7 +271,7 @@ class IXR_Message
                 $valueFlag = true;
                 break;
             case 'double':
-                $value = (double)trim($this->_currentTagContents);
+                $value = (float)trim($this->_currentTagContents);
                 $valueFlag = true;
                 break;
             case 'string':
