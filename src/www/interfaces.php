@@ -759,6 +759,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
                 break;
             case "dhcp":
+                if ((!empty($pconfig['adv_dhcp_config_advanced']) || !empty($pconfig['adv_dhcp_config_file_override'])) && !userIsAdmin($_SESSION['Username'])) {
+                    $input_errors[] = gettext('Advanced options may only be edited by system administrators due to the increased possibility of privilege escalation.');
+                }
                 if (!empty($pconfig['adv_dhcp_config_file_override'] && !file_exists($pconfig['adv_dhcp_config_file_override_path']))) {
                     $input_errors[] = sprintf(gettext('The DHCP override file "%s" does not exist.'), $pconfig['adv_dhcp_config_file_override_path']);
                 }
@@ -772,7 +775,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
                 break;
             case 'dhcp6':
-                if (!empty($pconfig['adv_dhcp6_config_file_override'] && !file_exists($pconfig['adv_dhcp6_config_file_override_path']))) {
+                if ((!empty($pconfig['adv_dhcp6_config_advanced']) || !empty($pconfig['adv_dhcp6_config_file_override'])) && !userIsAdmin($_SESSION['Username'])) {
+                    $input_errors[] = gettext('Advanced options may only be edited by system administrators due to the increased possibility of privilege escalation.');
+                }
+                if (!empty($pconfig['adv_dhcp6_config_file_override']) && !file_exists($pconfig['adv_dhcp6_config_file_override_path'])) {
                     $input_errors[] = sprintf(gettext('The DHCPv6 override file "%s" does not exist.'), $pconfig['adv_dhcp6_config_file_override_path']);
                 }
                 if (isset($pconfig['dhcp6-prefix-id--hex']) && $pconfig['dhcp6-prefix-id--hex'] != '') {
