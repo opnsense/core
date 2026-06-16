@@ -137,7 +137,7 @@ class FilterRule extends Rule
             }
         } elseif (empty($rule['disablereplyto']) && ($rule['direction'] ?? "") != 'any' && empty($rule['interfacenot'])) {
             $proto = $rule['ipprotocol'];
-            if (!empty($this->interfaceMapping[$rule['interface']]['if']) && empty($rule['gateway'])) {
+            if (!empty($rule['interface']) && !empty($this->interfaceMapping[$rule['interface']]['if']) && empty($rule['gateway'])) {
                 $if = $this->interfaceMapping[$rule['interface']]['if'];
                 switch ($proto) {
                     case "inet6":

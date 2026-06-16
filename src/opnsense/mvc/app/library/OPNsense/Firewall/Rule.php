@@ -304,13 +304,16 @@ abstract class Rule
                 $rulecpy['protocol'] = strtolower($rulecpy['protocol']);
             }
             $interface = $rulecpy['interface'];
-            if ($rulecpy['ipprotocol'] == 'inet6' && !empty($this->interfaceMapping[$interface]['IPv6_override'])) {
-                $rulecpy['interface'] = $this->interfaceMapping[$interface]['IPv6_override'];
-            }
-            // disable rule when interface not found
-            if (!empty($interface) && empty($this->interfaceMapping[$interface]['if'])) {
-                $this->log("Interface {$interface} not found");
-                $rulecpy['disabled'] = true;
+            if (!empty($interface)) {
+                /* pivot to  IPv6 device if found */
+                if ($rulecpy['ipprotocol'] == 'inet6' && !empty($this->interfaceMapping[$interface]['IPv6_override'])) {
+                    $rulecpy['interface'] = $this->interfaceMapping[$interface]['IPv6_override'];
+                }
+                /* disable rule when device not found */
+                if (empty($this->interfaceMapping[$interface]['if'])) {
+                    $this->log("Interface {$interface} not found");
+                    $rulecpy['disabled'] = true;
+                }
             }
             yield $rulecpy;
         }
