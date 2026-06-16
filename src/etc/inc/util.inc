@@ -401,9 +401,9 @@ function gen_subnetv6_max($ipaddr, $bits)
         }
     );
     $mask = Net_IPv6::getNetmask('FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF:FFFF', $bits);
-    $inet_ip = (binary)inet_pton($ipaddr);
+    $inet_ip = (string)inet_pton($ipaddr);
     if ($inet_ip) {
-        $inet_mask = (binary)inet_pton($mask);
+        $inet_mask = (string)inet_pton($mask);
         if ($inet_mask) {
             $inet_end = $inet_ip | ~$inet_mask;
             $result = inet_ntop($inet_end);
