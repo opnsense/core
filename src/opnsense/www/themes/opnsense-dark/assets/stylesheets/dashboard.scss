@@ -359,3 +359,12 @@ div {
     align-items: center;
     justify-content: center;
 }
+
+.service-tile {
+    border: 1px solid transparentize(map-get($colors, brand-primary), 0.85);
+    background-color: #1a1d27;
+}
+
+.service-tile-title {
+    color: map-get($colors, text-color);
+}

@@ -84,16 +84,14 @@ export default class Services extends BaseTableWidget {
 
             let $tile = $(`
                 <div class="service-tile" style="
-                    border: 1px solid #e5e5e5;
                     border-radius: 4px;
                     padding: 8px;
                     display: flex;
                     flex-direction: column;
                     align-items: center;
-                    background-color: #fff;
                     box-shadow: 0 1px 1px rgba(0,0,0,0.05);
                 ">
-                    <div style="
+                    <div class="service-tile-title" style="
                         font-weight: bold;
                         font-size: 12px;
                         margin-bottom: 5px;
@@ -102,7 +100,6 @@ export default class Services extends BaseTableWidget {
                         text-overflow: ellipsis;
                         width: 100%;
                         text-align: center;
-                        color: #555;
                     " title="${service.description}" data-toggle="tooltip">${service.description}</div>
                     <div style="display: grid; grid-template-columns: 1fr 1.2fr; align-items: center; gap: 0px; width: 100%;">
                         <div style="text-align: right; padding-right: 10px;">
