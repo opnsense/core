@@ -40,7 +40,7 @@ class FileObject
      * @param bool $operation flock operation mode when set
      * @param string $chown username to chown to
      */
-    public function __construct($filename, $mode, $permissions = null, $operation = null, string $chown = null)
+    public function __construct($filename, $mode, $permissions = null, $operation = null, ?string $chown = null)
     {
         $this->fhandle = fopen($filename, $mode . 'e');   /* always add close-on-exec flag to prevent fork inherit */
 
