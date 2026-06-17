@@ -65,7 +65,6 @@ function opendns_register($pconfig)
     curl_setopt($ch, CURLOPT_USERPWD, sprintf('%s:%s', $pconfig['username'], $pconfig['password']));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $output = curl_exec($ch);
-    curl_close($ch);
 
     return $output;
 }

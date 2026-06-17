@@ -199,7 +199,6 @@ class DashboardController extends ApiControllerBase
         curl_setopt($ch, CURLOPT_URL, 'https://forum.opnsense.org/index.php?board=11.0&action=.xml;limit=5;type=rss2');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $output = curl_exec($ch);
-        curl_close($ch);
         $payload = @simplexml_load_string($output);
         if (empty($payload)) {
             return $result;

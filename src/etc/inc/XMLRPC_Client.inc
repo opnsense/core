@@ -202,11 +202,8 @@ class SimpleXMLRPC_Client
         }
         if ($this->response_received === false) {
             $this->error = 'fetch error. remote host down? (' . curl_error($ch) . ')';
-            curl_close($ch);
             return false;
         }
-
-        curl_close($ch);
 
         if ($this->debug) {
             echo sprintf(">>> received %d bytes: \n%s\n", strlen($this->response_received), $this->response_received);
