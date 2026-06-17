@@ -391,9 +391,8 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         $selected_node = $this->getModel()->getNodeByReference($node_reference . '.' . $selected_uuid);
 
         if ($target_node === null || $selected_node === null) {
-            throw new UserException(
-                gettext("Either source or destination is not a rule managed with this component")
-            );
+            return ["status" => "error",
+                    "message" => gettext("Either source or destination is not a rule managed with this component")];
         }
 
         $step_size = 50;
@@ -449,7 +448,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         $node = $mdl->getNodeByReference($node_reference . '.' . $uuid);
 
         if ($node === null) {
-            throw new UserException(gettext('Rule not found'));
+            return ['status' => 'error', 'message' => gettext('Rule not found')];
         }
 
         $node->log = $log;
