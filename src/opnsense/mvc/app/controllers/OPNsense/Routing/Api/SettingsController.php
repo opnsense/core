@@ -201,7 +201,7 @@ class SettingsController extends ApiMutableModelControllerBase
             if ($uuid != null) {
                 $gateway = $this->getModel()->getNodeByReference('gateway_item.' . $uuid);
                 if ($gateway === null) {
-                    return $result; // unknown uuid -> {"result":"failed"}, mirrors toggleGatewayAction()
+                    return $result;
                 }
                 $cfg = Config::getInstance()->object();
                 foreach ($cfg->interfaces->children() as $tag => $interface) {
