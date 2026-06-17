@@ -133,7 +133,7 @@ class Util
                     $ip_mask .= chr(0xFF);
                     $significant_bits -= 8;
                 } else {
-                    $ip_mask .= chr(~(0xFF >> $significant_bits));
+                    $ip_mask .= chr((~(0xFF >> $significant_bits)) & 0xFF);
                     $significant_bits = 0;
                 }
             }
