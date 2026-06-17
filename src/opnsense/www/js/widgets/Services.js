@@ -46,6 +46,7 @@ export default class Services extends BaseTableWidget {
         return actions.map(({ action, id, title, icon }) => `
             <span data-service_action="${action}" data-service="${id}"
                   class="srv_status_act2"
+                  style="color: rgb(55, 55, 54);"
                   title="${title}" data-toggle="tooltip">
                 <i class="fa fa-fw fa-${icon}"></i>
             </span>
@@ -86,9 +87,10 @@ export default class Services extends BaseTableWidget {
                     <div style="
                         padding: 4px;
                         white-space: nowrap;
+                        font-weight: 500;
                         overflow: hidden;
                         text-overflow: ellipsis;
-                        color: #fff;
+                        color: rgb(55, 55, 54);
                         width: 100%;
                         text-align: left;
                     " title="${service.description} (${statusTitle})" data-toggle="tooltip">${service.description}</div>
