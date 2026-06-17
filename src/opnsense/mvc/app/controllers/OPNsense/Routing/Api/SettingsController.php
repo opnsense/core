@@ -200,6 +200,9 @@ class SettingsController extends ApiMutableModelControllerBase
         if ($this->request->isPost()) {
             if ($uuid != null) {
                 $gateway = $this->getModel()->getNodeByReference('gateway_item.' . $uuid);
+                if ($gateway === null) {
+                    return $result;
+                }
                 $cfg = Config::getInstance()->object();
                 foreach ($cfg->interfaces->children() as $tag => $interface) {
                     if ((string)$interface->gateway == (string)$gateway->name) {
