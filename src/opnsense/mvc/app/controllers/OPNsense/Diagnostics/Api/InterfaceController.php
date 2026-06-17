@@ -360,7 +360,7 @@ class InterfaceController extends ApiControllerBase
      * set new carp node status (enable, disable, maintenance)
      * @return array
      */
-    public function CarpStatusAction($status)
+    public function carpStatusAction($status)
     {
         if ($this->request->isPost()) {
             $response = json_decode((new Backend())->configdpRun('interface carp_set_status', [$status]), true);
@@ -368,7 +368,7 @@ class InterfaceController extends ApiControllerBase
                 return $response;
             }
         }
-        return array("message" => "error");
+        return ['message' => 'error'];
     }
 
     public function getPfsyncNodesAction()
