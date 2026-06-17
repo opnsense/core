@@ -36,6 +36,16 @@ use OPNsense\Base\Validators\CallbackValidator;
 class DescriptionField extends TextField
 {
     /**
+     * @var bool allow newlines
+     */
+    protected $internalAllowNewlines = false;
+
+    /**
+     * @var bool allow special control characters
+     */
+    protected $internalAllowSpecial = false;
+
+    /**
      * {@inheritdoc}
      */
     protected function defaultValidationMessage()
