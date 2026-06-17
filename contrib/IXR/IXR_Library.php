@@ -1246,7 +1246,6 @@ class IXR_ClientSSL extends IXR_Client
 
         // Call cURL to do it's stuff and return us the content
         $contents = curl_exec($curl);
-        curl_close($curl);
 
         // Check for 200 Code in $contents
         if (!strstr($contents, '200 OK')) {

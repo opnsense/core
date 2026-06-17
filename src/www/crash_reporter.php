@@ -77,7 +77,6 @@ function upload_crash_report($files, $agent)
     curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
     curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: multipart/form-data;' ));
     $response = curl_exec($ch);
-    curl_close($ch);
 
     return !$response;
 }
