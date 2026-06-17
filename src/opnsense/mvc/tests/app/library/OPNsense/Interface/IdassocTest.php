@@ -67,7 +67,6 @@ class IdassocTest extends TestCase
     {
         $reflection = new \ReflectionClass(Idassoc::class);
         $method = $reflection->getMethod($method);
-        $method->setAccessible(true);
 
         return $method->invokeArgs(null, $args);
     }
