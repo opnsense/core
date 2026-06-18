@@ -259,7 +259,10 @@ class ControllerBase extends ControllerRoot
                 foreach ($rootnode as $key => $item) {
                     switch ($key) {
                         case 'label':
-                            $record['label'] = gettext((string)$item);
+                            $text = (string)$item;
+                            if (strlen($text)) {
+                                $record['label'] = gettext($text);
+                            }
                             break;
                         case 'id':
                             $parts = explode('.', (string)$item);
