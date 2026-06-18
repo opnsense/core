@@ -169,13 +169,16 @@
 /usr/local/opnsense/mvc/app/config/loader.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/Api/GroupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/Api/PrivController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/Api/TesterController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/Api/UserController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/GroupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/PrivController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/TesterController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/UserController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/forms/dialogGroup.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/forms/dialogPriv.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/forms/dialogUser.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/forms/tester.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ApiControllerBase.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ApiMutableModelControllerBase.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Base/ApiMutableServiceControllerBase.php
@@ -954,6 +957,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Wireguard/Server.xml
 /usr/local/opnsense/mvc/app/views/OPNsense/Auth/group.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Auth/priv.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Auth/tester.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Auth/user.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/clients.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/CaptivePortal/index.volt
@@ -2549,7 +2553,6 @@
 /usr/local/www/authgui.inc
 /usr/local/www/crash_reporter.php
 /usr/local/www/csrf.inc
-/usr/local/www/diag_authentication.php
 /usr/local/www/diag_backup.php
 /usr/local/www/fbegin.inc
 /usr/local/www/firewall_nat_out.php
