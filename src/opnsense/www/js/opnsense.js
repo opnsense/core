@@ -40,6 +40,21 @@ function htmlDecode(value) {
     return $("<textarea/>").html(value).text();
 }
 
+/**
+ * replace single and double quotes with their HTML-safe equivalents
+ *
+ * @param value input string
+ * @returns string
+ */
+function htmlSafe(value) {
+    if (typeof value !== "string") {
+        return value;
+    }
+
+    return value.replace(/["']/g, (char) => {
+        return char === '"' ? "&quot;" : "&#39;";
+    });
+}
 
  /**
  *
