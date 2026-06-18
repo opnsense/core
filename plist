@@ -1206,8 +1206,6 @@
 /usr/local/opnsense/scripts/filter/pftablecount.py
 /usr/local/opnsense/scripts/filter/pftop.py
 /usr/local/opnsense/scripts/filter/read_log.py
-/usr/local/opnsense/scripts/filter/rollback_cancel.php
-/usr/local/opnsense/scripts/filter/rollback_timer.php
 /usr/local/opnsense/scripts/filter/rule_stats.py
 /usr/local/opnsense/scripts/filter/run_unittests.py
 /usr/local/opnsense/scripts/filter/tests/__init__.py
