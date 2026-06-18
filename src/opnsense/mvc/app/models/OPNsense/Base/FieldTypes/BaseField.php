@@ -794,12 +794,14 @@ abstract class BaseField
         foreach ($this->iterateItems() as $key => $node) {
             if ($data != null && isset($data[$key])) {
                 if ($node->isContainer()) {
-                    if (is_array($data[$key])) {
-                        $node->setNodes($data[$key]);
-                    } else {
-                        throw new Exception("Invalid  input type for {$key} (configuration error?)");
+                    if (!is_array($data[$key])) {
+                        throw new Exception("Invalid input type for {$key} (configuration error?)");
                     }
+                    $node->setNodes($data[$key]);
                 } else {
+                    if (is_array($data[$key])) {
+                        throw new Exception("Invalid input for \"{$key}\": expected a single value, not a list.");
+                    }
                     $node->setValue($data[$key]);
                 }
             }
