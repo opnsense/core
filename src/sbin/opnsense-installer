@@ -29,7 +29,13 @@ if [ "$(id -u)" != "0" ]; then
 	exit 1
 fi
 
-resizewin -z
+# A workaround for the fact that serial console does not
+# adjust on a resize which also prevented the installer
+# from working.  While "-z" works it only bootstraps the
+# value if it was zero, but never updates it again so here
+# we are forced to make it somewhat dynamic with each
+# invoke of the installer.
+resizewin
 
 bsdinstall opnsense
 
