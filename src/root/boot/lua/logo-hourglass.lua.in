@@ -48,7 +48,7 @@ local hourglass_color = {
 drawer.addLogo("hourglass", {
 	requires_color = true,
 	graphic = hourglass_color,
-	shift = {x = 1, y = 5},
+	shift = {x = 1, y = 0},
 })
 
 return true
