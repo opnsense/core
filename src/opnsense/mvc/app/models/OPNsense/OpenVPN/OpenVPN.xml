@@ -354,9 +354,11 @@
                     <MinimumValue>1</MinimumValue>
                 </maxclients>
                 <keepalive_interval type="IntegerField">
+                    <Default>10</Default>
                     <MinimumValue>0</MinimumValue>
                 </keepalive_interval>
                 <keepalive_timeout type="IntegerField">
+                    <Default>60</Default>
                     <MinimumValue>0</MinimumValue>
                 </keepalive_timeout>
                 <reneg-sec type="IntegerField">
