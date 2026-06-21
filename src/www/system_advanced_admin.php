@@ -134,15 +134,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 
+    $webgui_cert_stale = false;
     if (!empty($pconfig['ssl-certref'])) {
+        $current_certref = $config['system']['webgui']['ssl-certref'] ?? '';
         foreach (config_read_array('cert', false) as $cert) {
             if ($cert['refid'] == $pconfig['ssl-certref']) {
                 if (cert_get_purpose($cert['crt'])['server'] == 'No') {
-                    $input_errors[] = gettext(
-                        sprintf('Certificate %s is not intended for server use.', $cert['descr'])
-                    );
-                    break;
+                    if ($pconfig['ssl-certref'] != $current_certref) {
+                        /* a newly selected certificate must be usable as a server certificate */
+                        $input_errors[] = gettext(
+                            sprintf('Certificate %s is not intended for server use.', $cert['descr'])
+                        );
+                    } else {
+                        /*
+                         * The certificate already in use cannot serve as a TLS server
+                         * certificate, for example a self-signed certificate created before
+                         * the serverAuth purpose was enforced. Do not reject the whole page
+                         * (which also blocks unrelated SSH and HTTP settings) and lock the
+                         * administrator out: accept the save and force a web GUI reconfigure,
+                         * which regenerates the self-signed certificate.
+                         */
+                        $webgui_cert_stale = true;
+                    }
                 }
+                break;
             }
         }
     }
@@ -166,7 +181,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $newinterfaces = !empty($pconfig['webguiinterfaces']) ? implode(',', $pconfig['webguiinterfaces']) : '';
         $newciphers = !empty($pconfig['ssl-ciphers']) ? implode(':', $pconfig['ssl-ciphers']) : '';
 
-        $restart_webgui = $config['system']['webgui']['protocol'] != $pconfig['webguiproto'] ||
+        $restart_webgui = $webgui_cert_stale ||
+            $config['system']['webgui']['protocol'] != $pconfig['webguiproto'] ||
             ($config['system']['webgui']['session_timeout'] ?? '') != $pconfig['session_timeout'] ||
             $config['system']['webgui']['port'] != $pconfig['webguiport'] ||
             $config['system']['webgui']['ssl-certref'] != $pconfig['ssl-certref'] ||
