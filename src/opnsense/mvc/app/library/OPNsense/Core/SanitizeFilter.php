@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2024 Deciso B.V.
+ * Copyright (C) 2024-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -101,5 +101,29 @@ class SanitizeFilter
     protected function filter_striptags($input)
     {
         return strip_tags($input);
+    }
+
+    /**
+     * sanitize local uri, returns null when invalid (not local)
+     */
+    protected function filter_local_uri($input)
+    {
+        $input = rawurldecode(preg_replace('/[\x00-\x1F\x7F]/u', '', $input));
+        $parts = parse_url($input);
+        if (
+            !preg_match('#^/[^/]?#', $input) || /* exactly one leading slash */
+            str_contains($input, '\\') || /* no backslashes */
+            str_contains($input, '..') || /* no path traversal */
+            $parts === false || /* should be able to parse as uri */
+            isset($parts['scheme']) || /* but may not contain a scheme or host */
+            isset($parts['host'])
+        ) {
+            return null;
+        }
+        $result = $parts['path'] ?? '/';
+        $result .= !empty($parts['query']) ? "?" . $parts['query'] : "";
+        $result .= !empty($parts['fragment']) ? "#" . $parts['fragment'] : "";
+
+        return $result;
     }
 }
