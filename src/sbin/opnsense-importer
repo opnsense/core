@@ -152,7 +152,7 @@ zfs_unload()
 
 zfs_probe()
 {
-	zpool import -aNf > /dev/null 2> /dev/null
+	zpool import -aNf > /dev/null 2> /dev/null; sleep 1
 
 	zpool get -H cachefile | while read ZPOOL ZMORE; do
 		ZGUID=$(zpool get -H guid ${ZPOOL} | awk '{ print $3 }')
@@ -302,7 +302,8 @@ while : ; do
 		echo "Starting import for ZFS pool '${POOL}'."
 		echo
 
-		zpool import -fNR ${MNT} ${POOL}
+		zpool import -fNR ${MNT} ${POOL}; sleep 1
+
 		if ! mount -t zfs ${POOL}/ROOT/default ${MNT}; then
 			echo "The pool could not be mounted."
 			POOL=
