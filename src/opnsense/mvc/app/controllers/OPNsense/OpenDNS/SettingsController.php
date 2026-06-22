@@ -2,7 +2,6 @@
 
 /*
  * Copyright (C) 2026 Greelan
- * Copyright (C) 2019 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,51 +26,17 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-function opendns_configure()
+namespace OPNsense\OpenDNS;
+
+/**
+ * Class SettingsController
+ * @package OPNsense\OpenDNS
+ */
+class SettingsController extends \OPNsense\Base\IndexController
 {
-    return [
-        'bootup' => ['opendns_configure_do'],
-        'local' => ['opendns_configure_do'],
-        'newwanip' => ['opendns_configure_do'],
-    ];
-}
-
-function opendns_configure_do($verbose = false)
-{
-    $mdl = new \OPNsense\OpenDNS\OpenDNS();
-
-    if (!$mdl->enable->isEmpty()) {
-        service_log('Configure OpenDNS...', $verbose);
-
-        $pconfig = [
-            'username' => (string)$mdl->username,
-            'password' => (string)$mdl->password,
-            'host' => (string)$mdl->host,
-        ];
-        $result = opendns_register($pconfig);
-        log_msg("opendns response: $result");
-
-        service_log("done.\n", $verbose);
+    public function indexAction()
+    {
+        $this->view->generalForm = $this->getForm('general');
+        $this->view->pick('OPNsense/OpenDNS/settings');
     }
-}
-
-function opendns_xmlrpc_sync()
-{
-    return [[
-        'description' => gettext('OpenDNS'),
-        'section' => 'OPNsense.OpenDNS',
-        'id' => 'opendns',
-    ]];
-}
-
-function opendns_register($pconfig)
-{
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, sprintf('https://updates.opendns.com/nic/update?hostname=%s', $pconfig['host']));
-    curl_setopt($ch, CURLOPT_USERPWD, sprintf('%s:%s', $pconfig['username'], $pconfig['password']));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-    $output = curl_exec($ch);
-
-    return $output;
 }
