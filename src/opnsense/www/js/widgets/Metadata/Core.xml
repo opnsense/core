@@ -406,8 +406,8 @@
         <endpoints>
             <endpoint>/api/kea/dhcpv4/get</endpoint>
             <endpoint>/api/kea/dhcpv6/get</endpoint>
-            <endpoint>/api/kea/leases4/*</endpoint>
-            <endpoint>/api/kea/leases6/*</endpoint>
+            <endpoint>/api/kea/leases4/search</endpoint>
+            <endpoint>/api/kea/leases6/search</endpoint>
         </endpoints>
         <translations>
             <title>Kea DHCP</title>
