@@ -25,7 +25,6 @@
  */
 
 export default class KeaLeases extends BaseTableWidget {
-
     constructor(config) {
         super(config);
         this.configurable = true;
