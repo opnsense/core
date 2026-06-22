@@ -39,15 +39,19 @@ abstract class LeasesController extends ApiControllerBase
 
     public function searchAction()
     {
+        $selected_interfaces = $this->request->get('selected_interfaces');
+
+        $backend = new Backend();
+
         if (empty($this->configd_fetch_leases)) {
-            return [];
+            $records = [];
+        } else {
+            $leases = json_decode($backend->configdpRun($this->configd_fetch_leases), true) ?? [];
+            $records = $leases['records'] ?? [];
         }
 
-        $selected_interfaces = $this->request->get('selected_interfaces');
-        $backend = new Backend();
         $interfaces = [];
 
-        $leases = json_decode($backend->configdpRun($this->configd_fetch_leases), true) ?? [];
         $mac_db = json_decode($backend->configdRun('interface list macdb'), true) ?? [];
 
         $ifmap = [];
@@ -58,29 +62,36 @@ abstract class LeasesController extends ApiControllerBase
             ];
         }
 
-        if (!empty($leases) && isset($leases['records'])) {
-            $records = $leases['records'];
-            foreach ($records as &$record) {
-                // Interface
-                $record['if_descr'] = '';
-                $record['if_name'] = '';
-                if (!empty($record['if']) && isset($ifmap[$record['if']])) {
-                    $record['if_descr'] = $ifmap[$record['if']]['descr'];
-                    $record['if_name'] = $ifmap[$record['if']]['key'];
-                    $interfaces[$ifmap[$record['if']]['key']] = $ifmap[$record['if']]['descr'];
-                }
-                // Vendor
-                $mac = strtoupper(substr(str_replace(':', '', $record['hwaddr']), 0, 6));
-                $record['mac_info'] = isset($mac_db[$mac]) ? $mac_db[$mac] : '';
+        $stats = [
+            'active' => 0,
+            'inactive' => 0,
+            'total' => 0,
+        ];
+
+        foreach ($records as &$record) {
+            // Stats
+            $stats['total']++;
+            $isActive = $record['state'] === 0;
+            $stats[$isActive ? 'active' : 'inactive']++;
+
+            // Interface
+            $record['if_descr'] = '';
+            $record['if_name'] = '';
+            if (!empty($record['if']) && isset($ifmap[$record['if']])) {
+                $record['if_descr'] = $ifmap[$record['if']]['descr'];
+                $record['if_name'] = $ifmap[$record['if']]['key'];
+                $interfaces[$ifmap[$record['if']]['key']] = $ifmap[$record['if']]['descr'];
             }
-        } else {
-            $records = [];
+            // Vendor
+            $mac = strtoupper(substr(str_replace(':', '', $record['hwaddr']), 0, 6));
+            $record['mac_info'] = isset($mac_db[$mac]) ? $mac_db[$mac] : '';
         }
 
         $response = $this->searchRecordsetBase($records, null, 'address', function ($key) use ($selected_interfaces) {
             return empty($selected_interfaces) || in_array($key['if_name'], $selected_interfaces);
         });
 
+        $response['stats'] = $stats;
         $response['interfaces'] = $interfaces;
         return $response;
     }

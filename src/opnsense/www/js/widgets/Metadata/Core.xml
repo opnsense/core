@@ -401,6 +401,24 @@
             <notavailable>N/A</notavailable>
         </translations>
     </dnsmasqleases>
+    <kealeases>
+        <filename>KeaLeases.js</filename>
+        <link>/ui/kea/dhcp/v4#settings</link>
+        <endpoints>
+            <endpoint>/api/kea/dhcpv4/get</endpoint>
+            <endpoint>/api/kea/dhcpv6/get</endpoint>
+            <endpoint>/api/kea/leases4/search</endpoint>
+            <endpoint>/api/kea/leases6/search</endpoint>
+        </endpoints>
+        <translations>
+            <title>Kea DHCP</title>
+            <unconfigured>Kea is currently disabled.</unconfigured>
+            <noleases>No leases found.</noleases>
+            <leases>Leases</leases>
+            <leasesselect>Select amount of leases to show</leasesselect>
+            <notavailable>N/A</notavailable>
+        </translations>
+    </kealeases>
     <notes>
         <filename>Notes.js</filename>
         <endpoints>
