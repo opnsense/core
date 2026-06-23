@@ -678,7 +678,6 @@ class UIBootgrid {
 
         if (Math.abs(currentTotalHeight - nextHeight) > 1) {
             this.table.setHeight(nextHeight);
-            this.table.redraw();
         }
     }
 
@@ -840,23 +839,28 @@ class UIBootgrid {
                 const pageObserver = new ResizeObserver(debounce((entries) => {
                     for (let entry of entries) {
                         const topDistance = document.getElementById(this.id).getBoundingClientRect().top;
-                        this.pageHeight = entry.contentRect.height - topDistance;
+                        let newHeight = entry.contentRect.height - topDistance;
                         if (this.options.bottomReserveElement) {
-                            this.pageHeight -= this.options.bottomReserveElement.getBoundingClientRect().height;
+                            newHeight -= this.options.bottomReserveElement.getBoundingClientRect().height;
                         }
-                        this._onDimensionChange();
+
+                        if (this.pageHeight != newHeight) {
+                            this.pageHeight = newHeight;
+                            this._onDimensionChange();
+                        }
                     }
                 }));
                 pageObserver.observe(pageTarget);
 
                 const tableObserver = new ResizeObserver(debounce((entries) => {
                     for (let entry of entries) {
-                        this.tableHeight = entry.contentRect.height;
-                        this._onDimensionChange();
+                        if (this.tableHeight != entry.contentRect.height) {
+                            this.tableHeight = entry.contentRect.height;
+                            this._onDimensionChange();
+                        }
                     }
                 }));
                 tableObserver.observe(tableTarget);
-
             }
 
             // make sure we redraw the table as it enters the viewport (multiple tabbed grids)
@@ -2303,27 +2307,37 @@ class UIBootgrid {
     }
 
     setColumns(columns) {
+        let redraw = false;
         this.table.getColumns().forEach((col) => {
             const def = col.getDefinition();
             if (columns.includes(def.field)) {
+                redraw = true;
                 col._silentToggle = true;
                 col.show();
                 delete col._silentToggle;
             }
         });
-        this.table.redraw();
+
+        if (redraw) {
+            this.table.redraw();
+        }
     }
 
     unsetColumns(columns) {
+        let redraw = false;
         this.table.getColumns().forEach((col) => {
             const def = col.getDefinition();
             if (columns.includes(def.field)) {
+                redraw = true;
                 col._silentToggle = true;
                 col.hide();
                 delete col._silentToggle;
             }
         });
-        this.table.redraw();
+
+        if (redraw) {
+            this.table.redraw();
+        }
     }
 
     search(value, event) {
