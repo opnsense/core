@@ -32,16 +32,22 @@
 
 import os
 import os.path
+import glob
+import re
 import ujson
 from lib import metadata
 from lib import rule_source_directory
+
+SAFE_RULE_FILENAME = re.compile(r'[A-Za-z0-9._-]+\.rules\Z')
 
 md = metadata.Metadata()
 if __name__ == '__main__':
     # collect all installable rules indexed by (target) filename
     # (filenames should be unique)
     items = dict()
+    md_filenames = set()
     for rule in md.list_rules():
+        md_filenames.add(rule['filename'])
         if not rule['required'] and not rule['deprecated']:
             items[rule['filename']] = rule
             rule_filename = ('%s/%s' % (rule_source_directory, rule['filename'])).replace('//', '/')
@@ -49,6 +55,11 @@ if __name__ == '__main__':
                 items[rule['filename']]['modified_local'] = os.stat(rule_filename).st_mtime
             else:
                 items[rule['filename']]['modified_local'] = None
-    result = {'items': items, 'count': len(items)}
+    local = []
+    for filename in sorted(glob.glob(('%s/*.rules' % rule_source_directory).replace('//', '/'))):
+        basename = os.path.basename(filename)
+        if basename not in md_filenames and SAFE_RULE_FILENAME.fullmatch(basename):
+            local.append(basename)
+    result = {'items': items, 'count': len(items), 'local': local}
     result['properties'] = md.list_rule_properties()
     print(ujson.dumps(result))
