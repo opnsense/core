@@ -59,6 +59,11 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     protected static $internalModelUseSafeDelete = false;
 
     /**
+     * @var bool requires full admin ( page-all) due to the sensitive nature of this controller
+     */
+    protected static $internalSaveRequiresAdmin = false;
+
+    /**
      * Message to append to configuration change event
      */
     protected $internalAuditMessage = null;
@@ -319,6 +324,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     protected function save($validateFullModel = false, $disable_validation = false)
     {
         $this->throwReadOnly();
+        if (static::$internalSaveRequiresAdmin) {
+            $this->throwNotFullAdmin();
+        }
         if ($this->getModel()->serializeToConfig($validateFullModel, $disable_validation)) {
             if ($this->internalAuditMessage) {
                 Config::getInstance()->save(['description' => $this->internalAuditMessage]);
