@@ -192,7 +192,7 @@
         <label>Translate Source IP</label>
         <type>text</type>
         <style>net_selector</style>
-        <help>Packets matching this rule will be mapped to the IP address given here.</help>
+        <help>Packets matching this rule will be mapped to the IP address given here. Leave empty to use the selected interface address automatically.</help>
         <grid_view>
             <formatter>alias</formatter>
             <sequence>90</sequence>

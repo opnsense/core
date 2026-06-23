@@ -486,10 +486,7 @@
                     <EnableAlias>Y</EnableAlias>
                     <ValidationMessage>Please specify a valid portnumber, name, alias or range.</ValidationMessage>
                 </destination_port>
-                <target type="NetworkAliasField">
-                    <Default>wanip</Default>
-                    <Required>Y</Required>
-                </target>
+                <target type="NetworkAliasField"/>
                 <target_port type="PortField">
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>

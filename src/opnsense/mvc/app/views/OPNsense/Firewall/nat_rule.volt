@@ -435,6 +435,8 @@
                         } else if (column.id === "local-port") {
                             // DNAT: mirror destination port into local-port for better visibility
                             return (!row["local-port"] ? row["destination.port"] : row["local-port"]) || "*";
+                        } else if (entrypoint === 'source_nat' && column.id === "target" && value === "") {
+                            return "{{ lang._('Interface address') }}";
                         } else if (!value || value === "any") {
                             return isNegated + '*';
                         }
@@ -694,6 +696,9 @@
             if (!data || !data.single) return;
             $(".net_selector").each(function(){
                 $(this).replaceInputWithSelector(data, $(this).hasClass('net_selector_multi'));
+                if (entrypoint === 'source_nat') {
+                    $('#rule\\.target').attr('placeholder', "{{ lang._('Interface address') }}");
+                }
                 /* enforce single selection when "single host or network" or "any" are selected */
                 if ($(this).hasClass('net_selector_multi')) {
                     $("select[for='" + $(this).attr('id') + "']").on('shown.bs.select', function(){

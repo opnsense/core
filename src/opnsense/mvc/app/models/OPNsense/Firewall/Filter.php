@@ -149,6 +149,12 @@ class Filter extends BaseModel
                     /* rule type specific rules (filter, snat) */
                     if ($rule->target !== null) {
                         // Additional source nat validations
+                        if ($rule->target->getValue() === 'any') {
+                            $messages->appendMessage(new Message(
+                                gettext("Target address cannot be any."),
+                                $rule->target->__reference
+                            ));
+                        }
                         $target_is_addr = Util::isSubnet($rule->target) || Util::isIpAddress($rule->target);
                         $target_proto = strpos($rule->target, ':') === false ? "inet" : "inet6";
                         if ($target_is_addr && $target_proto != $rule->ipprotocol) {
