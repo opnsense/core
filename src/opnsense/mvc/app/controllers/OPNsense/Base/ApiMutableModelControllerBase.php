@@ -59,7 +59,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     protected static $internalModelUseSafeDelete = false;
 
     /**
-     * @var bool requires full admin ( page-all) due to the sensitive nature of this controller
+     * @var bool requires full admin (page-all) due to the sensitive nature of this controller
      */
     protected static $internalSaveRequiresAdmin = false;
 
