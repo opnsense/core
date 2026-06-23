@@ -61,12 +61,9 @@ function legacy_target_to_network($rule)
     $interface = !empty($rule['interface']) ? $rule['interface'] : 'wan';
     $target = (string)($rule['target'] ?? '');
 
-    /*
-     * Empty target in the legacy outbound NAT rule means interface address.
-     * In the MVC model we store this explicitly as <interface>ip.
-     */
+    // Empty target means the special case "Interface Address"
     if ($target === '') {
-        return $interface . 'ip';
+        return '';
     }
 
     /*
