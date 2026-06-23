@@ -58,7 +58,7 @@ class FileObject
             if (!flock($this->fhandle, $operation)) {
                 fclose($this->fhandle);
                 $this->fhandle = null;
-                throw new Exception('Unable to open file in requested mode.');
+                throw new \Exception('Unable to open file in requested mode.');
             }
         }
     }
