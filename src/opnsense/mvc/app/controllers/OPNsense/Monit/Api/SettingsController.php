@@ -40,6 +40,7 @@ class SettingsController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'monit';
     protected static $internalModelClass = 'OPNsense\Monit\Monit';
+    protected static $internalSaveRequiresAdmin = true;
 
     /**
      * Retrieve alert settings or return defaults

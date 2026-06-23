@@ -47,7 +47,26 @@ class ApiControllerBase extends ControllerRoot
     {
         if ((new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
             throw new UserException(
-                sprintf("User %s denied for write access (user-config-readonly set)", $this->getUserName()),
+                sprintf(
+                    gettext("User %s denied for write access (user-config-readonly set)"),
+                    $this->getUserName()
+                ),
+                gettext("General access")
+            );
+        }
+    }
+
+    /**
+     * When the page-all privilege is not set, raise an error
+     */
+    protected function throwNotFullAdmin()
+    {
+        if (!(new ACL())->hasPrivilege($this->getUserName(), 'page-all')) {
+            $msg = gettext(
+                "User %s denied for write access due to the sensitive nature of this component (requires page-all priv)"
+                );
+            throw new UserException(
+                sprintf($msg, $this->getUserName()),
                 gettext("General access")
             );
         }
