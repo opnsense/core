@@ -73,7 +73,7 @@ class GEOIP(BaseContentParser):
                     for line in locations.decode().split('\n'):
                         parts = line.split(',')
                         if len(parts) > 4 and parts[0].isdigit():
-                            if len(parts[4]) >= 1:
+                            if len(parts[4]) == 2 and parts[4].isalnum():
                                 country_codes[parts[0]] = parts[4]
                             elif parts[2] == 'EU':
                                 country_codes[parts[0]] = parts[2]
@@ -115,7 +115,7 @@ class GEOIP(BaseContentParser):
                     elif network_field is None or country_field is None:
                         syslog.syslog(syslog.LOG_ERR, 'geoip update unknown gzip format')
                         break
-                    else:
+                    elif len(record[country_field]) == 2 and record[country_field].isalnum():
                         country_code = record[country_field]
                         proto = 'IPv6' if record[network_field].find(':') > 0 else 'IPv4'
                         this_handle = "%s-%s" % (country_code, proto)
