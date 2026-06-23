@@ -186,7 +186,7 @@ function ipsec_interfaces()
     if ($is_enabled) {
         $oic = ['enable' => true];
         $oic['if'] = 'enc0';
-        $oic['descr'] = 'IPsec';
+        $oic['descr'] = 'IPsec encapsulation';
         $oic['type'] = 'none';
         $oic['virtual'] = true;
         $interfaces['enc0'] = $oic;
