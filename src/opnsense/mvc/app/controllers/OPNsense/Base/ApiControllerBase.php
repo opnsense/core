@@ -64,7 +64,7 @@ class ApiControllerBase extends ControllerRoot
         if (!(new ACL())->hasPrivilege($this->getUserName(), 'page-all')) {
             $msg = gettext(
                 "User %s denied for write access due to the sensitive nature of this component (requires page-all priv)"
-                );
+            );
             throw new UserException(
                 sprintf($msg, $this->getUserName()),
                 gettext("General access")
