@@ -494,4 +494,12 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             }
         );
     }
+
+    public function applyAction()
+    {
+        if (!$this->request->isPost()) {
+            return ["status" => "error"];
+        }
+        return ["status" => (new Backend())->configdRun('filter reload')];
+    }
 }
