@@ -104,7 +104,7 @@ function openvpn_interfaces()
         $interfaces['openvpn'] = [
             'enable' => true,
             'if' => 'openvpn',
-            'descr' => 'OpenVPN',
+            'descr' => 'OpenVPN (Group)',
             'type' => 'group',
             'virtual' => true,
             'networks' => []
