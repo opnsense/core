@@ -144,7 +144,7 @@ if __name__ == '__main__':
                             result['messages'] = list()
                         if error_output not in result['messages']:
                             result['messages'].append(error_message)
-                            syslog.syslog(syslog.LOG_NOTICE, error_message)
+                            syslog.syslog(syslog.LOG_ERR, error_message)
         else:
             # We are not resolving these aliases and are not using their contents,
             # they are not being used in any of the ones we manage, we still need to call pre_process()

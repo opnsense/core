@@ -309,9 +309,9 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
                 // background rollback timer
                 (new Backend())->configdpRun('filter rollback_timer', [$rollback_revision], true);
             }
-            return array("status" => (new Backend())->configdRun('filter reload'));
+            return ['status' => (new Backend())->configdRun('filter reload skip_alias')];
         } else {
-            return array("status" => "error");
+            return ['status' => 'error'];
         }
     }
 
