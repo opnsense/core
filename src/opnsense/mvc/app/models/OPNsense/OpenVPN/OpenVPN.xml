@@ -12,7 +12,9 @@
                 <servers type=".\OpenVPNServerField">
                     <Multiple>Y</Multiple>
                 </servers>
-                <common_name type="TextField">
+                <common_name type="StrictTextField">
+                    <AllowSpaces>Y</AllowSpaces>
+                    <Mask>/[^\/]+/</Mask>
                     <Required>Y</Required>
                 </common_name>
                 <block type="BooleanField">

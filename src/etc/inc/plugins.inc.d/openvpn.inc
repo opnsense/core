@@ -1045,9 +1045,10 @@ function openvpn_csc_conf_write($settings, $server, $target_filename = null)
 
     openvpn_add_dhcpopts($settings, $conf);
 
-    $vpnid = filter_var($server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
     if (empty($target_filename)) {
-        $target_filename = "/var/etc/openvpn-csc/" . $vpnid . "/" . $settings['common_name'];
+        $vpnid = filter_var($server['vpnid'], FILTER_SANITIZE_NUMBER_INT);
+        $vpncn = basename($settings['common_name']);
+        $target_filename = "/var/etc/openvpn-csc/{$vpnid}/{$vpncn}";
     }
 
     if (!empty($conf)) {
