@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $gps[$fieldname] = $pconfig[$fieldname];
             }
         }
-        $gps['initcmd']= base64_encode($gps['initcmd']);
+        $gps['initcmd']= base64_encode($gps['initcmd'] ?? '');
         $config['ntpd']['gps'] = $gps;
         write_config("Updated NTP GPS Settings");
         ntpd_configure_do();
@@ -72,6 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 }
 
 $service_hook = 'ntpd';
+$pconfig['initcmd'] = base64_decode($pconfig['initcmd']);
 legacy_html_escape_form_data($pconfig);
 include("head.inc");
 ?>
@@ -498,7 +499,7 @@ SureGPS =    #Sure Electronics SKG16B
                           <input class="btn btn-xs btn-default" type="button" id="showgpsinitbox" value="<?= html_safe(gettext('Advanced')) ?>" /> - <?=gettext("Show GPS Initialization commands");?>
                         </div>
                         <div id="showgpsinit" style="display:none">
-                          <textarea name="initcmd" class="formpre" id="gpsinitcmd" cols="65" rows="7"><?=base64_decode($pconfig['initcmd']);?></textarea><br />
+                          <textarea name="initcmd" id="gpsinitcmd" cols="65" rows="7"><?= $pconfig['initcmd'] ?></textarea><br />
                           <?=gettext("Note: Commands entered here will be sent to the GPS during initialization. ".
                                      "Please read and understand your GPS documentation before making any changes here.");?><br /><br />
                           <strong><?=gettext("NMEA checksum calculator");?></strong><br /><br />
