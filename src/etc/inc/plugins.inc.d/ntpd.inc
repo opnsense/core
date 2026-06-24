@@ -109,7 +109,8 @@ function ntpd_configure_gps($port)
     symlink($serialport, $gps_device);
 
     $gps_init = base64_decode(
-        $config['ntpd']['gps']['initcmd'] ??
+        !empty($config['ntpd']['gps']['initcmd']) ?
+        $config['ntpd']['gps']['initcmd'] :
         'JFBVQlgsNDAsR1NWLDAsMCwwLDAqNTkNCiRQVUJYLDQwLEdMTCwwLDAsMC' .
         'wwKjVDDQokUFVCWCw0MCxaREEsMCwwLDAsMCo0NA0KJFBVQlgsNDAsVlRH' .
         'LDAsMCwwLDAqNUUNCiRQVUJYLDQwLEdTViwwLDAsMCwwKjU5DQokUFVCWC' .
