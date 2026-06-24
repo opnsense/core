@@ -500,6 +500,6 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         if (!$this->request->isPost()) {
             return ["status" => "error"];
         }
-        return ["status" => (new Backend())->configdRun('filter reload')];
+        return ["status" => (new Backend())->configdRun('filter reload skip_alias')];
     }
 }
