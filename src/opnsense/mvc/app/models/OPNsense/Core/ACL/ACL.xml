@@ -88,8 +88,12 @@
     <page-diagnostics-logs-system>
         <name>Diagnostics: Logs: System</name>
         <patterns>
+            <pattern>ui/diagnostics/log/core/audit/*</pattern>
+            <pattern>api/diagnostics/log/core/audit/*</pattern>
             <pattern>ui/diagnostics/log/core/configd/*</pattern>
             <pattern>api/diagnostics/log/core/configd/*</pattern>
+            <pattern>ui/diagnostics/log/core/boot/*</pattern>
+            <pattern>api/diagnostics/log/core/boot/*</pattern>
             <pattern>ui/diagnostics/log/core/system/*</pattern>
             <pattern>api/diagnostics/log/core/system/*</pattern>
             <pattern>ui/diagnostics/log/core/lighttpd/*</pattern>
@@ -496,6 +500,13 @@
             <pattern>api/trust/crl/*</pattern>
         </patterns>
     </page-system-crlmanager>
+    <page-system-trust-settings>
+        <name>System: Trust Settings</name>
+        <patterns>
+            <pattern>ui/trust/settings</pattern>
+            <pattern>api/trust/settings/*</pattern>
+        </patterns>
+    </page-system-trust-settings>
     <page-snapshots>
         <name>System: Snapshots</name>
         <patterns>
