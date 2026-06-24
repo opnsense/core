@@ -479,7 +479,7 @@
                             const classColor = ruleType? ruleType.color : '';
                             const bgColor = cat.color ? ` style="color:${cat.color};"` : '';
                             return `
-                                <span class="category-icon" data-toggle="tooltip" title="${name}">
+                                <span class="category-icon" data-toggle="tooltip" title="${htmlSafe(name)}">
                                     <i class="fa fa-fw ${icon} ${classColor}" ${bgColor}></i>
                                 </span>`;
                         }).join(' ');
@@ -619,7 +619,7 @@
                             if (aliasInfo.isAlias) {
                                 const tooltipHtml = aliasInfo.summary || aliasInfo.description || aliasInfo.value || "";
                                 return `
-                                    <span data-toggle="tooltip" data-html="true" title="${tooltipHtml}">${aliasInfo.value}&nbsp;</span>
+                                    <span data-toggle="tooltip" data-html="true" title="${htmlSafe(tooltipHtml)}">${aliasInfo.value}&nbsp;</span>
                                     <a href="/ui/firewall/alias/index/${encodeURIComponent(aliasInfo.value)}"
                                     data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
                                     <i class="fa fa-fw fa-list"></i>
