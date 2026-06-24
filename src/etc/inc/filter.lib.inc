@@ -644,7 +644,7 @@ function filter_core_rules_system($fw, $defaults)
 
     /* auto-generated DNAT rules */
     foreach ((new OPNsense\Firewall\DNat(false))->rule->sortedBy(['sequence']) as $key => $rule) {
-        if ($rule->disabled->isEmpty() && $rule->pass == 'rule') {
+        if (!$rule->enabled->isEmpty() && $rule->pass == 'rule') {
             $dnatrule = $rule->getNodeContent();
             $tmprule = [
                 'ipprotocol' =>  $dnatrule['ipprotocol'],
