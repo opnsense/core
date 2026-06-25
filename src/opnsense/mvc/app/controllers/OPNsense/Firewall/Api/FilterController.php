@@ -121,19 +121,30 @@ class FilterController extends FilterBaseController
             $is_cat = empty($categories) || array_intersect($r_categories, $categories);
             $rule_interfaces = array_filter(explode(',', $record['interface'] ?? ''));
             if ($interfaces === null || (empty($record['interface']))) {
-                /* ALL interfaces always matches, when inspecting, also show rules that apply to all */
-                $is_if = true; // ALL interfaces or floating always matches
+                /*
+                 * All rules view uses a "null" interface filter.
+                 * Rules without an assigned interface are floating/global and match everywhere.
+                 */
+                $is_if = true;
             } elseif (!empty($record['interfacenot'])) {
-                /* Inverted interface, show where applicable when inspecting */
-                $is_if = !array_intersect($rule_interfaces, $interfaces ?? []);
-            } elseif (empty($interfaces) && (count($rule_interfaces) != 1 || !empty($record['interfacenot']))) {
-                /* Floating, multiple interfaces selected */
+                /*
+                 * Inverted interface rule: selected interfaces are exclusions,
+                 * so show it only when none overlap with the active interface filter.
+                 * These also count as floating rules.
+                 */
+                $is_if = empty(array_intersect($rule_interfaces, $interfaces ?? []));
+            } elseif (empty($interfaces) && count($rule_interfaces) != 1) {
+                /*
+                 * Floating rules view: uses an "empty" interface filter.
+                 * Any rule not bound to exactly one interface counts as floating.
+                 */
                 $is_if = true;
             } else {
-                /* Interfaces overlap, when inspecting all overlaps are relevant, otherwise only exact matches */
-                $is_if = array_intersect($rule_interfaces, $interfaces ?? []) && (
-                    count($rule_interfaces) == 1
-                ) && empty($record['interfacenot']);
+                /*
+                 * Interface/Group rules view: show rules matching at least one selected interface or group.
+                 * This includes normal single interface/group and floating multi interface/group rules.
+                 */
+                $is_if = !empty(array_intersect($rule_interfaces, $interfaces ?? []));
             }
 
             if (!$is_cat || !$is_if) {
