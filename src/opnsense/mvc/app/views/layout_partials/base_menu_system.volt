@@ -4,8 +4,8 @@
             <div id="mainmenu" class="panel" style="border:0px">
                 <div class="panel list-group" style="border:0px">
                     {% for topMenuItem in menuSystem %}
-                        {% if topMenuItem.Children|length >= 1 %}
-                            <a href="#{{ topMenuItem.Id }}" class="{{ topMenuItem.LinkClass }}" data-toggle="collapse" data-parent="#mainmenu">
+                        {% if topMenuItem.Children|length >= 1 or topMenuItem.Id == 'Favorites' %}
+                            <a href="#{{ topMenuItem.Id }}" class="{{ topMenuItem.LinkClass }}"{% if topMenuItem.Id == 'Favorites' and topMenuItem.Children|length == 0 %} style="display:none"{% endif %} data-toggle="collapse" data-parent="#mainmenu">
                                 <span class="{{ topMenuItem.CssClass }} __iconspacer"></span><span style="word-break: keep-all">{{ topMenuItem.VisibleName }}</span>
                             </a>
                             <div class="collapse  {% if topMenuItem.Selected %} active-menu in {% endif  %}" id="{{ topMenuItem.Id }}">
@@ -25,9 +25,9 @@
                                         </a>
                                         <div class="collapse {% if subMenuItem.Selected %} active-menu in {% endif  %}" id="{{ topMenuItem.Id }}_{{ subMenuItem.Id }}">
                                             {% for subsubMenuItem in subMenuItem.Children %} {% if subsubMenuItem.IsExternal == "Y" %}
-                                            <a href="{{ subsubMenuItem.Url }}" target="_blank" rel="noopener noreferrer" class="{{ subsubMenuItem.LinkClass }}">{{ subsubMenuItem.VisibleName }}</a>
+                                                <a href="{{ subsubMenuItem.Url }}" target="_blank" rel="noopener noreferrer" class="{{ subsubMenuItem.LinkClass }}">{{ subsubMenuItem.VisibleName }}</a>
                                             {% elseif acl.isPageAccessible(session.get('Username'),subsubMenuItem.Url) %}
-                                            <a href="{{ subsubMenuItem.Url }}" class="{{ subsubMenuItem.LinkClass }}">{{ subsubMenuItem.VisibleName }}</a>
+                                                <a href="{{ subsubMenuItem.Url }}" class="{{ subsubMenuItem.LinkClass }}">{{ subsubMenuItem.VisibleName }}</a>
                                             {% endif %} {% endfor %}
                                         </div>
                                     {% elseif subMenuItem.IsExternal == "Y" %}

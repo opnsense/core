@@ -687,6 +687,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Favorites.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/FieldTypes/TunableField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Firmware.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Firmware.xml
@@ -694,6 +695,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Hasync.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/InitialSetup.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/InitialSetup.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Menu/Menu.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/M1_0_1.php
@@ -2196,6 +2198,7 @@
 /usr/local/opnsense/www/css/nv.d3.css
 /usr/local/opnsense/www/css/opnsense-bootgrid-layout.css
 /usr/local/opnsense/www/css/opnsense-bootgrid.css
+/usr/local/opnsense/www/css/opnsense-favorites.css
 /usr/local/opnsense/www/css/tabulator.min.css
 /usr/local/opnsense/www/css/tokenize2.css
 /usr/local/opnsense/www/fonts/FontAwesome.otf
@@ -2236,6 +2239,7 @@
 /usr/local/opnsense/www/js/opnsense-treeview.js
 /usr/local/opnsense/www/js/opnsense.js
 /usr/local/opnsense/www/js/opnsense_bootgrid.js
+/usr/local/opnsense/www/js/opnsense_favorites.js
 /usr/local/opnsense/www/js/opnsense_health.js
 /usr/local/opnsense/www/js/opnsense_menusystem.js
 /usr/local/opnsense/www/js/opnsense_status.js
