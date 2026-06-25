@@ -67,6 +67,20 @@ class DNat extends BaseModel
                         ));
                     }
                 }
+
+                if (!$rule->nordr->isEmpty() && !$rule->target->isEmpty()) {
+                    $messages->appendMessage(new Message(
+                        gettext("Target must be empty when No RDR is set."),
+                        $rule->target->__reference
+                    ));
+                }
+
+                if (!$rule->nordr->isEmpty() && !$rule->{'local-port'}->isEmpty()) {
+                    $messages->appendMessage(new Message(
+                        gettext("Port must be empty when No RDR is set."),
+                        $rule->{'local-port'}->__reference
+                    ));
+                }
             }
         }
 
