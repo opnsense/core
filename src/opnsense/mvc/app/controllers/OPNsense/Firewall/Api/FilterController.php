@@ -132,7 +132,7 @@ class FilterController extends FilterBaseController
                  * so show it only when none overlap with the active interface filter.
                  * These also count as floating rules.
                  */
-                $is_if = !array_intersect($rule_interfaces, $interfaces ?? []);
+                $is_if = empty(array_intersect($rule_interfaces, $interfaces ?? []));
             } elseif (empty($interfaces) && count($rule_interfaces) != 1) {
                 /*
                  * Floating rules view: uses an "empty" interface filter.
