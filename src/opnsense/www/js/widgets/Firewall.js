@@ -119,7 +119,7 @@ export default class Firewall extends BaseTableWidget {
         });
 
         $tableContainer.append($top_table);
-        $tableContainer.append(`<div style="margin-top: 2em"><b>${this.translations.events}</b><div>`);
+        $tableContainer.append(`<div style="margin-top: 2em"><b>${this.translations.events}</b></div>`);
         $tableContainer.append($rule_table);
 
         $container.append($tableContainer);
@@ -184,8 +184,8 @@ export default class Firewall extends BaseTableWidget {
                 /* Format time based on client browser locale */
                 (new Intl.DateTimeFormat(undefined, {hour: 'numeric', minute: 'numeric'})).format(new Date(data.__timestamp__)),
                 this.ifMap[data.interface] ?? data.interface,
-                `<span class="ip-tooltip" style="cursor: pointer; data-toggle="tooltip" title="${data.src}">${data.src}</span>`,
-                `<span class="ip-tooltip" style="cursor: pointer; data-toggle="tooltip" title="${data.dst}">${data.dst}</span>`,
+                `<span class="ip-tooltip" style="cursor: pointer;" data-toggle="tooltip" title="${data.src}">${data.src}</span>`,
+                `<span class="ip-tooltip" style="cursor: pointer;" data-toggle="tooltip" title="${data.dst}">${data.dst}</span>`,
                 data.dstport ?? ''
             ]
         ]);
