@@ -703,6 +703,141 @@ Set to 0 to disable, remember to change your client as well.
         </grid_view>
     </field>
     <field>
+        <id>instance.dns_update</id>
+        <label>DNS update</label>
+        <type>checkbox</type>
+        <style>role role_server</style>
+        <help>
+            Register client IP address at an external DNS server,
+            with the X509 client certificate 'CN' field as hostname.
+            Can be changed to another field in advanced mode.
+        </help>
+    </field>
+    <field>
+        <id>instance.dns_update_server</id>
+        <label>DNS update: server name</label>
+        <type>text</type>
+        <style>role role_server_dns_update</style>
+        <help>Hostname / IP address of the external DNS server.</help>
+    </field>
+    <field>
+        <id>instance.dns_update_port</id>
+        <label>DNS update: server port</label>
+        <type>text</type>
+        <style>role role_server_dns_update</style>
+        <advanced>true</advanced>
+        <help>
+            Used port on the external DNS server. &lt;br&gt;
+            If empty: '53'
+        </help>
+    </field>
+    <field>
+        <id>instance.dns_update_key_name</id>
+        <label>DNS update: key name</label>
+        <type>text</type>
+        <style>role role_server_dns_update</style>
+        <help>Name of the key to authenticate at the external DNS server.</help>
+    </field>
+    <field>
+        <id>instance.dns_update_key_secret</id>
+        <label>DNS update: key secret</label>
+        <type>text</type>
+        <style>role role_server_dns_update</style>
+        <help>Base64 secret of the key to authenticate at the external DNS server.</help>
+    </field>
+    <field>
+        <id>instance.dns_update_key_algorithm</id>
+        <label>DNS update: key algorithm</label>
+        <type>dropdown</type>
+        <style>role role_server_dns_update</style>
+        <help>Key algorithm used to authenticate at the external DNS server.</help>
+    </field>
+    <field>
+        <id>instance.dns_update_zone_forward</id>
+        <label>DNS update: forward zone name</label>
+        <type>text</type>
+        <style>role role_server_dns_update</style>
+        <help>
+            The zone name the hostname will be registered in. &lt;br&gt;
+            example: 'example.com'
+        </help>
+    </field>
+    <field>
+        <id>instance.dns_update_zone_reverse_4</id>
+        <label>DNS update: reverse zone name (IPv4)</label>
+        <type>text</type>
+        <style>role role_server_dns_update</style>
+        <advanced>true</advanced>
+        <help>
+            The reverse zone name the hostname will be registered in. &lt;br&gt;
+            If empty the /24 zone of the client IP will be used. &lt;br&gt;
+            example: &lt;br&gt;
+            client IP = '10.20.30.40' &lt;br&gt;
+            results in zone name = '30.20.10.in-addr.arpa'
+        </help>
+    </field>
+    <field>
+        <id>instance.dns_update_zone_reverse_6</id>
+        <label>DNS update: reverse zone name (IPv6)</label>
+        <type>text</type>
+        <style>role role_server_dns_update</style>
+        <advanced>true</advanced>
+        <help>
+            The reverse zone name the hostname will be registered in. &lt;br&gt;
+            If empty the /64 zone of the client IP will be used. &lt;br&gt;
+            example: &lt;br&gt;
+            client IP = '2001:0db8:abcd:0012:0000:0000:0000:0042' &lt;br&gt;
+            results in zone name = '2.1.0.0.d.c.b.a.8.b.d.0.1.0.0.2.ip6.arpa'
+        </help>
+    </field>
+    <field>
+        <id>instance.dns_update_hostname_field</id>
+        <label>DNS update: hostname field</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <style>role role_server_dns_update</style>
+        <help>
+            The X509 client certificate field used as hostname. &lt;br&gt;
+            If empty: 'CN'
+        </help>
+    </field>
+    <field>
+        <id>instance.dns_update_hostname_prefix</id>
+        <label>DNS update: hostname prefix</label>
+        <type>text</type>
+        <style>role role_server_dns_update</style>
+        <advanced>true</advanced>
+        <help>
+            An optional prefix can be added to the registered hostname.
+            example: &lt;br&gt;
+            prefix='vpn-' &lt;br&gt;
+            hostname='client1' &lt;br&gt;
+            registered name at DNS is 'vpn-client1'
+        </help>
+    </field>
+    <field>
+        <id>instance.dns_update_hostname_suffix</id>
+        <label>DNS update: hostname suffix</label>
+        <type>text</type>
+        <style>role role_server_dns_update</style>
+        <advanced>true</advanced>
+        <help>
+            An optional suffix can be added to the registered hostname. &lt;br&gt;
+            example: &lt;br&gt;
+            suffix='-vpn' &lt;br&gt;
+            hostname='client1' &lt;br&gt;
+            registered name at DNS is 'client1-vpn'
+        </help>
+    </field>
+    <field>
+        <id>instance.dns_update_ttl</id>
+        <label>DNS update: TTL</label>
+        <type>text</type>
+        <style>role role_server_dns_update</style>
+        <advanced>true</advanced>
+        <help>TTL in seconds for the DNS record. If empty: '300'</help>
+    </field>
+    <field>
         <id>instance.http-proxy</id>
         <label>HTTP Proxy</label>
         <type>text</type>
