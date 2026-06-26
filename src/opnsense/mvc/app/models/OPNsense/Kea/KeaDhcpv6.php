@@ -67,8 +67,8 @@ class KeaDhcpv6 extends BaseModel
             if (!Util::isIPv6PrefixInPrefix($reservation->prefix->getValue(), $subnet) && !$reservation->prefix->isEmpty()) {
                 $messages->appendMessage(new Message(gettext("Prefix not in specified subnet"), $key . ".prefix"));
             }
-            if ($reservation->ip_address->isEmpty() && $reservation->prefix->isEmpty()) {
-                $messages->appendMessage(new Message(gettext("Either an IP address or a Prefix should be specified."), $key . ".ip_address"));
+            if ($reservation->ip_address->isEmpty() && $reservation->prefix->isEmpty() && $reservation->hostname->isEmpty()) {
+                $messages->appendMessage(new Message(gettext("Either an IP address, a prefix, or a hostname must be specified."), $key . ".ip_address"));
             }
             if (!$reservation->duid->isEmpty() && !$reservation->hw_address->isEmpty()) {
                 $messages->appendMessage(new Message(gettext("Either a DUID or an MAC address should be specified, but not both"), $key . ".duid"));
