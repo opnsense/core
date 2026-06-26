@@ -78,6 +78,8 @@ foreach (glob("/tmp/delete_vip_*.todo") as $filename) {
         }
         if (isset($addresses[$address])) {
             legacy_interface_deladdress($addresses[$address]['if'], $address, is_ipaddrv6($address) ? 6 : 4);
+            // keep snapshot in sync so the re-add loop below sees the address as missing
+            unset($addresses[$address]);
         } else {
             // not found, likely proxy arp
             $proxyarp = true;

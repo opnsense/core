@@ -120,14 +120,23 @@ class VipSettingsController extends ApiMutableModelControllerBase
         Config::getInstance()->lock();
         $node = $this->getModel()->getNodeByReference('vip.' . $uuid);
         $validations = [];
-        $post_subnet = '';
-        $post_interface = '';
+        $post_subnet = null;
+        $post_interface = null;
         if (isset($_POST['vip'])) {
-            $post_subnet = !empty($_POST['vip']['network']) ? explode('/', $_POST['vip']['network'])[0] : '';
-            $post_interface = !empty($_POST['vip']['interface']) ? $_POST['vip']['interface'] : '';
+            if (!empty($_POST['vip']['network'])) {
+                $post_subnet = explode('/', $_POST['vip']['network'])[0];
+            } elseif (isset($_POST['vip']['subnet'])) {
+                $post_subnet = $_POST['vip']['subnet'];
+            }
+            if (isset($_POST['vip']['interface'])) {
+                $post_interface = $_POST['vip']['interface'];
+            }
         }
 
-        if ($node != null && $post_subnet != (string)$node->subnet) {
+        $subnet_changed = $post_subnet !== null && $post_subnet != (string)$node?->subnet;
+        $interface_changed = $post_interface !== null && $post_interface != (string)$node?->interface;
+
+        if ($node != null && $subnet_changed) {
             $validations = $this->getModel()->whereUsed((string)$node->subnet);
             if (!empty($validations)) {
                 // XXX a bit unpractical, but we can not validate previous values from the model so
@@ -140,7 +149,7 @@ class VipSettingsController extends ApiMutableModelControllerBase
                 ];
             }
         }
-        if ($node != null && ($post_subnet != (string)$node->subnet || $post_interface != (string)$node->interface)) {
+        if ($node != null && ($subnet_changed || $interface_changed)) {
             $addr = (string)$node->subnet;
             if (Util::isLinkLocal($addr)) {
                 $addr .= "@{$node->interface}";
