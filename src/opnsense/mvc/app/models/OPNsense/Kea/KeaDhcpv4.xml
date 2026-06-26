@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp4</mount>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <description>Kea DHCPv4 configuration</description>
     <items>
         <general>
@@ -96,6 +96,10 @@
                         </check001>
                     </Constraints>
                 </subnet>
+                <deny_unknown_clients type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </deny_unknown_clients>
                 <valid_lifetime type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                 </valid_lifetime>
