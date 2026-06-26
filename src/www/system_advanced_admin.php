@@ -88,6 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['sshpasswordauth'] = isset($config['system']['ssh']['passwordauth']);
     $pconfig['sshdpermitrootlogin'] = isset($config['system']['ssh']['permitrootlogin']);
     $pconfig['quietlogin'] = isset($config['system']['webgui']['quietlogin']);
+    $pconfig['ipacl_enable'] = isset($config['system']['webgui']['ipacl_enable']);
+    $pconfig['ipacl_nets']   = $config['system']['webgui']['ipacl_nets'] ?? '';
     $pconfig['deployment'] = $config['system']['deployment'] ?? '';
 
     /* XXX not really a syslog setting */
@@ -120,6 +122,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (!empty($pconfig['session_timeout']) && (!is_numeric($pconfig['session_timeout']) || $pconfig['session_timeout'] <= 0)) {
         $input_errors[] = gettext('Session timeout must be an integer value.');
+    }
+
+    if (!empty($pconfig['ipacl_enable'])) {
+        $ipacl_entries = preg_split('/[\r\n,]+/', $pconfig['ipacl_nets'] ?? '', -1, PREG_SPLIT_NO_EMPTY);
+        foreach ($ipacl_entries as $entry) {
+            $entry = trim($entry);
+            if (!empty($entry) && !is_ipaddr($entry) && !is_subnet($entry)) {
+                $input_errors[] = sprintf(
+                    gettext('IP Access Control: "%s" is not a valid IP address or subnet.'),
+                    htmlspecialchars($entry)
+                );
+            }
+        }
+        /* Lockout prevention: admin's own IP must be in the whitelist */
+        $admin_ip = $_SERVER['REMOTE_ADDR'] ?? '';
+        $in_list = false;
+        foreach ($ipacl_entries as $entry) {
+            $entry = trim($entry);
+            if ((is_ipaddr($entry) && $admin_ip === $entry) ||
+                (is_subnet($entry) && ip_in_subnet($admin_ip, $entry))) {
+                $in_list = true;
+                break;
+            }
+        }
+        if (!$in_list && !empty($admin_ip)) {
+            $input_errors[] = sprintf(
+                gettext('IP Access Control: Your current IP (%s) is not in the whitelist. Saving would lock you out.'),
+                htmlspecialchars($admin_ip)
+            );
+        }
     }
 
     if (!empty($pconfig['autologout']) && (!is_numeric($pconfig['autologout']) || $pconfig['autologout'] <= 0)) {
@@ -227,6 +259,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['webgui']['quietlogin'] = true;
         } elseif (isset($config['system']['webgui']['quietlogin'])) {
             unset($config['system']['webgui']['quietlogin']);
+        }
+
+        if (!empty($pconfig['ipacl_enable'])) {
+            $config['system']['webgui']['ipacl_enable'] = true;
+        } elseif (isset($config['system']['webgui']['ipacl_enable'])) {
+            unset($config['system']['webgui']['ipacl_enable']);
+        }
+
+        if (!empty($pconfig['ipacl_nets'])) {
+            $config['system']['webgui']['ipacl_nets'] = $pconfig['ipacl_nets'];
+        } elseif (isset($config['system']['webgui']['ipacl_nets'])) {
+            unset($config['system']['webgui']['ipacl_nets']);
         }
 
         if (!empty($pconfig['disableconsolemenu'])) {
@@ -476,6 +520,39 @@ $(document).ready(function() {
          }
      });
      $.webguiinterface_warned = $('#webguiinterface option:selected').length ? 1 : 0;
+
+     /* IP ACL — show/hide networks textarea */
+     function ipacl_toggle() {
+         if ($("#ipacl_enable").prop('checked')) {
+             $("#row_ipacl_nets").show();
+         } else {
+             $("#row_ipacl_nets").hide();
+         }
+     }
+     $("#ipacl_enable").change(ipacl_toggle);
+     ipacl_toggle();
+
+     /* Lockout warning — client-side UX only; server validates authoritatively */
+     $('#iform').on('submit', function(e) {
+         if (!$("#ipacl_enable").prop('checked')) return;
+         var currentIp = $('#admin_current_ip').val();
+         var nets = $('#ipacl_nets').val().split(/[\r\n,]+/).map(s => s.trim()).filter(Boolean);
+         if (nets.length === 0) return;
+         var found = nets.some(function(n) { return n === currentIp; });
+         if (!found) {
+             e.preventDefault();
+             BootstrapDialog.confirm({
+                 title: '<?= html_safe(gettext('Warning!')) ?>',
+                 message: '<?= html_safe(gettext('Your current IP address does not appear in the whitelist. The server will verify this and block saving if your IP is missing.')) ?>',
+                 type: BootstrapDialog.TYPE_DANGER,
+                 btnOKLabel: '<?= html_safe(gettext('Save Anyway')) ?>',
+                 btnCancelLabel: '<?= html_safe(gettext('Cancel')) ?>',
+                 callback: function(result) {
+                     if (result) { $('#iform').off('submit').submit(); }
+                 }
+             });
+         }
+     });
 
  <?php
     if (isset($restart_webgui) && $restart_webgui): ?>
@@ -744,6 +821,47 @@ $(document).ready(function() {
                                         "web GUI access in certain corner cases such as using external scripts to interact with this system. More information on HTTP_REFERER is available from %sWikipedia%s."),
                                         '<a target="_blank" href="http://en.wikipedia.org/wiki/HTTP_referrer">','</a>') ?>
                   </div>
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div class="content-box tab-content table-responsive __mb">
+            <table class="table table-striped opnsense_standard_table_form">
+              <tr>
+                <td style="width:22%"><strong><?= gettext('IP Access Control') ?></strong></td>
+                <td style="width:78%; text-align:right">
+                  <small><?= gettext("full help") ?></small>
+                  <i class="fa fa-toggle-off text-danger" id="show_all_help_ipacl"></i>
+                </td>
+              </tr>
+              <tr>
+                <td><a id="help_for_ipacl_enable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('IP Restriction') ?></td>
+                <td>
+                  <input name="ipacl_enable" type="checkbox" id="ipacl_enable" value="yes" <?= empty($pconfig['ipacl_enable']) ? '' : 'checked="checked"' ?> />
+                  <?= gettext('Enable IP-based access restriction') ?>
+                  <div class="hidden" data-for="help_for_ipacl_enable">
+                    <?= gettext('When enabled, only IP addresses and subnets listed below can reach the web GUI. All other connections receive an access denied page. Enforced on every request, including active sessions.') ?>
+                  </div>
+                </td>
+              </tr>
+              <tr id="row_ipacl_nets">
+                <td><a id="help_for_ipacl_nets" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext('Allowed Networks') ?></td>
+                <td>
+                  <textarea name="ipacl_nets" id="ipacl_nets" rows="5" class="form-control"><?= $pconfig['ipacl_nets'] ?></textarea>
+                  <input type="hidden" id="admin_current_ip" value="<?= htmlspecialchars($_SERVER['REMOTE_ADDR'] ?? '') ?>">
+                  <div class="hidden" data-for="help_for_ipacl_nets">
+                    <?= gettext('Enter one IP address or CIDR subnet per line (e.g. 192.168.1.0/24 or 10.0.0.5). IPv4 and IPv6 supported. The server will reject the save if your own IP is not included.') ?>
+                  </div>
+                  <small class="text-muted"><?= sprintf(gettext('Your current IP: %s'), htmlspecialchars($_SERVER['REMOTE_ADDR'] ?? '')) ?></small>
+                </td>
+              </tr>
+              <tr>
+                <td><i class="fa fa-info-circle text-muted"></i> <?= gettext('Access Log') ?></td>
+                <td>
+                  <a href="/ui/diagnostics/log/core/audit" class="btn btn-default btn-xs">
+                    <i class="fa fa-list"></i> <?= gettext('View Audit Log') ?>
+                  </a>
+                  <br/><small class="text-muted"><?= gettext('Blocked/allowed access and all login events are recorded in the Audit log. Filter by [GUI-ACL] to see IP restriction events.') ?></small>
                 </td>
               </tr>
             </table>
