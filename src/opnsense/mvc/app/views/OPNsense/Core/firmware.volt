@@ -475,7 +475,7 @@
                 $('#pluginlist > tbody').append(
                     '<tr><td colspan=7>{{ lang._('Check for updates to view available plugins.') }}</td></tr>'
                 );
-            } else {
+            } else if ($.plugins_keep_full == undefined) {
                 $('#pluginlist > tbody').append(
                     '<tr class="plugins-full filter_sup_inst"><td colspan=7><a id="plugins-act" href="#">{{ lang._('Click to view the community plugins.') }}</a></td></tr>'
                 );
