@@ -60,7 +60,7 @@ export default class KeaLeases extends BaseTableWidget {
         }
 
         const config = await this.getWidgetConfig();
-        const limit = parseInt(config.leasesToShow);
+        const limit = parseInt(config.leasesToShow ?? '2', 10) || 2;
 
         const leasesRequestBody = JSON.stringify({
             rowCount: limit,

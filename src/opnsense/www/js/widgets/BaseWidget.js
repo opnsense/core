@@ -65,9 +65,9 @@ class BaseWidget {
             if (key in widget_config &&
                 widget_config[key] !== null &&
                 widget_config[key] !== undefined &&
-                (typeof(widget_config[key] === 'array') && widget_config[key].length !== 0) &&
-                (typeof(widget_config[key] === 'object') && Object.keys(widget_config[key]).length !== 0) &&
-                (typeof(widget_config[key] === 'string') && widget_config[key].length !== 0)
+                !(Array.isArray(widget_config[key]) && widget_config[key].length === 0) &&
+                !(typeof widget_config[key] === 'object' && !Array.isArray(widget_config[key]) && Object.keys(widget_config[key]).length === 0) &&
+                !(typeof widget_config[key] === 'string' && widget_config[key].length === 0)
             ) {
                 if (value.type === 'select_multiple') {
                     const optionsArr = value.options.map(v => v.value);

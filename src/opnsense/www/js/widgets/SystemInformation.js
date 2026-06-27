@@ -50,7 +50,7 @@ export default class SystemInformation extends BaseTableWidget {
         const data = await this.ajaxCall('/api/diagnostics/system/system_information');
         let rows = [];
         for (let [key, value] of Object.entries(data)) {
-            if (!key in this.translations) {
+            if (!(key in this.translations)) {
                 console.error('Missing translation for ' + key);
                 continue;
             }
