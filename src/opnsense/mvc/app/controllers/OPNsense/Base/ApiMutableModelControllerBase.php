@@ -112,7 +112,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         $exclude_refs = [],
         $title = null
     ) {
-        if ($contains) {
+        if (!preg_match('/^[0-9a-z\-]{1,255}$/i', $token)) {
+            throw new UserException(gettext('Invalid input token provided'), gettext("Invalid token"));
+        } elseif ($contains) {
             $xpath = "//text()[contains(.,'{$token}')]";
         } else {
             $xpath = "//*[text() = '{$token}']";
