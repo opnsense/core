@@ -195,10 +195,10 @@ class ApiControllerBase extends ControllerRoot
         $records = is_array($records) ? $records : [];
         $stream = fopen('php://temp', 'rw+');
         if (isset($records[0])) {
-            fputcsv($stream, array_keys($records[0]), $separator);
+            fputcsv($stream, array_keys($records[0]), $separator, "\\");
         }
         foreach ($records as $record) {
-            fputcsv($stream, $record, $separator);
+            fputcsv($stream, $record, $separator, "\\");
         }
         foreach ($headers as $header) {
             $parts = explode(':', $header, 2);
