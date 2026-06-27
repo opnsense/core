@@ -44,7 +44,7 @@
                         <drop>Drop</drop>
                     </OptionValues>
                 </action>
-                <rulesets type="ModelRelationField">
+                <rulesets type=".\PolicyRulesetsField">
                     <Model>
                         <rulesets>
                             <source>OPNsense.IDS.IDS</source>
