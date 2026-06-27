@@ -419,6 +419,7 @@ $sshoptions = json_decode(configd_run('openssh query'), true);
 
 legacy_html_escape_form_data($pconfig);
 legacy_html_escape_form_data($a_group);
+legacy_html_escape_form_data($a_cert);
 
 include("head.inc");
 
