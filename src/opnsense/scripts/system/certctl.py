@@ -1,6 +1,6 @@
 #!/usr/local/bin/python3
 """
-    Copyright (c) 2023-2024 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2023-2026 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -71,11 +71,16 @@ def certificate_iterator(filename):
                 x509_item.public_bytes(serialization.Encoding.PEM)
             )
             hashval = hex(cert.subject_name_hash()).lstrip('0x').zfill(8)
+        if isinstance(x509_item, x509.Certificate):
+            payload = x509_item.public_bytes(serialization.Encoding.PEM)
+        else:
+            payload = open(filename, 'rb').read()
+
         yield {
             'hash': hashval,
             'target_pattern': '%s.%s%%d' % (hashval, 'r' if fext == 'crl' else ''),
             'type': 'copy' if needs_copy else 'link',
-            'data': x509_item.public_bytes(serialization.Encoding.PEM) if needs_copy and x509_item else filename,
+            'data': payload,
             'filename': filename
         }
 
@@ -90,7 +95,7 @@ def get_cert_common_name(filename):
     except (ValueError, TypeError):
         return None
 
-def cmd_list():
+def cmd_list(*args, **kwargs):
     print('Listing Trusted Certificates:')
     for filename in glob.glob('%s/*.[0-9]' % CERTDESTDIR):
         basename = os.path.basename(filename)
@@ -101,7 +106,7 @@ def cmd_list():
             print('Invalid certificate %s' % basename)
 
 
-def cmd_untrusted():
+def cmd_untrusted(*args, **kwargs):
     print('Listing Untrusted Certificates:')
     for filename in glob.glob('%s/*.[0-9]' % UNTRUSTDESTDIR):
         basename = os.path.basename(filename)
@@ -112,7 +117,7 @@ def cmd_untrusted():
             print('Invalid certificate %s' % basename)
 
 
-def cmd_rehash():
+def cmd_rehash(*args, **kwargs):
     targets = {'trusted': {}, 'untrusted': {}}
     for path in UNTRUSTEDPATH + TRUSTPATH:
         if os.path.isdir(path):
@@ -131,6 +136,7 @@ def cmd_rehash():
 
     current_target_files = []
     changes = 0
+    use_links = '-l' in args
     for target_name in targets:
         for pattern in targets[target_name]:
             for seq, record in enumerate(targets[target_name][pattern]):
@@ -144,18 +150,22 @@ def cmd_rehash():
                     continue
 
                 current_target_files.append(dst_filename)
-                if os.path.islink(dst_filename) and os.readlink(dst_filename) == src_filename:
+                if (use_links and record['type'] != 'copy' and os.path.islink(dst_filename) and
+                    os.readlink(dst_filename) == src_filename):
                     continue # unchanged
-                elif os.path.isfile(dst_filename) and open(dst_filename, 'rb').read() == record['data']:
+                elif use_links and record['type'] != 'copy' and not os.path.islink(dst_filename):
+                    pass # expects a link, but isn't
+                elif (os.path.isfile(dst_filename) and not os.path.islink(dst_filename) and
+                      open(dst_filename, 'rb').read() == record['data']):
                     continue # unchanged
 
                 changes += 1
-                if record['type'] == 'copy':
+                if record['type'] == 'copy' or not use_links:
                     if os.path.islink(dst_filename):
                         os.unlink(dst_filename)
                     with open(dst_filename, 'wb') as f_out:
                         f_out.write(record['data'])
-                    os.chmod(dst_filename, 0o644)
+                    os.chmod(dst_filename, 0o444)
                 else:
                     if os.path.isfile(dst_filename) or os.path.islink(dst_filename):
                         os.remove(dst_filename)
@@ -201,11 +211,21 @@ if __name__ == '__main__':
         'rehash': cmd_rehash,
         'untrusted': cmd_untrusted
     }
-    if len(sys.argv) < 2 or sys.argv[1] not in cmds:
+    flags = []
+    args = []
+    for idx, arg in enumerate(sys.argv):
+        if idx == 0:
+            continue
+        elif arg not in cmds:
+            flags.append(arg)
+        else:
+            args.append(arg)
+
+    if len(args) < 1 or args[0] not in cmds:
         script_name = os.path.basename(sys.argv[0])
         print('Manage the TLS trusted certificates on the system')
         print('%s list\n\tList trusted certificates' % script_name)
         print('%s untrusted\n\tList untrusted certificates' % script_name)
-        print('%s rehash\n\tGenerate hash links for all certificates' % script_name)
+        print('%s rehash\n\tGenerate hash files [-l for links] for all certificates' % script_name)
     else:
-        cmds[sys.argv[1]]()
+        cmds[args[0]](*flags)
