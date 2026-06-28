@@ -89,8 +89,8 @@ if __name__ == '__main__':
             if inputargs.verbose:
                 record += [
                     row['organization_name'],
-                    row['first_seen'],
-                    row['last_seen']
+                    row['first_seen'].replace(' ', 'T') + 'Z',
+                    row['last_seen'].replace(' ', 'T') + 'Z'
                 ]
             result['rows'].append(record)
     else:
