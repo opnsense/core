@@ -96,7 +96,7 @@
                     <th data-column-id="ether_address" data-type="string">{{ lang._('MAC Address') }}</th>
                     <th data-column-id="organization_name" data-type="string">{{ lang._('Organization') }}</th>
                     <th data-column-id="first_seen" data-visible="false" data-type="string">{{ lang._('First Seen') }}</th>
-                    <th data-column-id="last_seen" data-type="string">{{ lang._('Last Seen') }}</th>
+                    <th data-column-id="last_seen" data-type="string" data-formatter="isodatetime">{{ lang._('Last Seen') }}</th>
                 </tr>
             </thead>
             <tbody>

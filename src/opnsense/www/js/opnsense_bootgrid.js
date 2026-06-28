@@ -1871,6 +1871,16 @@ class UIBootgrid {
 
                 return cell.getValue() ? moment(parseInt(cell.getValue())*1000).format("lll") : "";
             },
+            isodatetime: (cell, formatterParams, onRendered) => {
+                onRendered(() => {
+                    this._onCellRendered(cell, formatterParams);
+                });
+                if (cell.getValue()) {
+                    return moment((new Date(cell.getValue())).getTime()).format("lll");
+                } else {
+                    return "";
+                }
+            },
             expand: (cell, formatterParams, onRendered) => {
                 const key = `%${cell.getColumn().getDefinition().field}`;
                 const data = cell.getData();

@@ -30,6 +30,13 @@ namespace OPNsense\Hostdiscovery;
 
 class SettingsController extends \OPNsense\Base\IndexController
 {
+    protected function templateJSIncludes()
+    {
+        return array_merge(parent::templateJSIncludes(), [
+            '/ui/js/moment-with-locales.min.js'
+        ]);
+    }
+
     public function indexAction()
     {
         $this->view->generalForm = $this->getForm("general");
