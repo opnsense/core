@@ -841,12 +841,12 @@
     </ul>
     <div class="tab-content content-box">
         <div id="query-overview" class="tab-pane fade in active">
-            <div class="content-box" style="margin-bottom: 10px;">
+            <div>
                 <div id="counters" class="container-fluid">
-                    <div class="col-md-12">
+                    <div class="col-md-12" style="height: 40px;">
                         <h3 id="bannersub"></h3>
                     </div>
-                    <div class="row" style="margin-bottom: 20px; margin-top: 20px;">
+                    <div class="row" style="margin-top: 40px;">
                         <div class="banner col-xs-3 justify-content-center">
                             <div class="stats-element">
                                 <div class="stats-icon">
@@ -894,7 +894,8 @@
                     </div>
                 </div>
             </div>
-            <div class="content-box" style="margin-bottom: 10px;">
+            <div><hr/></div>
+            <div>
                 <div id="graph" class="container-fluid">
                     <div class="row justify-content-center" style="display: flex; flex-wrap: wrap;">
                         <div class="col-md-4"></div>
@@ -925,7 +926,8 @@
                     </div>
                 </div>
             </div>
-            <div class="content-box" style="margin-bottom: 10px;">
+            <div><hr/></div>
+            <div>
                 <div id="graph" class="container-fluid">
                     <div class="row justify-content-center" style="display: flex; flex-wrap: wrap;">
                         <div class="col-md-4"></div>
@@ -956,7 +958,8 @@
                     </div>
                 </div>
             </div>
-            <div class="content-box">
+            <div><hr/></div>
+            <div>
                 <div class="container-fluid">
                     <div class="row justify-content-center" style="display: flex; flex-wrap: wrap;">
                     <div class="col-md-4"></div>

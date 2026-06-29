@@ -107,7 +107,7 @@ class OverviewController extends ApiControllerBase
                 $parsed[$idx]['category'] = $types[$query['blocklist']]['optgroup'];
             }
             $parsed[$idx]['blocklist'] = $types[$query['blocklist']]['value'] ?? $query['blocklist'];
-            $parsed[$idx]['policy'] = $policies[$query['uuid']]['description'] ?? '';
+            $parsed[$idx]['policy'] = $policies[$query['uuid'] ?? '']['description'] ?? '';
             /* Handle front-end color status mapping, start off with OK */
             $parsed[$idx]['status'] = 0;
 
