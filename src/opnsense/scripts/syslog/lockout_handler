@@ -67,10 +67,10 @@ if __name__ == '__main__':
 
             ip = None
             for part in line.split():
+                # collect last IP address from line (which matches from XXXX)
                 if re.match('^[0-9.]+$', part) or re.match('^[a-fA-F0-9:]+$', part):
                     try:
                         ip = ipaddress.ip_address(part)
-                        break
                     except ValueError:
                         ip = None
             if ip:
