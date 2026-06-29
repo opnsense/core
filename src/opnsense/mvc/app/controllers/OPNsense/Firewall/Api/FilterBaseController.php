@@ -299,6 +299,15 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         return $result;
     }
 
+    public function applyAction()
+    {
+        if ($this->request->isPost()) {
+            return ['status' => (new Backend())->configdRun('filter reload skip_alias')];
+        } else {
+            return ['status' => 'error'];
+        }
+    }
+
     /**
      * Moves the selected rule so that it appears immediately before the target rule.
      *
@@ -493,13 +502,5 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
                 }
             }
         );
-    }
-
-    public function applyAction()
-    {
-        if (!$this->request->isPost()) {
-            return ["status" => "error"];
-        }
-        return ["status" => (new Backend())->configdRun('filter reload skip_alias')];
     }
 }
