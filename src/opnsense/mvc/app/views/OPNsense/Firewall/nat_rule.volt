@@ -237,6 +237,7 @@
                 }
             },
             options: {
+                virtualDOM: true,
                 responsive: true,
                 sorting: false,
                 rowCount: [500,20,50,100,200,1000,2000,-1],
