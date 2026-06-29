@@ -795,12 +795,12 @@ abstract class BaseField
             if ($data != null && isset($data[$key])) {
                 if ($node->isContainer()) {
                     if (!is_array($data[$key])) {
-                        throw new Exception("Invalid input type for {$key} (configuration error?)");
+                        throw new Exception("Invalid input type for {$key}: expected a list");
                     }
                     $node->setNodes($data[$key]);
                 } else {
                     if (is_array($data[$key])) {
-                        throw new Exception("Invalid input for \"{$key}\": expected a single value, not a list.");
+                        throw new Exception("Invalid input for {$key}: expected a single value");
                     }
                     $node->setValue($data[$key]);
                 }
