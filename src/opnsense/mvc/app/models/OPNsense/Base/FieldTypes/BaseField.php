@@ -800,7 +800,7 @@ abstract class BaseField
                     $node->setNodes($data[$key]);
                 } else {
                     if (is_array($data[$key])) {
-                        throw new Exception("Invalid input for {$key}: expected a single value");
+                        throw new Exception("Invalid input type for {$key}: expected a single value");
                     }
                     $node->setValue($data[$key]);
                 }
