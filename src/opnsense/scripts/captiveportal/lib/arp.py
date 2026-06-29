@@ -70,7 +70,7 @@ class ARP(object):
         if source == "discovery":
             rows_iter = sorted(
                 rows,
-                key=lambda row: datetime.strptime(row[5], "%Y-%m-%d %H:%M:%S"),
+                key=lambda row: datetime.strptime(row[5], "%Y-%m-%dT%H:%M:%SZ"),
                 reverse=True
             )
         else:
@@ -85,8 +85,8 @@ class ARP(object):
             }
 
             if source == "discovery":
-                entry["first_seen"] = datetime.strptime(row[4], "%Y-%m-%d %H:%M:%S")
-                entry["last_seen"]  = datetime.strptime(row[5], "%Y-%m-%d %H:%M:%S")
+                entry["first_seen"] = datetime.strptime(row[4], "%Y-%m-%dT%H:%M:%SZ")
+                entry["last_seen"]  = datetime.strptime(row[5], "%Y-%m-%dT%H:%M:%SZ")
 
             # only first one is relevant
             if not ip in self._table:
