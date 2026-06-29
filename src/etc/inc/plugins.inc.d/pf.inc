@@ -173,8 +173,13 @@ function pf_firewall($fw)
         $fw->registerFilterRule($rule->getPriority(), $content);
     }
 
-    foreach ($mdlFilter->snatrules->rule->sortedBy(['sequence']) as $key => $rule) {
-         $fw->registerSNatRule(50, $rule->serialize());
+    if (
+        !empty($config['nat']['outbound']['mode']) &&
+        in_array($config['nat']['outbound']['mode'], ['advanced', 'hybrid'])
+    ) {
+        foreach ($mdlFilter->snatrules->rule->sortedBy(['sequence']) as $key => $rule) {
+            $fw->registerSNatRule(50, $rule->serialize());
+        }
     }
 
     foreach ($mdlFilter->onetoone->rule->sortedBy(['sequence']) as $key => $rule) {
