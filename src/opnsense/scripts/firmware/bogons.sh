@@ -69,30 +69,30 @@ update_bogons()
     mv ${WORKDIR}/${DST} ${DESTDIR}/${DST}
 }
 
-ENTRIES_MAX=`pfctl -s memory | awk '/table-entries/ { print $4 }'`
-ENTRIES_TOT=`pfctl -vvsTables | awk '/Addresses/ {s+=$2}; END {print s}'`
-ENTRIES_V4=`pfctl -vvsTables | awk '/-\tbogons$/ {getline; print $2}'`
-LINES_V4=`wc -l ${WORKDIR}/fullbogons-ipv4.txt | awk '{ print $1 }'`
+ENTRIES_MAX=$(pfctl -s memory | awk '/table-entries/ { print $4 }')
+ENTRIES_TOT=$(pfctl -vvsTables | awk '/Addresses/ {s+=$2}; END {print s}')
+ENTRIES_V4=$(pfctl -vvsTables | awk '/-\tbogons$/ {getline; print $2}')
+LINES_V4=$(wc -l ${WORKDIR}/fullbogons-ipv4.txt | awk '{ print $1 }')
 
 if [ $ENTRIES_MAX -gt $((2*ENTRIES_TOT-${ENTRIES_V4:-0}+LINES_V4)) ]; then
     update_bogons fullbogons-ipv4.txt bogons 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16 127.0.0.0/8 100.64.0.0/10 169.254.0.0/16
 
-    RESULT=`/sbin/pfctl -t bogons -T replace -f ${DESTDIR}/bogons 2>&1`
+    RESULT=$(/sbin/pfctl -t bogons -T replace -f ${DESTDIR}/bogons 2>&1)
     echo "$RESULT" | awk '{ print "Bogons V4 file updated: " $0 }' | logger
 else
     echo "Not updating IPv4 bogons (increase table-entries limit)" | logger
 fi
 
-ENTRIES_MAX=`pfctl -s memory | awk '/table-entries/ { print $4 }'`
-ENTRIES_TOT=`pfctl -vvsTables | awk '/Addresses/ {s+=$2}; END {print s}'`
-BOGONS_V6_TABLE_COUNT=`pfctl -sTables | grep ^bogonsv6$ | wc -l | awk '{ print $1 }'`
-ENTRIES_TOT=`pfctl -vvsTables | awk '/Addresses/ {s+=$2}; END {print s}'`
-LINES_V6=`wc -l ${WORKDIR}/fullbogons-ipv6.txt | awk '{ print $1 }'`
+ENTRIES_MAX=$(pfctl -s memory | awk '/table-entries/ { print $4 }')
+ENTRIES_TOT=$(pfctl -vvsTables | awk '/Addresses/ {s+=$2}; END {print s}')
+BOGONS_V6_TABLE_COUNT=$(pfctl -sTables | grep ^bogonsv6$ | wc -l | awk '{ print $1 }')
+ENTRIES_TOT=$(pfctl -vvsTables | awk '/Addresses/ {s+=$2}; END {print s}')
+LINES_V6=$(wc -l ${WORKDIR}/fullbogons-ipv6.txt | awk '{ print $1 }')
 
 ACTION=
 
 if [ $BOGONS_V6_TABLE_COUNT -gt 0 ]; then
-    ENTRIES_V6=`pfctl -vvsTables | awk '/-\tbogonsv6$/ {getline; print $2}'`
+    ENTRIES_V6=$(pfctl -vvsTables | awk '/-\tbogonsv6$/ {getline; print $2}')
     if [ $ENTRIES_MAX -gt $((2*ENTRIES_TOT-${ENTRIES_V6:-0}+LINES_V6)) ]; then
         ACTION=apply
     else
@@ -110,7 +110,7 @@ if [ -n "${ACTION}" ]; then
     update_bogons fullbogons-ipv6.txt bogonsv6 fd00::/8 fe80::/10 ::/128
 
     if [ "${ACTION}" = "apply" ]; then
-        RESULT=`/sbin/pfctl -t bogonsv6 -T replace -f ${DESTDIR}/bogonsv6 2>&1`
+        RESULT=$(/sbin/pfctl -t bogonsv6 -T replace -f ${DESTDIR}/bogonsv6 2>&1)
         echo "$RESULT" | awk '{ print "Bogons V6 file updated: " $0 }' | logger
     else
         echo "Not updating IPv6 bogons table because IPv6 Allow is off" | logger

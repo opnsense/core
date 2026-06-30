@@ -17,7 +17,7 @@
 if [ -f /var/db/ipsecpinghosts ]; then
 	IPSECHOSTS="/var/db/ipsecpinghosts"
 	CURRENTIPSECHOSTS="/var/db/currentipsecpinghosts"
-	IFVPNSTATE=`ifconfig $IFVPN | grep "carp: BACKUP vhid" | wc -l`
+	IFVPNSTATE=$(ifconfig $IFVPN | grep "carp: BACKUP vhid" | wc -l)
 	if [ $IFVPNSTATE -gt 1 ]; then
 		echo -e "CARP interface in BACKUP (not pinging ipsec hosts)"
 		rm -f $CURRENTIPSECHOSTS
@@ -43,9 +43,9 @@ if [ ! -d /var/db/pingmsstatus ]; then
 	/bin/mkdir -p /var/db/pingmsstatus
 fi
 
-PINGHOSTS=`cat /tmp/tmpHOSTS`
+PINGHOSTS=$(cat /tmp/tmpHOSTS)
 
-PINGHOSTCOUNT=`cat /tmp/tmpHOSTS | wc -l`
+PINGHOSTCOUNT=$(cat /tmp/tmpHOSTS | wc -l)
 
 if [ "$PINGHOSTCOUNT" -lt "1" ]; then
 	exit
@@ -53,14 +53,14 @@ fi
 
 for TOPING in $PINGHOSTS ; do
 	echo "PROCESSING $TOPING"
-	SRCIP=`echo $TOPING | cut -d"|" -f1`
-	DSTIP=`echo $TOPING | cut -d"|" -f2`
-	COUNT=`echo $TOPING | cut -d"|" -f3`
-	FAILURESCRIPT=`echo $TOPING | cut -d"|" -f4`
-	SERVICERESTOREDSCRIPT=`echo $TOPING | cut -d"|" -f5`
-	THRESHOLD=`echo $TOPING | cut -d"|" -f6`
-	WANTHRESHOLD=`echo $TOPING | cut -d"|" -f7`
-	AF=`echo $TOPING | cut -d"|" -f8`
+	SRCIP=$(echo $TOPING | cut -d"|" -f1)
+	DSTIP=$(echo $TOPING | cut -d"|" -f2)
+	COUNT=$(echo $TOPING | cut -d"|" -f3)
+	FAILURESCRIPT=$(echo $TOPING | cut -d"|" -f4)
+	SERVICERESTOREDSCRIPT=$(echo $TOPING | cut -d"|" -f5)
+	THRESHOLD=$(echo $TOPING | cut -d"|" -f6)
+	WANTHRESHOLD=$(echo $TOPING | cut -d"|" -f7)
+	AF=$(echo $TOPING | cut -d"|" -f8)
 	if [ "$AF" == "inet6" ]; then
 		PINGCMD="ping -6"
 	else
@@ -71,7 +71,7 @@ for TOPING in $PINGHOSTS ; do
 	# Read in previous status
 	PREVIOUSSTATUS=""
 	if [ -f "/var/db/pingstatus/${DSTIP}" ]; then
-		PREVIOUSSTATUS=`cat /var/db/pingstatus/$DSTIP`
+		PREVIOUSSTATUS=$(cat /var/db/pingstatus/$DSTIP)
 	fi
 	$PINGCMD -c $COUNT -S $SRCIP $DSTIP
 	if [ $? -eq 0 ]; then
@@ -99,7 +99,7 @@ for TOPING in $PINGHOSTS ; do
 	fi
 	echo "Checking ping time $DSTIP"
 	# Look at ping values themselves
-	PINGTIME=`$PINGCMD -c 1 -S $SRCIP $DSTIP | awk '{ print $7 }' | grep time | cut -d "=" -f2`
+	PINGTIME=$($PINGCMD -c 1 -S $SRCIP $DSTIP | awk '{ print $7 }' | grep time | cut -d "=" -f2)
 	echo "Ping returned $?"
 	echo $PINGTIME > /var/db/pingmsstatus/$DSTIP
 	if [ "$THRESHOLD" != "" ]; then
@@ -110,7 +110,7 @@ for TOPING in $PINGHOSTS ; do
 		fi
 	fi
 	# Wan ping time threshold
-	#WANTIME=`rrdtool fetch /var/db/rrd/wan-quality.rrd AVERAGE -r 120 -s -1min -e -1min | grep ":" | cut -f3 -d" " | cut -d"e" -f1`
+	#WANTIME=$(rrdtool fetch /var/db/rrd/wan-quality.rrd AVERAGE -r 120 -s -1min -e -1min | grep ":" | cut -f3 -d" " | cut -d"e" -f1)
 	echo "Checking wan ping time $WANTIME"
 	echo $WANTIME > /var/db/wanaverage
 	if [ "$WANTHRESHOLD" != "" -a "$WANTIME" != "" ]; then

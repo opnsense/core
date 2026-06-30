@@ -33,17 +33,15 @@ flowd_aggregate_stop()
     kill -15 ${rc_pid}
 
     # wait max 5 seconds for gentle exit
-    for i in $(seq 1 50);
-    do
-        if [ -z "`/bin/ps -ax | /usr/bin/awk '{print $1;}' | /usr/bin/grep "^${rc_pid}"`" ]; then
+    for i in $(seq 1 50); do
+        if [ -z "$(/bin/ps -ax | /usr/bin/awk '{print $1;}' | /usr/bin/grep "^${rc_pid}")" ]; then
             break
         fi
         sleep 0.1
     done
 
     # kill any remaining configd processes (if still running)
-    for flowd_aggregate_pid in `/bin/ps -ax | grep 'flowd_aggregate.py' | /usr/bin/awk '{print $1;}' `
-    do
+    for flowd_aggregate_pid in $(/bin/ps -ax | grep 'flowd_aggregate.py' | /usr/bin/awk '{print $1;}'); do
        kill -9 $flowd_aggregate_pid >/dev/null 2>&1
     done
 

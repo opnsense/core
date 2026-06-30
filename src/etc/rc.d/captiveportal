@@ -36,7 +36,7 @@ start_precmd=captiveportal_prestart
 start_cmd="${name}_start"
 stop_cmd="${name}_stop"
 
-[ -z "$captiveportal_enable" ]       && captiveportal_enable="NO"
+[ -z "$captiveportal_enable" ] && captiveportal_enable="NO"
 
 captiveportal_load_rc_config()
 {
@@ -44,13 +44,13 @@ captiveportal_load_rc_config()
     CPDEFAULTTEMPLATE="/usr/local/opnsense/scripts/captiveportal/htdocs_default"
 
     # extract all zones from captive portal configuration
-    CPZONES=`cat /usr/local/etc/captiveportal.conf | grep "\[zone_" | sed 's/\[zone_//' | sed 's/\]//'`
+    CPZONES=$(cat /usr/local/etc/captiveportal.conf | grep "\[zone_" | sed 's/\[zone_//' | sed 's/\]//')
 }
 
 captiveportal_cleanup_zones()
 {
     # cleanup removed zones
-    for installed_zoneid in `ls $CPWORKDIR |  sed 's/zone//g'`; do
+    for installed_zoneid in $(ls $CPWORKDIR |  sed 's/zone//g'); do
         if [ -d $CPWORKDIR/zone$installed_zoneid ]; then
             is_installed=0
             for zoneid in $CPZONES; do
@@ -146,7 +146,7 @@ captiveportal_stop()
     done
 
     # stopping unconfigured zones (not in $CPZONES list)
-    for zonepid in `ls /var/run/lighttpd-cp-zone-*.pid 2>/dev/null`; do
+    for zonepid in $(ls /var/run/lighttpd-cp-zone-*.pid 2>/dev/null); do
         /bin/pkill -TERM -F $zonepid
         rm -f $zonepid
     done
