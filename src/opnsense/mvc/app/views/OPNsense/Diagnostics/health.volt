@@ -262,7 +262,7 @@
 <div class="tab-content content-box">
     <div id="health-graph" class="tab-pane fade in active">
         <div class="panel panel-default" style="margin-bottom: 0px; border: none;">
-            <div id="info-disabled" class="alert alert-warning" role="alert" style="margin-bottom: 0; display: none;">
+            <div id="info-disabled" class="alert alert-warning" role="alert" style="margin: 15px; display: none;">
                 {{ lang._('No local data available.') }}
             </div>
 
@@ -303,9 +303,6 @@
                     <canvas id="health-chart"></canvas>
                     <i id="spinner" class="fa fa-spinner fa-pulse spinner-overlay" style="display: none;"></i>
                 </div>
-            </div>
-
-            <div class="panel-footer">
             </div>
         </div>
     </div>
