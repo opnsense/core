@@ -9,6 +9,12 @@
         </grid_view>
     </field>
     <field>
+        <id>interface.identifier</id>
+        <label>Identifier</label>
+        <type>info</type>
+        <help>Technical identifier of the interface used by HA sync for example.</help>
+    </field>
+    <field>
         <id>interface.descr</id>
         <label>Description</label>
         <type>text</type>
@@ -25,14 +31,6 @@
             <width>5em</width>
         </grid_view>
     </field>
-<!-- XXX: needs implementation
-    <field>
-        <id>interface.identifier</id>
-        <label>Identifier</label>
-        <type>text</type>
-        <help>Technical identifier of the interface, used by hasync for example.</help>
-    </field>
--->
     <field>
         <id>interface.if</id>
         <label>Device</label>

@@ -55,7 +55,11 @@ class AssignmentController extends ApiMutableModelControllerBase
 
     public function getItemAction($ifname = null)
     {
-        return $this->getBase("interface", "interface", $ifname);
+        $result = $this->getBase("interface", "interface", $ifname);
+        foreach ($result as $idx => $if) {
+            $result[$idx]['%descr'] = strtoupper($if['identifier']);
+        }
+        return $result;
     }
 
     public function delItemAction($ifnames)
