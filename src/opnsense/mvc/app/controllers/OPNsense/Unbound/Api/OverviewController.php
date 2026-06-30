@@ -103,10 +103,10 @@ class OverviewController extends ApiControllerBase
         $types = $this->mdl->dnsbl->blocklist->getTemplateNode()->type->getNodeData();
 
         foreach ($parsed as $idx => $query) {
-            if (isset($types[$query['blocklist']]['optgroup'])) {
+            if (isset($types[$query['blocklist'] ?? '']['optgroup'])) {
                 $parsed[$idx]['category'] = $types[$query['blocklist']]['optgroup'];
             }
-            $parsed[$idx]['blocklist'] = $types[$query['blocklist']]['value'] ?? $query['blocklist'];
+            $parsed[$idx]['blocklist'] = $types[$query['blocklist'] ?? '']['value'] ?? $query['blocklist'];
             $parsed[$idx]['policy'] = $policies[$query['uuid'] ?? '']['description'] ?? '';
             /* Handle front-end color status mapping, start off with OK */
             $parsed[$idx]['status'] = 0;
