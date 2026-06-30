@@ -42,6 +42,13 @@ for line in sp.stdout.split('\n'):
     if len(parts) == 3 and parts[2].isdigit():
         handshakes["%s-%s" % (parts[0], parts[1])] = ts_now - int(parts[2])
 
+sp = subprocess.run(['/usr/bin/wg', 'show', 'all', 'allowed-ips'], capture_output=True, text=True)
+allowed_ips = {}
+for line in sp.stdout.split('\n'):
+    parts = line.split()
+    if len(parts) >= 3:
+        allowed_ips["%s-%s" % (parts[0], parts[1])] = ','.join(parts[2:])
+
 
 for filename in glob.glob('/usr/local/etc/wireguard/*.conf'):
     this_peer = {}
@@ -54,8 +61,10 @@ for filename in glob.glob('/usr/local/etc/wireguard/*.conf'):
                 this_peer['PublicKey'] = line.split('=', 1)[1].strip()
             elif line.startswith('Endpoint'):
                 this_peer['Endpoint'] = line.split('=', 1)[1].strip()
+            elif line.startswith('AllowedIPs'):
+                this_peer['AllowedIPs'] = line.split('=', 1)[1].strip()
 
-            if 'Endpoint' in this_peer and 'PublicKey' in this_peer:
+            if 'Endpoint' in this_peer and 'PublicKey' in this_peer and 'AllowedIPs' in this_peer:
                 peer_key = "%(ifname)s-%(PublicKey)s" % this_peer
                 if handshakes.get(peer_key, 999) > 135:
                     # skip if there has been a handshake recently
@@ -68,6 +77,20 @@ for filename in glob.glob('/usr/local/etc/wireguard/*.conf'):
                             this_peer['PublicKey'],
                             'endpoint',
                             this_peer['Endpoint']
+                        ],
+                        capture_output=True,
+                        text=True
+                    )
+                if allowed_ips.get(peer_key, '(none)') == '(none)':
+                    subprocess.run(
+                        [
+                            '/usr/bin/wg',
+                            'set',
+                            ifname,
+                            'peer',
+                            this_peer['PublicKey'],
+                            'allowed-ips',
+                            this_peer['AllowedIPs']
                         ],
                         capture_output=True,
                         text=True
