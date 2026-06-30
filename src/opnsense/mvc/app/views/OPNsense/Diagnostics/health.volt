@@ -255,57 +255,64 @@
 
 </style>
 
-<div class="panel panel-default">
-    {{ partial("layout_partials/base_form",['fields':systemHealthForm,'id':'frm_HealthSettings'])}}
-    {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/diagnostics/systemhealth/reconfigure'}) }}
-    <button id="list-rrd" class="btn btn-default __mr" style="display: none;">{{ lang._('Show Collected Reports') }}</button>
-    <button id="reset-rrd" class="btn btn-default __mr" style="display: none;">{{ lang._('Reset RRD Data') }}</button>
-</div>
+<ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
+    <li class="active"><a data-toggle="tab" href="#health-graph" id="health_graph_tab">{{ lang._('Health') }}</a></li>
+    <li><a data-toggle="tab" href="#health-settings" id="health_settings_tab">{{ lang._('Settings') }}</a></li>
+</ul>
+<div class="tab-content content-box">
+    <div id="health-graph" class="tab-pane fade in active">
+        <div class="panel panel-default" style="margin-bottom: 0px; border: none;">
+            <div id="info-disabled" class="alert alert-warning" role="alert" style="margin-bottom: 0; display: none;">
+                {{ lang._('No local data available.') }}
+            </div>
 
-<div class="panel panel-default">
-	<div id="info-disabled" class="alert alert-warning" role="alert" style="margin-bottom: 0; display: none;">
-		{{ lang._('No local data available.') }}
-	</div>
+            <div id="health-header" class="panel-heading centered">
+                <button id="reset-zoom" class="btn btn-primary" style="align-self: flex-end;">{{ lang._('Reset zoom') }}</button>
 
-	<div id="health-header" class="panel-heading centered">
-        <button id="reset-zoom" class="btn btn-primary" style="align-self: flex-end;">{{ lang._('Reset zoom') }}</button>
+                <div class="label-select-pair">
+                    <label for="health-category-select"><b>{{ lang._('Category') }}</b></label>
+                    <select id="health-category-select" class="selectpicker" data-width="200px" data-container="body"></select>
+                </div>
+                <div class="label-select-pair">
+                    <label for="health-subcategory-select"><b>{{ lang._('Subject') }}</b></label>
+                    <select id="health-subcategory-select" class="selectpicker" data-width="200px" data-live-search="true" data-container="body"></select>
+                </div>
 
-        <div class="label-select-pair">
-            <label for="health-category-select"><b>{{ lang._('Category') }}</b></label>
-            <select id="health-category-select" class="selectpicker" data-width="200px" data-container="body"></select>
+                <div class="label-select-pair">
+                    <label for="detail-select"><b>{{ lang._('Granularity') }}</b></label>
+                    <select id="detail-select" class="selectpicker" data-width="200px">
+                        <option value="0">{{ lang._('%d minute (Default)') | format('1') }}</option>
+                        <option value="1">{{ lang._('%d minutes') | format('5') }}</option>
+                        <option value="2">{{ lang._('%d hour') | format('1') }}</option>
+                        <option value="3">{{ lang._('%d hours') | format('24') }}</option>
+                    </select>
+                </div>
+
+                <div class="label-select-pair" style="height: 55px">
+                    <label for="stacked-select"><b>{{ lang._('Stacked') }}</b></label>
+                    <input id="stacked-select" type="checkbox"/>
+                </div>
+
+                <button id="export" class="btn btn-default" data-toggle="tooltip" data-original-title="{{ lang._('Export current selection as CSV')}}" style="align-self: flex-end;">
+                    <span class="fa fa-cloud-download"></span>
+                </button>
+            </div>
+
+            <div id="main" class="panel-body">
+                <div class="chart-container" style="position: relative; height: 60vh;">
+                    <canvas id="health-chart"></canvas>
+                    <i id="spinner" class="fa fa-spinner fa-pulse spinner-overlay" style="display: none;"></i>
+                </div>
+            </div>
+
+            <div class="panel-footer">
+            </div>
         </div>
-        <div class="label-select-pair">
-            <label for="health-subcategory-select"><b>{{ lang._('Subject') }}</b></label>
-            <select id="health-subcategory-select" class="selectpicker" data-width="200px" data-live-search="true" data-container="body"></select>
-        </div>
-
-        <div class="label-select-pair">
-            <label for="detail-select"><b>{{ lang._('Granularity') }}</b></label>
-            <select id="detail-select" class="selectpicker" data-width="200px">
-                <option value="0">{{ lang._('%d minute (Default)') | format('1') }}</option>
-                <option value="1">{{ lang._('%d minutes') | format('5') }}</option>
-                <option value="2">{{ lang._('%d hour') | format('1') }}</option>
-                <option value="3">{{ lang._('%d hours') | format('24') }}</option>
-            </select>
-        </div>
-
-        <div class="label-select-pair" style="height: 55px">
-            <label for="stacked-select"><b>{{ lang._('Stacked') }}</b></label>
-            <input id="stacked-select" type="checkbox"/>
-        </div>
-
-        <button id="export" class="btn btn-default" data-toggle="tooltip" data-original-title="{{ lang._('Export current selection as CSV')}}" style="align-self: flex-end;">
-            <span class="fa fa-cloud-download"></span>
-        </button>
     </div>
-
-	<div id="main" class="panel-body">
-		<div class="chart-container" style="position: relative; height: 60vh;">
-			<canvas id="health-chart"></canvas>
-			<i id="spinner" class="fa fa-spinner fa-pulse spinner-overlay" style="display: none;"></i>
-		</div>
-	</div>
-
-	<div class="panel-footer">
-	</div>
+    <div id="health-settings" class="tab-pane fade in">
+        {{ partial("layout_partials/base_form",['fields':systemHealthForm,'id':'frm_HealthSettings'])}}
+        {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/diagnostics/systemhealth/reconfigure'}) }}
+        <button id="list-rrd" class="btn btn-default __mr" style="display: none;">{{ lang._('Show Collected Reports') }}</button>
+        <button id="reset-rrd" class="btn btn-default __mr" style="display: none;">{{ lang._('Reset RRD Data') }}</button>
+    </div>
 </div>
