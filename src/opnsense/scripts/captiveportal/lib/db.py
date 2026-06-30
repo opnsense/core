@@ -98,6 +98,18 @@ class DB(object):
             """)
             self._connection.commit()
 
+        # migration: add "accounting_interval" column to session_restrictions
+        cur.execute("PRAGMA table_info(session_restrictions)")
+        if not any([row[1] == 'accounting_interval' for row in cur.fetchall()]):
+            cur.execute("ALTER TABLE session_restrictions ADD COLUMN accounting_interval INT")
+            self._connection.commit()
+
+        # migration: add "last_update_time" column to accounting_state
+        cur.execute("PRAGMA table_info(accounting_state)")
+        if not any([row[1] == 'last_update_time' for row in cur.fetchall()]):
+            cur.execute("ALTER TABLE accounting_state ADD COLUMN last_update_time NUMBER")
+            self._connection.commit()
+
         cur.close()
 
     def sessions_per_address(self, zoneid, ip_address='', mac_address=''):
@@ -626,23 +638,25 @@ class DB(object):
 
         self._connection.commit()
 
-    def update_session_restrictions(self, zoneid, sessionid, session_timeout):
+    def update_session_restrictions(self, zoneid, sessionid, session_timeout, accounting_interval=None):
         """ upsert session restrictions
         :param zoneid: zone id
         :param sessionid: session id
         :param session_timeout: timeout in seconds
+        :param accounting_interval: Acct-Interim-Interval dictated by RADIUS backend
         :return: string "add"/"update" to signal the performed action to the client
         """
         cur = self._connection.cursor()
-        qry_params = {'zoneid': zoneid, 'sessionid': sessionid, 'session_timeout': session_timeout}
+        qry_params = {'zoneid': zoneid, 'sessionid': sessionid, 'session_timeout': session_timeout, 'accounting_interval': accounting_interval}
         sql_update = """update session_restrictions
-                        set session_timeout = :session_timeout
+                        set session_timeout = :session_timeout,
+                        accounting_interval = :accounting_interval
                         where zoneid = :zoneid and sessionid = :sessionid"""
 
         cur.execute(sql_update, qry_params)
         if cur.rowcount == 0:
-            sql_insert = """insert into session_restrictions(zoneid, sessionid, session_timeout)
-                            values (:zoneid, :sessionid, :session_timeout)"""
+            sql_insert = """insert into session_restrictions(zoneid, sessionid, session_timeout, accounting_interval)
+                            values (:zoneid, :sessionid, :session_timeout, :accounting_interval)"""
             cur.execute(sql_insert, qry_params)
             self._connection.commit()
             return 'add'

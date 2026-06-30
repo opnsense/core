@@ -53,6 +53,7 @@ create table if not exists session_restrictions (
       zoneid int
 ,     sessionid varchar
 ,     session_timeout int
+,     accounting_interval int
 ,     primary key (zoneid, sessionid)
 ) ;
 
@@ -61,5 +62,6 @@ create table if not exists accounting_state (
       zoneid int
 ,     sessionid varchar
 ,     state varchar
+,     last_update_time number
 ,     primary key (zoneid, sessionid)
 ) ;
