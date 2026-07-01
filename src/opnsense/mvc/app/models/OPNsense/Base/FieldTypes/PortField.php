@@ -226,26 +226,38 @@ class PortField extends BaseListField
         if ($this->enableRanges) {
             // add valid ranges to options
             foreach (explode(",", $this->internalValue) as $data) {
-                if (strpos($data, "-") !== false) {
-                    $tmp = explode('-', $data);
-                    if (count($tmp) == 2) {
-                        if (
-                            filter_var(
-                                $tmp[0],
-                                FILTER_VALIDATE_INT,
-                                ['options' => ['min_range' => 1, 'max_range' => 65535]]
-                            ) !== false &&
-                            filter_var(
-                                $tmp[1],
-                                FILTER_VALIDATE_INT,
-                                ['options' => ['min_range' => 1, 'max_range' => 65535]]
-                            ) !== false &&
-                            $tmp[0] < $tmp[1]
-                        ) {
-                            $this->internalOptionList[$data] = $data;
-                        }
-                    }
+                if (strpos($data, "-") === false) {
+                    continue;
                 }
+
+                $tmp = explode('-', $data);
+
+                if (count($tmp) != 2) {
+                    continue;
+                }
+
+                // Reject any whitespaces
+                if ($tmp[0] !== trim($tmp[0]) || $tmp[1] !== trim($tmp[1])) {
+                    continue;
+                }
+
+                if (
+                    filter_var(
+                        $tmp[0],
+                        FILTER_VALIDATE_INT,
+                        ['options' => ['min_range' => 1, 'max_range' => 65535]]
+                    ) === false ||
+                    filter_var(
+                        $tmp[1],
+                        FILTER_VALIDATE_INT,
+                        ['options' => ['min_range' => 1, 'max_range' => 65535]]
+                    ) === false ||
+                    $tmp[0] >= $tmp[1]
+                ) {
+                    continue;
+                }
+
+                $this->internalOptionList[$data] = $data;
             }
         }
         return parent::getValidators();
