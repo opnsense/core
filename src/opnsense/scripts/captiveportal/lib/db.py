@@ -647,23 +647,46 @@ class DB(object):
         :return: string "add"/"update" to signal the performed action to the client
         """
         cur = self._connection.cursor()
-        accounting_interval = 600 if not accounting_interval else accounting_interval
-        qry_params = {'zoneid': zoneid, 'sessionid': sessionid, 'session_timeout': session_timeout, 'accounting_interval': accounting_interval}
-        sql_update = """update session_restrictions
-                        set session_timeout = :session_timeout,
-                        accounting_interval = :accounting_interval
-                        where zoneid = :zoneid and sessionid = :sessionid"""
+
+        has_accounting_interval = True if accounting_interval else False
+
+        qry_params = {
+            "zoneid": zoneid,
+            "sessionid": sessionid,
+            "session_timeout": session_timeout,
+            **({"accounting_interval": accounting_interval} if has_accounting_interval else {}),
+        }
+
+        sql_update = f"""
+            UPDATE session_restrictions
+            SET session_timeout = :session_timeout
+                {", accounting_interval = :accounting_interval" if has_accounting_interval else ""}
+            WHERE zoneid = :zoneid AND sessionid = :sessionid
+        """
 
         cur.execute(sql_update, qry_params)
+
         if cur.rowcount == 0:
-            sql_insert = """insert into session_restrictions(zoneid, sessionid, session_timeout, accounting_interval)
-                            values (:zoneid, :sessionid, :session_timeout, :accounting_interval)"""
+            sql_insert = f"""
+                INSERT INTO session_restrictions (
+                    zoneid,
+                    sessionid,
+                    session_timeout
+                    {", accounting_interval" if has_accounting_interval else ""}
+                )
+                VALUES (
+                    :zoneid,
+                    :sessionid,
+                    :session_timeout
+                    {", :accounting_interval" if has_accounting_interval else ""}
+                )
+            """
             cur.execute(sql_insert, qry_params)
             self._connection.commit()
-            return 'add'
-        else:
-            self._connection.commit()
-            return 'update'
+            return "add"
+
+        self._connection.commit()
+        return "update"
 
     def cleanup_sessions(self):
         """ cleanup removed sessions, but wait for accounting to finish when busy
