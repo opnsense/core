@@ -93,7 +93,7 @@ class PortFieldTest extends Field_Framework_TestCase
         $field = new PortField();
         $field->setEnableRanges("Y");
         $field->eventPostLoading();
-        foreach (['80 ', ' 80', '1024-65535 ', ' 1024-65535', '1024 -65535', '1024-65535'] as $value) {
+        foreach (['80 ', ' 80', '1024-65535 ', ' 1024-65535', '1024 -65535', '1024- 65535'] as $value) {
             $field->setValue($value);
             $this->assertNotEmpty($this->validate($field), "Whitespace should be invalid");
         }
