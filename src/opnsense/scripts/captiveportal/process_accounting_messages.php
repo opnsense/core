@@ -95,7 +95,7 @@ if ($result !== false) {
                 if (method_exists($authenticator, 'updateAccounting')) {
                     // send interim update event. Default to an interval of 600 seconds unless specified otherwise
                     $now = time();
-                    if (($now - intval($row['last_update_time'])) >= intval($row['accounting_interval'] ?: 600)) {
+                    if (($now - intval($row['last_update_time'])) >= intval($row['accounting_interval'])) {
                         $stmt = $db->prepare('update accounting_state
                                               set last_update_time = :time
                                               where zoneid = :zoneid

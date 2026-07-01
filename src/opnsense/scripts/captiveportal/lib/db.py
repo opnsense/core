@@ -101,13 +101,13 @@ class DB(object):
         # migration: add "accounting_interval" column to session_restrictions
         cur.execute("PRAGMA table_info(session_restrictions)")
         if not any([row[1] == 'accounting_interval' for row in cur.fetchall()]):
-            cur.execute("ALTER TABLE session_restrictions ADD COLUMN accounting_interval INT")
+            cur.execute("ALTER TABLE session_restrictions ADD COLUMN accounting_interval INT DEFAULT 600")
             self._connection.commit()
 
         # migration: add "last_update_time" column to accounting_state
         cur.execute("PRAGMA table_info(accounting_state)")
         if not any([row[1] == 'last_update_time' for row in cur.fetchall()]):
-            cur.execute("ALTER TABLE accounting_state ADD COLUMN last_update_time NUMBER")
+            cur.execute("ALTER TABLE accounting_state ADD COLUMN last_update_time NUMBER DEFAULT 0")
             self._connection.commit()
 
         cur.close()
@@ -638,7 +638,7 @@ class DB(object):
 
         self._connection.commit()
 
-    def update_session_restrictions(self, zoneid, sessionid, session_timeout, accounting_interval=None):
+    def update_session_restrictions(self, zoneid, sessionid, session_timeout, accounting_interval):
         """ upsert session restrictions
         :param zoneid: zone id
         :param sessionid: session id
@@ -647,6 +647,7 @@ class DB(object):
         :return: string "add"/"update" to signal the performed action to the client
         """
         cur = self._connection.cursor()
+        accounting_interval = 600 if not accounting_interval else accounting_interval
         qry_params = {'zoneid': zoneid, 'sessionid': sessionid, 'session_timeout': session_timeout, 'accounting_interval': accounting_interval}
         sql_update = """update session_restrictions
                         set session_timeout = :session_timeout,
