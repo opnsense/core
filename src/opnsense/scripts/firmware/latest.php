@@ -32,7 +32,7 @@ require_once 'util.inc';
 $changelogfile = '/usr/local/opnsense/changelog/index.json';
 
 list ($series, $version) = shell_safe('opnsense-version -Vv', [], true, ' ');
-$version = explode('_', $version)[0];
+$version = preg_split('/[p_-]/', $version)[0];
 
 if (empty($argv[1]) && ($ret = json_decode(@file_get_contents($changelogfile), true)) != null) {
     # version_compare() has no single letter abbreviation for "RC"

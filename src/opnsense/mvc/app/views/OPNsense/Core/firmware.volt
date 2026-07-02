@@ -85,7 +85,7 @@
                     row['reason']+'</td><td>'+row['repository'] + '</td></tr>');
 
                     if (row['name'] == data['product_target'] && row['new'] != 'N/A') {
-                        show_log = row['new'].replace(/[_-].*/, '');
+                        show_log = row['new'].replace(/[p_-].*/, '');
                     }
                 });
                 $('#update_status_container').hide();
@@ -512,7 +512,7 @@
             $("#changeloglist > thead").html("<tr><th>{{ lang._('Version') }}</th>" +
             "<th>{{ lang._('Date') }}</th><th></th></tr>");
 
-            const installed_version = data['product_version'].replace(/[_-].*/, '');
+            const installed_version = data['product_version'].replace(/[p_-].*/, '');
 
             $.each(data['changelog'], function(index, row) {
                 changelog_count += 1;
