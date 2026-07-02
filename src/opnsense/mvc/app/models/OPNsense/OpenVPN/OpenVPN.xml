@@ -443,9 +443,10 @@
                         <crypt-v2>crypt-v2 (Encrypt and authenticate all control channel packets)</crypt-v2>
                     </OptionValues>
                 </mode>
-                <key type="StrictTextField">
+                <key type="TextField">
                     <Required>Y</Required>
-                    <ValidationMessage>A key is required; generate one with the button.</ValidationMessage>
+                    <Mask>/^([0-9a-z\#\-\r\n\s])*$/i</Mask>
+                    <ValidationMessage>A valid key is required; generate one with the button.</ValidationMessage>
                 </key>
                 <description type="DescriptionField">
                     <Required>Y</Required>
