@@ -185,7 +185,7 @@ class ExportController extends ApiControllerBase
     public function accountsAction($vpnid = null)
     {
         $result = [
-            null => [
+            '' => [
                 "description" => gettext("(none) Exclude certificate from export"),
                 "users" => []
             ]
