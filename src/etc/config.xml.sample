@@ -103,30 +103,6 @@
     </outbound>
   </nat>
   <filter>
-    <rule>
-      <type>pass</type>
-      <ipprotocol>inet</ipprotocol>
-      <descr>Default allow LAN to any rule</descr>
-      <interface>lan</interface>
-      <source>
-        <network>lan</network>
-      </source>
-      <destination>
-        <any/>
-      </destination>
-    </rule>
-    <rule>
-      <type>pass</type>
-      <ipprotocol>inet6</ipprotocol>
-      <descr>Default allow LAN IPv6 to any rule</descr>
-      <interface>lan</interface>
-      <source>
-        <network>lan</network>
-      </source>
-      <destination>
-        <any/>
-      </destination>
-    </rule>
   </filter>
   <rrd>
     <enable/>
@@ -135,4 +111,65 @@
     <prefer>0.opnsense.pool.ntp.org</prefer>
     <ispool>0.opnsense.pool.ntp.org 1.opnsense.pool.ntp.org 2.opnsense.pool.ntp.org 3.opnsense.pool.ntp.org</ispool>
   </ntpd>
+  <OPNsense>
+    <Firewall>
+      <Filter>
+        <rules>
+          <rule>
+            <enabled>1</enabled>
+            <statetype>keep</statetype>
+            <state-policy/>
+            <sequence>1</sequence>
+            <action>pass</action>
+            <quick>1</quick>
+            <interfacenot>0</interfacenot>
+            <interface>lan</interface>
+            <direction>in</direction>
+            <ipprotocol>inet</ipprotocol>
+            <protocol>any</protocol>
+            <source_net>lan</source_net>
+            <source_not>0</source_not>
+            <source_port/>
+            <destination_net>any</destination_net>
+            <destination_not>0</destination_not>
+            <disablereplyto>0</disablereplyto>
+            <log>0</log>
+            <allowopts>0</allowopts>
+            <nosync>0</nosync>
+            <nopfsync>0</nopfsync>
+            <statetimeout/>
+            <tcpflags_any>0</tcpflags_any>
+            <description>Default allow LAN to any rule</description>
+          </rule>
+          <rule>
+            <enabled>1</enabled>
+            <statetype>keep</statetype>
+            <state-policy/>
+            <sequence>11</sequence>
+            <action>pass</action>
+            <quick>1</quick>
+            <interfacenot>0</interfacenot>
+            <interface>lan</interface>
+            <direction>in</direction>
+            <ipprotocol>inet6</ipprotocol>
+            <protocol>any</protocol>
+            <source_net>lan</source_net>
+            <source_not>0</source_not>
+            <destination_net>any</destination_net>
+            <destination_not>0</destination_not>
+            <disablereplyto>0</disablereplyto>
+            <log>0</log>
+            <allowopts>0</allowopts>
+            <nosync>0</nosync>
+            <nopfsync>0</nopfsync>
+            <tcpflags_any>0</tcpflags_any>
+            <description>Default allow LAN IPv6 to any rule</description>
+          </rule>
+        </rules>
+        <snatrules/>
+        <npt/>
+        <onetoone/>
+      </Filter>
+    </Firewall>
+  </OPNsense>
 </opnsense>
