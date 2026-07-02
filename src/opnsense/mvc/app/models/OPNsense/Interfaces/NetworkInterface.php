@@ -99,6 +99,7 @@ class NetworkInterface extends BaseModel
             $node = $this->interface->add($key);
             $node->descr = (string)$intf->descr;
             $node->identifier = $key;
+            $node->lock = empty((string)$intf->lock) ? '0' : '1';
             if (isset($iftodo['pending_if'])) {
                 $node->if = $iftodo['pending_if'];
             } else {
@@ -122,6 +123,8 @@ class NetworkInterface extends BaseModel
                 $this->store_if_todo($key, ['pending_action' => 'delete']);
             } else {
                 $intf->descr = $interfaces[$key]['descr'];
+                $intf->lock = $interfaces[$key]['lock'];
+                /* flush actions that need to be applied, for which we need history */
                 if ($intf->if != $interfaces[$key]['if']) {
                     $this->store_if_todo($key, ['pending_action' => 'relink', 'pending_if' => $interfaces[$key]['if']]);
                 }
@@ -138,6 +141,7 @@ class NetworkInterface extends BaseModel
                 $newif = Config::getInstance()->object()->interfaces->addChild('opt' . $next_if);
                 $newif->if = $intf['if'];
                 $newif->descr = $intf['descr'];
+                $newif->lock = $intf['lock'];
                 $next_if++;
             }
         }

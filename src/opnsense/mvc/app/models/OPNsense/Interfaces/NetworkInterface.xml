@@ -4,7 +4,7 @@
     <description>Interface assignments</description>
     <items>
         <interface type="ArrayField">
-            <descr type="DescriptionField"/>
+            <descr type=".\IfDescField"/>
             <identifier type="TextField"/>
             <!-- backref from if field, read-only data -->
             <icon type="TextField" volatile="true"/>
@@ -18,6 +18,10 @@
                     </check001>
                 </Constraints>
             </if>
+            <lock type="BooleanField">
+                <Default>1</Default>
+                <Required>Y</Required>
+            </lock>
         </interface>
     </items>
 </model>
