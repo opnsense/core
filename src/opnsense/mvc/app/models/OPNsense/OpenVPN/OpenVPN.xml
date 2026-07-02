@@ -445,7 +445,7 @@
                 </mode>
                 <key type="TextField">
                     <Required>Y</Required>
-                    <Mask>/^([0-9a-z\#\-\r\n\s])*$/i</Mask>
+                    <Mask>/^([0-9a-z\#\-\=\+\/\r\n\s])*$/i</Mask>
                     <ValidationMessage>A valid key is required; generate one with the button.</ValidationMessage>
                 </key>
                 <description type="DescriptionField">
