@@ -48,9 +48,10 @@ class Menu extends MenuContainer
         natcasesort($iftargets);
 
         // add interfaces to "Firewall: Rules" menu tab...
-        $has_legacy_fw = !empty($config->filter?->rule?->count());
-        $has_mvc_fw = !empty($config->OPNsense?->Firewall?->Filter?->rules?->count());
-        $has_legacy_outbound_nat = !empty($config->nat?->outbound?->rule?->count());
+        $has_legacy_fw = !empty($config->filter?->rule?->count()) && !empty($config->filter->rule);
+        $has_mvc_fw = !empty($config->OPNsense?->Firewall?->Filter?->rules?->rule?->count());
+        $has_legacy_outbound_nat = !empty($config->nat?->outbound?->rule?->count())
+                                        && !empty($config->nat->outbound->rule);
         if ($has_legacy_fw || $has_legacy_outbound_nat) {
             $this->appendItem('Firewall', 'Migration', [
                 'url' => '/ui/firewall/migration',
