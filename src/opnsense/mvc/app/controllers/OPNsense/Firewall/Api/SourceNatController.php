@@ -76,7 +76,7 @@ class SourceNatController extends FilterBaseController
              * Only IPv4 interfaces participate in the automatic outbound NAT preview.
              * DHCP counts as IPv4 for WAN style interfaces.
              */
-            $has_ipv4 = $ipaddr === 'dhcp' || Util::isIpv4Address($ipaddr);
+            $has_ipv4 = in_array($ipaddr, ['dhcp', 'pppoe'], true) || Util::isIpv4Address($ipaddr);
             if (!$has_ipv4) {
                 continue;
             }
@@ -86,7 +86,8 @@ class SourceNatController extends FilterBaseController
              * DHCP WANs usually have no static gateway in the interface node, but should still
              * be treated as automatic outbound NAT interfaces.
              */
-            $is_wan_candidate = $ipaddr === 'dhcp' || ($gateway !== '' && $gateway !== 'none');
+            $is_wan_candidate = in_array($ipaddr, ['dhcp', 'pppoe'], true) ||
+            ($gateway !== '' && $gateway !== 'none');
 
             if ($is_wan_candidate && substr($device, 0, 4) !== 'ovpn') {
                 $nat_interfaces[] = [
@@ -100,73 +101,72 @@ class SourceNatController extends FilterBaseController
 
         $rows = [];
         $sequence = 1;
+        $source_net = implode(',', $source_networks);
 
         foreach ($nat_interfaces as $natintf) {
-            foreach ($source_networks as $source_net) {
-                $target = $natintf['interface'] . 'ip';
-                $rows[] = [
-                    'uuid' => 'automatic_isakmp_' . $natintf['interface'] . '_' . $source_net,
-                    'enabled' => '1',
-                    'nonat' => '0',
-                    'nosync' => '0',
-                    'sequence' => (string)$sequence,
-                    'interface' => $natintf['interface'],
-                    '%interface' => $natintf['descr'],
-                    'ipprotocol' => 'inet',
-                    '%ipprotocol' => 'IPv4',
-                    'protocol' => 'any',
-                    '%protocol' => '*',
-                    'source_net' => $source_net,
-                    'source_not' => '0',
-                    'source_port' => '',
-                    'destination_net' => 'any',
-                    'destination_not' => '0',
-                    'destination_port' => '500',
-                    'target' => $target,
-                    'target_port' => '',
-                    'staticnatport' => '1',
-                    'log' => '0',
-                    'categories' => '',
-                    'tag' => '',
-                    'tagged' => '',
-                    'description' => gettext('Auto created rule for ISAKMP'),
-                    'is_automatic' => true,
-                    'sort_order' => sprintf('%d.0%06d', 500000, $sequence),
-                    'prio_group' => '500000',
-                ];
-                $sequence++;
-                $rows[] = [
-                    'uuid' => 'automatic_' . $natintf['interface'] . '_' . $source_net,
-                    'enabled' => '1',
-                    'nonat' => '0',
-                    'nosync' => '0',
-                    'sequence' => (string)$sequence,
-                    'interface' => $natintf['interface'],
-                    '%interface' => $natintf['descr'],
-                    'ipprotocol' => 'inet',
-                    '%ipprotocol' => 'IPv4',
-                    'protocol' => 'any',
-                    '%protocol' => '*',
-                    'source_net' => $source_net,
-                    'source_not' => '0',
-                    'source_port' => '',
-                    'destination_net' => 'any',
-                    'destination_not' => '0',
-                    'destination_port' => '',
-                    'target' => $target,
-                    'target_port' => '',
-                    'staticnatport' => '0',
-                    'log' => '0',
-                    'categories' => '',
-                    'tag' => '',
-                    'tagged' => '',
-                    'description' => gettext('Auto created rule'),
-                    'is_automatic' => true,
-                    'sort_order' => sprintf('%d.0%06d', 500000, $sequence),
-                    'prio_group' => '500000',
-                ];
-                $sequence++;
-            }
+            $target = $natintf['interface'] . 'ip';
+            $rows[] = [
+                'uuid' => 'automatic_isakmp_' . $natintf['interface'],
+                'enabled' => '1',
+                'nonat' => '0',
+                'nosync' => '0',
+                'sequence' => (string)$sequence,
+                'interface' => $natintf['interface'],
+                '%interface' => $natintf['descr'],
+                'ipprotocol' => 'inet',
+                '%ipprotocol' => 'IPv4',
+                'protocol' => 'any',
+                '%protocol' => '*',
+                'source_net' => $source_net,
+                'source_not' => '0',
+                'source_port' => '',
+                'destination_net' => 'any',
+                'destination_not' => '0',
+                'destination_port' => '500',
+                'target' => $target,
+                'target_port' => '',
+                'staticnatport' => '1',
+                'log' => '0',
+                'categories' => '',
+                'tag' => '',
+                'tagged' => '',
+                'description' => gettext('Auto created rule for ISAKMP'),
+                'is_automatic' => true,
+                'sort_order' => sprintf('%d.0%06d', 500000, $sequence),
+                'prio_group' => '500000',
+            ];
+            $sequence++;
+            $rows[] = [
+                'uuid' => 'automatic_' . $natintf['interface'],
+                'enabled' => '1',
+                'nonat' => '0',
+                'nosync' => '0',
+                'sequence' => (string)$sequence,
+                'interface' => $natintf['interface'],
+                '%interface' => $natintf['descr'],
+                'ipprotocol' => 'inet',
+                '%ipprotocol' => 'IPv4',
+                'protocol' => 'any',
+                '%protocol' => '*',
+                'source_net' => $source_net,
+                'source_not' => '0',
+                'source_port' => '',
+                'destination_net' => 'any',
+                'destination_not' => '0',
+                'destination_port' => '',
+                'target' => $target,
+                'target_port' => '',
+                'staticnatport' => '0',
+                'log' => '0',
+                'categories' => '',
+                'tag' => '',
+                'tagged' => '',
+                'description' => gettext('Auto created rule'),
+                'is_automatic' => true,
+                'sort_order' => sprintf('%d.0%06d', 500000, $sequence),
+                'prio_group' => '500000',
+            ];
+            $sequence++;
         }
         return $rows;
     }
