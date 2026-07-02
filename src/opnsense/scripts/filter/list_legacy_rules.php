@@ -66,7 +66,7 @@ if (count($filter_rules)) {
 
     foreach ($filter_rules as $rule) {
         $target_rule = [
-            '@uuid' => $rule['@attributes']['uuid'],
+            '@uuid' => $rule['@attributes']['uuid'] ?? '',
             'enabled' => empty($rule['disabled']) ? '1' : '0',
             'statetype' => !empty($rule['statetype']) ? explode(' ', $rule['statetype'])[0] : 'keep',
             'state-policy' => $rule['state-policy'] ?? '',

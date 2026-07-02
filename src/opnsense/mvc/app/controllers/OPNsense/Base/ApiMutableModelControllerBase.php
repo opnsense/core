@@ -685,7 +685,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         $separator = $sep1 < $sep2 ? ',' : ';';
         fseek($stream, 0);
         $heading = [];
-        while (($line = fgetcsv($stream, null, $separator)) !== false) {
+        while (($line = fgetcsv($stream, null, $separator, "\"", "\\")) !== false) {
             if (empty($heading)) {
                 $heading = $line;
             } elseif (count($line) >= 1 && !is_null($line[array_key_first($line)])) {
