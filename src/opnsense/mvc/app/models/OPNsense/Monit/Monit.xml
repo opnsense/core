@@ -237,10 +237,12 @@
                 </filters>
             </interface>
             <start type="StrictTextField">
+                <AllowSpaces>Y</AllowSpaces>
                 <Mask>/^(\/[^\/ ]*)+\/? .*$/</Mask>
                 <ValidationMessage>Should be a valid absolute path to the executable with its arguments.</ValidationMessage>
             </start>
             <stop type="StrictTextField">
+                <AllowSpaces>Y</AllowSpaces>
                 <Mask>/^(\/[^\/ ]*)+\/? .*$/</Mask>
                 <ValidationMessage>Should be a valid absolute path to the executable with its arguments.</ValidationMessage>
             </stop>
@@ -309,6 +311,7 @@
             </type>
             <condition type="StrictTextField">
                 <Required>Y</Required>
+                <AllowSpaces>Y</AllowSpaces>
                 <Mask>/^.{1,255}$/u</Mask>
                 <ValidationMessage>Should be a string between 1 and 255 characters.</ValidationMessage>
             </condition>
