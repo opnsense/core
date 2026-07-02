@@ -358,7 +358,7 @@ class ACL
             foreach ($config->system->children() as $key => $node) {
                 if ($key == 'user' && (string)$node->name == $username) {
                     foreach ($node->priv as $priv) {
-                        $privs[] = (string)$priv;
+                        $privs = array_merge($privs, array_filter(explode(',', $priv)));
                     }
                     $uid = (string)$node->uid;
                 }
