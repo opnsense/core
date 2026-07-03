@@ -1,5 +1,11 @@
 <form>
     <field>
+        <id>subnet4.interface</id>
+        <label>Interface</label>
+        <type>dropdown</type>
+        <help>Optionally bind this subnet to a specific interface. This is only needed when the interface has no address within this subnet (e.g. when handing out an additional routed block); when left empty Kea selects the subnet by matching the interface address. The interface must also be selected in the general settings.</help>
+    </field>
+    <field>
         <id>subnet4.subnet</id>
         <label>Subnet</label>
         <type>text</type>

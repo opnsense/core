@@ -94,6 +94,18 @@ class KeaDhcpv4 extends BaseModel
                 $messages->appendMessage(new Message(gettext("Either a client ID or a MAC address should be specified."), $key . ".hw_address"));
             }
         }
+        // validate changed subnets
+        $this_interfaces = $this->general->interfaces->getValues();
+        foreach ($this->subnets->subnet4->iterateItems() as $subnet) {
+            if (!$validateFullModel && !$subnet->isFieldChanged()) {
+                continue;
+            }
+            if (!$subnet->interface->isEmpty() && !in_array($subnet->interface->getValue(), $this_interfaces)) {
+                $messages->appendMessage(
+                    new Message(gettext('Interface is not selected in the general settings.'), $subnet->__reference . ".interface")
+                );
+            }
+        }
 
         return $messages;
     }
@@ -180,6 +192,11 @@ class KeaDhcpv4 extends BaseModel
             /* add valid-lifetime at this level if given */
             if ($subnet->valid_lifetime->isSet()) {
                 $record['valid-lifetime'] = $subnet->valid_lifetime->asInt();
+            }
+            /* optionally bind this subnet to a specific interface (e.g. an additional routed block) */
+            $device = Util::getRealInterface($subnet->interface->getValue(), 'inet');
+            if (!empty($device)) {
+                $record['interface'] = $device;
             }
             /* add allocator if selected */
             if (!$subnet->allocator->isEmpty()) {

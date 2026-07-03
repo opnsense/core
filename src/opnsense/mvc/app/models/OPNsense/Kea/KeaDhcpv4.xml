@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp4</mount>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <description>Kea DHCPv4 configuration</description>
     <items>
         <general>
@@ -85,6 +85,7 @@
         </ha>
         <subnets>
             <subnet4 type="ArrayField">
+                <interface type="InterfaceField"/>
                 <subnet type="NetworkField">
                     <NetMaskRequired>Y</NetMaskRequired>
                     <AddressFamily>ipv4</AddressFamily>
