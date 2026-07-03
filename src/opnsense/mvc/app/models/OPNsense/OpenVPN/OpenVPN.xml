@@ -370,7 +370,9 @@
                 <auth-gen-token-renewal type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                 </auth-gen-token-renewal>
-                <auth-gen-token-secret type="StrictTextField"/>
+                <auth-gen-token-secret type="TextField">
+                    <Mask>/^([0-9a-z\#\-\=\+\/\r\n\s])*$/i</Mask>
+                </auth-gen-token-secret>
                 <provision_exclusive type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
