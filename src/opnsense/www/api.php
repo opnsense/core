@@ -16,7 +16,9 @@ function error_output($http_code, $e, $user_message)
         header('HTTP', true, $http_code);
         header("Content-Type: application/json;charset=utf-8");
     }
-    echo json_encode($response, JSON_UNESCAPED_SLASHES);
+    /* same encoding as Mvc\Router\Response */
+    $result = json_encode($response, JSON_UNESCAPED_SLASHES);
+    echo htmlspecialchars($result, ENT_NOQUOTES);
 }
 
 
