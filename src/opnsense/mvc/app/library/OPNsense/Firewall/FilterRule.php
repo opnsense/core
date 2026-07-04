@@ -192,6 +192,10 @@ class FilterRule extends Rule
                 $rule['disabled'] = true;
                 $this->log("Gateway protocol mismatch");
             }
+            if (!empty($rule['gateway']) && !empty($rule['type']) && $rule['type'] != 'pass') {
+                unset($rule['gateway']);
+                $this->log("Gateway not allowed for block rules");
+            }
             if (!isset($rule['quick'])) {
                 // all rules are quick by default except floating
                 $rule['quick'] = !isset($rule['floating']) ? true : false;
