@@ -86,8 +86,7 @@
         });
 
         $("#DialogCrl").click(function(){
-            $(this).html($("#crl\\.descr").val() !== '' ? $("#crl\\.descr").val() : '-');
-            $(this).show();
+            $(this).text($("#crl\\.descr").val() !== '' ? $("#crl\\.descr").val() : '-').show();
         });
 
         $("#DialogCrl").change(function(){

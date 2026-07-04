@@ -227,7 +227,7 @@ function setFormData(parent,data) {
                     } else if (targetNode.is("span")) {
                         if (node[keypart] != null) {
                             targetNode.text("");
-                            targetNode.append(htmlDecode(node[keypart]));
+                            targetNode.append(node[keypart]);
                         }
                     } else if (targetNode.hasClass('json-data')) {
                         // if the input field is JSON data, serialize the data into the field

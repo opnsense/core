@@ -92,7 +92,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
 }
-
+legacy_html_escape_form_data($pconfig);
+$authservers = auth_get_authserver_list();
+legacy_html_escape_form_data($authservers);
 include("head.inc");
 
 ?>
@@ -115,9 +117,9 @@ include("head.inc");
                   <td style="width:78%">
                     <select class="selectpicker" name="authmode" id="authmode" >
 <?php
-                    foreach (auth_get_authserver_list() as $auth_server_id => $auth_server):?>
+                    foreach ($authservers as $auth_server_id => $auth_server):?>
                       <option value="<?=$auth_server_id;?>" <?=$auth_server['name'] == $pconfig['authmode'] ? "selected=\"selected\"" : "";?>>
-                        <?=htmlspecialchars($auth_server['name']);?>
+                        <?=$auth_server['name'];?>
                       </option>
 <?php
                     endforeach; ?>
@@ -126,11 +128,11 @@ include("head.inc");
                 </tr>
                 <tr>
                   <td style="width:22%"><?=gettext("Username"); ?></td>
-                  <td style="width:78%"><input type="text" name="username" value="<?=htmlspecialchars($pconfig['username']);?>"></td>
+                  <td style="width:78%"><input type="text" name="username" value="<?=$pconfig['username'];?>"></td>
                 </tr>
                 <tr>
                   <td style="width:22%"><?=gettext("Password"); ?></td>
-                  <td style="width:78%"><input type="password" autocomplete="new-password" name="password" value="<?=htmlspecialchars($pconfig['password']);?>"></td>
+                  <td style="width:78%"><input type="password" autocomplete="new-password" name="password" value="<?=$pconfig['password'];?>"></td>
                 </tr>
                 <tr>
                   <td style="width:22%">&nbsp;</td>

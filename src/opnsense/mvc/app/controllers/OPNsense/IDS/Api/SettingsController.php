@@ -164,7 +164,7 @@ class SettingsController extends ApiMutableModelControllerBase
                 // browser friendly reference data
                 $row['reference_html'] = '';
                 foreach (explode("\n", $row['reference']) as $ref) {
-                    $ref = trim($ref);
+                    $ref = preg_replace('/[^a-z_0-9._~,\/\%]/i', '', $ref);
                     $item_html = '<small><a href="%url%" target="_blank">%ref%</a></small>';
                     if (substr($ref, 0, 4) == 'url,') {
                         $item_html = str_replace("%url%", 'https://' . substr($ref, 4), $item_html);

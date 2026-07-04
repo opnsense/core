@@ -219,7 +219,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       }
       if (empty($pconfig['name'])) {
           $input_errors[] = gettext('A server name must be provided.');
-      } elseif (strpos($pconfig['name'], ',') !== false) {
+      } elseif (!preg_match('/^[a-z0-9_\+\-.\s]+$/i', $pconfig['name'])) {
           $input_errors[] = gettext('Invalid server name given.');
       }
 
