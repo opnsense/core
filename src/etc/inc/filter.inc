@@ -182,18 +182,19 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     service_log('.', $verbose);
 
-    // initialize fw plugin object
+    /* initialize fw plugin object */
     $fw = filter_core_get_initialized_plugin_system();
     filter_core_bootstrap($fw);
     $cnfint = iterator_to_array($fw->getInterfaceMapping());
     plugins_firewall($fw);
-    // register legacy user rules
+
+    /* register legacy user rules */
     filter_core_rules_user($fw);
 
-    // manual outbound nat rules
+    /* manual outbound nat rules */
     if (
         !empty($config['nat']['outbound']['mode']) &&
-          in_array($config['nat']['outbound']['mode'], array("advanced", "hybrid"))
+          in_array($config['nat']['outbound']['mode'], ['advanced', 'hybrid'])
     ) {
         if (!empty($config['nat']['outbound']['rule'])) {
             foreach ($config['nat']['outbound']['rule'] as $rule) {
@@ -204,34 +205,36 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
 
+    /* automatic outbound rules */
     if (
         empty($config['nat']['outbound']['mode']) ||
-          in_array($config['nat']['outbound']['mode'], array("automatic", "hybrid"))
+          in_array($config['nat']['outbound']['mode'], ['automatic', 'hybrid'])
     ) {
-        // generate standard outbound rules when mode is automatic or hybrid
-        $intfv4 = array();
+        $intfv4 = [];
+
         foreach ($fw->getInterfaceMapping() as $intf => $intfcf) {
             if (!empty($intfcf['ifconfig']['ipv4']) && empty($intfcf['gateway'])) {
                 $intfv4[] = $intf;
             }
         }
-        // add VPN and local networks
+
+        /* add VPN and local networks */
         $intfv4 = array_merge($intfv4, filter_core_get_default_nat_outbound_networks());
         foreach ($fw->getInterfaceMapping() as $intf => $ifcfg) {
             /* XXX VPN is allowed but not OpenVPN dropping /tmp/ovpnxy_router(v6) file */
             if (substr($ifcfg['if'], 0, 4) != 'ovpn' && !empty($ifcfg['gateway'])) {
-                foreach (array(500, null) as $dstport) {
-                    $rule = array(
+                foreach ([500, null] as $dstport) {
+                    $rule = [
                         'descr' => 'Automatic outbound rule',
-                        'destination' => array('any' => true),
+                        'destination' => ['any' => true],
                         'dstport' => $dstport,
                         'interface' => $intf,
                         'ipprotocol' => 'inet',
                         'log' => !empty($config['syslog']['logoutboundnat']),
                         'staticnatport' => !empty($dstport),
-                    );
+                    ];
                     foreach ($intfv4 as $network) {
-                        $rule['source'] = array("network" => $network);
+                        $rule['source'] = ['network' => $network];
                         $fw->registerSNatRule(200, $rule);
                     }
                 }
@@ -239,23 +242,23 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
 
-    // prevent redirection on ports with "lock out" protection
+    /* prevent redirection on ports with "lock out" protection */
     foreach (filter_core_get_antilockout() as $lockoutif => $lockoutprts) {
         foreach ($lockoutprts as $port) {
-            $rule = array(
+            $fw->registerForwardRule(300, [
+                'descr' => 'Anti-lockout; prevent redirects for protected ports to this interface address',
+                'destination' => ['network' => "{$lockoutif}ip", 'port' => $port],
                 'interface' => $lockoutif,
-                "nordr" => true,
-                "protocol" => "tcp",
-                'destination' => array('network' => "{$lockoutif}ip", 'port' => $port),
-                "descr" => "Anti lockout, prevent redirects for protected ports to this interface ip"
-            );
-            $fw->registerForwardRule(300, $rule);
+                'nordr' => true,
+                'protocol' => 'tcp',
+            ]);
         }
     }
 
     foreach ((new OPNsense\Firewall\DNat())->rule->sortedBy(['sequence']) as $key => $rule) {
         $fw->registerForwardRule(600, $rule->getNodeContent());
     }
+
     /**
      * XXX: Apply schedules on all installed rules so we can use both legacy and MVC ones.
      * Eventually this needs to be replaced, but as this requires legacy code, we cannot do that easily now
