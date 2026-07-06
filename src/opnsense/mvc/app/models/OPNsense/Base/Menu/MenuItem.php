@@ -283,7 +283,11 @@ class MenuItem
         $css = ['list-group-item'];
         if (count($this->children) >= 1 && $this->depth < 3) {
             if ($this->selected) {
-                $css[] = 'active-menu-title';
+                $container = false;
+                foreach ($this->children as $child) {
+                    $container |= $child->visibility == 'all';
+                }
+                $css[] = $container ? 'active-menu-title' : 'active';
             }
         } else {
             if ($this->depth == 3) {

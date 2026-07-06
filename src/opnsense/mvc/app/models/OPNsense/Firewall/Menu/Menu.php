@@ -72,6 +72,7 @@ class Menu extends MenuContainer
                 /* only search */
                 $this->appendItem('Firewall.Rule', $key, [
                     'url' => '/ui/firewall/filter/#interface=' . $key,
+                    'visibility' => 'menu', /* XXX this isn't a feature but it works */
                     'fixedname' => $descr,
                     'order' => $ordid++,
                 ]);
