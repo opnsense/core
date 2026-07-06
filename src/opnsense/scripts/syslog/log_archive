@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2020-2024 Deciso B.V.
+ * Copyright (C) 2020-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,18 +34,20 @@ require_once("interfaces.inc");
 
 $mdl = new \OPNsense\Syslog\Syslog();
 
+$logdir = "/var/log";
 $preserve_logs = (string)$mdl->general->maxpreserve;
 $maxfilesize = (string)$mdl->general->maxfilesize;
 
 // gather all syslog created local logs (filename starts with directory name_[8 digits].log)
 $relevant_logs = [];
-$it = new RecursiveDirectoryIterator("/var/log");
+$it = new RecursiveDirectoryIterator($logdir);
 foreach(new RecursiveIteratorIterator($it) as $file) {
     if ($file->isFile()) {
-        $log_subject = basename($file->getPath());
-        if (strpos($file->getFilename(), $log_subject . "_") === 0
+        $log_subject = substr($file->getPath(), strlen($logdir)+1);
+        $basename = basename($file->getPath());
+        if (strpos($file->getFilename(), $basename . "_") === 0
               && $file->getExtension() == "log"
-              && ctype_digit(substr($file->getFilename(), strlen($log_subject)+1, 8))) {
+              && ctype_digit(substr($file->getFilename(), strlen($basename)+1, 8))) {
             if (!isset($relevant_logs[$log_subject])) {
                 $relevant_logs[$log_subject] = [];
             }
@@ -85,9 +87,9 @@ foreach ($relevant_logs as $log_subject => $items)  {
         }
     }
     // latest is always top of rsorted list $items[0]
+    $link = "{$logdir}/{$log_subject}/latest.log";
     $current_target = @readlink($link);
     if ($current_target != $items[0]) {
-        $link = "/var/log/{$log_subject}/latest.log";
         @unlink($link);
         @symlink($items[0], $link);
     }
