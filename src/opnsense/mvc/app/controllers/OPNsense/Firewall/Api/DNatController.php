@@ -132,7 +132,10 @@ class DNatController extends FilterBaseController
 
     public function getRuleAction($uuid = null)
     {
-        return $this->getBase("rule", "rule", $uuid);
+        return $this->setCopySequence(
+            $this->getBase("rule", "rule", $uuid),
+            $this->getModel()->rule
+        );
     }
 
     public function delRuleAction($uuid)
