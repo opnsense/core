@@ -93,7 +93,8 @@ class SystemController extends ApiControllerBase
         $backend = new Backend();
 
         $product = json_decode($backend->configdRun('firmware product'), true);
-        $current = explode('_', $product['product_version'])[0];
+        $current = preg_split('/[p_-]/', $product['product_version'])[0];
+
         /* information from changelog, more accurate for production release */
         $from_changelog = strpos($product['product_id'], '-devel') === false &&
             !empty($product['product_latest']) &&
