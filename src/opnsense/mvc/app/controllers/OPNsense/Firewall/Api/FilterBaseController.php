@@ -402,6 +402,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
      * Set a new sequence at the end when fetching a rule in copy mode.
      *
      * @param array $result
+     * @param mixed $rules
      * @return array
      */
     protected function setCopySequence(array $result, $rules): array
