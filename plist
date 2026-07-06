@@ -2557,8 +2557,6 @@
 /usr/local/www/firewall_nat_out.php
 /usr/local/www/firewall_nat_out_edit.php
 /usr/local/www/firewall_rule_lookup.php
-/usr/local/www/firewall_rules.php
-/usr/local/www/firewall_rules_edit.php
 /usr/local/www/firewall_schedule.php
 /usr/local/www/firewall_schedule_edit.php
 /usr/local/www/firewall_scrub.php

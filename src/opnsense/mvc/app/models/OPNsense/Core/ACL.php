@@ -318,7 +318,7 @@ class ACL
     /**
      * check if an endpoint url is accessible by the specified user.
      * @param string $username user name
-     * @param string $url full url, for example /firewall_rules.php
+     * @param string $url full url, for example /ui/firewall/filter
      * @return bool
      */
     public function isPageAccessible($username, $url)

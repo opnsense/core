@@ -17,7 +17,7 @@
                                 }
                             },
                             ifname: function (column, row) {
-                                return '<a href="/firewall_rules.php?if='+row.ifname+'">'+row.ifname+'</a>';
+                                return `<a href="/ui/firewall/filter/#interface=${encodeURIComponent(row.ifname)}">${htmlSafe(row.ifname)}</a>`;
                             },
                         }
                     }

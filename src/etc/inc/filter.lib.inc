@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2025 Deciso B.V.
+ * Copyright (C) 2016-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -679,6 +679,8 @@ function filter_core_rules_system($fw, $defaults)
  */
 function filter_core_rules_user($fw)
 {
+    $has_legacy_fw = file_exists('/usr/local/www/firewall_rules.php');
+
     foreach ((new \OPNsense\Firewall\Group())->ifgroupentry->iterateItems() as $node) {
         $ifgroups[(string)$node->ifname] = !empty((string)$node->sequence) ? (string)$node->sequence : 0;
     }
@@ -693,7 +695,8 @@ function filter_core_rules_user($fw)
         $rule['label'] = OPNsense\Firewall\Util::calcRuleHash($rule);
 
         $intf = !empty($rule['floating']) ? 'FloatingRules' : $rule['interface'];
-        $rule['#ref'] = sprintf('firewall_rules_edit.php?if=%s&id=%s', $intf, $idx);
+        $rule['#ref'] = !$has_legacy_fw ? 'ui/firewall/migration' :
+            sprintf('firewall_rules_edit.php?if=%s&id=%s', $intf, $idx);
         $rule['seq'] = $idx;  // current rule sequence (used as id in firewall pages)
 
         if (empty($rule['descr'])) {
