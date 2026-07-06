@@ -70,7 +70,10 @@ class NptController extends FilterBaseController
 
     public function getRuleAction($uuid = null)
     {
-        return $this->getBase("rule", "npt.rule", $uuid);
+        return $this->setCopySequence(
+            $this->getBase('rule', 'npt.rule', $uuid),
+            $this->getModel()->npt->rule
+        );
     }
 
     public function delRuleAction($uuid)

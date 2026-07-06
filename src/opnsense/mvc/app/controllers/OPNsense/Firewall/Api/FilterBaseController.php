@@ -399,6 +399,27 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
     }
 
     /**
+     * Set a new sequence at the end when fetching a rule in copy mode.
+     *
+     * @param array $result
+     * @return array
+     */
+    protected function setCopySequence(array $result, $rules): array
+    {
+        if ($this->request->get('fetchmode') !== 'copy' || empty($result['rule'])) {
+            return $result;
+        }
+
+        $max = 0;
+        foreach ($rules->iterateItems() as $rule) {
+            $max = max($rule->sequence->asInt(), $max);
+        }
+
+        $result['rule']['sequence'] = $max + 100;
+        return $result;
+    }
+
+    /**
      * Export a rule collection as CSV.
      *
      * @param string $node_reference: Model node reference to export, e.g. "rules.rule"

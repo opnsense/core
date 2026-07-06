@@ -229,18 +229,10 @@ class FilterController extends FilterBaseController
 
     public function getRuleAction($uuid = null)
     {
-        $result = $this->getBase('rule', 'rules.rule', $uuid);
-
-        if ($this->request->get('fetchmode') === 'copy' && !empty($result['rule'])) {
-            /* copy mode, generate new sequence at the end */
-            $max = 0;
-            foreach ($this->getModel()->rules->rule->iterateItems() as $rule) {
-                $max = max($rule->sequence->asInt(), $max);
-            }
-            $result['rule']['sequence'] = $max + 100;
-        }
-
-        return $result;
+        return $this->setCopySequence(
+            $this->getBase('rule', 'rules.rule', $uuid),
+            $this->getModel()->rules->rule
+        );
     }
 
     public function delRuleAction($uuid)
