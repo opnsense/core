@@ -53,6 +53,7 @@ def run_watcher(target_filename, default_domain, watch_file, service_pid):
 
     # start watching dhcp leases
     last_cleanup = time.time()
+    dhcpd_changed = False
 
     while True:
         for lease in dhcpdleases.watch():
