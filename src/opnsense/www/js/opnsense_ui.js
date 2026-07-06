@@ -441,6 +441,78 @@ function initFormHelpUI() {
         event.preventDefault();
     });
 
+    /**
+     * XXX: handle file input, part of the form init, but we should move all form init code to a single callout
+     *      currently initFormHelpUI, initFormAdvancedUI, addMultiSelectClearUI and initGlobalOpenShortcuts are
+     *      used in the same area.
+     **/
+    $("textarea.frm_file_type").each(function(){
+        const this_id = $(this).attr('id').replace(/\./g, '\\.');
+        const this_file_input = $("#" +this_id + '_filename');
+        const this_name = this_id + '__name';
+        /* drag and drop files to the name input */
+        if (!Object.getOwnPropertyDescriptor($.Event.prototype, "dataTransfer")) {
+            $.event.addProp('dataTransfer');
+        }
+        const reader_onload = function(readerEvt) {
+            let binary = "";
+            const bytes = new Uint8Array(readerEvt.target.result);
+            const chunkSize = 0x8000;
+            for (let i = 0; i < bytes.length; i += chunkSize) {
+                binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+            }
+            $("#" + this_id ).val(btoa(binary));
+            $("#" + this_id +"_progress").removeClass("fa fa-spinner fa-pulse");
+            $("#" + this_id + "_icon").show();
+        };
+        /* via drag/drop */
+        $("#"+ this_name).on('dragenter dragleave dragover drop', function(event) {
+            event.preventDefault();
+            let sender = $(this);
+            switch (event.type) {
+                case 'dragover':
+                case 'dragenter':
+                    sender.css('font-style', 'italic');
+                    break;
+                case 'drop':
+                    if (event.dataTransfer.files !== undefined && event.dataTransfer.files[0] !== undefined) {
+                        sender.val(event.dataTransfer.files[0].name);
+                        $("#" + this_id + "_progress").addClass("fa fa-spinner fa-pulse");
+                        $("#" + this_id + "_icon").hide();
+                        let reader = new FileReader();
+                        reader.onload = reader_onload;
+                        reader.readAsArrayBuffer(event.dataTransfer.files[0]);
+                    }
+                case 'dragleave':
+                    sender.css('font-style', '');
+                    break;
+                default:
+            }
+        });
+        /* via button */
+        this_file_input.click(function(evt) {
+            $("#" + this_id + "_progress").addClass("fa fa-spinner fa-pulse");
+            $("#" + this_id + "_icon").hide();
+            this.value = null;
+        });
+        this_file_input.change(function(evt) {
+            if (evt.isTrigger !== undefined) {
+                this.value = null;
+                $("#" + this_id).val(null);
+                $("#" + this_name).val(null);
+            }
+            if (evt.target.files[0]) {
+                const reader = new FileReader();
+                reader.onload = reader_onload;
+                reader.readAsArrayBuffer(evt.target.files[0]);
+                $("#" + this_name).val(this_file_input.val().split('\\').pop());
+            } else {
+                $("#" + this_id + "_progress").removeClass("fa fa-spinner fa-pulse");
+                $("#" + this_id + "_icon").show();
+            }
+        });
+    });
+
     if (window.sessionStorage && sessionStorage.getItem('all_help_preset') === "1") {
         // show all help messages when preset was stored
         elements.toggleClass("fa-toggle-on fa-toggle-off").toggleClass("text-success text-danger");
