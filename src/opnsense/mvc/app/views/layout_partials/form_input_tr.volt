@@ -40,6 +40,7 @@
  #                   color              color picker for selecting a color
  #                   datetime-local     local time picker
  #                   buttons            save and cancel buttons
+ #                   file               file upload (returns id__name as well)
  # label       :   attribute label (visible text)
  # size        :   size (width in characters) attribute if applicable
  # height      :   height (length in characters) attribute if applicable
@@ -50,7 +51,7 @@
  # width       :   width in pixels if applicable
  # allownew    :   allow new items (for list) if applicable
  # readonly    :   if true, input fields will be readonly
- # type_formatter : when set add type_formatter="" atribute which is used in getFormData() to pipe data before returning
+ # type_formatter : when set add type_formatter="" attribute which is used in getFormData() to pipe data before returning
  # parent      :   ID reference for the parent form
  # save        :   request save button (default true)
  # cancel      :   request cancel button (default false)
@@ -99,7 +100,7 @@
         {% elseif type == "hidden" %}
             <input type="hidden" id="{{ id }}" class="{{style|default('')}}" {% if type_formatter is defined %}type_formatter="{{type_formatter}}"{% endif %} >
         {% elseif type == "checkbox" %}
-            <input type="checkbox"  class="{{style|default('')}}" id="{{ id }}" aria-label="{{label|safe}}">
+            <input type="checkbox"  class="{{style|default('')}}" id="{{ id }}" aria-label="{{label|safe}}"  {% if type_formatter is defined %}type_formatter="{{type_formatter}}"{% endif %}>
         {% elseif type in ["select_multiple", "dropdown"] %}
             <div id="select_{{ id }}">
             <select aria-label="{{label|safe}}" {% if type == 'select_multiple' %}multiple="multiple" title="{{ lang._('Nothing selected') }}"{% endif %}
@@ -114,6 +115,7 @@
                     data-sortable="{{sortable|default("false")}}"
                     data-live-search="true"
                     {% if separator|default(false) %}data-separator="{{separator}}"{% endif %}
+                    {% if type_formatter is defined %}type_formatter="{{type_formatter}}"{% endif %}
             ></select>
             {% if type == 'select_multiple' %}
               <?php $this_style = explode(' ', $style ?? '');?>
@@ -144,6 +146,18 @@
             <span  class="{{style|default('')}}" id="{{ id }}" {% if type_formatter is defined %}type_formatter="{{type_formatter}}"{% endif %}></span>
         {% elseif type == "color" %}
             <input type="color" class="form-control {{style|default('')}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}">
+        {% elseif type == "file" %}
+            <textarea id="{{ id }}" class="hidden frm_file_type form-control {{style|default('')}}"></textarea>
+            <div class="input-group">
+                <label class="input-group-btn">
+                    <label class="btn btn-default" style="padding-bottom: 7px;">
+                        <i class="fa fa-folder-o" id="{{ id }}_icon"></i>
+                        <i id="{{ id }}_progress"></i>
+                        <input type="file" id="{{ id }}_filename" style="display: none;">
+                    </label>
+                </label>
+                <input type="text" class="form-control {{style|default('')}}" readonly="" for="{{ id }}" id="{{ id }}__name">
+            </div>
         {% endif %}
         {% if help|default(false) %}
             <div class="hidden" data-for="help_for_{{ id }}">
