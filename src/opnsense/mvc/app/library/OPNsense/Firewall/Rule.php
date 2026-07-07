@@ -305,7 +305,7 @@ abstract class Rule
             }
             $interface = $rulecpy['interface'];
             if (!empty($interface)) {
-                /* pivot to  IPv6 device if found */
+                /* pivot to IPv6 device if found */
                 if ($rulecpy['ipprotocol'] == 'inet6' && !empty($this->interfaceMapping[$interface]['IPv6_override'])) {
                     $rulecpy['interface'] = $this->interfaceMapping[$interface]['IPv6_override'];
                 }
