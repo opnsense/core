@@ -395,6 +395,7 @@
                             <check>AAAA</check>
                         </check002>
                     </Constraints>
+                    <NetMaskAllowed>N</NetMaskAllowed>
                 </server>
                 <txtdata type="DescriptionField">
                     <!-- Use DescriptionField to cap to 255 characters -->
