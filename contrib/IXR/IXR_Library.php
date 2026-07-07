@@ -290,7 +290,7 @@ class IXR_Message
                 }
                 break;
             case 'boolean':
-                $value = (boolean)trim($this->_currentTagContents);
+                $value = (bool)trim($this->_currentTagContents);
                 $valueFlag = true;
                 break;
             case 'base64':
