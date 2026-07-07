@@ -50,7 +50,7 @@ captiveportal_load_rc_config()
 captiveportal_cleanup_zones()
 {
     # cleanup removed zones
-    for installed_zoneid in $(ls $CPWORKDIR |  sed 's/zone//g'); do
+    for installed_zoneid in $(ls $CPWORKDIR | sed 's/zone//g'); do
         if [ -d $CPWORKDIR/zone$installed_zoneid ]; then
             is_installed=0
             for zoneid in $CPZONES; do
