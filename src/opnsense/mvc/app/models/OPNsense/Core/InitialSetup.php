@@ -282,10 +282,13 @@ class InitialSetup extends BaseModel
     private function flush_network_wan()
     {
         $target = Config::getInstance()->object();
+        $gateways = new Gateways();
+
         /* ensure wan exists*/
         if (!isset($target->interfaces->wan)) {
             $target->interfaces->addChild('wan');
         }
+
         /* configure wan */
         $target->interfaces->wan->enable = $this->interfaces->wan->disable->isEmpty() ? '1' : '0';
         if ($target->interfaces->wan->enable == '0') {
@@ -293,7 +296,7 @@ class InitialSetup extends BaseModel
             return;
         }
 
-        $gateways = new Gateways();
+        /* drop all previously attached gateways */
         foreach ($gateways->gateway_item->iterateItems() as $uuid => $node) {
             if ($node->interface == 'wan' && $node->ipprotocol == 'inet') {
                 $gateways->gateway_item->del($uuid);
