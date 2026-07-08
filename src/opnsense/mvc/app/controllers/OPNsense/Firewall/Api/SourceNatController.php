@@ -34,7 +34,10 @@ class SourceNatController extends FilterBaseController
 {
     protected static $categorysource = "snatrules.rule";
 
-    public function setGeneralAction()
+    /**
+     * set/get only affect general settings
+     */
+    public function setAction()
     {
         $result = ['result' => 'failed'];
         if ($this->request->isPost()) {
@@ -47,6 +50,16 @@ class SourceNatController extends FilterBaseController
             }
         }
         return $result;
+    }
+
+    public function getAction()
+    {
+        $data = parent::getAction();
+        return [
+            self::$internalModelName => [
+                'general' => $data[self::$internalModelName]['general']
+            ]
+        ];
     }
 
     // XXX: These are synthetic, display only for user convenience.
