@@ -116,16 +116,8 @@ class Store
                         foreach ($inf_crt as $key => $val) {
                             $response[$key] = $val;
                         }
-                        if (
-                            isset($inf_crt['extensions']['extendedKeyUsage']) &&
-                            strstr($inf_crt['extensions']['extendedKeyUsage'], 'TLS Web Server Authentication') !== false &&
-                            isset($inf_crt['extensions']['keyUsage']) &&
-                            strpos($inf_crt['extensions']['keyUsage'], 'Digital Signature') !== false &&
-                            (strpos($inf_crt['extensions']['keyUsage'], 'Key Encipherment') !== false ||
-                                strpos($inf_crt['extensions']['keyUsage'], 'Key Agreement') !== false)
-                        ) {
-                            $response['is_server'] = true;
-                        }
+                        $response = array_merge($response, self::extractPurpose($inf_crt));
+                        $response['is_server'] = in_array($response['cert_type'], ['combined_server_client', 'server_cert']);
                     }
                     $response['crt'] = self::cleanCert(base64_decode((string)$cert->crt));
                     if (!empty((string)$cert->prv)) {
@@ -133,6 +125,7 @@ class Store
                     }
                     if (!empty($chain = self::getCaChain((string)$cert->caref))) {
                         $response['ca'] = ['crt' => self::cleanCert($chain)];
+                        $response['caref'] = (string)$cert->caref; /* metadata, id we have in our administration */
                     }
                     return $response;
                 }
@@ -405,6 +398,48 @@ class Store
         return false;
     }
 
+    private static function extractPurpose($crt)
+    {
+        $result = [];
+        /* Extract certificate purpose */
+        $purpose = [];
+        foreach (['basicConstraints', 'extendedKeyUsage', 'keyUsage', 'authorityInfoAccess'] as $ext) {
+            $purpose[$ext] = [];
+            if (!empty($crt['extensions'][$ext])) {
+                foreach (explode(",", $crt['extensions'][$ext]) as $item) {
+                    $purpose[$ext][] = trim($item);
+                }
+            }
+        }
+
+        // rfc3280 purpose definitions (+ cert_type derivative field)
+        $result['rfc3280_purpose'] = '';
+        $result['cert_type'] = '';
+        if (
+            in_array('TLS Web Server Authentication', $purpose['extendedKeyUsage']) &&
+            in_array('Digital Signature', $purpose['keyUsage']) && (
+                in_array('Key Encipherment', $purpose['keyUsage']) ||
+                in_array('Key Agreement', $purpose['keyUsage'])
+            )
+        ) {
+            $result['rfc3280_purpose'] = 'id-kp-serverAuth';
+            $both = in_array('TLS Web Client Authentication', $purpose['extendedKeyUsage']);
+            $result['cert_type'] = $both ? 'combined_server_client' : 'server_cert';
+        } elseif (
+            in_array('TLS Web Client Authentication', $purpose['extendedKeyUsage']) &&
+            in_array('Digital Signature', $purpose['keyUsage'])
+        ) {
+            $result['rfc3280_purpose'] = 'id-kp-clientAuth';
+            $result['cert_type'] = 'usr_cert';
+        } elseif (
+            in_array('OCSP Signing', $purpose['extendedKeyUsage']) &&
+            in_array('Digital Signature', $purpose['keyUsage'])
+        ) {
+            $result['rfc3280_purpose'] = 'id-kp-OCSPSigning';
+        }
+        return $result;
+    }
+
     /**
      * Extract certificate info into easy to use flattened chunks
      * @param string certificate
@@ -463,41 +498,7 @@ class Store
                 }
             }
 
-            /* Extract certificate purpose */
-            $purpose = [];
-            foreach (['basicConstraints', 'extendedKeyUsage', 'keyUsage', 'authorityInfoAccess'] as $ext) {
-                $purpose[$ext] = [];
-                if (!empty($crt['extensions'][$ext])) {
-                    foreach (explode(",", $crt['extensions'][$ext]) as $item) {
-                        $purpose[$ext][] = trim($item);
-                    }
-                }
-            }
-
-            // rfc3280 purpose definitions (+ cert_type derivative field)
-            $result['rfc3280_purpose'] = '';
-            if (
-                in_array('TLS Web Server Authentication', $purpose['extendedKeyUsage']) &&
-                in_array('Digital Signature', $purpose['keyUsage']) && (
-                    in_array('Key Encipherment', $purpose['keyUsage']) ||
-                    in_array('Key Agreement', $purpose['keyUsage'])
-                )
-            ) {
-                $result['rfc3280_purpose'] = 'id-kp-serverAuth';
-                $both = in_array('TLS Web Client Authentication', $purpose['extendedKeyUsage']);
-                $result['cert_type'] = $both ? 'combined_server_client' : 'server_cert';
-            } elseif (
-                in_array('TLS Web Client Authentication', $purpose['extendedKeyUsage']) &&
-                in_array('Digital Signature', $purpose['keyUsage'])
-            ) {
-                $result['rfc3280_purpose'] = 'id-kp-clientAuth';
-                $result['cert_type'] = 'usr_cert';
-            } elseif (
-                in_array('OCSP Signing', $purpose['extendedKeyUsage']) &&
-                in_array('Digital Signature', $purpose['keyUsage'])
-            ) {
-                $result['rfc3280_purpose'] = 'id-kp-OCSPSigning';
-            }
+            $result = array_merge($result, self::extractPurpose($crt));
 
             $pk = openssl_pkey_get_public($cert);
             $pkdetails = openssl_pkey_get_details($pk);
