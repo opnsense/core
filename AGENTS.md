@@ -28,12 +28,13 @@ OPNsense core is built around a PHP/Phalcon MVC frontend, XML-backed configurati
 | `src/opnsense/mvc/app/models/` | XML models and validation |
 | `src/opnsense/mvc/app/controllers/` | API and page controllers |
 | `src/opnsense/mvc/app/views/` | Volt templates and UI code |
+| `src/opnsense/mvc/app/library/` | shared components |
+| `src/opnsense/mvc/tests/` | phpunit tests |
 | `src/opnsense/service/conf/actions.d/` | configd actions |
 | `src/opnsense/service/templates/` | generated service configuration |
 | `src/opnsense/scripts/` | backend helper scripts |
 | `src/etc/inc/` | legacy PHP/system integration |
-| `src/etc/rc*` | boot and service integration |
-| `src/opnsense/mvc/app/migrations/` | configuration migrations |
+| `src/etc/rc*/` | boot and service integration |
 
 Reference: [Development Workflow](https://docs.opnsense.org/development/workflow.html)
 
