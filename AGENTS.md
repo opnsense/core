@@ -4,8 +4,6 @@ Repository-level guidance for coding agents working on the OPNsense core reposit
 
 OPNsense® is an open source, easy-to-use and easy-to-build FreeBSD based firewall and routing platform.
 
-OPNsense includes most of the features available in expensive commercial firewalls, and more in many cases. It brings the rich feature set of commercial offerings with the benefits of open and verifiable sources.
-
 ## Mission
 
 Give users, developers and businesses a friendly, stable and transparent environment. Make OPNsense the most widely used open source security platform. The project’s name is derived from open and sense and stands for: “Open (source) makes sense.”
@@ -34,7 +32,7 @@ OPNsense core is built around a PHP/Phalcon MVC frontend, XML-backed configurati
 | `src/opnsense/service/templates/` | generated service configuration |
 | `src/opnsense/scripts/` | backend helper scripts |
 | `src/etc/inc/` | legacy PHP/system integration |
-| `src/etc/rc*`, `src/etc/rc.d/` | boot and service integration |
+| `src/etc/rc*` | boot and service integration |
 | `src/opnsense/mvc/app/migrations/` | configuration migrations |
 
 Reference: [Development Workflow](https://docs.opnsense.org/development/workflow.html)
@@ -42,13 +40,13 @@ Reference: [Development Workflow](https://docs.opnsense.org/development/workflow
 ## Code Style
 
 - Follow the style already used in the touched file and subsystem.
-- Use clear domain names; avoid vague names like `data`, `tmp`, or `result2` when the value has meaning.
+- Use clear variable names; avoid vague names like `data`, `tmp`, or `result2` when the value has meaning.
 - Prefer early returns and straightforward control flow.
 - Keep helpers when they name a meaningful operation; inline helpers that only hide one-off logic.
 - Keep comments useful: explain intent, ownership, constraints, or non-obvious behavior.
 - Avoid formatting-only churn in unrelated lines.
 - Keep public API shape stable unless a breaking change is intentional.
-- Wrap user-facing PHP strings in `gettext()` where appropriate.
+- Wrap user-facing PHP strings in `gettext()` where appropriate, important: except log messages
 
 Reference: [Coding Guidelines](https://docs.opnsense.org/development/guidelines.html)
 
