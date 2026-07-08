@@ -317,6 +317,15 @@ class ExportController extends ApiControllerBase
                 if ($certref !== null) {
                     $cert = (new Store())->getCertificate($certref);
                     if ($cert) {
+                        if (
+                            $cert['caref'] != $server['caref'] ||
+                            !in_array($cert['cert_type'], ['usr_cert', 'combined_server_client'])
+                        ) {
+                            throw new UserException(
+                                gettext("Certificate does not belong to server CA"),
+                                gettext("OpenVPN export")
+                            );
+                        }
                         if (!empty($cert['subject']) && !empty($cert['subject']['CN'])) {
                             $config['client_cn'] = $cert['subject']['CN'];
                             $config['client_crt'] = $cert['crt'];
@@ -324,7 +333,7 @@ class ExportController extends ApiControllerBase
                         }
                     }
                     if (empty($config['client_cn'])) {
-                        throw new UserException("Client certificate not found", gettext("OpenVPN export"));
+                        throw new UserException(gettext("Client certificate not found"), gettext("OpenVPN export"));
                     }
                 }
 
