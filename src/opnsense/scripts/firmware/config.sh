@@ -128,10 +128,9 @@ output_cmd()
 	done
 
 	# pipe needed for grabbing the command return value
-	(sed -uE 's:/[a-z0-9]{8}(-[a-z0-9]{4}){3}-[a-z0-9]{12}/:/${SUBSCRIPTION}/:gi' | \
-	    ${TEE} ${LOCKFILE} ${DO_OUT}) < ${PIPEFILE} &
+	${TEE} ${LOCKFILE} ${DO_OUT} < ${PIPEFILE} &
 
-	# also capture stderr in this case and scrub subscription output
+	# also capture stderr in this case
 	eval "(${DO_CMD}) 2>&1" > ${PIPEFILE}
 }
 
