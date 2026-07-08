@@ -615,7 +615,12 @@ class Radius extends Base implements IAuthConnector
                                     $this->lastAuthProperties['session_timeout'] = radius_cvt_int($resa['data']);
                                     break;
                                 case 85: // Acct-Interim-Interval
-                                    $this->lastAuthProperties['Acct-Interim-Interval'] = radius_cvt_int($resa['data']);
+                                    $interval = radius_cvt_int($resa['data']);
+                                    if (empty($interval) || $interval < 60) { // RFC 2869, section 5.16
+                                        syslog(LOG_WARNING, 'Radius: ignoring invalid Acct-Interim-Interval: ' . $interval);
+                                        break;
+                                    }
+                                    $this->lastAuthProperties['Acct-Interim-Interval'] = $interval;
                                     break;
                                 case RADIUS_FRAMED_IP_ADDRESS:
                                     $this->lastAuthProperties['Framed-IP-Address'] = radius_cvt_addr($resa['data']);

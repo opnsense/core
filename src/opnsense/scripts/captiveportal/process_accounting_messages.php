@@ -49,6 +49,8 @@ $result = $db->query('
     ,           si.bytes_in
     ,           si.bytes_out
     ,           accs.state
+    ,           accs.last_update_time
+    ,           sr.accounting_interval
     from        cp_clients c
     inner join  session_restrictions sr on sr.zoneid = c.zoneid and sr.sessionid = c.sessionid
     left join   session_info si on c.zoneid = si.zoneid and c.sessionid = si.sessionid
@@ -64,10 +66,12 @@ if ($result !== false) {
         if ($authenticator != null) {
             if ($row['state'] == null) {
                 // new accounting state, send start event (if applicable)
-                $stmt = $db->prepare('insert into accounting_state(zoneid, sessionid, state)
-                                      values (:zoneid, :sessionid, \'RUNNING\')');
+                $stmt = $db->prepare('insert into accounting_state(zoneid, sessionid, state, last_update_time)
+                                      values (:zoneid, :sessionid, \'RUNNING\', :time)');
                 $stmt->bindParam(':zoneid', $row['zoneid']);
                 $stmt->bindParam(':sessionid', $row['sessionid']);
+                $now = time();
+                $stmt->bindParam(':time', $now);
                 $stmt->execute();
                 if (method_exists($authenticator, 'startAccounting')) {
                     // send start accounting event
@@ -83,15 +87,26 @@ if ($result !== false) {
                 $stmt->bindParam(':sessionid', $row['sessionid']);
                 $stmt->execute();
                 if (method_exists($authenticator, 'stopAccounting')) {
-                    $time_spend = time() - intval($row['created']);
-                    $authenticator->stopAccounting($row['username'], $row['sessionid'], $time_spend, $row['bytes_in'], $row['bytes_out'], $row['ip_address'], $row['delete_reason']);
+                    $time_spent = time() - intval($row['created']);
+                    $authenticator->stopAccounting($row['username'], $row['sessionid'], $time_spent, $row['bytes_in'], $row['bytes_out'], $row['ip_address'], $row['delete_reason']);
                 }
             } elseif ($row['state'] != 'STOPPED') {
                 // send interim updates (if applicable)
                 if (method_exists($authenticator, 'updateAccounting')) {
-                    // send interim update event
-                    $time_spend = time() - intval($row['created']);
-                    $authenticator->updateAccounting($row['username'], $row['sessionid'], $time_spend, $row['bytes_in'], $row['bytes_out'], $row['ip_address']);
+                    // send interim update event. Default to an interval of 600 seconds unless specified otherwise
+                    $now = time();
+                    if (($now - intval($row['last_update_time'])) >= intval($row['accounting_interval'])) {
+                        $stmt = $db->prepare('update accounting_state
+                                              set last_update_time = :time
+                                              where zoneid = :zoneid
+                                              and sessionid = :sessionid');
+                        $stmt->bindParam(':time', $now);
+                        $stmt->bindParam(':sessionid', $row['sessionid']);
+                        $stmt->bindParam(':zoneid', $row['zoneid']);
+                        $stmt->execute();
+                        $time_spent = $now - intval($row['created']);
+                        $authenticator->updateAccounting($row['username'], $row['sessionid'], $time_spent, $row['bytes_in'], $row['bytes_out'], $row['ip_address']);
+                    }
                 }
             }
         }

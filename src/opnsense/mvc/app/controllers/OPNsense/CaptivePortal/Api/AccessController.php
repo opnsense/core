@@ -315,6 +315,7 @@ class AccessController extends ApiControllerBase
                                         (string)$cpZone->zoneid,
                                         $CPsession['sessionId'],
                                         $authProps['session_timeout'] ?? null,
+                                        $authProps['Acct-Interim-Interval'] ?? null
                                     ]
                                 );
                             }

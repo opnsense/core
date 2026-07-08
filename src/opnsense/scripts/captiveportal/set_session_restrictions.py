@@ -34,10 +34,11 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--zoneid', help='zone number to allow this user in', type=str, required=True)
 parser.add_argument('--sessionid', help='session id', type=str, required=True)
 parser.add_argument('--session_timeout', help='authentication source', type=str)
+parser.add_argument('--accounting_interval', help='accounting interval', type=str, default=None)
 args = parser.parse_args()
 
 
 response = {
-    'response': DB().update_session_restrictions(args.zoneid, args.sessionid, args.session_timeout)
+    'response': DB().update_session_restrictions(args.zoneid, args.sessionid, args.session_timeout, args.accounting_interval)
 }
 print(ujson.dumps(response))
