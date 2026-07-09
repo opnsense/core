@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023-2025 Deciso B.V.
+ * Copyright (C) 2023-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -163,7 +163,23 @@ class KeaDhcpv4 extends BaseModel
         return $result;
     }
 
-    private function getConfigSubnets($ddns_enabled = false)
+    private function buildFlexOptionData($uuid, $option, array $scope = []): array
+    {
+        /* only conditionally send the option when a client option matches */
+        if (!$option->match_code->isEmpty()) {
+            $scope[] = sprintf("member('%s')", $uuid);
+        }
+        $expression = sprintf("0x%s", $option->data->encodeValue());
+        if (!empty($scope)) {
+            $expression = sprintf("ifelse(%s, %s, '')", implode(' and ', $scope), $expression);
+        }
+        return [
+            'code' => $option->code->asInt(),
+            'supersede' => $expression,
+        ];
+    }
+
+    private function getConfigSubnets($ddns_enabled = false, array &$flex_options = [], array &$client_classes = [])
     {
         $result = [];
         $subnet_id = 1;
@@ -194,6 +210,25 @@ class KeaDhcpv4 extends BaseModel
             foreach ($subnet->pools->getValues() as $pool) {
                 $record['pools'][] = ['pool' => $pool];
             }
+            $subnet_scope = sprintf("member('%s')", $subnet_uuid);
+            /*
+             * Important: flex-option supersede actions are order-sensitive; the last
+             * matching action for the same option code wins. Emit subnet options before
+             * reservation options so reservation-scoped options can override subnet defaults.
+             */
+            foreach ($subnet->option->getValues() as $uuid) {
+                $option = $this->getNodeByReference("options.option.$uuid");
+                if ($option === null) {
+                    continue;
+                }
+                $client_classes[$subnet_uuid] = [
+                    'name' => $subnet_uuid,
+                    'test' => "member('ALL')",
+                    'only-in-additional-list' => true,
+                ];
+                $record['evaluate-additional-classes'][] = $subnet_uuid;
+                $flex_options[] = $this->buildFlexOptionData($uuid, $option, [$subnet_scope]);
+            }
             /* static reservations */
             foreach ($this->reservations->reservation->iterateItems() as $key => $reservation) {
                 if ($reservation->subnet != $subnet_uuid) {
@@ -223,22 +258,25 @@ class KeaDhcpv4 extends BaseModel
                     if ($option === null) {
                         continue;
                     }
-                    $entry = [
-                        'code' => $option->code->asInt(),
-                        'csv-format' => false,
-                        'data' => $option->data->encodeValue(),
-                        'always-send' => !$option->force->isEmpty(),
+                    $client_classes[$subnet_uuid] = [
+                        'name' => $subnet_uuid,
+                        'test' => "member('ALL')",
+                        'only-in-additional-list' => true,
                     ];
-                    /* add description and other custom keys - not parsed by KEA */
-                    $entry['user-context'] = ['uuid' => $option->getAttribute('uuid')];
-                    if (!$option->description->isEmpty()) {
-                        $entry['user-context']['description'] = $option->description->getValue();
+                    $record['evaluate-additional-classes'][] = $subnet_uuid;
+                    $scope = [$subnet_scope];
+                    if (!$reservation->hw_address->isEmpty()) {
+                        $scope[] = sprintf(
+                            'pkt4.mac == 0x%s',
+                            strtoupper(str_replace([':', '-'], '', $reservation->hw_address->getValue()))
+                        );
+                    } elseif (!$reservation->client_id->isEmpty()) {
+                        $scope[] = sprintf(
+                            'option[61].hex == 0x%s',
+                            strtoupper(str_replace([':', '-'], '', $reservation->client_id->getValue()))
+                        );
                     }
-                    /* only conditionally send the option when a client option matches */
-                    if (!$option->match_code->isEmpty()) {
-                        $entry['client-classes'] = [$uuid];
-                    }
-                    $optdata[] = $entry;
+                    $flex_options[] = $this->buildFlexOptionData($uuid, $option, $scope);
                 }
                 if (!empty($optdata)) {
                     $res['option-data'] = $optdata;
@@ -251,29 +289,6 @@ class KeaDhcpv4 extends BaseModel
                 }
 
                 $record['reservations'][] = $res;
-            }
-            /* append raw options */
-            foreach ($subnet->option->getValues() as $uuid) {
-                $option = $this->getNodeByReference("options.option.$uuid");
-                if ($option === null) {
-                    continue;
-                }
-                $entry = [
-                    'code' => $option->code->asInt(),
-                    'csv-format' => false,
-                    'data' => $option->data->encodeValue(),
-                    'always-send' => !$option->force->isEmpty(),
-                ];
-                /* add description and other custom keys - not parsed by KEA */
-                $entry['user-context'] = ['uuid' => $option->getAttribute('uuid')];
-                if (!$option->description->isEmpty()) {
-                    $entry['user-context']['description'] = $option->description->getValue();
-                }
-                /* only conditionally send the option when a client option matches */
-                if (!$option->match_code->isEmpty()) {
-                    $entry['client-classes'] = [$uuid];
-                }
-                $record['option-data'][] = $entry;
             }
             /* DDNS per subnet settings */
             if ($ddns_enabled) {
@@ -288,6 +303,9 @@ class KeaDhcpv4 extends BaseModel
                     $record['ddns-conflict-resolution-mode'] = $subnet->ddns_conflict_resolution_mode->getValue();
                 }
             }
+            if (!empty($record['evaluate-additional-classes'])) {
+                $record['evaluate-additional-classes'] = array_values(array_unique($record['evaluate-additional-classes']));
+            }
             $result[] = $record;
         }
         return $result;
@@ -300,7 +318,7 @@ class KeaDhcpv4 extends BaseModel
             if ($option->match_code->isEmpty()) {
                 continue;
             }
-            $result[] = [
+            $result[$uuid] = [
                 'name' => $uuid,
                 'test' => sprintf('option[%d].hex == 0x%s', $option->match_code->asInt(), $option->match_data->encodeValue()),
             ];
@@ -325,6 +343,8 @@ class KeaDhcpv4 extends BaseModel
     {
         $ddns = new KeaDdns();
         $ddns_enabled = !$ddns->general->enabled->isEmpty();
+        $flex_options = [];
+        $client_classes = $this->getConfigClientClasses();
         $cnf = [
             'Dhcp4' => [
                 'valid-lifetime' => $this->general->valid_lifetime->asInt(),
@@ -358,16 +378,23 @@ class KeaDhcpv4 extends BaseModel
                         'severity' => 'INFO',
                     ]
                 ],
-                'subnet4' => $this->getConfigSubnets($ddns_enabled),
+                'subnet4' => $this->getConfigSubnets($ddns_enabled, $flex_options, $client_classes),
                 'hooks-libraries' => [
                     ['library' => '/usr/local/lib/kea/hooks/libdhcp_lease_cmds.so'],
                     ['library' => '/usr/local/lib/kea/hooks/libdhcp_host_cmds.so'],
                 ],
             ]
         ];
-        $client_classes = $this->getConfigClientClasses();
+        if (!empty($flex_options)) {
+            $cnf['Dhcp4']['hooks-libraries'][] = [
+                'library' => '/usr/local/lib/kea/hooks/libdhcp_flex_option.so',
+                'parameters' => [
+                    'options' => $flex_options,
+                ],
+            ];
+        }
         if (!empty($client_classes)) {
-            $cnf['Dhcp4']['client-classes'] = $client_classes;
+            $cnf['Dhcp4']['client-classes'] = array_values($client_classes);
         }
         $expiredLeasesConfig = $this->getExpiredLeasesProcessingConfig();
         if ($expiredLeasesConfig !== null) {
