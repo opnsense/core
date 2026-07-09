@@ -171,11 +171,7 @@ class KeaDhcpv4 extends BaseModel
         }
         $expression = sprintf("0x%s", $option->data->encodeValue());
         if (!empty($scope)) {
-            $expression = sprintf(
-                "ifelse(%s, %s, '')",
-                implode(' and ', $scope),
-                $expression
-            );
+            $expression = sprintf("ifelse(%s, %s, '')", implode(' and ', $scope), $expression);
         }
         return [
             'code' => $option->code->asInt(),
