@@ -4,7 +4,7 @@ Before you submit a pull request, we ask you kindly to acknowledge the following
 
 - [ ] I have read the contributing guidelines at https://github.com/opnsense/core/blob/master/CONTRIBUTING.md
 - [ ] I opened an issue first for non-trivial changes and linked it below.
-- [ ] AI tools were used to create at least part of the code submitted herewith.
+- [ ] AI tools were used to create at least part of the code and text submitted herewith.
 
 If AI was used, please disclose:
 

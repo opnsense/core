@@ -11,6 +11,12 @@ Before you add a new report, we ask you kindly to acknowledge the following:
 
 - [ ] I have read the contributing guidelines at https://github.com/opnsense/core/blob/master/CONTRIBUTING.md
 - [ ] I am convinced that my issue is new after having checked both open and closed issues at https://github.com/opnsense/core/issues?q=is%3Aissue
+- [ ] AI tools were used to create at least part of the text submitted herewith.
+
+If AI was used, please disclose:
+
+- Model used:
+- Extent of AI involvement:
 
 **Is your feature request related to a problem? Please describe.**
 
