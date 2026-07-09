@@ -33,18 +33,17 @@ class BaseTableWidget extends BaseWidget {
     }
 
     _calculateColumnWidth() {
-        for (const [id, tableObj] of Object.entries(this.tables)) {
-            if (tableObj.options.headerPosition === 'left') {
-                return `calc(100% / 2)`;
-            }
+        const tableObj = this;
+        if (tableObj.options.headerPosition === 'left') {
+            return `calc(100% / 2)`;
+        }
 
-            if (tableObj.options.headerPosition === 'none') {
-                let first = $(`#${tableObj.table.attr('id')} > .flextable-row`).first();
-                let count = first.children().filter(function() {
-                    return $(this).css('display') !== 'none';
-                }).length;
-                return `calc(100% / ${count})`;
-            }
+        if (tableObj.options.headerPosition === 'none') {
+            let first = $(`#${tableObj.id} > .flextable-row`).first();
+            let count = first.children().filter(function() {
+                return $(this)[0].style.display !== 'none';
+            }).length;
+            return `calc(100% / ${count})`;
         }
 
         return '';
@@ -95,25 +94,6 @@ class BaseTableWidget extends BaseWidget {
         let $headerContainer = null;
         this.headerBreakpoint = mergedOpts.headerBreakpoint;
 
-        this.sizeStates = {
-            0: {
-                '.flextable-row': {'padding': ''},
-                '.flextable-header .flex-cell': {'border-bottom': 'solid 1px'},
-                '.flex-cell': {'width': '100%'},
-                '.column': {'width': '100%'},
-                '.flex-subcell': {'width': '100%'},
-            },
-            [this.headerBreakpoint]: {
-                '.flextable-row': {'padding': '0.5em 0.5em'},
-                '.flextable-header .flex-cell': {'border-bottom': ''},
-                '.flex-cell': {'width': this._calculateColumnWidth.bind(this)},
-                '.column .flex-cell': {'width': '100%'},
-                '.column': {'width': ''},
-                '.flex-subcell': {'width': ''},
-            }
-        }
-        this.widths = Object.keys(this.sizeStates).sort();
-
         if (mergedOpts.headerPosition === 'top') {
             /* CSS grid implementation */
             $table = $(`<div class="grid-table" id="${id}" role="table"></div>`);
@@ -132,11 +112,31 @@ class BaseTableWidget extends BaseWidget {
         }
 
         this.tables[id] = {
+            'id': id,
             'table': $table,
             'options': mergedOpts,
             'headerContainer': $headerContainer,
             'data': [],
         };
+
+        this.sizeStates = {
+            0: {
+                '.flextable-row': {'padding': ''},
+                '.flextable-header .flex-cell': {'border-bottom': 'solid 1px'},
+                '.flex-cell': {'width': '100%'},
+                '.column': {'width': '100%'},
+                '.flex-subcell': {'width': '100%'},
+            },
+            [this.headerBreakpoint]: {
+                '.flextable-row': {'padding': '0.5em 0.5em'},
+                '.flextable-header .flex-cell': {'border-bottom': ''},
+                '.flex-cell': {'width': this._calculateColumnWidth.bind(this.tables[id])},
+                '.column .flex-cell': {'width': '100%'},
+                '.column': {'width': ''},
+                '.flex-subcell': {'width': ''},
+            }
+        }
+        this.widths = Object.keys(this.sizeStates).sort();
 
         return $table;
     }
@@ -147,8 +147,8 @@ class BaseTableWidget extends BaseWidget {
          * data: array of rows
          * rowIdentifier: if set, upsert row with this identifier
          */
-        let $table = $(`#${id}`);
-        let options = this.tables[id].options;
+        const $table = $(`#${id}`);
+        const options = this.tables[id].options;
 
         if (!options.rotation && rowIdentifier == null) {
             $table.children('.grid-row').remove();
@@ -210,8 +210,12 @@ class BaseTableWidget extends BaseWidget {
             }
         });
 
+        this.refreshStyles(id);
+    }
+
+    refreshStyles(id) {
         for (const [selector, styles] of Object.entries(this.sizeStates[this.curSize ?? 0])) {
-            $table.find(selector).css(styles);
+            $(`#${id}`).find(selector).css(styles);
         }
     }
 

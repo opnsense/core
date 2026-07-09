@@ -39,7 +39,8 @@ export default class Interfaces extends BaseTableWidget {
     getMarkup() {
         let $container = $('<div></div>');
         let $if_table = this.createTable('if-table', {
-            headerPosition: 'none'
+            headerPosition: 'none',
+            headerBreakpoint: 0
         });
 
         $container.append($if_table);
@@ -108,6 +109,7 @@ export default class Interfaces extends BaseTableWidget {
             $('.interface-info-detail').parent().hide();
         }
 
+        super.refreshStyles('if-table');
         return super.onWidgetResize(elem, width, height);
     }
 }
