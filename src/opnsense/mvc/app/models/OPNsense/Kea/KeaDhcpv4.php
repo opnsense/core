@@ -215,7 +215,11 @@ class KeaDhcpv4 extends BaseModel
                 $record['pools'][] = ['pool' => $pool];
             }
             $subnet_scope = sprintf("member('%s')", $subnet_uuid);
-            /* append raw options */
+            /*
+             * Important: flex-option supersede actions are order-sensitive; the last
+             * matching action for the same option code wins. Emit subnet options before
+             * reservation options so reservation-scoped options can override subnet defaults.
+             */
             foreach ($subnet->option->getValues() as $uuid) {
                 $option = $this->getNodeByReference("options.option.$uuid");
                 if ($option === null) {
