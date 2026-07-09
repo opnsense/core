@@ -104,6 +104,7 @@ class Alias extends BaseModel
     private function getAliasSource()
     {
         $sources = [];
+
         $sources[] = [['filter', 'rule'], ['source', 'address']];
         $sources[] = [['filter', 'rule'], ['destination', 'address']];
         $sources[] = [['filter', 'rule'], ['source', 'port']];
@@ -120,7 +121,6 @@ class Alias extends BaseModel
         $sources[] = [['nat', 'rule'], ['destination', 'port']];
         $sources[] = [['nat', 'rule'], ['target']];
         $sources[] = [['nat', 'rule'], ['local-port']];
-        $sources[] = [['nat', 'onetoone'], ['destination', 'address']]; /* XXX */
         $sources[] = [['nat', 'outbound', 'rule'], ['source', 'network']];
         $sources[] = [['nat', 'outbound', 'rule'], ['sourceport']];
         $sources[] = [['nat', 'outbound', 'rule'], ['destination', 'network']];
