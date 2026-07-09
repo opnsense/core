@@ -42,13 +42,13 @@ class Group extends BaseModel
         $sources = [
             ['filter', 'rule'],
             ['nat', 'rule'],
-            ['nat', 'onetoone'],
             ['nat', 'outbound', 'rule'],
         ];
         // mvc rules
         $sources[] = ['OPNsense', 'Firewall', 'Filter', 'rules', 'rule'];
         $sources[] = ['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'];
         $sources[] = ['OPNsense', 'Firewall', 'Filter', 'npt', 'rule'];
+        $sources[] = ['OPNsense', 'Firewall', 'Filter', 'onetoone', 'rule'];
 
         foreach ($sources as $aliasref) {
             $cfgsection = Config::getInstance()->object();

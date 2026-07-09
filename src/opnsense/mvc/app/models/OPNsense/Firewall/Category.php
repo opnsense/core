@@ -60,8 +60,7 @@ class Category extends BaseModel
         $source = [
             ['filter', 'rule'],
             ['nat', 'rule'],
-            ['nat', 'onetoone'],
-            ['nat', 'outbound', 'rule']
+            ['nat', 'outbound', 'rule'],
         ];
 
         foreach ($source as $aliasref) {

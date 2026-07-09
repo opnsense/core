@@ -102,11 +102,11 @@ class AssignmentController extends ApiMutableModelControllerBase
         $sources = [
             ['filter', 'rule'],
             ['nat', 'rule'],
-            ['nat', 'onetoone'],
             ['nat', 'outbound', 'rule'],
             ['OPNsense', 'Firewall', 'Filter', 'rules', 'rule'],
             ['OPNsense', 'Firewall', 'Filter', 'snatrules', 'rule'],
-            ['OPNsense', 'Firewall', 'Filter', 'npt', 'rule']
+            ['OPNsense', 'Firewall', 'Filter', 'npt', 'rule'],
+            ['OPNsense', 'Firewall', 'Filter', 'onetoone', 'rule'],
         ];
 
         foreach ($sources as $aliasref) {
