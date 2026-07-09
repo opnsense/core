@@ -44,6 +44,14 @@ class GroupController extends ApiMutableModelControllerBase
     protected static $internalModelClass = 'OPNsense\Firewall\Group';
 
     /**
+     * {@inheritdoc}
+     */
+    protected function invokeInterfaceRegistration()
+    {
+        return true;
+    }
+
+    /**
      * search groups
      * @return array search results
      * @throws \ReflectionException
