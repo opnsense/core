@@ -134,12 +134,14 @@ class GroupController extends ApiMutableModelControllerBase
      */
     public function reconfigureAction()
     {
+        $ret = ['status' => 'failed'];
+
         if ($this->request->isPost()) {
-            (new Backend())->configdRun("filter reload skip_alias");
             (new Backend())->configdRun('interface invoke registration');
-            return array("status" => "ok");
-        } else {
-            return array("status" => "failed");
+            (new Backend())->configdRun('filter reload skip_alias');
+            $ret = ['status' => 'ok'];
         }
+
+        return $ret;
     }
 }
