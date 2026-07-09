@@ -193,7 +193,7 @@ class FilterRule extends Rule
                 $this->log("Gateway protocol mismatch");
             }
             if (!empty($rule['type']) && $rule['type'] != 'pass') {
-                unset($rule['gateway'], $rule['reply-to']);
+                unset($rule['gateway'], $rule['reply']);
                 $this->log("Gateway not allowed for block rules");
             }
             if (!isset($rule['quick'])) {
