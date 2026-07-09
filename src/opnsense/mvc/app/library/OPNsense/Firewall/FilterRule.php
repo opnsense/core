@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2017 Deciso B.V.
+ * Copyright (C) 2016-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -192,8 +192,8 @@ class FilterRule extends Rule
                 $rule['disabled'] = true;
                 $this->log("Gateway protocol mismatch");
             }
-            if (!empty($rule['gateway']) && !empty($rule['type']) && $rule['type'] != 'pass') {
-                unset($rule['gateway']);
+            if (!empty($rule['type']) && $rule['type'] != 'pass') {
+                unset($rule['gateway'], $rule['reply']);
                 $this->log("Gateway not allowed for block rules");
             }
             if (!isset($rule['quick'])) {
