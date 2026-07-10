@@ -98,7 +98,7 @@ class Template(object):
                     for line in fhandle.read().split('\n'):
                         parts = line.split(':')
                         if len(parts) > 1 and parts[0].strip()[0] != '#':
-                            if parts[0].startswith('!') and not strict:
+                            if parts[0].startswith('!') and strict:
                                 # template reference is strict, only generate when explicity requested
                                 continue
                             source_file = parts[0].lstrip('!').strip()
