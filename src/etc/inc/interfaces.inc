@@ -84,7 +84,7 @@ function interfaces_loopback_configure($verbose = false)
 {
     service_log('Configuring loopback interface...', $verbose);
 
-    legacy_interface_setaddress('lo0', '127.0.0.1');
+    legacy_interface_setaddress('lo0', '127.0.0.1/8');
     interfaces_vips_configure('lo0');
     legacy_interface_flags('lo0', 'up');
 
