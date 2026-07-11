@@ -38,24 +38,39 @@ class Memory extends Base
             'vm.stats.vm.v_active_count',
             'vm.stats.vm.v_inactive_count',
             'vm.stats.vm.v_free_count',
-            'vm.stats.vm.v_cache_count',
-            'vm.stats.vm.v_wire_count'
+            'vm.stats.vm.v_wire_count',
+            'vm.stats.vm.v_laundry_count',
+            'hw.pagesize',
+            'kstat.zfs.misc.arcstats.size'
         ];
 
         $memory = $this->shellCmd($frmt);
 
         if (!empty($memory)) {
-            $percentages = [];
             $data = [];
-            foreach ($memory as $idx => $item) {
-                // strip vm.stats.vm.v_ and collect into $result
-                $tmp = explode(':', substr($item, 14));
-                $data[$tmp[0]] = trim($tmp[1]);
-                if ($idx > 0) {
-                    $percentages[explode('_', $tmp[0])[0]] = ($data[$tmp[0]] / $data['page_count']) * 100.0;
+            foreach ($memory as $item) {
+                $parts = explode(':', $item, 2);
+                if (count($parts) === 2) {
+                    $data[trim($parts[0])] = (float)trim($parts[1]);
                 }
             }
-            return $percentages;
+
+            $page_count = max(1.0, (float)($data['vm.stats.vm.v_page_count'] ?? 1.0));
+            $arc_size = $data['kstat.zfs.misc.arcstats.size'] ?? 0.0;
+            $pagesize = max(1.0, (float)($data['hw.pagesize'] ?? 4096.0));
+            $arc_pages = $arc_size / $pagesize;
+
+            $laundry_pages = $data['vm.stats.vm.v_laundry_count'] ?? 0.0;
+            $wire_pages = max(0.0, ($data['vm.stats.vm.v_wire_count'] ?? 0.0) - $arc_pages);
+            $cache_pages = $laundry_pages + $arc_pages;
+
+            return [
+                'active' => (($data['vm.stats.vm.v_active_count'] ?? 0.0) / $page_count) * 100.0,
+                'inactive' => (($data['vm.stats.vm.v_inactive_count'] ?? 0.0) / $page_count) * 100.0,
+                'free' => (($data['vm.stats.vm.v_free_count'] ?? 0.0) / $page_count) * 100.0,
+                'wire' => ($wire_pages / $page_count) * 100.0,
+                'cache' => ($cache_pages / $page_count) * 100.0,
+            ];
         }
 
         return [];
