@@ -73,7 +73,8 @@ class TrafficController extends ApiControllerBase
         $iflist = [];
         $ifmap = [];
         foreach (explode(',', $interfaces) as $intf) {
-            if (isset($config->interfaces->$intf) &&
+            if (
+                isset($config->interfaces->$intf) &&
                 !empty($config->interfaces->$intf->if) &&
                 !empty($config->interfaces->$intf->enable)
             ) {
