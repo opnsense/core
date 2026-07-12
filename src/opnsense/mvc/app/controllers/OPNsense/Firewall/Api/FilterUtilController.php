@@ -42,11 +42,13 @@ class FilterUtilController extends ApiControllerBase
      */
     public function ruleStatsAction()
     {
-        $result = json_decode((new Backend())->configdRun("filter rule stats"), true);
+        $result = json_decode((new Backend())->configdRun('!filter rule stats'), true);
+        $ret = ['status' => 'failed'];
+
         if ($result !== null) {
-            return ["status" => "ok", "stats" => $result];
-        } else {
-            return ["status" => "failed"];
+            $ret =  ['status' => 'ok', 'stats' => $result];
         }
+
+        return $ret;
     }
 }
