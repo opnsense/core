@@ -276,6 +276,26 @@ abstract class Base
     }
 
     /**
+     * execute an authentication step, when failed, make sure we always spend the same time for the sequence.
+     * This also adds a penalty for failed attempts.
+     * @param callable $handler authentication handler, returns a boolean
+     * @return bool
+     */
+    protected function timedAuthenticate($handler)
+    {
+        $tstart = microtime(true);
+        $expected_time = 2000000; /* failed login, aim at 2 seconds total time */
+        $result = $handler();
+
+        $timeleft = $expected_time - ((microtime(true) - $tstart) * 1000000);
+        if (!$result && $timeleft > 0) {
+            usleep((int)$timeleft);
+        }
+
+        return $result;
+    }
+
+    /**
      * authenticate user, when failed, make sure we always spend the same time for the sequence.
      * This also adds a penalty for failed attempts.
      * @param string $username username to authenticate
@@ -284,15 +304,8 @@ abstract class Base
      */
     public function authenticate($username, $password)
     {
-        $tstart = microtime(true);
-        $expected_time = 2000000; /* failed login, aim at 2 seconds total time */
-        $result = $this->_authenticate($username, $password);
-
-        $timeleft = $expected_time - ((microtime(true) - $tstart) * 1000000);
-        if (!$result && $timeleft > 0) {
-            usleep((int)$timeleft);
-        }
-
-        return $result;
+        return $this->timedAuthenticate(function () use ($username, $password) {
+            return $this->_authenticate($username, $password);
+        });
     }
 }

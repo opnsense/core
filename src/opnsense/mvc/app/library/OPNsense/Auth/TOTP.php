@@ -1,7 +1,8 @@
 <?php
 
 /*
- * Copyright (C) 2016 Deciso B.V.
+ * Copyright (C) 2026 Konstantinos Spartalis <cspartalis@potatonetworks.com>
+ * Copyright (C) 2016-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -143,6 +144,91 @@ trait TOTP
     }
 
     /**
+     * check if the user has a one-time password seed configured
+     * @param string $username username to check
+     * @return bool
+     */
+    public function hasOTP($username)
+    {
+        $userObject = $this->getUser($username);
+        return $userObject != null && !empty($userObject->otp_seed);
+    }
+
+    /**
+     * split a composed secret into its password and token code parts according to the
+     * configured token order, inverse of composeLoginSecret()
+     * @param string $secret composed secret, its length must exceed the token length
+     * @return array password and token code
+     */
+    private function splitLoginSecret($secret)
+    {
+        $pwLength = strlen($secret) - $this->otpLength;
+        $pwStart = $this->passwordFirst ? 0 : $this->otpLength;
+        $otpStart = $this->passwordFirst ? $pwLength : 0;
+        return [substr($secret, $pwStart, $pwLength), substr($secret, $otpStart, $this->otpLength)];
+    }
+
+    /**
+     * combine password and token code into the composed secret _authenticate() expects,
+     * inverse of splitLoginSecret()
+     * @param string $password user password
+     * @param string $otp_code token code
+     * @return string composed secret
+     */
+    public function composeLoginSecret($password, $otp_code)
+    {
+        return $this->passwordFirst ? $password . $otp_code : $otp_code . $password;
+    }
+
+    /**
+     * authenticate the first factor (password) of a token authentication sequence, refusing
+     * users without a token seed as in the single request flow (_authenticate). The seed
+     * check runs inside the same failed attempt penalty as a full authenticate() sequence
+     * so response time does not reveal seed provisioning state.
+     * @param string $username username to authenticate
+     * @param string $password user password
+     * @return bool
+     */
+    public function authenticateFirstFactor($username, $password)
+    {
+        return $this->timedAuthenticate(function () use ($username, $password) {
+            return $this->hasOTP($username) && parent::_authenticate($username, $password);
+        });
+    }
+
+    /**
+     * authenticate user one-time password only (second factor verification), enforcing
+     * the same failed attempt penalty as a full authenticate() sequence
+     * @param string $username username to authenticate
+     * @param string $otp_code one-time password code
+     * @return bool
+     */
+    public function authenticateOTP($username, $otp_code)
+    {
+        return $this->timedAuthenticate(function () use ($username, $otp_code) {
+            $userObject = $this->getUser($username);
+            if ($userObject != null && !empty($userObject->otp_seed)) {
+                $otp_seed = \Base32\Base32::decode($userObject->otp_seed);
+                if ($this->authTOTP($otp_seed, $otp_code)) {
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+
+    /**
+     * run password policy checks on bare password (for Step 1 check)
+     * @param string $username username to check
+     * @param string $password bare password
+     * @return bool
+     */
+    public function shouldChangePasswordStep1($username, $password = null)
+    {
+        return parent::shouldChangePassword($username, $password);
+    }
+
+    /**
      * authenticate user against otp key stored in local database
      * @param string $username username to authenticate
      * @param string $password user password
@@ -154,15 +240,7 @@ trait TOTP
         if ($userObject != null && !empty($userObject->otp_seed)) {
             if (strlen($password) > $this->otpLength) {
                 // split otp token code and userpassword
-                $pwLength = strlen($password) - $this->otpLength;
-                $pwStart = $this->otpLength;
-                $otpStart = 0;
-                if ($this->passwordFirst) {
-                    $otpStart = $pwLength;
-                    $pwStart = 0;
-                }
-                $userPassword = substr($password, $pwStart, $pwLength);
-                $code = substr($password, $otpStart, $this->otpLength);
+                list($userPassword, $code) = $this->splitLoginSecret($password);
                 $otp_seed = \Base32\Base32::decode($userObject->otp_seed);
                 if ($this->authTOTP($otp_seed, $code)) {
                     // token valid, do parents auth
@@ -183,9 +261,7 @@ trait TOTP
     {
         if ($password != null && strlen($password) > $this->otpLength) {
             /* deconstruct password according to settings */
-            $pwLength = strlen($password) - $this->otpLength;
-            $pwStart = $this->passwordFirst ? 0 : $this->otpLength;
-            $password = substr($password, $pwStart, $pwLength);
+            list($password) = $this->splitLoginSecret($password);
         }
 
         return parent::shouldChangePassword($username, $password);
