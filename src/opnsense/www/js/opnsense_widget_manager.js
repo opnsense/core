@@ -33,7 +33,8 @@ class ResizeObserverWrapper {
         this._observer = new ResizeObserver(debounce((entries) => {
             if (entries != undefined && entries.length > 0) {
                 for (const entry of entries) {
-                    const width = entry.contentRect.width;
+                    const size = entry.borderBoxSize?.[0];
+                    const width = size ? size.inlineSize : entry.target.getBoundingClientRect().width;
                     const height = entry.contentRect.height;
 
                     let id = entry.target.id;
@@ -57,7 +58,7 @@ class ResizeObserverWrapper {
         }));
 
         elements.forEach((element) => {
-            this._observer.observe(element);
+            this._observer.observe(element, { box: "border-box" });
         });
     }
 
@@ -530,6 +531,25 @@ class WidgetManager  {
         this.widgetHTMLElements[widget.id].gridstackNode._initDD = false;
         this.grid.resizable(this.widgetHTMLElements[widget.id], true);
 
+        // trigger initial widget resize and start observing resize events
+        this.resizeObserver.observe(
+            [document.querySelector(`.widget-${widget.id}`).parentElement],
+            (elem, width, height) => {
+                elem = elem.firstElementChild;
+                for (const subclass of elem.className.split(" ")) {
+                    let id = subclass.split('-')[1];
+                    if (id in this.widgetClasses) {
+                        if (this.widgetClasses[id].onWidgetResize(elem, width, height)) {
+                            this._updateGrid(elem.parentElement.parentElement);
+                        }
+                    }
+                }
+            },
+            (elem, width, height) => {
+                widget.onWidgetResize(this.widgetHTMLElements[widget.id], width, height);
+            }
+        );
+
         // start the widget-specific tick routine
         let onWidgetTick = widget.onWidgetTick.bind(widget);
         const tick = async () => {
@@ -548,24 +568,6 @@ class WidgetManager  {
         }, widget.tickTimeout * 1000);
         // store the reference to the tick routine so we can clear it later on widget removal
         this.widgetTickRoutines[widget.id] = interval;
-
-        // trigger initial widget resize and start observing resize events
-        this.resizeObserver.observe(
-            [document.querySelector(`.widget-${widget.id}`)],
-            (elem, width, height) => {
-                for (const subclass of elem.className.split(" ")) {
-                    let id = subclass.split('-')[1];
-                    if (id in this.widgetClasses) {
-                        if (this.widgetClasses[id].onWidgetResize(elem, width, height)) {
-                            this._updateGrid(elem.parentElement.parentElement);
-                        }
-                    }
-                }
-            },
-            (elem, width, height) => {
-                widget.onWidgetResize(this.widgetHTMLElements[widget.id], width, height);
-            }
-        );
     }
 
     _clearError(widgetId) {
