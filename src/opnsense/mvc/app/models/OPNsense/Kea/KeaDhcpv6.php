@@ -410,8 +410,10 @@ class KeaDhcpv6 extends BaseModel
             }
             /* add pools */
             if (!$subnet->dynamic_prefix->isEmpty()) {
-                if (!empty($idassoc['prefix_on_link'])) {
-                    $record['pools'][] = ['pool' => $idassoc['prefix_on_link']];
+                $prefix_on_link = $idassoc['prefix_on_link'];
+                if (!empty($prefix_on_link)) {
+                    $prefix_address = explode('/', $prefix_on_link, 2)[0];
+                    $record['pools'][] = ['pool' => sprintf('%s1000 - %s2000', $prefix_address, $prefix_address)];
                 }
             } else {
                 foreach ($subnet->pools->getValues() as $pool) {
