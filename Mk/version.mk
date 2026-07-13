@@ -25,10 +25,10 @@
 
 CORE_ABIS?=	26.7
 CORE_ADDITIONS?=#empty
-CORE_MESSAGE?=	Carry on my wayward son
+CORE_MESSAGE?=	Just a dream and the wind to carry me
 CORE_NAME?=	opnsense
 # adjust src/root/boot/lua/logo-hourglass.lua.in accordingly:
-CORE_NICKNAME?=	Not Yet
+CORE_NICKNAME?=	Xenial Xenops
 CORE_TYPE?=	community
 # plugins that were migrated to core are here
 CORE_CONFLICTS?=firewall wireguard wireguard-go
