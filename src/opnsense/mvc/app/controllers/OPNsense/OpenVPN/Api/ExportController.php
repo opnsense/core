@@ -274,6 +274,7 @@ class ExportController extends ApiControllerBase
     {
         $result = array("result" => "failed");
         if ($this->request->isPost()) {
+            $this->throwReadOnly();
             $result = $this->validatePresetsAction($vpnid);
             if ($result['result'] == 'ok' && $result['changed']) {
                 $this->getModel()->serializeToConfig();

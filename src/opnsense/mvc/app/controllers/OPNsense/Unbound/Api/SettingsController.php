@@ -45,6 +45,7 @@ class SettingsController extends ApiMutableModelControllerBase
         $result = ["status" => "failed"];
         if ($this->request->isPost() && $this->request->hasPost('domain') && $this->request->hasPost('type') && $this->request->hasPost('uuid')) {
             Config::getInstance()->lock();
+            $this->throwReadOnly();
             $domain = $this->request->getPost('domain');
             $type = $this->request->getPost('type');
             $uuid = $this->request->getPost('uuid');

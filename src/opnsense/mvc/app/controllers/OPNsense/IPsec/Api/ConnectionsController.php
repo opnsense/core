@@ -294,6 +294,7 @@ class ConnectionsController extends ApiMutableModelControllerBase
     {
         if ($this->request->isPost()) {
             Config::getInstance()->lock();
+            $this->throwReadOnly();
             $config = Config::getInstance()->object();
             if ($enabled == "0" || $enabled == "1") {
                 $new_status = $enabled == "1";
