@@ -103,8 +103,8 @@ class AliasUtilController extends ApiControllerBase
     public function flushAction($alias)
     {
         if ($this->request->isPost()) {
-            $backend = new Backend();
-            $backend->configdpRun("filter delete table", array($alias, "ALL"));
+            $this->throwReadOnly();
+            (new Backend())->configdpRun("filter delete table", array($alias, "ALL"));
             return array("status" => "done");
         } else {
             return array("status" => "failed");
@@ -120,6 +120,7 @@ class AliasUtilController extends ApiControllerBase
     {
         if ($this->request->isPost() && $this->request->hasPost("address")) {
             Config::getInstance()->lock();
+            $this->throwReadOnly();
             $address = $this->request->getPost("address");
             $cnfAlias = $this->getAlias($alias);
             if ($cnfAlias !== null && in_array($cnfAlias->type, array('host', 'network'))) {
@@ -166,6 +167,7 @@ class AliasUtilController extends ApiControllerBase
     {
         if ($this->request->isPost() && $this->request->hasPost("address")) {
             Config::getInstance()->lock();
+            $this->throwReadOnly();
             $address = $this->request->getPost("address");
             if (preg_match("/[^0-9a-f\:\.\/_]/", $address)) {
                 return array("status" => "not_an_address");

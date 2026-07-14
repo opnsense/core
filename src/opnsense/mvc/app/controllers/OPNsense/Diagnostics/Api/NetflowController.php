@@ -80,6 +80,7 @@ class NetflowController extends ApiControllerBase
     {
         $result = array("result" => "failed");
         if ($this->request->hasPost("netflow")) {
+            $this->throwReadOnly();
             // load model and update with provided data
             $mdlNetflow = new Netflow();
             $mdlNetflow->setNodes($this->request->getPost("netflow"));

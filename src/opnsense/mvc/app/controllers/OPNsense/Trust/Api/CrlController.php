@@ -181,6 +181,7 @@ class CrlController extends ApiControllerBase
     {
         if ($this->request->isPost() && !empty($caref)) {
             Config::getInstance()->lock();
+            $this->throwReadOnly();
             $config = Config::getInstance()->object();
             $payload = $_POST['crl'] ?? [];
             $validations = [];
@@ -383,6 +384,7 @@ class CrlController extends ApiControllerBase
     {
         if ($this->request->isPost() && !empty($caref)) {
             Config::getInstance()->lock();
+            $this->throwReadOnly();
             $config = Config::getInstance()->object();
             $to_delete = [];
             foreach ($config->crl as $node) {
