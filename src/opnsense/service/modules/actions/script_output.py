@@ -103,10 +103,12 @@ class Action(BaseAction):
                     if script_hash is None:
                         # temp file not for re-use
                         output_stream.close()
-                        os.remove(output_filename)
                     return script_output
         except Exception as script_exception:
             syslog_error('[%s] Script action failed with %s at %s' % (
                 message_uuid, script_exception, traceback.format_exc()
             ))
             return 'Execute error'
+        finally:
+            if script_hash is None and os.path.exists(output_filename):
+                os.remove(output_filename)
