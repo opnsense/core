@@ -163,6 +163,7 @@ class SystemController extends ApiControllerBase
             'vm.stats.vm.v_page_count',
             'vm.stats.vm.v_inactive_count',
             'vm.stats.vm.v_cache_count',
+            'vm.stats.vm.v_laundry_count',
             'vm.stats.vm.v_free_count',
             'kstat.zfs.misc.arcstats.size'
         ])), true);
@@ -170,7 +171,7 @@ class SystemController extends ApiControllerBase
         if (!empty($mem['vm.stats.vm.v_page_count'])) {
             $pc = $mem['vm.stats.vm.v_page_count'];
             $ic = $mem['vm.stats.vm.v_inactive_count'];
-            $cc = $mem['vm.stats.vm.v_cache_count'];
+            $cc = ($mem['vm.stats.vm.v_cache_count'] ?? 0) + ($mem['vm.stats.vm.v_laundry_count'] ?? 0);
             $fc = $mem['vm.stats.vm.v_free_count'];
             $result['memory']['total'] = $mem['hw.physmem'];
             $result['memory']['total_frmt'] = sprintf('%d', $mem['hw.physmem'] / 1024 / 1024);
