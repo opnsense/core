@@ -180,21 +180,22 @@ class ControllerBase extends ControllerRoot
                         $result['tabs'] = [];
                     }
                     $tab = [];
-                    $tab[] = (string)$node->attributes()->id;
-                    $tab[] = gettext((string)$node->attributes()->description);
+                    $tab['tab_id'] = (string)$node->attributes()->id;
+                    $tab['tab_descr'] = gettext((string)$node->attributes()->description);
                     if (isset($node->subtab)) {
-                        $tab["subtabs"] = $this->parseFormNode($node);
+                        $tab["subtabs"] = [];
+                        foreach ($node->subtab as $subnode) {
+                            $subtab = $this->parseFormNode($subnode);
+                            $subtab['tab_id'] = $subnode->attributes()->id;
+                            $subtab['tab_descr'] = gettext((string)$subnode->attributes()->description);
+                            $tab["subtabs"][] = $subtab;
+                        }
                     } else {
-                        $tab[] = $this->parseFormNode($node);
+                        $tab = array_merge($tab, $this->parseFormNode($node));
                     }
                     $result['tabs'][] = $tab;
                     break;
                 case "subtab":
-                    $subtab = [];
-                    $subtab[] = $node->attributes()->id;
-                    $subtab[] = gettext((string)$node->attributes()->description);
-                    $subtab[] = $this->parseFormNode($node);
-                    $result[] = $subtab;
                     break;
                 case "field":
                     // field type, containing attributes
