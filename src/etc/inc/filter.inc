@@ -383,9 +383,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set hostid {$current_hostid}\n";
     }
 
-    if (!empty($config['system']['pfdebug'])) {
-        $limitrules .= "set debug {$config['system']['pfdebug']}\n";
-    }
+    $pfdebug = !empty($config['system']['pfdebug']) ? $config['system']['pfdebug'] : 'urgent';
+    $limitrules .= "set debug {$pfdebug}\n";
 
     if (!empty($config['system']['keepcounters'])) {
         $limitrules .= "set keepcounters\n";
