@@ -2289,7 +2289,8 @@ function interface_configure_mtu($device, $mtu, $ifconfig_details)
         $parent_mtu = $mtu + 4;
         $force = false;
 
-        $parent_cfg = $config['interfaces'][convert_real_interface_to_friendly_interface_name($parent_device)] ?? [];
+        $ifname = convert_real_interface_to_friendly_interface_name($parent_device);
+        $parent_cfg = !empty($ifname) ? ($config['interfaces'][$ifname] ?? []) : [];
         if (isset($parent_cfg['enable']) && !empty($parent_cfg['mtu'])) {
             $parent_mtu = $parent_cfg['mtu'];
             $force = true;
@@ -3327,8 +3328,8 @@ function interface_dhcp_configure($interface = 'wan')
     $conf .= interfaces_dhcp_safe('  retry 15;');
     $conf .= interfaces_dhcp_safe('  select-timeout 0;');
     $conf .= interfaces_dhcp_safe('  initial-interval 1;');
-    $conf .= interfaces_dhcp_safe('  send dhcp-client-identifier "%s";', $wancfg['dhcphostname'], !empty($wancfg['dhcphostname']));
-    $conf .= interfaces_dhcp_safe('  send host-name "%s";', $wancfg['dhcphostname'], !empty($wancfg['dhcphostname']));
+    $conf .= interfaces_dhcp_safe('  send dhcp-client-identifier "%s";', $wancfg['dhcphostname'] ?? '', !empty($wancfg['dhcphostname']));
+    $conf .= interfaces_dhcp_safe('  send host-name "%s";', $wancfg['dhcphostname'] ?? '', !empty($wancfg['dhcphostname']));
     $conf .= interfaces_dhcp_safe('  script "%s";', '/usr/local/opnsense/scripts/interfaces/dhclient-script');
     $conf .= interfaces_dhcp_safe('  supersede interface-mtu %s;', 0, empty($wancfg['dhcphonourmtu']));
     $conf .= interfaces_dhcp_safe('  reject %s;', $wancfg['dhcprejectfrom'], !empty($wancfg['dhcprejectfrom']));
