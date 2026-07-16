@@ -134,14 +134,14 @@
                     </th>
                 </tr>
                 <tr>
-                    <th>{{ lang._('Sections')}}</th>
-                    <th></th>
+                    <th width="80%">{{ lang._('Sections')}}</th>
+                    <th width="20%"></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>
-                        <select id="sections" data-size="10" data-width="100%" data-live-search="true" multiple="multiple"></select>
+                        <select id="sections" data-size="10" data-selected-text-format="count" data-live-search="true" multiple="multiple"></select>
                     </td>
                     <td>
                         <button id="reset_sections" class="btn btn-primary">{{ lang._('Reset')}}</button>
