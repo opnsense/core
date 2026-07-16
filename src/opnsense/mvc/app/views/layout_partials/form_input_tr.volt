@@ -103,13 +103,13 @@
             <input type="checkbox"  class="{{style|default('')}}" id="{{ id }}" aria-label="{{label|safe}}"  {% if type_formatter is defined %}type_formatter="{{type_formatter}}"{% endif %}>
         {% elseif type in ["select_multiple", "dropdown"] %}
             <div id="select_{{ id }}">
-            <select aria-label="{{label|safe}}" {% if type == 'select_multiple' %}multiple="multiple" title="{{ lang._('Nothing selected') }}"{% endif %}
+            <select aria-label="{{label|safe}}" {% if type == 'select_multiple' %}multiple="multiple"{% endif %}
                     data-size="{{size|default(10)}}"
                     id="{{ id }}"
                     class="{{style|default('selectpicker')}}"
                     data-container="body"
-                    {% if hint is defined %}data-hint="{{hint}}"{% endif %}
-                    {% if hint is defined %}data-none-selected-text="{{hint}}"{% endif %}
+                    data-hint="{% if hint %}{{hint}}{%else%}{{ lang._('Nothing selected') }}{% endif %}"
+                    data-none-selected-text="{% if hint %}{{hint}}{%else%}{{ lang._('Nothing selected') }}{% endif %}"
                     data-width="{{width|default("346px")}}"
                     data-allownew="{{allownew|default("false")}}"
                     data-sortable="{{sortable|default("false")}}"
