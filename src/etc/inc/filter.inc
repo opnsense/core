@@ -495,75 +495,77 @@ function filter_generate_scrubbing(&$FilterIflist)
     $scrubrules = '';
 
     /* custom rules must be first */
-    if (!empty($config['filter']['scrub']['rule'])) {
-        foreach ($config['filter']['scrub']['rule'] as $scrub_rule) {
-            if (!isset($scrub_rule['disabled'])) {
-                $scrub_rule_out = !empty($scrub_rule['noscrub']) ? "no " : "";
-                $scrub_rule_out .= "scrub";
-                $scrub_rule_out .= !empty($scrub_rule['direction']) ? " " . $scrub_rule['direction'] : "";
-                $scrub_rule_out .= " on ";
-                $interfaces = array();
-                foreach (explode(',', $scrub_rule['interface']) as $interface) {
-                    if (!empty($FilterIflist[$interface]['if'])) {
-                        $interfaces[] = $FilterIflist[$interface]['if'];
-                    }
-                }
-                $scrub_rule_out .= count($interfaces) > 1 ? "{ " . implode(' ', $interfaces) . " } " : $interfaces[0];
-                switch ($scrub_rule['proto']) {
-                    case 'any':
-                        break;
-                    case 'tcp/udp':
-                        $scrub_rule_out .= " proto {tcp udp}";
-                        break;
-                    default:
-                        $scrub_rule_out .= " proto " . $scrub_rule['proto'];
-                        break;
-                }
-                $scrub_rule_out .= " from ";
-                if (is_alias($scrub_rule['src'])) {
-                    $scrub_rule_out .= !empty($scrub_rule['srcnot']) ? "!" : "";
-                    $scrub_rule_out .= '$' . $scrub_rule['src'];
-                } elseif (is_ipaddr($scrub_rule['src'])) {
-                    $scrub_rule_out .= !empty($scrub_rule['srcnot']) ? "!" : "";
-                    $scrub_rule_out .= $scrub_rule['src'] . "/" . $scrub_rule['srcmask'];
-                } else {
-                    $scrub_rule_out .= "any";
-                }
-                if (!empty($scrub_rule['srcport']) && is_alias($scrub_rule['srcport'])) {
-                    $scrub_rule_out .= " port $" . $scrub_rule['srcport'];
-                } else {
-                    $scrub_rule_out .= !empty($scrub_rule['srcport']) ?  " port " . $scrub_rule['srcport'] : "";
-                }
-                $scrub_rule_out .= " to ";
-                if (is_alias($scrub_rule['dst'])) {
-                    $scrub_rule_out .= !empty($scrub_rule['dstnot']) ? "!" : "";
-                    $scrub_rule_out .= '$' . $scrub_rule['dst'];
-                } elseif (is_ipaddr($scrub_rule['dst'])) {
-                    $scrub_rule_out .= !empty($scrub_rule['dstnot']) ? "!" : "";
-                    $scrub_rule_out .= $scrub_rule['dst'] . "/" . $scrub_rule['dstmask'];
-                } else {
-                    $scrub_rule_out .= "any";
-                }
-                if (!empty($scrub_rule['dstport']) && is_alias($scrub_rule['dstport'])) {
-                    $scrub_rule_out .= " port $" . $scrub_rule['dstport'];
-                } else {
-                    $scrub_rule_out .= !empty($scrub_rule['dstport']) ?  " port " . $scrub_rule['dstport'] : "";
-                }
-                if (empty($scrub_rule['noscrub'])) {
-                    $scrub_rule_out .= !empty($scrub_rule['no-df']) ? " no-df " : "";
-                    $scrub_rule_out .= !empty($scrub_rule['random-id']) ? " random-id " : "";
-                    $scrub_rule_out .= !empty($scrub_rule['max-mss']) ? " max-mss " . $scrub_rule['max-mss'] .  " " : "";
-                    $scrub_rule_out .= !empty($scrub_rule['min-ttl']) ? " min-ttl " . $scrub_rule['min-ttl'] .  " " : "";
-                    $scrub_rule_out .= !empty($scrub_rule['set-tos']) ? " set-tos " . $scrub_rule['set-tos'] .  " " : "";
-                }
-                $scrub_rule_out .= "\n";
-                if (count($interfaces) == 0) {
-                    # unknown interface, skip rule
-                    $scrubrules .= "#";
-                }
-                $scrubrules .= $scrub_rule_out;
+    foreach (config_read_array('filter', 'scrub', 'rule', false) as $scrub_rule) {
+        if (isset($scrub_rule['disabled'])) {
+            continue;
+        }
+
+        $scrub_rule_out = !empty($scrub_rule['noscrub']) ? "no " : "";
+        $scrub_rule_out .= "scrub";
+        $scrub_rule_out .= !empty($scrub_rule['direction']) ? " " . $scrub_rule['direction'] : "";
+        $interfaces = [];
+        foreach (explode(',', $scrub_rule['interface']) as $interface) {
+            if (!empty($FilterIflist[$interface]['if'])) {
+                $interfaces[] = $FilterIflist[$interface]['if'];
             }
         }
+
+        if (count($interfaces) != 0) {
+            $scrub_rule_out .= ' on { ' . implode(' ', $interfaces) . ' } ';
+        } else {
+            # unknown interface, skip rule
+            $scrubrules .= "#";
+        }
+        switch ($scrub_rule['proto']) {
+            case 'any':
+                break;
+            case 'tcp/udp':
+                $scrub_rule_out .= " proto {tcp udp}";
+                break;
+            default:
+                $scrub_rule_out .= " proto " . $scrub_rule['proto'];
+                break;
+        }
+        $scrub_rule_out .= " from ";
+        if (is_alias($scrub_rule['src'])) {
+            $scrub_rule_out .= !empty($scrub_rule['srcnot']) ? "!" : "";
+            $scrub_rule_out .= '$' . $scrub_rule['src'];
+        } elseif (is_ipaddr($scrub_rule['src'])) {
+            $scrub_rule_out .= !empty($scrub_rule['srcnot']) ? "!" : "";
+            $scrub_rule_out .= $scrub_rule['src'] . "/" . $scrub_rule['srcmask'];
+        } else {
+            $scrub_rule_out .= "any";
+        }
+        if (!empty($scrub_rule['srcport']) && is_alias($scrub_rule['srcport'])) {
+            $scrub_rule_out .= " port $" . $scrub_rule['srcport'];
+        } else {
+            $scrub_rule_out .= !empty($scrub_rule['srcport']) ?  " port " . $scrub_rule['srcport'] : "";
+        }
+        $scrub_rule_out .= " to ";
+        if (is_alias($scrub_rule['dst'])) {
+            $scrub_rule_out .= !empty($scrub_rule['dstnot']) ? "!" : "";
+            $scrub_rule_out .= '$' . $scrub_rule['dst'];
+        } elseif (is_ipaddr($scrub_rule['dst'])) {
+            $scrub_rule_out .= !empty($scrub_rule['dstnot']) ? "!" : "";
+            $scrub_rule_out .= $scrub_rule['dst'] . "/" . $scrub_rule['dstmask'];
+        } else {
+            $scrub_rule_out .= "any";
+        }
+        if (!empty($scrub_rule['dstport']) && is_alias($scrub_rule['dstport'])) {
+            $scrub_rule_out .= " port $" . $scrub_rule['dstport'];
+        } else {
+            $scrub_rule_out .= !empty($scrub_rule['dstport']) ?  " port " . $scrub_rule['dstport'] : "";
+        }
+        if (empty($scrub_rule['noscrub'])) {
+            $scrub_rule_out .= !empty($scrub_rule['no-df']) ? " no-df " : "";
+            $scrub_rule_out .= !empty($scrub_rule['random-id']) ? " random-id " : "";
+            $scrub_rule_out .= !empty($scrub_rule['max-mss']) ? " max-mss " . $scrub_rule['max-mss'] .  " " : "";
+            $scrub_rule_out .= !empty($scrub_rule['min-ttl']) ? " min-ttl " . $scrub_rule['min-ttl'] .  " " : "";
+            $scrub_rule_out .= !empty($scrub_rule['set-tos']) ? " set-tos " . $scrub_rule['set-tos'] .  " " : "";
+        }
+        $scrub_rule_out .= "\n";
+
+        $scrubrules .= $scrub_rule_out;
     }
 
     /* scrub per interface options */
