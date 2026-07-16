@@ -40,10 +40,27 @@ class Interfaces(object):
         """
         self._if_index = dict()
         sp = subprocess.run(['/usr/local/sbin/ifinfo'], capture_output=True, text=True)
-        interfaces = re.findall(r"Interface ([^ ]+)", sp.stdout)
+        interfaces = re.split(r'(?=^Interface )', sp.stdout, flags=re.MULTILINE)
 
-        for index, interface in enumerate(interfaces, start=1):
-            self._if_index["%s" % index] = interface
+        for interface_block in interfaces:
+            interface = self._parse_interface(interface_block)
+
+            if interface:
+                self._if_index[str(interface['index'])] = interface['name']
+
+    def _parse_interface(self, block):
+        """ extract fields from interface block
+        """
+        name = re.search(r'^Interface ([^ ]+)', block, re.MULTILINE)
+        index = re.search(r'^\s+index: (\d+)', block, re.MULTILINE)
+
+        if not name or not index:
+            return None
+
+        return {
+            'name': name.group(1),
+            'index': int(index.group(1))
+        }
 
     def if_device(self, if_index):
         """ convert index to device (if found)
