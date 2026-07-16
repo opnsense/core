@@ -54,7 +54,7 @@ if (empty($argument)) {
     $device = $argument;
 }
 
-if (!isset($config['interfaces'][$interface]['enable'])) {
+if (empty($interface) || !isset($config['interfaces'][$interface]['enable'])) {
     log_msg("Interface '{$interface}' ($device) is disabled or empty, nothing to do.", LOG_WARNING);
     return;
 }
