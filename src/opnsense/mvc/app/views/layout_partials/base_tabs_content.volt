@@ -31,14 +31,14 @@
     {% if tab['subtabs']|default(false) %}
         {# Tab with dropdown #}
         {% for subtab in tab['subtabs']|default({})%}
-                <div id="subtab_{{subtab[0]}}" class="tab-pane fade{% if formData['activetab']|default("") == subtab[0] %} in active {% endif %}">
-                    {{ partial("layout_partials/base_form",['fields':subtab[2],'id':'frm_'~subtab[0],'data_title':subtab[1],'apply_btn_id':'save_'~subtab[0]])}}
+                <div id="subtab_{{subtab['tab_id']}}" class="tab-pane fade{% if formData['activetab']|default("") == subtab['tab_id'] %} in active {% endif %}">
+                    {{ partial("layout_partials/base_form",['fields':subtab,'id':'frm_'~subtab['tab_id'],'data_title':subtab['tab_descr'],'apply_btn_id':'save_'~subtab['tab_id']])}}
                 </div>
         {% endfor %}
     {% endif %}
     {% if tab['subtabs']|default(false)==false %}
-            <div id="tab_{{tab[0]}}" class="tab-pane fade{% if formData['activetab']|default("") == tab[0] %} in active {% endif %}">
-                {{ partial("layout_partials/base_form",['fields':tab[2],'id':'frm_'~tab[0],'apply_btn_id':'save_'~tab[0]])}}
+            <div id="tab_{{tab['tab_id']}}" class="tab-pane fade{% if formData['activetab']|default("") == tab['tab_id'] %} in active {% endif %}">
+                {{ partial("layout_partials/base_form",['fields':tab,'id':'frm_'~tab['tab_id'],'apply_btn_id':'save_'~tab['tab_id']])}}
             </div>
     {% endif %}
 {% endfor %}

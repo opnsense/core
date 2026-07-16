@@ -1,6 +1,6 @@
 {#
  # Copyright (c) 2017 Franco Fichtner <franco@opnsense.org>
- # Copyright (c) 2014-2015 Deciso B.V.
+ # Copyright (c) 2014-2026 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -31,22 +31,22 @@
     {% if tab['subtabs']|default(false) %}
         {# Tab with dropdown #}
         {# Find active subtab #}
-            {% set active_subtab="" %}
-            {% for subtab in tab['subtabs']|default({}) %}
-                {% if subtab[0]==formData['activetab']|default("") %}
-                    {% set active_subtab=subtab[0] %}
-                {% endif %}
-            {% endfor %}
+        {% set is_active_subtab=false %}
+        {% for subtab in tab['subtabs']|default({}) %}
+            {% if subtab['tab_id']==formData['activetab']|default("") %}
+                {% set is_active_subtab=true %}
+            {% endif %}
+        {% endfor %}
 
-        <li role="presentation" class="dropdown {% if formData['activetab']|default("") == active_subtab %}active{% endif %}">
+        <li role="presentation" class="dropdown {% if is_active_subtab %}active{% endif %}">
             <a data-toggle="dropdown" href="#" class="dropdown-toggle pull-right visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" role="button">
                 <span class="caret"></span>
             </a>
-            <a data-toggle="tab" onclick="$('#subtab_item_{{tab['subtabs'][0][0]}}').click();" class="visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" style="border-right:0px;">{{tab[1]}}</a>
+            <a data-toggle="tab" class="visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" style="border-right:0px;">{{tab['tab_descr']}}</a>
             <ul class="dropdown-menu" role="menu">
                 {% for subtab in tab['subtabs']|default({})%}
                 <li class="{% if formData['activetab']|default("") == subtab[0] %}active{% endif %}">
-                    <a data-toggle="tab" id="subtab_item_{{subtab[0]}}" href="#subtab_{{subtab[0]}}">{{subtab[1]}}</a>
+                    <a data-toggle="tab" id="subtab_item_{{subtab['tab_id']}}" href="#subtab_{{subtab['tab_id']}}">{{subtab['tab_descr']}}</a>
                 </li>
                 {% endfor %}
             </ul>
@@ -54,8 +54,8 @@
     {% else %}
         {# Standard Tab #}
         <li {% if formData['activetab']|default("") == tab[0] %} class="active" {% endif %}>
-                <a data-toggle="tab" href="#tab_{{tab[0]}}">
-                    {{tab[1]}}
+                <a data-toggle="tab" href="#tab_{{tab['tab_id']}}">
+                    {{tab['tab_descr']}}
                 </a>
         </li>
     {% endif %}
