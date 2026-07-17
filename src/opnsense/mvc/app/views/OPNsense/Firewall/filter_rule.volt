@@ -82,6 +82,7 @@
             { idx: 3, uuid: "group", label: "{{ lang._('Group rules') }}", icon: "fa-sitemap", tooltip: "{{ lang._('Group rule') }}", color: "text-warning", groupType: "groups" },
             { idx: 4, uuid: "interface", label: "{{ lang._('Interface rules') }}", icon: "fa-ethernet", tooltip: "{{ lang._('Interface rule') }}", color: "text-info", groupType: "interfaces" },
             { idx: 5, uuid: "auto1", label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary", groupType: null },
+            { idx: 6, uuid: "invalid", label: "{{ lang._('Invalid rules') }}", icon: "fa-exclamation-triangle", tooltip: "{{ lang._('Invalid rules that are not processed') }}", color: "text-secondary", groupType: null },
         ];
 
         // XXX: The "prio_group.sequence" combination in "sort_order" (300000.0000010) is not always static, e.g. in group rules it could also be (300010.0000010).

@@ -30,6 +30,7 @@ namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\ContainerField;
+use OPNsense\Core\Config;
 
 /**
  * Class SourceNatRuleContainerField
@@ -95,6 +96,33 @@ class SourceNatRuleContainerField extends ContainerField
 
         return $result;
     }
+
+    /**
+     * Return the rule priority group.
+     *
+     * @return int
+     */
+    public function getPriority()
+    {
+        $configObj = Config::getInstance()->object();
+        $interfaces = $this->interface->getValues();
+        $has_interface = false;
+
+        foreach ($interfaces as $interface) {
+            if (isset($configObj?->interfaces?->$interface)) {
+                $has_interface = true;
+                break;
+            }
+        }
+
+        // Invalid rules (not applied by PF)
+        if (!empty($interfaces) && !$has_interface) {
+            return 600000;
+        }
+
+        // Default
+        return 400000;
+    }
 }
 
 /**
@@ -124,8 +152,8 @@ class SourceNatRuleField extends ArrayField
              * rules, but should still expose sort_order for tree view grouping.
              * If automatic rules are added later, they should either be 100000 (start) or 500000 (end of ruleset).
              */
-            $node->sort_order = sprintf("%d.0%06d", 400000, (string)$node->sequence);
-            $node->prio_group = "400000";
+            $node->sort_order = sprintf("%d.0%06d", $node->getPriority(), (string)$node->sequence);
+            $node->prio_group = (string)$node->getPriority();
         }
 
         return parent::actionPostLoadingEvent();
