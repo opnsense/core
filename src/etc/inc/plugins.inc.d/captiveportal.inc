@@ -157,7 +157,7 @@ function captiveportal_firewall($fw)
                 }
 
                 $fw->registerFilterRule(
-                    3,
+                    6,
                     [
                         'type' => 'block',
                         'interface' => $intf,
