@@ -62,11 +62,6 @@ class DNatController extends FilterBaseController
         };
 
         $results =  $this->searchBase("rule", null, "sequence", $filter_funct);
-
-        $configObj = Config::getInstance()->object();
-
-        /* carry results */
-        $results =  $this->searchBase("rule", null, "sequence", $filter_funct);
         $configObj = Config::getInstance()->object();
 
         /* carry results */

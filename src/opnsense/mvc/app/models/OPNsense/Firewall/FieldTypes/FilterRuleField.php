@@ -167,6 +167,7 @@ class FilterRuleContainerField extends ContainerField
 
         // default
         return 400000;
+
     }
 }
 
