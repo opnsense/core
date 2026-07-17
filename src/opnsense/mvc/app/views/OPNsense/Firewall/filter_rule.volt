@@ -872,7 +872,11 @@
             $('#{{formGridFilterRule["table_id"]}}-banner').remove();
 
             // check if interface/group type is selected, and if so, display an in-table message if there are no rules defined
-            if ((currentGroupType === "groups" || currentGroupType === "interfaces") && !buckets.find(b => b.groupType === currentGroupType)) {
+            if (
+                (currentGroupType === "groups" || currentGroupType === "interfaces") &&
+                !buckets.find(b => b.groupType === currentGroupType) &&
+                $('#{{formGridFilterRule["table_id"]}}').bootgrid('getSearchPhrase') === ""
+            ) {
                 let ifLabel = '';
                 for (const group of Object.values($('#interface_select').data().store)) {
                     const item = group.items.find(item => item.value === $('#interface_select').val());
