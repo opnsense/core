@@ -28,7 +28,7 @@ export default class Services extends BaseTableWidget {
     constructor() {
         super();
         this.locked = false;
-        this.titleVisible = false;
+        this.dividerVisible = false;
     }
 
     getGridOptions() {
@@ -39,14 +39,14 @@ export default class Services extends BaseTableWidget {
     }
 
     getMarkup() {
-        return $(`<div id="services-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); padding: 1px; gap: 2px;"></div>`);
+        return $(`<div id="services-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); padding: 2px; gap: 2px;"></div>`);
     }
 
     serviceControl(actions) {
         return actions.map(({ action, id, title, icon }) => `
             <span data-service_action="${action}" data-service="${id}"
                   class="srv_status_act2"
-                  style="color: rgb(55, 55, 54);"
+                  style="cursor: pointer"
                   title="${title}" data-toggle="tooltip">
                 <i class="fa fa-fw fa-${icon}"></i>
             </span>
@@ -83,14 +83,13 @@ export default class Services extends BaseTableWidget {
             let statusTitle = service.running ? this.translations.running : this.translations.stopped;
 
             let $tile = $(`
-                <div class="service-tile alert-${statusColor}" style="display: flex; align-items: center;">
+                <div class="service-tile btn-${statusColor}" style="display: flex; align-items: center; padding: 0px 2px 0 2px;">
                     <div style="
                         padding: 4px;
                         white-space: nowrap;
                         font-weight: 500;
                         overflow: hidden;
                         text-overflow: ellipsis;
-                        color: rgb(55, 55, 54);
                         width: 100%;
                         text-align: left;
                     " title="${service.description} (${statusTitle})" data-toggle="tooltip">${service.description}</div>

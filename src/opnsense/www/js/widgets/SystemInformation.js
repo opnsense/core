@@ -27,6 +27,7 @@
 export default class SystemInformation extends BaseTableWidget {
     constructor() {
         super();
+        this.dividerVisible = false;
     }
 
     getMarkup() {

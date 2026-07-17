@@ -29,6 +29,7 @@ export default class Gateways extends BaseTableWidget {
         super(config);
 
         this.configurable = true;
+        this.dividerVisible = false;
         this.cachedGateways = []; // prevent fetch when loading options
     }
 

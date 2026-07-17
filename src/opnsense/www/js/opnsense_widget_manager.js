@@ -616,7 +616,7 @@ class WidgetManager  {
         const link = this.breakoutLinks[identifier] !== "" ? `
                 <div id="link-handle-${identifier}" class="link-handle">
                     <a href="${this.breakoutLinks[identifier]}" target="_blank">
-                        <i class="fa fa-external-link fa-xs"></i>
+                        <i class="fa fa-external-link"></i>
                     </a>
                 </div>
         ` : '';
@@ -632,14 +632,15 @@ class WidgetManager  {
                 <div class="widget-command-container">
                     ${link}
                     <div id="close-handle-${identifier}" class="close-handle" style="display: none;">
-                        <i class="fa fa-times fa-xs"></i>
+                        <i class="fa fa-times"></i>
                     </div>
                 </div>
             </div>
         `);
         $content.append($header);
+        const dividerStyle = !widget.isTitleVisible() || !widget.isDividerVisible() ? "display: none" : "";
         let $divider = $(`
-            <div class="panel-divider ${headerClass}" style="${headerStyle}">
+            <div class="panel-divider ${headerClass}" style="${dividerStyle}">
                 <div class="line"></div>
             </div>
         `);

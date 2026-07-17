@@ -36,6 +36,7 @@ class BaseWidget {
         this.eventSourceOnData = null;
         this.cachedData = {};
         this.titleVisible = true;
+        this.dividerVisible = true;
 
         /* Connection timeout params */
         this.timeoutPeriod = 5000;
@@ -150,6 +151,10 @@ class BaseWidget {
 
     isTitleVisible() {
         return this.titleVisible;
+    }
+
+    isDividerVisible() {
+        return this.dividerVisible;
     }
 
     /* Utility/protected functions */

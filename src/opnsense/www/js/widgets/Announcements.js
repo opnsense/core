@@ -27,6 +27,7 @@
 export default class Announcements extends BaseTableWidget {
     constructor() {
         super();
+        this.dividerVisible = false;
         this.tickTimeout = 3600;
     }
 

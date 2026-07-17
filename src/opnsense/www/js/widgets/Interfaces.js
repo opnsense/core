@@ -28,6 +28,7 @@ export default class Interfaces extends BaseTableWidget {
     constructor() {
         super();
 
+        this.dividerVisible = false;
         this.width = null;
     }
 
