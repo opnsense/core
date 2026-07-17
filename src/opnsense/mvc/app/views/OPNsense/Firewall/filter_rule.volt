@@ -136,7 +136,7 @@
 
             // determine tree expansion state of top-level buckets
             for (const bucket of buckets) {
-                if (["auto0", "auto1"].includes(bucket.uuid)) {
+                if (["auto0", "auto1", "defunct"].includes(bucket.uuid)) {
                     bucket._expanded = false;
                 } else if (bucket.groupType === currentGroupType || currentGroupType === "any") {
                     bucket._expanded = true;
