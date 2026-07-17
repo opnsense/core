@@ -421,7 +421,7 @@ EOD;
             $lighty_config .= <<<EOD
 ssl.openssl.ssl-conf-cmd = (
     "MinProtocol" => "TLSv1.2",
-    "Options" => "-ServerPreference:-KTLS",
+    "Options" => "-ServerPreference,-KTLS",
     "CipherString" => "EECDH+AESGCM:AES256+EECDH:CHACHA20:!SHA1:!SHA256:!SHA384"
 )
 
