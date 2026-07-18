@@ -71,7 +71,8 @@
         <MinProtocol_DTLS type="OptionField">
             <OptionValues>
                 <DTLSv1/>
-                <DTLSv1.1/>
+                <DTLSv1.2/>
+                <DTLSv1.3/>
             </OptionValues>
         </MinProtocol_DTLS>
     </items>
