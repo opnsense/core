@@ -72,7 +72,6 @@
             <OptionValues>
                 <DTLSv1/>
                 <DTLSv1.2/>
-                <DTLSv1.3/>
             </OptionValues>
         </MinProtocol_DTLS>
     </items>
