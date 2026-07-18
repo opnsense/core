@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/trust/general</mount>
     <description>Trust general settings</description>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <items>
         <store_intermediate_certs type="BooleanField">
             <Default>0</Default>
@@ -71,7 +71,7 @@
         <MinProtocol_DTLS type="OptionField">
             <OptionValues>
                 <DTLSv1/>
-                <DTLSv1.1/>
+                <DTLSv1.2/>
             </OptionValues>
         </MinProtocol_DTLS>
     </items>
