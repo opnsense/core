@@ -336,9 +336,12 @@ class CrlController extends ApiControllerBase
                     /* add all cert serial numbers to crl */
                     foreach ($crl_certs as $cert) {
                         $tmp = @openssl_x509_parse(base64_decode((string)$cert->crt));
-                        if ($tmp !== false && isset($tmp['serialNumber'])) {
+                        if ($tmp !== false && isset($tmp['serialNumberHex'])) {
+                            /* serialNumber (decimal) is unreliable for serials with the high bit
+                               set; use serialNumberHex so MSB serials aren't collapsed to zero */
+                            $serial = new \phpseclib3\Math\BigInteger($tmp['serialNumberHex'], 16);
                             $x509_crl->setRevokedCertificateExtension(
-                                (string)$tmp['serialNumber'],
+                                (string)$serial,
                                 'id-ce-cRLReasons',
                                 self::$status_codes[(string)$cert->reason]
                             );
