@@ -490,7 +490,7 @@ deflate.cache-dir = "/tmp/lighttpdcompress/"
 
 {$server_upload_dirs}
 
-server.max-request-size    = 2097152
+server.max-request-size    = 209715
 server.max-request-field-size = 16384
 
 {$fastcgi_config}
