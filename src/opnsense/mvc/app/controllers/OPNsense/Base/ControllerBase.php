@@ -224,6 +224,8 @@ class ControllerBase extends ControllerRoot
                     $text = (string)$node;
                     if (strlen($text)) {
                         $result[$key] = gettext($text);
+                    } else {
+                        $result[$key] = '';
                     }
                     break;
                 case "grid_view":
