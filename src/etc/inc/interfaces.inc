@@ -3473,7 +3473,6 @@ function DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf)
     return $dhclientconf;
 }
 
-
 /* convert fxp0 -> wan, etc. */
 function convert_real_interface_to_friendly_interface_name($interface = 'wan')
 {

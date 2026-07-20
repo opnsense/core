@@ -1307,3 +1307,27 @@ function openvpn_refresh_crls()
         }
     }
 }
+
+function openvpn_get_default_nat_outbound_networks($unused_fw = null)
+{
+    $result = [];
+
+    foreach (['server', 'client'] as $section) {
+        if (openvpn_legacy($section)) {
+            foreach (config_read_array('openvpn', "openvpn-{$section}", false) as $ovpn) {
+                if (!isset($ovpn['disable']) && !empty($ovpn['tunnel_network'])) {
+                    $result[$ovpn['tunnel_network']] = $ovpn['tunnel_network'];
+                }
+            }
+        }
+    }
+
+    return $result;
+}
+
+function openvpn_run()
+{
+    return [
+        'outbound_net' => 'openvpn_get_default_nat_outbound_networks',
+    ];
+}
