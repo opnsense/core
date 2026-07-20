@@ -50,7 +50,7 @@ output_cmd opnsense-update -O
 if [ -n "${IPV4}" -a -z "${IPV4%%*.*}" ]; then
 	output_txt
 	output_txt "Checking connectivity for host: ${HOST} -> ${IPV4}"
-	if ! output_cmd ping -4 ${POPT_MIN} "${IPV4}"; then
+	if output_cmd ping -4 ${POPT_MIN} "${IPV4}"; then
 		output_txt
 		output_txt "Checking fragmentation for host: ${HOST} -> ${IPV4}"
 		output_cmd ping -4 ${POPT_MAX} "${IPV4}"
@@ -68,7 +68,7 @@ fi
 if [ -n "${IPV6}" -a -z "${IPV6%%*:*}" ]; then
 	output_txt
 	output_txt "Checking connectivity for host: ${HOST} -> ${IPV6}"
-	if ! output_cmd ping -6 ${POPT_MIN} "${IPV6}"; then
+	if output_cmd ping -6 ${POPT_MIN} "${IPV6}"; then
 		output_txt
 		output_txt "Checking fragmentation for host: ${HOST} -> ${IPV6}"
 		output_cmd ping -6 ${POPT_MAX} "${IPV6}"
