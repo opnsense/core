@@ -199,66 +199,41 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         if (!empty($config['nat']['outbound']['rule'])) {
             foreach ($config['nat']['outbound']['rule'] as $rule) {
                 if (is_array($rule)) {
-                    $fw->registerSNatRule(100, $rule);
+                    $fw->registerSourceNatRule(100, $rule);
                 }
             }
         }
     }
 
     /* automatic outbound rules */
-    if (
-        empty($config['nat']['outbound']['mode']) ||
-          in_array($config['nat']['outbound']['mode'], ['automatic', 'hybrid'])
-    ) {
-        $intfv4 = [];
+    foreach (filter_auto_source_nat($fw) as $interface => $networks) {
+        foreach ([500, null] as $dstport) {
+            $rule = [
+                'descr' => 'Automatic outbound rule',
+                'destination' => ['any' => true],
+                'dstport' => $dstport,
+                'interface' => $interface,
+                'ipprotocol' => 'inet',
+                'log' => !empty($config['syslog']['logoutboundnat']),
+                'staticnatport' => !empty($dstport),
+            ];
 
-        foreach ($fw->getInterfaceMapping() as $intf => $intfcf) {
-            if (!empty($intfcf['ifconfig']['ipv4']) && empty($intfcf['gateway'])) {
-                $intfv4[] = $intf;
-            }
-        }
-
-        /* add VPN and local networks */
-        $intfv4 = array_merge($intfv4, filter_core_get_default_nat_outbound_networks());
-        foreach ($fw->getInterfaceMapping() as $intf => $ifcfg) {
-            /* XXX VPN is allowed but not OpenVPN dropping /tmp/ovpnxy_router(v6) file */
-            if (substr($ifcfg['if'], 0, 4) != 'ovpn' && !empty($ifcfg['gateway'])) {
-                foreach ([500, null] as $dstport) {
-                    $rule = [
-                        'descr' => 'Automatic outbound rule',
-                        'destination' => ['any' => true],
-                        'dstport' => $dstport,
-                        'interface' => $intf,
-                        'ipprotocol' => 'inet',
-                        'log' => !empty($config['syslog']['logoutboundnat']),
-                        'staticnatport' => !empty($dstport),
-                    ];
-                    foreach ($intfv4 as $network) {
-                        $rule['source'] = ['network' => $network];
-                        $fw->registerSNatRule(200, $rule);
-                    }
-                }
+            foreach ($networks as $network => $unused) {
+                $rule['source'] = ['network' => $network];
+                $fw->registerSourceNatRule(200, $rule);
             }
         }
     }
 
     /* prevent redirection on ports with "lock out" protection */
-    foreach (filter_core_get_antilockout() as $lockoutif => $lockoutprts) {
-        foreach ($lockoutprts as $port) {
-            $fw->registerForwardRule(300, [
-                'descr' => 'Anti-lockout; prevent redirects for protected ports to this interface address',
-                'destination' => ['network' => "{$lockoutif}ip", 'port' => $port],
-                'interface' => $lockoutif,
-                'nordr' => true,
-                'protocol' => 'tcp',
-            ]);
-        }
+    foreach (filter_auto_destination_nat() as $rule) {
+        $fw->registerDestinationNatRule(300, $rule);
     }
 
     foreach ((new OPNsense\Firewall\DNat())->rule->sortedBy(['sequence']) as $key => $rule) {
         $node = $rule->getNodeContent();
         $node['local-port'] = $rule->{'local-port'}->normalizedPort();
-        $fw->registerForwardRule(600, $node);
+        $fw->registerDestinationNatRule(600, $node);
     }
 
     /**
