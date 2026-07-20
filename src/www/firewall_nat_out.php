@@ -565,22 +565,8 @@ include("head.inc");
             </table>
           </div>
         </section>
-<?php   endif; ?>
-<?php
-      // when automatic or hybrid, display "auto" table.
-      if ($mode == "automatic" || $mode == "hybrid"):
-        $fw = filter_core_get_initialized_plugin_system();
-        $intfv4 = array();
-        $intfnatv4 = array();
-        foreach ($fw->getInterfaceMapping() as $intf => $intfcf) {
-            if (!empty($intfcf['ifconfig']['ipv4']) && empty($intfcf['gateway'])) {
-                $intfv4[] = sprintf(gettext('%s networks'), $intfcf['descr']);
-            } elseif (substr($intfcf['if'], 0, 4) != 'ovpn' && !empty($intfcf['gateway'])) {
-                $intfnatv4[] = $intfcf;
-            }
-        }
-        $intfv4 = array_merge($intfv4, filter_core_get_default_nat_outbound_networks());
-?>
+<?php endif ?>
+<?php if ($mode == 'automatic' || $mode == 'hybrid'): ?>
         <section class="col-xs-12">
           <div class="__mb"></div>
           <div class="table-responsive content-box">
@@ -604,20 +590,20 @@ include("head.inc");
                   </tr>
               </thead>
               <tbody>
-<?php
-              foreach ($intfnatv4 as $natintf):
-?>
+<?php foreach (filter_auto_source_nat() as $natintf => $networks): ?>
+<?php   $networks_safe = html_safe(implode(', ', array_values($networks))); ?>
+<?php   $natintf_safe = html_safe(convert_friendly_interface_to_friendly_descr($natintf)); ?>
                 <tr>
                   <td>&nbsp;</td>
                   <td>
                     <span class="fa fa-play text-success" data-toggle="tooltip" title="<?=gettext("automatic outbound nat");?>"></span>
                   </td>
-                  <td><?= htmlspecialchars($natintf['descr']); ?></td>
-                  <td><?= implode(', ', $intfv4);?></td>
+                  <td><?= $natintf_safe ?></td>
+                  <td><?= $networks_safe ?></td>
                   <td class="hidden-xs hidden-sm">*</td>
                   <td class="hidden-xs hidden-sm">*</td>
                   <td class="hidden-xs hidden-sm">500</td>
-                  <td class="hidden-xs hidden-sm"><?= htmlspecialchars($natintf['descr']); ?></td>
+                  <td class="hidden-xs hidden-sm"><?= $natintf_safe ?></td>
                   <td class="hidden-xs hidden-sm">*</td>
                   <td class="hidden-xs hidden-sm"><?=gettext("YES");?></td>
                   <td><?=gettext('Auto created rule for ISAKMP');?></td>
@@ -627,25 +613,21 @@ include("head.inc");
                   <td>
                     <span class="fa fa-play text-success" data-toggle="tooltip" title="<?=gettext("automatic outbound nat");?>"></span>
                   </td>
-                  <td><?= htmlspecialchars($natintf['descr']); ?></td>
-                  <td><?= implode(', ', $intfv4);?></td>
+                  <td><?= $natintf_safe ?></td>
+                  <td><?= $networks_safe ?></td>
                   <td class="hidden-xs hidden-sm">*</td>
                   <td class="hidden-xs hidden-sm">*</td>
                   <td class="hidden-xs hidden-sm">*</td>
-                  <td class="hidden-xs hidden-sm"><?= htmlspecialchars($natintf['descr']); ?></td>
+                  <td class="hidden-xs hidden-sm"><?= $natintf_safe ?></td>
                   <td class="hidden-xs hidden-sm">*</td>
                   <td class="hidden-xs hidden-sm"><?=gettext("NO");?></td>
                   <td><?=gettext('Auto created rule');?></td>
                 </tr>
-<?php
-        endforeach;
-?>
+<?php endforeach ?>
               </table>
             </div>
           </section>
-<?php
-      endif;
-?>
+<?php endif ?>
         </form>
       </div>
     </div>

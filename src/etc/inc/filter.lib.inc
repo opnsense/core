@@ -170,35 +170,28 @@ function filter_core_get_port_alias($aliasname, $aliases = [], $aliasObject = nu
     return $response;
 }
 
-
 /**
- * Collect vpn networks for outbound rules
+ * return automatic source NAT data
  */
-function filter_core_get_default_nat_outbound_networks()
+function filter_auto_source_nat($fw = null)
 {
-    global $config;
+    $outbound = config_read_array('nat', 'outbound', false);
+    $ret = [];
 
-    $result = ['127.0.0.0/8'];
+    if (in_array($outbound['mode'] ?? '', ['', 'automatic', 'hybrid'])) {
+        $fw ??= filter_core_get_initialized_plugin_system();
 
-    require_once 'plugins.inc.d/openvpn.inc'; /* XXX for openvpn_legacy() */
+        $networks = array_merge(...array_values(plugins_run('outbound_net', [$fw])));
 
-    // Add openvpn networks
-    foreach (['server', 'client'] as $section) {
-        if (openvpn_legacy($section)) {
-            foreach (config_read_array('openvpn', "openvpn-{$section}", false) as $ovpn) {
-                if (!isset($ovpn['disable']) && !empty($ovpn['tunnel_network'])) {
-                    $result[] = $ovpn['tunnel_network'];
-                }
+        foreach ($fw->getInterfaceMapping() as $interface => $ifcfg) {
+            /* XXX VPN is allowed but not OpenVPN dropping /tmp/ovpnxy_router(v6) file */
+            if (substr($ifcfg['if'], 0, 4) != 'ovpn' && !empty($ifcfg['gateway'])) {
+                $ret[$interface] = $networks;
             }
         }
     }
 
-    // Add ipsec network pool if specified
-    if (!empty($config['ipsec']['client']['pool_address']) && !empty($config['ipsec']['client']['pool_netbits'])) {
-        $result[] = "{$config['ipsec']['client']['pool_address']}/{$config['ipsec']['client']['pool_netbits']}";
-    }
-
-    return $result;
+    return $ret;
 }
 
 /**

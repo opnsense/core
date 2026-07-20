@@ -1675,3 +1675,24 @@ function ipsec_configure_device($device)
 {
     ipsec_configure_vti(false, $device);
 }
+
+function ipsec_get_default_nat_outbound_networks($unused_fw = null)
+{
+    global $config;
+
+    $result = [];
+
+    if (!empty($config['ipsec']['client']['pool_address']) && !empty($config['ipsec']['client']['pool_netbits'])) {
+        $network = "{$config['ipsec']['client']['pool_address']}/{$config['ipsec']['client']['pool_netbits']}";
+        $result[$network] = $network;
+    }
+
+    return $result;
+}
+
+function ipsec_run()
+{
+    return [
+        'outbound_net' => 'ipsec_get_default_nat_outbound_networks',
+    ];
+}

@@ -252,3 +252,28 @@ function pf_xmlrpc_sync()
 
     return $result;
 }
+
+function pf_run()
+{
+    return [
+        'outbound_nat' => 'filter_auto_source_nat',
+        'outbound_net' => 'pf_get_default_nat_outbound_networks',
+    ];
+}
+
+function pf_get_default_nat_outbound_networks($fw = null)
+{
+    $fw ??= filter_core_get_initialized_plugin_system();
+    $loopback = '127.0.0.0/8';
+    $result = [];
+
+    foreach ($fw->getInterfaceMapping() as $intf => $intfcf) {
+        if (!empty($intfcf['ifconfig']['ipv4']) && empty($intfcf['gateway'])) {
+            $result[$intf] = sprintf(gettext('%s networks'), $intfcf['descr']);
+        }
+    }
+
+    $result[$loopback] = $loopback;
+
+    return $result;
+}
