@@ -6,7 +6,7 @@
         <cert type=".\CertificatesField">
             <refid type="TextField">
                 <Mask>/^[0-9a-f]{13}$/</Mask>
-                <ValidationMessage>Must match format</ValidationMessage>
+                <ValidationMessage>Must match format.</ValidationMessage>
             </refid>
             <descr type="DescriptionField">
                 <Required>Y</Required>

@@ -927,6 +927,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Trust/General.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Trust/General.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Trust/Migrations/M1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Trust/Migrations/M1_0_2.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/FieldTypes/AliasReflector.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Unbound/FieldTypes/UnboundInterfaceField.php
