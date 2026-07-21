@@ -27,6 +27,7 @@
  */
 namespace OPNsense\Firewall\Api;
 
+use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 
@@ -62,87 +63,28 @@ class SourceNatController extends FilterBaseController
         ];
     }
 
-    // XXX: These are synthetic, display only for user convenience.
-    //      The backend should generate them in the same way, but there is no relation to this.
     private function getAutomaticOutboundNatRules(): array
     {
+        $automatic_rules = (json_decode((new Backend())->configdRun('filter list automatic_outbound_nat'), true))['pf'] ?? [];
         $config = Config::getInstance()->object();
-        $source_networks = [];
-        $nat_interfaces = [];
-
-        if (!isset($config->interfaces)) {
-            return [];
-        }
-
-        foreach ($config->interfaces->children() as $if => $ifcfg) {
-            $if = (string)$if;
-            $ipaddr = (string)($ifcfg->ipaddr ?? '');
-            $gateway = (string)($ifcfg->gateway ?? '');
-            $device = (string)($ifcfg->if ?? '');
-            $descr = (string)($ifcfg->descr ?? '');
-
-            if ($descr === '') {
-                $descr = strtoupper($if);
-            }
-
-            /*
-             * Only IPv4 interfaces participate in the automatic outbound NAT preview.
-             * DHCP counts as IPv4 for WAN style interfaces.
-             */
-            $has_ipv4 = in_array($ipaddr, ['dhcp', 'pppoe'], true) || Util::isIpv4Address($ipaddr);
-            if (!$has_ipv4) {
-                continue;
-            }
-
-            /*
-             * Raw config does not resolve gateway status like filter_core_getInterfaceMapping().
-             * DHCP WANs usually have no static gateway in the interface node, but should still
-             * be treated as automatic outbound NAT interfaces.
-             */
-            $is_wan_candidate = in_array($ipaddr, ['dhcp', 'pppoe'], true) ||
-            ($gateway !== '' && $gateway !== 'none');
-
-            if ($is_wan_candidate && substr($device, 0, 4) !== 'ovpn') {
-                $nat_interfaces[] = [
-                    'interface' => $if,
-                    'descr' => $descr,
-                ];
-            } else {
-                $source_networks[] = $if;
-            }
-        }
-
         $rows = [];
         $sequence = 1;
-        $source_net = implode(',', $source_networks);
 
-        foreach ($nat_interfaces as $natintf) {
-            $target = $natintf['interface'] . 'ip';
+        foreach ($automatic_rules as $interface => $source_networks) {
+            $descr = (string)($config->interfaces->{$interface}->descr ?? strtoupper($interface));
+            $source_net = implode(',', array_keys($source_networks));
             $rows[] = [
-                'uuid' => 'automatic_isakmp_' . $natintf['interface'],
+                'uuid' => 'automatic_isakmp_' . $interface,
                 'enabled' => '1',
-                'nonat' => '0',
-                'nosync' => '0',
                 'sequence' => (string)$sequence,
-                'interface' => $natintf['interface'],
-                '%interface' => $natintf['descr'],
+                'interface' => $interface,
+                '%interface' => $descr,
                 'ipprotocol' => 'inet',
                 '%ipprotocol' => 'IPv4',
                 'protocol' => 'any',
-                '%protocol' => '*',
                 'source_net' => $source_net,
-                'source_not' => '0',
-                'source_port' => '',
-                'destination_net' => 'any',
-                'destination_not' => '0',
                 'destination_port' => '500',
-                'target' => $target,
-                'target_port' => '',
                 'staticnatport' => '1',
-                'log' => '0',
-                'categories' => '',
-                'tag' => '',
-                'tagged' => '',
                 'description' => gettext('Auto created rule for ISAKMP'),
                 'is_automatic' => true,
                 'sort_order' => sprintf('%d.0%06d', 500000, $sequence),
@@ -150,30 +92,16 @@ class SourceNatController extends FilterBaseController
             ];
             $sequence++;
             $rows[] = [
-                'uuid' => 'automatic_' . $natintf['interface'],
+                'uuid' => 'automatic_' . $interface,
                 'enabled' => '1',
-                'nonat' => '0',
-                'nosync' => '0',
                 'sequence' => (string)$sequence,
-                'interface' => $natintf['interface'],
-                '%interface' => $natintf['descr'],
+                'interface' => $interface,
+                '%interface' => $descr,
                 'ipprotocol' => 'inet',
                 '%ipprotocol' => 'IPv4',
                 'protocol' => 'any',
-                '%protocol' => '*',
                 'source_net' => $source_net,
-                'source_not' => '0',
-                'source_port' => '',
-                'destination_net' => 'any',
-                'destination_not' => '0',
-                'destination_port' => '',
-                'target' => $target,
-                'target_port' => '',
                 'staticnatport' => '0',
-                'log' => '0',
-                'categories' => '',
-                'tag' => '',
-                'tagged' => '',
                 'description' => gettext('Auto created rule'),
                 'is_automatic' => true,
                 'sort_order' => sprintf('%d.0%06d', 500000, $sequence),
@@ -181,6 +109,7 @@ class SourceNatController extends FilterBaseController
             ];
             $sequence++;
         }
+
         return $rows;
     }
 
