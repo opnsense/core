@@ -881,6 +881,35 @@ function system_firmware_configure($verbose = false)
 
 function system_trust_configure($verbose = false)
 {
+    service_log('Running selftest...', $verbose);
+
+    $mod = '/usr/local/lib/ossl-modules/fips.so';
+    $base = '/usr/lib/ossl-modules/fips.so';
+    $cnf = '/usr/local/etc/ssl/fipsmodule.cnf';
+    $bak = '/usr/local/openssl/fipsmodule.cnf';
+
+    @unlink($cnf);
+    @unlink($base);
+
+    /* set up fips module for base OpenSSL as well */
+    @symlink($mod, $base);
+
+    /*
+     * We are using opnsense.cnf to bootstrap the fipsmodule.cnf
+     * because OpenSSL requires fipsmodule.cnf by default and
+     * otherwise refuses to bootstrap.  We do this to get a clean
+     * result.
+     */
+    if (mwexecf('OPENSSL_CONF=/usr/local/etc/ssl/opnsense.cnf /usr/local/bin/openssl fipsinstall -module %s -out %s', [$mod, $cnf])) {
+        auth_log("OpenSSL self test failed.");
+        service_log("failed.\n", $verbose);
+        /* XXX self-test failed, use the package provided copy for now */
+        copy($bak, $cnf);
+    } else {
+        auth_log("OpenSSL self test succeeded.");
+        service_log("done.\n", $verbose);
+    }
+
     service_log('Writing trust files...', $verbose);
 
     $trust = new \OPNsense\Trust\General();
