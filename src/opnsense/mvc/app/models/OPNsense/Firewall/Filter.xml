@@ -513,6 +513,7 @@
                 <tagged type="StrictTextField">
                     <Mask>/^([0-9a-zA-Z.,_\-]){0,512}$/u</Mask>
                 </tagged>
+                <endpoint-independent type="BooleanField"/>
                 <description type="DescriptionField"/>
             </rule>
         </snatrules>
