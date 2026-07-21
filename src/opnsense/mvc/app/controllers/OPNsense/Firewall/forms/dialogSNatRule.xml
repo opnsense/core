@@ -217,7 +217,9 @@
         <type>checkbox</type>
         <help>prevents the firewall from modifying the source port on TCP and UDP packets</help>
         <grid_view>
-            <ignore>true</ignore>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
         </grid_view>
     </field>
     <field>
@@ -226,7 +228,9 @@
         <type>checkbox</type>
         <help>Enables "full-cone" NAT behavior by mapping the NAT address and port to the same ones based on their UDP source</help>
         <grid_view>
-            <ignore>true</ignore>
+            <visible>false</visible>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
         </grid_view>
     </field>
     <field>
