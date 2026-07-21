@@ -433,6 +433,10 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Monit/forms/tests.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Ntpd/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Ntpd/StatusController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/OpenDNS/Api/ServiceController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/OpenDNS/Api/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/OpenDNS/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/OpenDNS/forms/general.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/Api/ClientOverwritesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/Api/ExportController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/OpenVPN/Api/InstancesController.php
@@ -883,6 +887,10 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Monit.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Ntpd/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/OpenDNS/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/OpenDNS/Menu/Menu.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/OpenDNS/OpenDNS.php
+/usr/local/opnsense/mvc/app/models/OPNsense/OpenDNS/OpenDNS.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/Export.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/Export.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/FieldTypes/InstanceField.php
@@ -1039,6 +1047,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Monit/status.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Ntpd/status.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/OpenDNS/settings.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/cso.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/export.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/OpenVPN/instances.volt
@@ -1356,6 +1365,7 @@
 /usr/local/opnsense/scripts/netflow/lib/parse.py
 /usr/local/opnsense/scripts/ntpd/ntpd_status.php
 /usr/local/opnsense/scripts/openssh/ssh_query.py
+/usr/local/opnsense/scripts/opendns/configure.php
 /usr/local/opnsense/scripts/openvpn/client_connect.php
 /usr/local/opnsense/scripts/openvpn/client_disconnect.sh
 /usr/local/opnsense/scripts/openvpn/genkey.py
@@ -1484,6 +1494,7 @@
 /usr/local/opnsense/service/conf/actions.d/actions_monit.conf
 /usr/local/opnsense/service/conf/actions.d/actions_netflow.conf
 /usr/local/opnsense/service/conf/actions.d/actions_ntpd.conf
+/usr/local/opnsense/service/conf/actions.d/actions_opendns.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openssh.conf
 /usr/local/opnsense/service/conf/actions.d/actions_openvpn.conf
 /usr/local/opnsense/service/conf/actions.d/actions_radvd.conf
@@ -2576,7 +2587,6 @@
 /usr/local/www/services_ntpd.php
 /usr/local/www/services_ntpd_gps.php
 /usr/local/www/services_ntpd_pps.php
-/usr/local/www/services_opendns.php
 /usr/local/www/status_wireless.php
 /usr/local/www/system_advanced_admin.php
 /usr/local/www/system_advanced_firewall.php
