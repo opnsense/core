@@ -169,6 +169,12 @@ class Filter extends BaseModel
                                 $rule->target_port->__reference
                             ));
                         }
+                        if (!$rule->{'endpoint-independent'}->isEmpty() && !$rule->protocol->isEqual('UDP')) {
+                            $messages->appendMessage(new Message(
+                                gettext("Endpoint Independent NAT is only available for UDP."),
+                                $rule->{'endpoint-independent'}->__reference
+                            ));
+                        }
                     } else {
                         // Additional filter validations
                         if (empty((string)$rule->max) && ($rule->adaptivestart == '0' || $rule->adaptiveend == '0')) {

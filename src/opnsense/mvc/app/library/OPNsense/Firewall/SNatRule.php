@@ -52,6 +52,7 @@ class SNatRule extends Rule
         'poolopts' => 'parsePlain',
         'poolopts_sourcehashkey' => 'parsePlain',
         'staticnatport' => 'parseBool,  static-port ',
+        'endpoint-independent'  => 'parseBool,  endpoint-independent ',
         'descr' => 'parseComment'
     );
 
