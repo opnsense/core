@@ -37,6 +37,10 @@
             <description>HiHo (HTTPS, Zurich, CH)</description>
         </mirror>
         <mirror>
+            <url>https://mirror.hostarts.dz/opnsense</url>
+            <description>HOSTARTS (HTTPS, Algiers, DZ)</description>
+        </mirror>
+        <mirror>
             <url>https://mirror-opnsense.serverbase.ch</url>
             <description>ServerBase AG (HTTPS, Zurich, CH)</description>
         </mirror>
