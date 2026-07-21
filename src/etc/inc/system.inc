@@ -881,6 +881,22 @@ function system_firmware_configure($verbose = false)
 
 function system_trust_configure($verbose = false)
 {
+    service_log('Running selftest...', $verbose);
+
+    $mod = '/usr/local/lib/ossl-modules/fips.so';
+    $cnf = '/usr/local/etc/ssl/fipsmodule.cnf';
+    $bak = '/usr/local/openssl/fipsmodule.cnf';
+
+    @unlink($cnf);
+
+    if (mwexecf('OPENSSL_CONF=/usr/local/etc/ssl/opnsense.cnf /usr/local/bin/openssl fipsinstall -module %s -out %s', [$mod, $cnf])) {
+        /* XXX self-test failed, use the package provided copy */
+        copy($bak, $cnf);
+        service_log("failed.\n", $verbose);
+    } else {
+        service_log("done.\n", $verbose);
+    }
+
     service_log('Writing trust files...', $verbose);
 
     $trust = new \OPNsense\Trust\General();
