@@ -129,6 +129,41 @@ function check_security_http_referer_enforcement()
     return false;
 }
 
+/* GUI IP Access Control — return true when request should be blocked */
+function check_security_ip_acl()
+{
+    global $config;
+    if (!isset($config['system']['webgui']['ipacl_enable'])) {
+        return false;
+    }
+    $remote_addr = $_SERVER['REMOTE_ADDR'] ?? '';
+    $allowed_nets = !empty($config['system']['webgui']['ipacl_nets'])
+        ? preg_split('/[\r\n,]+/', $config['system']['webgui']['ipacl_nets'], -1, PREG_SPLIT_NO_EMPTY)
+        : [];
+
+    foreach ($allowed_nets as $net) {
+        $net = trim($net);
+        if (empty($net)) {
+            continue;
+        }
+        if (is_ipaddr($net) && $remote_addr === $net) {
+            if (empty($_SESSION['ipacl_logged'])) {
+                auth_log(sprintf("[GUI-ACL] ALLOWED access from %s", $remote_addr), LOG_INFO);
+                $_SESSION['ipacl_logged'] = true;
+            }
+            return false;
+        } elseif (is_subnet($net) && ip_in_subnet($remote_addr, $net)) {
+            if (empty($_SESSION['ipacl_logged'])) {
+                auth_log(sprintf("[GUI-ACL] ALLOWED access from %s", $remote_addr), LOG_INFO);
+                $_SESSION['ipacl_logged'] = true;
+            }
+            return false;
+        }
+    }
+    auth_log(sprintf("[GUI-ACL] BLOCKED access from %s (not in whitelist)", $remote_addr), LOG_WARNING);
+    return true;
+}
+
 function session_auth()
 {
     global $config;
@@ -164,6 +199,12 @@ function session_auth()
             ));
             exit;
         }
+    }
+
+    /* GUI IP access control — block non-whitelisted IPs on every request */
+    if (check_security_ip_acl()) {
+        display_error_form(gettext('Access denied: your IP address is not permitted to access the web GUI.'));
+        exit;
     }
 
     /* Validate incoming login request */
