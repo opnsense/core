@@ -63,7 +63,6 @@
                             return; // prevent error windows from constantly popping up.
                         }
                         let error_type = BootstrapDialog.TYPE_DANGER;
-                        console.log(request.responseJSON.errorLevel );
                         switch (request.responseJSON.errorLevel ?? '') {
                             case 'warning':
                                 error_type = BootstrapDialog.TYPE_WARNING
