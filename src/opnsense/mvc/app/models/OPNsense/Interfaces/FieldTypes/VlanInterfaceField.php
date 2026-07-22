@@ -55,7 +55,6 @@ class VlanInterfaceField extends BaseListField
                     if (
                         strpos($ifname, "qinq") === 0 || strpos($ifname, "lo") === 0 || strpos($ifname, "enc") === 0 ||
                         strpos($ifname, "pflog") === 0 || strpos($ifname, "pfsync") === 0 ||
-                        strpos($ifname, "bridge") === 0 ||
                         in_array('pointopoint', $details['flags'])
                     ) {
                         continue;

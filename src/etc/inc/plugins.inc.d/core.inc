@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2018-2025 Deciso B.V.
+ * Copyright (C) 2018-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -202,6 +202,7 @@ function core_devices()
     }
 
     $devices[] = [
+        'function' => 'interfaces_vlan_configure',
         'pattern' => '_vlan|^vlan|^qinq',
         'names' => $vlan_names,
         'volatile' => true,

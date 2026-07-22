@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2022-2023 Deciso B.V.
+ * Copyright (C) 2022-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -61,22 +61,22 @@ foreach (config_read_array('vlans', 'vlan', false) as $vlan) {
 }
 
 /* handle existing vlans */
-foreach (legacy_interfaces_details() as $ifname => $ifdetails) {
-    if (empty($ifdetails['vlan'])) {
+foreach (legacy_interfaces_details() as $device => $details) {
+    if (empty($details['vlan'])) {
         continue;
     }
-    if (!isset($all_vlans[$ifname])) {
+    if (!isset($all_vlans[$device])) {
         continue;
     }
-    if (empty($all_vlans[$ifname])) {
+    if (empty($all_vlans[$device])) {
         /* option 1: removed vlan */
-        legacy_interface_destroy($ifname);
+        legacy_interface_destroy($device);
     } else {
-        $vlan = $all_vlans[$ifname];
+        $vlan = $all_vlans[$device];
         if (empty($vlan['proto'])) {
             $vlan['proto'] = empty($all_parents[$vlan['vlanif']]) ? '802.1q' : '802.1ad';
         }
-        $cvlan = $ifdetails['vlan'];
+        $cvlan = $details['vlan'];
         if ($vlan['tag'] != $cvlan['tag'] || $vlan['if'] != $cvlan['parent']) {
             /* option 2: changed vlan, unlink and relink */
             /*
@@ -96,15 +96,12 @@ foreach (legacy_interfaces_details() as $ifname => $ifdetails) {
             }
         }
     }
-    unset($all_vlans[$ifname]);
+    unset($all_vlans[$device]);
 }
 
 /* configure new */
-foreach ($all_vlans as $ifname => $vlan) {
-    if (!empty($vlan)) {
-        $vlan['proto'] = !in_array($vlan['if'], $all_parents) ? '802.1q' : '802.1ad';
-        _interfaces_vlan_configure($vlan);
-    }
+foreach (array_keys($all_vlans) as $device) {
+    interfaces_vlan_configure($device);
 }
 
 ifgroup_setup();
