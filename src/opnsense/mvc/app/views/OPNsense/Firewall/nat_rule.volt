@@ -275,7 +275,15 @@
                         }
                         let rowId = row.uuid;
 
-                        if (!rowId.includes('-')) {
+                        if (row.prio_group == 600000) {
+                            return `
+                                <button type="button" class="btn btn-xs btn-default command-delete
+                                    bootgrid-tooltip" data-row-id="${rowId}"
+                                    title="{{ lang._('Delete') }}">
+                                    <span class="fa fa-fw fa-trash-o"></span>
+                                </button>
+                            `;
+                        } else if (!rowId.includes('-')) {
                             return `
                                 <a href="/system_advanced_firewall.php" target="_blank" rel="noopener noreferrer"
                                 class="btn btn-xs btn-default bootgrid-tooltip"
@@ -321,7 +329,7 @@
                     },
                     rowtoggle: function (column, row) {
                         const rowId = row.uuid || '';
-                        if (row.isGroup || !rowId.includes('-')) {
+                        if (row.isGroup || !rowId.includes('-') || row.prio_group == 600000) {
                             return '';
                         }
                         const isEnabled =

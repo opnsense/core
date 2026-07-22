@@ -343,6 +343,17 @@
                         const rowId = row.uuid || "";
                         const hasUuid = rowId.includes("-");
 
+                        // Defunct rules can only be deleted
+                        if (getRuleTypeDigit(row) === 6) {
+                            return `
+                                <button type="button" class="btn btn-xs btn-default command-delete
+                                    bootgrid-tooltip" data-row-id="${rowId}"
+                                    title="{{ lang._('Delete') }}">
+                                    <span class="fa fa-fw fa-trash-o"></span>
+                                </button>
+                            `;
+                        }
+
                         const logSearchCommand = (rid, log) => {
                             const loggingEnabled = log === '1' || log === true;
                             if (!loggingEnabled) return '';
@@ -420,7 +431,7 @@
                         }
 
                         const rowId = row.uuid || '';
-                        if (!rowId.includes('-')) {
+                        if (!rowId.includes('-') || getRuleTypeDigit(row) === 6) {
                             return '';
                         }
 
