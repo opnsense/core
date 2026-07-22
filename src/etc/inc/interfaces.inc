@@ -107,31 +107,20 @@ function interfaces_vlan_priorities()
     return $priorities;
 }
 
-function interfaces_vlan_configure($verbose = false)
+function interfaces_vlan_configure($device)
 {
-    global $config;
+    $vlans = config_read_array('vlans', 'vlan', false);
+    $all_parents = [];
 
-    if (!isset($config['vlans']['vlan'])) {
+    if (!count($vlans)) {
         return;
     }
 
-    service_log('Configuring VLAN interfaces...', $verbose);
-
-    /* XXX sorting vlans here on top of $config seems prone to further side effects */
-    // Handle QinQ dependencies by sorting list of vlans to create (first all vlans so we can stack QinQ on top)
-    usort($config['vlans']['vlan'], function ($a, $b) {
-        $aqinq = strpos($a['vlanif'], 'vlan') !== false ? 0 : 1;
-        $bqinq = strpos($b['vlanif'], 'vlan') !== false ? 0 : 1;
-        if ($aqinq === $bqinq) {
-            return $a['vlanif'] <=> $b['vlanif'];
-        } else {
-            return $aqinq <=> $bqinq;
-        }
-    });
-
-    /* requested vlan protocol, when the vlan has vlans as children, the 802.1ad (QinQ) proto should be used */
-    $all_parents = [];
-    foreach ($config['vlans']['vlan'] as $vlan) {
+    /*
+     * Requested VLAN protocol: when the VLAN has vlans as
+     * children, the 802.1ad (QinQ) proto should be used.
+     */
+    foreach ($vlans as $vlan) {
         if (!in_array($vlan['vlanif'], $all_parents)) {
             if (!isset($all_parents[$vlan['if']])) {
                 $all_parents[$vlan['if']] = 0;
@@ -139,14 +128,17 @@ function interfaces_vlan_configure($verbose = false)
             $all_parents[$vlan['if']]++;
         }
     }
-    foreach ($config['vlans']['vlan'] as $vlan) {
-        if (empty($vlan['proto'])) {
-            $vlan['proto'] = empty($all_parents[$vlan['vlanif']]) ? '802.1q' : '802.1ad';
-        }
-        _interfaces_vlan_configure($vlan);
-    }
 
-    service_log("done.\n", $verbose);
+    foreach ($vlans as $vlan) {
+        if ($vlan['vlanif'] == $device) {
+            /* XXX if we migrate this we don't have to deal with it anymore */
+            if (empty($vlan['proto'])) {
+                $vlan['proto'] = empty($all_parents[$vlan['vlanif']]) ? '802.1q' : '802.1ad';
+            }
+
+            _interfaces_vlan_configure($vlan);
+        }
+    }
 }
 
 function _interfaces_vlan_configure($vlan)
@@ -741,14 +733,21 @@ function interfaces_configure($verbose = false)
 
     interfaces_loopback_configure($verbose);
     interfaces_lagg_configure($verbose);
-    interfaces_vlan_configure($verbose);
 
     /* run through priority lists */
     foreach ([$hardware, $virtual, $track6, $bridge, $dhcp6c] as $list) {
         foreach ($list as $device => $if) {
+            /* pre-op: configuring the underlying parents */
+            foreach (interface_parent_devices($device) as $parent) {
+                if (!empty($devices[$parent])) {
+                    log_msg("Device $parent required by $device, configuring now");
+                    call_user_func_array($devices[$parent], [$parent]);
+                    unset($devices[$parent]);
+                }
+            }
+
             /* pre-op: configuring the underlying device */
             if (!empty($devices[$device])) {
-                /* XXX devices could depend on other devices */
                 log_msg("Device $device required for $if, configuring now");
                 call_user_func_array($devices[$device], [$device]);
                 unset($devices[$device]);
@@ -767,11 +766,21 @@ function interfaces_configure($verbose = false)
         }
     }
 
+    /* resolve parent devices of unconfigured devices */
+    foreach (array_keys($devices) as $device) {
+        foreach (interface_parent_devices($device) as $parent) {
+            if (!empty($devices[$parent])) {
+                log_msg("Device $parent required by $device, configuring late");
+                call_user_func_array($devices[$parent], [$parent]);
+                unset($devices[$parent]);
+            }
+        }
+    }
+
     /* last but not least start all unconfigured devices */
-    foreach ($devices as $name => $function) {
-        /* XXX devices could depend on other devices */
-        log_msg("Device $name is not assigned, configuring late");
-        call_user_func_array($function, [$name]);
+    foreach (array_keys($devices) as $device) {
+        log_msg("Device $device is not assigned, configuring late");
+        call_user_func_array($devices[$device], [$device]);
     }
 }
 
@@ -3556,7 +3565,6 @@ function interface_parent_devices($device, $as_interface = false)
     $parents = [];
 
     if (strstr($device, 'vlan') || strstr($device, 'qinq')) {
-        /* XXX maybe if we have a qinq type return both parents? */
         foreach (config_read_array('vlans', 'vlan', false) as $vlan) {
             if ($device == $vlan['vlanif']) {
                 $parents[] = $vlan['if'];
