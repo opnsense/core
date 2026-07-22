@@ -285,13 +285,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['syslog']['nologprivatenets'] = empty($pconfig['logprivatenets']);
         $config['syslog']['logoutboundnat'] = !empty($pconfig['logoutboundnat']);
 
-        write_config();
+        if (write_config()) {
+            system_cron_configure();
+            system_sysctl_configure();
+            filter_configure();
+        }
 
         $savemsg = get_std_save_message();
 
-        system_cron_configure();
-        system_sysctl_configure();
-        filter_configure();
     }
 }
 

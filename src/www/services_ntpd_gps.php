@@ -64,8 +64,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $gps['initcmd']= base64_encode($gps['initcmd'] ?? '');
         $config['ntpd']['gps'] = $gps;
-        write_config("Updated NTP GPS Settings");
-        ntpd_configure_do();
+        if (write_config("Updated NTP GPS Settings")) {
+            ntpd_configure_do();
+        }
         header(url_safe('Location: /services_ntpd_gps.php'));
         exit;
     }

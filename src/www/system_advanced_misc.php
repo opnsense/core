@@ -189,12 +189,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['disablebeep']);
         }
 
-        write_config();
-
-        system_resolver_configure();
-        system_cron_configure();
-        system_powerd_configure();
-        system_kernel_configure();
+        if (write_config()) {
+            system_resolver_configure();
+            system_cron_configure();
+            system_powerd_configure();
+            system_kernel_configure();
+        }
 
         $savemsg = get_std_save_message();
     }

@@ -331,8 +331,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $catmdl->serializeToConfig();
             $config = OPNsense\Core\Config::getInstance()->toArray(listtags());
         }
-        write_config();
-        mark_subsystem_dirty('natconf');
+        if (write_config()) {
+            mark_subsystem_dirty('natconf');
+        }
         header(url_safe('Location: /firewall_nat_out.php'));
         exit;
     }

@@ -188,8 +188,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         schedule_sort();
-        write_config();
-        filter_configure();
+        if (write_config()) {
+            filter_configure();
+        }
 
         header(url_safe('Location: /firewall_schedule.php'));
         exit;
