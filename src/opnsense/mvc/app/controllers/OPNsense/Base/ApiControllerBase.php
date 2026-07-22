@@ -402,4 +402,15 @@ class ApiControllerBase extends ControllerRoot
 
         return $this->response->send();
     }
+
+    /**
+     * run interface registration check and cache invalidation
+     */
+    public function runInterfaceRegistration()
+    {
+        $backend = new Backend();
+
+        $backend->configdRun('interface invoke registration');
+        $backend->configdRun('!interface list assign-opts', false, 20);
+    }
 }
