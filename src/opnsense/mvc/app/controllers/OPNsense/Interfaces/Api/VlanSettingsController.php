@@ -193,6 +193,7 @@ class VlanSettingsController extends ApiMutableModelControllerBase
         $result = array("status" => "failed");
         if ($this->request->isPost()) {
             $result['status'] = strtolower(trim((new Backend())->configdRun('interface vlan configure')));
+            $this->runInterfaceRegistration();
         }
         return $result;
     }

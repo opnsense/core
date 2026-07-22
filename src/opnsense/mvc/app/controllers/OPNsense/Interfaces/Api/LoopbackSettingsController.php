@@ -67,6 +67,7 @@ class LoopbackSettingsController extends ApiMutableModelControllerBase
         if ($this->request->isPost()) {
             $backend = new Backend();
             $result['status'] = strtolower(trim($backend->configdRun('interface loopback configure')));
+            $this->runInterfaceRegistration();
         }
         return $result;
     }

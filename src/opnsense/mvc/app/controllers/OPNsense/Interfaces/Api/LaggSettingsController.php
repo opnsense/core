@@ -170,6 +170,7 @@ class LaggSettingsController extends ApiMutableModelControllerBase
     {
         if ($this->request->isPost()) {
             (new Backend())->configdRun("interface lagg configure");
+            $this->runInterfaceRegistration();
             return array("status" => "ok");
         } else {
             return array("status" => "failed");

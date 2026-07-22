@@ -172,6 +172,7 @@ class GreSettingsController extends ApiMutableModelControllerBase
     {
         if ($this->request->isPost()) {
             (new Backend())->configdRun("interface gre configure");
+            $this->runInterfaceRegistration();
             return ["status" => "ok"];
         } else {
             return ["status" => "failed"];

@@ -172,6 +172,7 @@ class GifSettingsController extends ApiMutableModelControllerBase
     {
         if ($this->request->isPost()) {
             (new Backend())->configdRun("interface gif configure");
+            $this->runInterfaceRegistration();
             return ["status" => "ok"];
         } else {
             return ["status" => "failed"];

@@ -130,6 +130,7 @@ class BridgeSettingsController extends ApiMutableModelControllerBase
     {
         if ($this->request->isPost()) {
             (new Backend())->configdRun("interface bridge configure");
+            $this->runInterfaceRegistration();
             return ["status" => "ok"];
         } else {
             return ["status" => "failed"];
