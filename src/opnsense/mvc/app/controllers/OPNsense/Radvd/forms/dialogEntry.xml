@@ -192,7 +192,7 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>The default is to use the domain name of this system as the DNSSL option. You may specify explicit domains here instead.</help>
+        <help>The default is to use the domain name of this system as the DNSSL option. You may specify explicit domains here instead. Use "." by itself to disable DNS search domains.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
