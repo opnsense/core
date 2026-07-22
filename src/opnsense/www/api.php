@@ -12,6 +12,9 @@ function error_output($http_code, $e, $user_message)
     if (method_exists($e, 'getTitle')) {
         $response['errorTitle'] = $e->getTitle();
     }
+    if (method_exists($e, 'getLevel')) {
+        $response['errorLevel'] = $e->getLevel();
+    }
     if (!headers_sent()) {
         header('HTTP', true, $http_code);
         header("Content-Type: application/json;charset=utf-8");
@@ -43,7 +46,7 @@ try {
         $response->send();
     }
 } catch (\OPNsense\Base\UserException $e) {
-    error_output(500, $e, $e->getMessage());
+    error_output($e->getHttpCode(), $e, $e->getMessage());
 } catch (\OPNsense\Mvc\Exceptions\DispatchException $e) {
     error_output(404, $e, gettext('Endpoint not found'));
 } catch (\Error | \Exception $e) {

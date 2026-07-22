@@ -59,9 +59,19 @@
                         } else if ($("#opnsense-generic-error-dialog").is(':visible')) {
                             return; // prevent error windows from constantly popping up.
                         }
+                        let error_type = BootstrapDialog.TYPE_DANGER;
+                        console.log(request.responseJSON.errorLevel );
+                        switch (request.responseJSON.errorLevel ?? '') {
+                            case 'warning':
+                                error_type = BootstrapDialog.TYPE_WARNING
+                                break;
+                            case 'info':
+                                error_type = BootstrapDialog.TYPE_INFO
+                                break;
+                        }
                         BootstrapDialog.show({
                             id: 'opnsense-generic-error-dialog',
-                            type: BootstrapDialog.TYPE_DANGER,
+                            type: error_type,
                             title: request.responseJSON.errorTitle,
                             message:request.responseJSON.errorMessage,
                             buttons: [{
