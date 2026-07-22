@@ -55,7 +55,7 @@ class ServiceController extends ApiMutableServiceControllerBase
         }
 
         $backend = new Backend();
-        $backend->configdRun('interface invoke registration');
+        $this->runInterfaceRegistration();
         $backend->configdRun('template reload ' . escapeshellarg(static::$internalServiceTemplate));
         $backend->configdpRun('wireguard configure');
 

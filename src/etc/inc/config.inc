@@ -211,14 +211,7 @@ function write_config($desc = '', $backup = true)
         }
     }
 
-    /**
-     * XXX: Temporary construction.
-     *      When called via a legacy interface configure page, we might want to register new interfaces, but
-     *      in cases we just want to save our changes (not related to interfaces), we risk raising errors for
-     *      missing imports.
-     *      Eventually relevant callers should call 'interface invoke registration', which is the same as
-     *      mvc components use now (but can't be called here without side effects)
-     */
+    /* XXX temporary workaround for legacy interface creation */
     try {
         plugins_interfaces();
     } catch (Throwable $e) {

@@ -243,9 +243,8 @@ class ServiceController extends ApiControllerBase
             return ['result' => 'failed'];
         }
 
-        $backend = new Backend();
-        $backend->configdRun('openvpn configure');
-        $backend->configdRun('interface invoke registration');
+        (new Backend())->configdRun('openvpn configure');
+        $this->runInterfaceRegistration();
 
         return ['result' => 'ok'];
     }

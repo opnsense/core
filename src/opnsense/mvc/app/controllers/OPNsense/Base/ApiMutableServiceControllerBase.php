@@ -195,7 +195,7 @@ abstract class ApiMutableServiceControllerBase extends ApiControllerBase
             }
 
             if ($this->invokeInterfaceRegistration()) {
-                $backend->configdRun('interface invoke registration');
+                $this->runInterfaceRegistration();
             }
 
             if ($this->invokeFirewallReload()) {
