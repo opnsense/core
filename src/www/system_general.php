@@ -255,19 +255,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
         }
 
-        write_config();
+        if (write_config()) {
+            foreach ($staleroutes as $staleroute) {
+                /* explicit flush before proceeding */
+                system_host_route($staleroute, null);
+            }
 
-        foreach ($staleroutes as $staleroute) {
-            /* explicit flush before proceeding */
-            system_host_route($staleroute, null);
+            system_timezone_configure(); /* time zone change first */
+            system_hostname_configure();
+            system_resolver_configure();
+            plugins_configure('dns');
+            plugins_configure('dhcp');
+            filter_configure();
         }
 
-        system_timezone_configure(); /* time zone change first */
-        system_hostname_configure();
-        system_resolver_configure();
-        plugins_configure('dns');
-        plugins_configure('dhcp');
-        filter_configure();
 
         header(url_safe('Location: /system_general.php?savemsg=%s', ['The changes have been applied successfully.']));
         exit;

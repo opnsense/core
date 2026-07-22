@@ -88,6 +88,7 @@ class TemplateController extends ApiMutableModelControllerBase
         }
 
         Config::getInstance()->lock();
+        $this->throwReadOnly();
 
         $content = $this->request->getPost("content", "striptags", "");
         $templateName = $this->request->getPost("name", "striptags");

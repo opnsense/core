@@ -44,22 +44,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = $pconfig['id'];
     }
     if (isset($pconfig['apply'])) {
-        write_config();
-        filter_configure();
-        clear_subsystem_dirty('natconf');
-        clear_subsystem_dirty('filter');
+        if (write_config()) {
+            filter_configure();
+            clear_subsystem_dirty('natconf');
+            clear_subsystem_dirty('filter');
+        }
     } elseif (isset($pconfig['save']) && $pconfig['save'] == "Save") {
         $mode = $config['nat']['outbound']['mode'];
         $config['nat']['outbound']['mode'] = $pconfig['mode'];
-        write_config();
-        mark_subsystem_dirty('natconf');
+        if (write_config()) {
+            mark_subsystem_dirty('natconf');
+        }
         header(url_safe('Location: /firewall_nat_out.php'));
         exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del' && isset($id)) {
         // delete single record
         unset($a_out[$id]);
-        write_config();
-        mark_subsystem_dirty('natconf');
+        if (write_config()) {
+            mark_subsystem_dirty('natconf');
+        }
         header(url_safe('Location: /firewall_nat_out.php'));
         exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'del_x' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
@@ -69,16 +72,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 unset($a_out[$rulei]);
             }
         }
-        write_config();
-        mark_subsystem_dirty('natconf');
+        if (write_config()) {
+            mark_subsystem_dirty('natconf');
+        }
         header(url_safe('Location: /firewall_nat_out.php'));
         exit;
     } elseif (isset($pconfig['act']) && in_array($pconfig['act'], array('toggle_enable', 'toggle_disable')) && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
         foreach ($pconfig['rule'] as $rulei) {
             $a_out[$rulei]['disabled'] = $pconfig['act'] == 'toggle_disable';
         }
-        write_config();
-        mark_subsystem_dirty('filter');
+        if (write_config()) {
+            mark_subsystem_dirty('filter');
+        }
         header(url_safe('Location: /firewall_nat_out.php'));
         exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'move' && isset($pconfig['rule']) && count($pconfig['rule']) > 0) {
@@ -87,8 +92,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $id = count($a_out);
         }
         $a_out = legacy_move_config_list_items($a_out, $id,  $pconfig['rule']);
-        write_config();
-        mark_subsystem_dirty('natconf');
+        if (write_config()) {
+            mark_subsystem_dirty('natconf');
+        }
         header(url_safe('Location: /firewall_nat_out.php'));
         exit;
     } elseif (isset($pconfig['act']) && $pconfig['act'] == 'toggle' && isset($id)) {
@@ -98,8 +104,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $a_out[$id]['disabled'] = true;
         }
-        write_config('Firewall: NAT: Outbound, toggle NAT rule');
-        mark_subsystem_dirty('natconf');
+        if (write_config('Firewall: NAT: Outbound, toggle NAT rule')) {
+            mark_subsystem_dirty('natconf');
+        }
         header(url_safe('Location: /firewall_nat_out.php'));
         exit;
     }

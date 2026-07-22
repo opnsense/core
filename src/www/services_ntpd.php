@@ -160,10 +160,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_ntpd['leapsec'] = base64_encode(file_get_contents($_FILES['leapfile']['tmp_name']));
         }
 
-        write_config("Updated NTP Server Settings");
+        if (write_config("Updated NTP Server Settings")) {
+            ntpd_configure_do();
+            system_cron_configure();
+        }
 
-        ntpd_configure_do();
-        system_cron_configure();
 
         header(url_safe('Location: /services_ntpd.php'));
         exit;

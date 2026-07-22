@@ -291,14 +291,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_ppps[] = $ppp;
         }
 
-        write_config();
-
-        $iflist = get_configured_interface_with_descr();
-        foreach ($iflist as $pppif => $ifdescr) {
-            if ($config['interfaces'][$pppif]['if'] == $ppp['if']) {
-                interface_ppps_configure($pppif);
+        if (write_config()) {
+            $iflist = get_configured_interface_with_descr();
+            foreach ($iflist as $pppif => $ifdescr) {
+                if ($config['interfaces'][$pppif]['if'] == $ppp['if']) {
+                    interface_ppps_configure($pppif);
+                }
             }
         }
+
 
         header(url_safe('Location: /interfaces_ppps.php'));
         exit;

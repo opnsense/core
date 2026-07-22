@@ -699,19 +699,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         $a_interfaces[$if]['descr'] = preg_replace('/[^a-z_0-9]/i', '', $pconfig['descr']);
 
-        write_config("Interface {$pconfig['descr']}({$if}) is now disabled.");
-        mark_subsystem_dirty('interfaces');
-        if (file_exists('/tmp/.interfaces.apply')) {
-            $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
-        } else {
-            $toapplylist = [];
-        }
-        if (empty($toapplylist[$if])) {
-            // only flush if the running config is not in our list yet
-            $toapplylist[$if]['ifcfg'] = $a_interfaces[$if];
-            $toapplylist[$if]['ifcfg']['devices'] = get_real_interface($if, 'both');
-            $toapplylist[$if]['ppps'] = $a_ppps;
-            file_safe('/tmp/.interfaces.apply', serialize($toapplylist));
+        if (write_config("Interface {$pconfig['descr']}({$if}) is now disabled.")) {
+            mark_subsystem_dirty('interfaces');
+            if (file_exists('/tmp/.interfaces.apply')) {
+                $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
+            } else {
+                $toapplylist = [];
+            }
+            if (empty($toapplylist[$if])) {
+                // only flush if the running config is not in our list yet
+                $toapplylist[$if]['ifcfg'] = $a_interfaces[$if];
+                $toapplylist[$if]['ifcfg']['devices'] = get_real_interface($if, 'both');
+                $toapplylist[$if]['ppps'] = $a_ppps;
+                file_safe('/tmp/.interfaces.apply', serialize($toapplylist));
+            }
         }
         if (!empty($ifgroup)) {
             header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
@@ -1356,24 +1357,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $a_interfaces[$if] = $new_config;
 
             // save to config
-            write_config();
+            if (write_config()) {
+                // log changes for apply action
+                // (it would be better to diff the physical situation with the new config for changes)
+                if (file_exists('/tmp/.interfaces.apply')) {
+                    $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
+                } else {
+                    $toapplylist = [];
+                }
 
-            // log changes for apply action
-            // (it would be better to diff the physical situation with the new config for changes)
-            if (file_exists('/tmp/.interfaces.apply')) {
-                $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
-            } else {
-                $toapplylist = [];
+                if (empty($toapplylist[$if])) {
+                    // only flush if the running config is not in our list yet
+                    $toapplylist[$if]['ifcfg'] = $old_config;
+                    $toapplylist[$if]['ppps'] = $a_ppps;
+                    file_safe('/tmp/.interfaces.apply', serialize($toapplylist));
+                }
+
+                mark_subsystem_dirty('interfaces');
             }
-
-            if (empty($toapplylist[$if])) {
-                // only flush if the running config is not in our list yet
-                $toapplylist[$if]['ifcfg'] = $old_config;
-                $toapplylist[$if]['ppps'] = $a_ppps;
-                file_safe('/tmp/.interfaces.apply', serialize($toapplylist));
-            }
-
-            mark_subsystem_dirty('interfaces');
 
             if (!empty($ifgroup)) {
                 header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
