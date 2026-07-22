@@ -5,7 +5,8 @@
     <page-diagnostics-backup-restore>
         <name>System: Configuration: Backups</name>
         <patterns>
-            <pattern>diag_backup.php*</pattern>
+            <pattern>ui/core/backup</pattern>
+            <pattern>api/core/backup/*</pattern>
         </patterns>
     </page-diagnostics-backup-restore>
     <page-system-login-logout>
