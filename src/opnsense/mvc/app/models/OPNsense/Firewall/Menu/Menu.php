@@ -64,6 +64,10 @@ class Menu extends MenuContainer
         $has_legacy_fw = file_exists('/usr/local/www/firewall_rules.php');
         if ($has_legacy_fw) {
             $iftargets = array_merge(['FloatingRules' => gettext('Floating')], $iftargets);
+            $this->appendItem('Firewall', 'Rules', [
+                'fixedname' => gettext('Rules [legacy]'),
+                'cssClass' => 'fa fa-check fa-fw',
+            ]);
         }
 
         $ordid = 1;
