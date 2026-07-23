@@ -109,7 +109,7 @@ while (1) {
         }
 
         /* determine transition based on individual gateway group trigger levels */
-        $ralarm = $gwgroups->gatewayStateChange($report['name'], $rprev, $rcurr);
+        $ralarm |= $gwgroups->gatewayStateChange($report['name'], $rprev, $rcurr);
 
         if ($ralarm) {
             $alarm_gateways[] = $report['name'];
