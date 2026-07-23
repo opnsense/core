@@ -30,6 +30,7 @@ namespace OPNsense\Interfaces;
 
 use OPNsense\Base\BaseModel;
 use OPNsense\Base\Messages\Message;
+use OPNsense\Base\ModelException;
 use OPNsense\Core\Config;
 use OPNsense\Core\FileObject;
 
@@ -137,12 +138,18 @@ class NetworkInterface extends BaseModel
         }
 
         foreach ($interfaces as $key => $intf) {
+            $newIdentifier = 'opt' . $next_if;
             if (!isset(Config::getInstance()->object()->interfaces->$key)) {
-                $newif = Config::getInstance()->object()->interfaces->addChild('opt' . $next_if);
+                $newif = Config::getInstance()->object()->interfaces->addChild($newIdentifier);
                 $newif->if = $intf['if'];
                 $newif->descr = $intf['descr'];
                 $newif->lock = $intf['lock'];
                 $next_if++;
+
+                /* We want the node to return the new network identifier as the uuid not
+                the internal random generated uuid by the ArrayField.
+                Assignments use identifier as the uuid in the config.xml */
+                $this->getNodeByReference('interface.' . $key)?->setAttributeValue('uuid', $newIdentifier);
             }
         }
         return true;
