@@ -29,13 +29,21 @@ REQUEST="UPGRADE"
 
 . /usr/local/opnsense/scripts/firmware/config.sh
 
+PREFER_SHUTDOWN=0
+for arg in "$@"; do
+	if [ "$arg" = "shutdown" ]; then
+		PREFER_SHUTDOWN=1
+		break
+	fi
+done
+
 if output_cmd opnsense-update -u; then
 	if output_cmd /usr/local/etc/rc.syshook upgrade; then
 		# pending kernel applies before reboot
 		if output_cmd opnsense-update -K -c; then
 			output_cmd opnsense-update -K
 		fi
-		output_reboot keep-log
+		output_restart_action keep-log ${PREFER_SHUTDOWN}
 	fi
 
 	output_txt "The upgrade was aborted due to an error."
