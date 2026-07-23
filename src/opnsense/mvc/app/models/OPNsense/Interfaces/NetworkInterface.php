@@ -150,11 +150,6 @@ class NetworkInterface extends BaseModel
                 the internal random generated uuid by the ArrayField.
                 Assignments use identifier as the uuid in the config.xml */
                 $this->getNodeByReference('interface.' . $key)?->setAttributeValue('uuid', $newIdentifier);
-                if ($node === null) {
-                    throw new ModelException('Failed to locate interface node ' . $key . '
-                    while updating uuid to the new network identifier');
-                }
-                $node->setAttributeValue('uuid', $newIdentifier);
             }
         }
         return true;
