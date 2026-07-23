@@ -82,8 +82,9 @@ export default class OpenVPNClients extends BaseTableWidget {
             }
 
             if (!session.is_client) {
+                const existingClients = servers[id].clients;
                 servers[id] = session;
-                servers[id].clients = null;
+                servers[id].clients = existingClients;
             } else {
 
                 servers[id].clients.push(session);

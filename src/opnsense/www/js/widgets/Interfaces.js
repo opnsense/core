@@ -75,7 +75,7 @@ export default class Interfaces extends BaseTableWidget {
                 </div>
             `).prop('outerHTML'));
 
-            let media = (!'media' in intf_data ? intf_data.cell_mode : intf_data.media) ?? '';
+            let media = (!('media' in intf_data) ? intf_data.cell_mode : intf_data.media) ?? '';
             row.push($(`
                 <div class="interface-info-detail">
                     <div>${media}</div>
