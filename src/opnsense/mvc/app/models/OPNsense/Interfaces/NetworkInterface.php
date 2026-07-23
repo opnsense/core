@@ -149,7 +149,7 @@ class NetworkInterface extends BaseModel
                 /* We want the node to return the new network identifier as the uuid not
                 the internal random generated uuid by the ArrayField.
                 Assignments use identifier as the uuid in the config.xml */
-                $node = $this->getNodeByReference('interface.' . $key);
+                $this->getNodeByReference('interface.' . $key)?->setAttributeValue('uuid', $newIdentifier);
                 if ($node === null) {
                     throw new ModelException('Failed to locate interface node ' . $key . '
                     while updating uuid to the new network identifier');
