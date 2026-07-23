@@ -28,7 +28,6 @@ export default class Services extends BaseTableWidget {
     constructor() {
         super();
         this.locked = false;
-        this.titleVisible = false;
     }
 
     getGridOptions() {
@@ -39,13 +38,13 @@ export default class Services extends BaseTableWidget {
     }
 
     getMarkup() {
-        return $(`<div id="services-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); padding: 2px; gap: 2px;"></div>`);
+        return $(`<div id="services-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));"></div>`);
     }
 
-    serviceControl(actions) {
+    serviceControl(actions, status) {
         return actions.map(({ action, id, title, icon }) => `
             <span data-service_action="${action}" data-service="${id}"
-                  class="srv_status_act2"
+                  class="srv_status_act2 text-${status}"
                   style="cursor: pointer"
                   title="${title}" data-toggle="tooltip">
                 <i class="fa fa-fw fa-${icon}"></i>
@@ -70,20 +69,28 @@ export default class Services extends BaseTableWidget {
 
         for (const service of data.rows) {
             let actions = [];
+            let pad = false
             if (service.locked) {
+                pad = true
                 actions.push({ action: 'restart', id: service.id, title: this.translations.restart, icon: 'refresh' });
             } else if (service.running) {
-                actions.push({ action: 'restart', id: service.id, title: this.translations.restart, icon: 'refresh' });
                 actions.push({ action: 'stop', id: service.id, title: this.translations.stop, icon: 'stop' });
+                actions.push({ action: 'restart', id: service.id, title: this.translations.restart, icon: 'refresh' });
             } else {
+                pad = true
                 actions.push({ action: 'start', id: service.id, title: this.translations.start, icon: 'play' });
             }
 
             let statusColor = service.running ? 'success' : 'danger';
             let statusTitle = service.running ? this.translations.running : this.translations.stopped;
+            let padSpan = '';
+            if (pad) {
+                padSpan = '<span><i class="fa fa-fw"></i></span>'
+            }
 
             let $tile = $(`
-                <div class="service-tile btn-${statusColor}" style="display: flex; align-items: center; padding: 0px 2px 0 2px;">
+                <div class="flextable-row" style="padding: 0 10px 0 10px;"><div class="service-tile" style="display: flex; align-items: center;grid-column: -2 / -1;">
+                    ${padSpan}${this.serviceControl(actions, statusColor)}
                     <div style="
                         padding: 4px;
                         white-space: nowrap;
@@ -93,13 +100,11 @@ export default class Services extends BaseTableWidget {
                         width: 100%;
                         text-align: left;
                     " title="${service.description} (${statusTitle})" data-toggle="tooltip">${service.description}</div>
-                    ${this.serviceControl(actions)}
-                </div>
+                </div></div>
             `);
 
             $container.append($tile);
         }
-
 
         $('.srv_status_act2').on('click', async (event) => {
             this.locked = true;
