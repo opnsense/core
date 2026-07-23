@@ -67,6 +67,7 @@ class VxlanSettingsController extends ApiMutableModelControllerBase
         if ($this->request->isPost()) {
             $backend = new Backend();
             $result['status'] = strtolower(trim($backend->configdRun('interface vxlan configure')));
+            $this->runInterfaceRegistration();
         }
         return $result;
     }

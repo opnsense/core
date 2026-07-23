@@ -28,7 +28,6 @@
 
 namespace OPNsense\Base;
 
-
 class UserWarningException extends UserBaseException
 {
     public function getHttpCode()
