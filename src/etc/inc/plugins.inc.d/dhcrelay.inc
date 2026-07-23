@@ -90,6 +90,8 @@ function dhcrelay_xmlrpc_sync()
 
 function dhcrelay_configure_id($verbose = false, $id_map = null)
 {
+    global $config;
+
     if (!plugins_argument_map($id_map)) {
         return;
     }
@@ -186,6 +188,30 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
 
         $cmd_frmt[] = '-i %s';
         $cmd_args[] = $device;
+
+        $circuit_id_values = [
+            'index' => '', // This is the default behaviour
+            'name' => $device,
+            'vlan' => !empty($ifconfig_details[$device]['vlan']['tag']) ? $ifconfig_details[$device]['vlan']['tag'] : '',
+        ];
+
+        $circuit_id = $circuit_id_values[$relay->circuit_id->getValue()];
+        if (!empty($circuit_id)) {
+            $cmd_frmt[] = '-C %s';
+            $cmd_args[] = $circuit_id;
+        }
+
+        $remote_id_values = [
+            'addr' => '', // This is the default behaviour
+            'mac' => $ifconfig_details[$device]['macaddr'],
+            'host' => $config['system']['hostname'],
+        ];
+
+        $remote_id = $remote_id_values[$relay->remote_id->getValue()];
+        if (!empty($remote_id)) {
+            $cmd_frmt[] = '-R %s';
+            $cmd_args[] = $remote_id;
+        }
 
         $has_servers = false;
 

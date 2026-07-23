@@ -23,6 +23,24 @@
             <agent_info type="BooleanField">
                 <Required>Y</Required>
             </agent_info>
+            <circuit_id type="OptionField">
+                <Default>index</Default>
+                <OptionValues>
+                    <index>Interface index</index>
+                    <name>Interface name</name>
+                    <vlan>VLAN ID</vlan>
+                </OptionValues>
+                <Required>Y</Required>
+            </circuit_id>
+            <remote_id type="OptionField">
+                <Default>addr</Default>
+                <OptionValues>
+                    <addr>Destination address</addr>
+                    <mac>MAC address</mac>
+                    <host>Hostname</host>
+                </OptionValues>
+                <Required>Y</Required>
+            </remote_id>
             <carp_depend_on type="VirtualIPField">
                 <type>carp</type>
                 <key>mvc</key>
