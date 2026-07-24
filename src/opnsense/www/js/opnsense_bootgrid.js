@@ -1208,14 +1208,16 @@ class UIBootgrid {
             }
 
             const title = typeof command?.title === "function"
-                ? `title="${command?.title()}"`
-                : `title="${command?.title}"` ?? '';
+                ? command.title() : command?.title;
 
-            const $element = $(`
-                <button type="button" class="btn btn-xs ${key === 'add' ? 'btn-primary' : 'btn-default'} command-${key} bootgrid-tooltip" ${title}>
-                    <span class="${command.classname}"></span>
-                </button>
-            `);
+            const classname = typeof command?.classname === "function"
+                ? command.classname() : command?.classname;
+
+            const $element = $("<button>", {
+                type: "button",
+                title: title ?? "",
+                class: `btn btn-xs ${key === "add" ? "btn-primary" : "btn-default"} command-${key} bootgrid-tooltip`
+            }).append($("<span>").addClass(classname ?? ""));
 
             if (command?.primary) {
                 $commandContainer.append($element);
@@ -1644,7 +1646,8 @@ class UIBootgrid {
     * - footer: true|false whether this command should be rendered in the table footer
     * - primary: true|false only if footer: true, whether this command should be rendered as part
     *            of the primary button container (intended for primary CRUD actions)
-    * - classname: required. icon class added to the span inside the button element
+    * - classname: required. icon class added to the span inside the button element. Can be a function with
+    *               the cell object as param
     * - filter: a function that returns true or false determining if the command should be rendered.
     *           the cell object is passed in only if footer: false
     * - onRendered: a function that runs after the element including event bindings have been rendered,
@@ -1788,18 +1791,19 @@ class UIBootgrid {
                     }
 
                     if (has_option) {
-                        let title = typeof command?.title === "function"
-                            ? `title="${command?.title(cell)}"`
-                            : `title="${command?.title}"` ?? '';
+                        const title = typeof command?.title === "function"
+                            ? command?.title(cell) : command?.title;
 
-                        html.push(`
-                            <button type="button"
-                                    ${title}
-                                    class="btn btn-xs btn-default bootgrid-tooltip
-                                           command-${command.name}" data-row-id="${cell.getData()[rowid]}">
-                                <span class="${command.classname}"></span>
-                            </button>
-                        `);
+                        const classname = typeof command.classname === "function"
+                            ? command.classname(cell) : command.classname;
+
+                        const $button = $("<button>", {
+                            type: "button",
+                            title: title ?? "",
+                            class: `btn btn-xs btn-default bootgrid-tooltip command-${command.name}`
+                        }).attr("data-row-id", cell.getData()[rowid]).append($("<span>").addClass(classname));
+
+                        html.push($button[0].outerHTML);
                     }
                 });
 
