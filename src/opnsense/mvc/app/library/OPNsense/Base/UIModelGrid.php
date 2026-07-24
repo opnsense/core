@@ -28,8 +28,6 @@
 
 namespace OPNsense\Base;
 
-use OPNsense\Core\Type;
-
 /**
  * Class UIModelGrid Grid control support functions
  * @package OPNsense\Base

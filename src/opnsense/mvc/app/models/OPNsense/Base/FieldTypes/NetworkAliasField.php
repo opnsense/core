@@ -29,9 +29,8 @@
 namespace OPNsense\Base\FieldTypes;
 
 use OPNsense\Core\Config;
-use OPNsense\Firewall\Util;
 use OPNsense\Firewall\Alias;
-use OPNsense\Base\Validators\CallbackValidator;
+use OPNsense\Firewall\Util;
 
 /**
  * Network field type supporting aliases and special nets
