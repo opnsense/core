@@ -49,7 +49,7 @@ function restore_config_section($section_sets, $new_contents)
 {
     global $config;
 
-    $tmpxml = '/tmp/tmpxml';
+    $tmpxml = '/var/lib/php/tmp/tmpxml';
     $xml = null;
 
     try {
