@@ -261,8 +261,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 system_host_route($staleroute, null);
             }
 
-            system_timezone_configure(); /* time zone change first */
-            system_hostname_configure();
+            configd_run('service restart timezone'); /* time zone change first */
+            configd_run('service restart hostname');
             configd_run('dns reload');
             plugins_configure('dns');
             plugins_configure('dhcp');

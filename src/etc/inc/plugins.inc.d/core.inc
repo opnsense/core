@@ -112,6 +112,26 @@ function core_services()
         'noshow' => true,
     ];
 
+    $services[] = [
+        'description' => gettext('Timezone'),
+        'php' => [
+            'restart' => ['system_timezone_configure'],
+        ],
+        'name' => 'timezone',
+        'nocheck' => true,
+        'noshow' => true,
+    ];
+
+    $services[] = [
+        'description' => gettext('Hostname'),
+        'php' => [
+            'restart' => ['system_hostname_configure'],
+        ],
+        'name' => 'hostname',
+        'nocheck' => true,
+        'noshow' => true,
+    ];
+
     return $services;
 }
 
