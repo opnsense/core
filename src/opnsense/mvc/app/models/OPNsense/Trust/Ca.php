@@ -28,7 +28,6 @@
 
 namespace OPNsense\Trust;
 
-use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 
 /**
