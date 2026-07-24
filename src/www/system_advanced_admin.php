@@ -390,8 +390,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             configd_run('filter reload');
             configd_run('service restart login');
             configd_run('dns reload');
-            configd_run('dns configure');
-            plugins_configure('dhcp');
+            configd_run('plugins configure dns');
+            configd_run('plugins configure dhcp');
             configd_run('openssh restart', true);
 
             if ($restart_webgui) {

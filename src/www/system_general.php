@@ -264,8 +264,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             configd_run('service restart timezone'); /* time zone change first */
             configd_run('service restart hostname');
             configd_run('dns reload');
-            configd_run('dns configure');
-            plugins_configure('dhcp');
+            configd_run('plugins configure dns');
+            configd_run('plugins configure dhcp');
             configd_run('filter reload');
         }
 

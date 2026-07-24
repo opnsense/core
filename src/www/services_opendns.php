@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (write_config('OpenDNS filter configuration change')) {
             configd_run('dns reload');
-            plugins_configure('dhcp');
+            configd_run('plugins configure dhcp');
         }
         $savemsg = get_std_save_message();
     }
