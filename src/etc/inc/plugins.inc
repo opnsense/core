@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2026 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2024 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,7 @@ function plugins_scan($glob = '*')
     return $ret;
 }
 
-function plugins_services($hidden = false)
+function plugins_services()
 {
     $services = [];
 
@@ -79,9 +79,6 @@ function plugins_services($hidden = false)
         $func = sprintf('%s_services', $name);
         if (function_exists($func)) {
             foreach ($func() as $work) {
-                if (!$hidden && !empty($work['hidden'])) {
-                    continue;
-                }
                 $services[] = $work;
             }
         }

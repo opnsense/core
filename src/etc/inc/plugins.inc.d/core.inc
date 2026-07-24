@@ -99,7 +99,7 @@ function core_services()
         ],
         'name' => 'kernel',
         'nocheck' => true,
-        'hidden' => true,
+        'noshow' => true,
     ];
 
     $services[] = [
@@ -109,7 +109,7 @@ function core_services()
         ],
         'name' => 'powerd',
         'nocheck' => true,
-        'hidden' => true,
+        'noshow' => true,
     ];
 
     return $services;

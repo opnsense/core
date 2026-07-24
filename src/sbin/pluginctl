@@ -122,7 +122,7 @@ function flush_config_prop($path)
     echo "Done. A backup was created and can be restored if needed." . PHP_EOL;
 }
 
-function get_all_services($name = '', $id = '')
+function get_all_services($name = '', $id = '', $showall = true)
 {
     $services = [];
 
@@ -134,6 +134,11 @@ function get_all_services($name = '', $id = '')
 
         /* fail if ID lookup is not possible or does not match */
         if ($id !== '' && (!array_key_exists('id', $service) || $service['id'] != $id)) {
+            continue;
+        }
+
+        /* hide extra services for low level features */
+        if (!$showall && !empty($service['noshow'])) {
             continue;
         }
 
@@ -246,7 +251,7 @@ if (isset($opts['h'])) {
       echo json_encode($result, $jflags) . PHP_EOL;
    }
 } elseif (isset($opts['S'])) {
-    $services = get_all_services(isset($args[0]) ? $args[0] : '', isset($args[1]) ? $args[1] : '');
+    $services = get_all_services(isset($args[0]) ? $args[0] : '', isset($args[1]) ? $args[1] : '', false);
     echo json_encode($services, $jflags) . PHP_EOL;
 } elseif (isset($opts['s'])) {
     $results = [];
