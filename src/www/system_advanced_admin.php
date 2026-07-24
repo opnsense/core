@@ -388,7 +388,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (write_config()) {
             configd_run('filter reload');
-            system_login_configure();
+            configd_run('service restart login');
             configd_run('dns reload');
             plugins_configure('dns');
             plugins_configure('dhcp');
