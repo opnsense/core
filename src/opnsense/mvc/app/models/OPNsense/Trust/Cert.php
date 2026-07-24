@@ -29,7 +29,6 @@
 namespace OPNsense\Trust;
 
 use OPNsense\Base\BaseModel;
-use OPNsense\Base\Messages\Message;
 
 /**
  * Class Cert

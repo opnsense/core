@@ -37,7 +37,6 @@ use OPNsense\Core\Syslog;
 use ReflectionClass;
 use ReflectionException;
 use SimpleXMLElement;
-use http\Message;
 
 /**
  * Class BaseModel implements base model to bind config and definition to object.
