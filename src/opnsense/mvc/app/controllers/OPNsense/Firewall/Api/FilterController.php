@@ -30,7 +30,6 @@ namespace OPNsense\Firewall\Api;
 use OPNsense\Base\UserWarningException;
 use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
-use OPNsense\Firewall\Alias;
 use OPNsense\Firewall\Category;
 use OPNsense\Firewall\Filter;
 use OPNsense\Firewall\Group;

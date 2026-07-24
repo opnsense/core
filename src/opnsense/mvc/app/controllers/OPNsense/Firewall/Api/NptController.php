@@ -28,8 +28,6 @@
 
 namespace OPNsense\Firewall\Api;
 
-use OPNsense\Core\Config;
-
 class NptController extends FilterBaseController
 {
     protected static $categorysource = "npt.rule";
