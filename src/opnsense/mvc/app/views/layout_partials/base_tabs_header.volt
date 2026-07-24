@@ -45,7 +45,7 @@
             <a data-toggle="tab" class="visible-lg-inline-block visible-md-inline-block visible-xs-inline-block visible-sm-inline-block" style="border-right:0px;">{{tab['tab_descr']}}</a>
             <ul class="dropdown-menu" role="menu">
                 {% for subtab in tab['subtabs']|default({})%}
-                <li class="{% if formData['activetab']|default("") == subtab[0] %}active{% endif %}">
+                <li class="{% if formData['activetab']|default("") == subtab['tab_id'] %}active{% endif %}">
                     <a data-toggle="tab" id="subtab_item_{{subtab['tab_id']}}" href="#subtab_{{subtab['tab_id']}}">{{subtab['tab_descr']}}</a>
                 </li>
                 {% endfor %}
@@ -53,7 +53,7 @@
         </li>
     {% else %}
         {# Standard Tab #}
-        <li {% if formData['activetab']|default("") == tab[0] %} class="active" {% endif %}>
+        <li {% if formData['activetab']|default("") == tab['tab_id'] %} class="active" {% endif %}>
                 <a data-toggle="tab" href="#tab_{{tab['tab_id']}}">
                     {{tab['tab_descr']}}
                 </a>
