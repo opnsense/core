@@ -335,95 +335,6 @@
                     },
                 },
                 formatters:{
-                    commands: function (column, row) {
-                        // All formatters except category must skip processing bucket rows in tree view
-                        if (row.isGroup) {
-                            return "";
-                        }
-                        const rowId = row.uuid || "";
-                        const hasUuid = rowId.includes("-");
-
-                        // Defunct rules can only be deleted
-                        if (getRuleTypeDigit(row) === 6) {
-                            return `
-                                <button type="button" class="btn btn-xs btn-default command-delete
-                                    bootgrid-tooltip" data-row-id="${rowId}"
-                                    title="{{ lang._('Delete') }}">
-                                    <span class="fa fa-fw fa-trash-o"></span>
-                                </button>
-                            `;
-                        }
-
-                        const logSearchCommand = (rid, log) => {
-                            const loggingEnabled = log === '1' || log === true;
-                            if (!loggingEnabled) return '';
-
-                            return `
-                                <a href="/ui/diagnostics/firewall/log#${new URLSearchParams({field:'rid',operator:'=',value:rid})}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                class="btn btn-xs btn-default bootgrid-tooltip"
-                                title="{{ lang._('View log entries for this rule') }}">
-                                    <i class="fa fa-fw fa-search"></i>
-                                </a>
-                            `;
-                        };
-
-                        // If UUID is invalid, its an internal rule, use the #ref field to show a lookup button.
-                        if (!hasUuid) {
-                            const ref = (row["ref"] || "");
-
-                            // optional lookup button if ref exists
-                            const lookupRefCommand = ref ? `
-                                <a href="/${ref}" target="_blank" rel="noopener noreferrer"
-                                class="btn btn-xs btn-default bootgrid-tooltip"
-                                title="{{ lang._('Lookup rule reference') }}">
-                                    <i class="fa fa-fw fa-link"></i>
-                                </a>
-                            ` : '';
-
-                            return `
-                                ${logSearchCommand(rowId, row.log)}
-                                ${lookupRefCommand}
-                            `;
-                        }
-
-                        return `
-                            <button type="button" class="btn btn-xs btn-default command-move_before
-                                bootgrid-tooltip" data-row-id="${rowId}"
-                                title="{{ lang._('Move selected rule before this rule') }}">
-                                <span class="fa fa-fw fa-arrow-left"></span>
-                            </button>
-
-                            <button type="button" class="btn btn-xs btn-default command-toggle_log bootgrid-tooltip"
-                                data-row-id="${row.uuid}" data-value="${row.log}"
-                                title="${row.log == '1'
-                                    ? '{{ lang._("Disable Logging") }}'
-                                    : '{{ lang._("Enable Logging") }}'}">
-                                <i class="fa fa-fw ${row.log == '1' ? 'fa-bell' : 'fa-bell-slash'}"></i>
-                            </button>
-
-                            <button type="button" class="btn btn-xs btn-default command-edit
-                                bootgrid-tooltip" data-row-id="${rowId}"
-                                title="{{ lang._('Edit') }}">
-                                <span class="fa fa-fw fa-pencil"></span>
-                            </button>
-
-                            <button type="button" class="btn btn-xs btn-default command-copy
-                                bootgrid-tooltip" data-row-id="${rowId}"
-                                title="{{ lang._('Clone') }}">
-                                <span class="fa fa-fw fa-clone"></span>
-                            </button>
-
-                            <button type="button" class="btn btn-xs btn-default command-delete
-                                bootgrid-tooltip" data-row-id="${rowId}"
-                                title="{{ lang._('Delete') }}">
-                                <span class="fa fa-fw fa-trash-o"></span>
-                            </button>
-
-                            ${logSearchCommand(rowId, row.log)}
-                        `;
-                    },
                     // Disable rowtoggle for internal rules
                     rowtoggle: function (column, row) {
                         if (row.isGroup) {
@@ -733,7 +644,20 @@
                     },
                     sequence: 500
                 },
+                lookup_ref: {
+                    filter: (cell) => commandFilter(cell, "lookup_ref"),
+                    classname: "fa fa-fw fa-link",
+                    title: "{{ lang._('Lookup rule reference') }}",
+                    sequence: 10,
+                    method: function(event, cell) {
+                        const row = cell.getData();
+                        if (row?.ref) {
+                            window.open(`/${row.ref}`, "_blank", "noopener,noreferrer");
+                        }
+                    },
+                },
                 move_before: {
+                    filter: (cell) => commandFilter(cell, "move_before"),
                     method: function(event) {
                         // Ensure exactly one rule is selected to be moved
                         const selected = $("#{{ formGridFilterRule['table_id'] }}").bootgrid("getSelectedRows");
@@ -785,9 +709,11 @@
                     sequence: 10
                 },
                 toggle_log: {
-                    method: function(event) {
+                    filter: (cell) => commandFilter(cell, "toggle_log"),
+                    method: function(event, cell) {
                         const uuid = $(this).data("row-id");
-                        const log = String(+$(this).data("value") ^ 1);
+                        const row = cell.getData();
+                        const log = String(+row.log ^ 1);
                         ajaxCall(
                             `/api/firewall/filter/toggle_rule_log/${uuid}/${log}`,
                             {},
@@ -807,13 +733,63 @@
                             'POST'
                         );
                     },
-                    classname: 'fa fa-fw fa-exclamation-circle',
-                    title: "{{ lang._('Toggle Logging') }}",
+                    classname: (cell) => {
+                        const row = cell.getData();
+                        return (row.log === "1" || row.log === true) ? "fa fa-fw fa-bell" : "fa fa-fw fa-bell-slash";
+                    },
+                    title: (cell) => {
+                        const row = cell.getData();
+                        return (row.log === "1" || row.log === true) ? '{{ lang._("Disable Logging") }}' : '{{ lang._("Enable Logging") }}';
+                    },
                     sequence: 20
+                },
+                log_search: {
+                    filter: (cell) => commandFilter(cell, "log_search"),
+                    classname: "fa fa-fw fa-search",
+                    title: "{{ lang._('View log entries for this rule') }}",
+                    sequence: 999,
+                    method: function(event, cell) {
+                        const row = cell.getData();
+                        const params = new URLSearchParams({field:'rid',operator:'=',value:row.uuid || ""});
+                        window.open(`/ui/diagnostics/firewall/log#${params}`, "_blank", "noopener,noreferrer");
+                    }
+                },
+                delete: {
+                    filter: (cell) => commandFilter(cell, "delete"),
+                },
+                copy: {
+                    filter: (cell) => commandFilter(cell, "copy"),
+                },
+                edit: {
+                    filter: (cell) => commandFilter(cell, "edit"),
                 }
             },
 
         });
+
+        function commandFilter(cell, type = "") {
+            const row = cell.getData();
+            const hasUuid = row.uuid?.includes("-") ?? false;
+
+            if (row.isGroup) return false;
+
+            // Defunct rules can only be deleted or copied.
+            if (getRuleTypeDigit(row) === 6 && !["delete", "copy"].includes(type)) {
+                return false;
+            }
+
+            if (type === "lookup_ref") {
+                // lookup_ref only allowed without a valid UUID
+                return !hasUuid;
+            }
+
+            if (type === "log_search") {
+                // requires both a UUID and enabled logging
+                return hasUuid && (row.log === "1" || row.log === true);
+            }
+
+            return hasUuid;
+        }
 
         function onTreeEvent(row, open) {
             const getBucketById = (buckets, uuid) => {
