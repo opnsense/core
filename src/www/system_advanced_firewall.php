@@ -287,7 +287,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (write_config()) {
             configd_run('cron restart');
-            system_sysctl_configure();
+            configd_run('service restart sysctl');
             configd_run('filter reload');
         }
 

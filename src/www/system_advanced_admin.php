@@ -388,10 +388,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (write_config()) {
             configd_run('filter reload');
-            system_login_configure();
-            system_resolver_configure();
-            plugins_configure('dns');
-            plugins_configure('dhcp');
+            configd_run('service restart login');
+            configd_run('dns reload');
+            configd_run('plugins configure dns');
+            configd_run('plugins configure dhcp');
             configd_run('openssh restart', true);
 
             if ($restart_webgui) {
