@@ -62,6 +62,7 @@ class DNatController extends FilterBaseController
         };
 
         $results =  $this->searchBase("rule", null, "sequence", $filter_funct);
+        $configObj = Config::getInstance()->object();
 
         /* carry results */
         foreach ($results['rows'] as &$record) {
@@ -77,8 +78,26 @@ class DNatController extends FilterBaseController
             // This is only used for visualization to ensure the tabulator tree renders
             // rules in the correct order, similar to firewall rules.
             // It does not influence the processing order of the ruleset by sequence.
-            $record['sort_order'] = sprintf('%d.0%06d', 400000, (int)($record['sequence'] ?? 0));
-            $record['prio_group'] = '400000';
+            $interfaces = !empty($record['interface']) ? explode(',', $record['interface']) : [];
+            $has_interface = false;
+
+            foreach ($interfaces as $interface) {
+                if (isset($configObj?->interfaces?->$interface)) {
+                    $has_interface = true;
+                    break;
+                }
+            }
+
+            // Default
+            $priority = 400000;
+
+            // Invalid rules (not applied by PF)
+            if (!empty($interfaces) && !$has_interface) {
+                $priority = 600000;
+            }
+
+            $record['sort_order'] = sprintf('%d.0%06d', $priority, (int)($record['sequence'] ?? 0));
+            $record['prio_group'] = (string)$priority;
         }
 
         foreach (Util::getAntiLockout() as $if => $ports) {
