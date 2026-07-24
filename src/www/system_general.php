@@ -266,7 +266,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             system_resolver_configure();
             plugins_configure('dns');
             plugins_configure('dhcp');
-            filter_configure();
+            configd_run('filter reload');
         }
 
 

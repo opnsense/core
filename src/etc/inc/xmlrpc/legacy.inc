@@ -143,7 +143,7 @@ function filter_configure_xmlrpc()
 
     system_routing_configure();
     system_resolver_configure();
-    filter_configure();
+    configd_run('filter reload');
 
     return true;
 }

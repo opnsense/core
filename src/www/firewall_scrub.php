@@ -70,7 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     } elseif (isset($pconfig['apply'])) {
         if (write_config()) {
             /* misuse write to check for write access */
-            filter_configure();
+            configd_run('filter reload');
             clear_subsystem_dirty('filter');
         }
         header(url_safe('Location: /firewall_scrub.php?savemsg=yes'));

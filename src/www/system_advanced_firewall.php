@@ -288,7 +288,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (write_config()) {
             system_cron_configure();
             system_sysctl_configure();
-            filter_configure();
+            configd_run('filter reload');
         }
 
         $savemsg = get_std_save_message();

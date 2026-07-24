@@ -671,7 +671,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
 
                 system_routing_configure(false, array_keys($toapplylist));
-                filter_configure();
+                configd_run('filter reload');
                 configd_run('webgui restart 3', true);
             }
 

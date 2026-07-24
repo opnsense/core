@@ -45,7 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if (isset($pconfig['apply'])) {
         if (write_config()) {
-            filter_configure();
+            configd_run('filter reload');
             clear_subsystem_dirty('natconf');
             clear_subsystem_dirty('filter');
         }
