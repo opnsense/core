@@ -56,7 +56,7 @@
             <tr{% if section['advanced']|default(false) %} data-advanced="true"{% endif %}>
                 <th colspan="3">
                     <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px;">
-                        {% if section['static']|default(false) %}
+                        {% if not section['static']|default(false) %}
                         {% if section['collapse']|default(false) %}
                         <i class="fa fa-angle-right" aria-hidden="true"></i>
                         {% else %}
@@ -70,7 +70,7 @@
             </tr>
             </thead>
             {% endif %}
-            <tbody {%if not section['static']|default(false) %}class="collapsible" {% if section['collapse']|default(false) %}style="display: none;"{%endif%}{%endif%}></tbody>
+            <tbody {%if not section['static']|default(false) %}class="collapsible" {% if section['collapse']|default(false) %}style="display: none;"{%endif%}{%endif%}>
             {%  if not section['type'] and (fields['advanced']|default(false) or fields['help']|default(false)) %}
             <tr>
                 <td>{% if fields['advanced']|default(false) %}<a href="#"><i class="fa fa-toggle-off text-danger" id="show_advanced_formDialog{{base_form_id}}"></i></a> <small>{{ lang._('advanced mode') }}</small>{% endif %}</td>
