@@ -48,7 +48,7 @@ class LegacySubsystemController extends ApiControllerBase
     {
         return [
             'enabled' => isset(Config::getInstance()->object()->ipsec->enable),
-            'isDirty' => file_exists('/tmp/ipsec.dirty') // is_subsystem_dirty('ipsec')
+            'isDirty' => file_exists('/var/lib/php/tmp/ipsec.dirty'), /* XXX */
         ];
     }
 
@@ -65,7 +65,7 @@ class LegacySubsystemController extends ApiControllerBase
             if ($bckresult === 'OK') {
                 $result['message'] = gettext('The changes have been applied successfully.');
                 $result['status'] = "ok";
-                @unlink('/tmp/ipsec.dirty');
+                @unlink('/var/lib/php/tmp/ipsec.dirty'); /* XXX */
             }
         }
         return $result;
