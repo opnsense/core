@@ -29,7 +29,6 @@
 namespace OPNsense\Diagnostics\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
-use OPNsense\Core\Config;
 
 class LvtemplateController extends ApiMutableModelControllerBase
 {

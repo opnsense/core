@@ -29,7 +29,6 @@
 namespace OPNsense\Diagnostics\Api;
 
 use OPNsense\Base\ApiControllerBase;
-use OPNsense\Core\Config;
 
 /**
  * Class DnsController
