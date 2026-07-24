@@ -60,12 +60,12 @@
                         {% endif %}
                         </colgroup>
                         {% if section['type'] %}
-                        <thead {% if section['static']|default('false')=='false' %} style="cursor: pointer;"{% endif %}>
-                        <tr{% if section['advanced']|default('false')=='true' %} data-advanced="true"{% endif %}>
+                        <thead {% if not section['static']|default(false) %} style="cursor: pointer;"{% endif %}>
+                        <tr{% if section['advanced']|default(false) %} data-advanced="true"{% endif %}>
                             <th colspan="3">
                                 <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px;">
-                                    {% if section['static']|default('false')=='false' %}
-                                    {% if section['collapse']|default('false')=='true' %}
+                                    {% if not section['static']|default(false) %}
+                                    {% if section['collapse']|default(false)%}
                                     <i class="fa fa-angle-right" aria-hidden="true"></i>
                                     {% else %}
                                     <i class="fa fa-angle-down" aria-hidden="true"></i>
@@ -78,7 +78,7 @@
                         </tr>
                         </thead>
                         {% endif %}
-                        <tbody class="collapsible">
+                        <tbody {%if not section['static']|default(false) %}class="collapsible" {% if section['collapse']|default(false) %}style="display: none;"{%endif%}{%endif%}>
                         {%  if not section['type'] and (fields['advanced']|default(false) or fields['help']|default(false)) %}
                         <tr>
                             <td>{% if fields['advanced']|default(false) %}<a href="#"><i class="fa fa-toggle-off text-danger" id="show_advanced_formDialog{{base_dialog_id}}"></i></a> <small>{{ lang._('advanced mode') }}</small>{% endif %}</td>
@@ -89,7 +89,7 @@
                         {% endif %}
                         {% for field in section['children']%}
                             {% if field['type'] == 'subheader' %}
-                                <tr{% if field['advanced']|default('false') == 'true' %} data-advanced="true"{% endif %}>
+                                <tr{% if field['advanced']|default(false) %} data-advanced="true"{% endif %}>
                                     <td colspan="3">
                                         <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px; padding-left: 5px;">
                                             <i class="fa fa-ellipsis-v" aria-hidden="true"></i>

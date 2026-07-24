@@ -202,12 +202,13 @@ class ControllerBase extends ControllerRoot
                     $field = $this->parseFormNode($node);
                     foreach (
                         [
-                        'advanced', 'help', 'hint', 'style', 'maxheight', 'width', 'allownew', 'readonly', 'type'
+                        'advanced', 'help', 'hint', 'style', 'maxheight', 'width',
+                        'allownew', 'readonly', 'type', 'collapse', 'static'
                         ] as $f
                     ) {
                         if (!isset($field[$f])) {
                             $field[$f] = false;
-                        } elseif (!empty($field[$f]) && in_array($f, ['advanced', 'help'])) {
+                        } elseif (!empty($field[$f]) && in_array($f, ['advanced', 'help', 'collapse', 'static'])) {
                             $result[$f] = true; /* top level booleans */
                         }
                     }
