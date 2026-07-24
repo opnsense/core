@@ -82,6 +82,10 @@ class SystemController extends ApiControllerBase
             $acl = new ACL();
 
             foreach ($statuses as $subsystem => $status) {
+                $statuses[$subsystem]['message'] = gettext($status['message']);
+                if (!empty($status['title'])) {
+                    $statuses[$subsystem]['title'] = gettext($status['title']);
+                }
                 unset($statuses[$subsystem]['scope']);
                 $statuses[$subsystem]['status'] = $order[$status['statusCode']];
                 if (!empty($status['location'])) {
