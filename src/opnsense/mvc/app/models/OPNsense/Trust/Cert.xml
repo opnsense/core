@@ -40,6 +40,7 @@
                     <RSA-2048 value="2048">RSA-2048</RSA-2048>
                     <RSA-3072 value="3072">RSA-3072</RSA-3072>
                     <RSA-4096 value="4096">RSA-4096</RSA-4096>
+                    <RSA-7680 value="7680">RSA-7680</RSA-7680>
                     <RSA-8192 value="8192">RSA-8192</RSA-8192>
                     <prime256v1>Elliptic Curve prime256v1</prime256v1>
                     <secp384r1>Elliptic Curve secp384r1</secp384r1>
