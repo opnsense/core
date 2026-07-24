@@ -30,7 +30,6 @@ namespace OPNsense\Interfaces;
 
 use OPNsense\Base\BaseModel;
 use OPNsense\Base\Messages\Message;
-use OPNsense\Base\ModelException;
 use OPNsense\Core\Config;
 use OPNsense\Core\FileObject;
 
