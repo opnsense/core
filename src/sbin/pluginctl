@@ -126,7 +126,7 @@ function get_all_services($name = '', $id = '')
 {
     $services = [];
 
-    foreach (plugins_services() as $service) {
+    foreach (plugins_services(true) as $service) {
         /* fail if name filter does not match */
         if ($name != '' && $service['name'] != $name) {
             continue;

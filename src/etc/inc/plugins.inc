@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016-2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2016-2026 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,9 +66,9 @@ function plugins_scan($glob = '*')
     return $ret;
 }
 
-function plugins_services()
+function plugins_services($hidden = false)
 {
-    $services = array();
+    $services = [];
 
     foreach (plugins_scan() as $name => $path) {
         try {
@@ -79,6 +79,9 @@ function plugins_services()
         $func = sprintf('%s_services', $name);
         if (function_exists($func)) {
             foreach ($func() as $work) {
+                if (!$hidden && !empty($work['hidden'])) {
+                    continue;
+                }
                 $services[] = $work;
             }
         }
@@ -125,7 +128,7 @@ function plugins_devices()
 
 function plugins_cron()
 {
-    $jobs = array();
+    $jobs = [];
 
     foreach (plugins_scan() as $name => $path) {
         try {
@@ -150,7 +153,7 @@ function plugins_cron()
  */
 function plugins_syslog()
 {
-    $syslogs = array();
+    $syslogs = [];
 
     foreach (plugins_scan() as $name => $path) {
         try {
@@ -366,7 +369,7 @@ function plugins_run($hook, $args = [])
 
 function plugins_xmlrpc_sync()
 {
-    $sync_settings = array();
+    $sync_settings = [];
     foreach (plugins_scan() as $name => $path) {
         try {
             include_once $path;

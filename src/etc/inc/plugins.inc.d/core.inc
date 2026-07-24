@@ -92,6 +92,26 @@ function core_services()
         'name' => 'syslog-ng',
     ];
 
+    $services[] = [
+        'description' => gettext('Kernel modules'),
+        'php' => [
+            'restart' => ['system_kernel_configure'],
+        ],
+        'name' => 'kernel',
+        'nocheck' => true,
+        'hidden' => true,
+    ];
+
+    $services[] = [
+        'description' => gettext('Powerd'),
+        'php' => [
+            'restart' => ['system_powerd_configure'],
+        ],
+        'name' => 'powerd',
+        'nocheck' => true,
+        'hidden' => true,
+    ];
+
     return $services;
 }
 
