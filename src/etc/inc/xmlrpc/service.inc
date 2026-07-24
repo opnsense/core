@@ -51,10 +51,15 @@ function xmlrpc_publishable_service()
  */
 function list_services_xmlrpc()
 {
-    $services = plugins_services();
+    $services = [];
 
-    foreach ($services as &$service) {
+    foreach (plugins_services() as $service) {
+        if (!empty($service['noshow'])) {
+            continue;
+        }
+
         $service['status'] = service_status($service);
+        $services[] = $service;
     }
 
     return $services;
