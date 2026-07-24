@@ -28,8 +28,6 @@
 
 namespace OPNsense\Backup;
 
-use OPNsense\Core\Config;
-
 /**
  * Class local backup
  * @package OPNsense\Backup
