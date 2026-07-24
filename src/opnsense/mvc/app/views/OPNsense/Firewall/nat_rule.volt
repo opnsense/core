@@ -269,64 +269,6 @@
                     },
                 },
                 formatters:{
-                    commands: function (column, row) {
-                        if (row.isGroup) {
-                            return "";
-                        }
-                        let rowId = row.uuid;
-
-                        if (row.prio_group == 600000) {
-                            return `
-                                <button type="button" class="btn btn-xs btn-default command-delete
-                                    bootgrid-tooltip" data-row-id="${rowId}"
-                                    title="{{ lang._('Delete') }}">
-                                    <span class="fa fa-fw fa-trash-o"></span>
-                                </button>
-                            `;
-                        } else if (!rowId.includes('-')) {
-                            return `
-                                <a href="/system_advanced_firewall.php" target="_blank" rel="noopener noreferrer"
-                                class="btn btn-xs btn-default bootgrid-tooltip"
-                                title="{{ lang._('Lookup rule reference') }}">
-                                    <span class="fa fa-fw fa-link"></span>
-                                </a>
-                            `;
-                        }
-
-                        return `
-                            <button type="button" class="btn btn-xs btn-default command-move_before
-                                bootgrid-tooltip" data-row-id="${rowId}"
-                                title="{{ lang._('Move selected rule before this rule') }}">
-                                <span class="fa fa-fw fa-arrow-left"></span>
-                            </button>
-
-                            <button type="button" class="btn btn-xs btn-default command-toggle_log bootgrid-tooltip"
-                                data-row-id="${row.uuid}" data-value="${row.log}"
-                                title="${row.log == '1'
-                                    ? '{{ lang._("Disable Logging") }}'
-                                    : '{{ lang._("Enable Logging") }}'}">
-                                <i class="fa fa-fw ${row.log == '1' ? 'fa-bell' : 'fa-bell-slash'}"></i>
-                            </button>
-
-                            <button type="button" class="btn btn-xs btn-default command-edit
-                                bootgrid-tooltip" data-row-id="${rowId}"
-                                title="{{ lang._('Edit') }}">
-                                <span class="fa fa-fw fa-pencil"></span>
-                            </button>
-
-                            <button type="button" class="btn btn-xs btn-default command-copy
-                                bootgrid-tooltip" data-row-id="${rowId}"
-                                title="{{ lang._('Clone') }}">
-                                <span class="fa fa-fw fa-clone"></span>
-                            </button>
-
-                            <button type="button" class="btn btn-xs btn-default command-delete
-                                bootgrid-tooltip" data-row-id="${rowId}"
-                                title="{{ lang._('Delete') }}">
-                                <span class="fa fa-fw fa-trash-o"></span>
-                            </button>
-                        `;
-                    },
                     rowtoggle: function (column, row) {
                         const rowId = row.uuid || '';
                         if (row.isGroup || !rowId.includes('-') || row.prio_group == 600000) {
@@ -499,7 +441,17 @@
                     },
                     sequence: 500
                 },
+                lookup_ref: {
+                    filter: (cell) => commandFilter(cell, "lookup_ref"),
+                    classname: "fa fa-fw fa-link",
+                    title: "{{ lang._('Lookup rule reference') }}",
+                    sequence: 10,
+                    method: function(event, cell) {
+                        window.open(`/system_advanced_firewall.php`, "_blank", "noopener,noreferrer");
+                    },
+                },
                 move_before: {
+                    filter: (cell) => commandFilter(cell),
                     method: function(event) {
                         const selected = $("#{{ formGridRule['table_id'] }}").bootgrid("getSelectedRows");
                         if (selected.length !== 1) {
@@ -547,9 +499,11 @@
                     sequence: 10
                 },
                 toggle_log: {
-                    method: function(event) {
+                    filter: (cell) => commandFilter(cell),
+                    method: function(event, cell) {
                         const uuid = $(this).data("row-id");
-                        const log = String(+$(this).data("value") ^ 1);
+                        const row = cell.getData();
+                        const log = String(+row.log ^ 1);
                         ajaxCall(
                             `/api/firewall/${entrypoint}/toggle_rule_log/${uuid}/${log}`,
                             {},
@@ -569,12 +523,46 @@
                             'POST'
                         );
                     },
-                    classname: 'fa fa-fw fa-exclamation-circle',
-                    title: "{{ lang._('Toggle Logging') }}",
+                    classname: (cell) => {
+                        const row = cell.getData();
+                        return row.log === "1" ? "fa fa-fw fa-bell" : "fa fa-fw fa-bell-slash";
+                    },
+                    title: (cell) => {
+                        const row = cell.getData();
+                        return row.log === "1" ? '{{ lang._("Disable Logging") }}' : '{{ lang._("Enable Logging") }}';
+                    },
                     sequence: 20
+                },
+                delete: {
+                    filter: (cell) => commandFilter(cell, "delete"),
+                },
+                copy: {
+                    filter: (cell) => commandFilter(cell, "copy"),
+                },
+                edit: {
+                    filter: (cell) => commandFilter(cell, "edit"),
                 }
             },
         });
+
+        function commandFilter(cell, type="") {
+            const row = cell.getData();
+            const hasUuid = row.uuid?.includes("-") ?? false;
+
+            if (row.isGroup) return false;
+
+            if (row.prio_group == 600000 && !["delete", "copy"].includes(type)) {
+                // Defunct rules can only be deleted or copied.
+                return false;
+            }
+
+            if (type === "lookup_ref") {
+                // lookup_ref only allowed without a valid UUID
+                return !hasUuid;
+            }
+
+            return hasUuid;
+        }
 
         function onTreeEvent(row, open) {
             const getBucketById = (buckets, uuid) => {

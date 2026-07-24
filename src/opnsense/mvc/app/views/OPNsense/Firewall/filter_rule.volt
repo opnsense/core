@@ -773,8 +773,8 @@
 
             if (row.isGroup) return false;
 
-            // Defunct rules can only be deleted or copied.
             if (getRuleTypeDigit(row) === 6 && !["delete", "copy"].includes(type)) {
+                // Defunct rules can only be deleted or copied.
                 return false;
             }
 
