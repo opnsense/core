@@ -30,7 +30,6 @@ namespace OPNsense\Core\Migrations;
 
 use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Hasync;
-use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 
 class MHA1_0_1 extends BaseModelMigration
