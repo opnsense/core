@@ -162,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (write_config("Updated NTP Server Settings")) {
             ntpd_configure_do();
-            system_cron_configure();
+            configd_run('cron restart');
         }
 
 
