@@ -28,7 +28,6 @@
 namespace OPNsense\Core\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
-use OPNsense\Base\UserException;
 use OPNsense\Core\AppConfig;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
