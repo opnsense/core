@@ -387,7 +387,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (write_config()) {
-            filter_configure();
+            configd_run('filter reload');
             system_login_configure();
             system_resolver_configure();
             plugins_configure('dns');
