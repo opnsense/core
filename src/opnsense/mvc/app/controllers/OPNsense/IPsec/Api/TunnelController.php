@@ -277,7 +277,7 @@ class TunnelController extends ApiControllerBase
             }
             Config::getInstance()->save();
             if (!empty($phase_ids[0])) {
-                @touch("/tmp/ipsec.dirty");
+                @touch('/var/lib/php/tmp/ipsec.dirty'); /* XXX */
             }
             return [
               'status' => 'ok',
@@ -312,7 +312,7 @@ class TunnelController extends ApiControllerBase
                         }
 
                         Config::getInstance()->save();
-                        @touch("/tmp/ipsec.dirty");
+                        @touch('/var/lib/php/tmp/ipsec.dirty'); /* XXX */
                         return ['status' => 'ok', 'disabled' => $new_status];
                     }
                     $idx++;
@@ -334,7 +334,7 @@ class TunnelController extends ApiControllerBase
             if ((string)intval($seqid) == $seqid && isset($config->ipsec->phase2[intval($seqid)])) {
                 unset($config->ipsec->phase2[intval($seqid)]);
                 Config::getInstance()->save();
-                @touch("/tmp/ipsec.dirty");
+                @touch('/var/lib/php/tmp/ipsec.dirty'); /* XXX */
                 return ['status' => 'ok'];
             }
             return ['status' => 'not_found'];
@@ -363,7 +363,7 @@ class TunnelController extends ApiControllerBase
                 }
 
                 Config::getInstance()->save();
-                @touch("/tmp/ipsec.dirty");
+                @touch('/var/lib/php/tmp/ipsec.dirty'); /* XXX */
                 return ['status' => 'ok', 'disabled' => $new_status];
             }
             return ['status' => 'not_found'];
@@ -390,7 +390,7 @@ class TunnelController extends ApiControllerBase
                 unset($config->ipsec->enable);
             }
             Config::getInstance()->save();
-            @touch("/tmp/ipsec.dirty");
+            @touch('/var/lib/php/tmp/ipsec.dirty'); /* XXX */
             return ['status' => 'ok'];
         }
         return ['status' => 'failed'];

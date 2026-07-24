@@ -60,7 +60,7 @@ class KeyPairsController extends ApiMutableModelControllerBase
     {
         $response = $this->setBase('keyPair', 'keyPairs.keyPair', $uuid);
         if (!empty($response['result']) && $response['result'] === 'saved') {
-            touch('/tmp/ipsec.dirty'); // mark_subsystem_dirty('ipsec')
+            touch('/var/lib/php/tmp/ipsec.dirty'); /* XXX */
         }
 
         return $response;
@@ -76,7 +76,7 @@ class KeyPairsController extends ApiMutableModelControllerBase
     {
         $response = $this->addBase('keyPair', 'keyPairs.keyPair');
         if (!empty($response['result']) && $response['result'] === 'saved') {
-            touch('/tmp/ipsec.dirty'); // mark_subsystem_dirty('ipsec')
+            touch('/var/lib/php/tmp/ipsec.dirty'); /* XXX */
         }
 
         return $response;
@@ -104,7 +104,7 @@ class KeyPairsController extends ApiMutableModelControllerBase
     {
         $response = $this->delBase('keyPairs.keyPair', $uuid);
         if (!empty($response['result']) && $response['result'] === 'deleted') {
-            touch('/tmp/ipsec.dirty'); // mark_subsystem_dirty('ipsec')
+            touch('/var/lib/php/tmp/ipsec.dirty'); /* XXX */
         }
 
         return $response;

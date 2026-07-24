@@ -300,17 +300,17 @@ function service_control_restart($name, $extras)
 
 function is_subsystem_dirty($subsystem = '')
 {
-    return file_exists("/tmp/{$subsystem}.dirty");
+    return file_exists("/var/lib/php/tmp/{$subsystem}.dirty");
 }
 
 function mark_subsystem_dirty($subsystem = '')
 {
-    touch("/tmp/{$subsystem}.dirty");
+    touch("/var/lib/php/tmp/{$subsystem}.dirty");
 }
 
 function clear_subsystem_dirty($subsystem = '')
 {
-    @unlink("/tmp/{$subsystem}.dirty");
+    @unlink("/var/lib/php/tmp/{$subsystem}.dirty");
 }
 
 function exit_on_bootup($callback = null, $arguments = [])
