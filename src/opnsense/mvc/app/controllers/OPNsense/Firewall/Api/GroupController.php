@@ -122,7 +122,7 @@ class GroupController extends ApiMutableModelControllerBase
                 $message .= htmlspecialchars(sprintf("\n[%s] %s", $key, $value), ENT_NOQUOTES | ENT_HTML401);
             }
             $message = sprintf(gettext("Cannot delete group. Currently in use by %s"), $message);
-            throw new \OPNsense\Base\UserException($message, gettext("Group in use"));
+            throw new UserException($message, gettext("Group in use"));
         }
         return $this->delBase("ifgroupentry", $uuid);
     }

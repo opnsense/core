@@ -28,7 +28,6 @@
 
 namespace OPNsense\Firewall\Api;
 
-use OPNsense\Base\UserException;
 use OPNsense\Core\Config;
 
 class NptController extends FilterBaseController
