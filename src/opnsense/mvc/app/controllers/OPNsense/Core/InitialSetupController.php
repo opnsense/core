@@ -28,9 +28,9 @@
 
 namespace OPNsense\Core;
 
-use OPNsense\Core\Config;
+use OPNsense\Base\IndexController;
 
-class InitialSetupController extends \OPNsense\Base\IndexController
+class InitialSetupController extends IndexController
 {
     public function indexAction()
     {
