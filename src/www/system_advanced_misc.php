@@ -190,7 +190,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (write_config()) {
-            system_resolver_configure();
+            configd_run('dns reload');
             configd_run('cron restart');
             system_powerd_configure();
             system_kernel_configure();

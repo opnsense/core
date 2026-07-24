@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['dnsallowoverride'] = '1';
         }
         if (write_config('OpenDNS filter configuration change')) {
-            system_resolver_configure();
+            configd_run('dns reload');
             plugins_configure('dhcp');
         }
         $savemsg = get_std_save_message();

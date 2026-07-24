@@ -263,7 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             system_timezone_configure(); /* time zone change first */
             system_hostname_configure();
-            system_resolver_configure();
+            configd_run('dns reload');
             plugins_configure('dns');
             plugins_configure('dhcp');
             configd_run('filter reload');
