@@ -73,6 +73,7 @@
             del:'/api/firewall/alias/del_item/',
             toggle:'/api/firewall/alias/toggle_item/',
             options:{
+                virtualDOM: true,
                 requestHandler: function(request){
                     if ( $('#type_filter').val().length > 0) {
                         request['type'] = $('#type_filter').val();
@@ -83,14 +84,6 @@
                     return request;
                 },
                 formatters: {
-                    commands: function (column, row) {
-                        if (row.uuid.includes('-') === true) {
-                            // exclude buttons for internal aliases (which uses names instead of valid uuid's)
-                            return '<button type="button" class="btn btn-xs btn-default command-edit bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-pencil"></span></button> ' +
-                                '<button type="button" class="btn btn-xs btn-default command-copy bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-clone"></span></button>' +
-                                '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" data-row-id="' + row.uuid + '"><span class="fa fa-fw fa-trash-o"></span></button>';
-                        }
-                    },
                     rowtoggle: function (column, row) {
                         if (!row.uuid.includes('-')) {
                             return '<span class="fa fa-fw fa-check-square-o"></span>';
@@ -129,7 +122,18 @@
                         }
                     }
                 }
-            }
+            },
+            commands: {
+                edit: {
+                    filter: (cell) => cell.getData().uuid.includes('-')
+                },
+                copy: {
+                    filter: (cell) => cell.getData().uuid.includes('-')
+                },
+                delete: {
+                    filter: (cell) => cell.getData().uuid.includes('-')
+                }
+            },
         });
 
         $("#type_filter, #category_filter").change(function(){
