@@ -286,7 +286,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['syslog']['logoutboundnat'] = !empty($pconfig['logoutboundnat']);
 
         if (write_config()) {
-            system_cron_configure();
+            configd_run('cron restart');
             system_sysctl_configure();
             configd_run('filter reload');
         }

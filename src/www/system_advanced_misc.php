@@ -191,7 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (write_config()) {
             system_resolver_configure();
-            system_cron_configure();
+            configd_run('cron restart');
             system_powerd_configure();
             system_kernel_configure();
         }

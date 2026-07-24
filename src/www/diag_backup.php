@@ -407,7 +407,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     }
                 }
             }
-            system_cron_configure();
+            configd_run('cron restart');
         }
     } elseif (!empty($pconfig['save'])) {
         if ($pconfig['backupcount'] != null && (!is_numeric($pconfig['backupcount']) || $pconfig['backupcount'] <= 0)) {
