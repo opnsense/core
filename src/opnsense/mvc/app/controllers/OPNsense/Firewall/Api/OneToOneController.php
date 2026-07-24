@@ -28,8 +28,6 @@
 
 namespace OPNsense\Firewall\Api;
 
-use OPNsense\Core\Config;
-
 class OneToOneController extends FilterBaseController
 {
     protected static $categorysource = "onetoone.rule";

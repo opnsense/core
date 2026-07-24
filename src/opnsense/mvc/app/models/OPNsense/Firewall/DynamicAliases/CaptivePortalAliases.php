@@ -28,8 +28,6 @@
 
 namespace OPNsense\Firewall\DynamicAliases;
 
-use OPNsense\Core\Config;
-
 class CaptivePortalAliases
 {
     public function collect()
