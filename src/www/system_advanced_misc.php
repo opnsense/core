@@ -37,13 +37,13 @@ require_once("interfaces.inc");
 
 function crypto_modules()
 {
-    $modules = array(
+    $modules = [
         'hifn' => gettext('Hifn 7751/7951/7811/7955/7956 Crypto Accelerator'),
         'padlock' => gettext('Crypto and RNG in VIA C3, C7 and Eden Processors'),
         'qat' => gettext('Intel QuickAssist Technology'),
         'safe' => gettext('SafeNet Crypto Accelerator'),
-    );
-    $available = array();
+    ];
+    $available = [];
 
     foreach ($modules as $name => $desc) {
         if (file_exists("/boot/kernel/{$name}.ko")) {
@@ -56,11 +56,11 @@ function crypto_modules()
 
 function thermal_modules()
 {
-    $modules = array(
+    $modules = [
         'amdtemp' => gettext('AMD K8, K10 and K11 CPU on-die thermal sensor'),
         'coretemp' => gettext('Intel Core* CPU on-die thermal sensor'),
-    );
-    $available = array();
+    ];
+    $available = [];
 
     foreach ($modules as $name => $desc) {
         if (file_exists("/boot/kernel/{$name}.ko")) {
@@ -72,7 +72,7 @@ function thermal_modules()
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    $pconfig = array();
+    $pconfig = [];
     $pconfig['powerd_enable'] = isset($config['system']['powerd_enable']);
     $pconfig['crypto_hardware'] = !empty($config['system']['crypto_hardware']) ? explode(',', $config['system']['crypto_hardware']) : [];
     $pconfig['thermal_hardware'] = !empty($config['system']['thermal_hardware']) ? $config['system']['thermal_hardware'] : null;
@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     // System Sounds
     $pconfig['disablebeep'] = isset($config['system']['disablebeep']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $input_errors = array();
+    $input_errors = [];
     $pconfig = $_POST;
 
     if (!empty($pconfig['crypto_hardware'])) {
@@ -192,8 +192,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (write_config()) {
             configd_run('dns reload');
             configd_run('cron restart');
-            system_powerd_configure();
-            system_kernel_configure();
+            configd_run('service restart powerd');
+            configd_run('service restart kernel');
         }
 
         $savemsg = get_std_save_message();
