@@ -28,6 +28,8 @@
 
 namespace OPNsense\Firewall;
 
+use OPNsense\Base\FieldTypes\PortField;
+
 /**
  * Class ForwardRule, (pf rdr type rule, optionally combined with nat rules for reflection)
  * @package OPNsense\Firewall
@@ -141,8 +143,13 @@ class ForwardRule extends Rule
                         $tmp['localport'] .= ':' . ($tmp['local-port'] + $to_ports[1] - $to_ports[0]);
                     }
                 } else {
-                    $tmp['disabled'] = true;
-                    $this->log("invalid local-port");
+                    $known = PortField::getWellKnown($tmp['local-port']);
+                    if (!empty($known)) {
+                        $tmp['local-port'] = array_shift($known);
+                    } else {
+                        $rule['disabled'] = true;
+                        $this->log("Unable to map port {$port}, config error?");
+                    }
                 }
             }
 

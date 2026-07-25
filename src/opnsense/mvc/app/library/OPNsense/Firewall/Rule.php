@@ -418,7 +418,7 @@ abstract class Rule
         } else {
             // check fields which are known to contain addresses and search for an ipv4 address
             foreach (array('from', 'to', 'external', 'target') as $fieldname) {
-                if (
+                if (isset($rule[$fieldname]) &&
                     (Util::isIpAddress($rule[$fieldname]) || Util::isSubnet($rule[$fieldname]))
                         && strpos($rule[$fieldname], ":") === false
                 ) {
