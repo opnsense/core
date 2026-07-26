@@ -175,6 +175,10 @@ class ServiceController extends ApiControllerBase
     {
         if (!$this->request->isPost()) {
             return ['result' => 'failed'];
+        } elseif (preg_match('/[\x00-\x1F\x7F]/u', $this->request->get('server_id', null))) {
+            return ['result' => 'invalid server_id'];
+        } elseif (preg_match('/[\x00-\x1F\x7F]/u', $this->request->get('session_id', null))) {
+            return ['result' => 'invalid session_id'];
         }
         $server_id = $this->request->get('server_id', null);
         $session_id = $this->request->get('session_id', null);
