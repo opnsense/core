@@ -102,7 +102,7 @@
                                 let item = $("#"+row.categories_uuid[i]);
                                 if (item && item.data('color')) {
                                     html.push("<i class='fa fa-circle category-item' style='color:#"+
-                                           item.data('color')+"' title='"+item.text()+"'></i>");
+                                           htmlSafe(item.data('color'))+"' title='"+htmlSafe(item.text())+"'></i>");
                                 }
                             }
                             return html.join('&nbsp;');

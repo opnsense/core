@@ -68,7 +68,7 @@
             let target_select = null;
             let select_options = {};
             for (i=0; i < all_options.length; i++) {
-                let this_section = all_options[i].split('.')[0];
+                let this_section = htmlSafe(all_options[i].split('.')[0]);
                 let this_item = $(this).data('data')[all_options[i]];
                 if (this_section != prev_section) {
                     target_select = $("<select id='policy_content_" +
@@ -82,9 +82,9 @@
                 }
                 let option = null;
                 if (this_item.selected) {
-                    option = "<option selected='selected' value='"+all_options[i]+"'>" + this_item.value + "</option>";
+                    option = "<option selected='selected' value='"+htmlSafe(all_options[i])+"'>" + htmlSafe(this_item.value) + "</option>";
                 } else {
-                    option = "<option value='"+all_options[i]+"'>" + this_item.value + "</option>";
+                    option = "<option value='"+htmlSafe(all_options[i])+"'>" + htmlSafe(this_item.value) + "</option>";
                 }
 
                 select_options[this_section].push(option);
