@@ -1008,6 +1008,44 @@ function interface_ppps_hardware($device)
     return $devices;
 }
 
+function interface_ppps_carp_master($ports)
+{
+    /*
+     * Whether CARP considers this node the one to run a PPP link on: null when
+     * CARP does not own the link, true when a parent device is MASTER and false
+     * when the link must not run here.  A VIP that is configured but not up yet
+     * counts as false, because interfaces are configured without any notion of a
+     * PPP link depending on the VIPs of its parent and being unable to tell is
+     * not a reason to start.
+     */
+    if (empty(config_read_array('hasync', false)['disconnectppps'])) {
+        return null;
+    }
+
+    $owned = false;
+
+    foreach ($ports as $port) {
+        foreach (legacy_interface_details($port)['carp'] ?? [] as $carp) {
+            if ($carp['status'] == 'MASTER') {
+                return true;
+            }
+            $owned = true;
+        }
+    }
+
+    if (!$owned) {
+        /* the parent interface may not be configured yet, so ask the configuration */
+        foreach (config_read_array('virtualip', 'vip', false) as $vip) {
+            if (($vip['mode'] ?? '') == 'carp' && in_array(get_real_interface($vip['interface']), $ports)) {
+                $owned = true;
+                break;
+            }
+        }
+    }
+
+    return $owned ? false : null;
+}
+
 function interface_ppps_reset($interface, $suspend, $ifcfg, $ppps)
 {
     if (!interface_ppps_capable($ifcfg, $ppps)) {
@@ -1026,7 +1064,7 @@ function interface_ppps_reset($interface, $suspend, $ifcfg, $ppps)
     }
 }
 
-function interface_ppps_configure($interface)
+function interface_ppps_configure($interface, $defer_to_carp = false)
 {
     global $config;
 
@@ -1133,6 +1171,26 @@ function interface_ppps_configure($interface)
                 log_msg("Unknown {$ppp['type']} configured as PPP interface.", LOG_ERR);
                 break;
         }
+    }
+
+    $carp_master = interface_ppps_carp_master($ports);
+
+    if ($carp_master === false) {
+        /* decide before mpd5 is set up at all so a link is never started to be stopped again */
+        log_msg("interface_ppps_configure() skipped for {$interface}, no parent device is CARP MASTER", LOG_NOTICE);
+        killbypid("/var/run/{$ppp['type']}_{$interface}.pid");
+        return;
+    }
+
+    /*
+     * The interface configuration does not know the outcome of the election
+     * while booting, but the CARP event that follows it does.  Let the event
+     * own the link until then so it has a single starter instead of two racing
+     * ones and cannot be brought up twice.
+     */
+    if ($carp_master && $defer_to_carp && product::getInstance()->booting()) {
+        log_msg("interface_ppps_configure() deferred for {$interface} to the CARP event", LOG_NOTICE);
+        return;
     }
 
     // Construct the mpd.conf file
@@ -1365,6 +1423,16 @@ EOD;
         default:
             legacy_interface_mtu($ifcfg['if'], $mtus[0]);
             break;
+    }
+
+    /*
+     * CARP may have moved on while the link was coming up.  A teardown that
+     * arrived before mpd5 wrote its pid file could not stop it, so check the
+     * state once more now that there is a pid file to act on.
+     */
+    if (interface_ppps_carp_master($ports) === false) {
+        log_msg("interface_ppps_configure() stopping {$interface}, no parent device is CARP MASTER", LOG_NOTICE);
+        killbypid("/var/run/{$ppp['type']}_{$interface}.pid");
     }
 }
 
@@ -2484,7 +2552,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /* since the connectivity can include IPv4 and/or IPv6 let the function decide */
-    interface_ppps_configure($interface);
+    interface_ppps_configure($interface, true);
 
     switch ($wancfg['ipaddr'] ?? 'none') {
         case 'dhcp':
