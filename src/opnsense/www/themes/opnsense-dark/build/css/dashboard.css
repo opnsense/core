@@ -360,3 +360,12 @@ div {
   align-items: center;
   justify-content: center;
 }
+
+.service-tile {
+  border: 1px solid rgba(192, 62, 20, 0.15);
+  background-color: #1a1d27;
+}
+
+.service-tile-title {
+  color: #ECECEC;
+}

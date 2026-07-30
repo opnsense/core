@@ -83,6 +83,18 @@ export default class Services extends BaseTableWidget {
             let statusTitle = service.running ? this.translations.running : this.translations.stopped;
 
             let $tile = $(`
+                <div class="service-tile" style="
+                    border-radius: 4px;
+                    padding: 8px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    box-shadow: 0 1px 1px rgba(0,0,0,0.05);
+                ">
+                    <div class="service-tile-title" style="
+                        font-weight: bold;
+                        font-size: 12px;
+                        margin-bottom: 5px;
                 <div class="service-tile btn-${statusColor}" style="display: flex; align-items: center; padding: 0px 2px 0 2px;">
                     <div style="
                         padding: 4px;
@@ -91,6 +103,22 @@ export default class Services extends BaseTableWidget {
                         overflow: hidden;
                         text-overflow: ellipsis;
                         width: 100%;
+                        text-align: center;
+                    " title="${service.description}" data-toggle="tooltip">${service.description}</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1.2fr; align-items: center; gap: 0px; width: 100%;">
+                        <div style="text-align: right; padding-right: 10px;">
+                            <span class="label label-opnsense label-opnsense-xs label-${statusColor} service-status"
+                                data-toggle="tooltip" title="${statusTitle}"
+                                style="font-size: 10px; padding: 3px 6px;">
+                                <i class="fa fa-${statusIcon} fa-fw"></i>
+                            </span>
+                        </div>
+                        <div style="text-align: left;">
+                            <div class="btn-group" role="group">
+                                ${this.serviceControl(actions)}
+                            </div>
+                        </div>
+                    </div>
                         text-align: left;
                     " title="${service.description} (${statusTitle})" data-toggle="tooltip">${service.description}</div>
                     ${this.serviceControl(actions)}
