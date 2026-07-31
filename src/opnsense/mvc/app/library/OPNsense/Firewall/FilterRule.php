@@ -67,6 +67,7 @@ class FilterRule extends Rule
         'dn' =>  'parsePlain',
         'divert-to' => 'parsePlain,divert-to ',
         'label' => 'parsePlain,label ",",63',
+        'af-to' => 'parsePlain, af-to ',  // af-to always appears after the label in pfctl
         'descr' => 'parseComment'
     );
 
@@ -303,6 +304,14 @@ class FilterRule extends Rule
                     $rule['dn'] = sprintf('%s (%s, %s)', $shaper1['type'], $shaper1['id'], $shaper2['id']);
                 } else {
                     $rule['dn'] = sprintf('%s %s', $shaper1['type'], $shaper1['id']);
+                }
+            }
+            // restructure address family translation
+            if (!empty($rule['af-to-source'])) {
+                $address_family = $rule['ipprotocol'] === 'inet' ? 'inet6' : 'inet';
+                $rule['af-to'] = sprintf('%s from %s', $address_family, $rule['af-to-source']);
+                if (!empty($rule['af-to-destination'])) {
+                    $rule['af-to'] .= sprintf(' to %s', $rule['af-to-destination']);
                 }
             }
 
