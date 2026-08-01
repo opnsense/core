@@ -382,8 +382,10 @@ foreach ($all_authfields as $fieldname) {
     }
 }
 
+$a_group = config_read_array('system', 'group');
 legacy_html_escape_form_data($pconfig);
 legacy_html_escape_form_data($a_server);
+legacy_html_escape_form_data($a_group);
 
 include("head.inc");
 
@@ -901,7 +903,7 @@ endif; ?>
                   <td>
                     <select name='sync_default_groups[]' id="sync_default_groups" class="selectpicker" multiple="multiple">
 <?php
-                    foreach (config_read_array('system', 'group') as $group):
+                    foreach ($a_group as $group):
                         $selected = !empty($pconfig['sync_default_groups']) && in_array($group['name'], $pconfig['sync_default_groups']) ? 'selected="selected"' : ''; ?>
                       <option value="<?= $group['name'] ?>" <?= $selected ?>><?= $group['name'] ?></option>
 <?php
@@ -926,7 +928,7 @@ endif; ?>
                   <td>
                     <select name='sync_memberof_groups[]' id="sync_memberof_groups" class="selectpicker" multiple="multiple">
 <?php
-                    foreach (config_read_array('system', 'group') as $group):
+                    foreach ($a_group as $group):
                         $selected = !empty($pconfig['sync_memberof_groups']) && in_array($group['name'], $pconfig['sync_memberof_groups']) ? 'selected="selected"' : ''; ?>
                       <option value="<?= $group['name'] ?>" <?= $selected ?>><?= $group['name'] ?></option>
 <?php

@@ -1386,7 +1386,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 }
 
+$a_ca = config_read_array('ca', false);
+$a_cert = config_read_array('cert', false);
 legacy_html_escape_form_data($pconfig);
+legacy_html_escape_form_data($a_ca);
+legacy_html_escape_form_data($a_cert);
 
 // some wireless settings require additional details to build the listbox
 if (isset($a_interfaces[$if]['wireless'])) {
@@ -3211,7 +3215,7 @@ include("head.inc");
                           <td>
                             <select name="wpa_eap_cacertref" class="selectpicker" data-style="btn-default">
                               <option value="" <?=empty($pconfig['wpa_eap_cacertref']) ? "selected=\"selected\"" : "";?>><?=gettext("Do not verify server"); ?></option>
-<?php foreach (config_read_array('ca', false) as $ca): ?>
+<?php foreach ($a_ca as $ca): ?>
                               <option value="<?=$ca['refid'];?>" <?=$pconfig['wpa_eap_cacertref'] == $ca['refid'] ? "selected=\"selected\"" : "";?>>
                                 <?=$ca['descr'];?>
                               </option>
@@ -3232,7 +3236,7 @@ include("head.inc");
                           <td>
                             <select name="wpa_eap_cltcertref" class="selectpicker" data-style="btn-default">
                               <option value="" <?=empty($pconfig['wpa_eap_cltcertref']) ? "selected=\"selected\"" : "";?>><?=gettext("none"); ?></option>
-<?php foreach (config_read_array('cert', false) as $cert): ?>
+<?php foreach ($a_cert as $cert): ?>
 <?php if (isset($cert['prv'])): ?>
                               <option value="<?=$cert['refid'];?>" <?=$pconfig['wpa_eap_cltcertref'] == $cert['refid'] ? "selected=\"selected\"" : "";?>>
                                 <?=$cert['descr'];?>
