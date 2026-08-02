@@ -25,31 +25,31 @@
  */
 
 $(document).ready(function () {
-    var $cfg = $('#favorites-config');
-    var addText = $cfg.data('add-text') || 'Add Favorite';
-    var removeText = $cfg.data('remove-text') || 'Remove Favorite';
-    var favorites = $cfg.data('favorites') || [];
-    var $favPanel = $('#Favorites');
-    var $favHeader = $('a[href="#Favorites"]');
+    const $cfg = $('#favorites-config');
+    const addText = $cfg.data('add-text') || 'Add Favorite';
+    const removeText = $cfg.data('remove-text') || 'Remove Favorite';
+    const favorites = $cfg.data('favorites') || [];
+    const $favPanel = $('#Favorites');
+    const $favHeader = $('a[href="#Favorites"]');
 
-    var getRefClass = function ($el) {
+    const getRefClass = function ($el) {
         return ($el.attr('class') || '').split(/\s+/).find(function (c) {
             return c.indexOf('menu_ref_') === 0;
         });
     };
 
-    var findReal = function (refClass) {
+    const findReal = function (refClass) {
         return $('#mainmenu .' + refClass).not('#Favorites .' + refClass);
     };
 
-    var menuOrder = {};
+    let menuOrder = {};
     $('#mainmenu a.list-group-item').not('#Favorites a').each(function (i) {
         var cls = getRefClass($(this));
         if (cls) menuOrder[cls] = i;
     });
 
     $favPanel.children('a.list-group-item').each(function () {
-        var $entry = $(this), cls = getRefClass($entry), $real = cls ? findReal(cls) : $();
+        const $entry = $(this), cls = getRefClass($entry), $real = cls ? findReal(cls) : $();
         $($entry.attr('href')).remove();
         if (!$real.length) {
             $entry.remove();
@@ -68,7 +68,7 @@ $(document).ready(function () {
 
     $favPanel.on('click', '.list-group-item', function (e) {
         e.preventDefault();
-        var cls = getRefClass($(this));
+        const cls = getRefClass($(this));
         if (cls) {
             $favPanel.collapse('hide');
             findReal(cls).parents('.collapse').collapse('show');
@@ -79,54 +79,54 @@ $(document).ready(function () {
         }
     });
 
-    var $star = $('header.page-content-head .menu-favorite-star');
+    const $star = $('header.page-content-head .menu-favorite-star');
     if (!$star.length) return;
 
-    var refreshStar = function (url) {
-        var fav = favorites.indexOf(url) !== -1;
+    const refreshStar = function (url) {
+        const fav = favorites.indexOf(url) !== -1;
         $star.data('menu-url', url).attr('data-menu-url', url)
              .toggleClass('fa-star', fav).toggleClass('fa-star-o', !fav)
              .attr('data-original-title', fav ? removeText : addText).tooltip('fixTitle');
     };
 
-    var initialUrl = String($star.data('menu-url') || '');
+    const initialUrl = String($star.data('menu-url') || '');
     if (initialUrl.indexOf('#') !== -1) {
         refreshStar(window.location.pathname + (window.location.hash || '#' + initialUrl.split('#')[1]));
         $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
-            var href = $(e.target).attr('href');
+            const href = $(e.target).attr('href');
             if (href && href.charAt(0) === '#') refreshStar(window.location.pathname + href);
         });
     }
 
     $star.on('click', function (e) {
         e.stopPropagation();
-        var menuUrl = $(this).data('menu-url');
-        var wasFav = $(this).hasClass('fa-star'), nowFav = !wasFav;
+        const menuUrl = $(this).data('menu-url');
+        const wasFav = $(this).hasClass('fa-star'), nowFav = !wasFav;
 
         $star.toggleClass('fa-star fa-star-o')
              .attr('data-original-title', nowFav ? removeText : addText)
              .tooltip('fixTitle').tooltip('show');
 
-        var revert = function () {
+        const revert = function () {
             $star.toggleClass('fa-star fa-star-o')
                  .attr('data-original-title', wasFav ? removeText : addText)
                  .tooltip('fixTitle').tooltip('show');
         };
 
-        $.ajax('/api/core/menu/setFavorite/', {
+        $.ajax('/api/core/menu/set_favorite/', {
             type: 'POST',
             dataType: 'json',
-            data: { menuUrl: menuUrl, isFavorite: nowFav ? 'true' : 'false' },
+            data: { menuUrl: menuUrl, isFavorite: nowFav ? '1' : '0' },
             success: function (response) {
                 if (response.result !== 'saved') { revert(); return; }
-                var $real = $('#mainmenu a[href="' + menuUrl + '"]');
-                var refClass = $real.length ? getRefClass($real) : null;
+                const $real = $('#mainmenu a[href="' + menuUrl + '"]');
+                const refClass = $real.length ? getRefClass($real) : null;
                 if (!refClass) return;
                 if (nowFav) {
-                    var $newEntry = $('<a>').attr('href', '#')
+                    const $newEntry = $('<a>').attr('href', '#')
                         .addClass('list-group-item ' + refClass)
                         .text(new MenuItem($real).breadcrumb());
-                    var $before = null;
+                    const $before = null;
                     $favPanel.children('a.list-group-item').each(function () {
                         var cls = getRefClass($(this));
                         if (cls && menuOrder[cls] > menuOrder[refClass]) {

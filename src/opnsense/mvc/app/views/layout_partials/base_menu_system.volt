@@ -5,7 +5,7 @@
                 <div class="panel list-group" style="border:0px">
                     {% for topMenuItem in menuSystem %}
                         {% if topMenuItem.Children|length >= 1 or topMenuItem.Id == 'Favorites' %}
-                            <a href="#{{ topMenuItem.Id }}" class="{{ topMenuItem.LinkClass }}"{% if topMenuItem.Id == 'Favorites' and topMenuItem.Children|length == 0 %} style="display:none"{% endif %} data-toggle="collapse" data-parent="#mainmenu">
+                            <a href="#{{ topMenuItem.Id }}" class="{{ topMenuItem.LinkClass }}" data-toggle="collapse" data-parent="#mainmenu">
                                 <span class="{{ topMenuItem.CssClass }} __iconspacer"></span><span style="word-break: keep-all">{{ topMenuItem.VisibleName }}</span>
                             </a>
                             <div class="collapse  {% if topMenuItem.Selected %} active-menu in {% endif  %}" id="{{ topMenuItem.Id }}">

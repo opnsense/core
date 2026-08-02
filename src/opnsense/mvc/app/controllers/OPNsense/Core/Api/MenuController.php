@@ -30,10 +30,11 @@
 
 namespace OPNsense\Core\Api;
 
+use OPNsense\Auth\User;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Base\Menu;
 use OPNsense\Core\ACL;
-use OPNsense\Core\Favorites;
+use OPNsense\Core\Config;
 
 /**
  * Class MenuController
@@ -216,19 +217,20 @@ class MenuController extends ApiControllerBase
             return ['result' => 'failed'];
         }
 
-        $favorites = new Favorites($this->getUserName());
-        $favorites->prune($validUrls);
-
-        if ($isFavorite === 'true') {
-            $favorites->addFavorite($menuUrl);
-        } else {
-            $favorites->removeFavorite($menuUrl);
+        /* update user model with current set of valid favorites */
+        $user = new User();
+        if ($node = $user->getUserByName($this->getUserName())) {
+            $favorites = array_values(array_intersect($node->menu_favorites->deserialize(), $validUrls));
+            $favorites = array_values(array_filter($favorites, fn($value) => $value !== $menuUrl));
+            if (!empty($isFavorite)) {
+                $favorites[] = $menuUrl;
+            }
+            if ($node->menu_favorites->serialize($favorites) && $user->serializeToConfig(false, true)) {
+                Config::getInstance()->save();
+                return ['result' => 'saved'];
+            }
         }
 
-        if (!$favorites->save()) {
-            return ['result' => 'failed'];
-        }
-
-        return ['result' => 'saved'];
+        return ['result' => 'failed'];
     }
 }

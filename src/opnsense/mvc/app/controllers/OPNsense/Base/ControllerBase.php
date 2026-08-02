@@ -31,6 +31,7 @@ namespace OPNsense\Base;
 use Phalcon\Di\FactoryDefault;
 use Phalcon\Mvc\View;
 use Phalcon\Mvc\View\Engine\Volt as VoltEngine;
+use OPNsense\Auth\User;
 use OPNsense\Core\AppConfig;
 use OPNsense\Core\Config;
 use OPNsense\Mvc\Dispatcher;
@@ -76,6 +77,7 @@ class ControllerBase extends ControllerRoot
           '/ui/js/opnsense_theme.js',
           '/ui/js/opnsense_ui.js',
           '/ui/js/opnsense_status.js',
+          '/ui/js/opnsense_favorites.js',
           // OPNsense Menusystem access
           '/ui/js/opnsense_menusystem.js',
           // bootstrap script
@@ -421,11 +423,11 @@ class ControllerBase extends ControllerRoot
         $this->view->setVar('langcode', str_replace('_', '-', $this->langcode));
 
         $rewrite_uri = explode("?", $_SERVER["REQUEST_URI"])[0];
-        $favorites = new \OPNsense\Core\Favorites($_SESSION['Username'] ?? '');
+        $menuFavorites = (new User)->getUserByName($_SESSION['Username'] ?? '')?->menu_favorites->deserialize() ?? [];
+        /* XXX generating breadcrumbs requires getItems() call */
         $this->view->menuSystem = $menu->getItems($rewrite_uri);
         $this->view->menuBreadcrumbs = $menu->getBreadcrumbs();
         $this->view->menuSelectedUrl = $menu->getSelectedUrl();
-        $menuFavorites = $favorites->getFavorites();
         $this->view->menuFavorites = json_encode($menuFavorites);
         $this->view->menuSelectedIsFavorite = in_array(
             $this->view->menuSelectedUrl,

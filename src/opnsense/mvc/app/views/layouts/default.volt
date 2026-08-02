@@ -279,7 +279,6 @@
       {{ partial("layout_partials/base_menu_system") }}
       <!-- menu favorites -->
       <span id="favorites-config" data-add-text="{{ lang._('Add Favorite') }}" data-remove-text="{{ lang._('Remove Favorite') }}" data-favorites="{{ menuFavorites | safe }}"></span>
-      <script src="{{ cache_safe('/ui/js/opnsense_favorites.js') }}"></script>
       <div class="row">
         <!-- page header -->
         <header class="page-content-head">

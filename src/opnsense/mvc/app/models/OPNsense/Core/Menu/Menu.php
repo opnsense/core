@@ -28,18 +28,24 @@
 
 namespace OPNsense\Core\Menu;
 
+use OPNsense\Auth\User;
 use OPNsense\Base\Menu\MenuContainer;
-use OPNsense\Core\Favorites;
 
 class Menu extends MenuContainer
 {
     public function collect()
     {
-        $favorites = new Favorites($_SESSION['Username'] ?? '');
-        foreach ($favorites->getFavorites() as $idx => $url) {
-            $this->appendItem('Favorites', 'fav_' . $idx, [
-                'linkclass' => 'menu_ref_' . md5($url),
-            ]);
+        if (empty($_SESSION['Username'])) {
+            return;
+        }
+        $user = new User();
+        if ($node = $user->getUserByName($_SESSION['Username'])) {
+            $favorites = $node->menu_favorites->deserialize();
+            foreach ($favorites as $idx => $url) {
+                $this->appendItem('Favorites', 'fav_' . $idx, [
+                    'linkclass' => 'menu_ref_' . md5($url),
+                ]);
+            }
         }
     }
 }
