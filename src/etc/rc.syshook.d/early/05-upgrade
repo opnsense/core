@@ -3,8 +3,17 @@
 # Perform major updates
 
 for STAGE in K B P; do
-	if opnsense-update -${STAGE}; then
+	opnsense-update -${STAGE}
+	STATUS=${?}
+
+	if [ "${STATUS}" -eq 0 ]; then
 		echo "Rebooting now."
 		reboot
+		break
+	elif [ "${STATUS}" -ne 1 ]; then
+		# the stage was pending but could not be applied; the
+		# stages behind it must not run on top of the damage
+		echo "Upgrade stage ${STAGE} failed (${STATUS}), aborting."
+		break
 	fi
 done

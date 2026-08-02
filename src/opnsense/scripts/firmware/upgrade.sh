@@ -31,11 +31,11 @@ REQUEST="UPGRADE"
 
 if output_cmd opnsense-update -u; then
 	if output_cmd /usr/local/etc/rc.syshook upgrade; then
-		# pending kernel applies before reboot
-		if output_cmd opnsense-update -K -c; then
-			output_cmd opnsense-update -K
+		# pending kernel applies before reboot, but if that apply
+		# fails rebooting would only make matters worse
+		if ! output_cmd opnsense-update -K -c || output_cmd opnsense-update -K; then
+			output_reboot keep-log
 		fi
-		output_reboot keep-log
 	fi
 
 	output_txt "The upgrade was aborted due to an error."
