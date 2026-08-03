@@ -540,7 +540,8 @@ class UIBootgrid {
                     title: field.label,
                     resizable: false,
                     sequence: field.sequence ?? null,
-                    frozen: true,
+                    // If a touchscreen is detected, unfreeze commands (most likely small device/tablet)
+                    frozen: !window.matchMedia('(any-pointer: coarse)').matches,
                     headerSort: false,
                     headerHozAlign: "center",
                     selectable: true
