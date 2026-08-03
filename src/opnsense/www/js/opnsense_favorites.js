@@ -44,7 +44,7 @@ $(document).ready(function () {
 
     let menuOrder = {};
     $('#mainmenu a.list-group-item').not('#Favorites a').each(function (i) {
-        var cls = getRefClass($(this));
+        const cls = getRefClass($(this));
         if (cls) menuOrder[cls] = i;
     });
 
@@ -128,7 +128,7 @@ $(document).ready(function () {
                         .text(new MenuItem($real).breadcrumb());
                     let $before = null;
                     $favPanel.children('a.list-group-item').each(function () {
-                        var cls = getRefClass($(this));
+                        const cls = getRefClass($(this));
                         if (cls && menuOrder[cls] > menuOrder[refClass]) {
                             $before = $(this);
                             return false;
