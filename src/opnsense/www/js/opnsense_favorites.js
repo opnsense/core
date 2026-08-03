@@ -126,7 +126,7 @@ $(document).ready(function () {
                     const $newEntry = $('<a>').attr('href', '#')
                         .addClass('list-group-item ' + refClass)
                         .text(new MenuItem($real).breadcrumb());
-                    const $before = null;
+                    let $before = null;
                     $favPanel.children('a.list-group-item').each(function () {
                         var cls = getRefClass($(this));
                         if (cls && menuOrder[cls] > menuOrder[refClass]) {
