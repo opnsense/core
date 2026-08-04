@@ -37,3 +37,19 @@
         </tr>
     </tfoot>
 </table>
+
+{# _showMaximized() modal, it is here so z-index is always below an input dialog/backdrop #}
+<div id="{{ table_id }}-maximize-modal" class="modal fade bootgrid-maximize-modal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $.extend(jQuery.fn.UIBootgrid.translations, {
+        maximizeGrid: "{{ lang._('Maximize grid') }}",
+        minimizeGrid: "{{ lang._('Minimize grid') }}"
+    });
+</script>

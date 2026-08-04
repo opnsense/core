@@ -654,6 +654,10 @@ class UIBootgrid {
     }
 
     _onDimensionChange() {
+        if (this.$maximizeModal) {
+            return;
+        }
+
         const scrollbarGutterOffset = 16;
         const defaultHeight = 120;
 
@@ -1081,6 +1085,46 @@ class UIBootgrid {
         }
     }
 
+    _showMaximized() {
+        if (this.$maximizeModal) {
+            this.$maximizeModal.modal('hide');
+            return;
+        }
+
+        const $header = $(`#${this.id}-header`);
+        const $table = this.$element;
+        const $placeholder = $('<span>').insertBefore($header);
+        const $modal = $(`#${this.id}-maximize-modal`);
+        const $maximizeBtn = $(`#${this.id}-maximize`);
+
+        this.$maximizeModal = $modal;
+        $modal.find('.modal-body').append($header, $table);
+        $maximizeBtn.attr({
+            title: this.translations.minimizeGrid,
+            'aria-label': this.translations.minimizeGrid
+        }).find('.icon').removeClass('fa-expand').addClass('fa-xmark');
+
+        $modal.one('shown.bs.modal', () => {
+            this.table.setHeight(false);
+            $table.css({height: '', minHeight: '', maxHeight: ''});
+            $table.find('.tabulator-tableholder').css({height: '', maxHeight: ''});
+            this.table.redraw(true);
+        });
+
+        $modal.one('hidden.bs.modal', () => {
+            $placeholder.after($header, $table).remove();
+            $maximizeBtn.attr({
+                title: this.translations.maximizeGrid,
+                'aria-label': this.translations.maximizeGrid
+            }).find('.icon').removeClass('fa-xmark').addClass('fa-expand');
+            this.$maximizeModal = null;
+            this._onDimensionChange();
+            this.table.redraw(true);
+        });
+
+        $modal.modal('show');
+    }
+
     _renderActionBar() {
         if (!this.options.navigation) {
             return;
@@ -1182,6 +1226,20 @@ class UIBootgrid {
             });
 
             $(`#${this.id}-actions-group`).append($resetBtn);
+        }
+
+        // Maximize grid button
+        if ($(`#${this.id}-maximize-modal`).length) {
+            const $maximizeBtn = $(`
+                <button id="${this.id}-maximize" class="btn btn-default" type="button"
+                        title="${this.translations.maximizeGrid}" aria-label="${this.translations.maximizeGrid}">
+                    <span class="icon fa-solid fa-expand"></span>
+                </button>
+            `).on('click', () => {
+                this._showMaximized();
+            });
+
+            $(`#${this.id}-actions-group`).append($maximizeBtn);
         }
     }
 
