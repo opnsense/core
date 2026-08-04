@@ -875,7 +875,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDhcpv6.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDhcpv6.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/Menu/Menu.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/Kea/Migrations/M1_0_6.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Monit/Migrations/M1_0_0.php
@@ -1335,7 +1334,6 @@
 /usr/local/opnsense/scripts/kea/del_kea_leases.py
 /usr/local/opnsense/scripts/kea/get_kea_leases.py
 /usr/local/opnsense/scripts/kea/kea_dhcp_options.py
-/usr/local/opnsense/scripts/kea/kea_get_config.py
 /usr/local/opnsense/scripts/kea/kea_prefix_renew.py
 /usr/local/opnsense/scripts/kea/kea_prefix_watcher.py
 /usr/local/opnsense/scripts/kea/lib/__init__.py
