@@ -883,7 +883,19 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
 
     switch ($ifcfg['ipaddr'] ?? 'none') {
         case 'dhcp':
+            /*
+             * Stop the supervisor first: it owns the restart timer, so
+             * signalling dhclient directly would only get it respawned.
+             * daemon(8) forwards the TERM to dhclient and exits.
+             */
             killbypid("/var/run/dhclient.{$device}.pid");
+            /*
+             * Only a real teardown gives up the lease; a suspend is a
+             * temporary reconfigure and must keep the address claimed.
+             */
+            if (!$suspend) {
+                interface_dhcp_release($device);
+            }
             break;
         default:
             break;
@@ -3318,6 +3330,40 @@ function interfaces_dhcp_split($option)
     }
 
     return $args;
+}
+
+/*
+ * Give up the current IPv4 lease properly.
+ *
+ * /sbin/dhclient(8) from FreeBSD base has no release mode (getopt string is
+ * "bc:dl:np:qu"), so the DHCPRELEASE is emitted by a helper instead.  It must
+ * run after dhclient is gone -- it needs port 68 and dhclient holds it -- but
+ * before interfaces_addresses_flush(), because RFC 2131 requires the release
+ * to be unicast from the leased address.
+ */
+function interface_dhcp_release($device)
+{
+    /* the address is the source of the release; without it there is nothing to send */
+    if (empty($device) || !file_exists("/var/db/dhclient.leases.{$device}")) {
+        return;
+    }
+
+    /*
+     * hard bound: a release is never answered, so it must not be able to
+     * stall the GUI. Resolve `timeout` via $PATH rather than hardcoding
+     * /usr/bin or /bin -- confirmed to differ across OPNsense/FreeBSD
+     * builds (this system has it at /bin/timeout, not /usr/bin/timeout;
+     * a hardcoded wrong path makes mwexecf() fail to launch anything,
+     * silently, with interface_reset() otherwise appearing to succeed).
+     *
+     * Do NOT mute this call (default $mute is already false) -- a muted
+     * mwexecf() is exactly what made the /usr/bin/timeout path bug
+     * invisible in the first place. Let real failures reach syslog.
+     */
+    mwexecf(
+        'timeout -k 1 3 /usr/local/opnsense/scripts/interfaces/dhclient-release.py %s',
+        [$device]
+    );
 }
 
 function interface_dhcp_configure($interface = 'wan')
