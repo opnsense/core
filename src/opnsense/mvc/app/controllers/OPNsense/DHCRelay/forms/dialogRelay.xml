@@ -35,13 +35,13 @@
     <field>
         <id>relay.circuit_id</id>
         <label>Circuit id</label>
-        <type>dropdown</type>
+        <type>text</type>
         <help>Choose which value should be sent as the relay agent circuit ID.</help>
     </field>
     <field>
         <id>relay.remote_id</id>
         <label>Remote id</label>
-        <type>dropdown</type>
+        <type>text</type>
         <help>Choose which value should be sent as the relay agent remote ID.</help>
     </field>
     <field>
