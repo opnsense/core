@@ -73,7 +73,18 @@ class Dhcpv6Controller extends ApiMutableModelControllerBase
 
     public function getSubnetAction($uuid = null)
     {
-        return $this->getBase("subnet6", "subnets.subnet6", $uuid);
+        $result = $this->getBase("subnet6", "subnets.subnet6", $uuid);
+
+        // Ease cloning as subnet_id has unique constraint
+        if ($this->request->get('fetchmode') === 'copy' && !empty($result['subnet6'])) {
+            $max = 0;
+            foreach ($this->getModel()->subnets->subnet6->iterateItems() as $subnet) {
+                $max = max($subnet->subnet_id->asInt(), $max);
+            }
+            $result['subnet6']['subnet_id'] = $max + 1;
+        }
+
+        return $result;
     }
 
     public function delSubnetAction($uuid)
