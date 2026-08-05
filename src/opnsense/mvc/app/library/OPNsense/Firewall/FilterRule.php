@@ -58,6 +58,7 @@ class FilterRule extends Rule
         'icmp6-type' => 'parsePlain,icmp6-type {,}',
         'flags' => 'parsePlain, flags ',
         'state' => 'parseState',
+        'max-pkt-rate' => 'parsePlain, max-pkt-rate ',
         'set-prio' => 'parsePlain, set prio ',
         'prio' => 'parsePlain, prio ',
         'tos' => 'parsePlain, tos ',
@@ -216,6 +217,11 @@ class FilterRule extends Rule
                         }
                     }
                 }
+            }
+            // restructure packet rate
+            if (!empty($rule['max-pkt-rate-number']) && !empty($rule['max-pkt-rate-seconds'])) {
+                $rule['max-pkt-rate'] =
+                    $rule['max-pkt-rate-number'] . "/" . $rule['max-pkt-rate-seconds'];
             }
             // restructure state settings for easier output parsing
             if (!empty($rule['statetype']) && (empty($rule['type']) || $rule['type'] == 'pass')) {

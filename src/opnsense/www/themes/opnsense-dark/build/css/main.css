@@ -6889,6 +6889,7 @@ main.page-content.col-lg-12 {
   width: 70px;
   overflow: hidden;
   background-color: transparent !important;
+  border: none !important;
 }
 #navigation.col-sidebar-left > div.row {
   height: 100% !important;
@@ -6896,6 +6897,7 @@ main.page-content.col-lg-12 {
 #navigation.col-sidebar-left > div.row > nav.page-side-nav {
   width: 70px;
   height: 100% !important;
+  border-right: 1px solid rgba(217, 217, 217, 0.5);
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item {
   font-size: 14px;
@@ -6906,6 +6908,7 @@ main.page-content.col-lg-12 {
   padding-right: 0px;
   padding-top: 12px;
   border-bottom: 2px transparent;
+  border-right: 1px solid rgba(217, 217, 217, 0.5);
 }
 #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.fa, #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.fa-solid, #navigation.col-sidebar-left > div > nav > #mainmenu > div > a.list-group-item > span.glyphicon {
   visibility: visible;

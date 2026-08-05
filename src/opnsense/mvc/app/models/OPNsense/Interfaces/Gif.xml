@@ -42,6 +42,7 @@
             <descr type="DescriptionField"/>
             <link1 type="BooleanField"/>
             <link2 type="BooleanField"/>
+            <noclamp type="BooleanField"/>
         </gif>
     </items>
 </model>

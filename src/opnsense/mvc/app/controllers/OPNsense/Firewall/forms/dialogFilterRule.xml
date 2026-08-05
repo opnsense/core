@@ -509,6 +509,31 @@
     </field>
     <field>
         <type>header</type>
+        <label>Rate limiting</label>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.max-pkt-rate-number</id>
+        <label>Max packet rate [packets]</label>
+        <type>text</type>
+        <help>Maximum number of packets allowed during the configured time interval.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.max-pkt-rate-seconds</id>
+        <label>Max packet rate [seconds]</label>
+        <type>text</type>
+        <help>Time interval in seconds over which the maximum packet rate is measured.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
         <label>Traffic shaping</label>
         <advanced>true</advanced>
     </field>
