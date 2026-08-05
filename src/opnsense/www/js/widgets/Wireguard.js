@@ -70,7 +70,7 @@ export default class Wireguard extends BaseTableWidget {
 
     displayError(message) {
         $('#wgTunnelTable').empty().append(
-            $('<div class="error-message"></div>').append('<a href="/ui/wireguard/general"></a>').text(message)
+            $('<div class="error-message"></div>').append($('<a href="/ui/wireguard/general"></a>').text(message))
         );
     }
 
