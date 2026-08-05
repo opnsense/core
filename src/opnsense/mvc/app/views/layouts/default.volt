@@ -40,6 +40,9 @@
     <script src="{{ cache_safe(filename) }}"></script>
     {% endfor %}
 
+    <!-- theme JS -->
+    <script src="{{ cache_safe(theme_file_or_default('/js/theme.js', theme_name)) }}"></script>
+
     <script>
             // setup default scripting after page loading.
             $( document ).ready(function() {
@@ -212,9 +215,6 @@
 
             });
         </script>
-
-        <!-- theme JS -->
-        <script src="{{ cache_safe(theme_file_or_default('/js/theme.js', theme_name)) }}"></script>
   </head>
   <body>
   <header class="page-head">

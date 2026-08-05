@@ -110,6 +110,10 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
 
     <script src="<?= cache_safe("/ui/js/opnsense_status.js") ?>"></script>
 
+<?php if (get_themed_filename('/js/theme.js', true)): ?>
+    <script src="<?= cache_safe(get_themed_filename('/js/theme.js')) ?>"></script>
+<?php endif ?>
+
     <script>
     //<![CDATA[
     $( document ).ready(function() {
@@ -249,7 +253,4 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     });
     //]]>
     </script>
-<?php if (get_themed_filename('/js/theme.js', true)): ?>
-    <script src="<?= cache_safe(get_themed_filename('/js/theme.js')) ?>"></script>
-<?php endif ?>
 </head>
