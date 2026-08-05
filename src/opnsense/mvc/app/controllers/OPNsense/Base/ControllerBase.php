@@ -320,6 +320,8 @@ class ControllerBase extends ControllerRoot
                             continue 2;
                         } elseif ($key == 'sequence') {
                             $this_sequence = (string)$item;
+                        } elseif ($key == 'label') {
+                            $record[$key] = strlen((string)$item) ? gettext((string)$item) : '';
                         } else {
                             $record[$key] = (string)$item;
                         }
