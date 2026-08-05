@@ -2,9 +2,13 @@
 
 // link menu system
 $menu = new OPNsense\Base\Menu\MenuSystem();
+
 /* XXX generating breadcrumbs requires getItems() call */
 $menuSystem = $menu->getItems($_SERVER['REQUEST_URI']);
 $menuBreadcrumbs = $menu->getBreadcrumbs();
+$menuSelectedUrl = $menu->getSelectedUrl();
+$menuFavorites = (new OPNsense\Auth\User)->getUserByName($_SESSION['Username'] ?? '')?->menu_favorites->deserialize() ?? [];
+$menuSelectedIsFavorite = in_array($menuSelectedUrl, $menuFavorites);
 
 if (isset($extraBreadcrumb)) {
     $menuBreadcrumbs[] = array('name' => $extraBreadcrumb);
@@ -74,6 +78,9 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
     <!-- bootstrap dialog -->
     <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/bootstrap-dialog.css")) ?>">
 
+    <!-- Favorites layout -->
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/opnsense-favorites.css")) ?>">
+
     <!-- Font awesome -->
     <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/assets/fontawesome/css/all.min.css") ?>">
     <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/assets/fontawesome/css/v4-shims.min.css") ?>">
@@ -117,7 +124,7 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
       $("input").not("[autocomplete]").attr("autocomplete","off");
 
       // hide empty menu items
-      $('#mainmenu > div > .collapse').each(function(){
+      $('#mainmenu > div > .collapse').not('#Favorites').each(function(){
         // cleanup empty second level menu containers
         $(this).find("div.collapse").each(function(){
           if ($(this).children().length == 0 ) {
