@@ -87,6 +87,7 @@
             <subnet4 type="ArrayField">
                 <subnet_id type="AutoNumberField">
                     <Required>Y</Required>
+                    <Default>1</Default>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>4294967294</MaximumValue>
                     <Constraints>
