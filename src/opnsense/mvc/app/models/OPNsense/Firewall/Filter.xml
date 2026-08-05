@@ -260,6 +260,32 @@
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>2147483647</MaximumValue>
                 </max-src-conn-rates>
+                <max-pkt-rate-number type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>4294967</MaximumValue>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Packet rate number and seconds must either both be set or left empty.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>max-pkt-rate-seconds</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </max-pkt-rate-number>
+                <max-pkt-rate-seconds type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Packet rate number and seconds must either both be set or left empty.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>max-pkt-rate-number</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </max-pkt-rate-seconds>
                 <overload type="ModelRelationField">
                     <Model>
                         <aliases>
