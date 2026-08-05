@@ -549,7 +549,9 @@ function _interfaces_gif_configure($gif)
         ]);
     }
 
-    $flags = (empty($gif['link1']) ? "-" : "") . "link1 " . (empty($gif['link2']) ? "-" : "") . "link2";
+    $flags = (empty($gif['link1']) ? '-' : '') . 'link1 ' .
+        (empty($gif['link2']) ? '-' : '') . 'link2 ' .
+        (empty($gif['noclamp']) ? '-' : '') . 'noclamp';
     legacy_interface_flags($gif['gifif'], $flags);
 
     legacy_interface_flags($gif['gifif'], 'up');
