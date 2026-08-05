@@ -42,7 +42,7 @@ $(document).ready(function () {
         return $('#mainmenu .' + refClass).not('#Favorites .' + refClass);
     };
 
-    let menuOrder = {};
+    const menuOrder = {};
     $('#mainmenu a.list-group-item').not('#Favorites a').each(function (i) {
         const cls = getRefClass($(this));
         if (cls) menuOrder[cls] = i;
