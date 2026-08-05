@@ -1,0 +1,167 @@
+.tokenize > .tokens-container {
+    position: relative;
+    list-style: none;
+    padding: 0 0 5px 5px;
+    height: auto;
+    min-height: 34px;
+    cursor: text;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+}
+
+.tokenize > .tokens-container.disabled {
+    background-color: #eee;
+    cursor: not-allowed;
+}
+
+.tokenize.focus > .tokens-container {
+    outline: 0;
+    border-color: #66afe9;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(102,175,233,.6);
+}
+
+.tokenize > .tokens-container.input-sm {
+    padding: 0 0 4px 4px;
+    min-height: 30px;
+}
+
+.tokenize > .tokens-container.input-lg {
+    padding: 0 0 9px 9px;
+    min-height: 46px;
+}
+
+.tokenize > .tokens-container > .token {
+    padding: 0 1.2em 0 5px;
+    background-color: #eff2f7;
+    -webkit-border-radius: 2px;
+       -moz-border-radius: 2px;
+            border-radius: 2px;
+}
+
+.tokenize > .tokens-container > .token,
+.tokenize > .tokens-container > .placeholder,
+.tokenize > .tokens-container > .token-search {
+    border: 1px solid #cdd5e3;
+    display: inline-block;
+    margin: 5px 5px 0 0;
+    position: relative;
+    vertical-align: middle;
+}
+
+.tokenize.sortable > .tokens-container > .token {
+    cursor: move;
+}
+
+.tokenize.single > .tokens-container > .token {
+    display: block;
+    border-color: #fff;
+    background-color: transparent;
+}
+
+.tokenize.sortable > .tokens-container > .token.shadow {
+    border-color: #ccc;
+    background-color: #ccc;
+    filter: alpha(opacity=50);
+    opacity: .2;
+}
+
+.tokenize > .tokens-container > .placeholder,
+.tokenize > .tokens-container > .token-search {
+    padding: 0;
+    border-color: #fff;
+}
+
+.tokenize > .tokens-container > .placeholder {
+    color: #ccc;
+}
+
+.tokenize > .tokens-container > .token-search > input {
+    padding: 0;
+    margin: 0;
+    line-height: 1em;
+    border: 1px solid #fff;
+    background: transparent;
+    border-left: none;
+    border-right: none;
+    outline: none;
+    width: 100%;
+}
+
+.tokenize > .tokens-container > .token-search > input::-ms-clear {
+    display: none;
+}
+
+.tokenize > .tokens-container.input-sm > .placeholder,
+.tokenize > .tokens-container.input-sm > .token-search,
+.tokenize > .tokens-container.input-sm > .token {
+    margin: 4px 4px 0 0;
+}
+
+.tokenize > .tokens-container.input-lg > .placeholder,
+.tokenize > .tokens-container.input-lg > .token-search,
+.tokenize > .tokens-container.input-lg > .token {
+    margin: 9px 9px 0 0;
+}
+
+.tokenize > .tokens-container > .token.pending-delete {
+    background-color: #5b72a4;
+    border-color: #425c96;
+    color: #fff
+}
+
+.tokenize > .tokens-container > .token > .dismiss {
+    position: absolute;
+    right: 5px;
+    color: #a9b9d8;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.tokenize > .tokens-container > .token > .dismiss:after {
+    content: "\00D7";
+}
+
+.tokenize > .tokens-container > .token.pending-delete > .dismiss {
+    color: #aaa;
+}
+
+.tokenize-dropdown {
+    position: absolute;
+    display: none;
+}
+
+.tokenize-dropdown > .dropdown-menu {
+    min-height: 10px;
+    width: 100%;
+    display: block;
+    margin: -1px 0 0 0;
+    visibility: visible;
+    opacity: 1;
+}
+
+.tokenize-dropdown > .dropdown-menu li {
+    cursor: pointer;
+}
+
+.tokenize-dropdown > .dropdown-menu li > a .tokenize-highlight {
+    font-weight: bold;
+}
+
+.tokenize-dropdown > .dropdown-menu li.locked {
+    padding: 3px 20px;
+    color: #333;
+    white-space: nowrap;
+}
+
+.tokenize-dropdown > .dropdown-menu li.locked,
+.tokenize-dropdown > .dropdown-menu li > a {
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+}
+
+.tokenize-dropdown > .dropdown-menu li:not(.active) a:hover,
+.tokenize-dropdown > .dropdown-menu li:not(.active) a:focus {
+    background-color: transparent;
+}
