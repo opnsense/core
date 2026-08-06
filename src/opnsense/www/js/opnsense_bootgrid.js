@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 Deciso B.V.
+ * Copyright (C) 2025-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -888,6 +888,10 @@ class UIBootgrid {
         this.table.on('scrollVertical', (top) => {
             this.scrollPos = top;
         });
+        this.table.on('renderComplete', (top) => {
+            /* tooltips may stick, remove them on redraw */
+            $("div.tooltip.fade.top.in").remove();
+        });
     }
 
     _renderFooter() {
@@ -1094,8 +1098,27 @@ class UIBootgrid {
         const $header = $(`#${this.id}-header`);
         const $table = this.$element;
         const $placeholder = $('<span>').insertBefore($header);
-        const $modal = $(`#${this.id}-maximize-modal`);
+        const $modal = $('<div class="modal fade bootgrid-maximize-modal" role="dialog">');
         const $maximizeBtn = $(`#${this.id}-maximize`);
+        $modal.append(`
+            <div class="modal-backdrop fade in"></div>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body"></div>
+                </div>
+            </div>
+        `);
+
+        $modal.find('.modal-content').css({
+            'margin-top': $("header.page-head").outerHeight(),
+            'margin-bottom': 0,
+            'margin-left': 0,
+            'margin-right': 0,
+            'height': $("#navigation").outerHeight()
+        });
+
+        /* ensure model is "stacked" properly to allow the next dialog to overlay it */
+        $(`#${this.id}`).after($modal);
 
         this.$maximizeModal = $modal;
         $modal.find('.modal-body').append($header, $table);
@@ -1117,12 +1140,13 @@ class UIBootgrid {
                 title: this.translations.maximizeGrid,
                 'aria-label': this.translations.maximizeGrid
             }).find('.icon').removeClass('fa-xmark').addClass('fa-expand');
+            this.$maximizeModal.remove();
             this.$maximizeModal = null;
             this._onDimensionChange();
             this.table.redraw(true);
         });
 
-        $modal.modal('show');
+        $modal.modal({ backdrop: 'static', keyboard: false });
     }
 
     _renderActionBar() {
@@ -1209,8 +1233,8 @@ class UIBootgrid {
         // Reset button
         if (this.options.resetButton) {
             let $resetBtn = $(`
-                <button id="${this.id}-reset" class="btn btn-default" type="button"
-                        title="${this.persistence ? this.translations.resetGrid : ''}">
+                <button id="${this.id}-reset" class="btn btn-default" type="button" data-toggle="tooltip"
+                        title="${this.translations.resetGrid}">
                     <span class="icon fa-solid fa-share-square"></span>
                 </button>
             `).on('click', (e) => {
@@ -1229,18 +1253,16 @@ class UIBootgrid {
         }
 
         // Maximize grid button
-        if ($(`#${this.id}-maximize-modal`).length) {
-            const $maximizeBtn = $(`
-                <button id="${this.id}-maximize" class="btn btn-default" type="button"
-                        title="${this.translations.maximizeGrid}" aria-label="${this.translations.maximizeGrid}">
-                    <span class="icon fa-solid fa-expand"></span>
-                </button>
-            `).on('click', () => {
-                this._showMaximized();
-            });
+        const $maximizeBtn = $(`
+            <button id="${this.id}-maximize" class="btn btn-default" type="button" data-toggle="tooltip"
+                    title="${this.translations.maximizeGrid}" aria-label="${this.translations.maximizeGrid}">
+                <span class="icon fa-solid fa-expand"></span>
+            </button>
+        `).on('click', () => {
+            this._showMaximized();
+        });
 
-            $(`#${this.id}-actions-group`).append($maximizeBtn);
-        }
+        $(`#${this.id}-actions-group`).append($maximizeBtn);
     }
 
     _renderFooterCommands() {

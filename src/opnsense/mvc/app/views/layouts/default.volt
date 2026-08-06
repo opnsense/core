@@ -353,7 +353,9 @@
             infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}",
             resetGrid: "{{ lang._('Reset grid layout') }}",
             searchColumns: "{{ lang._('Search columns') }}",
-            expand: "{{ lang._('Click to expand/collapse cell') }}"
+            expand: "{{ lang._('Click to expand/collapse cell') }}",
+            maximizeGrid: "{{ lang._('Maximize grid') }}",
+            minimizeGrid: "{{ lang._('Minimize grid') }}"
         });
 
         $.fn.selectpicker.defaults = $.fn.selectpicker.defaults || {};

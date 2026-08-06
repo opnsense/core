@@ -98,7 +98,8 @@
     width: calc(100vw - 30px);
     max-width: none;
     max-height: calc(100dvh - 80px);
-    margin: 65px 15px 15px !important;
+    /* _showMaximized() calculates top margin */
+    margin: 0px 0px 0px 8px !important;
 }
 
 .bootgrid-maximize-modal .modal-content {
