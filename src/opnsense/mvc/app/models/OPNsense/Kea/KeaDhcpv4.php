@@ -182,10 +182,9 @@ class KeaDhcpv4 extends BaseModel
     private function getConfigSubnets($ddns_enabled = false, array &$flex_options = [], array &$client_classes = [])
     {
         $result = [];
-        $subnet_id = 1;
         foreach ($this->subnets->subnet4->iterateItems() as $subnet_uuid => $subnet) {
             $record = [
-                'id' => $subnet_id++,
+                'id' => $subnet->subnet_id->asInt(),
                 'subnet' => $subnet->subnet->getValue(),
                 'next-server' => $subnet->next_server->getValue(),
                 'match-client-id' => !$subnet->{'match-client-id'}->isEmpty(),
