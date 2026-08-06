@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015-2023 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2026 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -237,8 +237,8 @@ class Template(object):
                     for filename in list(result_filenames):
                         if target_filters[target_filter][key] is not None \
                                 and filename.find('[%s]' % target_filter) > -1:
-                            new_filename = filename.replace('[%s]' % target_filter, target_filters[target_filter][key])
-                            new_filename = new_filename.replace('//', '/')
+                            opt_value = os.path.basename(target_filters[target_filter][key])
+                            new_filename = os.path.normpath(filename.replace('[%s]' % target_filter, opt_value))
                             result_filenames[new_filename] = copy.deepcopy(result_filenames[filename])
                             result_filenames[new_filename][key] = target_filters[target_filter][key]
 
