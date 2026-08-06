@@ -192,6 +192,13 @@
                     <ConfigdPopulateAct>filter list diverts</ConfigdPopulateAct>
                     <ValidationMessage>Specify a valid divert-to target.</ValidationMessage>
                 </divert-to>
+                <af-to-source type="NetworkField">
+                    <NetMaskAllowed>N</NetMaskAllowed>
+                </af-to-source>
+                <af-to-destination type="NetworkField">
+                    <NetMaskRequired>Y</NetMaskRequired>
+                    <Strict>Y</Strict>
+                </af-to-destination>
                 <gateway type="JsonKeyValueStoreField">
                     <ConfigdPopulateAct>interface gateways list -g</ConfigdPopulateAct>
                     <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
