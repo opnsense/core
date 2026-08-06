@@ -39,9 +39,7 @@ from lib.kea_ctrl import KeaCtrl
 def use_ndp_discover():
     try:
         tree = xml.etree.ElementTree.parse('/conf/config.xml')
-        node = tree.find('./OPNsense/Kea/dhcp6/general/prefix_watcher_discover')
-        if node is not None and node.text == '1':
-            return True
+        return tree.find('./OPNsense/Kea/dhcp6/general/prefix_watcher_discover').text == '1'
     except Exception:
         pass
     return False
