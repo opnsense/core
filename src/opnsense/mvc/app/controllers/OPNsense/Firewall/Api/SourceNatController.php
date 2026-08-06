@@ -54,10 +54,9 @@ class SourceNatController extends FilterBaseController
 
     public function getAction()
     {
-        $data = parent::getAction();
         return [
             self::$internalModelName => [
-                'general' => $data[self::$internalModelName]['general']
+                'general' => $this->getModel()->general->getNodes()
             ]
         ];
     }
