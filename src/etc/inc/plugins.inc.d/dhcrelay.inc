@@ -90,8 +90,6 @@ function dhcrelay_xmlrpc_sync()
 
 function dhcrelay_configure_id($verbose = false, $id_map = null)
 {
-    global $config;
-
     if (!plugins_argument_map($id_map)) {
         return;
     }
@@ -189,16 +187,14 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
         $cmd_frmt[] = '-i %s';
         $cmd_args[] = $device;
 
-        $circuit_id = $relay->circuit_id->getValue();
-        if ($family == 'inet' && !empty($circuit_id)) {
+        if ($family == 'inet' && !$relay->circuit_id->isEmpty()) {
             $cmd_frmt[] = '-C %s';
-            $cmd_args[] = $circuit_id;
+            $cmd_args[] = $relay->circuit_id->getValue();
         }
 
-        $remote_id = $relay->remote_id->getValue();
-        if (!empty($remote_id)) {
+        if (!$relay->remote_id->isEmpty()) {
             $cmd_frmt[] = '-R %s';
-            $cmd_args[] = $remote_id;
+            $cmd_args[] = $relay->remote_id->getValue();
         }
 
         $has_servers = false;
