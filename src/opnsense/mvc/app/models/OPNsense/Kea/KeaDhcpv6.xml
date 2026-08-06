@@ -43,6 +43,10 @@
                 <Required>Y</Required>
                 <Default>1</Default>
             </fwrules>
+            <prefix_watcher_discover type="BooleanField">
+                <default>0</default>
+                <Required>N</Required>
+            </prefix_watcher_discover>
         </general>
         <lexpire>
             <hold_reclaimed_time type="IntegerField">

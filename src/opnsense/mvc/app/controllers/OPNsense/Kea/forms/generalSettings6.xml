@@ -69,6 +69,13 @@
         <help>Automatically add a basic set of firewall rules to allow dhcp traffic, more fine grained controls can be offered manually when disabling this option.</help>
     </field>
     <field>
+        <id>dhcpv6.general.prefix_watcher_discover</id>
+        <label>Bypass Hostwatch (Force native NDP)</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Passes the --discover flag to the prefix watcher to disable Hostwatch data and force reliance on the kernel's native NDP tables. This prevents Kea from injecting PD routes on physical bridge members instead of the bridge interface itself.</help>
+    </field>
+    <field>
         <type>header</type>
         <label>Lease Expiration</label>
         <collapse>true</collapse>

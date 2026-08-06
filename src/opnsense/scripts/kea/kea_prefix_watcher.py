@@ -31,8 +31,20 @@ import time
 import ujson
 import subprocess
 import syslog
+import xml.etree.ElementTree
 
 from lib.kea_ctrl import KeaCtrl
+
+
+def use_ndp_discover():
+    try:
+        tree = xml.etree.ElementTree.parse('/conf/config.xml')
+        node = tree.find('./OPNsense/Kea/dhcp6/general/prefix_watcher_discover')
+        if node is not None and node.text == '1':
+            return True
+    except Exception:
+        pass
+    return False
 
 
 def yield_lease_records(service='dhcp6', limit=256, poll_interval=10):
@@ -77,8 +89,13 @@ class Hostwatch:
     def reload(self):
         self._def_local_db.clear()
 
+        cmd = ['/usr/local/opnsense/scripts/interfaces/list_hosts.py', '--proto', 'inet6', '--ndp']
+
+        if use_ndp_discover():
+            cmd.append('--discover')
+
         out = subprocess.run(
-            ['/usr/local/opnsense/scripts/interfaces/list_hosts.py', '--proto', 'inet6', '--ndp'],
+            cmd,
             capture_output=True,
             text=True
         ).stdout
