@@ -39,6 +39,7 @@ function formTranslateAddresses()
     $retval = [];
 
     foreach (legacy_config_get_interfaces(['virtual' => false, 'enable' => true]) as $intf => $intfdata) {
+        $retval[$intf] = (!empty($intfdata['descr']) ? $intfdata['descr'] : $intf ) . " " . gettext("net");
         $retval[$intf."ip"] = (!empty($intfdata['descr']) ? $intfdata['descr'] : $intf ) . " " . gettext("address");
     }
 
