@@ -122,7 +122,7 @@ if __name__ == '__main__':
             if not ll_addr:
                 syslog.syslog(
                     syslog.LOG_WARNING,
-                    "failed to resolve next hop for %s on %s, skipping route %s" %
+                    "failed to resolve next hop for hwaddr %s on interface %s, skipping route for prefix %s" %
                     (record.get('hwaddr'), record.get('interface'), prefix)
                 )
                 continue
