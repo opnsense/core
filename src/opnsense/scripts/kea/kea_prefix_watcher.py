@@ -42,6 +42,14 @@ def yield_lease_records(service='dhcp6', limit=256, poll_interval=10):
     Since amount of leases can be large, using get-page is recommended.
     """
     while True:
+        config = KeaCtrl.send_command("config-get", None, service)
+        # include interface to disambiguate duplicate MAC observations, e.g. bridge members
+        interfaces = {
+            subnet["id"]: subnet.get("interface")
+            for subnet in config.get("arguments", {}).get("Dhcp6", {}).get("subnet6", [])
+            if subnet.get("id") is not None
+        }
+
         from_addr = "start"
         while True:
             response = KeaCtrl.send_command('lease6-get-page', {"from": from_addr, "limit": limit}, service)
@@ -55,6 +63,7 @@ def yield_lease_records(service='dhcp6', limit=256, poll_interval=10):
                         "address": lease.get("ip-address", ""),
                         "prefix_len": lease.get("prefix-len", 128),
                         "hwaddr": lease.get("hw-address", ""),
+                        "interface": interfaces.get(lease.get("subnet-id")),
                         "state": lease.get("state", 0)
                     }
 
@@ -87,14 +96,13 @@ class Hostwatch:
             # [ifname, mac, ip]
             if ipaddress.ip_address(row[2]).is_link_local:
                 # link local requires scope ID here, otherwise route add will fail
-                self._def_local_db[row[1]] = f"{row[2]}%{row[0]}"
+                self._def_local_db[(row[0], row[1])] = f"{row[2]}%{row[0]}"
 
-    def get(self, mac):
-        if mac not in self._def_local_db:
+    def get(self, ifname, mac):
+        if (ifname, mac) not in self._def_local_db:
             self.reload()
-
-        if mac in self._def_local_db:
-            return self._def_local_db[mac]
+        if (ifname, mac) in self._def_local_db:
+            return self._def_local_db[(ifname, mac)]
 
 
 if __name__ == '__main__':
@@ -108,11 +116,14 @@ if __name__ == '__main__':
         if (prefix not in prefixes or prefixes[prefix].get('hwaddr') != record.get('hwaddr')) \
                 and record.get('state', 0) == 0:
             prefixes[prefix] = record
-            ll_addr = hostwatch.get(record.get('hwaddr'))
+            ll_addr = None
+            if record.get('interface'):
+                ll_addr = hostwatch.get(record.get('interface'), record.get('hwaddr'))
             if not ll_addr:
                 syslog.syslog(
                     syslog.LOG_WARNING,
-                    "no LLA found for %s, skipping route %s" % (record.get('hwaddr'), prefix)
+                    "failed to resolve next hop for hwaddr %s on interface %s, skipping route for prefix %s" %
+                    (record.get('hwaddr'), record.get('interface'), prefix)
                 )
                 continue
             # lazy drop
