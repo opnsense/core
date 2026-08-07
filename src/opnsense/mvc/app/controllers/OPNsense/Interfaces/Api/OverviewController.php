@@ -49,7 +49,8 @@ class OverviewController extends ApiControllerBase
             'description' => gettext('Description'),
             'status' => gettext('Status'),
             'enabled' => gettext('Enabled'),
-            'link_type' => gettext('Link Type'),
+            'link_type' => gettext('IPv4 Link Type'),
+            'link_typev6' => gettext('IPv6 Link Type'),
             'ipv4' => gettext('IPv4 Addresses'),
             'ipv6' => gettext('IPv6 Addresses'),
             'gateways' => gettext('Gateways'),
@@ -181,18 +182,15 @@ class OverviewController extends ApiControllerBase
             $tmp['description'] = !empty($config['descr']) ? $config['descr'] : strtoupper($config['identifier']);
             $tmp['enabled'] = !empty($config['enable']);
             $tmp['link_type'] = !empty($config['ipaddr']) ? $config['ipaddr'] : 'none';
+            $tmp['link_typev6'] = !empty($config['ipaddrv6']) ? $config['ipaddrv6'] : 'none';
             foreach ([4, 6] as $primary) {
                 $addr = $ifaddr[$config['identifier']][$primary != 4] ?? [];
                 $tmp['addr' . $primary] = !empty($addr['address']) ?
                     "{$addr['address']}/{$addr['bits']}" : '';
             }
-            if (Util::isIpAddress($tmp['link_type'])) {
-                $tmp['link_type'] = 'static';
-            } elseif (empty($config['ipaddr']) && !empty(!empty($config['ipaddrv6']))) {
-                /* link_type prefers ipv4, but if none is found, show ipv6 type */
-                $tmp['link_type'] = $config['ipaddrv6'];
-                if (Util::isIpAddress($tmp['link_type'])) {
-                    $tmp['link_type'] = 'static';
+            foreach (['link_type', 'link_typev6'] as $linkType) {
+                if (Util::isIpAddress($tmp[$linkType])) {
+                    $tmp[$linkType] = 'static';
                 }
             }
 

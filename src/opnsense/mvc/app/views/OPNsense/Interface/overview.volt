@@ -343,9 +343,10 @@
                 <th data-column-id="description" data-formatter="interface" data-type="string">{{ lang._('Interface') }}</th>
                 <th data-column-id="device" data-identifier="true" data-width="5em" data-type="string">{{ lang._('Device') }}</th>
                 <th data-column-id="vlan_tag" data-formatter="vlan" data-type="string" data-width="3em">{{ lang._('VLAN') }}</th>
-                <th data-column-id="link_type" data-type="string">{{ lang._('Link Type') }}</th>
-                <th data-column-id="ipv4" data-formatter="ipv4" data-type="string">{{ lang._('IPv4') }}</th>
-                <th data-column-id="ipv6" data-formatter="ipv6" data-type="string">{{ lang._('IPv6') }}</th>
+                <th data-column-id="link_type" data-type="string">{{ lang._('IPv4 Link Type') }}</th>
+                <th data-column-id="ipv4" data-formatter="ipv4" data-type="string">{{ lang._('IPv4 Addresses') }}</th>
+                <th data-column-id="link_typev6" data-type="string">{{ lang._('IPv6 Link Type') }}</th>
+                <th data-column-id="ipv6" data-formatter="ipv6" data-type="string">{{ lang._('IPv6 Addresses') }}</th>
                 <th data-column-id="gateways" data-formatter="gateways" data-type="string">{{ lang._('Gateway') }}</th>
                 <th data-column-id="routes" data-formatter="expand" data-type="string">{{ lang._('Routes') }}</th>
                 <th data-column-id="commands" data-width="125" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
