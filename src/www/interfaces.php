@@ -580,7 +580,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig['ipaddrv6'] = null;
     }
 
-    if (isset($a_interfaces[$if]['wireless'])) {
+    if (strstr($a_interfaces[$if]['if'], '_wlan')) {
         config_read_array('interfaces', $if, 'wireless');
         /* Sync first to be sure it displays the actual settings that will be used */
         interface_sync_wireless_clones($a_interfaces[$if], false);
