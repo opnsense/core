@@ -178,15 +178,15 @@ class NetworkinsightController extends ApiControllerBase
                         $data_filter .= $filter_field . '=' . $filter_values[$field_indx];
                     }
                 }
-                $data_filter = "'{$data_filter}'";
             } else {
                 // no filter, empty parameter
-                $data_filter = "''";
+                $data_filter = "";
             }
             $backend = new Backend();
-            $configd_cmd = "netflow aggregate top {$provider} {$from_date} {$to_date} {$field}";
-            $configd_cmd .= " {$measure} {$data_filter} {$max_hits}";
-            $response = $backend->configdRun($configd_cmd);
+            $response = $backend->configdpRun(
+                "netflow aggregate top",
+                [$provider, $from_date, $to_date, $field, $measure, $data_filter, $max_hits]
+            );
             $graph_data = json_decode($response, true);
             if (is_array($graph_data)) {
                 foreach ($graph_data as &$record) {
