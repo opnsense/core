@@ -200,10 +200,11 @@ class BaseFlowAggregator(object):
             if type(last_timestamp) == datetime.datetime:
                 expire = self.history_per_resolution()[self.resolution]
                 expire_timestamp = last_timestamp - datetime.timedelta(seconds=expire)
-                if last_timestamp > datetime.datetime.now():
+                now_utc = datetime.datetime.now(datetime.timezone.utc).replace(tzinfo=None)
+                if last_timestamp > now_utc:
                     # if data recorded seems to be in the future, use current timestamp for cleanup
                     # (prevent current data being removed)
-                    expire_timestamp = datetime.datetime.now() - datetime.timedelta(seconds=expire)
+                    expire_timestamp = now_utc - datetime.timedelta(seconds=expire)
 
                 self._update_cur.execute('delete from timeserie where mtime < :expire', {'expire': expire_timestamp})
                 self.commit()
