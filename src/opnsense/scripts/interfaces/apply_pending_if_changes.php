@@ -55,9 +55,6 @@ if (is_array($config['interfaces'])) {
 
     foreach ($to_configure as $ifname) {
         $config['interfaces'][$ifname]['if'] = $todos[$ifname]['pending_if'];
-        if (isset($config['interfaces'][$ifname]['wireless'])) {
-            interface_sync_wireless_clones($config['interfaces'][$ifname], false);
-        }
         /* Reload all for the interface. */
         interface_configure(false, $ifname, true);
     }
