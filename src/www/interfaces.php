@@ -693,7 +693,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         } elseif (isset($a_interfaces[$if]['lock'])) {
             unset($a_interfaces[$if]['lock']);
         }
-        if (isset($a_interfaces[$if]['wireless'])) {
+        if (strstr($a_interfaces[$if]['if'], '_wlan')) {
             config_read_array('interfaces', $if, 'wireless');
             interface_sync_wireless_clones($a_interfaces[$if], false);
         }
@@ -980,7 +980,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         /*
           Wireless interface
         */
-        if (isset($a_interfaces[$if]['wireless'])) {
+        if (strstr($a_interfaces[$if]['if'], '_wlan')) {
             config_read_array('interfaces', $if, 'wireless');
             $reqdfields = array("mode");
             $reqdfieldsn = array(gettext("Mode"));
@@ -1063,7 +1063,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
             // copy physical interface data (wireless is a strange case, partly managed via interface_sync_wireless_clones)
             $new_config['if'] = $old_config['if'];
-            if (isset($old_config['wireless'])) {
+            if (strstr($a_interfaces[$if]['if'], '_wlan') && isset($old_config['wireless'])) {
                 $new_config['wireless'] = $old_config['wireless'];
             }
             //
@@ -2793,7 +2793,7 @@ include("head.inc");
                 </div>
 <?php
                 /* Wireless interface? */
-                if (isset($a_interfaces[$if]['wireless'])):?>
+                if (strstr($a_interfaces[$if]['if'], '_wlan')):?>
                 <!-- Section : Wireless -->
                 <div class="tab-content content-box col-xs-12 __mb">
                   <div class="table-responsive">
