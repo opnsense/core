@@ -68,6 +68,7 @@ $(document).ready(function () {
 
     $favPanel.on('click', '.list-group-item', function (e) {
         e.preventDefault();
+        if (!e.originalEvent) return;
         const cls = getRefClass($(this));
         if (cls) {
             $favPanel.collapse('hide');
