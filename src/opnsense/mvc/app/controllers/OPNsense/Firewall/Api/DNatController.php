@@ -37,6 +37,19 @@ class DNatController extends FilterBaseController
     protected static $internalModelClass = 'OPNsense\\Firewall\\DNat';
     protected static $categorysource = 'rule';
 
+    private array $export_ignore = [
+        'sort_order',
+        'prio_group',
+        'categories',
+        'associated-rule-id',
+        'created.username',
+        'created.time',
+        'created.description',
+        'updated.username',
+        'updated.time',
+        'updated.description',
+    ];
+
     /**
      * @inheritdoc
      */
@@ -194,11 +207,11 @@ class DNatController extends FilterBaseController
 
     public function downloadRulesAction()
     {
-        return $this->downloadRulesBase('rule', ['sort_order', 'prio_group']);
+        return $this->downloadRulesBase('rule', $this->export_ignore);
     }
 
     public function uploadRulesAction()
     {
-        return $this->uploadRulesBase('rule', ['sort_order', 'prio_group']);
+        return $this->uploadRulesBase('rule', $this->export_ignore);
     }
 }
