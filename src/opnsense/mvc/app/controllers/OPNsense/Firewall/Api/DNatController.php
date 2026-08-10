@@ -61,7 +61,17 @@ class DNatController extends FilterBaseController
             return empty($category) || array_intersect($catids, $category);
         };
 
-        $results =  $this->searchBase("rule", null, "sequence", $filter_funct);
+        $results = $this->searchBase(
+            "rule",
+            [
+                "uuid", "sequence", "interface", "ipprotocol", "protocol",
+                "source.network", "source.port", "destination.network", "destination.port",
+                "target", "local-port", "poolopts", "category", "descr",
+                "tag", "tagged", "natreflection", "pass"
+            ],
+            "sequence",
+            $filter_funct
+        );
         $configObj = Config::getInstance()->object();
 
         /* carry results */
