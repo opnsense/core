@@ -289,9 +289,16 @@ class ArrayField extends BaseField
         $iterator =  $include_static ? $this->iterateItems() : parent::iterateItems();
         foreach ($iterator as $akey => $anode) {
             $record = [];
+            // XXX: flatten nested containers, same one level limitation as ArrayField::add()
             foreach ($anode->iterateItems() as $tag => $node) {
                 if (!in_array($tag, $exclude)) {
-                    $record[$tag] = (string)$node;
+                    if ($node->isContainer()) {
+                        foreach ($node->iterateItems() as $subtag => $subnode) {
+                            $record["{$tag}.{$subtag}"] = (string)$subnode;
+                        }
+                    } else {
+                        $record[$tag] = (string)$node;
+                    }
                 }
             }
             if (is_callable($callback)) {
@@ -376,9 +383,15 @@ class ArrayField extends BaseField
                 $results['updated'] += 1;
             }
             $results['uuids'][$node->getAttributes()['uuid']] = $idx;
+            // XXX: resolve flattened containers, same one level limitation as ArrayField::add()
             foreach ($record as $fieldname => $content) {
-                if (isset($node->$fieldname)) {
-                    $node->$fieldname = (string)$content;
+                $path = explode('.', $fieldname, 2);
+                if (isset($node->{$path[0]})) {
+                    if (isset($path[1]) && isset($node->{$path[0]}->{$path[1]})) {
+                        $node->{$path[0]}->{$path[1]} = (string)$content;
+                    } elseif (!isset($path[1])) {
+                        $node->{$path[0]} = (string)$content;
+                    }
                 }
             }
             if (is_callable($node_callback)) {
