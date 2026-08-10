@@ -40,6 +40,8 @@ class DNatController extends FilterBaseController
     private array $export_ignore = [
         'sort_order',
         'prio_group',
+        'source.address',
+        'destination.address',
         'categories',
         'associated-rule-id',
         'created.username',
