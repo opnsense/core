@@ -95,7 +95,7 @@
 }
 
 .bootgrid-maximize-modal .modal-dialog {
-    width: calc(100vw - 30px);
+    width: calc(100vw - 16px);
     max-width: none;
     max-height: calc(100dvh - 80px);
     /* _showMaximized() calculates top margin */
