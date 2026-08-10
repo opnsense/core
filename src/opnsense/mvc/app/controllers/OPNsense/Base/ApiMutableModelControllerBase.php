@@ -416,8 +416,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         ) {
             $fields = [];
             foreach ($element->iterateItems() as $node) {
-                foreach ($node->iterateItems() as $key => $value) {
-                    $fields[] = $key;
+                $reflen = strlen($node->__reference) + 1;
+                foreach ($node->getFlatNodes() as $key => $val) {
+                    $fields[] = substr($key, $reflen);
                 }
                 break;
             }
@@ -715,12 +716,15 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 $result = $node->importRecordSet($data, $keyfields, $data_callback, $node_callback);
                 $valmsgfields = [];
                 foreach ($this->getModel()->performValidation() as $msg) {
+                    $tmp = explode('.', substr($msg->getField(), strlen($path) + 1));
+                    $uuid = $tmp[0];
+                    if (!isset($result['uuids'][$uuid])) {
+                        continue; /* existing, but unvalid, record */
+                    }
                     if (str_starts_with($msg->getField(), $path) && !in_array($msg->getField(), $valmsgfields)) {
-                        $tmp = explode('.', substr($msg->getField(), strlen($path) + 1));
-                        $uuid = $tmp[0];
                         $fieldname = end($tmp);
                         $result['validations'][] = [
-                            'sequence' => $result['uuids'][$uuid] ?? null,
+                            'sequence' => $result['uuids'][$uuid],
                             'message' =>  $msg->getMessage(),
                             'field' => $fieldname
                         ];
