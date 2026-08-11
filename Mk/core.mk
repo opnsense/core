@@ -110,7 +110,7 @@ plist-${TARGET}:
 				PREFIX="@shadow "; \
 			fi; \
 		fi; \
-		if [ "${TREE}" == "man" ]; then \
+		if [ "${TREE}" = "man" ]; then \
 			FILE="$${FILE}.gz"; \
 		fi; \
 		REALTARGET="/${TREE}"; \
