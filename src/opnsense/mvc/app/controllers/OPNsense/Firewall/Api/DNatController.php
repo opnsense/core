@@ -28,8 +28,8 @@
 
 namespace OPNsense\Firewall\Api;
 
+use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
-use OPNsense\Firewall\Util;
 
 class DNatController extends FilterBaseController
 {
@@ -65,6 +65,47 @@ class DNatController extends FilterBaseController
             $node->created->username = $node->updated->username;
             $node->created->description = $node->updated->description;
         }
+    }
+
+    private function getAutomaticDestinationNatRules(): array
+    {
+        $automatic_rules = json_decode((new Backend())->configdRun('filter list automatic_destination_nat'), true) ?? [];
+        $config = Config::getInstance()->object();
+        $rows = [];
+        $sequence = 1;
+
+        foreach ($automatic_rules as $provider => $rules) {
+            foreach ($rules as $rule) {
+                $interface = $rule['interface'] ?? '';
+                $descr = (string)($config->interfaces->{$interface}->descr ?? strtoupper($interface));
+                $rows[] = [
+                    'uuid' => sprintf('automatic_%s_%d', $provider, $sequence),
+                    'ipprotocol' => $rule['ipprotocol'] ?? '',
+                    'protocol' => $rule['protocol'] ?? '',
+                    '%protocol' => strtoupper($rule['protocol'] ?? ''),
+                    'disabled' => '0',
+                    'nordr' => !empty($rule['nordr']) ? '1' : '0',
+                    'interface' => $interface,
+                    '%interface' => $descr,
+                    'source.network' => $rule['from'] ?? ($rule['source']['network'] ?? ''),
+                    'source.port' => $rule['from_port'] ?? ($rule['source']['port'] ?? ''),
+                    'source.not' => !empty($rule['from_not']) ? '1' : '0',
+                    'destination.network' => $rule['to'] ?? ($rule['destination']['network'] ?? ''),
+                    'destination.port' => $rule['to_port'] ?? ($rule['destination']['port'] ?? ''),
+                    'destination.not' => !empty($rule['to_not']) ? '1' : '0',
+                    'target' => $rule['target'] ?? '',
+                    'local-port' => $rule['localport'] ?? '',
+                    'natreflection' => $rule['natreflection'] ?? '',
+                    'descr' => $rule['descr'] ?? '',
+                    'is_automatic' => true,
+                    'sort_order' => sprintf('%d.0%06d', 100000, $sequence),
+                    'prio_group' => '100000',
+                ];
+                $sequence++;
+            }
+        }
+
+        return $rows;
     }
 
     public function searchRuleAction()
@@ -115,31 +156,14 @@ class DNatController extends FilterBaseController
             $record['prio_group'] = (string)$priority;
         }
 
-        foreach (Util::getAntiLockout() as $if => $ports) {
-            $ifname = Config::getInstance()->object()->interfaces->$if?->name ?? strtoupper($if);
-            foreach ($ports as $idx => $port) {
-                array_unshift($results['rows'], [
-                    'uuid' => 'lockout_' . $idx,
-                    'ipprotocol' => '', /* renders as asterisk */
-                    'protocol' => 'tcp',
-                    '%protocol' => 'TCP',
-                    'disabled' => '0',
-                    'nordr' => '1',
-                    'interface' => $if,
-                    '%interface' => $ifname,
-                    'destination.network' => $if . 'ip',
-                    'destination.port' => $port,
-                    'alias_meta_destination.port' => $this->getNetworks($port),
-                    'alias_meta_destination.network' => $this->getNetworks($if . 'ip'),
-                    'descr' => gettext('Anti-Lockout Rule'),
-                    'is_automatic' => true,
-                    // Automatic DNAT rule priority should be same as firewall automatic rules
-                    'sort_order' => sprintf('%d.0%06d', 100000, $idx),
-                    'prio_group' => '100000',
-                ]);
+        foreach ($this->getAutomaticDestinationNatRules() as $record) {
+            foreach (['source.network', 'source.port', 'destination.network', 'destination.port', 'target', 'local-port'] as $field) {
+                if (!empty($record[$field])) {
+                    $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
+                }
             }
+            array_unshift($results['rows'], $record);
         }
-
 
         return $results;
     }

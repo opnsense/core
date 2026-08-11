@@ -55,9 +55,88 @@ function captiveportal_syslog()
     return $logfacilities;
 }
 
+function captiveportal_auto_destination_nat()
+{
+    $rules = [];
+
+    $cp = new \OPNsense\CaptivePortal\CaptivePortal();
+    if ($cp->isEnabled()) {
+        foreach ($cp->zones->zone->iterateItems() as $zone) {
+            if ($zone->enabled->isEmpty()) {
+                continue;
+            }
+
+            $zoneid = (string)$zone->zoneid;
+            $uuid = $zone->getAttribute('uuid');
+
+            if (!$zone->disableRules->isEmpty()) {
+                continue;
+            }
+
+            foreach ($zone->interfaces->getValues() as $intf) {
+                foreach (['80', '443'] as $to_port) {
+                    $rdr_port = $to_port === '443' ? (8000 + (int)$zoneid) : (9000 + (int)$zoneid);
+                    $to = $to_port === '443' ? "(self)" : "<__captiveportal_zone_{$zoneid}>";
+                    $to_not = $to_port === '443' ? false : true;
+
+                    // forward HTTP(S) to localhost if not authenticated (IPv4)
+                    // Only match HTTPS headed to (self) to facilitate RFC 8908
+                    $rules[] = [
+                        'interface' => $intf,
+                        'nordr' => false,
+                        'ipprotocol' => 'inet',
+                        'protocol' => 'tcp',
+                        'from' => "<__captiveportal_zone_{$zoneid}>",
+                        'from_not' => true,
+                        'to' => $to,
+                        'to_not' => $to_not,
+                        'to_port' => $to_port,
+                        'target' => '127.0.0.1',
+                        'localport' => $rdr_port,
+                        'natreflection' => 'disable',
+                        'descr' => "Redirect to Captive Portal (zone {$zoneid})",
+                        '#ref' => "ui/captiveportal#edit={$uuid}",
+                    ];
+
+                    // forward to localhost if not authenticated (IPv6)
+                    $rules[] = [
+                        'interface' => $intf,
+                        'nordr' => false,
+                        'ipprotocol' => 'inet6',
+                        'protocol' => 'tcp',
+                        'from' => "<__captiveportal_zone_{$zoneid}>",
+                        'from_not' => true,
+                        'to' => $to,
+                        'to_not' => $to_not,
+                        'to_port' => $to_port,
+                        'target' => $intf . 'ip',
+                        'localport' => $rdr_port,
+                        'natreflection' => 'disable',
+                        'descr' => "Redirect to Captive Portal (zone {$zoneid})",
+                        '#ref' => "ui/captiveportal#edit={$uuid}",
+                    ];
+                }
+            }
+        }
+    }
+
+    return $rules;
+}
+
+function captiveportal_run()
+{
+    return [
+        'destination_nat' => 'captiveportal_auto_destination_nat',
+    ];
+}
+
 function captiveportal_firewall($fw)
 {
     global $config;
+
+    foreach (captiveportal_auto_destination_nat() as $rule) {
+        $fw->registerForwardRule(2, $rule);
+    }
 
     $cp = new \OPNsense\CaptivePortal\CaptivePortal();
     if ($cp->isEnabled()) {
@@ -92,52 +171,7 @@ function captiveportal_firewall($fw)
 
                 foreach (['80', '443'] as $to_port) {
                     $rdr_port = $to_port === '443' ? (8000 + (int)$zoneid) : (9000 + (int)$zoneid);
-                    $to = $to_port === '443' ? "(self)" : "<__captiveportal_zone_{$zoneid}>";
-                    $to_not = $to_port === '443' ? false : true;
                     $proto = $to_port === '443' ? 'HTTPS' : 'HTTP';
-
-                    // forward HTTP(S) to localhost if not authenticated (IPv4)
-                    // Only match HTTPS headed to (self) to facilitate RFC 8908
-                    $fw->registerForwardRule(
-                        2,
-                        [
-                            'interface' => $intf,
-                            'nordr' => false,
-                            'ipprotocol' => 'inet',
-                            'protocol' => 'tcp',
-                            'from' => "<__captiveportal_zone_{$zoneid}>",
-                            'from_not' => true,
-                            'to' => $to,
-                            'to_not' => $to_not,
-                            'to_port' => $to_port,
-                            'target' => '127.0.0.1',
-                            'localport' => $rdr_port,
-                            'natreflection' => 'disable',
-                            'descr' => "Redirect to Captive Portal (zone {$zoneid})",
-                            '#ref' => "ui/captiveportal#edit={$uuid}"
-                        ]
-                    );
-
-                    // forward to localhost if not authenticated (IPv6)
-                    $fw->registerForwardRule(
-                        2,
-                        [
-                            'interface' => $intf,
-                            'nordr' => false,
-                            'ipprotocol' => 'inet6',
-                            'protocol' => 'tcp',
-                            'from' => "<__captiveportal_zone_{$zoneid}>",
-                            'from_not' => true,
-                            'to' => $to,
-                            'to_not' => $to_not,
-                            'to_port' => $to_port,
-                            'target' => $intf . 'ip',
-                            'localport' => $rdr_port,
-                            'natreflection' => 'disable',
-                            'descr' => "Redirect to Captive Portal (zone {$zoneid})",
-                            '#ref' => "ui/captiveportal#edit={$uuid}"
-                        ]
-                    );
 
                     $fw->registerFilterRule(
                         2,

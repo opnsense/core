@@ -226,16 +226,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     }
 
     /* prevent redirection on ports with "lock out" protection */
-    foreach (filter_core_get_antilockout() as $lockoutif => $lockoutprts) {
-        foreach ($lockoutprts as $port) {
-            $fw->registerForwardRule(300, [
-                'descr' => 'Anti-lockout; prevent redirects for protected ports to this interface address',
-                'destination' => ['network' => "{$lockoutif}ip", 'port' => $port],
-                'interface' => $lockoutif,
-                'nordr' => true,
-                'protocol' => 'tcp',
-            ]);
-        }
+    foreach (filter_auto_destination_nat() as $rule) {
+        $fw->registerForwardRule(300, $rule);
     }
 
     foreach ((new OPNsense\Firewall\DNat())->rule->sortedBy(['sequence']) as $key => $rule) {

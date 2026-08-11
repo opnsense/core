@@ -256,9 +256,29 @@ function pf_xmlrpc_sync()
 function pf_run()
 {
     return [
+        'destination_nat' => 'filter_auto_destination_nat',
         'outbound_nat' => 'filter_auto_source_nat',
         'outbound_net' => 'pf_get_default_nat_outbound_networks',
     ];
+}
+
+function filter_auto_destination_nat()
+{
+    $rules = [];
+
+    foreach (filter_core_get_antilockout() as $lockoutif => $lockoutprts) {
+        foreach ($lockoutprts as $port) {
+            $rules[] = [
+                'descr' => 'Anti-lockout; prevent redirects for protected ports to this interface address',
+                'destination' => ['network' => "{$lockoutif}ip", 'port' => $port],
+                'interface' => $lockoutif,
+                'nordr' => true,
+                'protocol' => 'tcp',
+            ];
+        }
+    }
+
+    return $rules;
 }
 
 function pf_get_default_nat_outbound_networks($fw = null)
