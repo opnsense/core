@@ -75,7 +75,7 @@ function captiveportal_auto_destination_nat()
 
             foreach ($zone->interfaces->getValues() as $intf) {
                 foreach (['80', '443'] as $to_port) {
-                    $rdr_port = $to_port === '443' ? (8000 + (int)$zoneid) : (9000 + (int)$zoneid);
+                    $localport = $to_port === '443' ? (8000 + (int)$zoneid) : (9000 + (int)$zoneid);
                     $to = $to_port === '443' ? "(self)" : "<__captiveportal_zone_{$zoneid}>";
                     $to_not = $to_port === '443' ? false : true;
 
@@ -92,7 +92,7 @@ function captiveportal_auto_destination_nat()
                         'to_not' => $to_not,
                         'to_port' => $to_port,
                         'target' => '127.0.0.1',
-                        'localport' => $rdr_port,
+                        'localport' => $localport,
                         'natreflection' => 'disable',
                         'descr' => "Redirect to Captive Portal (zone {$zoneid})",
                         '#ref' => "ui/captiveportal#edit={$uuid}",
@@ -110,7 +110,7 @@ function captiveportal_auto_destination_nat()
                         'to_not' => $to_not,
                         'to_port' => $to_port,
                         'target' => $intf . 'ip',
-                        'localport' => $rdr_port,
+                        'localport' => $localport,
                         'natreflection' => 'disable',
                         'descr' => "Redirect to Captive Portal (zone {$zoneid})",
                         '#ref' => "ui/captiveportal#edit={$uuid}",
