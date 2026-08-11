@@ -23,8 +23,8 @@
             <agent_info type="BooleanField">
                 <Required>Y</Required>
             </agent_info>
-            <circuit_id type="StrictTextField" />
-            <remote_id type="StrictTextField" />
+            <circuit_id type="StrictTextField"/>
+            <remote_id type="StrictTextField"/>
             <carp_depend_on type="VirtualIPField">
                 <type>carp</type>
                 <key>mvc</key>

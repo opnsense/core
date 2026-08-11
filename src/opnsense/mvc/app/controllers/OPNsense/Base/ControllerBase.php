@@ -423,7 +423,7 @@ class ControllerBase extends ControllerRoot
         $this->view->setVar('langcode', str_replace('_', '-', $this->langcode));
 
         $rewrite_uri = explode("?", $_SERVER["REQUEST_URI"])[0];
-        $menuFavorites = (new User)->getUserByName($_SESSION['Username'] ?? '')?->menu_favorites->deserialize() ?? [];
+        $menuFavorites = (new User())->getUserByName($_SESSION['Username'] ?? '')?->menu_favorites->deserialize() ?? [];
         /* XXX generating breadcrumbs requires getItems() call */
         $this->view->menuSystem = $menu->getItems($rewrite_uri);
         $this->view->menuBreadcrumbs = $menu->getBreadcrumbs();

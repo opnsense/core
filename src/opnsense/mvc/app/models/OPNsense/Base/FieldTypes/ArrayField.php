@@ -295,7 +295,6 @@ class ArrayField extends BaseField
                 if (!in_array($fieldname, $exclude)) {
                     $record[$fieldname] = (string)$node;
                 }
-
             }
             if (is_callable($callback)) {
                 $records[] = $callback($anode, $record);
