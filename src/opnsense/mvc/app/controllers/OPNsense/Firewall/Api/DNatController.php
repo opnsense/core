@@ -118,11 +118,17 @@ class DNatController extends FilterBaseController
 
         foreach ($this->getModel()->rule->iterateItems() as $uuid => $node) {
             $record = ['uuid' => $uuid];
+            $reflen = strlen($node->__reference) + 1;
 
             /* flatten nested source/destination containers */
-            $reflen = strlen($node->__reference) + 1;
-            foreach ($node->getFlatNodes() as $key => $value) {
-                $record[substr($key, $reflen)] = (string)$value;
+            foreach ($node->getFlatNodes() as $key => $field) {
+                /* XXX: duplicate model-to-grid conversion from UIModelGrid, not ideal but works for now */
+                $fieldname = substr($key, $reflen);
+                $descr = $field->getDescription();
+                $record[$fieldname] = $field->getValue();
+                if ($record[$fieldname] != $descr) {
+                    $record['%' . $fieldname] = $descr;
+                }
             }
 
             // Normal DNAT rule priority should be same as firewall interface rules
