@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 Deciso B.V.
+ * Copyright (C) 2025-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -654,6 +654,10 @@ class UIBootgrid {
     }
 
     _onDimensionChange() {
+        if (this.$maximizeModal) {
+            return;
+        }
+
         const scrollbarGutterOffset = 16;
         const defaultHeight = 120;
 
@@ -884,6 +888,10 @@ class UIBootgrid {
         this.table.on('scrollVertical', (top) => {
             this.scrollPos = top;
         });
+        this.table.on('renderComplete', (top) => {
+            /* tooltips may stick, remove them on redraw */
+            $("div.tooltip.fade.top.in").remove();
+        });
     }
 
     _renderFooter() {
@@ -1081,6 +1089,66 @@ class UIBootgrid {
         }
     }
 
+    _showMaximized() {
+        if (this.$maximizeModal) {
+            this.$maximizeModal.modal('hide');
+            return;
+        }
+
+        const $header = $(`#${this.id}-header`);
+        const $table = this.$element;
+        const $placeholder = $('<span>').insertBefore($header);
+        const $modal = $('<div class="modal fade bootgrid-maximize-modal" role="dialog">');
+        const $maximizeBtn = $(`#${this.id}-maximize`);
+        $modal.append(`
+            <div class="modal-backdrop fade in"></div>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body"></div>
+                </div>
+            </div>
+        `);
+
+        $modal.find('.modal-content').css({
+            'margin-top': $("header.page-head").outerHeight(),
+            'margin-bottom': 0,
+            'margin-left': 0,
+            'margin-right': 0,
+            'height': $("#navigation").outerHeight()
+        });
+
+        /* ensure model is "stacked" properly to allow the next dialog to overlay it */
+        $(`#${this.id}`).after($modal);
+
+        this.$maximizeModal = $modal;
+        $modal.find('.modal-body').append($header, $table);
+        $maximizeBtn.attr({
+            title: this.translations.minimizeGrid,
+            'aria-label': this.translations.minimizeGrid
+        }).find('.icon').removeClass('fa-expand').addClass('fa-xmark');
+
+        $modal.one('shown.bs.modal', () => {
+            this.table.setHeight(false);
+            $table.css({height: '', minHeight: '', maxHeight: ''});
+            $table.find('.tabulator-tableholder').css({height: '', maxHeight: ''});
+            this.table.redraw(true);
+        });
+
+        $modal.one('hidden.bs.modal', () => {
+            $placeholder.after($header, $table).remove();
+            $maximizeBtn.attr({
+                title: this.translations.maximizeGrid,
+                'aria-label': this.translations.maximizeGrid
+            }).find('.icon').removeClass('fa-xmark').addClass('fa-expand');
+            this.$maximizeModal.remove();
+            this.$maximizeModal = null;
+            this._onDimensionChange();
+            this.table.redraw(true);
+        });
+
+        $modal.modal({ backdrop: 'static', keyboard: false });
+    }
+
     _renderActionBar() {
         if (!this.options.navigation) {
             return;
@@ -1165,8 +1233,8 @@ class UIBootgrid {
         // Reset button
         if (this.options.resetButton) {
             let $resetBtn = $(`
-                <button id="${this.id}-reset" class="btn btn-default" type="button"
-                        title="${this.persistence ? this.translations.resetGrid : ''}">
+                <button id="${this.id}-reset" class="btn btn-default" type="button" data-toggle="tooltip"
+                        title="${this.translations.resetGrid}">
                     <span class="icon fa-solid fa-share-square"></span>
                 </button>
             `).on('click', (e) => {
@@ -1183,6 +1251,18 @@ class UIBootgrid {
 
             $(`#${this.id}-actions-group`).append($resetBtn);
         }
+
+        // Maximize grid button
+        const $maximizeBtn = $(`
+            <button id="${this.id}-maximize" class="btn btn-default" type="button" data-toggle="tooltip"
+                    title="${this.translations.maximizeGrid}" aria-label="${this.translations.maximizeGrid}">
+                <span class="icon fa-solid fa-expand"></span>
+            </button>
+        `).on('click', () => {
+            this._showMaximized();
+        });
+
+        $(`#${this.id}-actions-group`).append($maximizeBtn);
     }
 
     _renderFooterCommands() {
