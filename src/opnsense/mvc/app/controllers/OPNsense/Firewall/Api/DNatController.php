@@ -78,9 +78,11 @@ class DNatController extends FilterBaseController
             foreach ($rules as $rule) {
                 $interface = $rule['interface'] ?? '';
                 $descr = (string)($config->interfaces->{$interface}->descr ?? strtoupper($interface));
+
                 $rows[] = [
                     'uuid' => sprintf('automatic_%s_%d', $provider, $sequence),
                     'ipprotocol' => $rule['ipprotocol'] ?? '',
+                    '%ipprotocol' => ['inet' => 'IPv4', 'inet6' => 'IPv6'][$rule['ipprotocol'] ?? ''] ?? '*',
                     'protocol' => $rule['protocol'] ?? '',
                     '%protocol' => strtoupper($rule['protocol'] ?? ''),
                     'disabled' => '0',
@@ -98,6 +100,7 @@ class DNatController extends FilterBaseController
                     'natreflection' => $rule['natreflection'] ?? '',
                     'descr' => $rule['descr'] ?? '',
                     'is_automatic' => true,
+                    // Automatic DNAT rule priority should be same as firewall automatic rules
                     'sort_order' => sprintf('%d.0%06d', 100000, $sequence),
                     'prio_group' => '100000',
                 ];
@@ -108,28 +111,20 @@ class DNatController extends FilterBaseController
         return $rows;
     }
 
-    public function searchRuleAction()
+    private function getConfiguredDestinationNatRules(): array
     {
-        $category = (array)$this->request->get('category');
-        $filter_funct = function ($record) use ($category) {
-            /* categories are indexed by name in the record, but offered as uuid in the selector */
-            $catids = !empty((string)$record->categories) ? explode(',', (string)$record->categories) : [];
-            return empty($category) || array_intersect($catids, $category);
-        };
-
-        $results =  $this->searchBase("rule", null, "sequence", $filter_funct);
+        $rows = [];
         $configObj = Config::getInstance()->object();
 
-        /* carry results */
-        foreach ($results['rows'] as &$record) {
-            /* offer list of colors to be used by the frontend  */
-            $record['category_colors'] = $this->getCategoryColors(explode(',', $record['categories']));
-            /* format "networks" and ports */
-            foreach (['source.network','source.port','destination.network','destination.port', 'target', 'local-port'] as $field) {
-                if (!empty($record[$field])) {
-                    $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
-                }
+        foreach ($this->getModel()->rule->iterateItems() as $uuid => $node) {
+            $record = ['uuid' => $uuid];
+
+            /* flatten nested source/destination containers */
+            $reflen = strlen($node->__reference) + 1;
+            foreach ($node->getFlatNodes() as $key => $value) {
+                $record[substr($key, $reflen)] = (string)$value;
             }
+
             // Normal DNAT rule priority should be same as firewall interface rules
             // This is only used for visualization to ensure the tabulator tree renders
             // rules in the correct order, similar to firewall rules.
@@ -154,18 +149,49 @@ class DNatController extends FilterBaseController
 
             $record['sort_order'] = sprintf('%d.0%06d', $priority, (int)($record['sequence'] ?? 0));
             $record['prio_group'] = (string)$priority;
+
+            $rows[] = $record;
         }
 
-        foreach ($this->getAutomaticDestinationNatRules() as $record) {
-            foreach (['source.network', 'source.port', 'destination.network', 'destination.port', 'target', 'local-port'] as $field) {
+        return $rows;
+    }
+
+    public function searchRuleAction()
+    {
+        $category = (array)$this->request->get('category');
+
+        /* combine before sorting and pagination */
+        $allrules = array_merge(
+            $this->getConfiguredDestinationNatRules(),
+            $this->getAutomaticDestinationNatRules()
+        );
+
+        $filter_funct = function (&$record) use ($category) {
+            /* categories are indexed by name in the record, but offered as uuid in the selector */
+            $catids = !empty($record['categories']) ? explode(',', $record['categories']) : [];
+
+            /* offer list of colors to be used by the frontend */
+            $record['category_colors'] = $this->getCategoryColors(
+                !empty($record['categories']) ? explode(',', $record['categories']) : []
+            );
+
+            /* format networks and ports */
+            foreach (['source.network','source.port','destination.network','destination.port', 'target', 'local-port'] as $field) {
                 if (!empty($record[$field])) {
                     $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
                 }
             }
-            array_unshift($results['rows'], $record);
-        }
 
-        return $results;
+            return empty($category) || array_intersect($catids, $category);
+        };
+
+        return $this->searchRecordsetBase(
+            $allrules,
+            null,
+            'sort_order',
+            $filter_funct,
+            SORT_NATURAL | SORT_FLAG_CASE
+        );
     }
 
     public function setRuleAction($uuid)
