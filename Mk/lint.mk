@@ -34,7 +34,7 @@ lint-shell:
 .for DIR in ${.CURDIR}/src
 .if exists(${DIR})
 	@for FILE in $$(find ${DIR} -name "*.sh" -type f); do \
-	    if [ "$$(head $${FILE} | grep -c '^#!\/')" == "0" ]; then \
+	    if [ "$$(head $${FILE} | grep -c '^#!\/')" = "0" ]; then \
 	        echo "Missing shebang in $${FILE}"; exit 1; \
 	    fi; \
 	    sh -n "$${FILE}" || exit 1; \
