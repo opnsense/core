@@ -605,7 +605,7 @@
                 }
                 const $chip = $(`
                     <li class="filter-chip badge" data-id="${id}">
-                    <span>${f.field} ${operatorMap[f.operator].translation} “${f.format ?? f.value}”</span>
+                    <span>${f.field} ${operatorMap[f.operator].translation} “${f.format ?? htmlSafe(f.value)}”</span>
                     <button aria-label="Remove filter" title="Remove filter">&times;</button>
                     </li>
                 `);
