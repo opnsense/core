@@ -4,7 +4,9 @@
     <description>Interface assignments</description>
     <items>
         <interface type="ArrayField">
-            <descr type=".\IfDescField"/>
+            <descr type=".\IfDescField">
+                <Mask>/^[a-z_0-9]{0,255}$/i</Mask>
+            </descr>
             <identifier type="TextField"/>
             <!-- backref from if field, read-only data -->
             <icon type="TextField" volatile="true"/>
