@@ -328,7 +328,7 @@ class Template(object):
         for template_name in self.iter_modules(module_name):
             syslog_notice("generate template container %s" % template_name)
             try:
-                for filename in self._generate(template_name, create_directory, module_name.find('*') > 0):
+                for filename in self._generate(template_name, create_directory, module_name.find('*') > -1):
                     result.append(filename)
             except Exception as render_exception:
                 # log failure, but proceed processing for possible wildcard search
