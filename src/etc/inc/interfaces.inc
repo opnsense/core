@@ -3475,7 +3475,6 @@ function DHCP_Config_File_Substitutions($wancfg, $wanif, $dhclientconf)
     return $dhclientconf;
 }
 
-
 /* convert fxp0 -> wan, etc. */
 function convert_real_interface_to_friendly_interface_name($interface = 'wan')
 {
@@ -3559,7 +3558,6 @@ function interface_parent_devices($device, $as_interface = false)
     $parents = [];
 
     if (strstr($device, 'vlan') || strstr($device, 'qinq')) {
-        /* XXX maybe if we have a qinq type return both parents? */
         foreach (config_read_array('vlans', 'vlan', false) as $vlan) {
             if ($device == $vlan['vlanif']) {
                 $parents[] = $vlan['if'];
