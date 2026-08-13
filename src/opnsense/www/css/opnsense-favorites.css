@@ -17,6 +17,6 @@
   align-items: center;
 }
 
-.page-content-head .list-inline > li:first-child {
-  flex: 1;
+.page-content-head .list-inline > .btn-group-container {
+  margin-left: auto;
 }
