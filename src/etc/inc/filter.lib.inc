@@ -653,7 +653,7 @@ function filter_core_rules_system($fw, $defaults)
             if (!empty($dnatrule['destination']['port']) && !empty($dnatrule['local-port'])) {
                 $tmprule['destination']['port'] = $dnatrule['local-port'];
                 $parts = explode('-', $dnatrule['destination']['port']);
-                if (count($parts) == 2) {
+                if (count($parts) == 2 && is_numeric($parts[0]) && is_numeric($parts[1]) && is_numeric($dnatrule['local-port'])) {
                     $range_end = $parts[1] - $parts[0] + $dnatrule['local-port'];
                     $tmprule['destination']['port'] .= sprintf('-%s', $range_end);
                 }
