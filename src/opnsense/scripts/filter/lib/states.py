@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015-2024 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2026 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -24,11 +24,10 @@
     POSSIBILITY OF SUCH DAMAGE.
 
 """
-import fcntl
 import ipaddress
 import os
+import re
 import subprocess
-import ujson
 
 
 class AddressParser:
@@ -68,48 +67,23 @@ class AddressParser:
 
 
 def fetch_rule_labels():
-    """ Generate dict with labels per rule.
-        Since the output is directly related to the rules loaded by /tmp/rules.debug, we can safely cache the results
-        (into /tmp/cache_rule_labels.json) until /tmp/rules.debug changes.
+    """ Generate dict with descriptions indexed by rule id
         :return: dict
     """
     pf_rules_file = '/tmp/rules.debug'
-    fhandle = open('/tmp/cache_rule_labels.json', 'a+')
-    try:
-        fhandle.seek(0)
-        cached_labels = ujson.loads(fhandle.read())
-    except ValueError:
-        cached_labels = {'labels': {}}
 
-    pfr_mtime = os.stat(pf_rules_file).st_mtime if os.path.isfile(pf_rules_file) else 0
-    if cached_labels.get('mtime', 0) != pfr_mtime or cached_labels.get('labels', None) is None:
-        descriptions = dict()
-        # query descriptions from active ruleset so we can search and display rule descriptions as well.
-        if os.path.isfile(pf_rules_file):
-            with open(pf_rules_file, "rt", encoding="utf-8") as f_in:
-                for line in f_in:
-                    lbl = line.split(' label ')[-1] if line.find(' label ') > -1 else ""
-                    rule_label = lbl.split('"')[1] if lbl.count('"') >= 2 else None
-                    descriptions[rule_label] = ''.join(lbl.split('"')[2:]).strip().strip('# : ')
+    descriptions = dict()
+    # query descriptions from active ruleset so we can search and display rule descriptions as well.
+    if os.path.isfile(pf_rules_file):
+        with open(pf_rules_file, "rt", encoding="utf-8") as f_in:
+            for line in f_in:
+                if line.startswith('#'):
+                    continue
+                m = re.search(r'label\s+"(?P<label>[^"]+)"\s*#\s*(?P<description>.*)$', line)
+                if m:
+                    descriptions[m.group('label')] = m.group('description')
 
-        sp = subprocess.run(['/sbin/pfctl', '-vvPsr'], capture_output=True, text=True)
-        for line in sp.stdout.strip().split('\n'):
-            if line.startswith('@'):
-                line_id = line.split()[0][1:]
-                if line.find(' label ') > -1:
-                    rid = ''.join(line.split(' label ')[-1:]).strip()[1:].split('"')[0]
-                    cached_labels['labels'][line_id] = {'rid': rid, 'descr': None}
-                    if rid in descriptions:
-                        cached_labels['labels'][line_id]['descr'] = descriptions[rid]
-
-        fcntl.flock(fhandle, fcntl.LOCK_EX)
-        cached_labels['mtime'] = pfr_mtime
-        fhandle.seek(0)
-        fhandle.truncate()
-        fhandle.write(ujson.dumps(cached_labels))
-        fhandle.close()
-
-    return cached_labels['labels']
+    return descriptions
 
 
 def split_filter_clauses(filter_str):
@@ -148,11 +122,10 @@ def query_states(rule_label, filter_str):
             if parts[0] == 'age':
                 for part in line.split(","):
                     part = part.strip()
-                    if part.startswith("rule "):
-                        record["rule"] = part.split()[-1]
-                        if record["rule"] in rule_labels:
-                            record["label"] = rule_labels[record["rule"]]["rid"]
-                            record["descr"] = rule_labels[record["rule"]]["descr"]
+                    if part.startswith("rlabel "):
+                        record["label"] = part.split()[-1]
+                        if record["label"] in rule_labels:
+                            record["descr"] = rule_labels[record["label"]]
                     elif part.startswith("age "):
                         record["age"] = part.split()[-1]
                     elif part.startswith("expires in"):
@@ -254,9 +227,18 @@ def query_top():
     result = {
         'details': [],
         'metadata': {
-            'labels': fetch_rule_labels()
+            'labels': {}
         }
     }
+
+    lbls = fetch_rule_labels()
+    for line in subprocess.run(['/sbin/pfctl', '-vvPsr'], capture_output=True, text=True).stdout.strip().split('\n'):
+        m = re.search(r'\@(?P<rid>\d*).*label\s+"(?P<label>[^"]+)"\s*', line)
+        if m and m.group('label') in lbls:
+            result['metadata']['labels'][m.group('rid')] = {
+                'rid': m.group('label'),
+                'descr': lbls[m.group('label')]
+            }
 
     sp = subprocess.run(
         ['/usr/local/sbin/pftop', '-w', '1000', '-b','-v', 'long','200000'],
