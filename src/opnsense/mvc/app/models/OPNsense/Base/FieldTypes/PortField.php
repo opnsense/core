@@ -267,12 +267,12 @@ class PortField extends BaseListField
      * @return string
      */
     function normalizedPort() {
-        $known = self::getWellKnown((string)$this);
+        $known = self::getWellKnown($this->getValue());
 
         if (!empty($known)) {
             return array_shift($known);
         }
 
-        return (string)$this;
+        return $this->getValue();
     }
 }
