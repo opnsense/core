@@ -139,11 +139,6 @@ class ForwardRule extends Rule
                 } elseif (Util::isPort($tmp['local-port'])) {
                     $tmp['localport'] = $tmp['local-port'];
                     if (!empty($tmp['to_port']) && strpos($tmp['to_port'], ':') !== false) {
-                        $known = PortField::getWellKnown($tmp['local-port']);
-                        if (!empty($known)) {
-                            $tmp['localport'] = $tmp['local-port'] = array_shift($known);
-                        }
-
                         $to_ports = explode(':', $tmp['to_port']);
                         $tmp['localport'] .= ':' . ($tmp['local-port'] + $to_ports[1] - $to_ports[0]);
                     }

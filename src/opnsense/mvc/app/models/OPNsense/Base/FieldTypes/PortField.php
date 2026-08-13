@@ -262,4 +262,17 @@ class PortField extends BaseListField
         }
         return parent::getValidators();
     }
+
+    /**
+     * @return string
+     */
+    function normalizedPort() {
+        $known = self::getWellKnown((string)$this);
+
+        if (!empty($known)) {
+            return array_shift($known);
+        }
+
+        return (string)$this;
+    }
 }
