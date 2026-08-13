@@ -174,6 +174,9 @@ $aclObj = new \OPNsense\Core\ACL();
       <div class="container-fluid">
         <ul class="list-inline">
           <li><h1><?= html_safe(gentitle($menuBreadcrumbs)) ?></h1></li>
+<?php if (!empty($menuSelectedUrl)): ?>
+          <li><i class="menu-favorite-star <?= $menuSelectedIsFavorite ? 'fa fa-star' : 'fa fa-star-o' ?>" data-menu-url="<?= html_safe($menuSelectedUrl) ?>" data-toggle="tooltip" data-placement="bottom" title="<?= html_safe($menuSelectedIsFavorite ? gettext('Remove Favorite') : gettext('Add Favorite')) ?>"></i></li>
+<?php endif; ?>
           <li class="btn-group-container">
             <form method="post">
               <?php
@@ -198,9 +201,6 @@ $aclObj = new \OPNsense\Core\ACL();
               <?php endif; ?>
              </form>
           </li>
-<?php if (!empty($menuSelectedUrl)): ?>
-          <li><i class="menu-favorite-star <?= $menuSelectedIsFavorite ? 'fa fa-star' : 'fa fa-star-o' ?>" data-menu-url="<?= html_safe($menuSelectedUrl) ?>" data-toggle="tooltip" data-placement="bottom" title="<?= html_safe($menuSelectedIsFavorite ? gettext('Remove Favorite') : gettext('Add Favorite')) ?>"></i></li>
-<?php endif; ?>
         </ul>
       </div>
     </header>
