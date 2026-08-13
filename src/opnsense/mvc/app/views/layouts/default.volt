@@ -284,10 +284,7 @@
         <header class="page-content-head">
           <div class="container-fluid">
             <ul class="list-inline">
-              <li><h1>{{title | default("")}}</h1></li>
-{% if menuSelectedUrl is defined and menuSelectedUrl != '' %}
-              <li><i class="menu-favorite-star {% if menuSelectedIsFavorite %}fa fa-star{% else %}fa fa-star-o{% endif %}" data-menu-url="{{ menuSelectedUrl | safe }}" data-toggle="tooltip" data-placement="bottom" title="{% if menuSelectedIsFavorite %}{{ lang._('Remove Favorite') }}{% else %}{{ lang._('Add Favorite') }}{% endif %}"></i></li>
-{% endif %}
+              <li><h1>{{title | default("")}}{% if menuSelectedUrl is defined and menuSelectedUrl != '' %}<i class="menu-favorite-star {% if menuSelectedIsFavorite %}fa fa-star{% else %}fa fa-star-o{% endif %}" data-menu-url="{{ menuSelectedUrl | safe }}" data-toggle="tooltip" data-container="body" data-placement="bottom" title="{% if menuSelectedIsFavorite %}{{ lang._('Remove Favorite') }}{% else %}{{ lang._('Add Favorite') }}{% endif %}"></i>{% endif %}</h1></li>
               <li class="btn-group-container" id="service_status_container"></li>
             </ul>
           </div>
