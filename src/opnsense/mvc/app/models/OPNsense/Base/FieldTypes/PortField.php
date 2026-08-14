@@ -266,7 +266,7 @@ class PortField extends BaseListField
     /**
      * @return string
      */
-    function normalizedPort() {
+    public function normalizedPort() {
         $known = self::getWellKnown($this->getValue());
 
         if (!empty($known)) {
