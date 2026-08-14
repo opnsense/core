@@ -91,19 +91,25 @@
                                     subnet: function(column, row) {
                                         if ((row.subnet || '') === '') {
                                             // XXX: Dynamic hints could be a possibility, though more complex than this.
-                                            return '<span><i class="fa fa-fw fa-random"></i> {{ lang._("dynamic") }}</span>';
+                                            return $("<span/>")
+                                                .append($("<i/>", {class: "fa fa-fw fa-random"}))
+                                                .append(document.createTextNode(" {{ lang._('dynamic') }}"))[0];
                                         }
                                         return row["%" + column.id] || row[column.id] || "";
                                     },
                                     option_data_autocollect: function(column, row) {
                                         if (row.option_data_autocollect === "1") {
-                                            return '<span><i class="fa fa-fw fa-random"></i> {{ lang._("dynamic") }}</span>';
+                                            return $("<span/>")
+                                                .append($("<i/>", {class: "fa fa-fw fa-random"}))
+                                                .append(document.createTextNode(" {{ lang._('dynamic') }}"))[0];
                                         }
                                         return row["%" + column.id] || row[column.id] || "";
                                     },
                                     pd_pool: function(column, row) {
                                         if ((row.prefix || '') === '' && (row.prefix_len || '') === '') {
-                                            return '<span><i class="fa fa-fw fa-random"></i> {{ lang._("dynamic") }}</span>';
+                                            return $("<span/>")
+                                                .append($("<i/>", {class: "fa fa-fw fa-random"}))
+                                                .append(document.createTextNode(" {{ lang._('dynamic') }}"))[0];
                                         }
                                         return row["%" + column.id] || row[column.id] || "";
                                     },
