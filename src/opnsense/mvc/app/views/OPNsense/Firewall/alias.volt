@@ -116,7 +116,9 @@
                     },
                     alias_content: function (column, row) {
                         if (['internal', 'external', 'authgroup'].includes(row.type)) {
-                            return $("<strong/>").append($("<small>").text("{{ lang._('dynamic')}}"))[0];
+                            return $("<span/>")
+                                .append($("<i/>", {class: "fa fa-fw fa-random"}))
+                                .append(document.createTextNode(" {{ lang._('dynamic') }}"))[0];
                         } else {
                             return row[column.id];
                         }
