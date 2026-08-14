@@ -256,7 +256,9 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     }
 
     foreach ((new OPNsense\Firewall\DNat())->rule->sortedBy(['sequence']) as $key => $rule) {
-        $fw->registerForwardRule(600, $rule->getNodeContent());
+        $node = $rule->getNodeContent();
+        $node['local-port'] = $rule->{'local-port'}->normalizedPort();
+        $fw->registerForwardRule(600, $node);
     }
 
     /**

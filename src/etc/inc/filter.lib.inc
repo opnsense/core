@@ -658,10 +658,11 @@ function filter_core_rules_system($fw, $defaults)
                 'descr' => $dnatrule['descr']
             ];
             if (!empty($dnatrule['destination']['port']) && !empty($dnatrule['local-port'])) {
-                $tmprule['destination']['port'] = $dnatrule['local-port'];
-                $parts = explode('-', $dnatrule['destination']['port']);
+                $tmprule['destination']['port'] = $rule->{'local-port'}->normalizedPort();
+
+                $parts = explode('-', $rule->destination->port->normalizedPort());
                 if (count($parts) == 2) {
-                    $range_end = $parts[1] - $parts[0] + $dnatrule['local-port'];
+                    $range_end = $parts[1] - $parts[0] + $tmprule['destination']['port'];
                     $tmprule['destination']['port'] .= sprintf('-%s', $range_end);
                 }
             } elseif (!empty($dnatrule['local-port'])) {
