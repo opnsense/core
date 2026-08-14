@@ -81,8 +81,7 @@
                                     const icons = {
                                         subnet: '<i class="fa fa-fw fa-ethernet fa-sm text-info"></i>',
                                     };
-                                    const countValue = `<span class="badge chip">${count}</span>`;
-                                    return `${icons.subnet} ${value} ${countValue}`;
+                                    return `${icons.subnet} ${value}`;
                                 },
                             },
                             options: {
