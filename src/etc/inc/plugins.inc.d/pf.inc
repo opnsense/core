@@ -285,7 +285,7 @@ function filter_auto_destination_nat()
 function pf_get_default_nat_outbound_networks($fw = null)
 {
     $fw ??= filter_core_get_initialized_plugin_system();
-    $loopback = '127.0.0.0/8';
+    $loopback = '127.0.0.0/8'; /* XXX since lo0 is skipped not sure how useful this is */
     $result = [];
 
     foreach ($fw->getInterfaceMapping() as $intf => $intfcf) {
