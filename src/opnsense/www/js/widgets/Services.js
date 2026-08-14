@@ -89,7 +89,7 @@ export default class Services extends BaseTableWidget {
             }
 
             let $tile = $(`
-                <div class="flextable-row" style="padding: 0 10px 0 10px;"><div class="service-tile" style="display: flex; align-items: center;grid-column: -2 / -1;">
+                <div class="flextable-row" style="padding: 0 10px 0 10px;"><div class="service-tile" style="display: flex; align-items: center; min-width: 0; grid-column: -2 / -1;">
                     ${padSpan}${this.serviceControl(actions, statusColor)}
                     <div style="
                         padding: 4px;
