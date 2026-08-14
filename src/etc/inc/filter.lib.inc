@@ -362,7 +362,7 @@ function filter_core_rules_system($fw, $defaults)
             ['direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet6',
             '#ref' => "interfaces.php?if=" . $intf . "#blockpriv",
             'descr' => "Block private networks from " . $intfinfo['descr'],
-            'from' => 'fd00::/8,fe80::/10,::/128',
+            'from' => 'fd00::/8,fe80::/10,::1/128',
             'disabled' => $ipv6_disabled || empty($intfinfo['blockpriv'])],
             $privtmpl
         );
