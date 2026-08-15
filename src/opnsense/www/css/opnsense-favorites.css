@@ -13,4 +13,20 @@
   vertical-align: middle;
   position: relative;
   top: -0.1em;
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+}
+
+.page-content-head h1:hover .menu-favorite-star {
+  opacity: 1;
+}
+
+@media (hover: none) {
+  .page-content-head h1:focus-within .menu-favorite-star {
+    opacity: 1;
+  }
+}
+
+.page-content-head h1:focus {
+  outline: none;
 }
