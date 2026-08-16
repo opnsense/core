@@ -50,11 +50,33 @@ if (is_array($config['interfaces'])) {
             if ($pending_act == 'relink') {
                 $to_configure[] = $id;
             }
+        } else {
+            $to_configure[] = $id;
+            /* suspend only when we're changing the enabled status */
+            interface_reset($id, false, !empty($ifcfg['enable']) && !empty($todos[$id]['enable']));
+        }
+    }
+    foreach (array_keys($todos) as $id) {
+        if (!isset($config['interfaces'][$id])) {
+            $to_configure[] = $id; /* new interface */
         }
     }
 
     foreach ($to_configure as $ifname) {
-        $config['interfaces'][$ifname]['if'] = $todos[$ifname]['pending_if'];
+        $pending = $todos[$ifname]['pending'];
+        foreach ($pending as $key => $value) {
+            if ($value !== '') {
+                $config['interfaces'][$ifname][$key] = $value;
+            } elseif (isset($config['interfaces'][$ifname][$key])) {
+                unset($config['interfaces'][$ifname][$key]);
+            }
+
+        }
+        foreach (['enable', 'lock'] as $legacybool) {
+            if (empty($pending[$legacybool])) {
+                unset($config['interfaces'][$ifname][$legacybool]);
+            }
+        }
         /* Reload all for the interface. */
         interface_configure(false, $ifname, true);
     }
