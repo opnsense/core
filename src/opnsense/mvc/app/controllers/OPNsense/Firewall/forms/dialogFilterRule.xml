@@ -698,8 +698,7 @@
         <label>Username</label>
         <type>info</type>
         <grid_view>
-            <visible>false</visible>
-            <column-id>audit.created.username</column-id>
+            <ignore>true</ignore>
         </grid_view>
     </field>
     <field>
@@ -707,8 +706,7 @@
         <label>Time</label>
         <type>info</type>
         <grid_view>
-            <visible>false</visible>
-            <column-id>audit.created.time</column-id>
+            <ignore>true</ignore>
         </grid_view>
     </field>
     <field>
@@ -716,8 +714,7 @@
         <label>Description</label>
         <type>info</type>
         <grid_view>
-            <visible>false</visible>
-            <column-id>audit.created.description</column-id>
+            <ignore>true</ignore>
         </grid_view>
     </field>
     <field>
@@ -729,8 +726,7 @@
         <label>Username</label>
         <type>info</type>
         <grid_view>
-            <visible>false</visible>
-            <column-id>audit.updated.username</column-id>
+            <ignore>true</ignore>
         </grid_view>
     </field>
     <field>
@@ -738,8 +734,7 @@
         <label>Time</label>
         <type>info</type>
         <grid_view>
-            <visible>false</visible>
-            <column-id>audit.updated.time</column-id>
+            <ignore>true</ignore>
         </grid_view>
     </field>
     <field>
@@ -747,8 +742,7 @@
         <label>Description</label>
         <type>info</type>
         <grid_view>
-            <visible>false</visible>
-            <column-id>audit.updated.description</column-id>
+            <ignore>true</ignore>
         </grid_view>
     </field>
     <!-- Not exposed in dialog, do not exist in model, only for grid -->

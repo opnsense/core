@@ -133,16 +133,12 @@ class UIModelGrid
                 $row = ['uuid' => $record->getAttributes()['uuid']];
                 $reflen = strlen($record->__reference) + 1;
                 foreach ($record->getFlatNodes() as $key => $val) {
+                    // XXX: Structured field data would need flattening here
                     $fieldname = substr($key, $reflen);
-                    $value = $val->getNodeData();
-                    if (is_array($value)) {
-                        $row[$fieldname] = $value;
-                    } else {
-                        $descr = $val->getDescription();
-                        $row[$fieldname] = $value;
-                        if ($row[$fieldname] != $descr) {
-                            $row['%' . $fieldname] = $descr;
-                        }
+                    $descr = $val->getDescription();
+                    $row[$fieldname] = $val->getValue();
+                    if ($row[$fieldname] != $descr) {
+                        $row['%' . $fieldname] = $descr;
                     }
                 }
 
