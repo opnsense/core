@@ -73,4 +73,5 @@ class JsonAuditField extends JsonField
             $this->deserialize()
         );
     }
+
 }

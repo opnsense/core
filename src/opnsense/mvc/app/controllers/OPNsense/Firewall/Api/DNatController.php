@@ -43,7 +43,8 @@ class DNatController extends FilterBaseController
         'source.address',
         'destination.address',
         'categories',
-        'associated-rule-id'
+        'associated-rule-id',
+        'audit'
     ];
 
     public function searchRuleAction()

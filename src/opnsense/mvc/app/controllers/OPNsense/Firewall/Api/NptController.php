@@ -32,6 +32,12 @@ class NptController extends FilterBaseController
 {
     protected static $categorysource = "npt.rule";
 
+    private array $export_ignore = [
+        'sort_order',
+        'prio_group',
+        'audit'
+    ];
+
     public function searchRuleAction()
     {
         $category = (array)$this->request->get('category');
@@ -95,11 +101,11 @@ class NptController extends FilterBaseController
 
     public function downloadRulesAction()
     {
-        return $this->downloadRulesBase('npt.rule', ['sort_order', 'prio_group']);
+        return $this->downloadRulesBase('npt.rule', $this->export_ignore);
     }
 
     public function uploadRulesAction()
     {
-        return $this->uploadRulesBase('npt.rule', ['sort_order', 'prio_group']);
+        return $this->uploadRulesBase('npt.rule', $this->export_ignore);
     }
 }

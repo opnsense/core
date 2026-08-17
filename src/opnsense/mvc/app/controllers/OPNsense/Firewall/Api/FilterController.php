@@ -39,6 +39,12 @@ class FilterController extends FilterBaseController
 {
     protected static $categorysource = "rules.rule";
 
+    private array $export_ignore = [
+        'sort_order',
+        'prio_group',
+        'audit'
+    ];
+
     /* cache properties */
     private array $legacy_fieldmap = [];
 
@@ -403,12 +409,12 @@ class FilterController extends FilterBaseController
     // XXX: as shaper1/2 don't have functional keys, we can only export uuid's here
     public function downloadRulesAction()
     {
-        return $this->downloadRulesBase('rules.rule', ['sort_order', 'prio_group'], ['overload']);
+        return $this->downloadRulesBase('rules.rule', $this->export_ignore, ['overload']);
     }
 
     public function uploadRulesAction()
     {
-        return $this->uploadRulesBase('rules.rule', ['sort_order', 'prio_group'], ['overload']);
+        return $this->uploadRulesBase('rules.rule', $this->export_ignore, ['overload']);
     }
 
     public function flushInspectCacheAction()
