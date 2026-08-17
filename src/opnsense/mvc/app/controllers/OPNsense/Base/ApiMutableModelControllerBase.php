@@ -348,11 +348,13 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     protected function setAuditMetadata($node)
     {
-        if (isset($node->audit)) {
-            $node->audit->update(
-                $this->getUserName(),
-                sprintf('%s made changes', $_SERVER['SCRIPT_NAME'])
-            );
+        foreach ($node->iterateItems() as $field) {
+            if ($field instanceof \OPNsense\Base\FieldTypes\JsonAuditField) {
+                $field->update(
+                    $this->getUserName(),
+                    sprintf('%s made changes', $_SERVER['SCRIPT_NAME'])
+                );
+            }
         }
     }
 
@@ -365,10 +367,14 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     protected function stripAuditMetadata($node, $data)
     {
-        if (is_array($data) && isset($node->audit)) {
-            unset($data['audit']);
+        if (!is_array($data)) {
+            return $data;
         }
-
+        foreach ($node->iterateItems() as $key => $field) {
+            if ($field instanceof \OPNsense\Base\FieldTypes\JsonAuditField) {
+                unset($data[$key]);
+            }
+        }
         return $data;
     }
 
