@@ -684,6 +684,73 @@
             <visible>false</visible>
         </grid_view>
     </field>
+    <field>
+        <type>header</type>
+        <label>Audit</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <type>subheader</type>
+        <label>Created</label>
+    </field>
+    <field>
+        <id>rule.audit.created.username</id>
+        <label>Username</label>
+        <type>info</type>
+        <grid_view>
+            <visible>false</visible>
+            <column-id>audit.created.username</column-id>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.audit.created.time</id>
+        <label>Time</label>
+        <type>info</type>
+        <grid_view>
+            <visible>false</visible>
+            <column-id>audit.created.time</column-id>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.audit.created.description</id>
+        <label>Description</label>
+        <type>info</type>
+        <grid_view>
+            <visible>false</visible>
+            <column-id>audit.created.description</column-id>
+        </grid_view>
+    </field>
+    <field>
+        <type>subheader</type>
+        <label>Updated</label>
+    </field>
+    <field>
+        <id>rule.audit.updated.username</id>
+        <label>Username</label>
+        <type>info</type>
+        <grid_view>
+            <visible>false</visible>
+            <column-id>audit.updated.username</column-id>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.audit.updated.time</id>
+        <label>Time</label>
+        <type>info</type>
+        <grid_view>
+            <visible>false</visible>
+            <column-id>audit.updated.time</column-id>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.audit.updated.description</id>
+        <label>Description</label>
+        <type>info</type>
+        <grid_view>
+            <visible>false</visible>
+            <column-id>audit.updated.description</column-id>
+        </grid_view>
+    </field>
     <!-- Not exposed in dialog, do not exist in model, only for grid -->
     <field>
         <id>rule.statistics</id>
