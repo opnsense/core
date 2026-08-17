@@ -95,11 +95,11 @@ class NptController extends FilterBaseController
 
     public function downloadRulesAction()
     {
-        return $this->downloadRulesBase('npt.rule', ['sort_order', 'prio_group', 'audit']);
+        return $this->downloadRulesBase('npt.rule', ['sort_order', 'prio_group']);
     }
 
     public function uploadRulesAction()
     {
-        return $this->uploadRulesBase('npt.rule', ['sort_order', 'prio_group', 'audit']);
+        return $this->uploadRulesBase('npt.rule', ['sort_order', 'prio_group']);
     }
 }

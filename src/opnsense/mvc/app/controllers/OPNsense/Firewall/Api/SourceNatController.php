@@ -124,11 +124,7 @@ class SourceNatController extends FilterBaseController
 
         if (in_array($mode, ['hybrid', 'advanced'], true)) {
             foreach ($this->getModel()->snatrules->rule->iterateItems() as $key => $node) {
-                $record = array_merge(['uuid' => $key], $node->getNodeContent());
-                if (isset($node->audit)) {
-                    $record['audit'] = $node->audit->getNodeData();
-                }
-                $allrules[] = $record;
+                $allrules[] = array_merge(['uuid' => $key], $node->getNodeContent());
             }
         }
 
@@ -203,11 +199,11 @@ class SourceNatController extends FilterBaseController
 
     public function downloadRulesAction()
     {
-        return $this->downloadRulesBase('snatrules.rule', ['sort_order', 'prio_group', 'audit']);
+        return $this->downloadRulesBase('snatrules.rule', ['sort_order', 'prio_group']);
     }
 
     public function uploadRulesAction()
     {
-        return $this->uploadRulesBase('snatrules.rule', ['sort_order', 'prio_group', 'audit']);
+        return $this->uploadRulesBase('snatrules.rule', ['sort_order', 'prio_group']);
     }
 }
