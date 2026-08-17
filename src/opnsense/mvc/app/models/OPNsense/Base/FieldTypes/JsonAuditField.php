@@ -30,6 +30,24 @@ namespace OPNsense\Base\FieldTypes;
 
 class JsonAuditField extends JsonField
 {
+    public function update($username, $description)
+    {
+        $metadata = $this->deserialize();
+        $entry = [
+            'username' => $username,
+            'time' => sprintf('%0.2f', microtime(true)),
+            'description' => $description,
+        ];
+
+        if (empty($metadata['created'])) {
+            $metadata['created'] = $entry;
+        }
+
+        $metadata['updated'] = $entry;
+
+        $this->serialize($metadata);
+    }
+
     public function getNodeData()
     {
         return $this->deserialize();

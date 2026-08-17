@@ -348,30 +348,12 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      */
     protected function setAuditMetadata($node)
     {
-        if (!isset($node->audit)) {
-            return;
+        if (isset($node->audit)) {
+            $node->audit->update(
+                $this->getUserName(),
+                sprintf('%s made changes', $_SERVER['SCRIPT_NAME'])
+            );
         }
-
-        $metadata = $node->audit->deserialize();
-        $timestamp = sprintf('%0.2f', microtime(true));
-        $username = $this->getUserName();
-        $description = sprintf('%s made changes', $_SERVER['SCRIPT_NAME']);
-
-        if (empty($metadata['created'])) {
-            $metadata['created'] = [
-                'username' => $username,
-                'time' => $timestamp,
-                'description' => $description,
-            ];
-        }
-
-        $metadata['updated'] = [
-            'username' => $username,
-            'time' => $timestamp,
-            'description' => $description,
-        ];
-
-        $node->audit->serialize($metadata);
     }
 
     /**
