@@ -30,16 +30,33 @@ namespace OPNsense\Base\FieldTypes;
 
 class JsonAuditField extends JsonField
 {
+    private const SCHEMA = [
+        'created' => [
+            'username' => '',
+            'time' => '',
+            'description' => '',
+        ],
+        'updated' => [
+            'username' => '',
+            'time' => '',
+            'description' => '',
+        ],
+    ];
+
     public function update($username, $description)
     {
-        $metadata = $this->deserialize();
+        $metadata = array_replace_recursive(
+            self::SCHEMA,
+            $this->deserialize()
+        );
+
         $entry = [
             'username' => $username,
             'time' => sprintf('%0.2f', microtime(true)),
             'description' => $description,
         ];
 
-        if (empty($metadata['created'])) {
+        if (empty($metadata['created']['time'])) {
             $metadata['created'] = $entry;
         }
 
@@ -50,6 +67,10 @@ class JsonAuditField extends JsonField
 
     public function getNodeData()
     {
-        return $this->deserialize();
+        // Always return the full structure to prevent stale values in reused forms.
+        return array_replace_recursive(
+            self::SCHEMA,
+            $this->deserialize()
+        );
     }
 }
