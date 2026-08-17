@@ -341,6 +341,56 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     }
 
     /**
+     * Update controller managed audit information when supported by the model node.
+     *
+     * @param $node model node to update
+     * @return void
+     */
+    protected function setAuditMetadata($node)
+    {
+        if (!isset($node->audit)) {
+            return;
+        }
+
+        $metadata = $node->audit->deserialize();
+        $timestamp = sprintf('%0.2f', microtime(true));
+        $username = $this->getUserName();
+        $description = sprintf('%s made changes', $_SERVER['SCRIPT_NAME']);
+
+        if (empty($metadata['created'])) {
+            $metadata['created'] = [
+                'username' => $username,
+                'time' => $timestamp,
+                'description' => $description,
+            ];
+        }
+
+        $metadata['updated'] = [
+            'username' => $username,
+            'time' => $timestamp,
+            'description' => $description,
+        ];
+
+        $node->audit->serialize($metadata);
+    }
+
+    /**
+     * Remove controller managed audit information from submitted data.
+     *
+     * @param $node model node associated with the submitted data
+     * @param $data submitted model data
+     * @return mixed
+     */
+    protected function stripAuditMetadata($node, $data)
+    {
+        if (is_array($data) && isset($node->audit)) {
+            unset($data['audit']);
+        }
+
+        return $data;
+    }
+
+    /**
      * Hook to be overridden if the controller is to take an action when
      * setAction is called. This hook is called after a model has been
      * constructed and validated but before it serialized to the configuration
@@ -490,13 +540,15 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 $tmp = $tmp->{$step};
             }
             $node = $tmp->Add();
-            $node->setNodes($this->request->getPost($post_field));
+            $data = $this->request->getPost($post_field);
+            $node->setNodes($this->stripAuditMetadata($node, $data));
             if (is_array($overlay)) {
                 $node->setNodes($overlay);
             }
             $result = $this->validate($node, $post_field);
 
             if (empty($result['validations'])) {
+                $this->setAuditMetadata($node);
                 $this->setBaseHook($node);
                 // save config if validated correctly
                 $this->save(false, true);
@@ -587,12 +639,14 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 }
             }
             if ($node != null) {
-                $node->setNodes($this->request->getPost($post_field));
+                $data = $this->request->getPost($post_field);
+                $node->setNodes($this->stripAuditMetadata($node, $data));
                 if (is_array($overlay)) {
                     $node->setNodes($overlay);
                 }
                 $result = $this->validate($node, $post_field, true);
                 if (empty($result['validations'])) {
+                    $this->setAuditMetadata($node);
                     $this->setBaseHook($node);
                     // save config if validated correctly
                     $this->save(false, true);

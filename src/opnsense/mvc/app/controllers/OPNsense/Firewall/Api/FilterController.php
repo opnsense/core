@@ -104,7 +104,11 @@ class FilterController extends FilterBaseController
         /* extract all mvc records so we can filter and sort all at once */
         $allrules = [];
         foreach ($this->getModel()->rules->rule->iterateItems() as $key => $node) {
-            $allrules[] = array_merge(['uuid' => $key], $node->getNodeContent());
+            $record = array_merge(['uuid' => $key], $node->getNodeContent());
+            if (isset($node->audit)) {
+                $record['audit'] = $node->audit->getNodeData();
+            }
+            $allrules[] = $record;
         }
 
         if ($show_all) {
@@ -403,12 +407,12 @@ class FilterController extends FilterBaseController
     // XXX: as shaper1/2 don't have functional keys, we can only export uuid's here
     public function downloadRulesAction()
     {
-        return $this->downloadRulesBase('rules.rule', ['sort_order', 'prio_group'], ['overload']);
+        return $this->downloadRulesBase('rules.rule', ['sort_order', 'prio_group', 'audit'], ['overload']);
     }
 
     public function uploadRulesAction()
     {
-        return $this->uploadRulesBase('rules.rule', ['sort_order', 'prio_group'], ['overload']);
+        return $this->uploadRulesBase('rules.rule', ['sort_order', 'prio_group', 'audit'], ['overload']);
     }
 
     public function flushInspectCacheAction()

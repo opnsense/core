@@ -101,11 +101,11 @@ class OneToOneController extends FilterBaseController
 
     public function downloadRulesAction()
     {
-        return $this->downloadRulesBase('onetoone.rule', ['sort_order', 'prio_group']);
+        return $this->downloadRulesBase('onetoone.rule', ['sort_order', 'prio_group', 'audit']);
     }
 
     public function uploadRulesAction()
     {
-        return $this->uploadRulesBase('onetoone.rule', ['sort_order', 'prio_group']);
+        return $this->uploadRulesBase('onetoone.rule', ['sort_order', 'prio_group', 'audit']);
     }
 }

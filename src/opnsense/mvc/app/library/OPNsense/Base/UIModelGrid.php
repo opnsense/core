@@ -134,10 +134,15 @@ class UIModelGrid
                 $reflen = strlen($record->__reference) + 1;
                 foreach ($record->getFlatNodes() as $key => $val) {
                     $fieldname = substr($key, $reflen);
-                    $descr = $val->getDescription();
-                    $row[$fieldname] = $val->getValue();
-                    if ($row[$fieldname] != $descr) {
-                        $row['%' . $fieldname] = $descr;
+                    $value = $val->getNodeData();
+                    if (is_array($value)) {
+                        $row[$fieldname] = $value;
+                    } else {
+                        $descr = $val->getDescription();
+                        $row[$fieldname] = $value;
+                        if ($row[$fieldname] != $descr) {
+                            $row['%' . $fieldname] = $descr;
+                        }
                     }
                 }
 
