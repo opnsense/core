@@ -596,6 +596,13 @@ function initGlobalOpenShortcuts() {
                 $adv.click();
                 e.preventDefault();
             }
+        } else if (e.key === 'f' || e.key === 'F') {
+            /* In case multiple grids are present, use the first matching action bar in the current context */
+            const $maximize = searchContext.find('[id$="-actions-group"] button[id$="-maximize"]').first();
+            if ($maximize.length) {
+                $maximize.click();
+                e.preventDefault();
+            }
         } else if (e.key === 'h' || e.key === 'H') {
             const $help = searchContext.find('[id*="show_all_help"]').first();
             if ($help.length) {
