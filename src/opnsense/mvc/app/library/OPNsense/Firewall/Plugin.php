@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016 Deciso B.V.
+ * Copyright (C) 2016-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -172,7 +172,7 @@ class Plugin
     }
 
     /**
-     *  Fetch gateway
+     *  fetch gateway
      *  @param string $gw gateway name
      */
     public function getGateway($gw)
@@ -279,11 +279,11 @@ class Plugin
     }
 
     /**
-     * register a Forward (rdr) rule
+     * register a port forward/destination NAT rule
      * @param int $prio priority
      * @param array $conf configuration
      */
-    public function registerForwardRule($prio, $conf)
+    public function registerDestinationNatRule($prio, $conf)
     {
         if (!empty($this->systemDefaults['forward'])) {
             foreach ($this->systemDefaults['forward'] as $key => $val) {
@@ -299,12 +299,18 @@ class Plugin
         $this->natRules[$prio][] = $rule;
     }
 
+    /* XXX backwards glue to be removed in 27.1 */
+    public function registerForwardRule($prio, $conf)
+    {
+        $this->registerDestinationNatRule($prio, $conf);
+    }
+
     /**
-     * register a destination Nat rule
+     * register a one-to-one/static NAT rule
      * @param int $prio priority
      * @param array $conf configuration
      */
-    public function registerDNatRule($prio, $conf)
+    public function registerStaticNatRule($prio, $conf)
     {
         if (!empty($this->systemDefaults['nat'])) {
             $conf = array_merge($this->systemDefaults['nat'], $conf);
@@ -316,12 +322,18 @@ class Plugin
         $this->natRules[$prio][] = $rule;
     }
 
+    /* XXX backwards glue to be removed in 27.1 */
+    public function registerDNatRule($prio, $conf)
+    {
+        $this->registerStaticNatRule($prio, $conf);
+    }
+
     /**
-     * register a destination Nat rule
+     * register an outbound/source NAT rule
      * @param int $prio priority
      * @param array $conf configuration
      */
-    public function registerSNatRule($prio, $conf)
+    public function registerSourceNatRule($prio, $conf)
     {
         $rule = new SNatRule($this->interfaceMapping, $conf);
         if (empty($this->natRules[$prio])) {
@@ -330,8 +342,14 @@ class Plugin
         $this->natRules[$prio][] = $rule;
     }
 
+    /* XXX backwards glue to be removed in 27.1 */
+    public function registerSNatRule($prio, $conf)
+    {
+        $this->registerSourceNatRule($prio, $conf);
+    }
+
     /**
-     * register an Npt rule
+     * register an NPTv6 rule (strictly also static NAT but modelled separately)
      * @param int $prio priority
      * @param array $conf configuration
      */
