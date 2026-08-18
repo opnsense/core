@@ -34,12 +34,6 @@ class SourceNatController extends FilterBaseController
 {
     protected static $categorysource = "snatrules.rule";
 
-    private array $export_ignore = [
-        'sort_order',
-        'prio_group',
-        'audit'
-    ];
-
     /**
      * set/get only affect general settings
      */
@@ -205,11 +199,11 @@ class SourceNatController extends FilterBaseController
 
     public function downloadRulesAction()
     {
-        return $this->downloadRulesBase('snatrules.rule', $this->export_ignore);
+        return $this->downloadRulesBase('snatrules.rule');
     }
 
     public function uploadRulesAction()
     {
-        return $this->uploadRulesBase('snatrules.rule', $this->export_ignore);
+        return $this->uploadRulesBase('snatrules.rule');
     }
 }

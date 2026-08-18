@@ -32,12 +32,6 @@ class OneToOneController extends FilterBaseController
 {
     protected static $categorysource = "onetoone.rule";
 
-    private array $export_ignore = [
-        'sort_order',
-        'prio_group',
-        'audit'
-    ];
-
     public function searchRuleAction()
     {
         $category = (array)$this->request->get('category');
@@ -107,11 +101,11 @@ class OneToOneController extends FilterBaseController
 
     public function downloadRulesAction()
     {
-        return $this->downloadRulesBase('onetoone.rule', $this->export_ignore);
+        return $this->downloadRulesBase('onetoone.rule');
     }
 
     public function uploadRulesAction()
     {
-        return $this->uploadRulesBase('onetoone.rule', $this->export_ignore);
+        return $this->uploadRulesBase('onetoone.rule');
     }
 }
