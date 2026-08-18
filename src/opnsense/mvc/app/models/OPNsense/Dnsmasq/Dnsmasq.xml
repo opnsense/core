@@ -1,7 +1,7 @@
 <model>
     <mount>/dnsmasq</mount>
     <description>Dnsmasq DNS and DHCP</description>
-    <version>1.0.10</version>
+    <version>1.0.9</version>
     <items>
         <enable type="BooleanField"/>
         <regdhcp type="BooleanField"/>
