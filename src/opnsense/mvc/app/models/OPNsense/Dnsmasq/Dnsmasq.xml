@@ -1,7 +1,7 @@
 <model>
     <mount>/dnsmasq</mount>
     <description>Dnsmasq DNS and DHCP</description>
-    <version>1.0.9</version>
+    <version>1.0.10</version>
     <items>
         <enable type="BooleanField"/>
         <regdhcp type="BooleanField"/>
@@ -13,6 +13,7 @@
         <no_resolv type="BooleanField"/>
         <log_queries type="BooleanField"/>
         <no_hosts type="BooleanField"/>
+        <expand_hosts type="BooleanField"/>
         <strictbind type="BooleanField"/>
         <dnssec type="BooleanField"/>
         <regdhcpdomain type="HostnameField">
