@@ -43,6 +43,28 @@ class JsonAuditField extends JsonField
         ],
     ];
 
+    public function setValue($value)
+    {
+        if (is_a($value, 'SimpleXMLElement')) {
+            return parent::setValue($value); /* only during loading */
+        }
+        /* intentionally ignored */
+    }
+
+    /**
+     * Store audit data without using the protected setValue() path.
+     */
+    public function serialize(array $value): bool
+    {
+        $tmp = json_encode($value);
+        if (strlen($tmp) > $this->maxsize) {
+            return false;
+        }
+
+        parent::setValue(base64_encode($tmp));
+        return true;
+    }
+
     public function update($username, $description)
     {
         $metadata = array_replace_recursive(
@@ -73,5 +95,4 @@ class JsonAuditField extends JsonField
             $this->deserialize()
         );
     }
-
 }
