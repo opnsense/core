@@ -172,7 +172,7 @@ class Plugin
     }
 
     /**
-     *  Fetch gateway
+     *  fetch gateway
      *  @param string $gw gateway name
      */
     public function getGateway($gw)
@@ -279,7 +279,7 @@ class Plugin
     }
 
     /**
-     * register a Forward (rdr) rule
+     * register a forward/destination NAT rule
      * @param int $prio priority
      * @param array $conf configuration
      */
@@ -300,7 +300,7 @@ class Plugin
     }
 
     /**
-     * register a destination Nat rule
+     * register a one-to-one/destination NAT rule
      * @param int $prio priority
      * @param array $conf configuration
      */
@@ -317,7 +317,7 @@ class Plugin
     }
 
     /**
-     * register a destination Nat rule
+     * register a source NAT rule
      * @param int $prio priority
      * @param array $conf configuration
      */
@@ -331,7 +331,7 @@ class Plugin
     }
 
     /**
-     * register an Npt rule
+     * register an NPTv6 rule
      * @param int $prio priority
      * @param array $conf configuration
      */
