@@ -131,9 +131,10 @@ function openssh_configure_do($verbose = false, $interface_map = null)
 
     $keys = [
         /* .pub files are implied */
-        'rsa' => 'ssh_host_rsa_key',
-        'ecdsa' => 'ssh_host_ecdsa_key',
+        'rsa' => 'ssh_host_rsa_key', /* XXX could drop this from generation */
+        'ecdsa' => 'ssh_host_ecdsa_key', /* XXX could drop this from generation */
         'ed25519' => 'ssh_host_ed25519_key',
+        'mldsa44-ed25519' => 'ssh_host_mldsa44_ed25519_key',
     ];
 
     /* Check for all needed key files. If any are missing, the keys need to be regenerated. */
@@ -169,6 +170,7 @@ function openssh_configure_do($verbose = false, $interface_map = null)
     $sshconf .= "PubkeyAuthentication yes\n";
     $sshconf .= "Subsystem sftp internal-sftp\n";
     $sshconf .= "AllowGroups wheel\n";
+    $sshconf .= "PubkeyAcceptedAlgorithms +ssh-mldsa44-ed25519@openssh.com\n";
 
     $sshconf .= sprintf("PermitRootLogin %s\n", isset($sshcfg['permitrootlogin']) ? 'yes' : 'no');
     $sshconf .= sprintf("ChallengeResponseAuthentication %s\n", isset($sshcfg['passwordauth']) ? 'yes' : 'no');
