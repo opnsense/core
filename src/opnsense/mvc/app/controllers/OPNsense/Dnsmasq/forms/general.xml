@@ -46,6 +46,12 @@
         <help>Do not read hostnames in /etc/hosts</help>
     </field>
     <field>
+        <id>dnsmasq.expand_hosts</id>
+        <label>Expand hosts</label>
+        <type>checkbox</type>
+        <help>Append the configured domain to simple hostnames read from hosts files.</help>
+    </field>
+    <field>
         <id>dnsmasq.log_queries</id>
         <label>Log the results of DNS queries</label>
         <advanced>true</advanced>
