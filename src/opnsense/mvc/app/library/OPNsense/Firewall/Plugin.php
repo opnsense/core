@@ -317,7 +317,7 @@ class Plugin
     }
 
     /**
-     * register a source NAT rule
+     * register an outbound/source NAT rule
      * @param int $prio priority
      * @param array $conf configuration
      */
