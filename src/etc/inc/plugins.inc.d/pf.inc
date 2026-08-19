@@ -256,8 +256,8 @@ function pf_xmlrpc_sync()
 function pf_run()
 {
     return [
-        'destination_nat' => 'filter_auto_destination_nat',
         'networks_source_nat' => 'pf_get_default_nat_outbound_networks',
+        'rules_destination_nat' => 'filter_auto_destination_nat',
         'rules_source_nat' => 'filter_auto_source_nat',
     ];
 }
