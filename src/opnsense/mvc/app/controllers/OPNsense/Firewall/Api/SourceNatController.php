@@ -63,7 +63,7 @@ class SourceNatController extends FilterBaseController
 
     private function getAutomaticOutboundNatRules(): array
     {
-        $automatic_rules = (json_decode((new Backend())->configdRun('filter list automatic_outbound_nat'), true))['pf'] ?? [];
+        $automatic_rules = (json_decode((new Backend())->configdRun('filter list automatic_source_nat'), true))['pf'] ?? [];
         $config = Config::getInstance()->object();
         $rows = [];
         $sequence = 1;
