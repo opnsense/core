@@ -178,12 +178,12 @@ function pf_firewall($fw)
         in_array($config['nat']['outbound']['mode'], ['advanced', 'hybrid'])
     ) {
         foreach ($mdlFilter->snatrules->rule->sortedBy(['sequence']) as $key => $rule) {
-            $fw->registerSNatRule(50, $rule->serialize());
+            $fw->registerSourceNatRule(50, $rule->serialize());
         }
     }
 
     foreach ($mdlFilter->onetoone->rule->sortedBy(['sequence']) as $key => $rule) {
-        $fw->registerDNatRule(500, $rule->serialize());
+        $fw->registerStaticNatRule(500, $rule->serialize());
     }
 
     foreach ($mdlFilter->npt->rule->sortedBy(['sequence']) as $key => $rule) {

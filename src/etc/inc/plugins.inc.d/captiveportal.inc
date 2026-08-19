@@ -135,7 +135,7 @@ function captiveportal_firewall($fw)
     global $config;
 
     foreach (captiveportal_auto_destination_nat() as $rule) {
-        $fw->registerForwardRule(2, $rule);
+        $fw->registerDestinationNatRule(2, $rule);
     }
 
     $cp = new \OPNsense\CaptivePortal\CaptivePortal();
