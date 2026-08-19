@@ -93,9 +93,10 @@ function captiveportal_auto_rules()
             ];
 
             foreach (['80', '443'] as $to_port) {
-                $localport = $to_port === '443' ? (8000 + $zoneid) : (9000 + $zoneid);
+                $rdr_port = $to_port === '443' ? (8000 + $zoneid) : (9000 + $zoneid);
                 $to = $to_port === '443' ? "(self)" : "<__captiveportal_zone_{$zoneid}>";
                 $to_not = $to_port === '443' ? false : true;
+                $proto = $to_port === '443' ? 'HTTPS' : 'HTTP';
 
                 // forward HTTP(S) to localhost if not authenticated (IPv4)
                 // Only match HTTPS headed to (self) to facilitate RFC 8908
@@ -110,7 +111,7 @@ function captiveportal_auto_rules()
                     'to_not' => $to_not,
                     'to_port' => $to_port,
                     'target' => '127.0.0.1',
-                    'localport' => $localport,
+                    'localport' => $rdr_port,
                     'natreflection' => 'disable',
                     'descr' => "Redirect to Captive Portal (zone {$zoneid})",
                     '#ref' => "ui/captiveportal#edit={$uuid}",
@@ -129,15 +130,12 @@ function captiveportal_auto_rules()
                     'to_not' => $to_not,
                     'to_port' => $to_port,
                     'target' => $intf . 'ip',
-                    'localport' => $localport,
+                    'localport' => $rdr_port,
                     'natreflection' => 'disable',
                     'descr' => "Redirect to Captive Portal (zone {$zoneid})",
                     '#ref' => "ui/captiveportal#edit={$uuid}",
                     '#priority' => 2,
                 ];
-
-                $rdr_port = $to_port === '443' ? (8000 + $zoneid) : (9000 + $zoneid);
-                $proto = $to_port === '443' ? 'HTTPS' : 'HTTP';
 
                 $rules['filter'][] = [
                     'type' => 'pass',
