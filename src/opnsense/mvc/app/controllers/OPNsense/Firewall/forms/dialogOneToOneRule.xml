@@ -225,4 +225,17 @@
             <ignore>true</ignore>
         </grid_view>
     </field>
+    <field>
+        <type>subheader</type>
+        <label>Userdata</label>
+    </field>
+    <field>
+        <id>rule.audit.userdata.note</id>
+        <label>Note</label>
+        <type>textbox</type>
+        <help>Add a note to describe why this rule was created or changed.</help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
 </form>

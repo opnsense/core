@@ -41,14 +41,35 @@ class JsonAuditField extends JsonField
             'time' => '',
             'description' => '',
         ],
+        'userdata' => [
+            'note' => '',
+        ],
     ];
+
+    /**
+     * Allow structured audit data to be passed through BaseField::setNodes().
+     */
+    public function acceptsArrayInput()
+    {
+        return true;
+    }
 
     public function setValue($value)
     {
         if (is_a($value, 'SimpleXMLElement')) {
             return parent::setValue($value); /* only during loading */
         }
-        /* intentionally ignored */
+
+        /* Only userdata is user supplied, rest is ignored intentionally */
+        if (is_array($value) && array_key_exists('note', $value['userdata'] ?? [])) {
+            $metadata = array_replace_recursive(
+                self::SCHEMA,
+                $this->deserialize()
+            );
+
+            $metadata['userdata']['note'] = (string)$value['userdata']['note'];
+            $this->serialize($metadata);
+        }
     }
 
     /**
@@ -56,7 +77,8 @@ class JsonAuditField extends JsonField
      */
     public function serialize(array $value): bool
     {
-        $tmp = json_encode($value);
+        // normalize a bit for the user supplied note data
+        $tmp = json_encode($value, JSON_INVALID_UTF8_SUBSTITUTE);
         if (strlen($tmp) > $this->maxsize) {
             return false;
         }
