@@ -34,8 +34,9 @@ class UserController extends \OPNsense\Base\IndexController
     {
         $result = parent::templateJSIncludes();
         $result[] = '/ui/js/moment-with-locales.min.js';
-        $result[] = '/ui/js/jquery.qrcode.js';
         $result[] = '/ui/js/qrcode.js';
+        $result[] = '/ui/js/qrcode_UTF8.js';
+        $result[] = '/ui/js/jquery.qrcode.js';
         $result[] = '/ui/js/bootstrap-datepicker.min.js';
 
         return $result;
