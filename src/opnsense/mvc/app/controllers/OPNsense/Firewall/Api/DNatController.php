@@ -100,6 +100,7 @@ class DNatController extends FilterBaseController
                     'natreflection' => $rule['natreflection'] ?? '',
                     'descr' => $rule['descr'] ?? '',
                     'is_automatic' => true,
+                    'ref' => $rule['#ref'] ?? '',
                     // Automatic DNAT rule priority should be same as firewall automatic rules
                     'sort_order' => sprintf('%d.0%06d', 100000, $sequence),
                     'prio_group' => '100000',
