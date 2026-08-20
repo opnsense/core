@@ -181,7 +181,7 @@ function filter_auto_source_nat($fw = null)
     if (in_array($outbound['mode'] ?? '', ['', 'automatic', 'hybrid'])) {
         $fw ??= filter_core_get_initialized_plugin_system();
 
-        $networks = array_merge(...array_values(plugins_run('outbound_net', [$fw])));
+        $networks = array_merge(...array_values(plugins_run('networks_source_nat', [$fw])));
 
         foreach ($fw->getInterfaceMapping() as $interface => $ifcfg) {
             /* XXX VPN is allowed but not OpenVPN dropping /tmp/ovpnxy_router(v6) file */

@@ -178,12 +178,12 @@ function pf_firewall($fw)
         in_array($config['nat']['outbound']['mode'], ['advanced', 'hybrid'])
     ) {
         foreach ($mdlFilter->snatrules->rule->sortedBy(['sequence']) as $key => $rule) {
-            $fw->registerSNatRule(50, $rule->serialize());
+            $fw->registerSourceNatRule(50, $rule->serialize());
         }
     }
 
     foreach ($mdlFilter->onetoone->rule->sortedBy(['sequence']) as $key => $rule) {
-        $fw->registerDNatRule(500, $rule->serialize());
+        $fw->registerStaticNatRule(500, $rule->serialize());
     }
 
     foreach ($mdlFilter->npt->rule->sortedBy(['sequence']) as $key => $rule) {
@@ -256,9 +256,30 @@ function pf_xmlrpc_sync()
 function pf_run()
 {
     return [
-        'outbound_nat' => 'filter_auto_source_nat',
-        'outbound_net' => 'pf_get_default_nat_outbound_networks',
+        'networks_source_nat' => 'pf_get_default_nat_outbound_networks',
+        'rules_destination_nat' => 'filter_auto_destination_nat',
+        'rules_source_nat' => 'filter_auto_source_nat',
     ];
+}
+
+function filter_auto_destination_nat()
+{
+    $rules = [];
+
+    foreach (filter_core_get_antilockout() as $lockoutif => $lockoutprts) {
+        foreach ($lockoutprts as $port) {
+            $rules[] = [
+                'descr' => 'Anti-lockout; prevent redirects for protected ports to this interface address',
+                'destination' => ['network' => "{$lockoutif}ip", 'port' => $port],
+                'interface' => $lockoutif,
+                'nordr' => true,
+                'protocol' => 'tcp',
+                '#ref' => 'system_advanced_firewall.php#noantilockout',
+            ];
+        }
+    }
+
+    return $rules;
 }
 
 function pf_get_default_nat_outbound_networks($fw = null)
