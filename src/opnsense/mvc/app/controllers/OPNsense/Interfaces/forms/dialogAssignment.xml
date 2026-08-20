@@ -1,5 +1,9 @@
 <form>
     <field>
+        <type>header</type>
+        <label>Basic configuration</label>
+    </field>
+    <field>
         <id>interface.icon</id>
         <label>Status</label>
         <type>ignore</type>
@@ -13,6 +17,17 @@
         <label>Identifier</label>
         <type>info</type>
         <help>Technical identifier of the interface, used by hasync for example.</help>
+    </field>
+    <field>
+        <id>interface.enable</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Enable this interface.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
     </field>
     <field>
         <id>interface.lock</id>
@@ -40,9 +55,417 @@
         </grid_view>
     </field>
     <field>
+        <type>header</type>
+        <label>Device configuration</label>
+    </field>
+    <field>
         <id>interface.if</id>
         <label>Device</label>
         <type>dropdown</type>
         <help>Device name to connect this interface to.</help>
+    </field>
+    <field>
+        <id>interface.promisc</id>
+        <label>Promiscuous mode</label>
+        <type>checkbox</type>
+        <help>Put interface into permanently promiscuous mode. Only to be used for specific usecases requiring the interface to receive all packets being received. When unsure, leave this disabled.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.mtu</id>
+        <label>MTU</label>
+        <type>text</type>
+        <help>If you leave this field blank, the adapter's default MTU will be used. This is typically 1500 bytes but can vary in some circumstances.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.mss</id>
+        <label>MSS</label>
+        <type>text</type>
+        <help>If you enter a value in this field, then MSS clamping for TCP connections to the value entered above minus 40 (IPv4) or 60 (IPv6) will be in effect (TCP/IP header size).</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Generic configuration</label>
+    </field>
+    <field>
+        <id>interface.blockpriv</id>
+        <label>Block private networks</label>
+        <type>checkbox</type>
+        <help>When set, this option blocks traffic from IP addresses that are reserved for private networks as per RFC 1918 as well as loopback, link-local and Carrier-grade NAT addresses. This option should only be set for WAN interfaces that use the public IP address space.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.blockbogons</id>
+        <label>Block bogon networks</label>
+        <type>checkbox</type>
+        <help>When set, this option blocks traffic from IP addresses that are reserved (but not RFC 1918) or not yet assigned by IANA. Bogons are prefixes that should never appear in the Internet routing table, and obviously should not appear as the source address in any packets you receive.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Address configuration [IPv4]</label>
+    </field>
+    <field>
+        <id>interface.type4</id>
+        <label>IPv4 Configuration Type</label>
+        <type>dropdown</type>
+        <style>selectpicker ipoption</style>
+        <help>The primary type for this interface for IPv4 communication.</help>
+        <grid_view>
+            <label>IPv4</label>
+            <formatter>ipv4typeformatter</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.ipaddr</id>
+        <label>IPv4 address</label>
+        <type>text</type>
+        <hint>192.168.1.1/24</hint>
+        <style>type4 type4_staticv4</style>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.alias-address</id>
+        <label>Alias IPv4 address</label>
+        <type>text</type>
+        <style>type4 type4_dhcp</style>
+        <help>The value in this field is used as a fixed alias IPv4 address by the DHCP client.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.alias-subnet</id>
+        <label>Alias IPv4 subnet mask</label>
+        <type>text</type>
+        <style>type4 type4_dhcp</style>
+        <help>The value in this field is used as a fixed alias IPv4 subnet by the DHCP client.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.dhcprejectfrom</id>
+        <label>Reject Leases From</label>
+        <type>select_multiple</type>
+        <allownew>true</allownew>
+        <style>tokenize type4 type4_dhcp</style>
+        <help>If there are certain upstream DHCP servers that should be ignored, place the comma separated list of IP addresses of the DHCP servers to be ignored here. This is useful for rejecting leases from cable modems that offer private IPs when they lose upstream sync.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.dhcphostname</id>
+        <label>Hostname</label>
+        <type>text</type>
+        <style>type4 type4_dhcp</style>
+        <help>The value in this field is sent as the DHCP client identifier and hostname when requesting a DHCP lease. Some ISPs may require this (for client identification).</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.dhcphonourmtu</id>
+        <label>Honour MTU</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <style>type4 type4_dhcp</style>
+        <help>An ISP may incorrectly set an MTU value which can cause intermittent network disruption. By default this value will be ignored. Setting this option will allow to apply the MTU supplied by the ISP instead.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.dhcpvlanprio</id>
+        <label>Use VLAN priority</label>
+        <type>dropdown</type>
+        <style>type4 type4_dhcp</style>
+        <help>Certain ISPs may require that DHCPv4 requests are sent with a specific VLAN priority.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Address configuration [IPv6]</label>
+    </field>
+    <field>
+        <id>interface.type6</id>
+        <label>IPv6 Configuration Type</label>
+        <type>dropdown</type>
+        <style>selectpicker ipoption</style>
+        <help>The primary type for this interface for IPv6 communication.</help>
+        <grid_view>
+            <label>IPv6</label>
+            <formatter>ipv6typeformatter</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.ipaddrv6</id>
+        <label>IPv6 address</label>
+        <type>text</type>
+        <hint>dead::beef/24</hint>
+        <style>type6 type6_staticv6</style>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+
+    <field>
+        <id>interface.dhcp6vlanprio</id>
+        <label>Use VLAN priority</label>
+        <type>dropdown</type>
+        <style>type6 type6_dhcp6</style>
+        <help>Certain ISPs may require that DHCPv6 requests are sent with a specific VLAN priority.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.dhcp6-ia-pd-len</id>
+        <label>Prefix delegation size</label>
+        <type>text</type>
+        <style>type6 type6_dhcp6</style>
+        <help>The value in this field is the delegated prefix length provided by the DHCPv6 server.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.dhcp6prefixonly</id>
+        <label>Request prefix only</label>
+        <type>checkbox</type>
+        <style>type6 type6_dhcp6</style>
+        <help>Only request an IPv6 prefix; do not request an IPv6 address.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.dhcp6_request_dns</id>
+        <label>Request DNS configuration</label>
+        <type>checkbox</type>
+        <style>type6 type6_dhcp6</style>
+        <help>Request DNS configuration from the server.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.dhcp6-ia-pd-send-hint</id>
+        <label>Send prefix hint</label>
+        <type>checkbox</type>
+        <style>type6 type6_dhcp6</style>
+        <help>Send an IPv6 prefix hint to indicate the desired prefix size for delegation</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.dhcp6_rapid_commit</id>
+        <label>Send rapid commit</label>
+        <type>checkbox</type>
+        <style>type6 type6_dhcp6</style>
+        <help>Send a rapid-commit option in solicit messages and wait for an immediate reply instead of advertisements.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.dhcp6-prefix-id</id>
+        <label>Optional prefix ID</label>
+        <hint>0x9</hint>
+        <type>text</type>
+        <style>type6 type6_dhcp6</style>
+        <help>The value in this field is the delegated hexadecimal IPv6 prefix ID. This determines the configurable /64 network ID based on the dynamic IPv6 connection.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.dhcp6_ifid</id>
+        <label>Optional interface ID</label>
+        <hint>0xfff</hint>
+        <type>text</type>
+        <style>type6 type6_dhcp6</style>
+        <help>The value in this field is the numeric IPv6 interface ID used to construct the lower part of the resulting IPv6 prefix address. Setting a hex value will use that fixed value in its lower address part. Please note the maximum usable value is 0x7fffffffffffffff due to a PHP integer restriction.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.dhcp6_assoc_pd</id>
+        <label>Optional prefix IAID</label>
+        <type>text</type>
+        <help>The ID to use for prefix request identity association if required to be non-standard.</help>
+        <style>type6 type6_dhcp6</style>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.prefix-6rd</id>
+        <label>6RD prefix</label>
+        <type>text</type>
+        <style>type6 type6_6rd</style>
+        <hint>2001:db8::/32</hint>
+        <help>The value in this field is the 6RD IPv6 prefix assigned by your ISP. e.g. '2001:db8::/32'</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.gateway-6rd</id>
+        <label>6RD Border Relay</label>
+        <type>text</type>
+        <style>type6 type6_6rd</style>
+        <help>The value in this field is 6RD IPv4 gateway address assigned by your ISP</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.prefix-6rd-v4plen</id>
+        <label>6RD IPv4 Prefix length</label>
+        <type>text</type>
+        <style>type6 type6_6rd</style>
+        <help>The value in this field is the 6RD IPv4 prefix length. A value of 0 means we embed the entire IPv4 address in the 6RD prefix.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.prefix-6rd-v4addr</id>
+        <label> 6RD IPv4 Prefix address</label>
+        <type>text</type>
+        <style>type6 type6_6rd</style>
+        <help>The value in this field is the 6RD IPv4 prefix address. Optionally overrides the automatic detection.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.track6-interface</id>
+        <label>Parent interface</label>
+        <type>dropdown</type>
+        <style>selectpicker type6 type6_track6 type6_idassoc6</style>
+        <help>This selects the dynamic IPv6 WAN interface to track for configuration.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.track6-prefix-id</id>
+        <label>Assign prefix ID</label>
+        <type>text</type>
+        <hint>0x9</hint>
+        <style>type6 type6_track6 type6_idassoc6</style>
+        <help>The value in this field is the delegated hexadecimal IPv6 prefix ID. This determines the configurable /64 network ID based on the dynamic IPv6 connection.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.track6_prefix_range</id>
+        <label>Reserved prefix range</label>
+        <type>text</type>
+        <style>type6 type6_track6 type6_idassoc6</style>
+        <help>The value in this field is the length of the reserved prefix range for downstream prefix delegation. The range starts at the given prefix ID. The default is to only reserve the given prefix ID.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.track6_ifid</id>
+        <label>Optional interface ID</label>
+        <type>text</type>
+        <hint>0xfff</hint>
+        <style>type6 type6_track6 type6_idassoc6</style>
+        <help>The value in this field is the numeric IPv6 interface ID used to construct the lower part of the resulting IPv6 prefix address. Setting a hex value will use that fixed value in its lower address part. Please note the maximum usable value is 0x7fffffffffffffff due to a PHP integer restriction.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.track6_assoc_pd</id>
+        <label>Optional prefix IAID</label>
+        <type>text</type>
+        <style>type6 type6_track6 type6_idassoc6</style>
+        <help>The ID to use for prefix request identity association if required to be non-standard.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.dhcpd6track6allowoverride</id>
+        <label>Manual configuration</label>
+        <type>checkbox</type>
+        <style>type6 type6_track6 type6_idassoc6</style>
+        <help>If this option is set, you will be able to manually set the DHCPv6 and Router Advertisements service for this interface. Use with care.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Gateway configuration</label>
+    </field>
+    <field>
+        <id>interface.gateway_interface</id>
+        <label>Dynamic gateway policy</label>
+        <type>checkbox</type>
+        <help>If the destination is directly reachable via an interface requiring no intermediary system to act as a gateway, you can select this option which allows dynamic gateways to be created without direct target addresses. Some tunnel types support this.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.gateway</id>
+        <label>IPv4 gateway rules</label>
+        <type>dropdown</type>
+        <style>selectpicker type4 type4_staticv4</style>
+        <help>Select a gateway from the list to reply the incoming packets to the proper next hop on their way back and apply source NAT when configured. This is typically disabled for LAN type interfaces.</help>
+    </field>
+    <field>
+        <id>interface.gatewayv6</id>
+        <label>IPv6 gateway rules</label>
+        <type>dropdown</type>
+        <style>selectpicker type6 type6_staticv6</style>
+        <help>Select a gateway from the list to reply the incoming packets to the proper next hop on their way back. This is typically disabled for LAN type interfaces.</help>
     </field>
 </form>

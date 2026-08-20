@@ -3,11 +3,12 @@
     <version>0.0.1</version>
     <description>Interface assignments</description>
     <items>
-        <interface type="ArrayField">
+        <interface type=".\NetworkInterfaceField">
             <descr type=".\IfDescField">
                 <Mask>/^[a-z_0-9]{0,255}$/i</Mask>
             </descr>
             <identifier type="TextField"/>
+            <pending_action type="TextField"/>
             <!-- backref from if field, read-only data -->
             <icon type="TextField" volatile="true"/>
             <optgroup type="TextField" volatile="true"/>
@@ -24,6 +25,180 @@
                 <Default>1</Default>
                 <Required>Y</Required>
             </lock>
+            <enable type="BooleanField">
+                <Default>1</Default>
+                <Required>Y</Required>
+            </enable>
+            <blockpriv type="BooleanField"/>
+            <blockbogons type="BooleanField"/>
+            <promisc type="BooleanField"/>
+            <gateway_interface type="BooleanField"/>
+            <mtu type="IntegerField">
+                <MinimumValue>576</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+                <ValidationMessage>The MTU must be greater than 576 bytes and less than 65535.</ValidationMessage>
+            </mtu>
+            <mss type="IntegerField">
+                <MinimumValue>576</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+                <ValidationMessage>The MSS must be greater than 576 bytes.</ValidationMessage>
+            </mss>
+            <type4 type="OptionField">
+                <Required>Y</Required>
+                <Default>none</Default>
+                <OptionValues>
+                    <none>None</none>
+                    <staticv4>Static IPv4</staticv4>
+                    <dhcp>DHCP</dhcp>
+                    <!-- Require PPP type-->
+                    <ppp>PPP</ppp>
+                    <pppoe>PPPoE</pppoe>
+                    <pptp>PPTP</pptp>
+                    <l2tp>L2TP</l2tp>
+                </OptionValues>
+            </type4>
+            <type6 type="OptionField">
+                <Required>Y</Required>
+                <Default>none</Default>
+                <OptionValues>
+                    <none>None</none>
+                    <staticv6>Static IPv6</staticv6>
+                    <dhcp6>DHCPv6</dhcp6>
+                    <linklocal>Link-local</linklocal>
+                    <slaac>SLAAC</slaac>
+                    <_6rd value="6rd">6rd Tunnel</_6rd>
+                    <_6to4 value="6to4">6to4 Tunnel</_6to4>
+                    <idassoc6>Identity association</idassoc6>
+                    <track6>Track Interface (legacy)</track6>
+                    <!-- Require PPP type-->
+                    <pppoev6>PPPoEv6</pppoev6>
+                </OptionValues>
+            </type6>
+            <ipaddr type="NetworkField">
+                <AddressFamily>ipv4</AddressFamily>
+                <NetMaskRequired>Y</NetMaskRequired>
+            </ipaddr>
+            <ipaddrv6 type="NetworkField">
+                <AddressFamily>ipv6</AddressFamily>
+                <NetMaskRequired>Y</NetMaskRequired>
+            </ipaddrv6>
+            <!-- DHCPv4 client settings-->
+            <alias-address type="NetworkField">
+                <AddressFamily>ipv4</AddressFamily>
+                <NetMaskAllowed>N</NetMaskAllowed>
+            </alias-address>
+            <alias-subnet type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>32</MaximumValue>
+                <ValidationMessage>A valid IPv4 CIDR must be provided.</ValidationMessage>
+            </alias-subnet>
+            <dhcprejectfrom type="NetworkField">
+                <AddressFamily>ipv4</AddressFamily>
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <AsList>Y</AsList>
+            </dhcprejectfrom>
+            <dhcphostname type="HostnameField">
+                <IsDNSName>Y</IsDNSName>
+                <IpAllowed>N</IpAllowed>
+            </dhcphostname>
+            <dhcphonourmtu type="BooleanField"/>
+            <dhcpvlanprio type="OptionField">
+                <BlankDesc>Disabled</BlankDesc>
+                <OptionValues>
+                    <pcp1 value="1">Background (1, lowest)</pcp1>
+                    <pcp0 value="0">Best Effort (0, default)</pcp0>
+                    <pcp2 value="2">Excellent Effort (2)</pcp2>
+                    <pcp3 value="3">Critical Applications (3)</pcp3>
+                    <pcp4 value="4">Video (4)</pcp4>
+                    <pcp5 value="5">Voice (5)</pcp5>
+                    <pcp6 value="6">Internetwork Control (6)</pcp6>
+                    <pcp7 value="7">Network Control (7, highest)</pcp7>
+                </OptionValues>
+            </dhcpvlanprio>
+            <!-- DHCPv6 client settings-->
+            <dhcp6vlanprio type="OptionField">
+                <BlankDesc>Disabled</BlankDesc>
+                <OptionValues>
+                    <pcp1 value="1">Background (1, lowest)</pcp1>
+                    <pcp0 value="0">Best Effort (0, default)</pcp0>
+                    <pcp2 value="2">Excellent Effort (2)</pcp2>
+                    <pcp3 value="3">Critical Applications (3)</pcp3>
+                    <pcp4 value="4">Video (4)</pcp4>
+                    <pcp5 value="5">Voice (5)</pcp5>
+                    <pcp6 value="6">Internetwork Control (6)</pcp6>
+                    <pcp7 value="7">Network Control (7, highest)</pcp7>
+                </OptionValues>
+            </dhcp6vlanprio>
+            <dhcp6-ia-pd-len type="IntegerField">
+                <MinimumValue>48</MinimumValue>
+                <MaximumValue>64</MaximumValue>
+            </dhcp6-ia-pd-len>
+            <dhcp6prefixonly type="BooleanField"/>
+            <dhcp6_request_dns type="BooleanField"/>
+            <dhcp6-ia-pd-send-hint type="BooleanField"/>
+            <dhcp6_rapid_commit type="BooleanField"/>
+            <dhcp6-prefix-id type="TextField">
+                <Mask>/^0x([a-f,0-9]){0,30}$/i</Mask>
+                <ValidationMessage>Should be a hex value within range.</ValidationMessage>
+            </dhcp6-prefix-id>
+            <dhcp6_ifid type="TextField">
+                <Mask>/^0x([a-f,0-9]){0,30}$/i</Mask>
+                <ValidationMessage>Should be a hex value within range.</ValidationMessage>
+            </dhcp6_ifid>
+            <dhcp6_assoc_pd type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+                <ValidationMessage>Requires a valid positive number</ValidationMessage>
+            </dhcp6_assoc_pd>
+            <!-- 6rd settings-->
+            <prefix-6rd type="NetworkField">
+                <AddressFamily>ipv6</AddressFamily>
+                <NetMaskRequired>Y</NetMaskRequired>
+            </prefix-6rd>
+            <gateway-6rd type="NetworkField">
+                <AddressFamily>ipv4</AddressFamily>
+                <NetMaskAllowed>N</NetMaskAllowed>
+            </gateway-6rd>
+            <prefix-6rd-v4plen type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>32</MaximumValue>
+                <ValidationMessage>6RD IPv4 prefix length must be a number.</ValidationMessage>
+            </prefix-6rd-v4plen>
+            <prefix-6rd-v4addr type="NetworkField">
+                <AddressFamily>ipv4</AddressFamily>
+                <NetMaskAllowed>N</NetMaskAllowed>
+            </prefix-6rd-v4addr>
+            <!-- idassoc6/track6 settings-->
+            <track6-interface type="InterfaceField">
+                <filters>
+                    <enable>/^(?!0).*$/</enable>
+                    <ipaddrv6>/^6rd|6to4|dhcp6$/</ipaddrv6>
+                </filters>
+            </track6-interface>
+            <track6-prefix-id type="TextField">
+                <Mask>/^0x([a-f,0-9]){0,30}$/i</Mask>
+                <ValidationMessage>Should be a hex value within range.</ValidationMessage>
+            </track6-prefix-id>
+            <track6_ifid type="TextField">
+                <Mask>/^0x([a-f,0-9]){0,30}$/i</Mask>
+                <ValidationMessage>Should be a hex value within range.</ValidationMessage>
+            </track6_ifid>
+            <track6_prefix_range type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <ValidationMessage>You specified an IPv6 prefix range that is not valid.</ValidationMessage>
+            </track6_prefix_range>
+            <track6_assoc_pd type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </track6_assoc_pd>
+            <dhcpd6track6allowoverride type="BooleanField"/>
+            <!-- gateway -->
+            <gateway type=".\GatewayField">
+                <Protocol>inet</Protocol>
+                <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
+            </gateway>
+            <gatewayv6 type=".\GatewayField">
+                <Protocol>inet6</Protocol>
+                <ValidationMessage>Specify a valid gateway from the list matching the networks ip protocol.</ValidationMessage>
+            </gatewayv6>
         </interface>
     </items>
 </model>
