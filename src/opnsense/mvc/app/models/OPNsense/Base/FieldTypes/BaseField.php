@@ -156,16 +156,6 @@ abstract class BaseField
     }
 
     /**
-     * Allow array input for field types exposing structured data.
-     *
-     * @return bool
-     */
-    public function acceptsArrayInput()
-    {
-        return false;
-    }
-
-    /**
      * generate a new UUID v4 number
      * @return string uuid v4 number
      */
@@ -817,8 +807,13 @@ abstract class BaseField
                         throw new Exception("Invalid input type for {$key}: expected a list");
                     }
                     $node->setNodes($data[$key]);
+                } elseif ($node instanceof IStructuredInput) {
+                    if (!is_array($data[$key])) {
+                        throw new Exception("Invalid input type for {$key}: expected structured input");
+                    }
+                    $node->setValue($data[$key]);
                 } else {
-                    if (is_array($data[$key]) && !$node->acceptsArrayInput()) {
+                    if (is_array($data[$key])) {
                         throw new Exception("Invalid input type for {$key}: expected a single value");
                     }
                     $node->setValue($data[$key]);

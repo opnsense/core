@@ -28,7 +28,7 @@
 
 namespace OPNsense\Base\FieldTypes;
 
-class JsonAuditField extends JsonField
+class JsonAuditField extends JsonField implements IStructuredInput
 {
     private const SCHEMA = [
         'created' => [
@@ -45,14 +45,6 @@ class JsonAuditField extends JsonField
             'note' => '',
         ],
     ];
-
-    /**
-     * Allow structured audit data to be passed through BaseField::setNodes().
-     */
-    public function acceptsArrayInput()
-    {
-        return true;
-    }
 
     public function setValue($value)
     {
