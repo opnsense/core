@@ -684,6 +684,31 @@
             <visible>false</visible>
         </grid_view>
     </field>
+    <field>
+        <type>header</type>
+        <label>Address family translation</label>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.af-to-source</id>
+        <label>Translation source</label>
+        <type>text</type>
+        <help>Source address used after translating the packet to the opposite address family. Address family translation is only valid for inbound pass rules using an explicit IPv4 or IPv6 version.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.af-to-destination</id>
+        <label>Translation destination</label>
+        <type>text</type>
+        <help>Optional destination address or network used after translating the packet to the opposite address family.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
     <!-- Not exposed in dialog, do not exist in model, only for grid -->
     <field>
         <id>rule.statistics</id>

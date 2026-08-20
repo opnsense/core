@@ -285,6 +285,52 @@ class Filter extends BaseModel
                                 $rule->replyto->__reference
                             ));
                         }
+                        // af-to validation
+                        if (!$rule->{'af-to-destination'}->isEmpty() && $rule->{'af-to-source'}->isEmpty()) {
+                            $messages->appendMessage(
+                                new Message(
+                                    gettext("Translation destination requires a translation source."),
+                                    $rule->{'af-to-source'}->__reference
+                                )
+                            );
+                        } elseif (!$rule->{'af-to-source'}->isEmpty()) {
+                            if ($rule->action != 'pass') {
+                                $messages->appendMessage(new Message(
+                                    gettext("Address family translation is only valid for pass rules."),
+                                    $rule->{'af-to-source'}->__reference
+                                ));
+                            }
+                            if ($rule->direction != 'in') {
+                                $messages->appendMessage(new Message(
+                                    gettext("Address family translation is only valid for inbound rules."),
+                                    $rule->{'af-to-source'}->__reference
+                                ));
+                            }
+                            if (!in_array((string)$rule->ipprotocol, ['inet', 'inet6'], true)) {
+                                $messages->appendMessage(new Message(
+                                    gettext("An address family must be selected when using address family translation."),
+                                    $rule->ipprotocol->__reference
+                                ));
+                            }
+                            if ($rule->statetype == 'none') {
+                                $messages->appendMessage(new Message(
+                                    gettext("Address family translation requires state tracking."),
+                                    $rule->{'af-to-source'}->__reference
+                                ));
+                            }
+                            if (!$rule->gateway->isEmpty()) {
+                                $messages->appendMessage(new Message(
+                                    gettext("Address family translation cannot be combined with route-to."),
+                                    $rule->gateway->__reference
+                                ));
+                            }
+                            if (!$rule->replyto->isEmpty()) {
+                                $messages->appendMessage(new Message(
+                                    gettext("Address family translation cannot be combined with reply-to."),
+                                    $rule->replyto->__reference
+                                ));
+                            }
+                        }
                     }
                 }
             }
