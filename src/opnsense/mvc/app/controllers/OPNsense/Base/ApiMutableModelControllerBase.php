@@ -30,6 +30,7 @@
 
 namespace OPNsense\Base;
 
+use OPNsense\Base\FieldTypes\JsonAuditField;
 use OPNsense\Core\Config;
 use OPNsense\Core\Type;
 
@@ -349,7 +350,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     protected function setAuditMetadata($node)
     {
         foreach ($node->iterateItems() as $field) {
-            if ($field instanceof \OPNsense\Base\FieldTypes\JsonAuditField) {
+            if ($field instanceof JsonAuditField) {
                 $field->update(
                     $this->getUserName(),
                     sprintf('%s made changes', $_SERVER['SCRIPT_NAME'])
