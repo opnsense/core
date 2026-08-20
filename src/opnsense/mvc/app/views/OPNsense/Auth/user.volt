@@ -83,7 +83,13 @@
                     username: function (column, row) {
                         let container = $("<div/>");
                         let item = $('<span/>').addClass('fa fa-user');
-                        if (row.disabled == '1') {
+                        let expired = false;
+                        if (row.expires != '') {
+                            const now = new Date();
+                            const then = new Date(row.expires);
+                            expired = now > then;
+                        }
+                        if (row.disabled == '1' || expired) {
                             item.addClass('text-muted');
                         } else if (row.is_admin === '1') {
                             item.addClass('text-danger');
