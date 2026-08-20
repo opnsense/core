@@ -1,3 +1,5 @@
+<?php
+
 /*
  * Copyright (C) 2026 Deciso B.V.
  * All rights reserved.
@@ -23,6 +25,8 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
+namespace OPNsense\Base\FieldTypes;
 
 /**
  * Structured input marker.
