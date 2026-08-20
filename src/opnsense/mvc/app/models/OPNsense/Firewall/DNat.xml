@@ -107,10 +107,20 @@
                     <rule>Register rule</rule>
                 </OptionValues>
             </pass>
+            <audit type="JsonAuditField"/>
             <!-- drop in a future version (27.1?), used for migration purposes.-->
             <associated-rule-id type=".\DNatAssociatedRuleField"/>
-            <!-- XXX this would probably need a migration from the old updated/created data -->
-            <audit type="JsonAuditField"/>
+            <!-- old audit data, drop in future version together with actionPostLoadingEvent in JsonAuditField.php -->
+            <created>
+                <username type="TextField"/>
+                <time type="TextField"/>
+                <description type="TextField"/>
+            </created>
+            <updated>
+                <username type="TextField"/>
+                <time type="TextField"/>
+                <description type="TextField"/>
+            </updated>
         </rule>
     </items>
 </model>

@@ -109,4 +109,38 @@ class JsonAuditField extends JsonField implements IStructuredInput
             $this->deserialize()
         );
     }
+
+    /**
+     * Migrate legacy created/updated fields into the audit JSON structure.
+     * Compatibility code. Remove together with the legacy created/updated model fields (e.g. in DNat.xml).
+     */
+    protected function actionPostLoadingEvent()
+    {
+        if (!$this->isEmpty()) {
+            return;
+        }
+
+        $parent = $this->getParentNode();
+        if ($parent === null) {
+            return;
+        }
+
+        $metadata = self::SCHEMA;
+
+        foreach (['created', 'updated'] as $key) {
+            if (isset($parent->$key)) {
+                $metadata[$key] = [
+                    'username' => $parent->$key->username->getValue(),
+                    'time' => $parent->$key->time->getValue(),
+                    'description' => $parent->$key->description->getValue(),
+                ];
+            }
+        }
+
+        if (!empty($metadata['created']['time']) || !empty($metadata['updated']['time'])) {
+            $this->serialize($metadata);
+        }
+
+        // We do not remove old data, it will naturally disappear once the old fields are removed
+    }
 }
