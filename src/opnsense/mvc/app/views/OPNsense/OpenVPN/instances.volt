@@ -60,14 +60,18 @@
             del:'/api/openvpn/instances/del_static_key/'
         });
 
-        $("#instance\\.role, #instance\\.dev_type").change(function(){
+        $("#instance\\.role, #instance\\.dev_type, #instance\\.dns_update").change(function(){
             const show_advanced = $("#show_advanced_formDialogdialog_dialogInstance").hasClass("fa-toggle-on");
             const this_role = $("#instance\\.role").val();
             const this_dev_type = $("#instance\\.dev_type").val();
+            const this_dns_update = $("#instance\\.dns_update").is(':checked');
             $(".role").each(function(){
                 const tr = $(this).closest("tr").hide();
                 if ((tr.data('advanced') === true && show_advanced) || !tr.data('advanced')) {
                     if ($(this).hasClass('role_' + this_role) || $(this).hasClass('role_' + this_role + '_' + this_dev_type)) {
+                        tr.show();
+                    }
+                    else if (this_dns_update && $(this).hasClass('role_' + this_role + '_dns_update')) {
                         tr.show();
                     }
                 }
