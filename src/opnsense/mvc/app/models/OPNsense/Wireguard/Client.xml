@@ -27,6 +27,8 @@
                         </check001>
                     </Constraints>
                 </pubkey>
+                <!-- The client privkey is not used for any service configuration -->
+                <privkey type="Base64Field"/>
                 <psk type="Base64Field"/>
                 <tunneladdress type="NetworkField">
                     <NetMaskRequired>Y</NetMaskRequired>

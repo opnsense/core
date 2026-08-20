@@ -26,6 +26,16 @@
         </grid_view>
     </field>
     <field>
+        <id>client.privkey</id>
+        <label>Private key</label>
+        <type>text</type>
+        <help>Private key of this peer. It is optional and not used for any service configuration. Please keep this key safe.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
         <id>client.psk</id>
         <label>Pre-shared key</label>
         <type>text</type>

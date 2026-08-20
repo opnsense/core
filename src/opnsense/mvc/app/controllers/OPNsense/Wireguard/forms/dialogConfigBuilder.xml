@@ -24,10 +24,16 @@
         <help>Public key of this peer. You can generate the key using the private key piped to "wg pubkey".</help>
     </field>
     <field>
+        <id>configbuilder.store_privkey</id>
+        <label>Store private key on this firewall</label>
+        <type>checkbox</type>
+        <help>Store the generated private key with this peer so its configuration can be shown again later.</help>
+    </field>
+    <field>
         <id>configbuilder.privkey</id>
         <label>Private key</label>
         <type>text</type>
-        <help>Private key of this peer, not stored on this host, only used for the configuration below.</help>
+        <help>Private key of this peer. It is only used for the configuration below.</help>
     </field>
     <field>
         <id>configbuilder.address</id>
@@ -68,6 +74,6 @@
         <label>Store and generate next</label>
         <id>configbuilder.store_btn</id>
         <type>info</type>
-        <help>Store the public parts of this peer and generate a keypair for the next.</help>
+        <help>Store this peer and generate a keypair for the next.</help>
     </field>
 </form>
