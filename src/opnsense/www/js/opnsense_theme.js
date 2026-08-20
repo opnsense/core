@@ -149,7 +149,7 @@ $(document).ready(function () {
         }
     }
 
-    if (!toggle_sidebar_loaded && !navigation.length) return;
+    if (!toggle_sidebar_loaded || !navigation.length) return;
 
     // --- Toggle button click ---
     toggle_btn.click(function () {
