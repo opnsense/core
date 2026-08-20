@@ -31,7 +31,6 @@ namespace OPNsense\Interfaces\FieldTypes;
 use OPNsense\Base\FieldTypes\BaseListField;
 use OPNsense\Routing\Gateways;
 
-
 class GatewayField extends BaseListField
 {
     protected $protocol = 'inet';

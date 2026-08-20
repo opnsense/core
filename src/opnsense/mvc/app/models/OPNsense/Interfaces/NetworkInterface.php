@@ -35,7 +35,6 @@ use OPNsense\Core\Config;
 use OPNsense\Core\FileObject;
 use OPNsense\Routing\Gateways;
 
-
 class NetworkInterface extends BaseModel
 {
     var $todo_file = '/tmp/.interfaces.todo';

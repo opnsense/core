@@ -163,7 +163,6 @@ class AssignmentController extends ApiMutableModelControllerBase
                             } elseif (isset(Config::getInstance()->object()->interfaces->$key->$akey)) {
                                 unset(Config::getInstance()->object()->interfaces->$key->$akey);
                             }
-
                         }
                         foreach (['enable', 'lock'] as $legacybool) {
                             if (empty($pending[$legacybool])) {

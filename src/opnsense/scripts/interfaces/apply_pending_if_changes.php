@@ -70,7 +70,6 @@ if (is_array($config['interfaces'])) {
             } elseif (isset($config['interfaces'][$ifname][$key])) {
                 unset($config['interfaces'][$ifname][$key]);
             }
-
         }
         foreach (['enable', 'lock'] as $legacybool) {
             if (empty($pending[$legacybool])) {
