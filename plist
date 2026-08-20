@@ -834,10 +834,17 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/BridgeMemberField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/DUIDField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/DeviceField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/Dhcp4RequestOptionsField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/Dhcp4SendOptionsField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/Dhcp6RequestOptionsField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/Dhcp6SendOptionsField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/GatewayField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/IfDescField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/LaggInterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/LinkAddressField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/MediaTypesField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/NeighborField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/NetworkInterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VipField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VipInterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VipNetworkField.php
@@ -1304,6 +1311,7 @@
 /usr/local/opnsense/scripts/interfaces/list_assign_options.php
 /usr/local/opnsense/scripts/interfaces/list_hosts.py
 /usr/local/opnsense/scripts/interfaces/list_macdb.py
+/usr/local/opnsense/scripts/interfaces/list_mediaopts.php
 /usr/local/opnsense/scripts/interfaces/list_ndp.py
 /usr/local/opnsense/scripts/interfaces/list_regdomain.py
 /usr/local/opnsense/scripts/interfaces/list_sockstat.py

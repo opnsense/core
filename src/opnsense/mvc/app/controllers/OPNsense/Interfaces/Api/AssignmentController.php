@@ -155,8 +155,31 @@ class AssignmentController extends ApiMutableModelControllerBase
                     if ($props['pending_action'] == 'delete') {
                         $this->cleanRules($key); /* remove associated rules */
                         unset(Config::getInstance()->object()->interfaces->$key);
-                    } elseif ($props['pending_action'] == 'relink') {
-                        Config::getInstance()->object()->interfaces->$key->if = $props['pending_if'];
+                    } else {
+                        /* update pending changes */
+                        $pending = $this->getModel()->interface->$key?->toLegacy() ?? null;
+                        if ($pending !== null) {
+                            /* advanced dhcp settings not supported, prevent settings being used */
+                            $removals = [
+                                'adv_dhcp6_config_advanced',
+                                'adv_dhcp6_config_file_override',
+                                'adv_dhcp_config_advanced',
+                                'adv_dhcp_config_file_override'
+                            ];
+                            foreach (Config::getInstance()->object()->interfaces->$key->children() as $remove) {
+                                if (!in_array($remove->getName(), array_keys($pending))) {
+                                    $removals[] = $remove->getName();
+                                }
+                            }
+                            foreach ($removals as $remove) {
+                                if (isset(Config::getInstance()->object()->interfaces->$key->$remove)) {
+                                    unset(Config::getInstance()->object()->interfaces->$key->$remove);
+                                }
+                            }
+                            foreach ($pending as $akey => $avalue) {
+                                Config::getInstance()->object()->interfaces->$key->$akey = $avalue;
+                            }
+                        }
                     }
                 }
                 Config::getInstance()->save();
@@ -167,5 +190,15 @@ class AssignmentController extends ApiMutableModelControllerBase
             }
         }
         return ["status" => "failed"];
+    }
+
+    /**
+     * retrieve pending status
+     */
+    public function pendingAction()
+    {
+        $backend = new Backend();
+
+        return ['status' => file_exists('/tmp/.interfaces.todo') ? 'pending' : 'ok'];
     }
 }
