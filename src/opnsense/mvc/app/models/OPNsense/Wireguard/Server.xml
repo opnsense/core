@@ -35,6 +35,7 @@
                     <ValidationMessage>Please use valid IPv4 or IPv6 addresses.</ValidationMessage>
                 </dns>
                 <tunneladdress type="NetworkField">
+                    <NetMaskRequired>Y</NetMaskRequired>
                     <AsList>Y</AsList>
                 </tunneladdress>
                 <disableroutes type="BooleanField">
