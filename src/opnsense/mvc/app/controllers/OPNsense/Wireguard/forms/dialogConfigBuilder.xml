@@ -70,10 +70,4 @@
         <label>Config</label>
         <type>textbox</type>
     </field>
-    <field>
-        <label>Store and generate next</label>
-        <id>configbuilder.store_btn</id>
-        <type>info</type>
-        <help>Store this peer and generate a keypair for the next.</help>
-    </field>
 </form>

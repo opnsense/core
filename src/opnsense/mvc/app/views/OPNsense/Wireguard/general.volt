@@ -202,6 +202,7 @@
         function configbuilder_set_reference_mode(enabled)
         {
             $("#configbuilder\\.name").prop("disabled", enabled);
+            $("#configbuilder_actions").toggle(!enabled);
 
             [
                 "servers",
@@ -213,8 +214,7 @@
                 "privkey",
                 "psk",
                 "address",
-                "store_privkey",
-                "store_btn"
+                "store_privkey"
             ].forEach(function(field) {
                 $("#row_configbuilder\\." + field).toggle(!enabled);
             });
@@ -268,7 +268,15 @@
             configbuilder_load_server($(this).val());
         });
 
-        $("#configbuilder\\.store_btn").replaceWith($("#btn_configbuilder_save"));
+        $("#configbuilder_actions")
+            .detach()
+            .appendTo($("#row_configbuilder\\.output td:eq(1)"))
+            .css({"text-align": "left", "margin-top": "10px"})
+            .show();
+
+        $("#btn_configbuilder_cancel").click(function() {
+            $('a[href="#peers"]').tab('show');
+        });
 
         $("#btn_configbuilder_save").click(function(){
             if (configbuilder_reference !== null) {
@@ -367,20 +375,26 @@
             $("#configbuilder\\.output").val(config).trigger('input');
         }
 
+        const $apply_container = $("#reconfigureAct").closest(".alert.content-box");
+
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             if (e.target.id == 'tab_configbuilder') {
                 if (configbuilder_reference !== null) {
                     configbuilder_load_reference(configbuilder_reference);
+                    $apply_container.hide();
                 } else {
                     configbuilder_new();
+                    $apply_container.show();
                 }
                 $('#frm_general_settings').hide();
             } else if (e.target.id == 'tab_peers') {
                 configbuilder_reference = null;
+                $apply_container.show();
                 $('#{{formGridWireguardClient['table_id']}}').bootgrid('reload');
                 $('#frm_general_settings').show();
             } else if (e.target.id == 'tab_instances') {
                 configbuilder_reference = null;
+                $apply_container.show();
                 $('#{{formGridWireguardServer['table_id']}}').bootgrid('reload');
                 $('#frm_general_settings').show();
             }
@@ -436,11 +450,15 @@
               <i class="fa fa-fw fa-gear"></i>
             </button>
         </span>
-        <span id="configbuilder_div" style="display:none">
-            <button id="btn_configbuilder_save" type="button" class="btn btn-primary">
-                <i class="fa fa-fw fa-check"></i>
-              </button>
-        </span>
+        <div id="configbuilder_actions" style="display:none;">
+            <button type="button" class="btn btn-primary" id="btn_configbuilder_save">
+                {{ lang._('Save') }}
+                <i id="btn_configbuilder_save_progress" class=""></i>
+            </button>
+            <button type="button" class="btn btn-default" id="btn_configbuilder_cancel">
+                {{ lang._('Cancel') }}
+            </button>
+        </div>
         {{ partial("layout_partials/base_form",['fields':formDialogConfigBuilder,'id':'frm_config_builder'])}}
     </div>
     {{ partial("layout_partials/base_form",['fields':generalForm,'id':'frm_general_settings'])}}
