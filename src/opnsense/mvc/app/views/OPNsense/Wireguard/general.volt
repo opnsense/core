@@ -305,6 +305,7 @@
                     }
                     handleFormValidation("frm_config_builder", data.validations);
                 } else {
+                    $(document).trigger("settings-changed");
                     if (
                         endpoint.val() != endpoint.data('org-value') ||
                         peer_dns.val() != peer_dns.data('org-value') ||
