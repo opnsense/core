@@ -13,8 +13,8 @@
         <name>Interfaces: Neighbors: Discovery Log</name>
         <description>Allow access to the host discovery Log File</description>
         <patterns>
-            <pattern>ui/diagnostics/log/core/hostdiscovery/*</pattern>
-            <pattern>api/diagnostics/log/core/hostdiscovery/*</pattern>
+            <pattern>ui/diagnostics/log/core/hostwatch/*</pattern>
+            <pattern>api/diagnostics/log/core/hostwatch/*</pattern>
         </patterns>
     </page-diagnostics-logs-hostdiscovery>
 </acl>

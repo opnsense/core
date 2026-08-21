@@ -6,4 +6,11 @@
             <pattern>api/dhcrelay/*</pattern>
         </patterns>
     </page-services-dhcprelay>
+    <page-diagnostics-logs-dhcrelay>
+        <name>Diagnostics: Log: DHCRelay</name>
+        <patterns>
+            <pattern>ui/diagnostics/log/core/dhcrelay/*</pattern>
+            <pattern>api/diagnostics/log/core/dhcrelay/*</pattern>
+        </patterns>
+    </page-diagnostics-logs-dhcrelay>
 </acl>
