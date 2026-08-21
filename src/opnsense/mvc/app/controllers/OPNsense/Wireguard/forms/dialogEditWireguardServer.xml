@@ -132,14 +132,14 @@
     </field>
     <field>
         <type>header</type>
-        <label>Peer Generator</label>
+        <label>Peer generator</label>
         <collapse>true</collapse>
     </field>
     <field>
         <id>server.endpoint</id>
         <label>Endpoint</label>
         <type>text</type>
-        <help>The endpoint that the instance will be reachable at, only used by the Peer Generator.</help>
+        <help>The endpoint that the instance will be reachable at, only used by the Peer generator.</help>
         <grid_view>
             <ignore>true</ignore>
         </grid_view>
@@ -148,7 +148,7 @@
         <id>server.peer_dns</id>
         <label>DNS Servers</label>
         <type>text</type>
-        <help>The DNS Servers to use when peers connect, only used by the Peer Generator.</help>
+        <help>The DNS Servers to use when peers connect, only used by the Peer generator.</help>
         <grid_view>
             <ignore>true</ignore>
         </grid_view>
@@ -157,7 +157,7 @@
         <id>server.allowed_ips</id>
         <label>Allowed IPs</label>
         <type>text</type>
-        <help>The Allowed IPs to use when peers connect, only used by the Peer Generator.</help>
+        <help>The Allowed IPs to use when peers connect, only used by the Peer generator.</help>
         <grid_view>
             <ignore>true</ignore>
         </grid_view>

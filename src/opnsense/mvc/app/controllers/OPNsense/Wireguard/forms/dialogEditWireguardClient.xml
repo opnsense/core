@@ -75,14 +75,14 @@
     </field>
     <field>
         <type>header</type>
-        <label>Peer Generator</label>
+        <label>Peer generator</label>
         <collapse>true</collapse>
     </field>
     <field>
         <id>client.privkey</id>
         <label>Private key</label>
         <type>text</type>
-        <help>Private key of this peer, only used by the Peer Generator. Please keep this key safe.</help>
+        <help>Private key of this peer, only used by the Peer generator. Please keep this key safe.</help>
         <grid_view>
             <ignore>true</ignore>
         </grid_view>
