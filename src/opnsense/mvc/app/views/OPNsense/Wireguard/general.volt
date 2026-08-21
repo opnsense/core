@@ -55,7 +55,7 @@
                     filter: (cell) => !!cell.getData().privkey,
                     classname: "fa fa-fw fa-qrcode",
                     title: "{{ lang._('Open in peer generator') }}",
-                    sequence: 10,
+                    sequence: 1000,
                     method: function(event, cell) {
                         configbuilder_reference = cell.getData();
                         $('a[href="#configbuilder"]').tab('show');
