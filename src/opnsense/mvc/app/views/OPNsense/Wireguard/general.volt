@@ -374,12 +374,15 @@
                 } else {
                     configbuilder_new();
                 }
+                $('#frm_general_settings').hide();
             } else if (e.target.id == 'tab_peers') {
                 configbuilder_reference = null;
                 $('#{{formGridWireguardClient['table_id']}}').bootgrid('reload');
+                $('#frm_general_settings').show();
             } else if (e.target.id == 'tab_instances') {
                 configbuilder_reference = null;
                 $('#{{formGridWireguardServer['table_id']}}').bootgrid('reload');
+                $('#frm_general_settings').show();
             }
         });
 
