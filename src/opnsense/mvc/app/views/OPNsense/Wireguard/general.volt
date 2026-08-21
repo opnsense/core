@@ -261,7 +261,7 @@
         tmp.find('td:eq(2)').empty().append($("<div id='qrcode'/>"));
         $("#configbuilder\\.output").css('max-width', '100%');
         $("#configbuilder\\.output").css('height', '256px');
-        $("#configbuilder\\.output").change(function(){
+        $("#configbuilder\\.output").on('input', function() {
             $('#qrcode').empty().qrcode($(this).val());
         });
 
@@ -364,7 +364,7 @@
                 keepalive: $("#configbuilder\\.keepalive").val()
             });
 
-            $("#configbuilder\\.output").val(config).change();
+            $("#configbuilder\\.output").val(config).trigger('input');
         }
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
