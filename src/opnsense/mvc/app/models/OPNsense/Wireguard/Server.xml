@@ -76,6 +76,7 @@
                 <!-- Peer generator storage [default values] -->
                 <endpoint type="TextField"/>
                 <peer_dns type="TextField"/>
+                <allowed_ips type="TextField"/>
             </server>
         </servers>
     </items>

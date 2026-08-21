@@ -1,5 +1,9 @@
 <form>
     <field>
+        <type>header</type>
+        <label>Peer</label>
+    </field>
+    <field>
         <id>client.enabled</id>
         <label>Enabled</label>
         <type>checkbox</type>
@@ -23,16 +27,6 @@
         <help>Public key of this peer. You can generate the key using the private key piped to "wg pubkey".</help>
         <grid_view>
             <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
-        <id>client.privkey</id>
-        <label>Private key</label>
-        <type>text</type>
-        <help>Private key of this peer. It is optional and not used for any service configuration. Please keep this key safe.</help>
-        <advanced>true</advanced>
-        <grid_view>
-            <ignore>true</ignore>
         </grid_view>
     </field>
     <field>
@@ -77,6 +71,20 @@
         <help>Set persistent keepalive interval in seconds.</help>
         <grid_view>
             <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Peer Generator</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>client.privkey</id>
+        <label>Private key</label>
+        <type>text</type>
+        <help>Private key of this peer, only used by the Peer Generator. Please keep this key safe.</help>
+        <grid_view>
+            <ignore>true</ignore>
         </grid_view>
     </field>
 </form>

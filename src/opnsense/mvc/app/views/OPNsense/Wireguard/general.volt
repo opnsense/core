@@ -25,7 +25,7 @@
  # POSSIBILITY OF SUCH DAMAGE.
  #}
 
- <script>
+<script>
     $( document ).ready(function() {
         const data_get_map = {'frm_general_settings':"/api/wireguard/general/get"};
         let configbuilder_reference = null;
@@ -166,6 +166,7 @@
                 if (data.status === 'ok') {
                     let endpoint = $("#configbuilder\\.endpoint");
                     let peer_dns = $("#configbuilder\\.peer_dns");
+                    let allowed_ips = $("#configbuilder\\.tunneladdress");
 
                     if (update_address) {
                         $("#configbuilder\\.address").val(data.address);
@@ -180,6 +181,11 @@
                         .data('org-value', data.endpoint)
                         .data('mtu', data.mtu)
                         .data('pubkey', data.pubkey);
+
+                    const allowed_ips_value = data.allowed_ips || "0.0.0.0/0,::/0";
+                    allowed_ips
+                        .val(allowed_ips_value)
+                        .data('org-value', allowed_ips_value);
 
                     if (callback) {
                         callback();
@@ -199,6 +205,10 @@
 
             [
                 "servers",
+                "endpoint",
+                "peer_dns",
+                "tunneladdress",
+                "keepalive",
                 "pubkey",
                 "privkey",
                 "psk",
@@ -229,7 +239,6 @@
             $("#configbuilder\\.privkey").val(row.privkey);
             $("#configbuilder\\.psk").val(row.psk);
             $("#configbuilder\\.address").val(row.tunneladdress);
-            $("#configbuilder\\.tunneladdress").val("0.0.0.0/0,::/0");
             $("#configbuilder\\.keepalive").val(row.keepalive);
 
             configbuilder_load_server(server_id, function() {
@@ -269,6 +278,7 @@
             let instance_id = $("#configbuilder\\.servers").val();
             let endpoint = $("#configbuilder\\.endpoint");
             let peer_dns = $("#configbuilder\\.peer_dns");
+            let allowed_ips = $("#configbuilder\\.tunneladdress");
             let peer = {
                 configbuilder: {
                     enabled: '1',
@@ -279,7 +289,6 @@
                         : '',
                     psk: $("#configbuilder\\.psk").val(),
                     tunneladdress: $("#configbuilder\\.address").val(),
-                    allowedips: $("#configbuilder\\.tunneladdress").val(),
                     keepalive: $("#configbuilder\\.keepalive").val(),
                     server: instance_id,
                     endpoint: endpoint.val()
@@ -297,11 +306,16 @@
                     }
                     handleFormValidation("frm_config_builder", data.validations);
                 } else {
-                    if (endpoint.val() != endpoint.data('org-value') || peer_dns.val() != peer_dns.data('org-value')) {
+                    if (
+                        endpoint.val() != endpoint.data('org-value') ||
+                        peer_dns.val() != peer_dns.data('org-value') ||
+                        allowed_ips.val() != allowed_ips.data('org-value')
+                    ) {
                         let param = {
                             'server': {
                                 'endpoint': endpoint.val(),
-                                'peer_dns': peer_dns.val()
+                                'peer_dns': peer_dns.val(),
+                                'allowed_ips': allowed_ips.val()
                             }
                         };
                         ajaxCall('/api/wireguard/server/set_server/' + instance_id, param, function(data, status){
@@ -326,7 +340,6 @@
                 $('.selectpicker').selectpicker('refresh');
                 // Private key storage is intentionally opt-in to preserve existing behavior.
                 $("#configbuilder\\.store_privkey").prop("checked", false);
-                $("#configbuilder\\.tunneladdress").val("0.0.0.0/0,::/0");
                 ajaxGet("/api/wireguard/server/key_pair", {}, function(data, status){
                     if (data.status && data.status === 'ok') {
                         $("#configbuilder\\.pubkey").val(data.pubkey);
