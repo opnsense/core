@@ -219,7 +219,6 @@
                 $("#row_configbuilder\\." + field).toggle(!enabled);
             });
 
-            $("#row_general\\.enabled").toggle(!enabled);
             $("#pskgen_cb").toggle(!enabled);
         }
 
