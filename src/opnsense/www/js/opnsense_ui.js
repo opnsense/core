@@ -425,9 +425,10 @@ function initFormHelpUI() {
     // handle all help messages show/hide
     let elements = $('[id*="show_all_help"]');
     elements.click(function(event) {
-        $(this).toggleClass("fa-toggle-on fa-toggle-off");
-        $(this).toggleClass("text-success text-danger");
-        if ($(this).hasClass("fa-toggle-on")) {
+        let element = $(this);
+        element.toggleClass("fa-toggle-on fa-toggle-off");
+        element.toggleClass("text-success text-danger");
+        if (element.hasClass("fa-toggle-on")) {
             if (window.sessionStorage) {
                 sessionStorage.setItem('all_help_preset', 1);
             }
@@ -560,9 +561,10 @@ function initFormAdvancedUI() {
     }
 
     elements.click(function() {
-        elements.toggleClass("fa-toggle-on fa-toggle-off");
-        elements.toggleClass("text-success text-danger");
-        if (elements.hasClass("fa-toggle-on")) {
+        let element = $(this);
+        element.toggleClass("fa-toggle-on fa-toggle-off");
+        element.toggleClass("text-success text-danger");
+        if (element.hasClass("fa-toggle-on")) {
             $('[data-advanced*="true"]').show();
             if (window.sessionStorage) {
                 sessionStorage.setItem('show_advanced_preset', 1);
@@ -591,11 +593,10 @@ function initGlobalOpenShortcuts() {
         const searchContext = $context.length > 0 ? $context : $(document);
 
         if (e.key === 'a' || e.key === 'A') {
-            const $adv = searchContext.find('[id*="show_advanced"]').first();
-            if ($adv.length) {
-                $adv.click();
+            searchContext.find('[id*="show_advanced"]').each(function () {
+                $(this).click();
                 e.preventDefault();
-            }
+            });
         } else if (e.key === 'f' || e.key === 'F') {
             /* In case multiple grids are present, use the first matching action bar in the current context */
             const $maximize = searchContext.find('[id$="-actions-group"] button[id$="-maximize"]').first();
@@ -604,11 +605,10 @@ function initGlobalOpenShortcuts() {
                 e.preventDefault();
             }
         } else if (e.key === 'h' || e.key === 'H') {
-            const $help = searchContext.find('[id*="show_all_help"]').first();
-            if ($help.length) {
-                $help.click();
+            searchContext.find('[id*="show_all_help"]').each(function () {
+                $(this).click();
                 e.preventDefault();
-            }
+            });
         }
     });
 }
