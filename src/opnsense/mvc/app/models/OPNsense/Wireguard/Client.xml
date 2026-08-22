@@ -66,6 +66,8 @@
                     </Model>
                     <Multiple>Y</Multiple>
                 </servers>
+                <!-- Peer generator storage [client specific] -->
+                <privkey type="Base64Field"/>
             </client>
         </clients>
     </items>

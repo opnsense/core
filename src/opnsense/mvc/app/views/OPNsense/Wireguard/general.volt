@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2014-2023 Deciso B.V.
+ # Copyright (c) 2014-2026 Deciso B.V.
  # Copyright (c) 2018 Michael Muenz <m.muenz@gmail.com>
  # All rights reserved.
  #
@@ -25,30 +25,43 @@
  # POSSIBILITY OF SUCH DAMAGE.
  #}
 
- <script>
+<script>
     $( document ).ready(function() {
         const data_get_map = {'frm_general_settings':"/api/wireguard/general/get"};
+        let configbuilder_reference = null;
         mapDataToFormUI(data_get_map).done(function(data){
             formatTokenizersUI();
             $('.selectpicker').selectpicker('refresh');
         });
 
         const grid_peers = $("#{{formGridWireguardClient['table_id']}}").UIBootgrid({
-                search: '/api/wireguard/client/search_client',
-                get: '/api/wireguard/client/get_client/',
-                set: '/api/wireguard/client/set_client/',
-                add: '/api/wireguard/client/add_client/',
-                del: '/api/wireguard/client/del_client/',
-                toggle: '/api/wireguard/client/toggle_client/',
-                options:{
-                    initialSearchPhrase: getUrlHash('search'),
-                    requestHandler: function(request){
-                        if ( $('#server_filter').val().length > 0) {
-                            request['servers'] = $('#server_filter').val();
-                        }
-                        return request;
+            search: '/api/wireguard/client/search_client',
+            get: '/api/wireguard/client/get_client/',
+            set: '/api/wireguard/client/set_client/',
+            add: '/api/wireguard/client/add_client/',
+            del: '/api/wireguard/client/del_client/',
+            toggle: '/api/wireguard/client/toggle_client/',
+            options: {
+                initialSearchPhrase: getUrlHash('search'),
+                requestHandler: function(request){
+                    if ( $('#server_filter').val().length > 0) {
+                        request['servers'] = $('#server_filter').val();
                     }
-            }
+                    return request;
+                }
+            },
+            commands: {
+                show_peer: {
+                    filter: (cell) => !!cell.getData().privkey,
+                    classname: "fa fa-fw fa-qrcode",
+                    title: "{{ lang._('Open in peer generator') }}",
+                    sequence: 1000,
+                    method: function(event, cell) {
+                        configbuilder_reference = cell.getData();
+                        $('a[href="#configbuilder"]').tab('show');
+                    }
+                }
+            },
         });
         grid_peers.on("loaded.rs.jquery.bootgrid", function (e){
             // reload servers before grid load
@@ -114,6 +127,125 @@
         });
 
         /**
+         * Build the peer config for the peer generator
+         */
+        function buildPeerConfig(data)
+        {
+            let rows = [];
+            rows.push('[Interface]');
+            rows.push('PrivateKey = ' + data.privkey);
+            if (data.address) {
+                rows.push('Address = ' + data.address);
+            }
+            if (data.peer_dns) {
+                rows.push('DNS = ' + data.peer_dns);
+            }
+            if (data.mtu) {
+                rows.push('MTU = ' + data.mtu);
+            }
+            rows.push('');
+            rows.push('[Peer]');
+            rows.push('PublicKey = ' + data.pubkey);
+            if (data.psk) {
+                rows.push('PresharedKey = ' + data.psk);
+            }
+            rows.push('Endpoint = ' + data.endpoint);
+            rows.push('AllowedIPs = ' + data.allowedips);
+            if (data.keepalive) {
+                rows.push('PersistentKeepalive = ' + data.keepalive);
+            }
+            return rows.join("\n");
+        }
+
+        /**
+         * Load instance information for the peer generator
+         */
+        function configbuilder_load_server(server_id, callback, update_address = true)
+        {
+            ajaxGet('/api/wireguard/client/get_server_info/' + server_id, {}, function(data, status) {
+                if (data.status === 'ok') {
+                    let endpoint = $("#configbuilder\\.endpoint");
+                    let peer_dns = $("#configbuilder\\.peer_dns");
+                    let allowed_ips = $("#configbuilder\\.tunneladdress");
+
+                    if (update_address) {
+                        $("#configbuilder\\.address").val(data.address);
+                    }
+
+                    peer_dns
+                        .val(data.peer_dns)
+                        .data('org-value', data.peer_dns);
+
+                    endpoint
+                        .val(data.endpoint)
+                        .data('org-value', data.endpoint)
+                        .data('mtu', data.mtu)
+                        .data('pubkey', data.pubkey);
+
+                    const allowed_ips_value = data.allowed_ips || "0.0.0.0/0,::/0";
+                    allowed_ips
+                        .val(allowed_ips_value)
+                        .data('org-value', allowed_ips_value);
+
+                    if (callback) {
+                        callback();
+                    }
+
+                    endpoint.change();
+                }
+            });
+        }
+
+        /**
+         * Toggle peer generator reference mode
+         */
+        function configbuilder_set_reference_mode(enabled)
+        {
+            $("#configbuilder\\.name").prop("disabled", enabled);
+
+            [
+                "servers",
+                "endpoint",
+                "peer_dns",
+                "tunneladdress",
+                "keepalive",
+                "pubkey",
+                "privkey",
+                "psk",
+                "address",
+                "store_privkey",
+                "store_btn"
+            ].forEach(function(field) {
+                $("#row_configbuilder\\." + field).toggle(!enabled);
+            });
+
+            $("#pskgen_cb").toggle(!enabled);
+        }
+
+        /**
+         * Load an existing peer into the peer generator
+         */
+        function configbuilder_load_reference(row)
+        {
+            const server_id = row.servers;
+
+            $("#configbuilder\\.servers")
+                .val(server_id)
+                .selectpicker('refresh');
+
+            $("#configbuilder\\.name").val(row.name);
+            $("#configbuilder\\.pubkey").val(row.pubkey);
+            $("#configbuilder\\.privkey").val(row.privkey);
+            $("#configbuilder\\.psk").val(row.psk);
+            $("#configbuilder\\.address").val(row.tunneladdress);
+            $("#configbuilder\\.keepalive").val(row.keepalive);
+
+            configbuilder_load_server(server_id, function() {
+                configbuilder_set_reference_mode(true);
+            }, false);
+        }
+
+        /**
          * Peer generator tab hooks
          */
         $("#control_label_configbuilder\\.psk").append($("#pskgen_cb_div").detach().show());
@@ -128,41 +260,32 @@
         tmp.find('td:eq(2)').empty().append($("<div id='qrcode'/>"));
         $("#configbuilder\\.output").css('max-width', '100%');
         $("#configbuilder\\.output").css('height', '256px');
-        $("#configbuilder\\.output").change(function(){
+        $("#configbuilder\\.output").on('input', function() {
             $('#qrcode').empty().qrcode($(this).val());
         });
 
         $("#configbuilder\\.servers").change(function(){
-            ajaxGet('/api/wireguard/client/get_server_info/' + $(this).val(), {}, function(data, status) {
-                if (data.status === 'ok') {
-                    let endpoint = $("#configbuilder\\.endpoint");
-                    let peer_dns = $("#configbuilder\\.peer_dns");
-                    $("#configbuilder\\.address").val(data.address);
-                    peer_dns
-                        .val(data.peer_dns)
-                        .data('org-value', data.peer_dns);
-
-                    endpoint
-                        .val(data.endpoint)
-                        .data('org-value', data.endpoint)
-                        .data('mtu', data.mtu)
-                        .data('pubkey', data.pubkey)
-                        .change();
-                }
-            });
+            configbuilder_load_server($(this).val());
         });
 
         $("#configbuilder\\.store_btn").replaceWith($("#btn_configbuilder_save"));
 
         $("#btn_configbuilder_save").click(function(){
+            if (configbuilder_reference !== null) {
+                return;
+            }
             let instance_id = $("#configbuilder\\.servers").val();
             let endpoint = $("#configbuilder\\.endpoint");
             let peer_dns = $("#configbuilder\\.peer_dns");
+            let allowed_ips = $("#configbuilder\\.tunneladdress");
             let peer = {
                 configbuilder: {
                     enabled: '1',
                     name: $("#configbuilder\\.name").val(),
                     pubkey: $("#configbuilder\\.pubkey").val(),
+                    privkey: $("#configbuilder\\.store_privkey").prop("checked")
+                        ? $("#configbuilder\\.privkey").val()
+                        : '',
                     psk: $("#configbuilder\\.psk").val(),
                     tunneladdress: $("#configbuilder\\.address").val(),
                     keepalive: $("#configbuilder\\.keepalive").val(),
@@ -174,19 +297,25 @@
                 if (data.validations) {
                     if (data.validations['configbuilder.tunneladdress']) {
                         /*
-                            tunnel address for the client is this peers address, since we remap these
-                            in the form, we should remap the errors as well.
-                        */
+                         * tunnel address for the client is this peers address, since we remap these
+                         * in the form, we should remap the errors as well.
+                         */
                         data.validations['configbuilder.address'] = data.validations['configbuilder.tunneladdress'];
                         delete data.validations['configbuilder.tunneladdress'];
                     }
                     handleFormValidation("frm_config_builder", data.validations);
                 } else {
-                    if (endpoint.val() != endpoint.data('org-value') || peer_dns.val() != peer_dns.data('org-value')) {
+                    $(document).trigger("settings-changed");
+                    if (
+                        endpoint.val() != endpoint.data('org-value') ||
+                        peer_dns.val() != peer_dns.data('org-value') ||
+                        allowed_ips.val() != allowed_ips.data('org-value')
+                    ) {
                         let param = {
                             'server': {
                                 'endpoint': endpoint.val(),
-                                'peer_dns': peer_dns.val()
+                                'peer_dns': peer_dns.val(),
+                                'allowed_ips': allowed_ips.val()
                             }
                         };
                         ajaxCall('/api/wireguard/server/set_server/' + instance_id, param, function(data, status){
@@ -203,55 +332,57 @@
 
         function configbuilder_new()
         {
+            configbuilder_reference = null;
+            configbuilder_set_reference_mode(false);
+
             mapDataToFormUI({'frm_config_builder':"/api/wireguard/client/get_client_builder"}).done(function(data){
-                    formatTokenizersUI();
-                    $('.selectpicker').selectpicker('refresh');
-                    ajaxGet("/api/wireguard/server/key_pair", {}, function(data, status){
+                formatTokenizersUI();
+                $('.selectpicker').selectpicker('refresh');
+                // Private key storage is intentionally opt-in to preserve existing behavior.
+                $("#configbuilder\\.store_privkey").prop("checked", false);
+                ajaxGet("/api/wireguard/server/key_pair", {}, function(data, status){
                     if (data.status && data.status === 'ok') {
-                            $("#configbuilder\\.pubkey").val(data.pubkey);
-                            $("#configbuilder\\.privkey").val(data.privkey).change();
-                        }
-                    });
-                    $("#configbuilder\\.tunneladdress").val("0.0.0.0/0,::/0");
-                    clearFormValidation("frm_config_builder");
+                        $("#configbuilder\\.pubkey").val(data.pubkey);
+                        $("#configbuilder\\.privkey").val(data.privkey).change();
+                    }
                 });
+                clearFormValidation("frm_config_builder");
+            });
         }
 
         function configbuilder_update_config()
         {
-            let rows = [];
-            rows.push('[Interface]');
-            rows.push('PrivateKey = ' + $("#configbuilder\\.privkey").val());
-            if ($("#configbuilder\\.address").val()) {
-                rows.push('Address = ' + $("#configbuilder\\.address").val());
-            }
-            if ($("#configbuilder\\.peer_dns").val()) {
-                rows.push('DNS = ' + $("#configbuilder\\.peer_dns").val());
-            }
-            if ($("#configbuilder\\.endpoint").data('mtu')) {
-                rows.push('MTU = ' + $("#configbuilder\\.endpoint").data('mtu'));
-            }
-            rows.push('');
-            rows.push('[Peer]');
-            rows.push('PublicKey = ' + $("#configbuilder\\.endpoint").data('pubkey'));
-            if ($("#configbuilder\\.psk").val()) {
-                rows.push('PresharedKey = ' + $("#configbuilder\\.psk").val());
-            }
-            rows.push('Endpoint = ' + $("#configbuilder\\.endpoint").val());
-            rows.push('AllowedIPs = ' + $("#configbuilder\\.tunneladdress").val());
-            if ($("#configbuilder\\.keepalive").val()) {
-                rows.push('PersistentKeepalive = ' + $("#configbuilder\\.keepalive").val());
-            }
-            $("#configbuilder\\.output").val(rows.join("\n")).change();
+            const config = buildPeerConfig({
+                privkey: $("#configbuilder\\.privkey").val(),
+                address: $("#configbuilder\\.address").val(),
+                peer_dns: $("#configbuilder\\.peer_dns").val(),
+                mtu: $("#configbuilder\\.endpoint").data('mtu'),
+                pubkey: $("#configbuilder\\.endpoint").data('pubkey'),
+                psk: $("#configbuilder\\.psk").val(),
+                endpoint: $("#configbuilder\\.endpoint").val(),
+                allowedips: $("#configbuilder\\.tunneladdress").val(),
+                keepalive: $("#configbuilder\\.keepalive").val()
+            });
+
+            $("#configbuilder\\.output").val(config).trigger('input');
         }
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
-            if (e.target.id == 'tab_configbuilder'){
-                configbuilder_new();
+            if (e.target.id == 'tab_configbuilder') {
+                if (configbuilder_reference !== null) {
+                    configbuilder_load_reference(configbuilder_reference);
+                } else {
+                    configbuilder_new();
+                }
+                $('#frm_general_settings').hide();
             } else if (e.target.id == 'tab_peers') {
+                configbuilder_reference = null;
                 $('#{{formGridWireguardClient['table_id']}}').bootgrid('reload');
+                $('#frm_general_settings').show();
             } else if (e.target.id == 'tab_instances') {
+                configbuilder_reference = null;
                 $('#{{formGridWireguardServer['table_id']}}').bootgrid('reload');
+                $('#frm_general_settings').show();
             }
         });
 
@@ -289,7 +420,7 @@
                 </select>
             </div>
         </div>
-        {{ partial('layout_partials/base_bootgrid_table', formGridWireguardClient)}}
+        {{ partial('layout_partials/base_bootgrid_table', formGridWireguardClient + {'command_width':'120'}) }}
     </div>
     <div id="instances" class="tab-pane fade in active">
         <span id="keygen_div" style="display:none" class="pull-right">

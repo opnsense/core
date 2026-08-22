@@ -13,6 +13,7 @@
         <no_resolv type="BooleanField"/>
         <log_queries type="BooleanField"/>
         <no_hosts type="BooleanField"/>
+        <expand_hosts type="BooleanField"/>
         <strictbind type="BooleanField"/>
         <dnssec type="BooleanField"/>
         <regdhcpdomain type="HostnameField">

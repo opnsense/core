@@ -169,8 +169,9 @@ $( document ).ready(function() {
 
 </script>
 
-<script src="<?= cache_safe('/ui/js/jquery.qrcode.js') ?>"></script>
 <script src="<?= cache_safe('/ui/js/qrcode.js') ?>"></script>
+<script src="<?= cache_safe('/ui/js/qrcode_UTF8.js') ?>"></script>
+<script src="<?= cache_safe('/ui/js/jquery.qrcode.js') ?>"></script>
 <body>
 <?php include("fbegin.inc"); ?>
   <section class="page-content-main">

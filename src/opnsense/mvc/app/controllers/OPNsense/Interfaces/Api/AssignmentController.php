@@ -154,8 +154,21 @@ class AssignmentController extends ApiMutableModelControllerBase
                     if ($props['pending_action'] == 'delete') {
                         $this->cleanRules($key); /* remove associated rules */
                         unset(Config::getInstance()->object()->interfaces->$key);
-                    } elseif ($props['pending_action'] == 'relink') {
-                        Config::getInstance()->object()->interfaces->$key->if = $props['pending_if'];
+                    } else {
+                        /* update pending changes */
+                        $pending = $this->getModel()->interface->$key?->toLegacy() ?? [];
+                        foreach ($pending as $akey => $avalue) {
+                            if ($avalue !== '') {
+                                Config::getInstance()->object()->interfaces->$key->$akey = $avalue;
+                            } elseif (isset(Config::getInstance()->object()->interfaces->$key->$akey)) {
+                                unset(Config::getInstance()->object()->interfaces->$key->$akey);
+                            }
+                        }
+                        foreach (['enable', 'lock'] as $legacybool) {
+                            if (empty($pending[$legacybool])) {
+                                unset(Config::getInstance()->object()->interfaces->$key->$legacybool);
+                            }
+                        }
                     }
                 }
                 Config::getInstance()->save();

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2024 Deciso B.V.
+ * Copyright (C) 2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,33 +26,32 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Auth;
+namespace OPNsense\Interfaces\FieldTypes;
 
-class UserController extends \OPNsense\Base\IndexController
+use OPNsense\Base\FieldTypes\BaseListField;
+use OPNsense\Routing\Gateways;
+
+class GatewayField extends BaseListField
 {
-    protected function templateJSIncludes()
-    {
-        $result = parent::templateJSIncludes();
-        $result[] = '/ui/js/moment-with-locales.min.js';
-        $result[] = '/ui/js/qrcode.js';
-        $result[] = '/ui/js/qrcode_UTF8.js';
-        $result[] = '/ui/js/jquery.qrcode.js';
-        $result[] = '/ui/js/bootstrap-datepicker.min.js';
+    protected $protocol = 'inet';
+    private static $gateways = [];
 
-        return $result;
+    protected function actionPostLoadingEvent()
+    {
+        if (empty(self::$gateways)) {
+            foreach ((new Gateways())->gatewayIterator() as $gateway) {
+                if (!isset(self::$gateways[$gateway['ipprotocol']])) {
+                    self::$gateways[$gateway['ipprotocol']] = [];
+                }
+                self::$gateways[$gateway['ipprotocol']][$gateway['name']] = $gateway['name'];
+            }
+        }
+        $this->internalOptionList = self::$gateways[$this->protocol] ?? [];
+        return parent::actionPostLoadingEvent();
     }
 
-    protected function templateCssIncludes()
+    public function setProtocol($value)
     {
-        $result = parent::templateCssIncludes();
-        $result[] = '/ui/css/bootstrap-datepicker3.min.css';
-        return $result;
-    }
-
-    public function indexAction()
-    {
-        $this->view->formDialogEditUser = $this->getForm("dialogUser");
-        $this->view->formGridUser = $this->getFormGrid("dialogUser");
-        $this->view->pick('OPNsense/Auth/user');
+        $this->protocol = $value;
     }
 }

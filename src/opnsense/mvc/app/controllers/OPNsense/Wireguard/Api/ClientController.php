@@ -182,6 +182,7 @@ class ClientController extends ApiMutableModelControllerBase
                     $peers = array_filter(explode(',', (string)$node->peers));
                     $result['endpoint'] = (string)$node->endpoint;
                     $result['peer_dns'] = (string)$node->peer_dns;
+                    $result['allowed_ips'] = (string)$node->allowed_ips;
                     $result['mtu'] = (string)$node->mtu;
                     $result['pubkey'] = (string)$node->pubkey;
                     foreach (array_filter(explode(',', (string)$node->tunneladdress)) as $addr) {
