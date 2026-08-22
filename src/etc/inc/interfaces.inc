@@ -2326,6 +2326,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $loaded = [];
 
     if (!isset($wancfg['enable'])) {
+        interface_reset($interface);
         return $loaded;
     }
 
