@@ -199,11 +199,11 @@ class SourceNatController extends FilterBaseController
 
     public function downloadRulesAction()
     {
-        return $this->downloadRulesBase('snatrules.rule', ['sort_order', 'prio_group']);
+        return $this->downloadRulesBase('snatrules.rule');
     }
 
     public function uploadRulesAction()
     {
-        return $this->uploadRulesBase('snatrules.rule', ['sort_order', 'prio_group']);
+        return $this->uploadRulesBase('snatrules.rule');
     }
 }

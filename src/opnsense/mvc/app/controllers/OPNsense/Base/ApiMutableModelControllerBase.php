@@ -30,6 +30,7 @@
 
 namespace OPNsense\Base;
 
+use OPNsense\Base\FieldTypes\JsonAuditField;
 use OPNsense\Core\Config;
 use OPNsense\Core\Type;
 
@@ -341,6 +342,24 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     }
 
     /**
+     * Update controller managed audit information when supported by the model node.
+     *
+     * @param $node model node to update
+     * @return void
+     */
+    protected function setAuditMetadata($node)
+    {
+        foreach ($node->iterateItems() as $field) {
+            if ($field instanceof JsonAuditField) {
+                $field->update(
+                    $this->getUserName(),
+                    sprintf('%s made changes', $_SERVER['SCRIPT_NAME'])
+                );
+            }
+        }
+    }
+
+    /**
      * Hook to be overridden if the controller is to take an action when
      * setAction is called. This hook is called after a model has been
      * constructed and validated but before it serialized to the configuration
@@ -497,6 +516,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $result = $this->validate($node, $post_field);
 
             if (empty($result['validations'])) {
+                $this->setAuditMetadata($node);
                 $this->setBaseHook($node);
                 // save config if validated correctly
                 $this->save(false, true);
@@ -593,6 +613,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 }
                 $result = $this->validate($node, $post_field, true);
                 if (empty($result['validations'])) {
+                    $this->setAuditMetadata($node);
                     $this->setBaseHook($node);
                     // save config if validated correctly
                     $this->save(false, true);
