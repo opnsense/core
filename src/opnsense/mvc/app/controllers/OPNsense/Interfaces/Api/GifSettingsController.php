@@ -139,8 +139,8 @@ class GifSettingsController extends ApiMutableModelControllerBase
                         );
                     }
                 }
+                $nodes[] = $node;
             }
-            $nodes[] = $node;
         }
         $result = $this->delBase("gif", $uuids);
         if ($result['result'] != 'failed' && !empty($nodes)) {
