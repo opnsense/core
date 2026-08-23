@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (!empty($authCNFOptions[$pconfig['type']])) {
             foreach ($authCNFOptions[$pconfig['type']]['additionalFields'] as $fieldname => $field) {
-                $pconfig[$fieldname] = $a_server[$id][$fieldname];
+                $pconfig[$fieldname] = $a_server[$id][$fieldname] ?? null;
             }
         }
     }
@@ -196,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
       if (!empty($authCNFOptions[$pconfig['type']])) {
           foreach ($authCNFOptions[$pconfig['type']]['additionalFields'] as $fieldname => $field) {
               if (!empty($field['validate'])) {
-                  foreach ($field['validate']($pconfig[$fieldname]) as $input_error) {
+                  foreach ($field['validate']($pconfig[$fieldname] ?? null) as $input_error) {
                       $input_errors[] = $input_error;
                   }
               }
@@ -310,7 +310,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
           }
           if (!empty($authCNFOptions[$server['type']])) {
               foreach ($authCNFOptions[$server['type']]['additionalFields'] as $fieldname => $field) {
-                  $server[$fieldname] = $pconfig[$fieldname];
+                  $server[$fieldname] = $pconfig[$fieldname] ?? null;
               }
           }
 
