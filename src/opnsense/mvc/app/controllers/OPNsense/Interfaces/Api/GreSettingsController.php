@@ -139,8 +139,8 @@ class GreSettingsController extends ApiMutableModelControllerBase
                         );
                     }
                 }
+                $nodes[] = $node;
             }
-            $nodes[] = $node;
         }
         $result = $this->delBase("gre", $uuids);
         if ($result['result'] != 'failed' && !empty($nodes)) {
