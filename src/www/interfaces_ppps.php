@@ -49,7 +49,7 @@ $a_ppps = &config_read_array('ppps', 'ppp');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $input_errors = array();
-    if (!empty($a_ppps[$_POST['id']])) {
+    if (isset($_POST['id']) && !empty($a_ppps[$_POST['id']])) {
         $id = $_POST['id'];
     }
 
