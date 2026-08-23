@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dnssearchdomain'] = !empty($config['system']['dnssearchdomain']) ? explode(',', $config['system']['dnssearchdomain']) : [];
     $pconfig['domain'] = $config['system']['domain'];
     $pconfig['hostname'] = $config['system']['hostname'];
-    $pconfig['language'] = $config['system']['language'];
+    $pconfig['language'] = $config['system']['language'] ?? null;
     $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
     $pconfig['theme'] = $config['theme'] ?? '';
     $pconfig['timezone'] = empty($config['system']['timezone']) ? 'Etc/UTC' : $config['system']['timezone'];
@@ -205,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['dnsallowoverride'] = !empty($pconfig['dnsallowoverride']) ? '1' : '0';
         $config['system']['dnsallowoverride_exclude'] = implode(',', $pconfig['dnsallowoverride_exclude']);
 
-        if ($pconfig['dnslocalhost'] == 'yes') {
+        if (!empty($pconfig['dnslocalhost'])) {
             $config['system']['dnslocalhost'] = true;
         } elseif (isset($config['system']['dnslocalhost'])) {
             unset($config['system']['dnslocalhost']);
@@ -373,13 +373,11 @@ $( document ).ready(function() {
               <td><a id="help_for_language" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Language");?></td>
               <td>
                 <select name="language" class="selectpicker" data-style="btn-default" data-dropup-auto="true" data-size="10">
-<?php
-                  foreach (get_locale_list() as $lcode => $ldesc):?>
-                  <option value="<?=$lcode;?>" <?= $lcode == $pconfig['language'] ? 'selected="selected"' : '' ?>>
-                    <?=$ldesc;?>
+<?php foreach (get_locale_list() as $lcode => $ldesc): ?>
+                  <option value="<?= html_safe($lcode) ?>" <?= $lcode == $pconfig['language'] ? 'selected="selected"' : '' ?>>
+                    <?= html_safe($ldesc) ?>
                   </option>
-<?php
-                  endforeach;?>
+<?php endforeach ?>
                 </select>
                 <div class="hidden" data-for="help_for_language">
                   <?= gettext('Choose a language for the web GUI.') ?>
