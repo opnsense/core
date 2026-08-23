@@ -123,7 +123,7 @@ class SettingsController extends ApiMutableModelControllerBase
         if ($uuid != null) {
             $node = $this->getModel()->getNodeByReference('jobs.job.' . $uuid);
             if ($node === null) {
-                return $this->delBase('jobs.job', $uuid);
+                return ['result' => 'failed'];
             }
             $may_delete = false;
             if ($node->origin == 'cron') {
