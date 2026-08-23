@@ -763,7 +763,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if ((!empty($pconfig['adv_dhcp_config_advanced']) || !empty($pconfig['adv_dhcp_config_file_override'])) && !userIsAdmin($_SESSION['Username'])) {
                     $input_errors[] = gettext('Advanced options may only be edited by system administrators due to the increased possibility of privilege escalation.');
                 }
-                if (!empty($pconfig['adv_dhcp_config_file_override'] && !file_exists($pconfig['adv_dhcp_config_file_override_path']))) {
+                if (!empty($pconfig['adv_dhcp_config_file_override']) && !file_exists($pconfig['adv_dhcp_config_file_override_path'])) {
                     $input_errors[] = sprintf(gettext('The DHCP override file "%s" does not exist.'), $pconfig['adv_dhcp_config_file_override_path']);
                 }
                 break;
@@ -1118,8 +1118,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $new_config['adv_dhcp_request_options'] = $pconfig['adv_dhcp_request_options'];
                     $new_config['adv_dhcp_required_options'] = $pconfig['adv_dhcp_required_options'];
                     $new_config['adv_dhcp_option_modifiers'] = $pconfig['adv_dhcp_option_modifiers'];
-                    $new_config['adv_dhcp_config_advanced'] = $pconfig['adv_dhcp_config_advanced'];
-                    $new_config['adv_dhcp_config_file_override'] = $pconfig['adv_dhcp_config_file_override'];
+                    $new_config['adv_dhcp_config_advanced'] = $pconfig['adv_dhcp_config_advanced'] ?? null;
+                    $new_config['adv_dhcp_config_file_override'] = $pconfig['adv_dhcp_config_file_override'] ?? null;
                     $new_config['adv_dhcp_config_file_override_path'] = $pconfig['adv_dhcp_config_file_override_path'];
                     /* flipped in GUI on purpose */
                     if (empty($pconfig['dhcpoverridemtu'])) {
