@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['dnssearchdomain'] = !empty($config['system']['dnssearchdomain']) ? explode(',', $config['system']['dnssearchdomain']) : [];
     $pconfig['domain'] = $config['system']['domain'];
     $pconfig['hostname'] = $config['system']['hostname'];
-    $pconfig['language'] = $config['system']['language'];
+    $pconfig['language'] = $config['system']['language'] ?? 'en_US';
     $pconfig['prefer_ipv4'] = isset($config['system']['prefer_ipv4']);
     $pconfig['theme'] = $config['theme'] ?? '';
     $pconfig['timezone'] = empty($config['system']['timezone']) ? 'Etc/UTC' : $config['system']['timezone'];
