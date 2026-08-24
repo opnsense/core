@@ -268,10 +268,15 @@
             configbuilder_load_server($(this).val());
         });
 
+        const $actions_row = $(
+            '<tr id="row_configbuilder_actions">' +
+                '<td></td><td></td><td></td>' +
+            '</tr>'
+        ).insertAfter($("#frm_config_builder tr:last"));
+
         $("#configbuilder_actions")
             .detach()
-            .appendTo($("#row_configbuilder\\.output td:eq(1)"))
-            .css({"text-align": "left", "margin-top": "10px"})
+            .appendTo($actions_row.find("td:eq(1)"))
             .show();
 
         $("#btn_configbuilder_cancel").click(function() {
