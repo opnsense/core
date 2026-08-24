@@ -338,15 +338,10 @@
     <page-interfaces-wireless-edit>
         <name>Interfaces: Wireless edit</name>
         <patterns>
-            <pattern>interfaces_wireless_edit.php*</pattern>
+            <pattern>ui/interfaces/wireless</pattern>
+            <pattern>api/interfaces/wireless_settings/*</pattern>
         </patterns>
     </page-interfaces-wireless-edit>
-    <page-interfaces-wireless>
-        <name>Interfaces: Wireless</name>
-        <patterns>
-            <pattern>interfaces_wireless.php*</pattern>
-        </patterns>
-    </page-interfaces-wireless>
     <page-wizard-system>
         <name>System: Configuration: Wizard</name>
         <patterns>
