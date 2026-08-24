@@ -256,12 +256,10 @@
                 }
             });
         })
-        let tmp = $("#configbuilder\\.output").closest('tr');
-        tmp.find('td:eq(2)').empty().append($("<div id='qrcode'/>"));
         $("#configbuilder\\.output").css('max-width', '100%');
         $("#configbuilder\\.output").css('height', '256px');
         $("#configbuilder\\.output").on('input', function() {
-            $('#qrcode').empty().qrcode($(this).val());
+            $("#configbuilder\\.qrcode").empty().qrcode($(this).val());
         });
 
         $("#configbuilder\\.servers").change(function(){
