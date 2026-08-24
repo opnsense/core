@@ -380,17 +380,12 @@
                     configbuilder_new();
                     $apply_container.show();
                 }
-                $('#frm_general_settings').hide();
-            } else if (e.target.id == 'tab_peers') {
+                $('#frm_general_settings').parent().hide();
+            } else {
                 configbuilder_reference = null;
                 $apply_container.show();
                 $('#{{formGridWireguardClient['table_id']}}').bootgrid('reload');
-                $('#frm_general_settings').show();
-            } else if (e.target.id == 'tab_instances') {
-                configbuilder_reference = null;
-                $apply_container.show();
-                $('#{{formGridWireguardServer['table_id']}}').bootgrid('reload');
-                $('#frm_general_settings').show();
+                $('#frm_general_settings').parent().show();
             }
         });
 
@@ -446,6 +441,8 @@
         </span>
         {{ partial("layout_partials/base_form",['fields':formDialogConfigBuilder,'id':'frm_config_builder'])}}
     </div>
+</div>
+<div class="tab-content content-box tab-content __mt">
     {{ partial("layout_partials/base_form",['fields':generalForm,'id':'frm_general_settings'])}}
 </div>
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/wireguard/service/reconfigure'}) }}
