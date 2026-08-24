@@ -71,6 +71,11 @@
         <type>textbox</type>
     </field>
     <field>
+        <id>configbuilder.qrcode</id>
+        <label>QR code</label>
+        <type>info</type>
+    </field>
+    <field>
         <id>configbuilder.actions</id>
         <type>buttons</type>
         <parent>configbuilder</parent>
