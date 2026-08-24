@@ -31,7 +31,6 @@ namespace OPNsense\Interfaces;
 use OPNsense\Base\BaseModel;
 use OPNsense\Base\Messages\Message;
 
-
 class Wireless extends BaseModel
 {
     public function performValidation($validateFullModel = false)

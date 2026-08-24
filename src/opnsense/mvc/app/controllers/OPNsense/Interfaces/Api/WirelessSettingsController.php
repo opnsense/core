@@ -33,7 +33,6 @@ use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 
-
 class WirelessSettingsController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'wireless';
@@ -43,12 +42,12 @@ class WirelessSettingsController extends ApiMutableModelControllerBase
     {
         if ($node->cloneif->isEmpty()) {
             $names = [];
-            foreach($this->getModel()->clone->iterateItems() as $clone) {
+            foreach ($this->getModel()->clone->iterateItems() as $clone) {
                 if ($clone !== $node && $clone->if->isEqual($node->if->getValue())) {
                     $names[] = $clone->cloneif->getValue();
                 }
             }
-            for ($i=1; true; ++$i) {
+            for ($i = 1; true; ++$i) {
                 $node->cloneif = sprintf("%s_wlan%d", $node->if->getValue(), $i);
                 if (!in_array($node->cloneif, $names)) {
                     break;
@@ -94,8 +93,10 @@ class WirelessSettingsController extends ApiMutableModelControllerBase
                 }
                 foreach (Config::getInstance()->object()->interfaces->children() as $k => $child) {
                     if ($node->cloneif->isEqual((string)$child->if)) {
-                        $msg = sprintf(gettext(
-                            'This wireless clone cannot be deleted because it is assigned to interface \'%s\'.'),
+                        $msg = sprintf(
+                            gettext(
+                                'This wireless clone cannot be deleted because it is assigned to interface \'%s\'.'
+                            ),
                             empty((string)$child->descr) ? strtoupper((string)$k) : (string)$child->descr
                         );
                         throw new UserException($msg, gettext("Wireless"));
