@@ -190,12 +190,12 @@ function captiveportal_firewall($fw)
 {
     $auto = captiveportal_auto_rules();
 
-    foreach ($auto['destination'] as $rule) {
+    foreach ($auto['destination'] ?? [] as $rule) {
         /* XXX #priority passed, but use inside $rule is not unified */
         $fw->registerDestinationNatRule($rule['#priority'], $rule);
     }
 
-    foreach ($auto['filter'] as $rule) {
+    foreach ($auto['filter'] ?? [] as $rule) {
         /* XXX #priority passed, but use inside $rule is not unified */
         $fw->registerFilterRule($rule['#priority'], $rule);
     }
