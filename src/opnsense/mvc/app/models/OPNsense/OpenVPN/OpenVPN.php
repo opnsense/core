@@ -170,6 +170,39 @@ class OpenVPN extends BaseModel
                         $key . ".port-share"
                     ));
                 }
+
+                if (!$instance->dns_update->isEmpty()) {
+                    if ($instance->dns_update_server->isEmpty()) {
+                        $messages->appendMessage(new Message(
+                            gettext('The external server is required.'),
+                            $key . ".dns_update_server"
+                        ));
+                    }
+                    if ($instance->dns_update_key_name->isEmpty()) {
+                        $messages->appendMessage(new Message(
+                            gettext('The authentication key name is required.'),
+                            $key . ".dns_update_key_name"
+                        ));
+                    }
+                    if ($instance->dns_update_key_secret->isEmpty()) {
+                        $messages->appendMessage(new Message(
+                            gettext('The authentication key secret is required.'),
+                            $key . ".dns_update_key_secret"
+                        ));
+                    }
+                    if ($instance->dns_update_key_algorithm->isEmpty()) {
+                        $messages->appendMessage(new Message(
+                            gettext('The authentication key algorithm is required.'),
+                            $key . ".dns_update_key_algorithm"
+                        ));
+                    }
+                    if ($instance->dns_update_zone_forward->isEmpty()) {
+                        $messages->appendMessage(new Message(
+                            gettext('The forward zone name is required.'),
+                            $key . ".dns_update_zone_forward"
+                        ));
+                    }
+                }
             }
             if (!$instance->cert->isEmpty()) {
                 $tmp = Store::getCertificate((string)$instance->cert);
@@ -643,15 +676,48 @@ class OpenVPN extends BaseModel
                         $options['username-as-common-name'] = null;
                     }
                     $options['client-config-dir'] = "/var/etc/openvpn-csc/{$node->vpnid}";
+
+                    if (!$node->dns_update->isEmpty()) {
+                        // add these options as comments, cause these a no generic OpenVPN options
+                        // we parse them in our own dns update script
+                        $options['#dns-update-server'] = "$node->dns_update_server";
+                        if (!$node->dns_update_port->isEmpty()) {
+                            $options['#dns-update-port'] = "$node->dns_update_port";
+                        }
+                        $options['#dns-update-key-name'] = "$node->dns_update_key_name";
+                        $options['#dns-update-key-secret'] = "$node->dns_update_key_secret";
+                        $options['#dns-update-key-algorithm'] = "$node->dns_update_key_algorithm";
+                        $options['#dns-update-zone-forward'] = "$node->dns_update_zone_forward";
+                        if (!$node->dns_update_zone_reverse_4->isEmpty()) {
+                            $options['#dns-update-zone-reverse-4'] = "$node->dns_update_zone_reverse_4";
+                        }
+                        if (!$node->dns_update_zone_reverse_6->isEmpty()) {
+                            $options['#dns-update-zone-reverse-6'] = "$node->dns_update_zone_reverse_6";
+                        }
+                        if (!$node->dns_update_hostname_field->isEmpty()) {
+                            $options['#dns-update-hostname-field'] = "$node->dns_update_hostname_field";
+                        }
+                        if (!$node->dns_update_hostname_prefix->isEmpty()) {
+                            $options['#dns-update-hostname-prefix'] = "$node->dns_update_hostname_prefix";
+                        }
+                        if (!$node->dns_update_hostname_suffix->isEmpty()) {
+                            $options['#dns-update-hostname-suffix'] = "$node->dns_update_hostname_suffix";
+                        }
+                        if (!$node->dns_update_ttl->isEmpty()) {
+                            $options['#dns-update-ttl'] = "$node->dns_update_ttl";
+                        }
+                        $run_dns_update = "--dns_update";
+                    }
+
                     // hook event handlers
                     if (!$node->authmode->isEmpty()) {
                         $options['auth-user-pass-verify'] = "\"{$event_script} --defer '{$node_uuid}'\" via-env";
-                        $options['learn-address'] =  "\"{$event_script} '{$node->vpnid}'\"";
+                        $options['learn-address'] =  "\"{$event_script} {$run_dns_update} '{$node->vpnid}'\"";
                     } else {
                         // client specific profiles are being deployed using the connect event when no auth is used
-                        $options['client-connect'] = "\"{$event_script} '{$node_uuid}'\"";
+                        $options['client-connect'] = "\"{$event_script} {$run_dns_update} '{$node_uuid}'\"";
                     }
-                    $options['client-disconnect'] = "\"{$event_script} '{$node_uuid}'\"";
+                    $options['client-disconnect'] = "\"{$event_script} {$run_dns_update} '{$node_uuid}'\"";
                     $options['tls-verify'] = "\"{$event_script} '{$node_uuid}'\"";
 
                     if (!$node->maxclients->isEmpty()) {

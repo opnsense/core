@@ -64,14 +64,24 @@ def main(params):
             os.environ["certificate_depth"] = params.args[0]
         sys.exit(subprocess.run("%s/tls_verify.php" % cmd_path).returncode)
     elif params.script_type == 'client-connect':
-        # Temporary file used for the profile specified by client-connect
-        if len(params.args) > 0:
-            os.environ["config_file"] = params.args[0]
-        sys.exit(subprocess.run("%s/client_connect.php" % cmd_path).returncode)
+        if os.fork() == 0:
+            if params.dns_update:
+                subprocess.Popen(['/usr/local/opnsense/scripts/filter/dnsupdate.py', 'add', '--syslog'])
+        else:
+            # Temporary file used for the profile specified by client-connect
+            if len(params.args) > 0:
+                os.environ["config_file"] = params.args[0]
+            sys.exit(subprocess.run("%s/client_connect.php" % cmd_path).returncode)
     elif params.script_type == 'client-disconnect':
-        sys.exit(subprocess.run("%s/client_disconnect.sh" % cmd_path).returncode)
+        if os.fork() == 0:
+            if params.dns_update:
+                subprocess.Popen(['/usr/local/opnsense/scripts/filter/dnsupdate.py', 'delete', '--syslog'])
+        else:
+            sys.exit(subprocess.run("%s/client_disconnect.sh" % cmd_path).returncode)
     elif params.script_type == 'learn-address':
         if os.fork() == 0:
+            if params.dns_update:
+                subprocess.Popen(['/usr/local/opnsense/scripts/filter/dnsupdate.py', 'add', '--syslog'])
             # Highly simplified debouncer.
             # Gathers events for 2 seconds, if more are triggered in the same slot, execute the last one.
             # This moves events until we have at least 2 seconds of "silence" to process them
@@ -112,6 +122,7 @@ if __name__ == '__main__':
         choices=['via-env', 'via-file']
     )
     parser.add_argument('--defer', help='defer action (when supported)', default=False, action="store_true")
+    parser.add_argument('--dns_update', help='run dns update script', default=False, action="store_true")
     parser.add_argument('server', help='openvpn server id to use, authentication settings are configured per server')
     parser.add_argument('args',  nargs='*',  help='script arguments specified by openvpn')
 
