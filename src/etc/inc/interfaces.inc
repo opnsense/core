@@ -156,22 +156,9 @@ function _interfaces_vlan_configure($vlan)
 
 function interfaces_wlan_clone($device)
 {
-    global $config;
-
-    foreach (array_keys(get_configured_interface_with_descr()) as $if) {
-        if (!isset($config['interfaces'][$if]['wireless'])) {
-            continue;
-        }
-        if ($device == $config['interfaces'][$if]['if']) {
-            return _interfaces_wlan_clone($device, $config['interfaces'][$if]);
-        }
-    }
-
-    if (isset($config['wireless']['clone'])) {
-        foreach ($config['wireless']['clone'] as $clone) {
-            if ($device == $clone['cloneif']) {
-                return _interfaces_wlan_clone($clone['cloneif'], $clone);
-            }
+    foreach (config_read_array('wireless', 'clone', false) as $clone) {
+        if ($device == $clone['cloneif']) {
+            return _interfaces_wlan_clone($clone['cloneif'], $clone);
         }
     }
 
@@ -844,16 +831,6 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
     /* cache ifconfig now that VIPs are handled */
     $ifconfig_details = legacy_interfaces_details();
 
-    /*
-     * hostapd and wpa_supplicant do not need to be running when the
-     * interface is down.  They will also use 100% CPU if running after
-     * the wireless clone gets deleted.
-     */
-    if (isset($ifcfg['wireless'])) {
-        kill_wpasupplicant($device);
-        kill_hostapd($device);
-    }
-
     $track6 = array_keys(link_interface_to_track6($interface));
     if (count($track6)) {
         /* bring down radvd and dhcp6 on these interfaces */
@@ -906,8 +883,9 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
         }
     }
 
-    /* check reset of running PPP configuration inside function */
+    /* XXX pluggable reset of deamon on top of this interface */
     interface_ppps_reset($interface, $suspend, $ifcfg, $ppps);
+    interfaces_wlan_reset($device);
 
     /* clear stale state associated with this interface */
     mwexecf('/usr/local/sbin/ifctl -4c -i %s', $device);
@@ -1634,13 +1612,8 @@ function _interfaces_wlan_clone($device, $wlcfg)
      */
     $needs_clone = false;
 
-    if (!empty($wlcfg['wireless']['mode'])) {
-        /* XXX this is interfaces wireless config */
-        $wlcfg_mode = $wlcfg['wireless']['mode'];
-    } else {
-        /* XXX this is wireless clone config or fallback */
-        $wlcfg_mode = $wlcfg['mode'] ?? 'bss';
-    }
+    /* XXX historic fallback if we do not use the model */
+    $wlcfg_mode = $wlcfg['mode'] ?? 'bss';
 
     if (does_interface_exist($device)) {
         $ifconfig_str = shell_safe('/sbin/ifconfig %s', $device);
@@ -1661,7 +1634,7 @@ function _interfaces_wlan_clone($device, $wlcfg)
     }
 
     if ($needs_clone) {
-        $baseif = interface_get_wireless_base($wlcfg['if']);
+        $baseif = interfaces_wlan_base($wlcfg['if']);
 
         legacy_interface_destroy($device);
 
@@ -1687,108 +1660,24 @@ function _interfaces_wlan_clone($device, $wlcfg)
     return $device;
 }
 
-function interface_sync_wireless_clones(&$ifcfg, $sync_changes = false) /* XXX kill side effect */
+function interfaces_wlan_configure($device, $linkup = false)
 {
-    global $config;
-
-    $shared_settings = [
-        'channel',
-        'diversity',
-        'protmode',
-        'regcountry',
-        'regdomain',
-        'reglocation',
-        'rxantenna',
-        'standard',
-        'turbo',
-        'txantenna',
-        'txpower',
-    ];
-
-    $baseif = interface_get_wireless_base($ifcfg['if']);
-
-    foreach (array_keys(legacy_config_get_interfaces(['virtual' => false])) as $if) {
-        if ($baseif == interface_get_wireless_base($config['interfaces'][$if]['if']) && $ifcfg['if'] != $config['interfaces'][$if]['if']) {
-            if (isset($config['interfaces'][$if]['wireless']['standard']) || $sync_changes) {
-                foreach ($shared_settings as $setting) {
-                    if ($sync_changes) {
-                        if (isset($ifcfg['wireless'][$setting])) {
-                            $config['interfaces'][$if]['wireless'][$setting] = $ifcfg['wireless'][$setting];
-                        } elseif (isset($config['interfaces'][$if]['wireless'][$setting])) {
-                            unset($config['interfaces'][$if]['wireless'][$setting]);
-                        }
-                    } else {
-                        if (isset($config['interfaces'][$if]['wireless'][$setting])) {
-                            $ifcfg['wireless'][$setting] = $config['interfaces'][$if]['wireless'][$setting];
-                        } elseif (isset($ifcfg['wireless'][$setting])) {
-                            unset($ifcfg['wireless'][$setting]);
-                        }
-                    }
-                }
-                if (!$sync_changes) {
-                    break;
-                }
-            }
-        }
-    }
-
-    // Read or write settings at shared area
-    if (!empty($config['wireless']['interfaces'][$baseif])) {
-        foreach ($shared_settings as $setting) {
-            if ($sync_changes) {
-                if (isset($ifcfg['wireless'][$setting])) {
-                    $config['wireless']['interfaces'][$baseif][$setting] = $ifcfg['wireless'][$setting];
-                } elseif (isset($config['wireless']['interfaces'][$baseif][$setting])) {
-                    unset($config['wireless']['interfaces'][$baseif][$setting]);
-                }
-            } elseif (isset($config['wireless']['interfaces'][$baseif][$setting])) {
-                if (isset($config['wireless']['interfaces'][$baseif][$setting])) {
-                    $ifcfg['wireless'][$setting] = $config['wireless']['interfaces'][$baseif][$setting];
-                } elseif (isset($ifcfg['wireless'][$setting])) {
-                    unset($ifcfg['wireless'][$setting]);
-                }
-            }
-        }
-    }
-
-    // Sync the mode on the clone creation page with the configured mode on the interface
-    if (strstr($ifcfg['if'], '_wlan') && !empty($config['wireless']['clone'])) {
-        foreach ($config['wireless']['clone'] as &$clone) {
-            if ($clone['cloneif'] == $ifcfg['if']) {
-                if ($sync_changes) {
-                    $clone['mode'] = $ifcfg['wireless']['mode'];
-                } else {
-                    $ifcfg['wireless']['mode'] = $clone['mode'];
-                }
-                break;
-            }
-        }
-        unset($clone);
-    }
-}
-
-function interface_wireless_configure($if, &$wancfg)
-{
-    global $config;
-
-    if (!isset($wancfg['wireless'])) {
+    /* Historically, $linkup early return is needed in order to
+     * fix causing link flaps when in rc.linkup, but that is only
+     * because this function tries to bring down all siblings
+     * and then puts them back up which would cause a cascasde of
+     * rc.linkup calls that never stop.
+     *
+     * A better appraoch would be to stop doing that or make a
+     * $batch variable so that we don't taint other interfaces
+     * when we don't need to.
+     */
+    if (strpos($device, '_wlan') === false || $linkup) {
         return;
     }
 
-    if (empty($wancfg['wireless'])) {
-        /* if an empty node reset to empty array to avoid PHP 8+ issues */
-        $wancfg['wireless'] = [];
-    }
-
-    /* XXX _interfaces_wlan_clone() and interface_sync_wireless_clones() need work */
-
-    // Clone wireless nic if needed.
-    _interfaces_wlan_clone($if, $wancfg);
-
-    // Reject inadvertent changes to shared settings in case the interface hasn't been configured.
-    interface_sync_wireless_clones($wancfg, false);
-
-    $wlcfg = &$wancfg['wireless'];
+    $wlmdl = new \OPNsense\Interfaces\Wlan();
+    $wlcfg = $wlmdl->getConfig($device);
 
    /*
     * Open up a shell script that will be used to output the commands.
@@ -1798,7 +1687,7 @@ function interface_wireless_configure($if, &$wancfg)
     * do not change this routine from a shell script to individual exec commands.  -sullrich
     */
 
-    $fd_set = fopen("/tmp/{$if}_setup.sh", "w");
+    $fd_set = fopen("/tmp/{$device}_setup.sh", "w");
     fwrite($fd_set, "#!/bin/sh\n");
     fwrite($fd_set, "# wireless configuration script.\n\n");
 
@@ -1809,7 +1698,7 @@ function interface_wireless_configure($if, &$wancfg)
     /* Make sure it's up */
     $wlcmd[] = "up";
 
-    if (isset($wlcfg['standard'])) {
+    if (!empty($wlcfg['standard'])) {
         /* Set a/b/g standard */
         $standard = str_replace(" Turbo", "", $wlcfg['standard']);
         $wlcmd[] = "mode " . escapeshellarg($standard);
@@ -1818,23 +1707,23 @@ function interface_wireless_configure($if, &$wancfg)
          * XXX: Disable ampdu for now on mwl when running in 11n mode
          * to prevent massive packet loss under certain conditions.
          */
-        if (preg_match("/^mwl/i", $if) && ($standard == "11ng" || $standard == "11na")) {
+        if (preg_match("/^mwl/i", $device) && ($standard == "11ng" || $standard == "11na")) {
             $wlcmd[] = "-ampdu";
         }
     }
 
-    if (isset($wlcfg['ssid'])) {
+    if (!empty($wlcfg['ssid'])) {
         /* Set ssid */
         $wlcmd[] = "ssid " . escapeshellarg($wlcfg['ssid']);
     }
 
-    if (isset($wlcfg['protmode'])) {
+    if (isset($wlcfg['protmode']) && $wlcfg['protmode'] != '') {
         /* Set 802.11g protection mode */
         $wlcmd[] = "protmode " . escapeshellarg($wlcfg['protmode']);
     }
 
     /* set wireless channel value */
-    if (isset($wlcfg['channel'])) {
+    if (isset($wlcfg['channel']) && $wlcfg['channel'] != '') {
         if ($wlcfg['channel'] == "0") {
             $wlcmd[] = "channel any";
         } else {
@@ -1843,29 +1732,29 @@ function interface_wireless_configure($if, &$wancfg)
     }
 
     /* Set antenna diversity value */
-    if (isset($wlcfg['diversity'])) {
+    if (isset($wlcfg['diversity']) && $wlcfg['diversity'] != '') {
         $wl_sysctl[] = "diversity=" . escapeshellarg($wlcfg['diversity']);
     }
 
     /* Set txantenna value */
-    if (isset($wlcfg['txantenna'])) {
+    if (isset($wlcfg['txantenna']) && $wlcfg['txantenna'] != '') {
         $wl_sysctl[] = "txantenna=" . escapeshellarg($wlcfg['txantenna']);
     }
 
     /* Set rxantenna value */
-    if (isset($wlcfg['rxantenna'])) {
+    if (isset($wlcfg['rxantenna']) && $wlcfg['rxantenna'] != '') {
         $wl_sysctl[] = "rxantenna=" . escapeshellarg($wlcfg['rxantenna']);
     }
 
     /* Set wireless hostap mode */
-    if (isset($wlcfg['mode']) && $wlcfg['mode'] == 'hostap') {
+    if ($wlcfg['mode'] == 'hostap') {
         $wlcmd[] = "mediaopt hostap";
     } else {
         $wlcmd[] = "-mediaopt hostap";
     }
 
     /* Set wireless adhoc mode */
-    if (isset($wlcfg['mode']) && $wlcfg['mode'] == 'adhoc') {
+    if ($wlcfg['mode'] == 'adhoc') {
         $wlcmd[] = "mediaopt adhoc";
     } else {
         $wlcmd[] = "-mediaopt adhoc";
@@ -1874,49 +1763,49 @@ function interface_wireless_configure($if, &$wancfg)
     /* Not necessary to set BSS mode as this is default if adhoc and/or hostap is NOT set */
 
     /* handle hide ssid option */
-    if (isset($wlcfg['hidessid']['enable'])) {
+    if (!empty($wlcfg['hidessid'])) {
         $wlcmd[] = "hidessid";
     } else {
         $wlcmd[] = "-hidessid";
     }
 
     /* handle pureg (802.11g) only option */
-    if (isset($wlcfg['pureg']['enable'])) {
+    if (!empty($wlcfg['pureg'])) {
         $wlcmd[] = "mode 11g pureg";
     } else {
         $wlcmd[] = "-pureg";
     }
 
     /* handle puren (802.11n) only option */
-    if (isset($wlcfg['puren']['enable'])) {
+    if (!empty($wlcfg['puren'])) {
         $wlcmd[] = "puren";
     } else {
         $wlcmd[] = "-puren";
     }
 
     /* enable apbridge option */
-    if (isset($wlcfg['apbridge']['enable'])) {
+    if (!empty($wlcfg['apbridge'])) {
         $wlcmd[] = "apbridge";
     } else {
         $wlcmd[] = "-apbridge";
     }
 
     /* handle turbo option */
-    if (isset($wlcfg['turbo']['enable'])) {
+    if (!empty($wlcfg['turbo'])) {
         $wlcmd[] = "mediaopt turbo";
     } else {
         $wlcmd[] = "-mediaopt turbo";
     }
 
     /* handle wme option */
-    if (isset($wlcfg['wme']['enable'])) {
+    if (!empty($wlcfg['wme'])) {
         $wlcmd[] = "wme";
     } else {
         $wlcmd[] = "-wme";
     }
 
     /* set up wep if enabled */
-    if (isset($wlcfg['wep']['enable']) && is_array($wlcfg['wep']['key'])) {
+    if (!empty($wlcfg['wep']['enable']) && !empty($wlcfg['wep']['keys'])) {
         $wepset = '';
         switch ($wlcfg['wpa']['auth_algs']) {
             case "1":
@@ -1929,27 +1818,24 @@ function interface_wireless_configure($if, &$wancfg)
                 $wepset .= "authmode mixed wepmode on ";
         }
         $i = 1;
-        foreach ($wlcfg['wep']['key'] as $wepkey) {
-            $wepset .= "wepkey " . escapeshellarg("{$i}:{$wepkey['value']}") . " ";
-            if (isset($wepkey['txkey'])) {
-                $wlcmd[] = "weptxkey {$i} ";
-            }
+        foreach (explode("\n", $wlcfg['wep']['keys']) as $wepkey) {
+            $wepset .= "wepkey " . escapeshellarg("{$i}:{$wepkey}") . " ";
             $i++;
         }
+        $wlcmd[] = "weptxkey 1 ";
         $wlcmd[] = $wepset;
     } else {
         $wlcmd[] = 'authmode open wepmode off';
     }
 
-    kill_wpasupplicant($if);
-    kill_hostapd($if);
+    interfaces_wlan_reset($device);
 
     /* generate wpa_supplicant/hostap config if wpa is enabled */
-    switch ($wlcfg['mode'] ?? 'bss') {
+    switch ($wlcfg['mode']) {
         case 'bss':
             $authentication = [];
-            if (isset($wlcfg['wpa']['enable'])) {
-                if ($wlcfg['wpa']['wpa_key_mgmt'] == 'WPA-EAP' && isset($wlcfg['wpa']['wpa_eap_method'])) {
+            if (!empty($wlcfg['wpa']['enable'])) {
+                if ($wlcfg['wpa']['wpa_key_mgmt'] == 'WPA-EAP' && !empty($wlcfg['wpa']['wpa_eap_method'])) {
                     switch ($wlcfg['wpa']['wpa_eap_method']) {
                         case 'PEAP':
                         case 'TTLS':
@@ -1970,21 +1856,21 @@ function interface_wireless_configure($if, &$wancfg)
 
                             $all_certs = [];
                             // Generate CA cert and client cert to file
-                            foreach ($config['ca'] as $ca) {
+                            foreach (config_read_array('ca', false) as $ca) {
                                 if ($wlcfg['wpa']['wpa_eap_cacertref'] == $ca['refid']) {
-                                    $all_certs["/var/etc/wpa_supplicant_{$if}_ca.crt"] =
+                                    $all_certs["/var/etc/wpa_supplicant_{$device}_ca.crt"] =
                                         base64_decode($ca['crt']);
-                                    $authentication[] = "ca_cert=\"/var/etc/wpa_supplicant_{$if}_ca.crt\"";
+                                    $authentication[] = "ca_cert=\"/var/etc/wpa_supplicant_{$device}_ca.crt\"";
                                 }
                             }
-                            foreach ($config['cert'] as $cert) {
+                            foreach (config_read_array('cert', false) as $cert) {
                                 if ($wlcfg['wpa']['wpa_eap_cltcertref'] == $cert['refid']) {
-                                    $all_certs["/var/etc/wpa_supplicant_{$if}_clt.crt"] =
+                                    $all_certs["/var/etc/wpa_supplicant_{$device}_clt.crt"] =
                                         base64_decode($cert['crt']);
-                                    $all_certs["/var/etc/wpa_supplicant_{$if}_clt.key"] =
+                                    $all_certs["/var/etc/wpa_supplicant_{$device}_clt.key"] =
                                         base64_decode($cert['prv']);
-                                    $authentication[] = "client_cert=\"/var/etc/wpa_supplicant_{$if}_clt.crt\"";
-                                    $authentication[] = "private_key=\"/var/etc/wpa_supplicant_{$if}_clt.key\"";
+                                    $authentication[] = "client_cert=\"/var/etc/wpa_supplicant_{$device}_clt.crt\"";
+                                    $authentication[] = "private_key=\"/var/etc/wpa_supplicant_{$device}_clt.key\"";
                                 }
                             }
                             foreach ($all_certs as $filename => $content) {
@@ -2015,7 +1901,7 @@ group={$wlcfg['wpa']['wpa_pairwise']}
 
 EOD;
 
-                @file_put_contents("/var/etc/wpa_supplicant_{$if}.conf", $wpa);
+                @file_put_contents("/var/etc/wpa_supplicant_{$device}.conf", $wpa);
                 unset($wpa);
             }
             break;
@@ -2025,19 +1911,19 @@ EOD;
             } else {
                 $wpa_passphrase = "";
             }
-            if (isset($wlcfg['wpa']['enable'])) {
+            if (!empty($wlcfg['wpa']['enable'])) {
                 $wpa = <<<EOD
-interface={$if}
+interface={$device}
 driver=bsd
 logger_syslog=-1
 logger_syslog_level=0
 logger_stdout=-1
 logger_stdout_level=0
-dump_file=/tmp/hostapd_{$if}.dump
+dump_file=/tmp/hostapd_{$device}.dump
 ctrl_interface=/var/run/hostapd
 ctrl_interface_group=wheel
-#accept_mac_file=/tmp/hostapd_{$if}.accept
-#deny_mac_file=/tmp/hostapd_{$if}.deny
+#accept_mac_file=/tmp/hostapd_{$device}.accept
+#deny_mac_file=/tmp/hostapd_{$device}.deny
 #macaddr_acl={$wlcfg['wpa']['macaddr_acl']}
 ssid={$wlcfg['ssid']}
 debug={$wlcfg['wpa']['debug_mode']}
@@ -2052,15 +1938,15 @@ wpa_strict_rekey={$wlcfg['wpa']['wpa_strict_rekey']}
 
 EOD;
 
-                if (isset($wlcfg['wpa']['rsn_preauth'])) {
+                if (!empty($wlcfg['wpa']['rsn_preauth'])) {
                     $wpa .= <<<EOD
 # Enable the next lines for preauth when roaming. Interface = wired or wireless interface talking to the AP you want to roam from/to
 rsn_preauth=1
-rsn_preauth_interfaces={$if}
+rsn_preauth_interfaces={$device}
 
 EOD;
                 }
-                if (is_array($wlcfg['wpa']['ieee8021x']) && isset($wlcfg['wpa']['ieee8021x']['enable'])) {
+                if (!empty($wlcfg['wpa']['ieee8021x'])) {
                     $wpa .= "ieee8021x=1\n";
 
                     if (!empty($wlcfg['auth_server_addr']) && !empty($wlcfg['auth_server_shared_secret'])) {
@@ -2091,7 +1977,7 @@ EOD;
                     }
                 }
 
-                @file_put_contents("/var/etc/hostapd_{$if}.conf", $wpa);
+                @file_put_contents("/var/etc/hostapd_{$device}.conf", $wpa);
                 unset($wpa);
             }
             break;
@@ -2101,7 +1987,7 @@ EOD;
      *    all variables are set, lets start up everything
      */
 
-    $baseif = interface_get_wireless_base($if);
+    $baseif = interfaces_wlan_base($device);
     preg_match("/^(.*?)([0-9]*)$/", $baseif, $baseif_split);
     $wl_sysctl_prefix = 'dev.' . $baseif_split[1] . '.' . $baseif_split[2];
 
@@ -2113,12 +1999,16 @@ EOD;
         }
     }
 
-    if (isset($wlcfg['wpa']['enable'])) {
-        if ($wlcfg['mode'] == "bss") {
-            fwrite($fd_set, exec_safe('/usr/local/sbin/wpa_supplicant -B -i %s -c %s', [$if, "/var/etc/wpa_supplicant_{$if}.conf"]) . PHP_EOL);
-        }
-        if ($wlcfg['mode'] == "hostap") {
-            fwrite($fd_set, exec_safe('/usr/local/sbin/hostapd -B -P %s %s', ["/var/run/hostapd_{$if}.pid", "/var/etc/hostapd_{$if}.conf"]) . PHP_EOL);
+    if (!empty($wlcfg['wpa']['enable'])) {
+        switch ($wlcfg['mode']) {
+            case 'bss':
+                fwrite($fd_set, exec_safe('/usr/local/sbin/wpa_supplicant -B -i %s -c %s', [$device, "/var/etc/wpa_supplicant_{$device}.conf"]) . PHP_EOL);
+                break;
+            case 'hostap':
+                fwrite($fd_set, exec_safe('/usr/local/sbin/hostapd -B -P %s %s', ["/var/run/hostapd_{$device}.pid", "/var/etc/hostapd_{$device}.conf"]) . PHP_EOL);
+                break;
+            default:
+                break;
         }
     }
 
@@ -2129,7 +2019,7 @@ EOD;
      * before applying, because changing them requires bringing
      * down all wireless networks on the interface.
      */
-    $ifconfig_str = shell_safe('/sbin/ifconfig %s', $if);
+    $ifconfig_str = shell_safe('/sbin/ifconfig %s', $device);
     $reg_changing = false;
 
     /* special case for the debug country code */
@@ -2151,26 +2041,24 @@ EOD;
         if (does_interface_exist("{$baseif}_wlan0")) {
             $clone_list[] = "{$baseif}_wlan0";
         }
-        if (isset($config['wireless']['clone'])) {
-            foreach ($config['wireless']['clone'] as $clone) {
-                if ($clone['if'] == $baseif) {
-                    $clone_list[] = $clone['cloneif'];
-                }
+        foreach (config_read_array('wireless', 'clone', false) as $clone) {
+            if ($clone['if'] == $baseif) {
+                $clone_list[] = $clone['cloneif'];
             }
         }
 
         /* find which clones are up and bring them down */
-        $ifup = legacy_interface_listget('up');
+        $devices_up = legacy_interface_listget('up');
         $clones_up = [];
         foreach ($clone_list as $clone_if) {
-            if (in_array($clone_if, $ifup)) {
+            if (in_array($clone_if, $devices_up)) {
                 $clones_up[] = $clone_if;
                 mwexecf('/sbin/ifconfig %s down', $clone_if);
             }
         }
 
         $wlregfrmt = ['/sbin/ifconfig %s'];
-        $wlregargs = [$if];
+        $wlregargs = [$device];
 
         /* set regulatory domain */
         if ($wlcfg['regdomain']) {
@@ -2202,13 +2090,9 @@ EOD;
              * is in infrastructure mode, and WPA is enabled.
              * This can be removed if wpa_supplicant stops dying when you bring the interface down.
              */
-            if ($clone_if != $if) {
-                $friendly_if = convert_real_interface_to_friendly_interface_name($clone_if);
-                if (
-                    !empty($friendly_if)
-                    && isset($config['interfaces'][$friendly_if]['wireless']['wpa']['enable'])
-                    && $config['interfaces'][$friendly_if]['wireless']['mode'] == 'bss'
-                ) {
+            if ($clone_if != $device) {
+                $_wlcfg = $wlmdl->getConfig($device);
+                if (!empty($_wlcfg['wpa']['enable']) && $_wlcfg['mode'] == 'bss') {
                     mwexecf('/bin/sh %s', "/tmp/{$clone_if}_setup.sh");
                 }
             }
@@ -2222,33 +2106,36 @@ EOD;
          *
          * XXX but we do not have the standard when wireless was not configured...
          */
-        mwexecf('/sbin/ifconfig %s mode %s', [$if, $standard]);
+        mwexecf('/sbin/ifconfig %s mode %s', [$device, $standard]);
     }
 
     /* configure wireless */
-    mwexecf('/sbin/ifconfig %s ' . implode(' ', $wlcmd), $if);
+    mwexecf('/sbin/ifconfig %s ' . implode(' ', $wlcmd), $device);
 
     /* configure txpower setting (it has been known to fail so run it separately) */
     if (!empty($wlcfg['txpower'])) {
-        mwexecf('/sbin/ifconfig %s txpower %s', [$if, $wlcfg['txpower']]);
+        mwexecf('/sbin/ifconfig %s txpower %s', [$device, $wlcfg['txpower']]);
     }
 
     sleep(1); /* XXX historic sleep */
 
     /* execute hostapd and wpa_supplicant if required in shell */
-    mwexecf('/bin/sh %s', "/tmp/{$if}_setup.sh");
+    mwexecf('/bin/sh %s', "/tmp/{$device}_setup.sh");
 
     return 0;
 }
 
-function kill_hostapd($interface)
+function interfaces_wlan_reset($device)
 {
-    killbypid("/var/run/hostapd_{$interface}.pid");
-}
-
-function kill_wpasupplicant($interface)
-{
-    mwexecf("/bin/pkill -f \"wpa_supplicant .*\"%s\"\\.conf\"\n", $interface);
+    /*
+     * hostapd and wpa_supplicant do not need to be running when the
+     * interface is down.  They will also use 100% CPU if running after
+     * the wireless clone gets deleted.
+     */
+    if (strpos($device, '_wlan') !== false) {
+        mwexecf("/bin/pkill -f \"wpa_supplicant .*\"%s\"\\.conf\"\n", $device);
+        killbypid("/var/run/hostapd_{$device}.pid");
+    }
 }
 
 function interface_static_configure($interface, $wancfg)
@@ -2377,11 +2264,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
     }
 
-    if (!$linkup) {
-        /* XXX wireless configuration: shouldn't live in interface config */
-        interface_wireless_configure($device, $wancfg);
-    }
-
     /* get expected and current MAC address from the configuration and system */
     $mac_prev = $ifconfig_details[$realhwif]['macaddr'] ?? '';
     $mac_next = !empty($wancfg['spoofmac']) ? $wancfg['spoofmac'] : ($ifconfig_details[$realhwif]['macaddr_hw'] ?? '');
@@ -2488,8 +2370,9 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         interface_configure_mtu($realhwif, $wancfg['mtu'], $ifconfig_details);
     }
 
-    /* since the connectivity can include IPv4 and/or IPv6 let the function decide */
+    /* XXX start additional daemons on this interface now: needs a plugin facility */
     interface_ppps_configure($interface);
+    interfaces_wlan_configure($device, $linkup);
 
     switch ($wancfg['ipaddr'] ?? 'none') {
         case 'dhcp':
@@ -3614,7 +3497,7 @@ function interface_parent_devices($device, $as_interface = false)
     return $parents;
 }
 
-function interface_get_wireless_base($wlif)
+function interfaces_wlan_base($wlif)
 {
     if (!strstr($wlif, '_wlan')) {
         return $wlif;

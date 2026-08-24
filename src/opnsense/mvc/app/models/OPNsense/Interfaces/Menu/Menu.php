@@ -66,7 +66,7 @@ class Menu extends MenuContainer
                     $iftargets['if'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
                 }
                 // Wireless status tab
-                if (isset($node->wireless)) {
+                if (strstr($node->if, '_wlan')) {
                     $iftargets['wl'][$key] = !empty($node->descr) ? (string)$node->descr : strtoupper($key);
                 }
             }
