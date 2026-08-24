@@ -88,7 +88,8 @@ class ApiControllerBase extends ControllerRoot
         $defaultSort = null,
         $filter_funct = null,
         $sort_flags = SORT_NATURAL | SORT_FLAG_CASE,
-        $search_clauses = null
+        $search_clauses = null,
+        $sort_transforms = []
     ) {
         $records = is_array($records) ? $records : []; // safeguard input, we are only able to search arrays.
         $itemsPerPage = intval($this->request->getPost('rowCount', 'int', 9999));
@@ -121,6 +122,10 @@ class ApiControllerBase extends ControllerRoot
                 }
             }
             $keys = array_column($records, $sortKey);
+            if (isset($sort_transforms[$sortKey])) {
+                $keys = array_map($sort_transforms[$sortKey], $keys);
+                $sort_flags = SORT_STRING; // a transform yields a directly comparable key
+            }
             array_multisort($keys, $sortOrder, $sort_flags, $records);
         }
 

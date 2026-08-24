@@ -102,6 +102,15 @@ class LeasesController extends ApiControllerBase
             $record['is_reserved'] = $reservedBy;
         }
 
+        /* Sort keys that compare byte-for-byte rather than as text (which
+         * mis-orders IPv6 and hex fields): pack the address to bytes, and
+         * normalise MAC/DUID hex. */
+        $addressSortKey = function ($address) {
+            /* length prefix groups IPv4 before IPv6 */
+            $bin = @inet_pton($address);
+            return $bin === false ? $address : sprintf('%02x', strlen($bin)) . bin2hex($bin);
+        };
+        $hexSortKey = fn($value) => strtolower(str_replace(':', '', (string)$value));
         $response = $this->searchRecordsetBase(
             $records,
             null,
@@ -120,7 +129,16 @@ class LeasesController extends ApiControllerBase
                 }
 
                 return $interfaceMatch && $protocolMatch;
-            }
+            },
+            SORT_NATURAL | SORT_FLAG_CASE,
+            null,
+            [
+                'address' => $addressSortKey,
+                'hwaddr' => $hexSortKey,
+                'client_id' => $hexSortKey,
+                /* is_reserved is an array; sort by the derived lease type */
+                'is_reserved' => fn($reserved) => empty($reserved) ? 'dynamic' : 'static',
+            ]
         );
 
         $response['interfaces'] = $interfaces;
