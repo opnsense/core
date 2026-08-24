@@ -5,14 +5,376 @@
         <type>dropdown</type>
     </field>
     <field>
+        <id>wireless.descr</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>You may enter a description here for your reference (not parsed).</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Common wireless configuration (per device)</label>
+    </field>
+    <field>
+        <id>wireless.use_common</id>
+        <label>Use these common settings</label>
+        <type>checkbox</type>
+        <help>Common settings for the physical device, the ones marked will be used.</help>
+        <grid_view>
+            <formatter>boolean</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.standard</id>
+        <label>Minimum standard</label>
+        <type>dropdown</type>
+        <help>When operating as an access point, allow only stations capable of the selected wireless standard to associate (stations not capable are not permitted to associate).</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.protmode</id>
+        <label>802.11g OFDM Protection Mode</label>
+        <type>dropdown</type>
+        <help>For IEEE 802.11g, use the specified technique for protecting OFDM frames in a mixed 11b/11g network.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.txpower</id>
+        <label>Transmit power</label>
+        <type>text</type>
+        <help>Typically only a few discreet power settings are available and the driver will use the setting closest to the specified value. Not all adapters support changing the transmit power setting.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.channel</id>
+        <label>Channel</label>
+        <type>text</type>
+        <help>Not all channels may be supported by your card.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.txantenna</id>
+        <label>Transmit antenna</label>
+        <type>dropdown</type>
+        <help>Note: The antenna numbers do not always match up with the labels on the card.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.rxantenna</id>
+        <label>Receive antenna</label>
+        <type>dropdown</type>
+        <help>Note: The antenna numbers do not always match up with the labels on the card.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.regdomain</id>
+        <label>Regulatory domain</label>
+        <type>dropdown</type>
+        <help>Some cards have a default that is not recognized and require changing the regulatory domain to one in this list for the changes to other regulatory settings to work.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.regcountry</id>
+        <label>Country</label>
+        <type>dropdown</type>
+        <help>Any country setting other than "Default" will override the regulatory domain setting.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.reglocation</id>
+        <label>Location</label>
+        <type>dropdown</type>
+        <help>These settings may affect which channels are available and the maximum transmit power allowed on those channels. Using the correct settings to comply with local regulatory requirements is recommended.
+All wireless networks on this interface will be temporarily brought down when changing regulatory settings. Some of the regulatory domains or country codes may not be allowed by some cards. These settings may not be able to add additional channels that are not already supported.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Network-specific wireless configuration</label>
+    </field>
+    <field>
         <id>wireless.mode</id>
         <label>Mode</label>
         <type>dropdown</type>
     </field>
     <field>
-        <id>wireless.descr</id>
-        <label>Description</label>
+        <id>wireless.ssid</id>
+        <label>SSID</label>
         <type>text</type>
-        <help>You may enter a description here for your reference (not parsed).</help>
+        <help>Note: Only required in Access Point mode. If left blank in Ad-hoc or Infrastructure mode, this interface will connect to any available SSID</help>
+    </field>
+    <field>
+        <id>wireless.pureg</id>
+        <label>Pure 802.11g mode</label>
+        <type>checkbox</type>
+        <help>When operating as an access point, allow only stations capable of the selected wireless standard to associate (stations not capable are not permitted to associate).</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.puren</id>
+        <label>Pure 802.11n mode</label>
+        <type>checkbox</type>
+        <help>When operating as an access point, allow only stations capable of the selected wireless standard to associate (stations not capable are not permitted to associate).</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.apbridge</id>
+        <label>Allow intra-BSS communication</label>
+        <type>checkbox</type>
+        <help>When operating as an access point, enable this if you want to pass packets between wireless clients directly.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wme</id>
+        <label>Enable WME</label>
+        <type>checkbox</type>
+        <help>Setting this option will force the card to use WME (wireless QoS).</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.hidessid</id>
+        <label>Enable Hide SSID</label>
+        <type>checkbox</type>
+        <help>Setting this option will force the card to NOT broadcast its SSID (this might create problems for some clients).</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wep.enable</id>
+        <label>WEP</label>
+        <type>checkbox</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wep.keys</id>
+        <label>WEP key</label>
+        <type>textbox</type>
+        <help>40 (64) bit keys may be entered as 5 ASCII characters or 10 hex digits preceded by '0x'.<br/>
+104 (128) bit keys may be entered as 13 ASCII characters or 26 hex digits preceded by '0x'.<br/>
+Maximum 4 keys, preferred key first.
+        </help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wpa.enable</id>
+        <label>WPA</label>
+        <type>checkbox</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wpa.identity</id>
+        <label>WPA EAP Identity</label>
+        <type>text</type>
+        <help>Only relevant when Extended Authentication Protocol (EAP) is used.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wpa.passphrase</id>
+        <label>WPA Pre-Shared Key/EAP Password</label>
+        <type>text</type>
+        <help>Passphrase must be from 8 to 63 characters.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wpa.wpa_mode</id>
+        <label>WPA Mode</label>
+        <type>dropdown</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wpa.wpa_key_mgmt</id>
+        <label>WPA Key Management Mode</label>
+        <type>dropdown</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wpa.wpa_eap_method</id>
+        <label>EAP Method</label>
+        <type>dropdown</type>
+        <help>Note: Only relevant for infrastructure mode (BSS) and if Extensible Authentication Protocol (EAP) is used for key management.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wpa.wpa_eap_p2_auth</id>
+        <label>EAP Phase 2 Authentication</label>
+        <type>dropdown</type>
+        <help>Note: Only relevant for infrastructure mode (BSS) and if Extensible Authentication Protocol (EAP) is used for key management.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wpa.wpa_eap_cacertref</id>
+        <label>EAP TLS CA Certificate</label>
+        <type>dropdown</type>
+        <help>Certificate authority used to verify the access point\'s TLS certificate. Only relevant for infrastructure mode (BSS) if Extensible Authentication Protocol (EAP) is used for key management.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wpa.wpa_eap_cltcertref</id>
+        <label>EAP TLS Client Certificate</label>
+        <type>dropdown</type>
+        <help>Certificate used for authentication towards the access point. Only relevant for infrastructure mode (BSS) if EAP with TLS is used for key management.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wpa.auth_algs</id>
+        <label>Access Point Authentication</label>
+        <type>dropdown</type>
+        <help>Note: Shared Key Authentication requires WEP. Only relevant for access point mode.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wpa.wpa_pairwise</id>
+        <label>WPA Pairwise</label>
+        <type>dropdown</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wpa.wpa_group_rekey</id>
+        <label>Key Rotation</label>
+        <type>text</type>
+        <help>Allowed values are 1-9999 but should not be longer than Master Key Regeneration time.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wpa.wpa_gmk_rekey</id>
+        <label>Master Key Regeneration</label>
+        <type>text</type>
+        <help>Allowed values are 1-9999 but should not be shorter than Key Rotation time.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wpa.wpa_strict_rekey</id>
+        <label>Strict Key Regeneration</label>
+        <type>checkbox</type>
+        <help>Setting this option will force the AP to rekey whenever a client disassociates.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.wpa.ieee8021x</id>
+        <label>Enable IEEE802.1X Authentication</label>
+        <type>checkbox</type>
+        <help>This option requires checking the "Enable WPA box".</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.auth_server_addr</id>
+        <label>802.1X Server IP Address</label>
+        <type>text</type>
+        <help>Enter the IP address of the 802.1X Authentication Server. This is commonly a Radius server (FreeRadius, Internet Authentication Services, etc.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.auth_server_port</id>
+        <label>802.1X Server Port</label>
+        <type>text</type>
+        <help>Leave blank for the default 1812 port.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.auth_server_shared_secret</id>
+        <label>802.1X Server Shared Secret</label>
+        <type>text</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.auth_server_addr2</id>
+        <label>802.1X Server IP Address (2)</label>
+        <type>text</type>
+        <help>Secondary 802.1X Authentication Server IP Address</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.auth_server_port2</id>
+        <label>802.1X Server Port (2)</label>
+        <type>text</type>
+        <help>Secondary 802.1X Authentication Server Port</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.auth_server_shared_secret2</id>
+        <label>802.1X Server Shared Secret (2)</label>
+        <type>text</type>
+        <help>Secondary 802.1X Authentication Server Shared Secret</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>wireless.rsn_preauth</id>
+        <label>802.1X Roaming Preauth</label>
+        <type>checkbox</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
     </field>
 </form>
