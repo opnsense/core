@@ -205,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['dnsallowoverride'] = !empty($pconfig['dnsallowoverride']) ? '1' : '0';
         $config['system']['dnsallowoverride_exclude'] = implode(',', $pconfig['dnsallowoverride_exclude']);
 
-        if ($pconfig['dnslocalhost'] == 'yes') {
+        if (!empty($pconfig['dnslocalhost'])) {
             $config['system']['dnslocalhost'] = true;
         } elseif (isset($config['system']['dnslocalhost'])) {
             unset($config['system']['dnslocalhost']);
