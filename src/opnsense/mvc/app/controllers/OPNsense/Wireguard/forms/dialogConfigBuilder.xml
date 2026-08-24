@@ -70,4 +70,10 @@
         <label>Config</label>
         <type>textbox</type>
     </field>
+    <field>
+        <id>configbuilder.actions</id>
+        <type>buttons</type>
+        <parent>configbuilder</parent>
+        <cancel>true</cancel>
+    </field>
 </form>

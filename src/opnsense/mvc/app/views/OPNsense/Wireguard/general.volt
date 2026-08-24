@@ -202,7 +202,6 @@
         function configbuilder_set_reference_mode(enabled)
         {
             $("#configbuilder\\.name").prop("disabled", enabled);
-            $("#configbuilder_actions").toggle(!enabled);
 
             [
                 "servers",
@@ -214,7 +213,8 @@
                 "privkey",
                 "psk",
                 "address",
-                "store_privkey"
+                "store_privkey",
+                "actions"
             ].forEach(function(field) {
                 $("#row_configbuilder\\." + field).toggle(!enabled);
             });
@@ -267,17 +267,6 @@
         $("#configbuilder\\.servers").change(function(){
             configbuilder_load_server($(this).val());
         });
-
-        const $actions_row = $(
-            '<tr id="row_configbuilder_actions">' +
-                '<td></td><td></td><td></td>' +
-            '</tr>'
-        ).insertAfter($("#frm_config_builder tr:last"));
-
-        $("#configbuilder_actions")
-            .detach()
-            .appendTo($actions_row.find("td:eq(1)"))
-            .show();
 
         $("#btn_configbuilder_cancel").click(function() {
             $('a[href="#peers"]').tab('show');
@@ -455,15 +444,6 @@
               <i class="fa fa-fw fa-gear"></i>
             </button>
         </span>
-        <div id="configbuilder_actions" style="display:none;">
-            <button type="button" class="btn btn-primary" id="btn_configbuilder_save">
-                {{ lang._('Save') }}
-                <i id="btn_configbuilder_save_progress" class=""></i>
-            </button>
-            <button type="button" class="btn btn-default" id="btn_configbuilder_cancel">
-                {{ lang._('Cancel') }}
-            </button>
-        </div>
         {{ partial("layout_partials/base_form",['fields':formDialogConfigBuilder,'id':'frm_config_builder'])}}
     </div>
     {{ partial("layout_partials/base_form",['fields':generalForm,'id':'frm_general_settings'])}}
