@@ -85,7 +85,7 @@ if __name__ == '__main__':
             params.append(inputargs.last_seen_window)
 
         query += """
-            ORDER BY last_seen ASC
+            ORDER BY last_seen DESC
         """
 
         for row in con.execute(query, params):
