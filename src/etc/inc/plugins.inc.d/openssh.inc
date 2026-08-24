@@ -137,19 +137,10 @@ function openssh_configure_do($verbose = false, $interface_map = null)
         'mldsa44-ed25519' => 'ssh_host_mldsa44_ed25519_key',
     ];
 
-    /* Check for all needed key files. If any are missing, the keys need to be regenerated. */
-    $generate_keys = false;
-    foreach ($keys as $name) {
+    /* Check for all needed key files. Regenerate missing ones. */
+    foreach ($keys as $type => $name) {
         $file = "/conf/sshd/{$name}";
         if (!file_exists($file) || !file_exists("{$file}.pub")) {
-            $generate_keys = true;
-            break;
-        }
-    }
-
-    if ($generate_keys) {
-        foreach ($keys as $type => $name) {
-            $file = "/conf/sshd/{$name}";
             @unlink("{$file}.pub");
             @unlink($file);
             mwexecf('/usr/local/bin/ssh-keygen -t %s -N "" -f %s', [$type, $file]);
