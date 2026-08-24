@@ -417,10 +417,7 @@ class Store
         $result['cert_type'] = '';
         if (
             in_array('TLS Web Server Authentication', $purpose['extendedKeyUsage']) &&
-            in_array('Digital Signature', $purpose['keyUsage']) && (
-                in_array('Key Encipherment', $purpose['keyUsage']) ||
-                in_array('Key Agreement', $purpose['keyUsage'])
-            )
+            in_array('Digital Signature', $purpose['keyUsage'])
         ) {
             $result['rfc3280_purpose'] = 'id-kp-serverAuth';
             $both = in_array('TLS Web Client Authentication', $purpose['extendedKeyUsage']);
