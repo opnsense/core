@@ -84,6 +84,10 @@ if __name__ == '__main__':
             """
             params.append(inputargs.last_seen_window)
 
+        query += """
+            ORDER BY last_seen ASC
+        """
+
         for row in con.execute(query, params):
             record = [row['interface_name'], row['ether_address'], row['ip_address']]
             if inputargs.verbose:
