@@ -214,7 +214,7 @@
                 "psk",
                 "address",
                 "store_privkey",
-                "store_btn"
+                "actions"
             ].forEach(function(field) {
                 $("#row_configbuilder\\." + field).toggle(!enabled);
             });
@@ -268,7 +268,9 @@
             configbuilder_load_server($(this).val());
         });
 
-        $("#configbuilder\\.store_btn").replaceWith($("#btn_configbuilder_save"));
+        $("#btn_configbuilder_cancel").click(function() {
+            $('a[href="#peers"]').tab('show');
+        });
 
         $("#btn_configbuilder_save").click(function(){
             if (configbuilder_reference !== null) {
@@ -367,20 +369,26 @@
             $("#configbuilder\\.output").val(config).trigger('input');
         }
 
+        const $apply_container = $("#reconfigureAct").closest(".alert.content-box");
+
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             if (e.target.id == 'tab_configbuilder') {
                 if (configbuilder_reference !== null) {
                     configbuilder_load_reference(configbuilder_reference);
+                    $apply_container.hide();
                 } else {
                     configbuilder_new();
+                    $apply_container.show();
                 }
                 $('#frm_general_settings').hide();
             } else if (e.target.id == 'tab_peers') {
                 configbuilder_reference = null;
+                $apply_container.show();
                 $('#{{formGridWireguardClient['table_id']}}').bootgrid('reload');
                 $('#frm_general_settings').show();
             } else if (e.target.id == 'tab_instances') {
                 configbuilder_reference = null;
+                $apply_container.show();
                 $('#{{formGridWireguardServer['table_id']}}').bootgrid('reload');
                 $('#frm_general_settings').show();
             }
@@ -435,11 +443,6 @@
             <button id="pskgen_cb" type="button" class="btn btn-secondary" title="{{ lang._('Generate new psk.') }}" data-toggle="tooltip">
               <i class="fa fa-fw fa-gear"></i>
             </button>
-        </span>
-        <span id="configbuilder_div" style="display:none">
-            <button id="btn_configbuilder_save" type="button" class="btn btn-primary">
-                <i class="fa fa-fw fa-check"></i>
-              </button>
         </span>
         {{ partial("layout_partials/base_form",['fields':formDialogConfigBuilder,'id':'frm_config_builder'])}}
     </div>
