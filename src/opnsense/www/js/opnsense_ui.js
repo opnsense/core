@@ -426,15 +426,16 @@ function initFormHelpUI() {
     let elements = $('[id*="show_all_help"]');
     elements.click(function(event) {
         let element = $(this);
+        const $form = $(this).closest('form[id^="frm_"]');
         element.toggleClass("fa-toggle-on fa-toggle-off");
         element.toggleClass("text-success text-danger");
         if (element.hasClass("fa-toggle-on")) {
             if (window.sessionStorage) {
                 sessionStorage.setItem('all_help_preset', 1);
             }
-            $('[data-for*="help_for"]').addClass("show").removeClass("hidden");
+            $form.find('[data-for*="help_for"]').addClass("show").removeClass("hidden");
         } else {
-            $('[data-for*="help_for"]').addClass("hidden").removeClass("show");
+            $form.find('[data-for*="help_for"]').addClass("hidden").removeClass("show");
             if (window.sessionStorage) {
                 sessionStorage.setItem('all_help_preset', 0);
             }
