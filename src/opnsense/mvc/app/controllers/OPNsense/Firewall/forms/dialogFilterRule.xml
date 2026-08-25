@@ -149,6 +149,26 @@
         </grid_view>
     </field>
     <field>
+        <id>rule.received-on-not</id>
+        <label>Invert received interface</label>
+        <type>checkbox</type>
+        <help>Match packets that were not received on the selected interface.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.received-on</id>
+        <label>Received on</label>
+        <type>dropdown</type>
+        <help>Only match packets that were initially received on the selected interface.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>rule.ipprotocol</id>
         <label>Version</label>
         <type>dropdown</type>

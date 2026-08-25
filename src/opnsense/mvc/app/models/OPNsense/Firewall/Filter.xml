@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Firewall/Filter</mount>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <migration_prefix>MFP</migration_prefix>
     <description>Firewall rules (new)</description>
     <items>
@@ -82,6 +82,16 @@
                         <any>Both</any>
                     </OptionValues>
                 </direction>
+                <received-on-not type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </received-on-not>
+                <received-on type="InterfaceField">
+                    <Filters>
+                        <if>/^(?!lo0$).*/</if>
+                    </Filters>
+                    <AllowDynamic>Y</AllowDynamic>
+                </received-on>
                 <ipprotocol type="OptionField">
                     <Required>Y</Required>
                     <Default>inet</Default>
