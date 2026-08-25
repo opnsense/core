@@ -49,7 +49,42 @@ class JsonAuditField extends JsonField implements IStructuredInput
     public function setValue($value)
     {
         if (is_a($value, 'SimpleXMLElement')) {
-            return parent::setValue($value); /* only during loading */
+            if ($this->getInternalIsVolatile()) {
+                /**
+                 * This is a bit of trickery, but if we set JsonAuditField on a volatile field holding legacy content,
+                 * we will automatically migrate the content into the persisted JsonAuditField field inside the same
+                 * container.
+                 *
+                 * Legacy used rather fixed fields, which means we only have to assign this to either create or update.
+                 */
+                $parent = $value->xpath('parent::*')[0];
+                $metadata = [];
+                foreach (['updated', 'created'] as $container) {
+                    $set = [];
+                    foreach (['username', 'time', 'description'] as $prop) {
+                        if (isset($parent->$container) && isset($parent->$container->$prop)) {
+                            $set[$prop] = (string)$parent->$container->$prop;
+                        }
+                    }
+                    if (!empty($set)) {
+                        $metadata[$container] = $set;
+                    }
+                }
+                if (!empty($metadata)) {
+                    /* now we need to loop the contents back into the new JsonAuditField (which isn't volatile */
+                    foreach ($this->getParentNode()->iterateItems() as $field) {
+                        if ($field instanceof JsonAuditField) {
+                            /**
+                             * When there's legacy data, there shouldn't be new data yet, overwrite all that's in the
+                             * container at this point in time.
+                             */
+                            $field->serialize($metadata);
+                        }
+                    }
+                }
+            } else {
+                return parent::setValue($value); /* only during loading */
+            }
         }
 
         /* Only userdata is user supplied, rest is ignored intentionally */
@@ -108,39 +143,5 @@ class JsonAuditField extends JsonField implements IStructuredInput
             self::SCHEMA,
             $this->deserialize()
         );
-    }
-
-    /**
-     * Migrate legacy created/updated fields into the audit JSON structure.
-     * Compatibility code. Remove together with the legacy created/updated model fields (e.g. in DNat.xml).
-     */
-    protected function actionPostLoadingEvent()
-    {
-        if (!$this->isEmpty()) {
-            return;
-        }
-
-        $parent = $this->getParentNode();
-        if ($parent === null) {
-            return;
-        }
-
-        $metadata = self::SCHEMA;
-
-        foreach (['created', 'updated'] as $key) {
-            if (isset($parent->$key)) {
-                $metadata[$key] = [
-                    'username' => $parent->$key->username->getValue(),
-                    'time' => $parent->$key->time->getValue(),
-                    'description' => $parent->$key->description->getValue(),
-                ];
-            }
-        }
-
-        if (!empty($metadata['created']['time']) || !empty($metadata['updated']['time'])) {
-            $this->serialize($metadata);
-        }
-
-        // We do not remove old data, it will naturally disappear once the old fields are removed
     }
 }
