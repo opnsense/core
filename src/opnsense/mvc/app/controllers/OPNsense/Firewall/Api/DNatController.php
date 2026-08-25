@@ -37,35 +37,13 @@ class DNatController extends FilterBaseController
     protected static $internalModelClass = 'OPNsense\\Firewall\\DNat';
     protected static $categorysource = 'rule';
 
-    private array $export_ignore = [
-        'sort_order',
-        'prio_group',
+    // ignore in addition to the fields in FilterBaseController
+    private array $export_ignore_extra = [
         'source.address',
         'destination.address',
         'categories',
         'associated-rule-id',
-        'created.username',
-        'created.time',
-        'created.description',
-        'updated.username',
-        'updated.time',
-        'updated.description',
     ];
-
-    /**
-     * @inheritdoc
-     */
-    protected function setBaseHook($node)
-    {
-        $node->updated->time = sprintf('%0.2f', microtime(true));
-        $node->updated->username = $this->getUserName();
-        $node->updated->description = sprintf('%s made changes', $_SERVER['SCRIPT_NAME']);
-        if ($node->created->time->isEmpty()) {
-            $node->created->time = $node->updated->time;
-            $node->created->username = $node->updated->username;
-            $node->created->description = $node->updated->description;
-        }
-    }
 
     private function getAutomaticDestinationNatRules(): array
     {
@@ -203,19 +181,11 @@ class DNatController extends FilterBaseController
 
     public function setRuleAction($uuid)
     {
-        /* prevent created metadata being overwritten or offered */
-        if (is_array($_POST['rule']) && isset($_POST['rule']['created'])) {
-            unset($_POST['rule']['created']);
-        }
         return $this->setBase("rule", "rule", $uuid);
     }
 
     public function addRuleAction()
     {
-        /* prevent created metadata being overwritten or offered */
-        if (is_array($_POST['rule']) && isset($_POST['rule']['created'])) {
-            unset($_POST['rule']['created']);
-        }
         return $this->addBase("rule", "rule");
     }
 
@@ -266,11 +236,11 @@ class DNatController extends FilterBaseController
 
     public function downloadRulesAction()
     {
-        return $this->downloadRulesBase('rule', $this->export_ignore);
+        return $this->downloadRulesBase('rule', $this->export_ignore_extra);
     }
 
     public function uploadRulesAction()
     {
-        return $this->uploadRulesBase('rule', $this->export_ignore);
+        return $this->uploadRulesBase('rule', $this->export_ignore_extra);
     }
 }
