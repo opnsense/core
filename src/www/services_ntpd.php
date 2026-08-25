@@ -31,7 +31,6 @@
 require_once("guiconfig.inc");
 require_once("system.inc");
 require_once("interfaces.inc");
-require_once("plugins.inc.d/ntpd.inc");
 
 $a_ntpd = &config_read_array('ntpd');
 
@@ -161,8 +160,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if (write_config("Updated NTP Server Settings")) {
-            ntpd_configure_do();
-            system_cron_configure();
+            configd_run('service restart ntpd');
+            configd_run('cron restart');
         }
 
 
