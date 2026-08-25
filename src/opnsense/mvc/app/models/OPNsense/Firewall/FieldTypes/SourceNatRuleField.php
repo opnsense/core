@@ -30,6 +30,7 @@ namespace OPNsense\Firewall\FieldTypes;
 
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\ContainerField;
+use OPNsense\Base\FieldTypes\PortField;
 use OPNsense\Core\Config;
 
 /**
@@ -66,6 +67,8 @@ class SourceNatRuleContainerField extends ContainerField
                     if ((string)$node != 'any') {
                         $result[$target_fieldname] = (string)$node;
                     }
+                } elseif ($key == 'target_port' && is_a($node, PortField::class) && $node->getValue() != '') {
+                    $result[$target_fieldname] = (string)$node->normalizedPort();
                 } elseif ((string)$node != '') {
                     /*
                      * XXX: Omit empty values to allow array_merge() to overlay default values in Plugin.php.

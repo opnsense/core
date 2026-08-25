@@ -204,7 +204,7 @@
         <label>Translate Source Port</label>
         <type>text</type>
         <style>port_selector</style>
-        <help>Source port number or well known name (imap, imaps, http, https, ...)</help>
+        <help>Source port number, well-known name, range, or alias containing a single port or range.</help>
         <grid_view>
             <formatter>alias</formatter>
             <sequence>95</sequence>
