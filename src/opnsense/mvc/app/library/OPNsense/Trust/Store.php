@@ -415,7 +415,7 @@ class Store
         // Extended key usage purpose definitions (+ cert_type derivative field)
         $result['rfc3280_purpose'] = '';
         $result['cert_type'] = '';
-        // RFC 5280, section 4.2.1.12: serverAuth permits digitalSignature, keyEncipherment, or keyAgreement.
+        // RFC 5280, section 4.2.1.12 lists these key usage bits as consistent with serverAuth
         if (
             in_array('TLS Web Server Authentication', $purpose['extendedKeyUsage']) && (
                 empty($purpose['keyUsage']) ||
