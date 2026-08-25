@@ -91,6 +91,11 @@ class LeasesController extends ApiControllerBase
             }
         }
 
+        /* fixed-width decimal-per-byte keys so the grid's natural sort orders
+         * the address and hex fields numerically instead of as text */
+        $byteSortKey = fn($bin) => $bin === false ? ''
+            : implode('.', array_map(fn($b) => sprintf('%03d', $b), unpack('C*', $bin)));
+
         foreach ($records as &$record) {
             $reservedBy = [];
             foreach (['client_id', 'hwaddr'] as $reservedType) {
@@ -100,21 +105,18 @@ class LeasesController extends ApiControllerBase
                 }
             }
             $record['is_reserved'] = $reservedBy;
+            $record['lease_type'] = empty($reservedBy) ? 'dynamic' : 'static';
+            /* length prefix groups IPv4 before IPv6 instead of interleaving */
+            $addressBin = @inet_pton($record['address']);
+            $record['sort_address'] = sprintf('%02d.', strlen((string)$addressBin)) . $byteSortKey($addressBin);
+            $record['sort_hwaddr'] = $byteSortKey(@hex2bin(str_replace(':', '', $record['hwaddr'])));
+            $record['sort_client_id'] = $byteSortKey(@hex2bin(str_replace(':', '', $record['client_id'])));
         }
 
-        /* Sort keys that compare byte-for-byte rather than as text (which
-         * mis-orders IPv6 and hex fields): pack the address to bytes, and
-         * normalise MAC/DUID hex. */
-        $addressSortKey = function ($address) {
-            /* length prefix groups IPv4 before IPv6 */
-            $bin = @inet_pton($address);
-            return $bin === false ? $address : sprintf('%02x', strlen($bin)) . bin2hex($bin);
-        };
-        $hexSortKey = fn($value) => strtolower(str_replace(':', '', (string)$value));
         $response = $this->searchRecordsetBase(
             $records,
-            null,
-            'address',
+            ['if_descr', 'address', 'hwaddr', 'mac_info', 'iaid', 'client_id', 'hostname'],
+            'sort_address',
             function ($record) use ($selected_interfaces, $selected_protocol) {
                 $interfaceMatch = empty($selected_interfaces)
                     || in_array($record['if_name'], $selected_interfaces, true);
@@ -129,16 +131,7 @@ class LeasesController extends ApiControllerBase
                 }
 
                 return $interfaceMatch && $protocolMatch;
-            },
-            SORT_NATURAL | SORT_FLAG_CASE,
-            null,
-            [
-                'address' => $addressSortKey,
-                'hwaddr' => $hexSortKey,
-                'client_id' => $hexSortKey,
-                /* is_reserved is an array; sort by the derived lease type */
-                'is_reserved' => fn($reserved) => empty($reserved) ? 'dynamic' : 'static',
-            ]
+            }
         );
 
         $response['interfaces'] = $interfaces;
