@@ -351,10 +351,11 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     {
         foreach ($node->iterateItems() as $field) {
             if ($field instanceof JsonAuditField && !$field->getInternalIsVolatile()) {
-                $field->update(
-                    $this->getUserName(),
-                    sprintf('%s made changes', $_SERVER['SCRIPT_NAME'])
-                );
+                $username = $this->getUserName();
+                if (!empty($_SERVER['REMOTE_ADDR'])) {
+                    $username .= '@' . $_SERVER['REMOTE_ADDR'];
+                }
+                $field->update($username, sprintf('%s made changes', $_SERVER['SCRIPT_NAME']));
             }
         }
     }
