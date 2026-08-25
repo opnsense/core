@@ -163,9 +163,20 @@ class Filter extends BaseModel
                                 $rule->target->__reference
                             ));
                         }
-                        if (!empty((string)$rule->target_port) && !in_array($rule->protocol, $port_protos)) {
+                        $target_port = $rule->target_port->getValue();
+                        if (!empty($target_port) && !in_array($rule->protocol, $port_protos)) {
                             $messages->appendMessage(new Message(
                                 gettext("Target ports are only valid for tcp or udp type rules."),
+                                $rule->target_port->__reference
+                            ));
+                        }
+                        if (
+                            !empty($target_port) &&
+                            Util::isAlias($target_port) &&
+                            count(Util::getPortAlias($target_port)) != 1
+                        ) {
+                            $messages->appendMessage(new Message(
+                                gettext("Target port aliases must resolve to exactly one port or port range."),
                                 $rule->target_port->__reference
                             ));
                         }

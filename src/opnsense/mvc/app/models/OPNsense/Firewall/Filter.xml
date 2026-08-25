@@ -527,6 +527,8 @@
                 <target_port type="PortField">
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
+                    <EnableAlias>Y</EnableAlias>
+                    <ValidationMessage>Please specify a valid port number, well-known name, alias or range.</ValidationMessage>
                 </target_port>
                 <poolopts type="OptionField">
                     <OptionValues>
