@@ -80,14 +80,14 @@
     <td>
         <div class="control-label" id="control_label_{{ id }}">
             {% if help|default(false) %}
-                <a id="help_for_{{ id }}" href="#" class="showhelp"><i class="fa fa-info-circle" data-toggle="tooltip" title="{{ lang._('Help') }}"></i></a>
+                <a id="help_for_{{ id }}" href="#" class="showhelp"><i class="fa fa-info-circle fa-fw" data-toggle="tooltip" title="{{ lang._('Help') }}"></i></a>
             {% elseif help|default(false) == false %}
-                <i class="fa fa-info-circle text-muted"></i>
-            {% endif %}
-            {% if advanced|default(false)=='true' %}
-                <i class="text-warning fa fa-exclamation-triangle" data-toggle="tooltip" title="{{ lang._('Advanced') }}"></i>
+                <i class="fa fa-info-circle fa-fw text-muted"></i>
             {% endif %}
             <b>{{label}}</b>
+            {% if advanced|default(false)=='true' %}
+                <i class="fa fa-cog fa-fw text-muted" data-toggle="tooltip" title="{{ lang._('Advanced') }}"></i>
+            {% endif %}
         </div>
     </td>
     <td>
