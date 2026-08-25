@@ -779,7 +779,7 @@
                                     <td colspan="2" style="text-align:right;">
                                         <small>{{ lang._('full help') }} </small>
                                         <a href="#">
-                                            <i class="fa fa-toggle-off text-danger" id="show_all_help_formDialogformDialogAlias">
+                                            <i class="fa fa-toggle-off text-danger" id="show_all_help_frm_DialogAlias">
                                             </i>
                                         </a>
                                     </td>
