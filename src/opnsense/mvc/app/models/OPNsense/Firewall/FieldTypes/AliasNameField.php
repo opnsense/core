@@ -222,7 +222,7 @@ class AliasNameField extends BaseField
                             $result[] = gettext('The name must start with a letter or single underscore, be less than 32 characters and only consist of alphanumeric characters or underscores.');
                         }
                         if (in_array($value, self::$reservedWords)) {
-                            $result[] = gettext('The name cannot be the internally reserved keyword "%s".');
+                            $result[] = sprintf(gettext('The name cannot be the internally reserved keyword "%s".'), $value);
                         }
                         if (Util::getservbyname($value) || getprotobyname($value)) {
                             $result[] = gettext('Reserved protocol or service names may not be used');
