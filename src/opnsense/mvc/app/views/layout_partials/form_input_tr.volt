@@ -86,7 +86,7 @@
             {% endif %}
             <b>{{label}}</b>
             {% if advanced|default(false)=='true' %}
-                <i class="fa fa-cog fa-fw text-muted" data-toggle="tooltip" title="{{ lang._('Advanced') }}"></i>
+                <i class="fa fa-cogs fa-fw text-info" data-toggle="tooltip" title="{{ lang._('Advanced') }}"></i>
             {% endif %}
         </div>
     </td>
