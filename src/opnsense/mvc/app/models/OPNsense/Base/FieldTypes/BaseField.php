@@ -399,6 +399,16 @@ abstract class BaseField
     }
 
     /**
+     * return initial value after loading from disk
+     * @return string field initial value
+     */
+    public function getInitialValue(): string
+    {
+        /* When internalInitialValue is set to true, the current value is the first value offered (just added) */
+        return $this->internalInitialValue === true ? $this->getValue() : (string)$this->internalInitialValue;
+    }
+
+    /**
      * return field current value(s) as array (empty strings are omitted)
      * @return array field current values
      */
