@@ -52,7 +52,7 @@
         $('select.ipoption').change(function(){
             let this_id = $(this).attr('id').split('.')[1];
             let this_value =  $(this).val();
-            let show_advanced = $("#show_advanced_formDialogdialog_dialogAssignment").hasClass('fa-toggle-on');
+            let show_advanced = $("#show_advanced_dialog_dialogAssignment").hasClass('fa-toggle-on');
             $("."+this_id).closest('tr').hide();
             $("."+this_id + '_' + $(this).val()).each(function(){
                 let tr = $(this).closest("tr");
