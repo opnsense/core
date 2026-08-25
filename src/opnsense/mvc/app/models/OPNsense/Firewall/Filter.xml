@@ -447,6 +447,7 @@
                     <ValidationMessage>Related pipe or queue not found.</ValidationMessage>
                 </shaper2>
                 <description type="DescriptionField"/>
+                <audit type="JsonAuditField"/>
             </rule>
         </rules>
         <snatrules>
@@ -568,6 +569,7 @@
                 </tagged>
                 <endpoint-independent type="BooleanField"/>
                 <description type="DescriptionField"/>
+                <audit type="JsonAuditField"/>
             </rule>
         </snatrules>
         <npt>
@@ -634,6 +636,7 @@
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
                 <description type="DescriptionField"/>
+                <audit type="JsonAuditField"/>
             </rule>
         </npt>
         <onetoone>
@@ -709,6 +712,7 @@
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
                 <description type="DescriptionField"/>
+                <audit type="JsonAuditField"/>
             </rule>
         </onetoone>
     </items>
