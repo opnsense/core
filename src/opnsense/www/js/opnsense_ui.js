@@ -563,15 +563,16 @@ function initFormAdvancedUI() {
 
     elements.click(function() {
         let element = $(this);
+        const $form = $(this).closest('form[id^="frm_"]');
         element.toggleClass("fa-toggle-on fa-toggle-off");
         element.toggleClass("text-success text-danger");
         if (element.hasClass("fa-toggle-on")) {
-            $('[data-advanced*="true"]').show();
+            $form.find('[data-advanced*="true"]').show();
             if (window.sessionStorage) {
                 sessionStorage.setItem('show_advanced_preset', 1);
             }
         } else {
-            $('[data-advanced*="true"]').hide()
+            $form.find('[data-advanced*="true"]').hide()
             if (window.sessionStorage) {
                 sessionStorage.setItem('show_advanced_preset', 0);
             }
