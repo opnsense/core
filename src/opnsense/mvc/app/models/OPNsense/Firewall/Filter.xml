@@ -446,6 +446,7 @@
                     <ValidationMessage>Related pipe or queue not found.</ValidationMessage>
                 </shaper2>
                 <description type="DescriptionField"/>
+                <audit type="JsonAuditField"/>
             </rule>
         </rules>
         <snatrules>
@@ -526,6 +527,8 @@
                 <target_port type="PortField">
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
+                    <EnableAlias>Y</EnableAlias>
+                    <ValidationMessage>Please specify a valid port number, well-known name, alias or range.</ValidationMessage>
                 </target_port>
                 <staticnatport type="BooleanField"/>
                 <log type="BooleanField">
@@ -551,6 +554,7 @@
                 </tagged>
                 <endpoint-independent type="BooleanField"/>
                 <description type="DescriptionField"/>
+                <audit type="JsonAuditField"/>
             </rule>
         </snatrules>
         <npt>
@@ -617,6 +621,7 @@
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
                 <description type="DescriptionField"/>
+                <audit type="JsonAuditField"/>
             </rule>
         </npt>
         <onetoone>
@@ -692,6 +697,7 @@
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
                 <description type="DescriptionField"/>
+                <audit type="JsonAuditField"/>
             </rule>
         </onetoone>
     </items>

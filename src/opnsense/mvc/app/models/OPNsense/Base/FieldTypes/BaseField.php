@@ -817,6 +817,11 @@ abstract class BaseField
                         throw new Exception("Invalid input type for {$key}: expected a list");
                     }
                     $node->setNodes($data[$key]);
+                } elseif ($node instanceof IStructuredInput) {
+                    if (!is_array($data[$key])) {
+                        throw new Exception("Invalid input type for {$key}: expected structured input");
+                    }
+                    $node->setValue($data[$key]);
                 } else {
                     if (is_array($data[$key])) {
                         throw new Exception("Invalid input type for {$key}: expected a single value");
