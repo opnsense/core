@@ -177,6 +177,24 @@ class Filter extends BaseModel
                         }
                     } else {
                         // Additional filter validations
+                        if (!$rule->{'received-on'}->isEmpty() && $rule->direction != 'out') {
+                            $messages->appendMessage(new Message(
+                                gettext("Received-on is only valid for out direction rules."),
+                                $rule->{'received-on'}->__reference
+                            ));
+                        }
+                        if (
+                            !$rule->{'received-on-not'}->isEmpty() && (
+                                count(explode(',', $rule->{'received-on'})) != 1 ||
+                                $rule->{'received-on'}->isEmpty()
+                            )
+                        ) {
+                            $messages->appendMessage(new Message(
+                                gettext("Inverting received-on interfaces is only allowed for " .
+                                    "single targets to avoid mis-interpretations"),
+                                $rule->{'received-on-not'}->__reference
+                            ));
+                        }
                         if (empty((string)$rule->max) && ($rule->adaptivestart == '0' || $rule->adaptiveend == '0')) {
                             $messages->appendMessage(new Message(
                                 gettext('Disabling adaptive timeouts is only supported in ".

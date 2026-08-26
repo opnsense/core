@@ -81,21 +81,44 @@
     </field>
     <field>
         <id>rule.interfacenot</id>
-        <label>Invert Interface</label>
+        <label>Invert interface (rule)</label>
         <type>checkbox</type>
-        <help>Use all but selected interfaces</help>
+        <help>Match packets on all but the selected rule interface.</help>
+        <advanced>true</advanced>
         <grid_view>
             <ignore>true</ignore>
         </grid_view>
     </field>
     <field>
         <id>rule.interface</id>
-        <label>Interface</label>
+        <label>Interface (rule)</label>
         <type>select_multiple</type>
         <hint>any</hint>
+        <help>Only match packets on the selected rule interfaces or groups.</help>
         <grid_view>
             <formatter>interfaces</formatter>
             <sequence>25</sequence>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.received-on-not</id>
+        <label>Invert interface (origin)</label>
+        <type>checkbox</type>
+        <help>Match packets that were not received on the selected interface.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.received-on</id>
+        <label>Interface (origin)</label>
+        <type>select_multiple</type>
+        <hint>any</hint>
+        <help>Only match packets that were initially received on the selected interfaces or groups. This is mostly relevant for out direction rules when creating a security zone ruleset.</help>
+        <grid_view>
+            <formatter>interfaces</formatter>
+            <sequence>26</sequence>
         </grid_view>
     </field>
     <field>

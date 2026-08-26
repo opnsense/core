@@ -124,18 +124,21 @@ class FilterRuleContainerField extends ContainerField
     {
         $configObj = Config::getInstance()->object();
         $interfaces = $this->interface->getValues();
-        $has_interface = false;
+        $received_on = $this->{'received-on'}->getValues();
 
-        foreach ($interfaces as $interface) {
-            if (isset($configObj?->interfaces?->$interface)) {
-                $has_interface = true;
-                break;
+        foreach ([$interfaces, $received_on] as $interface_set) {
+            $has_interface = false;
+            foreach ($interface_set as $interface) {
+                if (isset($configObj?->interfaces?->$interface)) {
+                    $has_interface = true;
+                    break;
+                }
             }
-        }
 
-        // Invalid rules (not applied by PF)
-        if (!empty($interfaces) && !$has_interface) {
-            return 600000;
+            // Invalid rules (not applied by PF)
+            if (!empty($interface_set) && !$has_interface) {
+                return 600000;
+            }
         }
 
         /* XXX this is an approximation of the complex situation and will be removed eventually */
