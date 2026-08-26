@@ -106,7 +106,7 @@
         <help>Match packets that were not received on the selected interface.</help>
         <advanced>true</advanced>
         <grid_view>
-            <visible>false</visible>
+            <ignore>true</ignore>
         </grid_view>
     </field>
     <field>
