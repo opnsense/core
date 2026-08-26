@@ -81,7 +81,7 @@
     </field>
     <field>
         <id>rule.interfacenot</id>
-        <label>Invert inbound (interface)</label>
+        <label>Invert interface (inbound)</label>
         <type>checkbox</type>
         <help>Match packets that were not inbound on the selected interface.</help>
         <grid_view>
@@ -90,7 +90,7 @@
     </field>
     <field>
         <id>rule.interface</id>
-        <label>Inbound (interface)</label>
+        <label>Interface (inbound)</label>
         <type>select_multiple</type>
         <hint>any</hint>
         <help>Only match packets that are going in on the selected interfaces or groups.</help>
@@ -101,7 +101,7 @@
     </field>
     <field>
         <id>rule.received-on-not</id>
-        <label>Invert origin (interface)</label>
+        <label>Invert interface (origin)</label>
         <type>checkbox</type>
         <help>Match packets that were not received on the selected interface.</help>
         <advanced>true</advanced>
@@ -111,7 +111,7 @@
     </field>
     <field>
         <id>rule.received-on</id>
-        <label>Origin (interface)</label>
+        <label>Interface (origin)</label>
         <type>dropdown</type>
         <hint>any</hint>
         <help>Only match packets that were initially received on the selected interface or group. This is mostly relevant for out direction rules when creating a security zone ruleset.</help>
