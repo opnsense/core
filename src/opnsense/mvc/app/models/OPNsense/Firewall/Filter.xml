@@ -78,6 +78,7 @@
                     <Required>Y</Required>
                 </received-on-not>
                 <received-on type="InterfaceField">
+                    <BlankDesc>any</BlankDesc>
                     <Filters>
                         <if>/^(?!lo0$).*/</if>
                     </Filters>

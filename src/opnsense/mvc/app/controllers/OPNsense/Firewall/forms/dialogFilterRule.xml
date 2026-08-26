@@ -114,7 +114,6 @@
         <id>rule.received-on</id>
         <label>Interface (origin)</label>
         <type>dropdown</type>
-        <hint>any</hint>
         <help>Only match packets that were initially received on the selected interface or group. This is mostly relevant for out direction rules when creating a security zone ruleset.</help>
         <grid_view>
             <formatter>interfaces</formatter>
