@@ -105,28 +105,93 @@ class IPsecProposalField extends BaseListField
         return $this->phase == '1' ? $this->AeadPhase1() : $this->AeadPhase2();
     }
 
+    private function addPostQuantumKeOptions(array $ciphers)
+    {
+       /*
+        * Add hybrid post-quantum key exchange options using a single additional
+        * key exchange (KE1). ML-KEM is deliberately not offered as
+        * the primary key exchange to prevent a larger cartesian product in our UI.
+        *
+        * We only offer the post-quantum variants on top of classical primary key exchanges,
+        * see https://www.rfc-editor.org/rfc/rfc9370.html#section-1.1-2 and only within our
+        * "Commonly used" section.
+        */
+
+        $dhgroups = [
+            'modp2048',
+            'modp3072',
+            'modp4096',
+            'modp6144',
+            'modp8192',
+            'ecp224',
+            'ecp256',
+            'ecp384',
+            'ecp521',
+            'ecp224bp',
+            'ecp256bp',
+            'ecp384bp',
+            'ecp512bp',
+            'x25519',
+            'x448',
+        ];
+
+        $postQuantumKe = [
+            'mlkem512' => 'ML-KEM-512 (ID 35)',
+            'mlkem768' => 'ML-KEM-768 (ID 36)',
+            'mlkem1024' => 'ML-KEM-1024 (ID 37)',
+        ];
+
+        $result = $ciphers;
+
+        foreach ($ciphers as $cipher => $description) {
+            foreach ($dhgroups as $dhgroup) {
+                if (substr($cipher, -strlen("-{$dhgroup}")) !== "-{$dhgroup}") {
+                    continue;
+                }
+
+                foreach ($postQuantumKe as $pqKe => $pqDescription) {
+                    $pqCipher = "{$cipher}-ke1_{$pqKe}";
+
+                    $result[$pqCipher] = "{$pqCipher} [{$pqDescription}]";
+                }
+
+                break;
+            }
+        }
+
+        return $result;
+    }
+
     private function commonOptions()
     {
+        $commonAes = [
+            'aes256-sha256-modp2048' => null,
+            'aes256-sha512-modp2048' => null,
+            'aes128-sha256-modp2048' => null,
+            'aes128-sha512-modp2048' => null,
+            'aes256-sha256-modp4096' => null,
+            'aes256-sha512-modp4096' => null,
+            'aes256-sha256-ecp521' => null,
+            'aes256-sha512-ecp521' => null,
+        ];
+
+        $commonAead = $this->AeadAlgorithms();
+
+        $commonAes = $this->addPostQuantumKeOptions($commonAes);
+        $commonAead = $this->addPostQuantumKeOptions($commonAead);
+
         /* group and cipher order, when set to null an auto generated description will be used */
         return [
             gettext('Internal') => [
                 'default' => gettext('default')
             ],
+
             /* Non-AEAD algorithms */
-            gettext('Commonly used AES') => [
-                'aes256-sha256-modp2048' => null,
-                'aes256-sha512-modp2048' => null,
-                'aes128-sha256-modp2048' => null,
-                'aes128-sha512-modp2048' => null,
-                'aes256-sha256-modp4096' => null,
-                'aes256-sha512-modp4096' => null,
-                'aes256-sha256-ecp521' => null,
-                'aes256-sha512-ecp521' => null,
-            ],
+            gettext('Commonly used AES') => $commonAes,
+
             /* AEAD algorithms */
-            gettext('Commonly used combined-mode (AEAD) ciphers') => [
-                ...$this->AeadAlgorithms()
-            ],
+            gettext('Commonly used combined-mode (AEAD) ciphers') => $commonAead,
+
             gettext('Commonly used, but insecure cipher suites') => [
                 'aes256-sha1-modp2048' => 'aes256-sha1-modp2048 [DH14]',
                 'aes192-sha1-modp2048' => 'aes192-sha1-modp2048 [DH14]',
@@ -208,53 +273,6 @@ class IPsecProposalField extends BaseListField
                 }
             }
             self::$internalCacheOptionList[$this->internalCacheKey] = self::$internalCacheOptionList[$this->internalCacheKey] + $gcm_prf_options;
-
-            /*
-             * Add hybrid post-quantum variants using a single additional
-             * key exchange (KE1). ML-KEM is deliberately not offered as
-             * the primary key exchange to prevent a larger cartesian product in our UI.
-             *
-             * We only offer the post-quantum variants on top of classical primary key exchanges,
-             * see https://www.rfc-editor.org/rfc/rfc9370.html#section-1.1-2
-             *
-             * For example:
-             *
-             * aes256-sha384-x25519
-             *
-             * additionally produces:
-             *
-             * aes256-sha384-x25519-ke1_mlkem512
-             * aes256-sha384-x25519-ke1_mlkem768
-             * aes256-sha384-x25519-ke1_mlkem1024
-             */
-            $pqOptions = [];
-
-            foreach (self::$internalCacheOptionList[$this->internalCacheKey] as $cipher => $option) {
-                foreach ($dhgroups as $dhgroup => $dhDescription) {
-                    if (
-                        $cipher === $dhgroup ||
-                        substr($cipher, -strlen("-{$dhgroup}")) === "-{$dhgroup}"
-                    ) {
-                        foreach ($postQuantumKe as $pqKe => $pqDescription) {
-                            $pqCipher = "{$cipher}-ke1_{$pqKe}";
-
-                            $description = $option['value'];
-                            if (empty($description)) {
-                                $description = $cipher . " [{$dhDescription}]";
-                            }
-
-                            $pqOptions[$pqCipher] = [
-                                'value' => $pqCipher . " [{$dhDescription} + {$pqDescription}]",
-                                'optgroup' => $option['optgroup']
-                            ];
-                        }
-
-                        break;
-                    }
-                }
-            }
-
-            self::$internalCacheOptionList[$this->internalCacheKey] = self::$internalCacheOptionList[$this->internalCacheKey] + $pqOptions;
         }
 
         $this->internalOptionList = self::$internalCacheOptionList[$this->internalCacheKey];
