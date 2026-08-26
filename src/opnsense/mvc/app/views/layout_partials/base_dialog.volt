@@ -83,7 +83,7 @@
                         <tr>
                             <td colspan="3">
                                 <span>
-                                    {% if fields['advanced']|default(false) %}<a href="#"><i class="fa fa-toggle-off fa-fw text-danger" id="show_advanced_{{base_dialog_id}}"></i></a> <small>{{ lang._('advanced mode') }}</small> <i class="fa fa-cog fa-sm fa-fw text-info"></i>{% endif %}</td>
+                                    {% if fields['advanced']|default(false) %}<a href="#"><i class="fa fa-toggle-off fa-fw text-danger" id="show_advanced_{{base_dialog_id}}"></i></a> <small>{{ lang._('advanced mode') }}</small> <i class="fa fa-cog fa-sm fa-fw text-info"></i>{% endif %}
                                 </span>
                                 <span class="pull-right">
                                     {% if fields['help']|default(false) %}<i class="fa fa-info-circle fa-sm fa-fw text-primary"></i> <small>{{ lang._('full help') }}</small> <a href="#"><i class="fa fa-toggle-off fa-fw text-danger" id="show_all_help_{{base_dialog_id}}"></i></a>{% endif %}
