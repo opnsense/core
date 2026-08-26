@@ -348,22 +348,22 @@ class FilterController extends FilterBaseController
     {
         $result = [
             'floating' => [
-                'label' => gettext('Floating'),
+                'label' => gettext('Floating (inbound)'),
                 'icon' => 'fa fa-layer-group fa-fw text-primary',
                 'items' => [],
             ],
             'groups' => [
-                'label' => gettext('Groups'),
+                'label' => gettext('Groups (inbound)'),
                 'icon' => 'fa fa-sitemap fa-fw text-warning',
                 'items' => [],
             ],
             'interfaces' => [
-                'label' => gettext('Interfaces'),
+                'label' => gettext('Interfaces (inbound)'),
                 'icon' => 'fa fa-ethernet fa-fw text-info',
                 'items' => [],
             ],
             'any' => [
-                'label' => gettext('Any'),
+                'label' => gettext('Any (inbound)'),
                 'icon' => 'fa fa-globe-europe fa-fw',
                 'items' => [],
             ],
