@@ -858,7 +858,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $new_config['mss'] = $pconfig['mss'];
             }
             if (!empty($pconfig['mediaopt'])) {
-                $mediaopts = explode(' ', $pconfig['mediaopt']);
+                $mediaopts = explode("\t", $pconfig['mediaopt']);
                 if (isset($mediaopts[0])) {
                     $new_config['media'] = $mediaopts[0];
                 }
@@ -1453,7 +1453,7 @@ include("head.inc");
                                   <option value=""><?=gettext('Default (no preference, typically autoselect)');?></option>
 <?php
                                   foreach($mediaopts_list as $mediaopt):?>
-                                    <option value="<?=$mediaopt;?>" <?=!empty($pconfig['media']) && $mediaopt == trim($pconfig['media'] . " ". $pconfig['mediaopt']) ? "selected=\"selected\"" : "";?> >
+                                    <option value="<?=$mediaopt;?>" <?=!empty($pconfig['media']) && $mediaopt == trim($pconfig['media'] . "\t". $pconfig['mediaopt']) ? "selected=\"selected\"" : "";?> >
                                       <?=$mediaopt;?>
                                     </option>
 <?php

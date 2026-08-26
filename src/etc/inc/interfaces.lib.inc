@@ -397,7 +397,7 @@ function legacy_interfaces_details($intf = null)
             }
             $result[$current_interface]['media_raw'] = substr(trim($line), 7);
         } elseif (preg_match("/media (.*)/", $line, $matches)) {
-            $result[$current_interface]["supported_media"][] = str_replace(" mediaopt ", " ", trim($matches[1]));
+            $result[$current_interface]["supported_media"][] = str_replace(" mediaopt ", "\t", trim($matches[1]));
         } elseif (preg_match("/plugged: (.*)/", $line, $matches)) {
             $result[$current_interface]['sfp'] = [
                 'plugged' => $matches[1]
