@@ -287,10 +287,10 @@
                         return '<i class="fa-solid fa-fw fa-check-square" data-toggle="tooltip" title="{{ lang._('Enabled') }}"></i>';;
                     },
                     interface: function (column) {
-                        return '<span class="text-nowrap" data-toggle="tooltip" title="{{ lang._('Interface') }}"><i class="fa-solid fa-fw fa-network-wired"></i> {{ lang._('Inbound') }}</span>';
+                        return '<span class="text-nowrap" data-toggle="tooltip" title="{{ lang._('Interface (rule)') }}"><i class="fa-solid fa-fw fa-network-wired"></i> {{ lang._('Rule') }}</span>';
                     },
                     'received-on': function (column) {
-                        return '<span class="text-nowrap" data-toggle="tooltip" title="{{ lang._('Interface') }}"><i class="fa-solid fa-fw fa-network-wired"></i> {{ lang._('Origin') }}</span>';
+                        return '<span class="text-nowrap" data-toggle="tooltip" title="{{ lang._('Interface (origin)') }}"><i class="fa-solid fa-fw fa-network-wired"></i> {{ lang._('Origin') }}</span>';
                     },
                     evaluations: function (column) {
                         return '<i class="fa-solid fa-fw fa-bullseye" data-toggle="tooltip" title="{{ lang._('Number of rule evaluations') }}"></i>';
