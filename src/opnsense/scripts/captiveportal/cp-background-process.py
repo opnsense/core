@@ -28,6 +28,7 @@
     --------------------------------------------------------------------------------------
     update captive portal statistics
 """
+import ipaddress
 import copy
 import sys
 import time
@@ -73,6 +74,28 @@ class CPBackgroundProcess(object):
     def _remove_client(self, zoneid, ip):
         PF.remove_from_table(zoneid, ip)
         IPFW.del_accounting(zoneid, ip)
+
+    def _filter_addresses(self, addresses, roaming):
+        if not addresses:
+            return []
+
+        if not roaming:
+            return [addresses[0]]
+
+        result = []
+        first_ipv4_found = False
+
+        for addr in addresses:
+            ip = ipaddress.ip_address(addr)
+
+            if ip.version == 4:
+                if not first_ipv4_found:
+                    result.append(addr)
+                    first_ipv4_found = True
+            else:
+                result.append(addr)
+
+        return result
 
     def initialize_fixed(self):
         """ initialize fixed ip / hosts per zone
@@ -187,7 +210,8 @@ class CPBackgroundProcess(object):
                 # if primary IP changed, update db accordingly. Not relevant for static IP-authenticated clients
                 if db_client['authenticated_via'] != '---ip---':
                     current_ips = self.arp.get_all_addresses_by_mac(db_client['macAddress'])
-                    if len(current_ips) > 0 and db_client['ipAddress'] != current_ips[0]:
+                    addresses = self._filter_addresses(current_ips, allow_roaming)
+                    if len(addresses) > 0 and db_client['ipAddress'] != addresses[0]:
                         if not allow_roaming and db_client['ipAddress'] != '':
                             # Remove old ip, but only if non-roaming, otherwise, we're state killing traffic from a different IP which may be valid.
                             # Unused addresses are cleared through arp/hostwatch automatically when roaming.
@@ -201,9 +225,10 @@ class CPBackgroundProcess(object):
                         self.db.update_client_mac(zoneid, db_client['sessionId'], current_arp['mac'])
 
                 # session should be active, validate its properties
+                addresses = set(self._filter_addresses(self.arp.get_all_addresses_by_mac(db_client['macAddress']), allow_roaming))
                 if allow_roaming:
                     # merge primary IP here, if authenticated via ip, the roaming ips may not contain the statically configured IP if there is no MAC known.
-                    session_ips = {db_client['ipAddress']} | self.db.update_roaming_ips(zoneid, db_client['sessionId'], self.arp.get_all_addresses_by_mac(db_client['macAddress']))
+                    session_ips = {db_client['ipAddress']} | self.db.update_roaming_ips(zoneid, db_client['sessionId'], addresses)
                 else:
                     # may have been updated if primary IP changed
                     session_ips = {db_client['ipAddress']}

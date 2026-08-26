@@ -779,7 +779,7 @@
                                     <td colspan="2" style="text-align:right;">
                                         <small>{{ lang._('full help') }} </small>
                                         <a href="#">
-                                            <i class="fa fa-toggle-off text-danger" id="show_all_help_formDialogformDialogAlias">
+                                            <i class="fa fa-toggle-off text-danger" id="show_all_help_frm_DialogAlias">
                                             </i>
                                         </a>
                                     </td>
@@ -1072,7 +1072,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang._('Cancel') }}</button>
                 <button type="button" class="btn btn-primary" id="btn_DialogAlias_save">{{ lang._('Save') }}
-                    <i id="btn_formDialogAlias_save_progress" class=""></i></button>
+                    <i id="btn_DialogAlias_save_progress" class=""></i></button>
             </div>
         </div>
     </div>

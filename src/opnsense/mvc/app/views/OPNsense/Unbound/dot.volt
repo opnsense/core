@@ -91,7 +91,7 @@
             $('tr[id="row_dot.verify"]').removeClass('hidden');
             $('tr[id="row_dot.forward_tcp_upstream"]').addClass('hidden');
             /* remove advanced option toggle (currently no advanced options for DNS over TLS) */
-            $("#show_advanced_formDialog{{ formGridDot['edit_dialog_id'] }}").closest('td').html('');
+            $("#show_advanced_{{ formGridDot['edit_dialog_id'] }}").closest('td').html('');
         }
 
         /**

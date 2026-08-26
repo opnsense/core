@@ -204,7 +204,7 @@
         <label>Translate Source Port</label>
         <type>text</type>
         <style>port_selector</style>
-        <help>Source port number or well known name (imap, imaps, http, https, ...)</help>
+        <help>Source port number, well-known name, range, or alias containing a single port or range.</help>
         <grid_view>
             <formatter>alias</formatter>
             <sequence>95</sequence>
@@ -279,6 +279,80 @@
         <grid_view>
             <visible>false</visible>
             <sortable>false</sortable>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Audit</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <type>subheader</type>
+        <label>Created</label>
+    </field>
+    <field>
+        <id>rule.audit.created.username</id>
+        <label>Username</label>
+        <type>info</type>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.audit.created.time</id>
+        <label>Time</label>
+        <type>info</type>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.audit.created.description</id>
+        <label>Description</label>
+        <type>info</type>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <type>subheader</type>
+        <label>Updated</label>
+    </field>
+    <field>
+        <id>rule.audit.updated.username</id>
+        <label>Username</label>
+        <type>info</type>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.audit.updated.time</id>
+        <label>Time</label>
+        <type>info</type>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.audit.updated.description</id>
+        <label>Description</label>
+        <type>info</type>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <type>subheader</type>
+        <label>Userdata</label>
+    </field>
+    <field>
+        <id>rule.audit.userdata.note</id>
+        <label>Note</label>
+        <type>textbox</type>
+        <help>Add a note to describe why this rule was created or changed.</help>
+        <grid_view>
+            <ignore>true</ignore>
         </grid_view>
     </field>
 </form>
