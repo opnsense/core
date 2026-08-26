@@ -45,7 +45,7 @@ class FilterController extends \OPNsense\Base\IndexController
      */
     protected function getAdvancedIds($form)
     {
-        $advancedFieldIds = ['icmptype', 'icmp6type']; // force-include, hidden based on user input
+        $advancedFieldIds = ['icmptype', 'icmp6type', 'statetype']; // force-include, hidden based on user input
         $exclude = ['sequence', 'sort_order', 'interfacenot', 'received-on-not']; // force-exclude even if advanced
 
         foreach ($form['sections'] as $section) {
