@@ -76,6 +76,17 @@
         </grid_view>
     </field>
     <field>
+        <id>interface.spoofmac</id>
+        <label>MAC address (spoof)</label>
+        <advanced>true</advanced>
+        <type>text</type>
+        <help>This field can be used to spoof the MAC address of the interface. Enter a MAC address in the following format: xx:xx:xx:xx:xx:xx or leave blank if unsure. This may only be required e.g. with certain cable connections on a WAN interface.
+When used on a single VLAN interface the setting "Promiscuous mode" is required for this to work. Alternatively, the parent interface MAC can be spoofed applying the MAC address to all attached VLAN children automatically.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>interface.mtu</id>
         <label>MTU</label>
         <type>text</type>
@@ -89,6 +100,75 @@
         <label>MSS</label>
         <type>text</type>
         <help>If you enter a value in this field, then MSS clamping for TCP connections to the value entered above minus 40 (IPv4) or 60 (IPv6) will be in effect (TCP/IP header size).</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Hardware settings</label>
+    </field>
+    <field>
+        <id>interface.media</id>
+        <label>Media (speed and duplex)</label>
+        <type>dropdown</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.hw_settings_overwrite</id>
+        <label>Overwrite global settings</label>
+        <type>checkbox</type>
+        <help>Overwrite custom interface hardware settings with settings specified below</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.disablechecksumoffloading</id>
+        <label>Hardware CRC</label>
+        <type>checkbox</type>
+        <style>hw_settings_overwrite</style>
+        <help>Checking this option will disable hardware checksum offloading. Checksum offloading is broken in some hardware, particularly some Realtek cards. Rarely, drivers may have problems with checksum offloading and some specific NICs.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.disablesegmentationoffloading</id>
+        <label>Hardware TSO</label>
+        <style>hw_settings_overwrite</style>
+        <type>checkbox</type>
+        <help>Checking this option will disable hardware TCP segmentation offloading (TSO, TSO4, TSO6). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.disablelargereceiveoffloading</id>
+        <label>Hardware LRO</label>
+        <style>hw_settings_overwrite</style>
+        <type>checkbox</type>
+        <help>Checking this option will disable hardware large receive offloading (LRO). This offloading is broken in some hardware drivers, and may impact performance with some specific NICs.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.disablevlanhwfilter</id>
+        <label>VLAN Hardware Filtering</label>
+        <style>selectpicker hw_settings_overwrite</style>
+        <type>dropdown</type>
+        <help>Set usage of VLAN hardware filtering. This hardware acceleration may be broken in a particular device driver, or may impact performance.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -209,6 +289,28 @@
         </grid_view>
     </field>
     <field>
+        <id>interface.dhcp_send_options</id>
+        <label>Send Options</label>
+        <advanced>true</advanced>
+        <type>textbox</type>
+        <help>Options to send to the server, one per line.</help>
+        <style>type4 type4_dhcp</style>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.dhcp_request_options</id>
+        <label>Request Options</label>
+        <advanced>true</advanced>
+        <type>textbox</type>
+        <help>Options to request from the server, one per line.</help>
+        <style>type4 type4_dhcp</style>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <type>header</type>
         <label>Address configuration [IPv6]</label>
     </field>
@@ -233,7 +335,6 @@
             <visible>false</visible>
         </grid_view>
     </field>
-
     <field>
         <id>interface.dhcp6vlanprio</id>
         <label>Use VLAN priority</label>
@@ -247,8 +348,8 @@
     <field>
         <id>interface.dhcp6-ia-pd-len</id>
         <label>Prefix delegation size</label>
-        <type>text</type>
-        <style>type6 type6_dhcp6</style>
+        <type>dropdown</type>
+        <style>selectpicker type6 type6_dhcp6</style>
         <help>The value in this field is the delegated prefix length provided by the DHCPv6 server.</help>
         <grid_view>
             <visible>false</visible>
@@ -260,6 +361,19 @@
         <type>checkbox</type>
         <style>type6 type6_dhcp6</style>
         <help>Only request an IPv6 prefix; do not request an IPv6 address.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.dhcp6-information-only</id>
+        <label>Information Only</label>
+        <type>checkbox</type>
+        <style>type6 type6_dhcp6</style>
+        <advanced>true</advanced>
+        <help>Prevent asking for an IPv6 address, only request configuration parameters like DNS etc. </help>
         <grid_view>
             <type>boolean</type>
             <formatter>boolean</formatter>
@@ -329,6 +443,28 @@
         <label>Optional prefix IAID</label>
         <type>text</type>
         <help>The ID to use for prefix request identity association if required to be non-standard.</help>
+        <style>type6 type6_dhcp6</style>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.dhcp6_send_options</id>
+        <label>Send Options</label>
+        <advanced>true</advanced>
+        <type>textbox</type>
+        <help>Options to send to the server, one per line.</help>
+        <style>type6 type6_dhcp6</style>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>interface.dhcp6_request_options</id>
+        <label>Request Options</label>
+        <advanced>true</advanced>
+        <type>textbox</type>
+        <help>Options to send to the server, one per line.</help>
         <style>type6 type6_dhcp6</style>
         <grid_view>
             <visible>false</visible>

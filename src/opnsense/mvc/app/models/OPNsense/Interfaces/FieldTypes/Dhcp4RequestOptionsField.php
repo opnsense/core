@@ -1,0 +1,323 @@
+<?php
+
+/*
+ * Copyright (C) 2026 Deciso B.V.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+namespace OPNsense\Interfaces\FieldTypes;
+
+use OPNsense\Base\FieldTypes\TextField;
+use OPNsense\Base\Validators\CallbackValidator;
+
+class Dhcp4RequestOptionsField extends TextField
+{
+    static $validoptions = [
+        'subnet-mask',
+        'time-offset',
+        'routers',
+        'time-servers',
+        'ien116-name-servers',
+        'domain-name-servers',
+        'log-servers',
+        'cookie-servers',
+        'lpr-servers',
+        'impress-servers',
+        'resource-location-servers',
+        'host-name',
+        'boot-size',
+        'merit-dump',
+        'domain-name',
+        'swap-server',
+        'root-path',
+        'extensions-path',
+        'ip-forwarding',
+        'non-local-source-routing',
+        'policy-filter',
+        'max-dgram-reassembly',
+        'default-ip-ttl',
+        'path-mtu-aging-timeout',
+        'path-mtu-plateau-table',
+        'interface-mtu',
+        'all-subnets-local',
+        'broadcast-address',
+        'perform-mask-discovery',
+        'mask-supplier',
+        'router-discovery',
+        'router-solicitation-address',
+        'static-routes',
+        'trailer-encapsulation',
+        'arp-cache-timeout',
+        'ieee802-3-encapsulation',
+        'default-tcp-ttl',
+        'tcp-keepalive-interval',
+        'tcp-keepalive-garbage',
+        'nis-domain',
+        'nis-servers',
+        'ntp-servers',
+        'vendor-encapsulated-options',
+        'netbios-name-servers',
+        'netbios-dd-server',
+        'netbios-node-type',
+        'netbios-scope',
+        'font-servers',
+        'x-display-manager',
+        'dhcp-requested-address',
+        'dhcp-lease-time',
+        'dhcp-option-overload',
+        'dhcp-message-type',
+        'dhcp-server-identifier',
+        'dhcp-parameter-request-list',
+        'dhcp-message',
+        'dhcp-max-message-size',
+        'dhcp-renewal-time',
+        'dhcp-rebinding-time',
+        'dhcp-class-identifier',
+        'dhcp-client-identifier',
+        'option-62',
+        'option-63',
+        'nisplus-domain',
+        'nisplus-servers',
+        'tftp-server-name',
+        'bootfile-name',
+        'mobile-ip-home-agent',
+        'smtp-server',
+        'pop-server',
+        'nntp-server',
+        'www-server',
+        'finger-server',
+        'irc-server',
+        'streettalk-server',
+        'streettalk-directory-assistance-server',
+        'user-class',
+        'option-78',
+        'option-79',
+        'option-80',
+        'option-81',
+        'option-82',
+        'option-83',
+        'option-84',
+        'nds-servers',
+        'nds-tree-name',
+        'nds-context',
+        'option-88',
+        'option-89',
+        'option-90',
+        'option-91',
+        'option-92',
+        'option-93',
+        'option-94',
+        'option-95',
+        'option-96',
+        'option-97',
+        'option-98',
+        'option-99',
+        'option-100',
+        'option-101',
+        'option-102',
+        'option-103',
+        'option-104',
+        'option-105',
+        'option-106',
+        'option-107',
+        'option-108',
+        'option-109',
+        'option-110',
+        'option-111',
+        'option-112',
+        'option-113',
+        'url',
+        'option-115',
+        'option-116',
+        'option-117',
+        'option-118',
+        'domain-search',
+        'option-120',
+        'classless-routes',
+        'option-122',
+        'option-123',
+        'option-124',
+        'option-125',
+        'option-126',
+        'option-127',
+        'option-128',
+        'option-129',
+        'option-130',
+        'option-131',
+        'option-132',
+        'option-133',
+        'option-134',
+        'option-135',
+        'option-136',
+        'option-137',
+        'option-138',
+        'option-139',
+        'option-140',
+        'option-141',
+        'option-142',
+        'option-143',
+        'option-144',
+        'option-145',
+        'option-146',
+        'option-147',
+        'option-148',
+        'option-149',
+        'option-150',
+        'option-151',
+        'option-152',
+        'option-153',
+        'option-154',
+        'option-155',
+        'option-156',
+        'option-157',
+        'option-158',
+        'option-159',
+        'option-160',
+        'option-161',
+        'option-162',
+        'option-163',
+        'option-164',
+        'option-165',
+        'option-166',
+        'option-167',
+        'option-168',
+        'option-169',
+        'option-170',
+        'option-171',
+        'option-172',
+        'option-173',
+        'option-174',
+        'option-175',
+        'option-176',
+        'option-177',
+        'option-178',
+        'option-179',
+        'option-180',
+        'option-181',
+        'option-182',
+        'option-183',
+        'option-184',
+        'option-185',
+        'option-186',
+        'option-187',
+        'option-188',
+        'option-189',
+        'option-190',
+        'option-191',
+        'option-192',
+        'option-193',
+        'option-194',
+        'option-195',
+        'option-196',
+        'option-197',
+        'option-198',
+        'option-199',
+        'option-200',
+        'option-201',
+        'option-202',
+        'option-203',
+        'option-204',
+        'option-205',
+        'option-206',
+        'option-207',
+        'option-208',
+        'option-209',
+        'option-210',
+        'option-211',
+        'option-212',
+        'option-213',
+        'option-214',
+        'option-215',
+        'option-216',
+        'option-217',
+        'option-218',
+        'option-219',
+        'option-220',
+        'option-221',
+        'option-222',
+        'option-223',
+        'option-224',
+        'option-225',
+        'option-226',
+        'option-227',
+        'option-228',
+        'option-229',
+        'option-230',
+        'option-231',
+        'option-232',
+        'option-233',
+        'option-234',
+        'option-235',
+        'option-236',
+        'option-237',
+        'option-238',
+        'option-239',
+        'option-240',
+        'option-241',
+        'option-242',
+        'option-243',
+        'option-244',
+        'option-245',
+        'option-246',
+        'option-247',
+        'option-248',
+        'option-249',
+        'option-250',
+        'option-251',
+        'option-252',
+        'option-253',
+        'option-254',
+    ];
+    public function getValidators()
+    {
+
+        $validators = parent::getValidators();
+        $validators[] = new CallbackValidator(["callback" => function ($data) {
+            $messages = [];
+            if (empty($data)) {
+                return $messages;
+            }
+            foreach (explode("\n", $data) as $line) {
+                $parts = explode(" ", rtrim($line), 2);
+                if (!empty($parts)) {
+                    if (!in_array($parts[0], self::$validoptions) || count($parts) > 1) {
+                        $messages[] = sprintf(
+                            gettext('Invalid option or parameters "%s".'),
+                            $line
+                        );
+                    }
+                }
+            }
+            return $messages;
+        }
+        ]);
+
+        return $validators;
+    }
+}
+
+
+
+
+

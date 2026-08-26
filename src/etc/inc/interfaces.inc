@@ -2930,6 +2930,10 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $default_id)
 
         $dhcp6cconf .= "interface {$wanif} {\n";
 
+        if (!empty($wancfg['dhcp6-information-only'])) {
+            $dhcp6cconf .= "  information-only;\n";
+        }
+
         if (!isset($wancfg['dhcp6prefixonly'])) {
             /* request non-temporary address */
             $dhcp6cconf .= "  send ia-na {$default_id};\n";
@@ -2949,6 +2953,17 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $default_id)
         if (empty($wancfg['dhcp6_norequest_dns'])) {
             $dhcp6cconf .= "  request domain-name-servers;\n";
             $dhcp6cconf .= "  request domain-name;\n";
+        }
+
+        if (!empty($wancfg['dhcp6_send_options'])) {
+            foreach (explode("\n", $wancfg['dhcp6_send_options']) as $line) {
+                $dhcp6cconf .= sprintf("  send %s;\n", $line);
+            }
+        }
+        if (!empty($wancfg['dhcp6_request_options'])) {
+            foreach (explode("\n", $wancfg['dhcp6_request_options']) as $line) {
+                $dhcp6cconf .= sprintf("  request %s;\n", $line);
+            }
         }
 
         $dhcp6cconf .= "  script \"/usr/local/opnsense/scripts/interfaces/dhcp6c_script.sh\";\n";
@@ -3238,6 +3253,14 @@ function interface_dhcp_configure($interface = 'wan')
     $conf .= interfaces_dhcp_safe('  supersede interface-mtu %s;', 0, empty($wancfg['dhcphonourmtu']));
     $conf .= interfaces_dhcp_safe('  reject %s;', $wancfg['dhcprejectfrom'], !empty($wancfg['dhcprejectfrom']));
     $conf .= interfaces_dhcp_safe('  vlan-pcp %s;', $wancfg['dhcpvlanprio'] ?? '', isset($wancfg['dhcpvlanprio']));
+    foreach (['dhcp_send_options' => 'send' , 'dhcp_request_options' => 'request'] as $prop => $tag) {
+        if (!empty($wancfg[$prop])) {
+            foreach (explode("\n", $wancfg[$prop]) as $line) {
+                $option = interfaces_dhcp_split($line)[0]; /* only one per line */
+                $conf .= interfaces_dhcp_safe(sprintf('  %s %s;', $tag, implode(' ', $option['frmt'])), $option['args']);
+            }
+        }
+    }
     $conf .= interfaces_dhcp_safe('}');
 
     // DHCP Config File Advanced
