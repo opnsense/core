@@ -1307,6 +1307,7 @@
 /usr/local/opnsense/scripts/interfaces/list_assign_options.php
 /usr/local/opnsense/scripts/interfaces/list_hosts.py
 /usr/local/opnsense/scripts/interfaces/list_macdb.py
+/usr/local/opnsense/scripts/interfaces/list_mediaopts.php
 /usr/local/opnsense/scripts/interfaces/list_ndp.py
 /usr/local/opnsense/scripts/interfaces/list_regdomain.py
 /usr/local/opnsense/scripts/interfaces/list_sockstat.py
