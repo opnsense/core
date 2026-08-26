@@ -156,13 +156,9 @@ function _interfaces_vlan_configure($vlan)
 
 function interfaces_wlan_clone($device)
 {
-    global $config;
-
-    if (isset($config['wireless']['clone'])) {
-        foreach ($config['wireless']['clone'] as $clone) {
-            if ($device == $clone['cloneif']) {
-                return _interfaces_wlan_clone($clone['cloneif'], $clone);
-            }
+    foreach (config_read_array('wireless', 'clone', false) as $clone) {
+        if ($device == $clone['cloneif']) {
+            return _interfaces_wlan_clone($clone['cloneif'], $clone);
         }
     }
 
@@ -1865,14 +1861,14 @@ function interface_wlan_configure($if)
 
                             $all_certs = [];
                             // Generate CA cert and client cert to file
-                            foreach ($config['ca'] as $ca) {
+                            foreach (config_read_array('ca', false) as $ca) {
                                 if ($wlcfg['wpa']['wpa_eap_cacertref'] == $ca['refid']) {
                                     $all_certs["/var/etc/wpa_supplicant_{$if}_ca.crt"] =
                                         base64_decode($ca['crt']);
                                     $authentication[] = "ca_cert=\"/var/etc/wpa_supplicant_{$if}_ca.crt\"";
                                 }
                             }
-                            foreach ($config['cert'] as $cert) {
+                            foreach (config_read_array('cert', false) as $cert) {
                                 if ($wlcfg['wpa']['wpa_eap_cltcertref'] == $cert['refid']) {
                                     $all_certs["/var/etc/wpa_supplicant_{$if}_clt.crt"] =
                                         base64_decode($cert['crt']);
@@ -2047,11 +2043,9 @@ EOD;
         if (does_interface_exist("{$baseif}_wlan0")) {
             $clone_list[] = "{$baseif}_wlan0";
         }
-        if (isset($config['wireless']['clone'])) {
-            foreach ($config['wireless']['clone'] as $clone) {
-                if ($clone['if'] == $baseif) {
-                    $clone_list[] = $clone['cloneif'];
-                }
+        foreach (config_read_array('wireless', 'clone', false) as $clone) {
+            if ($clone['if'] == $baseif) {
+                $clone_list[] = $clone['cloneif'];
             }
         }
 

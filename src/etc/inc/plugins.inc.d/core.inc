@@ -260,8 +260,9 @@ function core_devices()
     }
 
     /* also need to find implied clones that do not have explicit cloneif set */
+    /* XXX this may be obsolete / fixable in a migration now */
     foreach (legacy_config_get_interfaces() as $id => $conf) {
-        if (isset($conf['wireless']) && !isset($wlan_names[$conf['if']])) {
+        if (strpos($conf['if'], '_wlan') !== false && !isset($wlan_names[$conf['if']])) {
             $wlan_names[$conf['if']] = [
                 'descr' => sprintf('%s (%s)', $conf['if'], gettext('wireless clone')),
                 'ifdescr' => gettext('wireless clone'),
