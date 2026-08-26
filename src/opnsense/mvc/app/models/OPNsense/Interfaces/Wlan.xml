@@ -1,0 +1,206 @@
+<model>
+    <mount>/wireless</mount>
+    <version>1.0.0</version>
+    <migration_prefix>WLAN</migration_prefix>
+    <description>Wireless configuration</description>
+    <items>
+        <clone type="ArrayField">
+            <if type="JsonKeyValueStoreField">
+                <Required>Y</Required>
+                <ConfigdPopulateAct>interface list wlan-adapters</ConfigdPopulateAct>
+                <ValidationMessage>Specify a valid wireless device.</ValidationMessage>
+            </if>
+            <mode type="OptionField">
+                <Required>Y</Required>
+                <Default>bss</Default>
+                <OptionValues>
+                    <bss>Infrastructure (BSS)</bss>
+                    <adhoc>Ad-hoc (IBSS)</adhoc>
+                    <hostap>Access Point</hostap>
+                </OptionValues>
+            </mode>
+            <descr type="DescriptionField"/>
+            <cloneif type="TextField"/>
+            <use_common type="BooleanField"/>
+            <standard type="OptionField">
+                <Required>Y</Required>
+                <Default>auto</Default>
+                <OptionValues>
+                    <!-- https://github.com/opnsense/src/blob/cda7faa147a81233c0b6f40b089c587ed7db6a1d/sbin/ifconfig/ifieee80211.c#L160-L175 -->
+                    <p0 value="auto">auto</p0>
+                    <p1 value="11b">11a</p1>
+                    <p2 value="11b">11b</p2>
+                    <p3 value="fh">fh</p3>
+                    <p4 value="turboA">turboA</p4>
+                    <p5 value="turboG">turboG</p5>
+                    <p6 value="sturbo">sturbo</p6>
+                    <p7 value="11na">11na</p7>
+                    <p8 value="11ng">11ng</p8>
+                    <p9 value="11acg">11acg</p9>
+                    <p10 value="11ac">11ac</p10>
+                </OptionValues>
+            </standard>
+            <pureg type="BooleanField"/>
+            <puren type="BooleanField"/>
+            <protmode  type="OptionField">
+                <Required>Y</Required>
+                <Default>off</Default>
+                <OptionValues>
+                    <off>Protection mode off</off>
+                    <cts>Protection mode CTS to self</cts>
+                    <rtscts>Protection mode RTS and CTS</rtscts>
+                </OptionValues>
+            </protmode>
+            <txpower type="IntegerField">
+                <BlankDesc>Default</BlankDesc>
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>99</MaximumValue>
+            </txpower>
+            <channel type="IntegerField">
+                <BlankDesc>Default</BlankDesc>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>999</MaximumValue>
+            </channel>
+            <diversity type="OptionField">
+                <BlankDesc>Default</BlankDesc>
+                <OptionValues>
+                    <p0 value="0">Off</p0>
+                    <p1 value="1">On</p1>
+                </OptionValues>
+            </diversity>
+            <txantenna type="OptionField">
+                <BlankDesc>Default</BlankDesc>
+                <OptionValues>
+                    <p0 value="0">Auto</p0>
+                    <p1 value="1">#1</p1>
+                    <p2 value="2">#2</p2>
+                </OptionValues>
+            </txantenna>
+            <rxantenna type="OptionField">
+                <BlankDesc>Default</BlankDesc>
+                <OptionValues>
+                    <p0 value="0">Auto</p0>
+                    <p1 value="1">#1</p1>
+                    <p2 value="2">#2</p2>
+                </OptionValues>
+            </rxantenna>
+            <regdomain type="JsonKeyValueStoreField">
+                <BlankDesc>Default</BlankDesc>
+                <ConfigdPopulateAct>interface wlan regdomain domain</ConfigdPopulateAct>
+                <ValidationMessage>Specify a valid regulatory domain.</ValidationMessage>
+            </regdomain>
+            <regcountry type="JsonKeyValueStoreField">
+                <BlankDesc>Default</BlankDesc>
+                <ConfigdPopulateAct>interface wlan regdomain country</ConfigdPopulateAct>
+                <ValidationMessage>Specify a valid country.</ValidationMessage>
+            </regcountry>
+            <reglocation type="OptionField">
+                <BlankDesc>Default</BlankDesc>
+                <OptionValues>
+                    <indoor>Indoor</indoor>
+                    <outdoor>Outdoor</outdoor>
+                    <anywhere>Anywhere</anywhere>
+                </OptionValues>
+            </reglocation>
+            <ssid type="TextField">
+                <AllowNewlines>N</AllowNewlines>
+                <AllowSpecial>N</AllowSpecial>
+            </ssid>
+            <wme type="BooleanField"/>
+            <hidessid type="BooleanField"/>
+            <wep>
+                <enable type="BooleanField"/>
+                <keys type="TextField"/>
+            </wep>
+            <wpa>
+                <enable type="BooleanField"/>
+                <auth_algs type="OptionField">
+                    <Required>Y</Required>
+                    <Default>1</Default>
+                    <OptionValues>
+                        <p1 value="1">Open System Authentication</p1>
+                        <p2 value="2">Shared Key Authentication</p2>
+                        <p3 value="3">Both</p3>
+                    </OptionValues>
+                </auth_algs>
+                <wpa_mode type="OptionField">
+                    <Required>Y</Required>
+                    <Default>1</Default>
+                    <OptionValues>
+                        <p1 value="1">WPA</p1>
+                        <p2 value="2">WPA2</p2>
+                        <p3 value="3">Both</p3>
+                    </OptionValues>
+                </wpa_mode>
+                <wpa_key_mgmt type="OptionField">
+                    <Required>Y</Required>
+                    <Default>WPA-PSK</Default>
+                    <OptionValues>
+                        <p1 value="WPA-PSK">Pre-Shared Key</p1>
+                        <p2 value="WPA-EAP">Extensible Authentication Protocol (EAP)</p2>
+                        <p3 value="WPA-PSK WPA-EAP">Both</p3>
+                    </OptionValues>
+                </wpa_key_mgmt>
+                <wpa_eap_method type="OptionField">
+                    <Required>Y</Required>
+                    <Default>PEAP</Default>
+                    <OptionValues>
+                        <PEAP>Protected Extensible Authentication Protocol (PEAP)</PEAP>
+                        <TLS>Transport Layer Security (TLS)</TLS>
+                        <TTLS>Tunneled Transport Layer Security (TTLS)</TTLS>
+                    </OptionValues>
+                </wpa_eap_method>
+                <wpa_eap_p2_auth type="OptionField">
+                    <Required>Y</Required>
+                    <Default>MD5</Default>
+                    <OptionValues>
+                        <MD5>MD5</MD5>
+                        <MSCHAPv2>MSCHAPv2</MSCHAPv2>
+                    </OptionValues>
+                </wpa_eap_p2_auth>
+                <wpa_eap_cacertref type="CertificateField">
+                    <type>ca</type>
+                </wpa_eap_cacertref>
+                <wpa_eap_cltcertref type="CertificateField"/>
+                <wpa_pairwise type="OptionField">
+                    <Required>Y</Required>
+                    <Default>CCMP TKIP</Default>
+                    <OptionValues>
+                        <p1 value="CCMP TKIP">Both</p1>
+                        <p2 value="CCMP">AES (recommended)</p2>
+                        <p3 value="TKIP">TKIP</p3>
+                    </OptionValues>
+                </wpa_pairwise>
+                <wpa_group_rekey type="IntegerField">
+                    <Default>60</Default>
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>9999</MaximumValue>
+                </wpa_group_rekey>
+                <wpa_gmk_rekey type="IntegerField">
+                    <Default>60</Default>
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>9999</MaximumValue>
+                </wpa_gmk_rekey>
+                <identity type="TextField"/>
+                <passphrase type="TextField"/>
+                <wpa_strict_rekey type="BooleanField"/>
+                <ieee8021x type="BooleanField"/>
+            </wpa>
+            <auth_server_addr type="NetworkField">
+                <NetMaskAllowed>N</NetMaskAllowed>
+            </auth_server_addr>
+            <auth_server_port type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+            </auth_server_port>
+            <auth_server_shared_secret type="TextField"/>
+            <auth_server_port2 type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>65535</MaximumValue>
+            </auth_server_port2>
+            <auth_server_shared_secret2 type="TextField"/>
+            <apbridge type="BooleanField"/>
+            <rsn_preauth type="BooleanField"/>
+        </clone>
+    </items>
+</model>

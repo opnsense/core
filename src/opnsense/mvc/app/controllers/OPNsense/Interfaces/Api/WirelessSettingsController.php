@@ -36,7 +36,7 @@ use OPNsense\Core\Config;
 class WirelessSettingsController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'wireless';
-    protected static $internalModelClass = 'OPNsense\Interfaces\Wireless';
+    protected static $internalModelClass = 'OPNsense\Interfaces\Wlan';
 
     protected function setBaseHook($node)
     {
@@ -111,7 +111,7 @@ class WirelessSettingsController extends ApiMutableModelControllerBase
     {
         $result = ["status" => "failed"];
         if ($this->request->isPost()) {
-            $result['status'] = strtolower(trim((new Backend())->configdRun('interface wireless configure')));
+            $result['status'] = strtolower(trim((new Backend())->configdRun('interface wlan configure')));
             $this->runInterfaceRegistration();
         }
         return $result;

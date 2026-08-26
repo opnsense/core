@@ -856,6 +856,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Menu/Menu.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Migrations/SET1_0_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Migrations/WLAN1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Neighbor/README
@@ -869,8 +870,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vlan.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/VxLan.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/VxLan.xml
-/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Wireless.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Wireless.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Wlan.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Wlan.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaClasslessStaticRouteField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaOptionDataField.php
@@ -1307,6 +1308,7 @@
 /usr/local/opnsense/scripts/interfaces/list_hosts.py
 /usr/local/opnsense/scripts/interfaces/list_macdb.py
 /usr/local/opnsense/scripts/interfaces/list_ndp.py
+/usr/local/opnsense/scripts/interfaces/list_regdomain.py
 /usr/local/opnsense/scripts/interfaces/list_sockstat.py
 /usr/local/opnsense/scripts/interfaces/macinfo.py
 /usr/local/opnsense/scripts/interfaces/mpd.script
@@ -1324,7 +1326,7 @@
 /usr/local/opnsense/scripts/interfaces/reconfigure_neighbors.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vips.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vlans.php
-/usr/local/opnsense/scripts/interfaces/reconfigure_wireless.php
+/usr/local/opnsense/scripts/interfaces/reconfigure_wlan.php
 /usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh
 /usr/local/opnsense/scripts/interfaces/rtsold_script.sh
 /usr/local/opnsense/scripts/interfaces/setup_hostwatch.sh

@@ -31,11 +31,20 @@ namespace OPNsense\Interfaces;
 use OPNsense\Base\BaseModel;
 use OPNsense\Base\Messages\Message;
 
-class Wireless extends BaseModel
+class Wlan extends BaseModel
 {
     public function performValidation($validateFullModel = false)
     {
         $messages = parent::performValidation($validateFullModel);
+        $commons = [];
+        foreach ($this->clone->iterateItems() as $clone) {
+            if (!isset($commons[$clone->if->getValue()])) {
+                $commons[$clone->if->getValue()] = 0;
+            }
+            if (!$clone->use_common->isEmpty()) {
+                $commons[$clone->if->getValue()] += 1;
+            }
+        }
         foreach ($this->clone->iterateItems() as $clone) {
             $key = $clone->__reference;
             if ($validateFullModel || $clone->isFieldChanged()) {
@@ -45,8 +54,47 @@ class Wireless extends BaseModel
                         $key . ".if"
                     ));
                 }
+                if ($commons[$clone->if->getValue()] > 1 || $commons[$clone->if->getValue()] == 0) {
+                    $messages->appendMessage(new Message(
+                        gettext("Exactly one device should be marked as used for common settings."),
+                        $key . ".use_common"
+                    ));
+                }
             }
         }
         return $messages;
+    }
+
+    public function getInterface($ifname)
+    {
+        $result = [];
+        foreach ($this->clone->iterateItems() as $clone) {
+            if ($clone->cloneif->isEqual($ifname)) {
+                $result = $clone->getNodeContent();
+            }
+        }
+        if (empty($result)) {
+            return $result;
+        }
+        foreach ($this->clone->iterateItems() as $clone) {
+            if ($clone->if->isEqual($result['if']) && !$clone->use_common->isEmpty()) {
+                /* overlay common settings */
+                foreach ([
+                    'channel',
+                    'diversity',
+                    'protmode',
+                    'regcountry',
+                    'regdomain',
+                    'reglocation',
+                    'rxantenna',
+                    'standard',
+                    'txantenna',
+                    'txpower',
+                ] as $fieldname) {
+                    $result[$fieldname] = $clone->$fieldname->getValue();
+                }
+            }
+        }
+        return $result;
     }
 }
