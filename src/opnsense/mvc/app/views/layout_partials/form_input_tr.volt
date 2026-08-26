@@ -86,7 +86,7 @@
             {% endif %}
             <b>{{label}}</b>
             {% if advanced|default(false)=='true' %}
-                <i class="fa fa-cog fa-sm fa-fw text-info"></i>
+                <i class="fa fa-cog fa-sm fa-fw text-warning"></i>
             {% endif %}
         </div>
     </td>
