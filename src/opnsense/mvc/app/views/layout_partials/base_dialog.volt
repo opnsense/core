@@ -81,9 +81,13 @@
                         <tbody {%if not (section['static']|default(false)) %}class="collapsible" {% if section['collapse']|default(false) %}style="display: none;"{%endif%}{%endif%}>
                         {%  if not section['type'] and (fields['advanced']|default(false) or fields['help']|default(false)) %}
                         <tr>
-                            <td>{% if fields['advanced']|default(false) %}<a href="#"><i class="fa fa-toggle-off text-danger" id="show_advanced_{{base_dialog_id}}"></i></a> <small>{{ lang._('advanced mode') }}</small>{% endif %}</td>
-                            <td colspan="2" style="text-align:right;">
-                                {% if fields['help']|default(false) %}<small>{{ lang._('full help') }}</small> <a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_{{base_dialog_id}}"></i></a>{% endif %}
+                            <td colspan="3">
+                                <span>
+                                    {% if fields['advanced']|default(false) %}<a href="#"><i class="fa fa-toggle-off fa-fw text-danger" id="show_advanced_{{base_dialog_id}}"></i></a> <small>{{ lang._('advanced mode') }}</small> <i class="fa fa-cog fa-sm fa-fw text-warning"></i>{% endif %}
+                                </span>
+                                <span class="pull-right">
+                                    {% if fields['help']|default(false) %}<i class="fa fa-info-circle fa-sm fa-fw text-primary"></i> <small>{{ lang._('full help') }}</small> <a href="#"><i class="fa fa-toggle-off fa-fw text-danger" id="show_all_help_{{base_dialog_id}}"></i></a>{% endif %}
+                                </span>
                             </td>
                         </tr>
                         {% endif %}

@@ -80,11 +80,14 @@
     <td>
         <div class="control-label" id="control_label_{{ id }}">
             {% if help|default(false) %}
-                <a id="help_for_{{ id }}" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>
+                <a id="help_for_{{ id }}" href="#" class="showhelp"><i class="fa fa-info-circle fa-fw"></i></a>
             {% elseif help|default(false) == false %}
-                <i class="fa fa-info-circle text-muted"></i>
+                <i class="fa fa-info-circle fa-fw text-muted"></i>
             {% endif %}
             <b>{{label}}</b>
+            {% if advanced|default(false)=='true' %}
+                <i class="fa fa-cog fa-sm fa-fw text-warning"></i>
+            {% endif %}
         </div>
     </td>
     <td>
