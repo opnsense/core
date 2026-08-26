@@ -81,7 +81,7 @@
     </field>
     <field>
         <id>rule.interfacenot</id>
-        <label>Invert interface</label>
+        <label>Invert inbound (interface)</label>
         <type>checkbox</type>
         <help>Match packets that were not inbound on the selected interface.</help>
         <grid_view>
@@ -90,7 +90,7 @@
     </field>
     <field>
         <id>rule.interface</id>
-        <label>Interface</label>
+        <label>Inbound (interface)</label>
         <type>select_multiple</type>
         <hint>any</hint>
         <help>Only match packets that are going in on the selected interfaces or groups.</help>
