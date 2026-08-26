@@ -269,6 +269,7 @@ abstract class Rule
         $rule = array_replace([], $this->rule); /* deep copy before use */
         $this->legacyMoveAddressFields($rule);
         $interfaces = empty($rule['interface']) ? [null] : explode(',', $rule['interface']);
+        $received_ons = empty($rule['received-on']) ? [null] : explode(',', $rule['received-on']);
         $froms = empty($rule['from']) ? [null] : explode(',', $rule['from']);
         $tos = empty($rule['to']) ? [null] : explode(',', $rule['to']);
         if (isset($rule['ipprotocol']) && $rule['ipprotocol'] == 'inet46') {
@@ -285,13 +286,16 @@ abstract class Rule
         foreach ($froms as $from) {
             foreach ($tos as $to) {
                 foreach ($interfaces as $interface) {
-                    foreach ($ipprotos as $ipproto) {
-                        $meta_rules[] = [
-                            'ipprotocol' => $ipproto,
-                            'interface' => $interface,
-                            'from' => $from,
-                            'to' => $to
-                        ];
+                    foreach ($received_ons as $received_on) {
+                        foreach ($ipprotos as $ipproto) {
+                            $meta_rules[] = [
+                                'ipprotocol' => $ipproto,
+                                'interface' => $interface,
+                                'received-on' => $received_on,
+                                'from' => $from,
+                                'to' => $to
+                            ];
+                        }
                     }
                 }
             }
@@ -303,16 +307,21 @@ abstract class Rule
                 /* lowercase to avoid mismatching lookups */
                 $rulecpy['protocol'] = strtolower($rulecpy['protocol']);
             }
-            $interface = $rulecpy['interface'];
-            if (!empty($interface)) {
-                /* pivot to IPv6 device if found */
-                if ($rulecpy['ipprotocol'] == 'inet6' && !empty($this->interfaceMapping[$interface]['IPv6_override'])) {
-                    $rulecpy['interface'] = $this->interfaceMapping[$interface]['IPv6_override'];
-                }
-                /* disable rule when device not found */
-                if (empty($this->interfaceMapping[$interface]['if'])) {
-                    $this->log("Interface {$interface} not found");
-                    $rulecpy['disabled'] = true;
+            foreach (['interface', 'received-on'] as $fieldname) {
+                $interface = $rulecpy[$fieldname];
+                if (!empty($interface)) {
+                    /* pivot to IPv6 device if found */
+                    if (
+                        $rulecpy['ipprotocol'] == 'inet6' &&
+                        !empty($this->interfaceMapping[$interface]['IPv6_override'])
+                    ) {
+                        $rulecpy[$fieldname] = $this->interfaceMapping[$interface]['IPv6_override'];
+                    }
+                    /* disable rule when device not found */
+                    if (empty($this->interfaceMapping[$interface]['if'])) {
+                        $this->log("Interface {$interface} not found");
+                        $rulecpy['disabled'] = true;
+                    }
                 }
             }
             yield $rulecpy;

@@ -54,6 +54,7 @@ class FilterRule extends Rule
         'os' => 'parsePlain, os {","}',
         'to' => 'parsePlainCurly,to ',
         'to_port' => 'parsePlainCurly, port ',
+        'received-on' => 'parseReceivedOn',
         'icmp-type' => 'parseReplaceSimple,skip:"skip",icmp-type {,}',
         'icmp6-type' => 'parsePlain,icmp6-type {,}',
         'flags' => 'parsePlain, flags ',
@@ -100,6 +101,23 @@ class FilterRule extends Rule
         } else {
             return "";
         }
+    }
+
+    /**
+     * parse interface a packet was initially received on
+     * @param string $value logical interface name
+     * @return string
+     */
+    protected function parseReceivedOn($value)
+    {
+        if (empty($value)) {
+            return "";
+        }
+        $prefix = !empty($this->rule['received-on-not']) ? "!received-on " : "received-on ";
+        if (empty($this->interfaceMapping[$value]['if'])) {
+            return "{$prefix}##{$value}## ";
+        }
+        return $prefix . $this->interfaceMapping[$value]['if'] . " ";
     }
 
     /**
