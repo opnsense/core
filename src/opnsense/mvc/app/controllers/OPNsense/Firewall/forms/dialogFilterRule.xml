@@ -340,11 +340,11 @@
     <field>
         <type>header</type>
         <label>Stateful firewall</label>
-        <advanced>true</advanced>
     </field>
     <field>
         <type>subheader</type>
         <label>State options</label>
+        <!-- subheader should only show when more options become relevant -->
         <advanced>true</advanced>
     </field>
     <field>
@@ -352,7 +352,6 @@
         <label>State type</label>
         <type>dropdown</type>
         <help>State tracking mechanism to use, default is full stateful tracking, sloppy ignores sequence numbers, use none for stateless rules.</help>
-        <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
         </grid_view>
