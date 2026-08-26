@@ -78,7 +78,7 @@
                         {% if fields['advanced']|default(false) %}<a href="#"><i class="fa fa-toggle-off fa-fw text-danger" id="show_advanced_{{base_form_id}}"></i></a> <small>{{ lang._('advanced mode') }}</small> <i class="fa fa-cogs fa-fw text-info"></i>{% endif %}
                     </span>
                     <span class="pull-right">
-                        {% if fields['help']|default(false) %}<i class="fa fa-info-circle fa-fw text-primary"></i><small>{{ lang._('full help') }}</small> <a href="#"><i class="fa fa-toggle-off fa-fw text-danger" id="show_all_help_{{base_form_id}}"></i></a>{% endif %}
+                        {% if fields['help']|default(false) %}<i class="fa fa-info-circle fa-fw text-primary"></i> <small>{{ lang._('full help') }}</small> <a href="#"><i class="fa fa-toggle-off fa-fw text-danger" id="show_all_help_{{base_form_id}}"></i></a>{% endif %}
                     </span>
                 </td>
             </tr>
