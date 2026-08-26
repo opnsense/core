@@ -176,6 +176,13 @@ class IPsecProposalField extends BaseListField
                 'x25519' => 'DH31, Modern EC',
                 'x448' => 'DH32, Modern EC'
             ];
+
+            $postQuantumKe = [
+                'mlkem512' => 'ML-KEM-512 (ID 35)',
+                'mlkem768' => 'ML-KEM-768 (ID 36)',
+                'mlkem1024' => 'ML-KEM-1024 (ID 37)',
+            ];
+
             $gcm_prf_options = [];
             foreach (['aes128', 'aes192', 'aes256', 'aes128gcm16', 'aes192gcm16', 'aes256gcm16'] as $encalg) {
                 foreach (['sha256', 'sha384', 'sha512', 'aesxcbc'] as $intalg) {
@@ -201,6 +208,53 @@ class IPsecProposalField extends BaseListField
                 }
             }
             self::$internalCacheOptionList[$this->internalCacheKey] = self::$internalCacheOptionList[$this->internalCacheKey] + $gcm_prf_options;
+
+            /*
+             * Add hybrid post-quantum variants using a single additional
+             * key exchange (KE1). ML-KEM is deliberately not offered as
+             * the primary key exchange to prevent a larger cartesian product in our UI.
+             *
+             * We only offer the post-quantum variants on top of classical primary key exchanges,
+             * see https://www.rfc-editor.org/rfc/rfc9370.html#section-1.1-2
+             *
+             * For example:
+             *
+             * aes256-sha384-x25519
+             *
+             * additionally produces:
+             *
+             * aes256-sha384-x25519-ke1_mlkem512
+             * aes256-sha384-x25519-ke1_mlkem768
+             * aes256-sha384-x25519-ke1_mlkem1024
+             */
+            $pqOptions = [];
+
+            foreach (self::$internalCacheOptionList[$this->internalCacheKey] as $cipher => $option) {
+                foreach ($dhgroups as $dhgroup => $dhDescription) {
+                    if (
+                        $cipher === $dhgroup ||
+                        substr($cipher, -strlen("-{$dhgroup}")) === "-{$dhgroup}"
+                    ) {
+                        foreach ($postQuantumKe as $pqKe => $pqDescription) {
+                            $pqCipher = "{$cipher}-ke1_{$pqKe}";
+
+                            $description = $option['value'];
+                            if (empty($description)) {
+                                $description = $cipher . " [{$dhDescription}]";
+                            }
+
+                            $pqOptions[$pqCipher] = [
+                                'value' => $pqCipher . " [{$dhDescription} + {$pqDescription}]",
+                                'optgroup' => $option['optgroup']
+                            ];
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            self::$internalCacheOptionList[$this->internalCacheKey] = self::$internalCacheOptionList[$this->internalCacheKey] + $pqOptions;
         }
 
         $this->internalOptionList = self::$internalCacheOptionList[$this->internalCacheKey];
