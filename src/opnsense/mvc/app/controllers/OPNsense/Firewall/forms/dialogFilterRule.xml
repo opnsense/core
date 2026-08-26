@@ -84,6 +84,7 @@
         <label>Invert interface (inbound)</label>
         <type>checkbox</type>
         <help>Match packets that were not inbound on the selected interface.</help>
+        <advanced>true</advanced>
         <grid_view>
             <ignore>true</ignore>
         </grid_view>
@@ -115,7 +116,6 @@
         <type>dropdown</type>
         <hint>any</hint>
         <help>Only match packets that were initially received on the selected interface or group. This is mostly relevant for out direction rules when creating a security zone ruleset.</help>
-        <advanced>true</advanced>
         <grid_view>
             <formatter>interfaces</formatter>
             <sequence>26</sequence>
