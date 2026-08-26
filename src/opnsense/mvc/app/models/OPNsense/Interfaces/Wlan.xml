@@ -42,7 +42,7 @@
             </standard>
             <pureg type="BooleanField"/>
             <puren type="BooleanField"/>
-            <protmode  type="OptionField">
+            <protmode type="OptionField">
                 <Required>Y</Required>
                 <Default>off</Default>
                 <OptionValues>

@@ -79,7 +79,8 @@ class Wlan extends BaseModel
         foreach ($this->clone->iterateItems() as $clone) {
             if ($clone->if->isEqual($result['if']) && !$clone->use_common->isEmpty()) {
                 /* overlay common settings */
-                foreach ([
+                foreach (
+                    [
                     'channel',
                     'diversity',
                     'protmode',
@@ -90,7 +91,8 @@ class Wlan extends BaseModel
                     'standard',
                     'txantenna',
                     'txpower',
-                ] as $fieldname) {
+                    ] as $fieldname
+                ) {
                     $result[$fieldname] = $clone->$fieldname->getValue();
                 }
             }
