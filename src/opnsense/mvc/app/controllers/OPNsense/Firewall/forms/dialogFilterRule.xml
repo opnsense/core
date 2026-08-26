@@ -81,9 +81,9 @@
     </field>
     <field>
         <id>rule.interfacenot</id>
-        <label>Invert Interface</label>
+        <label>Invert interface</label>
         <type>checkbox</type>
-        <help>Use all but selected interfaces</help>
+        <help>Match packets that were not received on the selected interface.</help>
         <grid_view>
             <ignore>true</ignore>
         </grid_view>
@@ -93,9 +93,31 @@
         <label>Interface</label>
         <type>select_multiple</type>
         <hint>any</hint>
+        <help>Only match packets that are going in on the selected interfaces or groups.</help>
         <grid_view>
             <formatter>interfaces</formatter>
             <sequence>25</sequence>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.received-on-not</id>
+        <label>Invert received-on interface</label>
+        <type>checkbox</type>
+        <help>Match packets that were not received on the selected interface.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.received-on</id>
+        <label>Received-on interface</label>
+        <type>dropdown</type>
+        <hint>any</hint>
+        <help>Only match packets that were initially received on the selected interface or group. This is mostly relevant for out direction rules when creating a security zone ruleset.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
         </grid_view>
     </field>
     <field>
@@ -146,26 +168,6 @@
         </help>
         <grid_view>
             <ignore>true</ignore>
-        </grid_view>
-    </field>
-    <field>
-        <id>rule.received-on-not</id>
-        <label>Invert received interface</label>
-        <type>checkbox</type>
-        <help>Match packets that were not received on the selected interface.</help>
-        <advanced>true</advanced>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
-        <id>rule.received-on</id>
-        <label>Received on</label>
-        <type>dropdown</type>
-        <help>Only match packets that were initially received on the selected interface.</help>
-        <advanced>true</advanced>
-        <grid_view>
-            <visible>false</visible>
         </grid_view>
     </field>
     <field>

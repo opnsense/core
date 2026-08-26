@@ -73,15 +73,6 @@
                     </Filters>
                     <AllowDynamic>Y</AllowDynamic>
                 </interface>
-                <direction type="OptionField">
-                    <Required>Y</Required>
-                    <Default>in</Default>
-                    <OptionValues>
-                        <in>In</in>
-                        <out>Out</out>
-                        <any>Both</any>
-                    </OptionValues>
-                </direction>
                 <received-on-not type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
@@ -92,6 +83,15 @@
                     </Filters>
                     <AllowDynamic>Y</AllowDynamic>
                 </received-on>
+                <direction type="OptionField">
+                    <Required>Y</Required>
+                    <Default>in</Default>
+                    <OptionValues>
+                        <in>In</in>
+                        <out>Out</out>
+                        <any>Both</any>
+                    </OptionValues>
+                </direction>
                 <ipprotocol type="OptionField">
                     <Required>Y</Required>
                     <Default>inet</Default>
