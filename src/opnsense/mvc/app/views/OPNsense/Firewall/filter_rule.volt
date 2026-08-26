@@ -428,7 +428,10 @@
 
                         // Only single interfaces can be negated
                         if (!interfaces.includes(",")) {
-                            return (row.interfacenot == 1 ? "! " : "") + interfaces;
+                            const invertField = Object.keys(row).find(
+                                field => field.startsWith(column.id) && field.endsWith("not")
+                            );
+                            return (row[invertField] == 1 ? "! " : "") + interfaces;
                         }
 
                         const interfaceList = interfaces.split(",");
