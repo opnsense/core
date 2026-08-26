@@ -98,6 +98,7 @@
         <grid_view>
             <formatter>interfaces</formatter>
             <sequence>25</sequence>
+            <min-width>100</min-width>
         </grid_view>
     </field>
     <field>
