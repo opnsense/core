@@ -601,7 +601,7 @@ function initGlobalOpenShortcuts() {
             });
         } else if (e.key === 'f' || e.key === 'F') {
             /* In case multiple grids are present, use the first matching action bar in the current context */
-            const $maximize = searchContext.find('[id$="-actions-group"] button[id$="-maximize"]').first();
+            const $maximize = searchContext.find('[id$="-actions-group"] button[id$="-maximize"]:visible').first();
             if ($maximize.length) {
                 $maximize.click();
                 e.preventDefault();
