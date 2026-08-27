@@ -95,4 +95,26 @@ class FilterRuleTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals(join('', $rules), $this->getConf(__FUNCTION__));
     }
+
+    /**
+     * test FreeBSD 15 match rule normalization output
+     */
+    public function testNormalization()
+    {
+        $rules = [];
+
+        $rules[] = new FilterRule(self::$ifmap, self::$gwmap, [
+            'type' => 'match',
+            'direction' => 'in',
+            'ipprotocol' => 'inet',
+            'protocol' => 'tcp',
+            'from' => '192.0.2.0/24',
+            'to' => 'any',
+            /* match normalization must never terminate evaluation of later filter rules */
+            'quick' => true,
+            'scrub' => 'no-df random-id max-mss 1400 min-ttl 32 set-tos lowdelay',
+        ]);
+
+        $this->assertEquals(join('', $rules), $this->getConf(__FUNCTION__));
+    }
 }

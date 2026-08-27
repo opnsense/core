@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Firewall/Filter</mount>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <migration_prefix>MFP</migration_prefix>
     <description>Firewall rules (new)</description>
     <items>
@@ -56,6 +56,7 @@
                         <pass>Pass</pass>
                         <block>Block</block>
                         <reject>Reject</reject>
+                        <match>Normalize</match>
                     </OptionValues>
                 </action>
                 <quick type="BooleanField">
@@ -404,6 +405,23 @@
                 </categories>
                 <sched type=".\ScheduleField"/>
                 <tos type=".\TosField"/>
+                <scrub_no_df type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </scrub_no_df>
+                <scrub_random_id type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </scrub_random_id>
+                <scrub_max_mss type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                </scrub_max_mss>
+                <scrub_min_ttl type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>255</MaximumValue>
+                </scrub_min_ttl>
+                <scrub_set_tos type=".\TosField"/>
                 <shaper1 type="ModelRelationField">
                     <Model>
                         <pipes>

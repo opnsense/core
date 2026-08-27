@@ -54,6 +54,7 @@ class FilterRule extends Rule
         'os' => 'parsePlain, os {","}',
         'to' => 'parsePlainCurly,to ',
         'to_port' => 'parsePlainCurly, port ',
+        'scrub' => 'parseScrub',
         'received-on' => 'parseReceivedOn',
         'icmp-type' => 'parseReplaceSimple,skip:"skip",icmp-type {,}',
         'icmp6-type' => 'parsePlain,icmp6-type {,}',
@@ -101,6 +102,17 @@ class FilterRule extends Rule
         } else {
             return "";
         }
+    }
+
+    /**
+     * Render FreeBSD 15 style normalization options on a match rule.
+     *
+     * @param string $value space-separated scrub options
+     * @return string
+     */
+    protected function parseScrub($value)
+    {
+        return empty($value) ? '' : "scrub ( {$value} ) ";
     }
 
     /**
@@ -216,6 +228,9 @@ class FilterRule extends Rule
                     $this->log("Gateway not allowed for block rules");
                 }
                 unset($rule['gateway'], $rule['reply']);
+            }
+            if (($rule['type'] ?? '') === 'match') {
+                $rule['quick'] = false;
             }
             if (!isset($rule['quick'])) {
                 // all rules are quick by default except floating

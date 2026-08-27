@@ -49,6 +49,74 @@ class Filter extends BaseModel
         foreach ([$this->rules->rule, $this->snatrules->rule] as $rules) {
             foreach ($rules->iterateItems() as $rule) {
                 if ($validateFullModel || $rule->isFieldChanged()) {
+                    if ($rule->action !== null) {
+                        $scrub_fields = [
+                            'scrub_no_df',
+                            'scrub_random_id',
+                            'scrub_max_mss',
+                            'scrub_min_ttl',
+                            'scrub_set_tos',
+                        ];
+                        if ($rule->action->getValue() === 'match') {
+                            $allowed_fields = [
+                                'enabled',
+                                'sequence',
+                                'sort_order',
+                                'prio_group',
+                                'action',
+                                'interfacenot',
+                                'interface',
+                                'direction',
+                                'ipprotocol',
+                                'protocol',
+                                'source_net',
+                                'source_not',
+                                'source_port',
+                                'destination_net',
+                                'destination_not',
+                                'destination_port',
+                                'nosync',
+                                'categories',
+                                'description',
+                                'audit',
+                            ];
+                            $has_scrub_option = false;
+                            foreach ($scrub_fields as $fieldname) {
+                                $allowed_fields[] = $fieldname;
+                                $has_scrub_option = $has_scrub_option || !$rule->$fieldname->isEmpty();
+                            }
+                            if (!$has_scrub_option) {
+                                $messages->appendMessage(new Message(
+                                    gettext("Normalization rules require at least one scrub option."),
+                                    $rule->action->__reference
+                                ));
+                            }
+                            foreach ($rule->iterateItems() as $fieldname => $field) {
+                                if ($fieldname === 'statetype') {
+                                    if ($field->getValue() !== 'keep') {
+                                        $messages->appendMessage(new Message(
+                                            gettext("State options are not valid for normalization rules."),
+                                            $field->__reference
+                                        ));
+                                    }
+                                } elseif (!in_array($fieldname, $allowed_fields) && !$field->isEmpty()) {
+                                    $messages->appendMessage(new Message(
+                                        gettext("This option is not valid for normalization rules."),
+                                        $field->__reference
+                                    ));
+                                }
+                            }
+                        } else {
+                            foreach ($scrub_fields as $fieldname) {
+                                if (!$rule->$fieldname->isEmpty()) {
+                                    $messages->appendMessage(new Message(
+                                        gettext("Scrub options are only valid for normalization rules."),
+                                        $rule->$fieldname->__reference
+                                    ));
+                                }
+                            }
+                        }
+                    }
                     // port / protocol validation
                     if (!empty((string)$rule->source_port) && !in_array($rule->protocol, $port_protos)) {
                         $messages->appendMessage(new Message(

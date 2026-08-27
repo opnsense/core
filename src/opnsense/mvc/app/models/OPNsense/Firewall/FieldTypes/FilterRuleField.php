@@ -103,6 +103,26 @@ class FilterRuleContainerField extends ContainerField
         $result['descr'] = (string)$this->description;
         $result['type'] = (string)$this->action;
         $result['reply-to'] = (string)$this->replyto;
+        if ($result['type'] === 'match') {
+            $scrub_options = [];
+            foreach (
+                [
+                    'scrub_no_df' => 'no-df',
+                    'scrub_random_id' => 'random-id',
+                    'scrub_max_mss' => 'max-mss',
+                    'scrub_min_ttl' => 'min-ttl',
+                    'scrub_set_tos' => 'set-tos',
+                ] as $fieldname => $keyword
+            ) {
+                if (!$this->$fieldname->isEmpty()) {
+                    $scrub_options[] = is_a($this->$fieldname, "OPNsense\\Base\\FieldTypes\\BooleanField") ?
+                        $keyword : $keyword . ' ' . (string)$this->$fieldname;
+                }
+            }
+            $result['scrub'] = implode(' ', $scrub_options);
+            /* A match rule must not stop evaluation of the pass/block rules that follow it. */
+            $result['quick'] = false;
+        }
         if (!$this->disablereplyto->isEmpty()) {
             /* XXX: registerFilterRule() merges disablereplyto, which requires the item to only exist when set  */
             $result['disablereplyto'] = true;
@@ -116,8 +136,8 @@ class FilterRuleContainerField extends ContainerField
     }
 
     /**
-     * rule priority is treated equally to the legacy rules, first "floating" then groups and single interface
-     * rules are handled last
+     * Rule priority is treated equally to the legacy rules. Normalization match rules are evaluated first,
+     * followed by floating, group and single-interface rules.
      * @return int priority in the ruleset, sequence should determine sort order.
      */
     public function getPriority()
@@ -139,6 +159,10 @@ class FilterRuleContainerField extends ContainerField
             if (!empty($interface_set) && !$has_interface) {
                 return 600000;
             }
+        }
+
+        if ($this->action->getValue() === 'match') {
+            return 100000;
         }
 
         /* XXX this is an approximation of the complex situation and will be removed eventually */

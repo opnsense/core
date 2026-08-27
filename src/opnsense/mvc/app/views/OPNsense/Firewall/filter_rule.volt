@@ -78,6 +78,7 @@
 
         const ruleTypeMap = [
             { idx: 0, uuid: "auto0", label: "{{ lang._('Automatically generated rules') }}", icon: "fa-magic", tooltip: "{{ lang._('Automatically generated rules') }}", color: "text-secondary", groupType: null },
+            { idx: 1, uuid: "normalization", label: "{{ lang._('Normalization rules') }}", icon: "fa-filter", tooltip: "{{ lang._('Normalization rule') }}", color: "text-primary", groupType: "normalization" },
             { idx: 2, uuid: "floating", label: "{{ lang._('Floating rules') }}", icon: "fa-layer-group", tooltip: "{{ lang._('Floating rule') }}", color: "text-primary", groupType: "floating" },
             { idx: 3, uuid: "group", label: "{{ lang._('Group rules') }}", icon: "fa-sitemap", tooltip: "{{ lang._('Group rule') }}", color: "text-warning", groupType: "groups" },
             { idx: 4, uuid: "interface", label: "{{ lang._('Interface rules') }}", icon: "fa-ethernet", tooltip: "{{ lang._('Interface rule') }}", color: "text-info", groupType: "interfaces" },
@@ -464,7 +465,9 @@
                         }
 
                         // Action
-                        if (row.action === "block") {
+                        if (row.action === "match") {
+                            result += `<i class="fa fa-filter fa-fw text-primary" data-toggle="tooltip" title="${row['%action']}"></i> `;
+                        } else if (row.action === "block") {
                             result += `<i class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="${row['%action']}"></i> `;
                         } else if (row.action === "reject") {
                             result += `<i class="fa fa-times-circle fa-fw text-danger" data-toggle="tooltip" title="${row['%action']}"></i> `;
