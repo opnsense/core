@@ -177,7 +177,7 @@ class Swanctl extends BaseModel
             }
             $key = $node->__reference;
             $conn = $this->getNodeByReference('Connections.Connection.' . $node->connection->getValue());
-            if (str_contains($node->esp_proposals->getValue(), 'mlkem') && $conn->version->getValue() != '2') {
+            if ($conn != null && str_contains($node->esp_proposals->getValue(), 'mlkem') && $conn->version->getValue() != '2') {
                 $messages->appendMessage(
                     new Message(
                         gettext("A post-quantum key exchange method (mlkem) can only be used with IKEv2"),
