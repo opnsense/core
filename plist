@@ -835,10 +835,15 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/BridgeMemberField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/DUIDField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/DeviceField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/Dhcp4RequestOptionsField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/Dhcp4SendOptionsField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/Dhcp6RequestOptionsField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/Dhcp6SendOptionsField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/GatewayField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/IfDescField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/LaggInterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/LinkAddressField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/MediaTypesField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/NeighborField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/NetworkInterfaceField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/FieldTypes/VipField.php

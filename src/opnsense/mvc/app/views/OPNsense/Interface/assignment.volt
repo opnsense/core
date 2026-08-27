@@ -62,6 +62,14 @@
             });
         });
 
+        $("#interface\\.hw_settings_overwrite").change(function(){
+            if ($(this).is(':checked')) {
+                $(".hw_settings_overwrite").closest('tr').show();
+            } else {
+                $(".hw_settings_overwrite").closest('tr').hide();
+            }
+        });
+
     });
 </script>
 <div class="tab-content content-box">

@@ -31,7 +31,24 @@
             </enable>
             <blockpriv type="BooleanField"/>
             <blockbogons type="BooleanField"/>
+            <spoofmac type="MacAddressField"/>
             <promisc type="BooleanField"/>
+            <media type=".\MediaTypesField">
+                <BlankDesc>Default (no preference, typically autoselect)</BlankDesc>
+            </media>
+            <hw_settings_overwrite type="BooleanField"/>
+            <disablechecksumoffloading type="BooleanField"/>
+            <disablesegmentationoffloading type="BooleanField"/>
+            <disablelargereceiveoffloading type="BooleanField"/>
+            <disablevlanhwfilter type="OptionField">
+                <Required>Y</Required>
+                <Default>0</Default>
+                <OptionValues>
+                    <p0 value="0">Enable VLAN Hardware Filtering</p0>
+                    <p1 value="1">Disable VLAN Hardware Filtering</p1>
+                    <p2 value="2">Leave default</p2>
+                </OptionValues>
+            </disablevlanhwfilter>
             <gateway_interface type="BooleanField"/>
             <mtu type="IntegerField">
                 <MinimumValue>576</MinimumValue>
@@ -115,6 +132,8 @@
                     <pcp7 value="7">Network Control (7, highest)</pcp7>
                 </OptionValues>
             </dhcpvlanprio>
+            <dhcp_send_options type=".\Dhcp4SendOptionsField"/>
+            <dhcp_request_options type=".\Dhcp4RequestOptionsField"/>
             <!-- DHCPv6 client settings-->
             <dhcp6vlanprio type="OptionField">
                 <BlankDesc>Disabled</BlankDesc>
@@ -129,12 +148,33 @@
                     <pcp7 value="7">Network Control (7, highest)</pcp7>
                 </OptionValues>
             </dhcp6vlanprio>
-            <dhcp6-ia-pd-len type="IntegerField">
-                <MinimumValue>48</MinimumValue>
-                <MaximumValue>64</MaximumValue>
+            <dhcp6-ia-pd-len type="OptionField">
+                <Required>Y</Required>
+                <Default>0</Default>
+                <OptionValues>
+                    <pcp0 value="0">64</pcp0>
+                    <pcp1 value="1">63</pcp1>
+                    <pcp2 value="2">62</pcp2>
+                    <pcp3 value="3">61</pcp3>
+                    <pcp4 value="4">60</pcp4>
+                    <pcp5 value="5">59</pcp5>
+                    <pcp6 value="6">58</pcp6>
+                    <pcp7 value="7">57</pcp7>
+                    <pcp8 value="8">56</pcp8>
+                    <pcp9 value="9">55</pcp9>
+                    <pcp10 value="10">54</pcp10>
+                    <pcp11 value="11">53</pcp11>
+                    <pcp12 value="12">52</pcp12>
+                    <pcp13 value="13">51</pcp13>
+                    <pcp14 value="14">50</pcp14>
+                    <pcp15 value="15">49</pcp15>
+                    <pcp16 value="16">48</pcp16>
+                    <none>None</none>
+                </OptionValues>
             </dhcp6-ia-pd-len>
             <dhcp6prefixonly type="BooleanField"/>
             <dhcp6_request_dns type="BooleanField"/>
+            <dhcp6-information-only type="BooleanField"/>
             <dhcp6-ia-pd-send-hint type="BooleanField"/>
             <dhcp6_rapid_commit type="BooleanField"/>
             <dhcp6-prefix-id type="TextField">
@@ -149,6 +189,8 @@
                 <MinimumValue>0</MinimumValue>
                 <ValidationMessage>Requires a valid positive number</ValidationMessage>
             </dhcp6_assoc_pd>
+            <dhcp6_send_options type=".\Dhcp6SendOptionsField"/>
+            <dhcp6_request_options type=".\Dhcp6RequestOptionsField"/>
             <!-- 6rd settings-->
             <prefix-6rd type="NetworkField">
                 <AddressFamily>ipv6</AddressFamily>

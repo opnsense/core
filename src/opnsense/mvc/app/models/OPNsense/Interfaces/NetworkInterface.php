@@ -31,6 +31,7 @@ namespace OPNsense\Interfaces;
 use OPNsense\Base\BaseModel;
 use OPNsense\Base\FieldTypes\BooleanField;
 use OPNsense\Base\Messages\Message;
+use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Core\FileObject;
 use OPNsense\Routing\Gateways;
@@ -190,6 +191,7 @@ class NetworkInterface extends BaseModel
     {
         $messages = parent::performValidation($validateFullModel);
         $gateways = new Gateways();
+        $mediaopts = json_decode((new Backend())->configdRun('interface list media-opts'), true) ?? [];
         foreach ($this->interface->iterateItems() as $ifname => $if) {
             if (!$validateFullModel && !$if->isFieldChanged()) {
                 continue;
@@ -274,6 +276,25 @@ class NetworkInterface extends BaseModel
                         $key . ".gatewayv6"
                     ));
                 }
+            }
+
+            if (!$if->media->isEmpty() && (
+                !isset($mediaopts[$if->media->getValue()]) ||
+                !in_array($if->if->getValue(), $mediaopts[$if->media->getValue()]['ifs'])
+            )) {
+                $tmp = [];
+                foreach ($mediaopts as $val => $opt) {
+                    if (in_array($if->if->getValue(), $opt['ifs'])) {
+                        $tmp[] = $val;
+                    }
+                }
+                $messages->appendMessage(new Message(
+                    sprintf(
+                        gettext('Selected media type not valid for this interface (available: %s).'),
+                        implode(",", $tmp)
+                    ),
+                    $key . ".media"
+                ));
             }
         }
 

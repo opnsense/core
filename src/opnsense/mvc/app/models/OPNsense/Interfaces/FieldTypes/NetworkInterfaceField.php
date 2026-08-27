@@ -34,6 +34,7 @@ use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 
+
 class NetworkInterfaceContainerField extends ContainerField
 {
     static $pppDevices = null;
@@ -65,7 +66,8 @@ class NetworkInterfaceContainerField extends ContainerField
             'optgroup',
             'dhcp6_request_dns',
             'dhcp6-prefix-id',
-            'dhcp6_ifid'
+            'dhcp6_ifid',
+            'media',
         ];
         foreach ($this->iterateItems() as $key => $node) {
             if (in_array($key, $skiplist)) {
@@ -75,9 +77,14 @@ class NetworkInterfaceContainerField extends ContainerField
         }
         $result['dhcp6_norequest_dns'] = $this->dhcp6_request_dns->isEmpty() ? '1' : '0';
         foreach (['dhcp6-prefix-id', 'dhcp6_ifid', 'track6-prefix-id', 'track6_ifid'] as $fld) {
-            if (!$this->$fld->isEmpty()) {
+            if (!$this->$fld->isSet()) {
                 $result[$fld] = intval($this->$fld->getValue(), 16);
             }
+        }
+        if (!$this->media->isEmpty()) {
+            $parts = explode("\t", $this->media->getValue());
+            $result['media'] = $parts[0];
+            $result['mediaopt'] = $parts[1] ?? '';
         }
         return $result;
     }
@@ -104,9 +111,12 @@ class NetworkInterfaceContainerField extends ContainerField
         }
         $this->dhcp6_request_dns = empty($data['dhcp6_norequest_dns']) ? '1' : '0';
         foreach (['dhcp6-prefix-id', 'dhcp6_ifid', 'track6-prefix-id', 'track6_ifid'] as $fld) {
-            if (!empty($data[$fld])) {
+            if (isset($data[$fld]) && $data[$fld] !== '') {
                 $this->$fld = sprintf("0x%x", $data[$fld]);
             }
+        }
+        if (!empty($data['media']) && !empty($data['mediaopt'])) {
+            $this->media = sprintf("%s\t%s", $data['media'], $data['mediaopt']);
         }
     }
 

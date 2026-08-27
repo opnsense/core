@@ -139,6 +139,13 @@ class AssignmentController extends ApiMutableModelControllerBase
 
     public function reconfigureAction()
     {
+        $legacybools = [
+            'enable',
+            'lock',
+            'disablechecksumoffloading',
+            'disablesegmentationoffloading',
+            'disablelargereceiveoffloading'
+        ];
         if ($this->request->isPost()) {
             $backend = new Backend();
             /***
@@ -164,9 +171,20 @@ class AssignmentController extends ApiMutableModelControllerBase
                                 unset(Config::getInstance()->object()->interfaces->$key->$akey);
                             }
                         }
-                        foreach (['enable', 'lock'] as $legacybool) {
+                        foreach ($legacybools as $legacybool) {
                             if (empty($pending[$legacybool])) {
                                 unset(Config::getInstance()->object()->interfaces->$key->$legacybool);
+                            }
+                        }
+                        /* advanced dhcp settings not supported, prevent settings being used */
+                        foreach ([
+                            'adv_dhcp6_config_file_override',
+                            'adv_dhcp6_config_advanced',
+                            'adv_dhcp_config_advanced',
+                            'adv_dhcp_config_file_override'
+                        ] as $unset) {
+                            if (isset(Config::getInstance()->object()->interfaces->$key->$unset)) {
+                                unset(Config::getInstance()->object()->interfaces->$key->$unset);
                             }
                         }
                     }
