@@ -3510,6 +3510,19 @@ function interface_parent_devices($device, $as_interface = false)
         }
     }
 
+    foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
+        if ($device == $ppp['if']) {
+            foreach (explode(',', $ppp['ports']) as $port) {
+                /*
+                 * XXX We only have get_real_interface() here because
+                 * PPP may be assigned to an assigned interface!  :(
+                 */
+                $parents[] = get_real_interface($port);
+            }
+            break;
+        }
+    }
+
     return $parents;
 }
 
