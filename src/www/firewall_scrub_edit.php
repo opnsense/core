@@ -46,6 +46,11 @@ function formNetworks()
 
 $a_scrub = &config_read_array('filter', 'scrub', 'rule');
 
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && count($a_scrub) === 0) {
+    header(url_safe('Location: /ui/firewall/filter/'));
+    exit;
+}
+
 // define form fields
 $config_fields = array('interface', 'proto', 'srcnot', 'src', 'srcmask', 'dstnot', 'dst', 'dstmask', 'dstport',
                        'no-df', 'random-id', 'max-mss', 'min-ttl', 'set-tos', 'descr', 'disabled', 'direction',

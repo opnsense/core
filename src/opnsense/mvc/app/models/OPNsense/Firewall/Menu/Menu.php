@@ -49,14 +49,30 @@ class Menu extends MenuContainer
 
         // add interfaces to "Firewall: Rules" menu tab...
         $has_legacy_fw = !empty($config->filter->rule) && !empty($config->filter->rule->count());
+        $has_legacy_scrub = !empty($config->filter->scrub->rule) &&
+            !empty($config->filter->scrub->rule->count());
         $has_legacy_outbound_nat = !empty($config->nat->outbound->rule) &&
             !empty($config->nat->outbound->rule->count());
-        if ($has_legacy_fw || $has_legacy_outbound_nat) {
+        if ($has_legacy_fw || $has_legacy_scrub || $has_legacy_outbound_nat) {
             $this->appendItem('Firewall', 'Migration', [
                 'url' => '/ui/firewall/migration',
                 'fixedname' => gettext('Migration assistant'),
                 'cssClass' => 'fa fa-gears fa-fw',
                 'order' => 0,
+            ]);
+        }
+
+        if ($has_legacy_scrub) {
+            $this->appendItem('Firewall.Settings', 'Normalization', [
+                'url' => '/firewall_scrub.php',
+            ]);
+            $this->appendItem('Firewall.Settings.Normalization', 'NormalizationEdit', [
+                'url' => '/firewall_scrub_edit.php*',
+                'visibility' => 'hidden',
+            ]);
+            $this->appendItem('Firewall.Settings.Normalization', 'Normalization', [
+                'url' => '/firewall_scrub.php*',
+                'visibility' => 'hidden',
             ]);
         }
 

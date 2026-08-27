@@ -74,6 +74,33 @@
                 }]
             });
         });
+        $("#remove_scrub").click(function(){
+            if ($(this).hasClass("disabled")) {
+                return;
+            }
+            BootstrapDialog.show({
+                type:BootstrapDialog.TYPE_WARNING,
+                title: "{{ lang._('Flush') }}",
+                message: "{{ lang._('Are you sure you want to remove all legacy normalization rules.') }}",
+                buttons: [{
+                    label: "{{ lang._('Yes') }}",
+                    action: function(dialogRef){
+                        dialogRef.close();
+                        $("#flushScrub_progress").addClass("fa fa-spinner fa-pulse");
+                        ajaxCall("/api/firewall/migration/flush_scrub", {}, function(data,status) {
+                            if (data.status === 'ok') {
+                                window.location = '/ui/firewall/filter/';
+                            }
+                        });
+                    }
+                }, {
+                    label: "{{ lang._('No') }}",
+                    action: function(dialogRef){
+                        dialogRef.close();
+                    }
+                }]
+            });
+        });
         ajaxCall("/api/firewall/migration/count_rules", {}, function(data) {
             if (data.status === "ok" && data.count > 0) {
                 $("#legacy_rules_count").text(data.count);
@@ -89,6 +116,21 @@
                 $("#source-nat-migration").removeClass("hidden");
                 if ($("#migration_rules_tab").hasClass("hidden")) {
                     $("#migration_outbound_tab_link").tab("show");
+                }
+            }
+        });
+        ajaxCall("/api/firewall/migration/count_scrub", {}, function(data) {
+            if (data.status === "ok" && data.count + data.unsupported > 0) {
+                $("#legacy_scrub_count").text(data.count);
+                $("#migration_scrub_tab").removeClass("hidden");
+                $("#normalization-migration").removeClass("hidden");
+                if (data.unsupported > 0) {
+                    $("#legacy_scrub_unsupported").text(data.unsupported);
+                    $("#unsupported_scrub_notice").removeClass("hidden");
+                    $("#remove_scrub").addClass("disabled");
+                }
+                if ($("#migration_rules_tab").hasClass("hidden")) {
+                    $("#migration_scrub_tab_link").tab("show");
                 }
             }
         });
@@ -132,6 +174,11 @@
     <li id="migration_outbound_tab" class="hidden">
         <a id="migration_outbound_tab_link" href="#source-nat-migration" data-toggle="tab">
             {{ lang._('Outbound NAT rules') }}
+        </a>
+    </li>
+    <li id="migration_scrub_tab" class="hidden">
+        <a id="migration_scrub_tab_link" href="#normalization-migration" data-toggle="tab">
+            {{ lang._('Normalization rules') }}
         </a>
     </li>
 </ul>
@@ -231,6 +278,47 @@
                 <i class="fa fa-fw fa-trash"></i>
                 <a id="remove_outbound" style="cursor: pointer;">{{ lang._('Remove all legacy outbound NAT rules') }}</a>
                 <i id="flushAct_progress" class=""></i>
+            </div>
+        </div>
+    </div>
+
+    <div id="normalization-migration" class="tab-pane fade hidden">
+        <pre class="migration-text">
+{{ lang._('
+    Legacy normalization rules must be migrated to match rules before the old interface can be removed.
+
+    Export the supported rules [1] and import the CSV file into the new Firewall rules interface [2].
+    Inspect the imported normalization rules, but do not apply the firewall configuration yet.
+
+    Legacy "no scrub" rules and rules without normalization options cannot be translated automatically.
+    Remove or restructure these rules in the legacy Normalization interface before continuing.
+
+    After validating the imported rules, remove the legacy rules [3] and apply the firewall configuration once.
+    The legacy Normalization page disappears when no legacy normalization rules remain.
+
+') }}
+        </pre>
+
+        <div id="unsupported_scrub_notice" class="alert alert-warning hidden">
+            {{ lang._('Unsupported legacy normalization rules:') }}
+            <span id="legacy_scrub_unsupported" class="badge"></span>
+            {{ lang._('These rules must be removed or restructured in the legacy Normalization interface first.') }}
+        </div>
+
+        <div class="miglist">
+            <div>
+                <i class="fa fa-fw fa-file-csv"></i>
+                <a href="/api/firewall/migration/download_scrub">{{ lang._('Export supported normalization rules') }}</a>
+                <span id="legacy_scrub_count" class="badge"></span>
+            </div>
+            <div>
+                <i class="fa fa-fw fa-upload"></i>
+                <a target="_new" href="/ui/firewall/filter/">{{ lang._('Import rules using the button in the grid footer') }}</a>
+            </div>
+            <div>
+                <i class="fa fa-fw fa-trash"></i>
+                <a id="remove_scrub" style="cursor: pointer;">{{ lang._('Remove all legacy normalization rules') }}</a>
+                <i id="flushScrub_progress" class=""></i>
             </div>
         </div>
     </div>

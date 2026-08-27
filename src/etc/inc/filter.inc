@@ -469,6 +469,7 @@ function filter_generate_scrubbing(&$FilterIflist)
 {
     global $config;
 
+    $scruboptions = '';
     $scrubrules = '';
 
     /* custom rules must be first */
@@ -545,11 +546,17 @@ function filter_generate_scrubbing(&$FilterIflist)
         $scrubrules .= $scrub_rule_out;
     }
 
-    /* scrub per interface options */
+    /* default normalization and per-interface MSS clamping */
     if (empty($config['system']['scrub_interface_disable'])) {
-        /* scrub generic options, appended to all default rules */
-        $scrub_gen_opts = !empty($config['system']['scrubnodf']) ? ' no-df ' : '';
-        $scrub_gen_opts .= (!empty($config['system']['scrubrnid']) ? ' random-id ' : '');
+        $scruboptions = 'set reassemble yes';
+        if (!empty($config['system']['scrubnodf'])) {
+            $scruboptions .= ' no-df';
+        }
+        $scruboptions .= "\n";
+
+        if (!empty($config['system']['scrubrnid'])) {
+            $scrubrules .= "match in inet all scrub ( random-id )\n";
+        }
         foreach ($FilterIflist as $scrubcfg) {
             if (is_numeric($scrubcfg['mss'] ?? '')) {
                 /**
@@ -561,14 +568,15 @@ function filter_generate_scrubbing(&$FilterIflist)
                  */
                 $mssclampv4 = 'max-mss ' . (intval($scrubcfg['mss'] - 40));
                 $mssclampv6 = 'max-mss ' . (intval($scrubcfg['mss'] - 60));
-                $scrubrules .= "scrub on {$scrubcfg['if']} inet all {$scrub_gen_opts} {$mssclampv4}\n";
-                $scrubrules .= "scrub on {$scrubcfg['if']} inet6 all {$scrub_gen_opts} {$mssclampv6}\n";
+                $scrubrules .= "match on {$scrubcfg['if']} inet all scrub ( {$mssclampv4} )\n";
+                $scrubrules .= "match on {$scrubcfg['if']} inet6 all scrub ( {$mssclampv6} )\n";
             }
         }
-        $scrubrules .= "scrub in all {$scrub_gen_opts}\n";
+    } else {
+        $scruboptions = "set reassemble no\n";
     }
 
-    return $scrubrules;
+    return $scruboptions . $scrubrules;
 }
 
 function filter_generate_aliases()

@@ -44,6 +44,11 @@ class MigrationController extends ApiControllerBase
         return json_decode((new Backend())->configdRun('filter list legacy_outbound_nat') ?? '', true) ?? [];
     }
 
+    private function getLegacyScrub(): array
+    {
+        return json_decode((new Backend())->configdRun('filter list legacy_scrub') ?? '', true) ?? [];
+    }
+
     // Firewall rules
     public function downloadRulesAction()
     {
@@ -98,5 +103,42 @@ class MigrationController extends ApiControllerBase
         } else {
             return ['status' => 'failed'];
         }
+    }
+
+    // Normalization rules
+    public function downloadScrubAction()
+    {
+        if ($this->request->isGet()) {
+            $this->exportCsv($this->getLegacyScrub()['rules'] ?? []);
+        }
+    }
+
+    public function countScrubAction()
+    {
+        $legacy = $this->getLegacyScrub();
+        return [
+            'status' => 'ok',
+            'count' => count($legacy['rules'] ?? []),
+            'unsupported' => $legacy['unsupported'] ?? 0,
+        ];
+    }
+
+    public function flushScrubAction()
+    {
+        if ($this->request->isPost()) {
+            $this->throwReadOnly();
+            $legacy = $this->getLegacyScrub();
+            if (!empty($legacy['unsupported'])) {
+                return [
+                    'status' => 'failed',
+                    'message' => gettext('Unsupported legacy normalization rules must be removed manually first.'),
+                ];
+            }
+            (new ConfigMaintenance())->delItem('filter.scrub.rule');
+            Config::getInstance()->save();
+            return ['status' => 'ok'];
+        }
+
+        return ['status' => 'failed'];
     }
 }

@@ -93,10 +93,6 @@
             <Schedules url="/firewall_schedule.php">
                 <SchedulesEdit url="/firewall_schedule_edit.php*" visibility="hidden"/>
             </Schedules>
-            <Normalization url="/firewall_scrub.php">
-                <NormalizationEdit url="/firewall_scrub_edit.php*" visibility="hidden"/>
-                <Normalization url="/firewall_scrub.php*" visibility="hidden"/>
-            </Normalization>
             <Advanced url="/system_advanced_firewall.php"/>
         </Settings>
         <Diagnostics order="500" cssClass="fa fa-medkit fa-fw">
