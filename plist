@@ -1100,6 +1100,7 @@
 /usr/local/opnsense/mvc/tests/app/library/OPNsense/Firewall/FilterRuleTest.php
 /usr/local/opnsense/mvc/tests/app/library/OPNsense/Firewall/FilterRuleTest/testDirection.conf
 /usr/local/opnsense/mvc/tests/app/library/OPNsense/Firewall/FilterRuleTest/testIcmp.conf
+/usr/local/opnsense/mvc/tests/app/library/OPNsense/Firewall/FilterRuleTest/testNormalization.conf
 /usr/local/opnsense/mvc/tests/app/library/OPNsense/Firewall/FilterRuleTest/testProtocol.conf
 /usr/local/opnsense/mvc/tests/app/library/OPNsense/Interface/IdassocTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/ACL/AclConfig/config.xml
@@ -1212,6 +1213,7 @@
 /usr/local/opnsense/scripts/filter/list_divert_sockets.php
 /usr/local/opnsense/scripts/filter/list_legacy_outbound_nat.php
 /usr/local/opnsense/scripts/filter/list_legacy_rules.php
+/usr/local/opnsense/scripts/filter/list_legacy_scrub.php
 /usr/local/opnsense/scripts/filter/list_non_mvc_rules.php
 /usr/local/opnsense/scripts/filter/list_osfp.py
 /usr/local/opnsense/scripts/filter/list_pfsync.py
