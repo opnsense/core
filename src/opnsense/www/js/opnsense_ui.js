@@ -426,7 +426,7 @@ function initFormHelpUI() {
     let elements = $('[id*="show_all_help"]');
     elements.click(function(event) {
         let element = $(this);
-        const $form = $(this).closest('form[id^="frm_"]');
+        const $form = $(this).closest('form[id^="frm"]');
         element.toggleClass("fa-toggle-on fa-toggle-off");
         element.toggleClass("text-success text-danger");
         if (element.hasClass("fa-toggle-on")) {
@@ -563,7 +563,7 @@ function initFormAdvancedUI() {
 
     elements.click(function() {
         let element = $(this);
-        const $form = $(this).closest('form[id^="frm_"]');
+        const $form = $(this).closest('form[id^="frm"]');
         element.toggleClass("fa-toggle-on fa-toggle-off");
         element.toggleClass("text-success text-danger");
         if (element.hasClass("fa-toggle-on")) {
