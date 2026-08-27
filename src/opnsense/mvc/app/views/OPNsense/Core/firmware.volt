@@ -995,96 +995,98 @@
                     </table>
                 </div>
                 <div id="settings" class="tab-pane table-responsive">
-                    <table class="table table-striped table-condensed">
-                        <tbody>
-                            <tr>
-                                <td style="text-align:left"><i class="fa fa-toggle-off text-danger" id="show_advanced_firmware"></i></a> <small>{{ lang._('advanced mode') }}</small></td>
-                                <td colspan="2" style="text-align:right">
-                                    <small>{{ lang._('full help') }}</small> <a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_firmware"></i></a>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td style="width: 150px;"><a id="help_for_mirror" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Mirror') }}</td>
-                                <td>
-                                    <select class="selectpicker" id="firmware_mirror"  data-size="5" data-live-search="true">
-                                    </select>
-                                    <div style="display:none;" id="firmware_mirror_custom">
-                                        <input type="text" id="firmware_mirror_value">
-                                    </div>
-                                    <div class="hidden" data-for="help_for_mirror">
-                                        {{ lang._('Select an alternate firmware mirror.') }}
-                                    </div>
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr data-advanced="true">
-                                <td><a id="help_for_flavour" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Flavour') }}</td>
-                                <td>
-                                    <select class="selectpicker" id="firmware_flavour">
-                                    </select>
-                                    <div style="display:none;" id="firmware_flavour_custom">
-                                        <input type="text" id="firmware_flavour_value">
-                                    </div>
-                                    <div class="hidden" data-for="help_for_flavour">
-                                        {{ lang._('Select an alternate firmware flavour.') }}
-                                    </div>
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td><a id="help_for_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Type') }}</td>
-                                <td>
-                                    <select class="selectpicker" id="firmware_type">
-                                    </select>
-                                    <div class="hidden" data-for="help_for_type">
-                                        {{ lang._('Select the release type.') }}
-                                    </div>
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="width: 150px;"><a id="help_for_subscription" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Subscription') }}</td>
-                                <td>
-                                    <input type="text" id="firmware_subscription">
-                                    <div class="hidden" data-for="help_for_subscription">
-                                        {{ lang._('Provide subscription key.') }}
-                                    </div>
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr data-advanced="true">
-                                <td style="width: 150px;"><i class="fa fa-info-circle text-muted"></i> {{ lang._('Reboot') }}</td>
-                                <td>
-                                    <input type="checkbox" id="firmware_reboot">
-                                    {{ lang._('Always reboot after a successful update') }}
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr data-advanced="true">
-                                <td style="width: 150px;"><i class="fa fa-info-circle text-muted"></i> {{ lang._('Repository') }}</td>
-                                <td>
-                                    <input type="checkbox" id="firmware_aux">
-                                    {{ lang._('Activate the auxiliary packages repository') }}
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td style="width: 150px;"><i class="fa fa-info-circle text-muted"></i> {{ lang._('Usage') }}</td>
-                                <td>
-                                    {{ lang._('In order to apply these settings a firmware update must be performed after save, which can include a reboot of the system.') }}
-                                </td>
-                                <td></td>
-                            </tr>
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <button class="btn btn-primary" id="change_mirror" type="button"><i class="fa fa-floppy-o"></i> {{ lang._('Save') }}</button>
-                                    <button class="btn btn-default" id="reset_mirror" type="button"><i class="fa fa-times"></i> {{ lang._('Cancel') }}</button>
-                                </td>
-                                <td></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <form id="frm_firmware_dummy">
+                        <table class="table table-striped table-condensed">
+                            <tbody>
+                                <tr>
+                                    <td style="text-align:left"><i class="fa fa-toggle-off text-danger" id="show_advanced_firmware"></i></a> <small>{{ lang._('advanced mode') }}</small></td>
+                                    <td colspan="2" style="text-align:right">
+                                        <small>{{ lang._('full help') }}</small> <a href="#"><i class="fa fa-toggle-off text-danger" id="show_all_help_firmware"></i></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 150px;"><a id="help_for_mirror" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Mirror') }}</td>
+                                    <td>
+                                        <select class="selectpicker" id="firmware_mirror"  data-size="5" data-live-search="true">
+                                        </select>
+                                        <div style="display:none;" id="firmware_mirror_custom">
+                                            <input type="text" id="firmware_mirror_value">
+                                        </div>
+                                        <div class="hidden" data-for="help_for_mirror">
+                                            {{ lang._('Select an alternate firmware mirror.') }}
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr data-advanced="true">
+                                    <td><a id="help_for_flavour" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Flavour') }}</td>
+                                    <td>
+                                        <select class="selectpicker" id="firmware_flavour">
+                                        </select>
+                                        <div style="display:none;" id="firmware_flavour_custom">
+                                            <input type="text" id="firmware_flavour_value">
+                                        </div>
+                                        <div class="hidden" data-for="help_for_flavour">
+                                            {{ lang._('Select an alternate firmware flavour.') }}
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td><a id="help_for_type" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Type') }}</td>
+                                    <td>
+                                        <select class="selectpicker" id="firmware_type">
+                                        </select>
+                                        <div class="hidden" data-for="help_for_type">
+                                            {{ lang._('Select the release type.') }}
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 150px;"><a id="help_for_subscription" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Subscription') }}</td>
+                                    <td>
+                                        <input type="text" id="firmware_subscription">
+                                        <div class="hidden" data-for="help_for_subscription">
+                                            {{ lang._('Provide subscription key.') }}
+                                        </div>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr data-advanced="true">
+                                    <td style="width: 150px;"><i class="fa fa-info-circle text-muted"></i> {{ lang._('Reboot') }}</td>
+                                    <td>
+                                        <input type="checkbox" id="firmware_reboot">
+                                        {{ lang._('Always reboot after a successful update') }}
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr data-advanced="true">
+                                    <td style="width: 150px;"><i class="fa fa-info-circle text-muted"></i> {{ lang._('Repository') }}</td>
+                                    <td>
+                                        <input type="checkbox" id="firmware_aux">
+                                        {{ lang._('Activate the auxiliary packages repository') }}
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td style="width: 150px;"><i class="fa fa-info-circle text-muted"></i> {{ lang._('Usage') }}</td>
+                                    <td>
+                                        {{ lang._('In order to apply these settings a firmware update must be performed after save, which can include a reboot of the system.') }}
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <button class="btn btn-primary" id="change_mirror" type="button"><i class="fa fa-floppy-o"></i> {{ lang._('Save') }}</button>
+                                        <button class="btn btn-default" id="reset_mirror" type="button"><i class="fa fa-times"></i> {{ lang._('Cancel') }}</button>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
                 </div>
             </div>
         </div>
