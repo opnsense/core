@@ -28,6 +28,7 @@
 namespace OPNsense\Firewall\Api;
 
 use OPNsense\Core\Config;
+use OPNsense\Firewall\Util;
 
 class SourceNatController extends FilterBaseController
 {
