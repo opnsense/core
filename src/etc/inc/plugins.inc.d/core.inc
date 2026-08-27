@@ -225,7 +225,7 @@ function core_devices()
     }
 
     $devices[] = [
-        'pattern' => '^cua|^l2tp|^ppp|^pptp', /* XXX ^cua likely doesn't match since it's a /dev node */
+        'pattern' => '^l2tp|^ppp|^pptp', /* includes ^pppoe */
         'names' => $ppp_names,
         'volatile' => true,
         'type' => 'ppp',
