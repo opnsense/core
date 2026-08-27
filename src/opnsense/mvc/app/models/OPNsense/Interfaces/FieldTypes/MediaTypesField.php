@@ -31,7 +31,6 @@ namespace OPNsense\Interfaces\FieldTypes;
 use OPNsense\Base\FieldTypes\BaseListField;
 use OPNsense\Core\Backend;
 
-
 class MediaTypesField extends BaseListField
 {
     private static $known_types = [];

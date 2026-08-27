@@ -177,12 +177,14 @@ class AssignmentController extends ApiMutableModelControllerBase
                             }
                         }
                         /* advanced dhcp settings not supported, prevent settings being used */
-                        foreach ([
+                        foreach (
+                            [
                             'adv_dhcp6_config_file_override',
                             'adv_dhcp6_config_advanced',
                             'adv_dhcp_config_advanced',
                             'adv_dhcp_config_file_override'
-                        ] as $unset) {
+                            ] as $unset
+                        ) {
                             if (isset(Config::getInstance()->object()->interfaces->$key->$unset)) {
                                 unset(Config::getInstance()->object()->interfaces->$key->$unset);
                             }

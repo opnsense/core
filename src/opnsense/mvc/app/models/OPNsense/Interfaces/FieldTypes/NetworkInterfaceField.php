@@ -34,7 +34,6 @@ use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 
-
 class NetworkInterfaceContainerField extends ContainerField
 {
     static $pppDevices = null;

@@ -81,8 +81,3 @@ class Dhcp6SendOptionsField extends TextField
         return $validators;
     }
 }
-
-
-
-
-

@@ -278,10 +278,12 @@ class NetworkInterface extends BaseModel
                 }
             }
 
-            if (!$if->media->isEmpty() && (
+            if (
+                !$if->media->isEmpty() && (
                 !isset($mediaopts[$if->media->getValue()]) ||
                 !in_array($if->if->getValue(), $mediaopts[$if->media->getValue()]['ifs'])
-            )) {
+                )
+            ) {
                 $tmp = [];
                 foreach ($mediaopts as $val => $opt) {
                     if (in_array($if->if->getValue(), $opt['ifs'])) {

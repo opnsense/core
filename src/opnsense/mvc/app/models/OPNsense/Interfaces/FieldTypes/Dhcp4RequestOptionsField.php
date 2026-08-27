@@ -316,8 +316,3 @@ class Dhcp4RequestOptionsField extends TextField
         return $validators;
     }
 }
-
-
-
-
-

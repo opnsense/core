@@ -77,8 +77,3 @@ class Dhcp6RequestOptionsField extends TextField
         return $validators;
     }
 }
-
-
-
-
-
