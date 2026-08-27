@@ -120,6 +120,7 @@ class MigrationController extends ApiControllerBase
             'status' => 'ok',
             'count' => count($legacy['rules'] ?? []),
             'unsupported' => $legacy['unsupported'] ?? 0,
+            'reassembly_review' => $legacy['reassembly_review'] ?? 0,
         ];
     }
 
@@ -128,10 +129,10 @@ class MigrationController extends ApiControllerBase
         if ($this->request->isPost()) {
             $this->throwReadOnly();
             $legacy = $this->getLegacyScrub();
-            if (!empty($legacy['unsupported'])) {
+            if (!empty($legacy['unsupported']) || !empty($legacy['reassembly_review'])) {
                 return [
                     'status' => 'failed',
-                    'message' => gettext('Unsupported legacy normalization rules must be removed manually first.'),
+                    'message' => gettext('Legacy normalization rules requiring manual review must be resolved first.'),
                 ];
             }
             (new ConfigMaintenance())->delItem('filter.scrub.rule');

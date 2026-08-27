@@ -136,8 +136,8 @@ class FilterRuleContainerField extends ContainerField
     }
 
     /**
-     * Rule priority is treated equally to the legacy rules. Normalization match rules are evaluated first,
-     * followed by floating, group and single-interface rules.
+     * Normalization uses a separate pre-filter output pass. This priority keeps its grid group ahead of
+     * floating, group and single-interface rules.
      * @return int priority in the ruleset, sequence should determine sort order.
      */
     public function getPriority()

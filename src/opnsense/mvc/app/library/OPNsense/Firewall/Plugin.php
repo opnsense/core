@@ -363,6 +363,29 @@ class Plugin
     }
 
     /**
+     * normalization rules to text
+     * @return string
+     */
+    public function outputNormalizationRules()
+    {
+        $output = "";
+        ksort($this->filterRules);
+        foreach ($this->filterRules as $prio => $ruleset) {
+            $printed_header = false;
+            foreach ($ruleset as $rule) {
+                if (($rule->getRawRule()['type'] ?? '') === 'match') {
+                    if (!$printed_header) {
+                        $output .= "# [normalization prio: {$prio}]\n";
+                        $printed_header = true;
+                    }
+                    $output .= (string)$rule;
+                }
+            }
+        }
+        return $output;
+    }
+
+    /**
      * filter rules to text
      * @return string
      */
@@ -371,9 +394,16 @@ class Plugin
         $output = "";
         ksort($this->filterRules);
         foreach ($this->filterRules as $prio => $ruleset) {
-            $output .= "# [prio: {$prio}]\n";
+            $printed_header = false;
             foreach ($ruleset as $rule) {
-                $output .= (string)$rule;
+                /* Match normalization is emitted before all potentially quick filter rules. */
+                if (($rule->getRawRule()['type'] ?? '') !== 'match') {
+                    if (!$printed_header) {
+                        $output .= "# [prio: {$prio}]\n";
+                        $printed_header = true;
+                    }
+                    $output .= (string)$rule;
+                }
             }
         }
         return $output;

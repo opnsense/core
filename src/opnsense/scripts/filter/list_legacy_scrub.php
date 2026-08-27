@@ -93,6 +93,7 @@ function legacy_scrub_port($port)
 $result = [
     'rules' => [],
     'unsupported' => 0,
+    'reassembly_review' => 0,
 ];
 $sequence = 1;
 
@@ -105,6 +106,10 @@ foreach (config_read_array('filter', 'scrub', 'rule', false) as $rule) {
     if (!empty($rule['noscrub']) || !$has_scrub_option) {
         $result['unsupported']++;
         continue;
+    }
+    if (empty($rule['disabled']) && !empty($config['system']['scrub_interface_disable'])) {
+        /* A match scrub rule cannot replace the selective reassembly implicit in this legacy rule. */
+        $result['reassembly_review']++;
     }
 
     $protocol = !empty($rule['proto']) ? strtoupper($rule['proto']) : 'any';

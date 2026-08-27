@@ -572,11 +572,11 @@ include("head.inc");
                 <td style="width:78%"></td>
               </tr>
               <tr>
-                <td><a id="help_for_scrub_interface_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable interface scrub");?></td>
+                <td><a id="help_for_scrub_interface_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable automatic normalization");?></td>
                 <td>
                   <input id="scrub_interface_disable" name="scrub_interface_disable" type="checkbox" value="yes" <?=!empty($pconfig['scrub_interface_disable']) ? 'checked="checked"' : '';?> />
                   <div class="hidden" data-for="help_for_scrub_interface_disable">
-                    <?=gettext("Disable default packet normalization and interface MSS clamping. Explicit normalization rules remain active.");?>
+                    <?=gettext("Disable automatic IPv4 fragment reassembly and generated random-ID and interface MSS rules. Basic PF normalization, IPv6 fragment handling and explicit normalization rules remain active.");?>
                   </div>
                 </td>
               </tr>

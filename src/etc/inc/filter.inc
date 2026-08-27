@@ -383,6 +383,13 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     $rules .= $fw->anchorToText('nat,binat,rdr', 'head');
     $rules .= "{$natrules}\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'tail');
+    /* Legacy no-scrub cannot cancel modern match actions, so never load both normalization pipelines. */
+    if (!filter_has_legacy_scrub_rules()) {
+        /* Match is a filter rule in PF, so it follows translation but precedes every potentially quick filter. */
+        $rules .= filter_generate_normalization_rules($cnfint);
+        /* Explicit rules follow automatic defaults so scalar scrub options can override them. */
+        $rules .= $fw->outputNormalizationRules();
+    }
     $rules .= $fw->anchorToText('fw', 'head');
     $rules .= filter_rules_legacy($cnfint);
     $rules .= $fw->outputFilterRules();
@@ -465,6 +472,16 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     service_log("done.\n", $verbose);
 }
 
+function filter_has_legacy_scrub_rules()
+{
+    foreach (config_read_array('filter', 'scrub', 'rule', false) as $scrub_rule) {
+        if (!isset($scrub_rule['disabled'])) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function filter_generate_scrubbing(&$FilterIflist)
 {
     global $config;
@@ -477,7 +494,6 @@ function filter_generate_scrubbing(&$FilterIflist)
         if (isset($scrub_rule['disabled'])) {
             continue;
         }
-
         $scrub_rule_out = !empty($scrub_rule['noscrub']) ? "no " : "";
         $scrub_rule_out .= "scrub";
         $scrub_rule_out .= !empty($scrub_rule['direction']) ? " " . $scrub_rule['direction'] : "";
@@ -546,37 +562,66 @@ function filter_generate_scrubbing(&$FilterIflist)
         $scrubrules .= $scrub_rule_out;
     }
 
-    /* default normalization and per-interface MSS clamping */
+    if (filter_has_legacy_scrub_rules()) {
+        /* FreeBSD ignores set reassemble when the legacy scrub ruleset is populated. */
+        if (empty($config['system']['scrub_interface_disable'])) {
+            $scrub_gen_opts = !empty($config['system']['scrubnodf']) ? ' no-df ' : '';
+            $scrub_gen_opts .= !empty($config['system']['scrubrnid']) ? ' random-id ' : '';
+            foreach ($FilterIflist as $scrubcfg) {
+                if (is_numeric($scrubcfg['mss'] ?? '')) {
+                    $mssclampv4 = 'max-mss ' . (intval($scrubcfg['mss'] - 40));
+                    $mssclampv6 = 'max-mss ' . (intval($scrubcfg['mss'] - 60));
+                    $scrubrules .= "scrub on {$scrubcfg['if']} inet all {$scrub_gen_opts} {$mssclampv4}\n";
+                    $scrubrules .= "scrub on {$scrubcfg['if']} inet6 all {$scrub_gen_opts} {$mssclampv6}\n";
+                }
+            }
+            $scrubrules .= "scrub in all {$scrub_gen_opts}\n";
+        }
+        return $scrubrules;
+    }
+
+    /* Modern global reassembly is only authoritative when no legacy scrub rules are loaded. */
     if (empty($config['system']['scrub_interface_disable'])) {
         $scruboptions = 'set reassemble yes';
         if (!empty($config['system']['scrubnodf'])) {
+            /* Fragment normalization happens before filter match rules can apply their own no-df option. */
             $scruboptions .= ' no-df';
         }
         $scruboptions .= "\n";
-
-        if (!empty($config['system']['scrubrnid'])) {
-            $scrubrules .= "match in inet all scrub ( random-id )\n";
-        }
-        foreach ($FilterIflist as $scrubcfg) {
-            if (is_numeric($scrubcfg['mss'] ?? '')) {
-                /**
-                 * Legacy MSS clamping on interface expects outbound packets to be scrubbed in order to work.
-                 * https://github.com/pfsense/pfsense/commit/7c382a8
-                 *
-                 * In a future release we might want to consider to move the MSS option from the interface into a
-                 * manual scrubbing rule, this is a bit intransparant.
-                 */
-                $mssclampv4 = 'max-mss ' . (intval($scrubcfg['mss'] - 40));
-                $mssclampv6 = 'max-mss ' . (intval($scrubcfg['mss'] - 60));
-                $scrubrules .= "match on {$scrubcfg['if']} inet all scrub ( {$mssclampv4} )\n";
-                $scrubrules .= "match on {$scrubcfg['if']} inet6 all scrub ( {$mssclampv6} )\n";
-            }
-        }
     } else {
         $scruboptions = "set reassemble no\n";
     }
 
     return $scruboptions . $scrubrules;
+}
+
+function filter_generate_normalization_rules(&$FilterIflist)
+{
+    global $config;
+
+    $rules = '';
+    if (!empty($config['system']['scrub_interface_disable']) || filter_has_legacy_scrub_rules()) {
+        return $rules;
+    }
+
+    if (!empty($config['system']['scrubrnid'])) {
+        $rules .= "match in inet all scrub ( random-id )\n";
+    }
+    foreach ($FilterIflist as $scrubcfg) {
+        if (is_numeric($scrubcfg['mss'] ?? '')) {
+            /**
+             * The interface value is an MTU, while PF expects the TCP payload MSS.
+             * Keep random-id here as legacy MSS scrub rules applied it in both directions.
+             */
+            $mssclampv4 = 'max-mss ' . (intval($scrubcfg['mss'] - 40));
+            $mssclampv6 = 'max-mss ' . (intval($scrubcfg['mss'] - 60));
+            $random_id = !empty($config['system']['scrubrnid']) ? ' random-id' : '';
+            $rules .= "match on {$scrubcfg['if']} inet all scrub ( {$mssclampv4}{$random_id} )\n";
+            $rules .= "match on {$scrubcfg['if']} inet6 all scrub ( {$mssclampv6}{$random_id} )\n";
+        }
+    }
+
+    return $rules;
 }
 
 function filter_generate_aliases()

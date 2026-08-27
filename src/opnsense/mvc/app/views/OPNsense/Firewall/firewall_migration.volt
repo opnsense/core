@@ -129,6 +129,11 @@
                     $("#unsupported_scrub_notice").removeClass("hidden");
                     $("#remove_scrub").addClass("disabled");
                 }
+                if (data.reassembly_review > 0) {
+                    $("#legacy_scrub_reassembly").text(data.reassembly_review);
+                    $("#reassembly_scrub_notice").removeClass("hidden");
+                    $("#remove_scrub").addClass("disabled");
+                }
                 if ($("#migration_rules_tab").hasClass("hidden")) {
                     $("#migration_scrub_tab_link").tab("show");
                 }
@@ -288,10 +293,14 @@
     Legacy normalization rules must be migrated to match rules before the old interface can be removed.
 
     Export the supported rules [1] and import the CSV file into the new Firewall rules interface [2].
-    Inspect the imported normalization rules, but do not apply the firewall configuration yet.
+    Inspect the imported normalization rules. They remain staged and are not loaded while legacy normalization
+    rules still exist, which prevents both normalization pipelines from affecting the same traffic.
 
     Legacy "no scrub" rules and rules without normalization options cannot be translated automatically.
     Remove or restructure these rules in the legacy Normalization interface before continuing.
+
+    Legacy scrub rules use first-match behavior and implicitly reassemble matching fragments. Modern match rules
+    combine all matching normalization options and fragment reassembly is controlled globally in Advanced settings.
 
     After validating the imported rules, remove the legacy rules [3] and apply the firewall configuration once.
     The legacy Normalization page disappears when no legacy normalization rules remain.
@@ -303,6 +312,12 @@
             {{ lang._('Unsupported legacy normalization rules:') }}
             <span id="legacy_scrub_unsupported" class="badge"></span>
             {{ lang._('These rules must be removed or restructured in the legacy Normalization interface first.') }}
+        </div>
+
+        <div id="reassembly_scrub_notice" class="alert alert-warning hidden">
+            {{ lang._('Rules using selective fragment reassembly:') }}
+            <span id="legacy_scrub_reassembly" class="badge"></span>
+            {{ lang._('Modern rules require global fragment reassembly. Enable default normalization in Firewall Advanced if the broader behavior is acceptable, or resolve these rules manually.') }}
         </div>
 
         <div class="miglist">
