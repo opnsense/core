@@ -246,6 +246,7 @@ function core_devices()
         'pattern' => '_vlan|^vlan|^qinq',
         'names' => $vlan_names,
         'volatile' => true,
+        'reload' => false,
         'type' => 'vlan',
     ];
 
