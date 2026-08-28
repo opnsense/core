@@ -218,7 +218,7 @@
         <help>Choose how traffic is distributed when multiple translation addresses are used.</help>
         <advanced>true</advanced>
         <grid_view>
-            <ignore>true</ignore>
+            <visible>false</visible>
         </grid_view>
     </field>
     <field>
@@ -228,7 +228,7 @@
         <help>Optionally specify a key to keep Source Hash mappings stable across ruleset reloads. Enter 0x followed by 32 hexadecimal digits.</help>
         <advanced>true</advanced>
         <grid_view>
-            <ignore>true</ignore>
+            <visible>false</visible>
         </grid_view>
     </field>
     <field>
