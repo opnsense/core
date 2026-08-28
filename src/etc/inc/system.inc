@@ -474,7 +474,7 @@ function get_nameservers($interface = null, $with_gateway = false)
     }
 
     if (!$with_gateway) {
-        $master_list = array_unique($master_list);
+        $master_list = array_values(array_unique($master_list));
     }
 
     return $master_list;
