@@ -33,9 +33,6 @@ $a_scrub = &config_read_array('filter', 'scrub', 'rule');
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
-    $pconfig['scrubnodf'] = !empty($config['system']['scrubnodf']);
-    $pconfig['scrubrnid'] = !empty($config['system']['scrubrnid']);
-    $pconfig['scrub_interface_disable'] = !empty($config['system']['scrub_interface_disable']);
     if (!empty($_GET['savemsg'])) {
         $savemsg = gettext('The settings have been applied and the rules are now reloading in the background.');
     }
@@ -45,29 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $pconfig['id'];
     }
 
-    if (isset($pconfig['act']) && $pconfig['act'] == 'edit') {
-        // update general settings
-        if (!empty($pconfig['scrubnodf'])) {
-            $config['system']['scrubnodf'] = "enabled";
-        } elseif (isset($config['system']['scrubnodf'])) {
-            unset($config['system']['scrubnodf']);
-        }
-        if (!empty($pconfig['scrubrnid'])) {
-            $config['system']['scrubrnid'] = "enabled";
-        } elseif (isset($config['system']['scrubrnid'])) {
-            unset($config['system']['scrubrnid']);
-        }
-        if (!empty($pconfig['scrub_interface_disable'])) {
-            $config['system']['scrub_interface_disable'] = "enabled";
-        } elseif (isset($config['system']['scrub_interface_disable'])) {
-            unset($config['system']['scrub_interface_disable']);
-        }
-        if (write_config()) {
-            mark_subsystem_dirty('filter');
-        }
-        header(url_safe('Location: /firewall_scrub.php'));
-        exit;
-    } elseif (isset($pconfig['apply'])) {
+    if (isset($pconfig['apply'])) {
         if (write_config()) {
             /* misuse write to check for write access */
             configd_run('filter reload');
@@ -190,21 +165,6 @@ $( document ).ready(function() {
     $("#iform").submit();
   });
 
-  $("#save").click(function(event){
-    event.preventDefault();
-    $("#action").val("edit");
-    $("#iform").submit();
-  });
-
-  $("#scrub_interface_disable").change(function(){
-    if ($("#scrub_interface_disable:checked").val() == undefined) {
-        $(".scrub_settings").show();
-    } else{
-        $(".scrub_settings").hide();
-    }
-  });
-  $("#scrub_interface_disable").change();
-
   // select All
   $("#selectAll").click(function(){
       $(".rule_select").prop("checked", $(this).prop("checked"));
@@ -237,66 +197,6 @@ $( document ).ready(function() {
         <form method="post" name="iform" id="iform">
           <input type="hidden" id="id" name="id" value="" />
           <input type="hidden" id="action" name="act" value="" />
-          <section class="col-xs-12">
-            <div class="content-box">
-              <div class="table-responsive" >
-                <table class="table table-striped table-hover opnsense_standard_table_form">
-                  <thead>
-                    <tr>
-                      <td style="width:22%"><strong><?=gettext("General settings");?></strong></td>
-                      <td style="width:78%; text-align:right">
-                           <small><?=gettext("full help"); ?> </small>
-                           <i class="fa fa-toggle-off text-danger"  style="cursor: pointer;" id="show_all_help_page">&nbsp;</i>
-                      </td>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td><a id="help_for_scrub_interface_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable interface scrub");?></td>
-                      <td>
-                        <input id="scrub_interface_disable" name="scrub_interface_disable" type="checkbox" value="yes" <?=!empty($pconfig['scrub_interface_disable']) ? "checked=\"checked\"" : "";?> />
-                        <div class="hidden" data-for="help_for_scrub_interface_disable">
-                          <?=gettext("Disable all default interface scrubbing rules,".
-                                     " mss clamping will also be disabled when you check this.".
-                                     " Detailed settings specified below will still be used.");?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="scrub_settings">
-                      <td><a id="help_for_scrubnodf" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Do-Not-Fragment");?></td>
-                      <td>
-                        <input name="scrubnodf" type="checkbox" value="yes" <?=!empty($pconfig['scrubnodf']) ? "checked=\"checked\"" : ""; ?>/>
-                        <div class="hidden" data-for="help_for_scrubnodf">
-                          <?=gettext("This allows for communications with hosts that generate fragmented " .
-                                              "packets with the don't fragment (DF) bit set. Linux NFS is known to " .
-                                              "do this. This will cause the filter to not drop such packets but " .
-                                              "instead clear the don't fragment bit.");?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr class="scrub_settings">
-                      <td><a id="help_for_scrubrnid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Random id");?></td>
-                      <td>
-                        <input name="scrubrnid" type="checkbox" value="yes" <?= !empty($pconfig['scrubrnid']) ? "checked=\"checked\"" : "";?> />
-                        <div class="hidden" data-for="help_for_scrubrnid">
-                          <?=gettext("Replaces the IP identification field of packets with random values to " .
-                                              "compensate for operating systems that use predictable values. " .
-                                              "This option only applies to packets that are not fragmented after the " .
-                                              "optional packet reassembly.");?>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td></td>
-                      <td>
-                          <input name="Submit" id="save" type="submit" class="btn btn-primary" value="<?=html_safe(gettext('Save'));?>" />
-                      </td>
-                    </tr>
-                    </tbody>
-                  </table>
-              </div>
-            </div>
-          </section>
           <section class="col-xs-12">
             <div class="content-box">
               <div class="table-responsive" >
