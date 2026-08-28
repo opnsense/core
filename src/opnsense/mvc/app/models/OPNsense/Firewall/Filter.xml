@@ -532,7 +532,6 @@
                     <ValidationMessage>Please specify a valid port number, well-known name, alias or range.</ValidationMessage>
                 </target_port>
                 <poolopts type="OptionField">
-                    <BlankDesc>Default</BlankDesc>
                     <OptionValues>
                         <p1 value="round-robin">Round Robin</p1>
                         <p2 value="round-robin sticky-address">Round Robin with Sticky Address</p2>

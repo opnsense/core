@@ -215,7 +215,7 @@
         <id>rule.poolopts</id>
         <label>Pool Options</label>
         <type>dropdown</type>
-        <help>Choose how traffic is distributed when multiple translation addresses are used.</help>
+        <help>Choose how traffic is distributed when multiple translation addresses are used. When nothing is selected, the current default is round-robin.</help>
         <advanced>true</advanced>
         <grid_view>
             <visible>false</visible>
