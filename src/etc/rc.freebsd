@@ -141,6 +141,8 @@ for rc_filename in ${rc_filenames}; do
 				if [ "${current_pid}" = "${service_pid}" ]; then
 					echo " Service ${name} did not stop within ${service_stop_timeout}s; killing pid ${service_pid}"
 					kill -KILL "${service_pid}" 2>/dev/null
+				else
+					echo " Service ${name} stop timed out, but pid changed/disappeared; not killing pid ${service_pid}"
 				fi
 			) &
 			watchdog_pid=$!
