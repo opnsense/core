@@ -147,7 +147,7 @@ for rc_filename in ${rc_filenames}; do
 		fi
 	fi
 
-	${rc_filename} "${1}"
+	${rc_filename} ${1}
 
 	if [ -n "${watchdog_pid}" ]; then
 		kill "${watchdog_pid}" 2>/dev/null
