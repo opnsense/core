@@ -82,7 +82,7 @@ class StatusController extends ApiControllerBase
 
                 // format the response
                 if ($format == 'xml') {
-                    $result['status'] = simplexml_load_string($response);
+                    $result['status'] = simplexml_load_string($response, 'SimpleXMLElement', LIBXML_NOCDATA);
                 } elseif ($format === 'text') {
                     $result['status'] = '<div class="alert"><pre>' . $this->bashColorToCSS(strip_tags($response)) . '</pre></div>';
                 }
