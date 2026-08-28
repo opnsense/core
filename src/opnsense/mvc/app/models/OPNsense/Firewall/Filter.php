@@ -175,6 +175,15 @@ class Filter extends BaseModel
                                 $rule->{'endpoint-independent'}->__reference
                             ));
                         }
+                        if (
+                            !$rule->poolopts_sourcehashkey->isEmpty() &&
+                            !$rule->poolopts->isEqual('source-hash')
+                        ) {
+                            $messages->appendMessage(new Message(
+                                gettext("Source Hash Key is only valid for Source Hash type."),
+                                $rule->poolopts_sourcehashkey->__reference
+                            ));
+                        }
                     } else {
                         // Additional filter validations
                         if (!$rule->{'received-on'}->isEmpty() && $rule->direction != 'out') {
