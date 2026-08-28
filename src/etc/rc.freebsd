@@ -145,41 +145,32 @@ for rc_filename in ${rc_filenames}; do
 		continue
 	fi
 
-	if [ "${1}" != "stop" ]; then
-		${rc_filename} ${1}
-		continue
-	fi
+	if [ "${1}" = "stop" ]; then
+		service_pid="$(get_service_pid "${rc_filename}" "${name}")"
 
-	service_pid="$(get_service_pid "${rc_filename}" "${name}")"
+		if [ -n "${service_pid}" ]; then
+			# Watchdog
+			(
+				sleep "${service_stop_timeout}"
 
-	if [ -z "${service_pid}" ]; then
-		# no valid pid through status, stop without watchdog
-		${rc_filename} stop
-		continue
-	fi
+				current_pid="$(get_service_pid "${rc_filename}" "${name}")"
 
-	${rc_filename} stop &
-	stop_pid=$!
+				if [ "${current_pid}" = "${service_pid}" ]; then
+					echo " Service ${name} did not stop within ${service_stop_timeout}s; killing pid ${service_pid}"
+					kill -KILL "${service_pid}" 2>/dev/null
+				fi
+			) &
+			watchdog_pid=$!
 
-	# Watchdog.
-	(
-		sleep "${service_stop_timeout}"
+			${rc_filename} stop
 
-		# If the rc script has already completed, there is nothing to do.
-		kill -0 "${stop_pid}" 2>/dev/null || exit 0
-
-		# Re-query the service before sending SIGKILL to prevent blindly killing a stale/reused PID.
-		current_pid="$(get_service_pid "${rc_filename}" "${name}")"
-
-		if [ "${current_pid}" = "${service_pid}" ]; then
-			echo " Service ${name} did not stop within ${service_stop_timeout}s; killing pid ${service_pid}"
-			kill -KILL "${service_pid}" 2>/dev/null
+			kill "${watchdog_pid}" 2>/dev/null
+			wait "${watchdog_pid}" 2>/dev/null
+		else
+			# No reliable PID: don't apply watchdog policy.
+			${rc_filename} stop
 		fi
-	) &
-	watchdog_pid=$!
-
-	wait "${stop_pid}"
-
-	kill "${watchdog_pid}" 2>/dev/null
-	wait "${watchdog_pid}" 2>/dev/null
+	else
+		${rc_filename} "${1}"
+	fi
 done
