@@ -36,6 +36,24 @@ use OPNsense\TrafficShaper\TrafficShaper;
 
 class Filter extends BaseModel
 {
+    private static $matchStateFields = [
+        'state-policy',
+        'nopfsync',
+        'statetimeout',
+        'udp-first',
+        'udp-multiple',
+        'udp-single',
+        'max-src-nodes',
+        'max-src-states',
+        'max-src-conn',
+        'max',
+        'max-src-conn-rate',
+        'max-src-conn-rates',
+        'overload',
+        'adaptivestart',
+        'adaptiveend',
+    ];
+
     /**
      * @inheritDoc
      */
@@ -188,6 +206,30 @@ class Filter extends BaseModel
                         }
                     } else {
                         // Additional filter validations
+                        if ($rule->action->isEqual('match')) {
+                            if (!$rule->statetype->isEqual('none')) {
+                                $messages->appendMessage(new Message(
+                                    gettext("Match rules cannot create state; select no state."),
+                                    $rule->statetype->__reference
+                                ));
+                            }
+                            foreach (self::$matchStateFields as $fieldname) {
+                                if (!$rule->$fieldname->isEmpty()) {
+                                    $messages->appendMessage(new Message(
+                                        gettext("State options are not valid for match rules."),
+                                        $rule->$fieldname->__reference
+                                    ));
+                                }
+                            }
+                            foreach (['gateway', 'replyto'] as $fieldname) {
+                                if (!$rule->$fieldname->isEmpty()) {
+                                    $messages->appendMessage(new Message(
+                                        gettext("Routing options are not valid for match rules."),
+                                        $rule->$fieldname->__reference
+                                    ));
+                                }
+                            }
+                        }
                         if (!$rule->{'received-on'}->isEmpty() && $rule->direction != 'out') {
                             $messages->appendMessage(new Message(
                                 gettext("Received-on is only valid for out direction rules."),
@@ -239,7 +281,7 @@ class Filter extends BaseModel
                                 $rule->adaptiveend->__reference
                             ));
                         }
-                        if ($rule->statetype == 'none') {
+                        if ($rule->statetype->isEqual('none') && !$rule->action->isEqual('match')) {
                             foreach (
                                 [
                                 'statetimeout', 'max', 'max-src-states', 'max-src-nodes', 'adaptivestart', 'adaptiveend',
@@ -302,9 +344,9 @@ class Filter extends BaseModel
                                 }
                             }
                         }
-                        if (!$rule->{'divert-to'}->isEmpty() && in_array($rule->action->getValue(), ['block', 'reject'], true)) {
+                        if (!$rule->{'divert-to'}->isEmpty() && !$rule->action->isEqual('pass')) {
                             $messages->appendMessage(new Message(
-                                gettext("Divert-to is not valid for block or reject rules."),
+                                gettext("Divert-to is only valid for pass rules."),
                                 $rule->{'divert-to'}->__reference
                             ));
                         }

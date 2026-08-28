@@ -155,6 +155,9 @@ class FilterRule extends Rule
      */
     protected function convertReplyTo(&$rule)
     {
+        if (($rule['type'] ?? '') == 'match') {
+            return;
+        }
         if (!empty($rule['reply-to'])) {
             // reply-to gateway set, when found map to reply attribute, otherwise skip keyword
             if (!empty($this->gatewayMapping[$rule['reply-to']])) {
@@ -223,9 +226,10 @@ class FilterRule extends Rule
                 $rule['disabled'] = true;
                 $this->log("Gateway protocol mismatch");
             }
-            if (in_array($rule['type'] ?? '', ['block', 'reject'], true)) {
+            /* PF does not support routing on match or block rules. */
+            if (!empty($rule['type']) && $rule['type'] != 'pass') {
                 if (!empty($rule['gateway']) || !empty($rule['reply'])) {
-                    $this->log("Gateway not allowed for block rules");
+                    $this->log("Gateway not allowed for {$rule['type']} rules");
                 }
                 unset($rule['gateway'], $rule['reply']);
             }
