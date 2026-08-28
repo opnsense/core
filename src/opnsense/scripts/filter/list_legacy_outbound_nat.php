@@ -115,6 +115,8 @@ if (count($nat_rules)) {
             'destination_port' => normalize_port($rule['dstport'] ?? ''),
             'target' => legacy_target_to_network($rule),
             'target_port' => normalize_port($rule['natport'] ?? ''),
+            'poolopts' => $rule['poolopts'] ?? '',
+            'poolopts_sourcehashkey' => $rule['poolopts_sourcehashkey'] ?? '',
             'staticnatport' => !empty($rule['staticnatport']) ? '1' : '0',
             'log' => !empty($rule['log']) ? '1' : '0',
             'categories' => $rule['category'] ?? '',

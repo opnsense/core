@@ -531,6 +531,20 @@
                     <EnableAlias>Y</EnableAlias>
                     <ValidationMessage>Please specify a valid port number, well-known name, alias or range.</ValidationMessage>
                 </target_port>
+                <poolopts type="OptionField">
+                    <OptionValues>
+                        <p1 value="round-robin">Round Robin</p1>
+                        <p2 value="round-robin sticky-address">Round Robin with Sticky Address</p2>
+                        <p3 value="random">Random</p3>
+                        <p4 value="random sticky-address">Random with Sticky Address</p4>
+                        <p5 value="source-hash">Source Hash</p5>
+                        <p6 value="bitmask">Bitmask</p6>
+                    </OptionValues>
+                </poolopts>
+                <poolopts_sourcehashkey type="StrictTextField">
+                    <Mask>/^0x[0-9a-fA-F]{32}$/</Mask>
+                    <ValidationMessage>Source Hash Key must be 0x followed by 32 hexadecimal digits.</ValidationMessage>
+                </poolopts_sourcehashkey>
                 <staticnatport type="BooleanField"/>
                 <log type="BooleanField">
                     <Default>0</Default>
