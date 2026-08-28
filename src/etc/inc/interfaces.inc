@@ -667,11 +667,10 @@ function interfaces_hardware($verbose = false)
 
 function interfaces_configure($verbose = false)
 {
-    $all_devices = plugins_devices();
     $interfaces = [];
     $devices = [];
 
-    foreach ($all_devices as $device) {
+    foreach (plugins_devices() as $device) {
         if (empty($device['function']) || empty($device['names'])) {
             continue;
         }
@@ -744,7 +743,7 @@ function interfaces_configure($verbose = false)
             }
 
             /* post-op: removing associated devices and current interface */
-            foreach (interface_configure($verbose, $if, all_devices: $all_devices) as $loaded) {
+            foreach (interface_configure($verbose, $if) as $loaded) {
                 if (!empty($devices[$loaded])) {
                     log_msg("Device $loaded loaded by $if, skipping now", LOG_INFO);
                     unset($devices[$loaded]);
@@ -2213,7 +2212,7 @@ function interface_configure_mtu($device, $mtu, $ifconfig_details)
     }
 }
 
-function interface_configure($verbose = false, $interface = 'wan', $reload = false, $linkup = false, $all_devices = null)
+function interface_configure($verbose = false, $interface = 'wan', $reload = false, $linkup = false)
 {
     global $config;
 
@@ -2230,7 +2229,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $device = $realhwif = $wancfg['if'];
     $realifv6 = get_real_interface($interface, 'inet6');
 
-    $all_devices ??= plugins_devices();
+    $all_devices = plugins_devices();
 
     $ppps_hardware = interface_ppps_hardware($device);
     if (count($ppps_hardware)) {
