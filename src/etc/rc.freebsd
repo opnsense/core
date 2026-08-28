@@ -179,7 +179,6 @@ for rc_filename in ${rc_filenames}; do
 	watchdog_pid=$!
 
 	wait "${stop_pid}"
-	stop_result=$?
 
 	kill "${watchdog_pid}" 2>/dev/null
 	wait "${watchdog_pid}" 2>/dev/null
