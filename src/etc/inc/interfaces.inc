@@ -85,7 +85,7 @@ function interfaces_loopback_configure($verbose = false)
     service_log('Configuring loopback interface...', $verbose);
 
     legacy_interface_setaddress('lo0', '127.0.0.1/8');
-    interfaces_vips_configure('lo0');
+    interfaces_vips_configure('lo0', null, false);
     legacy_interface_flags('lo0', 'up');
 
     service_log("done.\n", $verbose);
@@ -743,7 +743,7 @@ function interfaces_configure($verbose = false)
             }
 
             /* post-op: removing associated devices and current interface */
-            foreach (interface_configure($verbose, $if) as $loaded) {
+            foreach (interface_configure($verbose, $if, false, false, true) as $loaded) {
                 if (!empty($devices[$loaded])) {
                     log_msg("Device $loaded loaded by $if, skipping now", LOG_INFO);
                     unset($devices[$loaded]);
@@ -771,6 +771,9 @@ function interfaces_configure($verbose = false)
         log_msg("Device $device is not assigned, configuring late");
         call_user_func_array($devices[$device], [$device]);
     }
+
+    interfaces_pfsync_configure();
+    interface_proxyarp_configure();
 }
 
 function interface_vip_bring_down($vip)
@@ -1454,7 +1457,7 @@ function interface_proxyarp_configure($interface = '')
     }
 }
 
-function interfaces_vips_configure($interface, $family = null)
+function interfaces_vips_configure($interface, $family = null, $reload = true)
 {
     $proxyarp = false;
     $pfsync = false;
@@ -1488,11 +1491,11 @@ function interfaces_vips_configure($interface, $family = null)
         }
     }
 
-    if ($pfsync) {
+    if ($pfsync && $reload) {
         interfaces_pfsync_configure();
     }
 
-    if ($proxyarp) {
+    if ($proxyarp && $reload) {
         interface_proxyarp_configure();
     }
 
@@ -2212,7 +2215,7 @@ function interface_configure_mtu($device, $mtu, $ifconfig_details)
     }
 }
 
-function interface_configure($verbose = false, $interface = 'wan', $reload = false, $linkup = false)
+function interface_configure($verbose = false, $interface = 'wan', $reload = false, $linkup = false, $batch = false)
 {
     global $config;
 
@@ -2432,7 +2435,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             break;
     }
 
-    interfaces_vips_configure($interface);
+    interfaces_vips_configure($interface, null, !$batch);
     interfaces_neighbors_configure($interface, $ifconfig_details);
 
     /* XXX device member plugin hook */
