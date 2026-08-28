@@ -1114,7 +1114,9 @@ class UIBootgrid {
             'margin-bottom': 0,
             'margin-left': 0,
             'margin-right': 0,
-            'height': $("#navigation").outerHeight()
+            'height': $("#navigation").outerHeight() ||
+                // Mobile navigation collapses below 768px and reports 0 height.
+                window.innerHeight - $("header.page-head").outerHeight()
         });
 
         /* ensure model is "stacked" properly to allow the next dialog to overlay it */
