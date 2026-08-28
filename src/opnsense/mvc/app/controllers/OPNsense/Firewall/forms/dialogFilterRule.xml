@@ -349,6 +349,8 @@
         <advanced>true</advanced>
         <help>Clear the don't-fragment bit from matching IPv4 packets.</help>
         <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
             <visible>false</visible>
         </grid_view>
     </field>
@@ -359,6 +361,8 @@
         <advanced>true</advanced>
         <help>Replace the IPv4 identification field with random values.</help>
         <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
             <visible>false</visible>
         </grid_view>
     </field>
