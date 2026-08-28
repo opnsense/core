@@ -79,10 +79,34 @@ rc_enabled()
 	esac
 }
 
+get_service_pid()
+{
+	rc_filename="$1"
+	service_name="$2"
+
+	status="$(${rc_filename} status 2>/dev/null)" || return 1
+
+	pid="$(printf '%s\n' "${status}" |
+	    sed -n "s/^${service_name} is running as pid \([0-9][0-9]*\)\.$/\1/p")"
+
+	case "${pid}" in
+		''|*[!0-9]*)
+			return 1
+			;;
+	esac
+
+	# Make sure it actually exists right now.
+	kill -0 "${pid}" 2>/dev/null || return 1
+
+	printf '%s\n' "${pid}"
+	return 0
+}
+
 rc_filenames="$(${RCORDER} /etc/rc.d/* /usr/local/etc/rc.d/* 2> /dev/null)"
 rc_filenames_defer=
 rc_filenames_reverse=
 rc_filenames_skip=
+service_stop_timeout="${service_stop_timeout:-15}"
 
 for rc_filename in ${rc_filenames}; do
 	eval "$(grep "^name[[:blank:]]*=" ${rc_filename})"
@@ -121,5 +145,42 @@ for rc_filename in ${rc_filenames}; do
 		continue
 	fi
 
-	${rc_filename} ${1}
+	if [ "${1}" != "stop" ]; then
+		${rc_filename} ${1}
+		continue
+	fi
+
+	service_pid="$(get_service_pid "${rc_filename}" "${name}")"
+
+	if [ -z "${service_pid}" ]; then
+		# no valid pid through status, stop without watchdog
+		${rc_filename} stop
+		continue
+	fi
+
+	${rc_filename} stop &
+	stop_pid=$!
+
+	# Watchdog.
+	(
+		sleep "${service_stop_timeout}"
+
+		# If the rc script has already completed, there is nothing to do.
+		kill -0 "${stop_pid}" 2>/dev/null || exit 0
+
+		# Re-query the service before sending SIGKILL to prevent blindly killing a stale/reused PID.
+		current_pid="$(get_service_pid "${rc_filename}" "${name}")"
+
+		if [ "${current_pid}" = "${service_pid}" ]; then
+			echo " Service ${name} did not stop within ${service_stop_timeout}s; killing pid ${service_pid}"
+			kill -KILL "${service_pid}" 2>/dev/null
+		fi
+	) &
+	watchdog_pid=$!
+
+	wait "${stop_pid}"
+	stop_result=$?
+
+	kill "${watchdog_pid}" 2>/dev/null
+	wait "${watchdog_pid}" 2>/dev/null
 done
