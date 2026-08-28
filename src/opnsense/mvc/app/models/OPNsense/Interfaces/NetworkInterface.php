@@ -45,7 +45,7 @@ class NetworkInterface extends BaseModel
      */
     private function store_if_todo($id, $payload)
     {
-        $fobj = new FileObject($this->todo_file, 'a+', 0600, LOCK_EX);
+        $fobj = new FileObject($this->todo_file, 'a+e', 0600, LOCK_EX);
         $data = $fobj->readJson() ?? [];
         $data[$id] = array_merge($data[$id] ?? [], $payload);
         $fobj->truncate(0)->writeJson($data);
