@@ -41,10 +41,10 @@ export default class Services extends BaseTableWidget {
         return $(`<div id="services-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));"></div>`);
     }
 
-    serviceControl(actions) {
+    serviceControl(actions, status) {
         return actions.map(({ action, id, title, icon }) => `
             <span data-service_action="${action}" data-service="${id}"
-                  class="srv_status_act2 text-muted"
+                  class="srv_status_act2 text-${status}"
                   style="cursor: pointer"
                   title="${title}" data-toggle="tooltip">
                 <i class="fa fa-fw fa-${icon}"></i>
@@ -94,6 +94,7 @@ export default class Services extends BaseTableWidget {
                         overflow: hidden;
                         text-overflow: ellipsis;
                         flex: 1;
+                        min-width: 0;
                         text-align: left;
                     " title="${service.description}" data-toggle="tooltip">${service.description}</div>
                     <div class="srv-actions" style="margin-left: auto; display: flex; align-items: center; gap: 2px; flex-shrink: 0;">
