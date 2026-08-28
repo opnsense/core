@@ -119,7 +119,7 @@ function openssh_configure_do($verbose = false, $interface_map = null)
     }
 
     /* lock the config generation and service start/stop, also secures key generation */
-    $fobj = new \OPNsense\Core\FileObject('/usr/local/etc/ssh/sshd_config', 'a+', null, LOCK_EX);
+    $fobj = new \OPNsense\Core\FileObject('/usr/local/etc/ssh/sshd_config', 'a+e', null, LOCK_EX);
 
     openssh_stop();
 

@@ -169,7 +169,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     \OPNsense\Firewall\Alias::flushCacheData();
 
     /* Use filter lock to not allow concurrent filter reloads during this run. */
-    $fobj = new \OPNsense\Core\FileObject('/tmp/rules.debug', 'a+', 0600, LOCK_EX);
+    $fobj = new \OPNsense\Core\FileObject('/tmp/rules.debug', 'a+e', 0600, LOCK_EX);
 
     /*
      * Kickstart dnctl and ipfw (no-op if shaper not configured)
