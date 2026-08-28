@@ -36,7 +36,7 @@ use OPNsense\TrafficShaper\TrafficShaper;
 
 class Filter extends BaseModel
 {
-    private static $matchStateFields = [
+    private static $stateFields = [
         'state-policy',
         'nopfsync',
         'statetimeout',
@@ -213,7 +213,7 @@ class Filter extends BaseModel
                                     $rule->statetype->__reference
                                 ));
                             }
-                            foreach (self::$matchStateFields as $fieldname) {
+                            foreach (self::$stateFields as $fieldname) {
                                 if (!$rule->$fieldname->isEmpty()) {
                                     $messages->appendMessage(new Message(
                                         gettext("State options are not valid for match rules."),
@@ -282,13 +282,8 @@ class Filter extends BaseModel
                             ));
                         }
                         if ($rule->statetype->isEqual('none') && !$rule->action->isEqual('match')) {
-                            foreach (
-                                [
-                                'statetimeout', 'max', 'max-src-states', 'max-src-nodes', 'adaptivestart', 'adaptiveend',
-                                'max-src-conn'
-                                ] as $fieldname
-                            ) {
-                                if (!empty((string)$rule->$fieldname)) {
+                            foreach (self::$stateFields as $fieldname) {
+                                if (!$rule->$fieldname->isEmpty()) {
                                     $messages->appendMessage(new Message(
                                         gettext("Invalid option when statetype is none."),
                                         $rule->$fieldname->__reference
