@@ -112,6 +112,7 @@ class FilterRuleContainerField extends ContainerField
                 'scrub_random_id' => 'random-id',
                 'scrub_max_mss' => 'max-mss',
                 'scrub_min_ttl' => 'min-ttl',
+                /* XXX: pf maps this legacy scrub option to "set tos", so pfctl may display both forms. */
                 'scrub_set_tos' => 'set-tos',
             ] as $fieldname => $keyword
         ) {
