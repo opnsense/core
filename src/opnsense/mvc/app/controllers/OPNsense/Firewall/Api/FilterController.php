@@ -58,6 +58,7 @@ class FilterController extends FilterBaseController
             }
             $this->legacy_fieldmap['%action'] = [
                 'block' => gettext('Block'),
+                'match' => gettext('Match'),
                 'pass' => gettext('Pass'),
                 'reject' => gettext('Reject'),
             ];

@@ -302,9 +302,9 @@ class Filter extends BaseModel
                                 }
                             }
                         }
-                        if (!$rule->{'divert-to'}->isEmpty() && $rule->action != 'pass') {
+                        if (!$rule->{'divert-to'}->isEmpty() && in_array($rule->action->getValue(), ['block', 'reject'], true)) {
                             $messages->appendMessage(new Message(
-                                gettext("Divert-to is only valid for pass rules."),
+                                gettext("Divert-to is not valid for block or reject rules."),
                                 $rule->{'divert-to'}->__reference
                             ));
                         }

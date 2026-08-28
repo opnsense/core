@@ -464,7 +464,9 @@
                         }
 
                         // Action
-                        if (row.action === "block") {
+                        if (row.action === "match") {
+                            result += `<i class="fa fa-filter fa-fw text-primary" data-toggle="tooltip" title="${row['%action']}"></i> `;
+                        } else if (row.action === "block") {
                             result += `<i class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="${row['%action']}"></i> `;
                         } else if (row.action === "reject") {
                             result += `<i class="fa fa-times-circle fa-fw text-danger" data-toggle="tooltip" title="${row['%action']}"></i> `;
