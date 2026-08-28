@@ -41,10 +41,10 @@ export default class Services extends BaseTableWidget {
         return $(`<div id="services-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));"></div>`);
     }
 
-    serviceControl(actions, status) {
+    serviceControl(actions) {
         return actions.map(({ action, id, title, icon }) => `
             <span data-service_action="${action}" data-service="${id}"
-                  class="srv_status_act2 text-${status}"
+                  class="srv_status_act2 text-muted"
                   style="cursor: pointer"
                   title="${title}" data-toggle="tooltip">
                 <i class="fa fa-fw fa-${icon}"></i>
@@ -69,38 +69,37 @@ export default class Services extends BaseTableWidget {
 
         for (const service of data.rows) {
             let actions = [];
-            let pad = false
             if (service.locked) {
-                pad = true
                 actions.push({ action: 'restart', id: service.id, title: this.translations.restart, icon: 'refresh' });
             } else if (service.running) {
-                actions.push({ action: 'stop', id: service.id, title: this.translations.stop, icon: 'stop' });
                 actions.push({ action: 'restart', id: service.id, title: this.translations.restart, icon: 'refresh' });
+                actions.push({ action: 'stop', id: service.id, title: this.translations.stop, icon: 'stop' });
             } else {
-                pad = true
                 actions.push({ action: 'start', id: service.id, title: this.translations.start, icon: 'play' });
             }
 
             let statusColor = service.running ? 'success' : 'danger';
             let statusTitle = service.running ? this.translations.running : this.translations.stopped;
-            let padSpan = '';
-            if (pad) {
-                padSpan = '<span><i class="fa fa-fw"></i></span>'
-            }
 
             let $tile = $(`
-                <div class="flextable-row" style="padding: 0 10px 0 10px;"><div class="service-tile" style="display: flex; align-items: center; min-width: 0; grid-column: -2 / -1;">
-                    ${padSpan}${this.serviceControl(actions, statusColor)}
+                <div class="flextable-row" style="padding: 4px 10px; display: flex; align-items: center; min-width: 0;">
+                    <i class="fa fa-circle text-${statusColor} srv-status-icon"
+                       style="font-size: 11px; flex-shrink: 0;"
+                       title="${statusTitle}" data-toggle="tooltip"></i>
                     <div style="
-                        padding: 4px;
+                        padding: 0 4px;
+                        margin-left: 4px;
                         white-space: nowrap;
                         font-weight: 500;
                         overflow: hidden;
                         text-overflow: ellipsis;
-                        width: 100%;
+                        flex: 1;
                         text-align: left;
-                    " title="${service.description} (${statusTitle})" data-toggle="tooltip">${service.description}</div>
-                </div></div>
+                    " title="${service.description}" data-toggle="tooltip">${service.description}</div>
+                    <div class="srv-actions" style="margin-left: auto; display: flex; align-items: center; gap: 2px; flex-shrink: 0;">
+                        ${this.serviceControl(actions)}
+                    </div>
+                </div>
             `);
 
             $container.append($tile);

@@ -313,6 +313,7 @@
     </Wireguard>
     <services>
         <filename>Services.js</filename>
+        <link>/ui/core/service</link>
         <endpoints>
             <endpoint>/api/core/service/*</endpoint>
         </endpoints>
