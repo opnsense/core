@@ -81,32 +81,14 @@ rc_enabled()
 
 get_service_pid()
 {
-	rc_filename="$1"
-	service_name="$2"
-
-	status="$(${rc_filename} status 2>/dev/null)" || return 1
-
-	pid="$(printf '%s\n' "${status}" |
-	    sed -n "s/^${service_name} is running as pid \([0-9][0-9]*\)\.$/\1/p")"
-
-	case "${pid}" in
-		''|*[!0-9]*)
-			return 1
-			;;
-	esac
-
-	# Make sure it actually exists right now.
-	kill -0 "${pid}" 2>/dev/null || return 1
-
-	printf '%s\n' "${pid}"
-	return 0
+	${1} status 2>/dev/null | awk '{gsub(/[^0-9]/, "", $NF); print $NF}'
 }
 
 rc_filenames="$(${RCORDER} /etc/rc.d/* /usr/local/etc/rc.d/* 2> /dev/null)"
 rc_filenames_defer=
 rc_filenames_reverse=
 rc_filenames_skip=
-service_stop_timeout="${service_stop_timeout:-15}"
+service_stop_timeout=30
 
 for rc_filename in ${rc_filenames}; do
 	eval "$(grep "^name[[:blank:]]*=" ${rc_filename})"
@@ -139,6 +121,7 @@ fi
 
 # pass all commands to script now
 for rc_filename in ${rc_filenames}; do
+	watchdog_pid=
 	eval "$(grep "^name[[:blank:]]*=" ${rc_filename})"
 
 	if ! rc_enabled ${rc_filename} ${name}; then
@@ -146,14 +129,14 @@ for rc_filename in ${rc_filenames}; do
 	fi
 
 	if [ "${1}" = "stop" ]; then
-		service_pid="$(get_service_pid "${rc_filename}" "${name}")"
+		service_pid="$(get_service_pid "${rc_filename}")"
 
 		if [ -n "${service_pid}" ]; then
 			# Watchdog
 			(
 				sleep "${service_stop_timeout}"
 
-				current_pid="$(get_service_pid "${rc_filename}" "${name}")"
+				current_pid="$(get_service_pid "${rc_filename}")"
 
 				if [ "${current_pid}" = "${service_pid}" ]; then
 					echo " Service ${name} did not stop within ${service_stop_timeout}s; killing pid ${service_pid}"
@@ -161,16 +144,13 @@ for rc_filename in ${rc_filenames}; do
 				fi
 			) &
 			watchdog_pid=$!
-
-			${rc_filename} stop
-
-			kill "${watchdog_pid}" 2>/dev/null
-			wait "${watchdog_pid}" 2>/dev/null
-		else
-			# No reliable PID: don't apply watchdog policy.
-			${rc_filename} stop
 		fi
-	else
-		${rc_filename} "${1}"
+	fi
+
+	${rc_filename} "${1}"
+
+	if [ -n "${watchdog_pid}" ]; then
+		kill "${watchdog_pid}" 2>/dev/null
+		wait "${watchdog_pid}" 2>/dev/null
 	fi
 done
