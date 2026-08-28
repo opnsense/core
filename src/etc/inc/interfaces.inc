@@ -2342,7 +2342,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     if ($reload) {
         foreach ($all_devices as $one_device) {
-            if (empty($one_device['function']) || empty($one_device['names'])) {
+            if (empty($one_device['function']) || empty($one_device['names']) || !$one_device['reload']) {
                 continue;
             }
 
