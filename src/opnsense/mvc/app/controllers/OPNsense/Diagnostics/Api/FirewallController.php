@@ -65,8 +65,7 @@ class FirewallController extends ApiControllerBase
             [],
             [
                 'Content-Type: text/event-stream',
-                'Cache-Control: no-cache',
-                'X-Accel-Buffering: no' /* disable nginx reverse proxy buffering for SSE streams to ensure real-time delivery */
+                'Cache-Control: no-cache'
             ],
             60
         );
