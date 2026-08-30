@@ -227,10 +227,8 @@ class ApiControllerBase extends ControllerRoot
     ) {
         $response = (new Backend())->configdpStream($action, $params, $poll_timeout);
 
-        if (in_array('Content-Type: text/event-stream', $headers)) {
-            /* disable nginx reverse proxy buffering so SSE streams are delivered in real time */
-            $headers[] = 'X-Accel-Buffering: no';
-        }
+        /* disable nginx reverse proxy buffering so streamed configd output is delivered in real time */
+        $headers[] = 'X-Accel-Buffering: no';
         foreach ($headers as $header) {
             $parts = explode(':', $header, 2);
             $this->response->setHeader($parts[0], ltrim($parts[1]));
