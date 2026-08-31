@@ -160,14 +160,14 @@ class IPsecProposalField extends BaseListField
         if ($this->phase == '1') {
             return [
                 'aes256gcm16-sha256-x25519-ke1_mlkem768' => 'aes256gcm16-sha256-x25519-ke1_mlkem768 [DH31, ML-KEM-768 (ID 36)]',
-                'aes256gcm16-sha256-ecp256-ke1_mlkem768' => 'aes256gcm16-sha256-ecp256-ke1_mlkem768 [DH19, NIST EC, ML-KEM-768 (ID 36)]',
-                'aes256gcm16-sha384-ecp384-ke1_mlkem1024' => 'aes256gcm16-sha384-ecp384-ke1_mlkem1024 [DH20, NIST EC, ML-KEM-1024 (ID 37)]',
+                'aes256gcm16-sha256-ecp256-ke1_mlkem768' => 'aes256gcm16-sha256-ecp256-ke1_mlkem768 [DH19, ML-KEM-768 (ID 36)]',
+                'aes256gcm16-sha384-ecp384-ke1_mlkem1024' => 'aes256gcm16-sha384-ecp384-ke1_mlkem1024 [DH20, ML-KEM-1024 (ID 37)]',
             ];
         } else {
             return [
                 'aes256gcm16-x25519-ke1_mlkem768' => 'aes256gcm16-x25519-ke1_mlkem768 [DH31, ML-KEM-768 (ID 36)]',
-                'aes256gcm16-ecp256-ke1_mlkem768' => 'aes256gcm16-ecp256-ke1_mlkem768 [DH19, NIST EC, ML-KEM-768 (ID 36)]',
-                'aes256gcm16-ecp384-ke1_mlkem1024' => 'aes256gcm16-ecp384-ke1_mlkem1024 [DH20, NIST EC, ML-KEM-1024 (ID 37)]',
+                'aes256gcm16-ecp256-ke1_mlkem768' => 'aes256gcm16-ecp256-ke1_mlkem768 [DH19, ML-KEM-768 (ID 36)]',
+                'aes256gcm16-ecp384-ke1_mlkem1024' => 'aes256gcm16-ecp384-ke1_mlkem1024 [DH20, ML-KEM-1024 (ID 37)]',
             ];
         }
     }
