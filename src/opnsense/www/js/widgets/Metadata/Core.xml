@@ -320,8 +320,8 @@
         <translations>
             <title>Services</title>
             <noservices>No services found</noservices>
-            <running>running</running>
-            <stopped>stopped</stopped>
+            <running>Running</running>
+            <stopped>Stopped</stopped>
             <restart>Restart</restart>
             <stop>Stop</stop>
             <start>Start</start>
