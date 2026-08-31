@@ -92,7 +92,7 @@ class FirewallController extends ApiControllerBase
         }
         sort($interfaces, SORT_NATURAL | SORT_FLAG_CASE);
         return [
-            'action' => ['pass', 'block', 'rdr', 'nat', 'binat'],
+            'action' => ['pass', 'block', 'match', 'rdr', 'nat', 'binat'],
             'interface_name' => $interfaces,
             'dir' => ['in', 'out'],
         ];

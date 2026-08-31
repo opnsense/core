@@ -546,7 +546,8 @@
                 'nat': 1,
                 'rdr': 1,
                 'binat': 1,
-                'block': 2
+                'block': 2,
+                'match': 3,
             }
             return new Promise((resolve, reject) => {
                 ajaxGet('/api/diagnostics/firewall/log/', {'digest': last_digest, 'limit': limit}, function(data, status) {
@@ -825,6 +826,7 @@
                     0: "fw-pass",
                     1: "fw-nat",
                     2: "fw-block",
+                    3: "fw-match",
                 }
             },
             tabulatorOptions: {
@@ -861,6 +863,7 @@
           'binat': 'fa-exchange',
           'block': 'fa-ban',
           'in': 'fa-arrow-right',
+          'match': 'fa-filter',
           'nat': 'fa-exchange',
           'out': 'fa-arrow-left',
           'pass': 'fa-play',
@@ -1277,7 +1280,8 @@
 </script>
 
 <style>
-.fw-pass {
+.fw-pass,
+.fw-match {
     background: rgba(5, 142, 73, 0.3);
 }
 .fw-block {
