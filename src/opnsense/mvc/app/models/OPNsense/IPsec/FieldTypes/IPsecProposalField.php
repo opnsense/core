@@ -126,63 +126,8 @@ class IPsecProposalField extends BaseListField
         return $this->phase == '1' ? $this->AeadPhase1() : $this->AeadPhase2();
     }
 
-    private function addPostQuantumKeOptions(array $ciphers)
-    {
-       /*
-        * Add hybrid post-quantum key exchange options using a single additional
-        * key exchange (KE1). ML-KEM is deliberately not offered as
-        * the primary key exchange to prevent a larger cartesian product in our UI.
-        *
-        * We only offer the post-quantum variants on top of classical primary key exchanges,
-        * see https://www.rfc-editor.org/rfc/rfc9370.html#section-1.1-2 and only within our
-        * "Commonly used" section.
-        */
-
-        $postQuantumKe = [
-            'mlkem512' => 'ML-KEM-512 (ID 35)',
-            'mlkem768' => 'ML-KEM-768 (ID 36)',
-            'mlkem1024' => 'ML-KEM-1024 (ID 37)',
-        ];
-
-        $result = $ciphers;
-
-        foreach ($ciphers as $cipher => $description) {
-            foreach ($this->DHGroups() as $dhgroup => $dhdescr) {
-                if (substr($cipher, -strlen("-{$dhgroup}")) !== "-{$dhgroup}") {
-                    continue;
-                }
-
-                foreach ($postQuantumKe as $pqKe => $pqDescription) {
-                    $pqCipher = "{$cipher}-ke1_{$pqKe}";
-
-                    $result[$pqCipher] = "{$pqCipher} [{$pqDescription}]";
-                }
-
-                break;
-            }
-        }
-
-        return $result;
-    }
-
     private function commonOptions()
     {
-        $commonAes = [
-            'aes256-sha256-modp2048' => null,
-            'aes256-sha512-modp2048' => null,
-            'aes128-sha256-modp2048' => null,
-            'aes128-sha512-modp2048' => null,
-            'aes256-sha256-modp4096' => null,
-            'aes256-sha512-modp4096' => null,
-            'aes256-sha256-ecp521' => null,
-            'aes256-sha512-ecp521' => null,
-        ];
-
-        $commonAead = $this->AeadAlgorithms();
-
-        $commonAes = $this->addPostQuantumKeOptions($commonAes);
-        $commonAead = $this->addPostQuantumKeOptions($commonAead);
-
         /* group and cipher order, when set to null an auto generated description will be used */
         return [
             gettext('Internal') => [
@@ -190,10 +135,21 @@ class IPsecProposalField extends BaseListField
             ],
 
             /* Non-AEAD algorithms */
-            gettext('Commonly used AES') => $commonAes,
+            gettext('Commonly used AES') => [
+                'aes256-sha256-modp2048' => null,
+                'aes256-sha512-modp2048' => null,
+                'aes128-sha256-modp2048' => null,
+                'aes128-sha512-modp2048' => null,
+                'aes256-sha256-modp4096' => null,
+                'aes256-sha512-modp4096' => null,
+                'aes256-sha256-ecp521' => null,
+                'aes256-sha512-ecp521' => null,
+            ],
 
             /* AEAD algorithms */
-            gettext('Commonly used combined-mode (AEAD) ciphers') => $commonAead,
+            gettext('Commonly used combined-mode (AEAD) ciphers') => [
+                ...$this->AeadAlgorithms()
+            ],
 
             gettext('Commonly used, but insecure cipher suites') => [
                 'aes256-sha1-modp2048' => 'aes256-sha1-modp2048 [DH14]',
@@ -213,6 +169,33 @@ class IPsecProposalField extends BaseListField
         ];
     }
 
+    private function postQuantumCiphers()
+    {
+       /*
+        * Add hybrid post-quantum key exchange options using a single additional
+        * key exchange (KE1). ML-KEM is deliberately not offered as
+        * the primary key exchange since including a classical primitive is encouraged
+        * (see https://www.rfc-editor.org/rfc/rfc9370.html#section-1.1-2).
+        *
+        * Also limit to just a couple of sensible options
+        * (see https://www.rfc-editor.org/info/rfc10024/#name-motivation).
+        */
+
+        if ($this->phase == '1') {
+            return [
+                'aes256gcm16-sha256-x25519-ke1_mlkem768' => 'aes256gcm16-sha256-x25519-ke1_mlkem768 [DH31, ML-KEM-768 (ID 36)]',
+                'aes256gcm16-sha256-ecp256-ke1_mlkem768' => 'aes256gcm16-sha256-ecp256-ke1_mlkem768 [DH19, NIST EC, ML-KEM-768 (ID 36)]',
+                'aes256gcm16-sha384-ecp384-ke1_mlkem1024' => 'aes256gcm16-sha384-ecp384-ke1_mlkem1024 [DH20, NIST EC, ML-KEM-1024 (ID 37)]',
+            ];
+        } else {
+            return [
+                'aes256gcm16-x25519-ke1_mlkem768' => 'aes256gcm16-x25519-ke1_mlkem768 [DH31, ML-KEM-768 (ID 36)]',
+                'aes256gcm16-ecp256-ke1_mlkem768' => 'aes256gcm16-ecp256-ke1_mlkem768 [DH19, NIST EC, ML-KEM-768 (ID 36)]',
+                'aes256gcm16-ecp384-ke1_mlkem1024' => 'aes256gcm16-ecp384-ke1_mlkem1024 [DH20, NIST EC, ML-KEM-1024 (ID 37)]',
+            ];
+        }
+    }
+
     protected function actionPostLoadingEvent()
     {
         if (empty(self::$internalCacheOptionList[$this->internalCacheKey])) {
@@ -225,6 +208,10 @@ class IPsecProposalField extends BaseListField
                 foreach ($ciphers as $cipher => $description) {
                     self::$internalCacheOptionList[$this->internalCacheKey][$cipher] = ['value' => $description, 'optgroup' => $group];
                 }
+            }
+
+            foreach ($this->postQuantumCiphers() as $cipher => $description) {
+                self::$internalCacheOptionList[$this->internalCacheKey][$cipher] = ['value' => $description, 'optgroup' => gettext('Post-quantum options')];
             }
 
             $gcm_prf_options = [];
