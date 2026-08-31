@@ -118,7 +118,7 @@ class FilterRuleContainerField extends ContainerField
         ) {
             if (!$this->$fieldname->isEmpty()) {
                 $scrub_options[] = is_a($this->$fieldname, BooleanField::class) ?
-                    $keyword : $keyword . ' ' . (string)$this->$fieldname;
+                    $keyword : $keyword . ' ' . $this->$fieldname->getValue();
             }
         }
         if (!empty($scrub_options)) {
