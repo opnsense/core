@@ -53,27 +53,6 @@ class IPsecProposalField extends BaseListField
         $this->internalCacheKey = $this->phase;
     }
 
-    private function DHGroups()
-    {
-        return [
-            'modp2048' => 'DH14',
-            'modp3072' => 'DH15',
-            'modp4096' => 'DH16',
-            'modp6144' => 'DH17',
-            'modp8192' => 'DH18',
-            'ecp224' => 'DH26, NIST EC',
-            'ecp256' => 'DH19, NIST EC',
-            'ecp384' => 'DH20, NIST EC',
-            'ecp521' => 'DH21, NIST EC',
-            'ecp224bp' => 'DH27, Brainpool EC',
-            'ecp256bp' => 'DH28, Brainpool EC',
-            'ecp384bp' => 'DH29, Brainpool EC',
-            'ecp512bp' => 'DH30, Brainpool EC',
-            'x25519' => 'DH31, Modern EC',
-            'x448' => 'DH32, Modern EC'
-        ];
-    }
-
     private function AeadPhase1()
     {
         /* a PRF is mandatory for IKE proposals containing AEAD algorithms, e.g. GCM and ChaCha20-Poly1305 */
@@ -214,10 +193,27 @@ class IPsecProposalField extends BaseListField
                 self::$internalCacheOptionList[$this->internalCacheKey][$cipher] = ['value' => $description, 'optgroup' => gettext('Post-quantum options')];
             }
 
+            $dhgroups = [
+                'modp2048' => 'DH14',
+                'modp3072' => 'DH15',
+                'modp4096' => 'DH16',
+                'modp6144' => 'DH17',
+                'modp8192' => 'DH18',
+                'ecp224' => 'DH26, NIST EC',
+                'ecp256' => 'DH19, NIST EC',
+                'ecp384' => 'DH20, NIST EC',
+                'ecp521' => 'DH21, NIST EC',
+                'ecp224bp' => 'DH27, Brainpool EC',
+                'ecp256bp' => 'DH28, Brainpool EC',
+                'ecp384bp' => 'DH29, Brainpool EC',
+                'ecp512bp' => 'DH30, Brainpool EC',
+                'x25519' => 'DH31, Modern EC',
+                'x448' => 'DH32, Modern EC'
+            ];
             $gcm_prf_options = [];
             foreach (['aes128', 'aes192', 'aes256', 'aes128gcm16', 'aes192gcm16', 'aes256gcm16'] as $encalg) {
                 foreach (['sha256', 'sha384', 'sha512', 'aesxcbc'] as $intalg) {
-                    foreach ($this->DHGroups() as $dhgroup => $descr) {
+                    foreach ($dhgroups as $dhgroup => $descr) {
                         $cipher = "{$encalg}-{$intalg}-{$dhgroup}";
                         if (strpos($encalg, 'gcm') !== false && $this->phase != '1') {
                             /* only relevant for phase 2 entries, see comment in AeadPhase1() */
