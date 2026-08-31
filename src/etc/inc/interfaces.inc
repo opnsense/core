@@ -562,7 +562,7 @@ function _interfaces_hardware($device, $intf_details = null)
     if (
         strstr($device, 'vlan') || strpos($device, 'qinq') === 0 ||
         strpos($device, 'lo') === 0 || strpos($device, 'vxlan') === 0 ||
-        strpos($device, 'ipsec') === 0 || strpos($device, '/') === 0
+        strpos($device, 'ipsec') === 0
     ) {
         /* skip checksumming  */
         return;
@@ -2372,10 +2372,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         mwexecf('/sbin/ifconfig %s %spromisc', [$realhwif, empty($wancfg['promisc']) ? '-' : '']);
     }
 
-    /* apply interface hardware settings (tso, lro, ..) */
+    /* apply interface hardware settings (TSO, LRO, ..) */
     _interfaces_hardware($realhwif, $ifconfig_details);
 
-    if (!empty($wancfg['mtu']) && strpos($realhwif, '/') === false) {
+    if (!empty($wancfg['mtu'])) {
         interface_configure_mtu($realhwif, $wancfg['mtu'], $ifconfig_details);
     }
 
@@ -2520,7 +2520,7 @@ function interface_track6_6rd_configure($interface, $lancfg)
     $hexwanv4 = return_hex_ipv4($ip4address);
 
     /* create the long prefix notation for math, save the prefix length */
-    $rd6prefix = explode("/", $wancfg['prefix-6rd']);
+    $rd6prefix = explode('/', $wancfg['prefix-6rd']);
     $rd6prefixlen = $rd6prefix[1];
     $rd6prefix = Net_IPv6::uncompress($rd6prefix[0]);
 
@@ -2618,7 +2618,7 @@ function interface_6rd_configure($interface, $wancfg, $update = false)
     }
 
     /* create the long prefix notation for math, save the prefix length */
-    $rd6prefix = explode("/", $wancfg['prefix-6rd']);
+    $rd6prefix = explode('/', $wancfg['prefix-6rd']);
     $rd6prefix_isp = $rd6prefix[0];
     $rd6prefixlen = $rd6prefix[1];
     $rd6prefix = Net_IPv6::uncompress($rd6prefix[0]);
