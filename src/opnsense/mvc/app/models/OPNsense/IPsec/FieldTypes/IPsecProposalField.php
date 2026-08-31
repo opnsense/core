@@ -112,7 +112,6 @@ class IPsecProposalField extends BaseListField
             gettext('Internal') => [
                 'default' => gettext('default')
             ],
-
             /* Non-AEAD algorithms */
             gettext('Commonly used AES') => [
                 'aes256-sha256-modp2048' => null,
@@ -124,12 +123,10 @@ class IPsecProposalField extends BaseListField
                 'aes256-sha256-ecp521' => null,
                 'aes256-sha512-ecp521' => null,
             ],
-
             /* AEAD algorithms */
             gettext('Commonly used combined-mode (AEAD) ciphers') => [
                 ...$this->AeadAlgorithms()
             ],
-
             gettext('Commonly used, but insecure cipher suites') => [
                 'aes256-sha1-modp2048' => 'aes256-sha1-modp2048 [DH14]',
                 'aes192-sha1-modp2048' => 'aes192-sha1-modp2048 [DH14]',
