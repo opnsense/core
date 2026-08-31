@@ -76,6 +76,12 @@
                     "overflowformatter": function (column, row) {
                         return '<span class="overflow">' + row[column.id] + '</span><br/>'
                     },
+                    "addressformatter": function (column, row) {
+                        return '<span class="overflow">' + row.address + '</span><br/>'
+                    },
+                    "clientidformatter": function (column, row) {
+                        return '<span class="overflow">' + row.client_id + '</span><br/>'
+                    },
                     "macformatter": function (column, row) {
                         let mac = '<span class="overflow">' + row.hwaddr + '</span>';
                         if (row.mac_info != '') {
@@ -181,14 +187,14 @@
         <thead>
             <tr>
                 <th data-column-id="if_descr" data-type="string">{{ lang._('Interface') }}</th>
-                <th data-column-id="address" data-identifier="true" data-type="string" data-formatter="overflowformatter">{{ lang._('IP Address') }}</th>
-                <th data-column-id="hwaddr" data-type="string" data-formatter="macformatter" data-width="9em">{{ lang._('MAC Address') }}</th>
-                <th data-column-id="client_id" data-type="string" data-width="9em">{{ lang._('Client ID') }}</th>
+                <th data-column-id="sort_address" data-identifier="true" data-type="string" data-formatter="addressformatter">{{ lang._('IP Address') }}</th>
+                <th data-column-id="sort_hwaddr" data-type="string" data-formatter="macformatter" data-width="9em">{{ lang._('MAC Address') }}</th>
+                <th data-column-id="sort_client_id" data-type="string" data-formatter="clientidformatter" data-width="9em">{{ lang._('Client ID') }}</th>
                 <th data-column-id="valid_lifetime" data-width="6em" data-type="integer">{{ lang._('Lifetime') }}</th>
                 <th data-column-id="expire" data-type="string" data-formatter="timestamp">{{ lang._('Expire') }}</th>
                 <th data-column-id="hostname" data-type="string" data-formatter="overflowformatter">{{ lang._('Hostname') }}</th>
                 <th data-column-id="state" data-type="string" data-formatter="state" data-width="8em">{{ lang._('State') }}</th>
-                <th data-column-id="is_reserved" data-type="string" data-formatter="reservation" data-width="6em">{{ lang._('Lease Type') }}</th>
+                <th data-column-id="lease_type" data-type="string" data-formatter="reservation" data-width="6em">{{ lang._('Lease Type') }}</th>
                 <th data-column-id="commands" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
             </tr>
         </thead>

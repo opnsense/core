@@ -68,6 +68,11 @@ abstract class LeasesController extends ApiControllerBase
             'total' => 0,
         ];
 
+        /* fixed-width decimal-per-byte keys so the grid's natural sort orders
+         * the address and hex fields numerically instead of as text */
+        $byteSortKey = fn($bin) => $bin === false ? ''
+            : implode('.', array_map(fn($b) => sprintf('%03d', $b), unpack('C*', $bin)));
+
         foreach ($records as &$record) {
             // Stats
             $stats['total']++;
@@ -85,11 +90,26 @@ abstract class LeasesController extends ApiControllerBase
             // Vendor
             $mac = strtoupper(substr(str_replace(':', '', $record['hwaddr']), 0, 6));
             $record['mac_info'] = isset($mac_db[$mac]) ? $mac_db[$mac] : '';
+
+            $record['lease_type'] = empty($record['is_reserved']) ? 'dynamic' : 'static';
+            /* length prefix groups IPv4 before IPv6 instead of interleaving; */
+            /* currently redundant given Kea presents IPv4 and IPv6 leases separately, */
+            /* but kept for consistency with dnsmasq and if we ever merge Kea leases */
+            $addressBin = @inet_pton((string)$record['address']);
+            $record['sort_address'] = sprintf('%02d.', strlen((string)$addressBin)) . $byteSortKey($addressBin);
+            $record['sort_hwaddr'] = $byteSortKey(@hex2bin(str_replace(':', '', $record['hwaddr'])));
+            $record['sort_client_id'] = $byteSortKey(@hex2bin(str_replace(':', '', $record['client_id'])));
+            $record['sort_duid'] = $byteSortKey(@hex2bin(str_replace(':', '', $record['duid'])));
         }
 
-        $response = $this->searchRecordsetBase($records, null, 'address', function ($key) use ($selected_interfaces) {
-            return empty($selected_interfaces) || in_array($key['if_name'], $selected_interfaces);
-        });
+        $response = $this->searchRecordsetBase(
+            $records,
+            ['if_descr', 'address', 'hwaddr', 'mac_info', 'iaid', 'client_id', 'duid', 'hostname', 'type'],
+            'sort_address',
+            function ($key) use ($selected_interfaces) {
+                return empty($selected_interfaces) || in_array($key['if_name'], $selected_interfaces);
+            }
+        );
 
         $response['stats'] = $stats;
         $response['interfaces'] = $interfaces;
