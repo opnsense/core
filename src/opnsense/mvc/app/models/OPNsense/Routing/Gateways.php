@@ -409,8 +409,10 @@ class Gateways extends BaseModel
                         "virtual" => true
                     ];
                     // set default priority
-                    if (str_starts_with($device, 'gre') || str_starts_with($device, 'gif') ||
-                        str_starts_with($device, 'ovpn') || str_starts_with($device, 'wg')) {
+                    if (
+                        str_starts_with($device, 'gre') || str_starts_with($device, 'gif') ||
+                        str_starts_with($device, 'ovpn') || str_starts_with($device, 'wg')
+                    ) {
                         // consider tunnel type interfaces least attractive by default
                         $thisconf['priority'] = 255;
                     } else {

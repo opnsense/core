@@ -558,11 +558,10 @@ function _interfaces_hardware($device, $intf_details = null)
 {
     global $config;
 
-    /* XXX this needs fixing, lots of devices are not capable */
     if (
-        strstr($device, 'vlan') || strpos($device, 'qinq') === 0 ||
-        strpos($device, 'lo') === 0 || strpos($device, 'vxlan') === 0 ||
-        strpos($device, 'ipsec') === 0
+        str_starts_with($device, 'vlan') || str_starts_with($device, 'qinq') === 0 ||
+        strstr($device, '_vlan') || str_starts_with($device, 'lo') ||
+        str_starts_with($device, 'vxlan') || str_starts_with($device, 'ipsec')
     ) {
         /* skip checksumming  */
         return;
@@ -697,19 +696,19 @@ function interfaces_configure($verbose = false)
         /* XXX use this to figure out when bridges can be configured */
         $interfaces[$if] = $ifcfg['if'];
 
-        if (!empty($devices[$ifcfg['if']]) && !strstr($ifcfg['if'], 'bridge')) {
+        if (!empty($devices[$ifcfg['if']]) && !str_starts_with($ifcfg['if'], 'bridge')) {
             $virtual[$ifcfg['if']] = $if;
             continue;
         }
 
         $is_track6 = !empty($ifcfg['ipaddrv6']) && in_array($ifcfg['ipaddrv6'], ['idassoc6', 'track6']);
-        if (!strstr($ifcfg['if'], 'bridge') && $is_track6) {
+        if (!str_starts_with($ifcfg['if'], 'bridge') && $is_track6) {
             $track6[$ifcfg['if']] = $if;
             continue;
         }
 
         $is_dhcp6c = !empty($ifcfg['ipaddrv6']) && ($ifcfg['ipaddrv6'] == 'dhcp6' || $ifcfg['ipaddrv6'] == 'slaac');
-        if (strstr($ifcfg['if'], 'bridge') && !$is_dhcp6c) {
+        if (str_starts_with($ifcfg['if'], 'bridge') && !$is_dhcp6c) {
             $bridge[$ifcfg['if']] = $if;
             continue;
         } elseif ($is_dhcp6c) {
@@ -2192,7 +2191,7 @@ function interface_configure_mtu($device, $mtu, $ifconfig_details)
 {
     global $config;
 
-    if (strstr($device, 'vlan') || strstr($device, 'qinq')) {
+    if (str_starts_with($device, 'vlan') || str_starts_with($device, 'qinq') || strstr($device, '_vlan')) {
         $parent_device = interface_parent_devices($device)[0];
         $parent_mtu = $mtu + 4;
         $force = false;
@@ -3482,14 +3481,14 @@ function interface_parent_devices($device)
 {
     $parents = [];
 
-    if (strstr($device, 'vlan') || strstr($device, 'qinq')) {
+    if (str_starts_with($device, 'vlan') || str_starts_with($device, 'qinq') || strstr($device, '_vlan')) {
         foreach (config_read_array('vlans', 'vlan', false) as $vlan) {
             if ($device == $vlan['vlanif']) {
                 $parents[] = $vlan['if'];
                 break;
             }
         }
-    } elseif (strstr($device, 'bridge')) {
+    } elseif (str_starts_with($device, 'bridge')) {
         foreach (config_read_array('bridges', 'bridged', false) as $bridge) {
             if ($device == $bridge['bridgeif']) {
                 foreach (explode(',', $bridge['members'] ?? '') as $member) {
@@ -3499,7 +3498,7 @@ function interface_parent_devices($device)
                 break;
             }
         }
-    } elseif (strstr($device, 'lagg')) {
+    } elseif (str_starts_with($device, 'lagg')) {
         foreach (config_read_array('laggs', 'lagg', false) as $lagg) {
             if ($device == $lagg['laggif']) {
                 foreach (explode(',', $lagg['members']) as $member) {
