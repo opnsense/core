@@ -36,9 +36,6 @@ require_once("system.inc");
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
     $pconfig['disablefilter'] = !empty($config['system']['disablefilter']);
-    $pconfig['scrubnodf'] = !empty($config['system']['scrubnodf']);
-    $pconfig['scrubrnid'] = !empty($config['system']['scrubrnid']);
-    $pconfig['scrub_interface_disable'] = !empty($config['system']['scrub_interface_disable']);
     $pconfig['optimization'] = isset($config['system']['optimization']) ? $config['system']['optimization'] : "normal";
     $pconfig['state-policy'] = isset($config['system']['state-policy']) ;
     $pconfig['maximumstates'] = isset($config['system']['maximumstates']) ? $config['system']['maximumstates'] : null;
@@ -128,24 +125,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
     if (count($input_errors) == 0) {
-        if (!empty($pconfig['scrubnodf'])) {
-            $config['system']['scrubnodf'] = 'enabled';
-        } elseif (isset($config['system']['scrubnodf'])) {
-            unset($config['system']['scrubnodf']);
-        }
-
-        if (!empty($pconfig['scrubrnid'])) {
-            $config['system']['scrubrnid'] = 'enabled';
-        } elseif (isset($config['system']['scrubrnid'])) {
-            unset($config['system']['scrubrnid']);
-        }
-
-        if (!empty($pconfig['scrub_interface_disable'])) {
-            $config['system']['scrub_interface_disable'] = 'enabled';
-        } elseif (isset($config['system']['scrub_interface_disable'])) {
-            unset($config['system']['scrub_interface_disable']);
-        }
-
         if (!empty($pconfig['pf_share_forward'])) {
             $config['system']['pf_share_forward'] = true;
         } elseif (isset($config['system']['pf_share_forward'])) {
@@ -332,10 +311,6 @@ include("head.inc");
             }
         });
         $("#syncookies").change();
-        $("#scrub_interface_disable").change(function(){
-            $(".scrub_settings").toggle(!$(this).prop("checked"));
-        });
-        $("#scrub_interface_disable").change();
     });
 </script>
 <body>
@@ -386,41 +361,6 @@ include("head.inc");
                   <input name="enablenatreflectionhelper" type="checkbox" id="enablenatreflectionhelper" value="yes" <?=!empty($pconfig['enablenatreflectionhelper']) ? "checked=\"checked\"" : "";?> />
                   <div class="hidden" data-for="help_for_enablenatreflectionhelper">
                     <?=gettext("Automatically create outbound NAT rules which assist inbound NAT rules that direct traffic back out to the same subnet it originated from.");?>
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </div>
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
-                <td style="width:22%"><strong><?= gettext('Normalization') ?></strong></td>
-                <td style="width:78%"></td>
-              </tr>
-              <tr>
-                <td><a id="help_for_scrub_interface_disable" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Disable automatic normalization");?></td>
-                <td>
-                  <input id="scrub_interface_disable" name="scrub_interface_disable" type="checkbox" value="yes" <?=!empty($pconfig['scrub_interface_disable']) ? 'checked="checked"' : '';?> />
-                  <div class="hidden" data-for="help_for_scrub_interface_disable">
-                    <?=gettext("Disable automatic IPv4 fragment reassembly and generated random-ID and interface MSS rules. Explicit scrub rules remain active.");?>
-                  </div>
-                </td>
-              </tr>
-              <tr class="scrub_settings">
-                <td><a id="help_for_scrubnodf" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Do-Not-Fragment");?></td>
-                <td>
-                  <input name="scrubnodf" type="checkbox" value="yes" <?=!empty($pconfig['scrubnodf']) ? 'checked="checked"' : '';?> />
-                  <div class="hidden" data-for="help_for_scrubnodf">
-                    <?=gettext("Clear the don't fragment bit during fragment reassembly instead of dropping conflicting packets.");?>
-                  </div>
-                </td>
-              </tr>
-              <tr class="scrub_settings">
-                <td><a id="help_for_scrubrnid" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("IP Random id");?></td>
-                <td>
-                  <input name="scrubrnid" type="checkbox" value="yes" <?=!empty($pconfig['scrubrnid']) ? 'checked="checked"' : '';?> />
-                  <div class="hidden" data-for="help_for_scrubrnid">
-                    <?=gettext("Replace IPv4 identification fields with random values after optional packet reassembly.");?>
                   </div>
                 </td>
               </tr>
