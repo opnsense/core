@@ -794,6 +794,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_3.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_4.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_8.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/static_aliases/core.json
 /usr/local/opnsense/mvc/app/models/OPNsense/Hostdiscovery/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Hostdiscovery/Hostwatch.php
