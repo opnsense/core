@@ -1100,9 +1100,7 @@
         // XXX: the backend normalizes this, there are no explicit validations in Filter.php for some combinations
         //      it would be better if the backend could trust the data though at some point
         $('#rule\\.action').change(function() {
-            if ($(this).val() === 'pass') {
-                $('#rule\\.statetype').val('keep').change();
-            } else {
+            if ($(this).val() !== 'pass') {
                 $('#rule\\.statetype').val('none').change();
                 [
                     'divert-to',
