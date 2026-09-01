@@ -581,6 +581,125 @@ function initFormAdvancedUI() {
 }
 
 /**
+ * Filter dialog form fields while preserving collapsed sections and advanced mode.
+ */
+function initFormSearchUI() {
+    $('.form-search input[type="search"]').each(function() {
+        const $search = $(this);
+        const $modal = $search.closest('.modal');
+        const $form = $modal.find('form[id^="frm"]').first();
+
+        function filterForm() {
+            const terms = $search.val().trim().toLowerCase().split(/\s+/).filter(Boolean);
+
+            $form.find('.form-search-section').each(function() {
+                const $section = $(this);
+                const $table = $section.children('table');
+                const $body = $table.children('tbody');
+                const $heading = $table.children('thead');
+                const $icon = $heading.find('> tr > th > div > i');
+
+                if (terms.length === 0) {
+                    if ($section.data('form-search-display') !== undefined) {
+                        $section[0].style.display = $section.data('form-search-display');
+                        $section.removeData('form-search-display');
+                    }
+                    if ($body.data('form-search-display') !== undefined) {
+                        $body[0].style.display = $body.data('form-search-display');
+                        $body.removeData('form-search-display');
+                    }
+                    if ($heading.data('form-search-display') !== undefined) {
+                        $heading[0].style.display = $heading.data('form-search-display');
+                        $heading.removeData('form-search-display');
+                    }
+                    $body.children('tr').not('.dummy_row').each(function() {
+                        const $row = $(this);
+                        if ($row.data('form-search-display') !== undefined) {
+                            this.style.display = $row.data('form-search-display');
+                            $row.removeData('form-search-display');
+                        }
+                        $row.children('td').each(function() {
+                            const $cell = $(this);
+                            if ($cell.data('form-search-display') !== undefined) {
+                                this.style.display = $cell.data('form-search-display');
+                                $cell.removeData('form-search-display');
+                            }
+                        });
+                    });
+                    $body.children('.dummy_row').css('display', '');
+                    const $displayedRows = $body.children('tr').not('.dummy_row').filter(function() {
+                        return this.style.display !== 'none';
+                    });
+                    const $displayedCells = $displayedRows.children('td').filter(function() {
+                        return this.style.display !== 'none';
+                    });
+                    const isCollapsed = $body[0].style.display === 'none' ||
+                        ($displayedRows.children('td').length > 0 && $displayedCells.length === 0);
+                    $icon.toggleClass('fa-angle-right', isCollapsed);
+                    $icon.toggleClass('fa-angle-down', !isCollapsed);
+                    return;
+                }
+
+                if ($body.data('form-search-display') === undefined) {
+                    $section.data('form-search-display', $section[0].style.display || '');
+                    $body.data('form-search-display', $body[0].style.display || '');
+                    $heading.data('form-search-display', $heading[0]?.style.display || '');
+                    $body.children('tr').not('.dummy_row').each(function() {
+                        $(this).data('form-search-display', this.style.display || '');
+                        $(this).children('td').each(function() {
+                            $(this).data('form-search-display', this.style.display || '');
+                        });
+                    });
+                }
+
+                const sectionMatches = terms.every(term => $heading.text().toLowerCase().includes(term));
+                let $subheader = $();
+                let subheaderMatches = false;
+                let hasMatches = false;
+
+                $body.children('tr').each(function() {
+                    const $row = $(this);
+                    if ($row.hasClass('dummy_row')) {
+                        return;
+                    }
+                    if ($row.hasClass('form-search-subheader')) {
+                        $subheader = $row;
+                        subheaderMatches = terms.every(term => $row.text().toLowerCase().includes(term));
+                        $row.hide();
+                        return;
+                    }
+                    if (!$row.attr('id')) {
+                        $row.hide();
+                        return;
+                    }
+
+                    const rowMatches = sectionMatches || subheaderMatches ||
+                        terms.every(term => $row.text().toLowerCase().includes(term));
+                    $row.toggle(rowMatches);
+                    if (rowMatches) {
+                        $row.children('td').css('display', '');
+                        $subheader.show().children('td').css('display', '');
+                        hasMatches = true;
+                    }
+                });
+
+                $section.toggle(hasMatches);
+                $heading.toggle(hasMatches);
+                $body.css('display', hasMatches ? '' : 'none');
+                $icon.removeClass('fa-angle-right').addClass('fa-angle-down');
+            });
+        }
+
+        $search.on('input', filterForm);
+        $modal.on('hidden.bs.modal', function() {
+            // restore state
+            $search.val('');
+            filterForm();
+        });
+    });
+}
+
+/**
  * handle keyboard shortcuts for toggling advanced and help
  */
 function initGlobalOpenShortcuts() {
