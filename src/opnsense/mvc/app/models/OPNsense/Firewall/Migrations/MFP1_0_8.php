@@ -49,12 +49,8 @@ class MFP1_0_8 extends BaseModelMigration
 
     private function normalizePort($port)
     {
-        $port = (string)$port;
-        if (empty($port) || $port === 'any') {
-            return '';
-        }
-        $port = str_replace('-any', '-65535', $port);
-        return str_replace('any-', '1-', $port);
+        /* Legacy port ranges use a colon, while PortField expects a dash. */
+        return str_replace(':', '-', (string)$port);
     }
 
     private function protocolFamily($rule, $protocol)
@@ -97,9 +93,6 @@ class MFP1_0_8 extends BaseModelMigration
                 }
 
                 $protocol = !empty($legacy->proto) ? strtoupper((string)$legacy->proto) : 'any';
-                if ($protocol === 'ICMP6') {
-                    $protocol = 'IPV6-ICMP';
-                }
 
                 $rule = $model->rules->rule->Add();
                 /* Duplicate sequences are intentional; migrated match rules should remain at the beginning. */
