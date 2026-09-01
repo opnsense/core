@@ -38,7 +38,7 @@ class MFP1_0_9 extends BaseModelMigration
     {
         if ($model instanceof Filter) {
             $legacy = Config::getInstance()->object()->system;
-            /* Copy only while the legacy scrub page remains available during the staged migration. */
+            /* Copy only so the legacy values remain available if migration recovery is needed. */
             $model->advanced->scrub->setNodes([
                 'disable' => !empty($legacy->scrub_interface_disable) ? '1' : '0',
                 'no_df' => !empty($legacy->scrubnodf) ? '1' : '0',
