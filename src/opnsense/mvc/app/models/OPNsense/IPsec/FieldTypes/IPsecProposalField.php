@@ -145,6 +145,33 @@ class IPsecProposalField extends BaseListField
         ];
     }
 
+    private function postQuantumCiphers()
+    {
+       /*
+        * Add hybrid post-quantum key exchange options using a single additional
+        * key exchange (KE1). ML-KEM is deliberately not offered as
+        * the primary key exchange since including a classical primitive is encouraged
+        * (see https://www.rfc-editor.org/rfc/rfc9370.html#section-1.1-2).
+        *
+        * Also limit to just a couple of sensible options
+        * (see https://www.rfc-editor.org/info/rfc10024/#name-motivation).
+        */
+
+        if ($this->phase == '1') {
+            return [
+                'aes256gcm16-sha256-x25519-ke1_mlkem768' => 'aes256gcm16-sha256-x25519-ke1_mlkem768 [DH31, ML-KEM-768 (ID 36)]',
+                'aes256gcm16-sha256-ecp256-ke1_mlkem768' => 'aes256gcm16-sha256-ecp256-ke1_mlkem768 [DH19, ML-KEM-768 (ID 36)]',
+                'aes256gcm16-sha384-ecp384-ke1_mlkem1024' => 'aes256gcm16-sha384-ecp384-ke1_mlkem1024 [DH20, ML-KEM-1024 (ID 37)]',
+            ];
+        } else {
+            return [
+                'aes256gcm16-x25519-ke1_mlkem768' => 'aes256gcm16-x25519-ke1_mlkem768 [DH31, ML-KEM-768 (ID 36)]',
+                'aes256gcm16-ecp256-ke1_mlkem768' => 'aes256gcm16-ecp256-ke1_mlkem768 [DH19, ML-KEM-768 (ID 36)]',
+                'aes256gcm16-ecp384-ke1_mlkem1024' => 'aes256gcm16-ecp384-ke1_mlkem1024 [DH20, ML-KEM-1024 (ID 37)]',
+            ];
+        }
+    }
+
     protected function actionPostLoadingEvent()
     {
         if (empty(self::$internalCacheOptionList[$this->internalCacheKey])) {
@@ -157,6 +184,10 @@ class IPsecProposalField extends BaseListField
                 foreach ($ciphers as $cipher => $description) {
                     self::$internalCacheOptionList[$this->internalCacheKey][$cipher] = ['value' => $description, 'optgroup' => $group];
                 }
+            }
+
+            foreach ($this->postQuantumCiphers() as $cipher => $description) {
+                self::$internalCacheOptionList[$this->internalCacheKey][$cipher] = ['value' => $description, 'optgroup' => gettext('Post-quantum options')];
             }
 
             $dhgroups = [

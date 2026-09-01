@@ -82,6 +82,23 @@ class Swanctl extends BaseModel
                 }
             }
         }
+
+        foreach ($this->Connections->Connection->iterateItems() as $node) {
+            if (!$validateFullModel && !$node->isFieldChanged()) {
+                continue;
+            }
+
+            $key = $node->__reference;
+            if (str_contains($node->proposals->getValue(), 'mlkem') && $node->version->getValue() != '2') {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("A post-quantum key exchange method (mlkem) can only be used with IKEv2"),
+                        $key . ".proposals"
+                    )
+                );
+            }
+        }
+
         foreach ($this->VTIs->VTI->iterateItems() as $node) {
             if (!$validateFullModel && !$node->isFieldChanged()) {
                 continue;
@@ -151,6 +168,22 @@ class Swanctl extends BaseModel
                  $messages->appendMessage(
                      new Message(gettext("Either match on a certificate or an autority, but not both."), $key . ".certs")
                  );
+            }
+        }
+
+        foreach ($this->children->child->iterateItems() as $node) {
+            if (!$validateFullModel && !$node->isFieldChanged()) {
+                continue;
+            }
+            $key = $node->__reference;
+            $conn = $this->getNodeByReference('Connections.Connection.' . $node->connection->getValue());
+            if ($conn != null && str_contains($node->esp_proposals->getValue(), 'mlkem') && $conn->version->getValue() != '2') {
+                $messages->appendMessage(
+                    new Message(
+                        gettext("A post-quantum key exchange method (mlkem) can only be used with IKEv2"),
+                        $key . ".esp_proposals"
+                    )
+                );
             }
         }
 
