@@ -115,7 +115,7 @@ class LeasesController extends ApiControllerBase
 
         $response = $this->searchRecordsetBase(
             $records,
-            ['if_descr', 'address', 'hwaddr', 'mac_info', 'iaid', 'client_id', 'hostname'],
+            ['if_descr', 'address', 'hwaddr', 'mac_info', 'iaid', 'client_id', 'expire', 'hostname', 'lease_type'],
             'sort_address',
             function ($record) use ($selected_interfaces, $selected_protocol) {
                 $interfaceMatch = empty($selected_interfaces)
