@@ -2151,6 +2151,7 @@ class UIBootgrid {
                         this.showSaveAlert();
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
                     }, true, function () {
+                        $(document).trigger("validation-failed");
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
                     });
                 });
@@ -2208,6 +2209,7 @@ class UIBootgrid {
                         this.showSaveAlert();
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
                     }, true, () => {
+                        $(document).trigger("validation-failed");
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
                     });
                 });
@@ -2298,6 +2300,7 @@ class UIBootgrid {
                         this.showSaveAlert();
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
                     }, true, function () {
+                        $(document).trigger("validation-failed");
                         saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
                     });
                 });

@@ -667,8 +667,13 @@ function initFormSearchUI() {
         }
 
         $search.on('input', filterForm);
+
+        // restore state where relevant
         $modal.on('hidden.bs.modal', function() {
-            // restore state
+            $search.val('');
+            filterForm();
+        });
+        $(document).on("validation-failed", function () {
             $search.val('');
             filterForm();
         });
