@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Firewall/Filter</mount>
-    <version>1.0.8</version>
+    <version>1.0.9</version>
     <migration_prefix>MFP</migration_prefix>
     <description>Firewall rules (new)</description>
     <items>
@@ -16,6 +16,22 @@
                 </OptionValues>
             </snat_mode>
         </general>
+        <advanced>
+            <scrub>
+                <disable type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </disable>
+                <no_df type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </no_df>
+                <random_id type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </random_id>
+            </scrub>
+        </advanced>
         <rules>
             <rule type=".\FilterRuleField">
                 <enabled type="BooleanField">
