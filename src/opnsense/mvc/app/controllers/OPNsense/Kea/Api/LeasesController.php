@@ -68,7 +68,8 @@ abstract class LeasesController extends ApiControllerBase
             'total' => 0,
         ];
 
-        /* fixed-width decimal-per-byte keys so the grid's natural sort orders
+        /* 
+         * fixed-width decimal-per-byte keys so the grid's natural sort orders
          * the address and hex fields numerically instead of as text
          */
         $byteSortKey = fn($bin) => $bin === false ? ''
