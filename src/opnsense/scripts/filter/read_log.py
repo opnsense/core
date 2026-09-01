@@ -144,7 +144,7 @@ def parse_record(record, running_conf_descr):
         # rule id in latest record format, don't use rule sequence number in that case
         if rule['rid'] in running_conf_descr:
             rule['label'] = running_conf_descr[rule['rid']]
-    elif rule['action'] not in ['pass', 'block']:
+    elif rule['action'] not in ['pass', 'block', 'match']:
         # no id for translation rules
         rule['label'] = "%s rule" % rule['action']
     elif len(rulep) > 0 and len(rulep[-1]) >= 32 and set(rulep[-1].replace('-', '')).issubset(HEX_DIGITS):

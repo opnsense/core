@@ -464,7 +464,9 @@
                         }
 
                         // Action
-                        if (row.action === "block") {
+                        if (row.action === "match") {
+                            result += `<i class="fa fa-filter fa-fw text-success" data-toggle="tooltip" title="${row['%action']}"></i> `;
+                        } else if (row.action === "block") {
                             result += `<i class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="${row['%action']}"></i> `;
                         } else if (row.action === "reject") {
                             result += `<i class="fa fa-times-circle fa-fw text-danger" data-toggle="tooltip" title="${row['%action']}"></i> `;
@@ -1092,6 +1094,21 @@
                     $('#rule\\.categories').selectpicker('val', selectedCategories);
                     $('#rule\\.categories').selectpicker('refresh');
                 }
+            }
+        });
+
+        // XXX: the backend normalizes this, there are no explicit validations in Filter.php for some combinations
+        //      it would be better if the backend could trust the data though at some point
+        $('#rule\\.action').change(function() {
+            if ($(this).val() !== 'pass') {
+                $('#rule\\.statetype').val('none').change();
+                [
+                    'divert-to',
+                    'gateway',
+                    'replyto',
+                ].forEach(function(fieldname) {
+                    $('#rule\\.' + fieldname).val('').change();
+                });
             }
         });
 

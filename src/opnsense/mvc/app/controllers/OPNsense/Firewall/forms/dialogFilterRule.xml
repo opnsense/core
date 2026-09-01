@@ -339,6 +339,65 @@
     </field>
     <field>
         <type>header</type>
+        <label>Normalization</label>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>rule.scrub_no_df</id>
+        <label>Clear DF bit</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Clear the don't-fragment bit from matching IPv4 packets.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.scrub_random_id</id>
+        <label>Random ID</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Replace the IPv4 identification field with random values.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.scrub_max_mss</id>
+        <label>Maximum MSS</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Reduce the maximum segment size on matching TCP SYN packets.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.scrub_min_ttl</id>
+        <label>Minimum TTL</label>
+        <type>text</type>
+        <advanced>true</advanced>
+        <help>Enforce a minimum TTL on matching IP packets.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>rule.scrub_set_tos</id>
+        <label>Set TOS / DSCP</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>Set the TOS or DSCP value on matching packets.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
         <label>Stateful firewall</label>
     </field>
     <field>
