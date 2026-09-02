@@ -50,6 +50,15 @@
             </div>
             <div class="modal-body">
                 <form id="frm_{{base_dialog_id}}">
+                <div class="table-responsive form-search-no-results" style="display: none;">
+                    <table class="table table-condensed">
+                        <tbody>
+                            <tr>
+                                <td class="text-center text-muted">{{ lang._('No matches found') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 {% for section in fields['sections'] %}
                   <div class="table-responsive form-search-section {{section['style']|default('')}}">
                     <table class="table table-striped table-condensed" style="table-layout: fixed; width: 100%;">

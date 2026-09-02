@@ -597,6 +597,7 @@ function initFormSearchUI() {
         function filterForm() {
             const query = $search.val().trim().toLowerCase();
             const terms = query === '' ? [] : query.split(/\s+/);
+            let hasResults = false;
 
             $form.find('.form-search-section').each(function() {
                 const $section = $(this);
@@ -669,7 +670,10 @@ function initFormSearchUI() {
                 $section.add($heading).add($headingRow).toggle(hasMatches);
                 $body.css('display', hasMatches ? '' : 'none');
                 $icon.removeClass('fa-angle-right').addClass('fa-angle-down');
+                hasResults = hasResults || hasMatches;
             });
+
+            $form.find('.form-search-no-results').toggle(terms.length > 0 && !hasResults);
         }
 
         $search.on('input', filterForm);
