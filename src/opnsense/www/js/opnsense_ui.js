@@ -72,7 +72,11 @@ function saveFormToEndpoint(url, formid, callback_ok, disable_dialog, callback_f
 
             // if there are validation issues, update our screen and show a dialog.
             if (data['validations'] !== undefined) {
-                $(document).trigger("validation-failed");
+                $(document).trigger("validation-failed", {
+                    url: url,
+                    formid: formid,
+                    data: data
+                });
                 if (!disable_dialog) {
                     const detailsid = "errorfrm" + Math.floor((Math.random() * 10000000) + 1);
                     const errorMessage = $('<div></div>');
