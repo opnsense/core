@@ -222,6 +222,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/SnapshotsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/TunablesController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/firmware.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/hasyncSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/snapshot.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/tunable.xml
@@ -695,6 +696,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/FieldTypes/FirmwareField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/FieldTypes/TunableField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Firmware.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Firmware.xml

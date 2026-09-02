@@ -3,10 +3,17 @@
     <version>1.0.1</version>
     <description>Firmware settings</description>
     <items>
-        <mirror type="TextField"/>
-        <flavour type="TextField"/>
+        <mirror type=".\FirmwareField">
+            <Custom>Y</Custom>
+        </mirror>
+        <flavour type=".\FirmwareField">
+            <Path>flavours.flavour</Path>
+            <Custom>Y</Custom>
+        </flavour>
         <plugins type="TextField"/>
-        <type type="TextField"/>
+        <type type=".\FirmwareField">
+            <Path>families.family</Path>
+        </type>
         <subscription type="TextField"/>
         <reboot type="BooleanField"/>
         <aux type="BooleanField"/>

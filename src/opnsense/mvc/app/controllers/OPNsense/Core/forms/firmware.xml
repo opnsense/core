@@ -1,0 +1,46 @@
+<form>
+    <field>
+        <id>firmware.mirror</id>
+        <label>Mirror</label>
+        <type>dropdown</type>
+        <help>Select an alternate firmware mirror.</help>
+    </field>
+    <field>
+        <id>firmware.flavour</id>
+        <label>Flavour</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>Select an alternate firmware flavour.</help>
+    </field>
+    <field>
+        <id>firmware.type</id>
+        <label>Type</label>
+        <type>dropdown</type>
+        <help>Select the release type.</help>
+    </field>
+    <field>
+        <id>firmware.reboot</id>
+        <label>Reboot</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Always reboot after a successful update.</help>
+    </field>
+    <field>
+        <id>firmware.aux</id>
+        <label>Repository</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>activate the auxiliary packages repository.</help>
+    </field>
+    <field>
+        <id>firmware.usage</id>
+        <label>Usage</label>
+        <type>label</type>
+    </field>
+    <field>
+        <id>firmware.actions</id>
+        <type>buttons</type>
+        <parent>ConnectionDialog</parent>
+        <cancel>true</cancel>
+    </field>
+</form>

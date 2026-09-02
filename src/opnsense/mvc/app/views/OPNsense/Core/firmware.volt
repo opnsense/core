@@ -633,6 +633,20 @@
     }
 
     $( document ).ready(function() {
+        var data_get_map = {'frm_FirmwareSettings':"/api/core/firmware/get"};
+        mapDataToFormUI(data_get_map).done(function(data) {
+            formatTokenizersUI();
+            $('.selectpicker').selectpicker('refresh');
+        });
+
+        $("#reconfigureAct").SimpleActionButton({
+            onPreAction: function () {
+              const dfObj = new $.Deferred();
+              saveFormToEndpoint("/api/unbound/settings/set", 'frm_FirmwareSettings', function () { dfObj.resolve(); }, true, function () { dfObj.reject(); });
+              return dfObj;
+            }
+        });
+
         // link event handlers
         $('#checkupdate').click(function () { backend('check'); });
         $('#upgrade').click(function () { upgrade_ui(false); });
@@ -740,6 +754,7 @@
                     $("#firmware_flavour").change();
                     if (fwconf['flavour'] !== '' || fwconf['reboot'] === '1' || fwconf['aux'] === '1') {
                         $("i.fa-toggle-off#show_advanced_firmware").click();
+                        $("#show_advanced_frm_FirmwareSettings").click();
                     }
 
                     $.each(fwopts.families, function(key, value) {
@@ -1087,6 +1102,9 @@
                             </tbody>
                         </table>
                     </form>
+<div class="content-box __mt">
+{{ partial("layout_partials/base_form",['fields':settingsForm,'id':'frm_FirmwareSettings'])}}
+</div>
                 </div>
             </div>
         </div>
