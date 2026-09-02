@@ -479,7 +479,7 @@
         </patterns>
     </page-system-authservers>
     <page-system-camanager>
-        <name>System: CA Manager</name>
+        <name>System: Trust: Authorities</name>
         <patterns>
             <pattern>ui/trust/ca</pattern>
             <pattern>api/trust/ca/*</pattern>
