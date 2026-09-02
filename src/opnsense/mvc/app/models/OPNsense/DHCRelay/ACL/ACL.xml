@@ -1,9 +1,16 @@
 <acl>
     <page-services-dhcprelay>
-        <name>Services: DHCRelay</name>
+        <name>Services: DHCRelay: Configuration</name>
         <patterns>
             <pattern>ui/dhcrelay/relay</pattern>
             <pattern>api/dhcrelay/*</pattern>
         </patterns>
     </page-services-dhcprelay>
+    <page-diagnostics-logs-dhcrelay>
+        <name>Services: DHCRelay: Log File</name>
+        <patterns>
+            <pattern>ui/diagnostics/log/core/dhcrelay/*</pattern>
+            <pattern>api/diagnostics/log/core/dhcrelay/*</pattern>
+        </patterns>
+    </page-diagnostics-logs-dhcrelay>
 </acl>
