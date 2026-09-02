@@ -29,39 +29,56 @@ export default class Zfs extends BaseTableWidget {
         super();
 
         this.tickTimeout = 60;
-        this.compactBreakpoint = 320;
     }
 
     getMarkup() {
         return this.createTable('zfs-table', {
             headerPosition: 'left',
-            headerBreakpoint: this.compactBreakpoint,
+            headerBreakpoint: 320,
         });
     }
 
-    poolField(name, state) {
-        const value = state || 'UNKNOWN';
+    poolField(name, pool) {
+        const state = pool.state || 'UNKNOWN';
+        const errors = this.getErrorSummary(pool);
 
-        let color = 'text-danger';
-        if (value === 'ONLINE') {
-            color = 'text-success';
-        } else if (value === 'DEGRADED') {
-            color = 'text-warning';
-        }
+        const healthy =
+            state === 'ONLINE' &&
+            errors.devices === 0 &&
+            errors.data === 0;
+
+        const color = healthy
+            ? 'text-success'
+            : 'text-warning';
+
+        const title = healthy
+            ? this.translations.healthy
+            : this.translations.attention;
 
         const $status = $('<i>')
-            .addClass(`fa fa-circle text-muted ${color} zfs-status-icon`)
+            .addClass(`fa fa-circle text-muted ${color} zfs-health-icon`)
             .css({
                 'font-size': '11px',
                 'cursor': 'pointer',
             })
             .attr('data-toggle', 'tooltip')
-            .attr('title', value);
+            .attr('title', title);
 
         return $('<div>')
+            .css('margin-bottom', '5px')
             .append($status)
             .append('&nbsp;')
             .append($('<span>').text(name))
+            .prop('outerHTML');
+    }
+
+    stateField(pool) {
+        const state = pool.state || 'UNKNOWN';
+
+        return $('<div>')
+            .append($('<b>').text(this.translations.state))
+            .append('<br>')
+            .append($('<span>').text(state))
             .prop('outerHTML');
     }
 
@@ -214,55 +231,30 @@ export default class Zfs extends BaseTableWidget {
             );
         }
 
-        const $value = $('<span>').text(
-            parts.length > 0
-                ? parts.join(' / ')
-                : this.translations.none
-        );
-
-        if (errors.data > 0) {
-            $value.addClass('text-danger');
-        } else if (errors.devices > 0) {
-            $value.addClass('text-warning');
-        }
-
         return $('<div>')
             .append($('<b>').text(this.translations.errors))
             .append('<br>')
-            .append($value)
-            .prop('outerHTML');
-    }
-
-    detailsField(pool) {
-        const $poolDivider = $('<hr>')
-            .addClass('zfs-pool-divider')
-            .css({
-                'margin': '0 0 0.5em',
-            })
-            .hide();
-
-        const $detailDivider = $('<hr>')
-            .addClass('zfs-detail-divider')
-            .css({
-                'margin': '0.5em 0',
-            });
-
-        return $('<div>')
-            .addClass('zfs-details')
-            .append($poolDivider)
-            .append(this.errorField(pool))
-            .append($detailDivider)
-            .append(this.scanField(pool.scan_stats))
+            .append(
+                $('<span>').text(
+                    parts.length > 0
+                        ? parts.join(' / ')
+                        : this.translations.none
+                )
+            )
             .prop('outerHTML');
     }
 
     renderPools(pools) {
-        const statusSelector = '#zfs-table .zfs-status-icon';
+        const statusSelector = '#zfs-table .zfs-health-icon';
         $(statusSelector).tooltip('hide');
 
         const rows = Object.entries(pools).map(([name, pool]) => [
-            this.poolField(pool.name || name, pool.state),
-            this.detailsField(pool),
+            this.poolField(pool.name || name, pool),
+            [
+                this.stateField(pool),
+                this.errorField(pool),
+                this.scanField(pool.scan_stats),
+            ],
         ]);
 
         if (rows.length === 0) {
@@ -276,14 +268,6 @@ export default class Zfs extends BaseTableWidget {
 
         this.updateTable('zfs-table', rows);
         $(statusSelector).tooltip({container: 'body'});
-    }
-
-    onWidgetResize(elem, width, height) {
-        $(elem)
-            .find('.zfs-pool-divider')
-            .toggle(width < this.compactBreakpoint);
-
-        return super.onWidgetResize(elem, width, height);
     }
 
     async onWidgetTick() {
