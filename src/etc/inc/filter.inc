@@ -378,14 +378,13 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
     $rules .= "\n";
-    $filtersettings = $config['OPNsense']['Firewall']['Filter']['settings']['filter'] ?? [];
-    $rules .= filter_generate_scrubbing($filtersettings);
+    $rules .= filter_generate_scrubbing();
     $rules .= "\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'head');
     $rules .= "{$natrules}\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'tail');
     /* Generated scrub matches are filter rules and must follow translation rules. */
-    $rules .= filter_generate_scrub_rules($cnfint, $filtersettings);
+    $rules .= filter_generate_scrub_rules($cnfint);
     $rules .= $fw->anchorToText('fw', 'head');
     $rules .= filter_rules_legacy($cnfint);
     $rules .= $fw->outputFilterRules();
@@ -468,8 +467,9 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     service_log("done.\n", $verbose);
 }
 
-function filter_generate_scrubbing($settings)
+function filter_generate_scrubbing()
 {
+    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'filter', false);
     $scruboptions = '';
     $enabled = !isset($settings['scrub_enabled']) || !empty($settings['scrub_enabled']);
 
@@ -487,8 +487,9 @@ function filter_generate_scrubbing($settings)
     return $scruboptions;
 }
 
-function filter_generate_scrub_rules(&$FilterIflist, $settings)
+function filter_generate_scrub_rules(&$FilterIflist)
 {
+    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'filter', false);
     $scrubrules = '';
     $enabled = !isset($settings['scrub_enabled']) || !empty($settings['scrub_enabled']);
     if (!$enabled) {
