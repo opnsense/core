@@ -29,30 +29,14 @@ export default class Zfs extends BaseTableWidget {
         super();
 
         this.tickTimeout = 60;
+        this.compactBreakpoint = 320;
     }
 
     getMarkup() {
-        const $table = this.createTable('zfs-table', {
+        return this.createTable('zfs-table', {
             headerPosition: 'left',
+            headerBreakpoint: this.compactBreakpoint,
         });
-
-        /*
-         * Separate the pool header from its details when the native
-         * left-header layout stacks vertically.
-         */
-        Object.assign(this.sizeStates[0]['.column'], {
-            'border-top': 'inherit',
-            'margin-top': '0.5em',
-            'padding-top': '0.5em',
-        });
-
-        Object.assign(this.sizeStates[this.headerBreakpoint]['.column'], {
-            'border-top': '',
-            'margin-top': '',
-            'padding-top': '',
-        });
-
-        return $table;
     }
 
     poolField(name, state) {
@@ -249,16 +233,36 @@ export default class Zfs extends BaseTableWidget {
             .prop('outerHTML');
     }
 
+    detailsField(pool) {
+        const $poolDivider = $('<hr>')
+            .addClass('zfs-pool-divider')
+            .css({
+                'margin': '0 0 0.5em',
+            })
+            .hide();
+
+        const $detailDivider = $('<hr>')
+            .addClass('zfs-detail-divider')
+            .css({
+                'margin': '0.5em 0',
+            });
+
+        return $('<div>')
+            .addClass('zfs-details')
+            .append($poolDivider)
+            .append(this.errorField(pool))
+            .append($detailDivider)
+            .append(this.scanField(pool.scan_stats))
+            .prop('outerHTML');
+    }
+
     renderPools(pools) {
         const statusSelector = '#zfs-table .zfs-status-icon';
         $(statusSelector).tooltip('hide');
 
         const rows = Object.entries(pools).map(([name, pool]) => [
             this.poolField(pool.name || name, pool.state),
-            [
-                this.errorField(pool),
-                this.scanField(pool.scan_stats),
-            ],
+            this.detailsField(pool),
         ]);
 
         if (rows.length === 0) {
@@ -272,6 +276,14 @@ export default class Zfs extends BaseTableWidget {
 
         this.updateTable('zfs-table', rows);
         $(statusSelector).tooltip({container: 'body'});
+    }
+
+    onWidgetResize(elem, width, height) {
+        $(elem)
+            .find('.zfs-pool-divider')
+            .toggle(width < this.compactBreakpoint);
+
+        return super.onWidgetResize(elem, width, height);
     }
 
     async onWidgetTick() {
