@@ -1,5 +1,5 @@
 <form>
-    <tab id="filter" description="Filter">
+    <tab id="settings-filter" description="Filter">
         <field>
             <type>header</type>
             <label>Scrub</label>
@@ -25,5 +25,5 @@
             <help>Replace predictable IPv4 identification values with random values.</help>
         </field>
     </tab>
-    <activetab>filter</activetab>
+    <activetab>settings-filter</activetab>
 </form>

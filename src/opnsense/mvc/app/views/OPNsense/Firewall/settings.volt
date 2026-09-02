@@ -30,7 +30,7 @@
             $('.scrub_option').closest('tr').toggle($('#filter\\.settings\\.filter\\.scrub_enabled').is(':checked'));
         }
 
-        mapDataToFormUI({'frm_filter': '/api/firewall/settings/get'}).done(function() {
+        mapDataToFormUI({'frm_settings': '/api/firewall/settings/get'}).done(function() {
             updateScrubOptions();
         });
 

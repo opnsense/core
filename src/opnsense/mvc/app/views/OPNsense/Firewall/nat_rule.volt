@@ -42,7 +42,7 @@
             }).done(function() {
                 $('.selectpicker').selectpicker('refresh');
                 updateSnatModeUI();
-                $('#filter\\.general\\.snat_mode').change(function () {
+                $('#filter\\.settings\\.nat\\.snat_mode').change(function () {
                     $(document).trigger("settings-changed");
                 });
             });
@@ -54,7 +54,7 @@
                 return;
             }
 
-            const snatMode = $('#filter\\.general\\.snat_mode').val();
+            const snatMode = $('#filter\\.settings\\.nat\\.snat_mode').val();
             const isDisabled = snatMode === 'disabled';
             const isReadonly = snatMode === 'automatic';
 
