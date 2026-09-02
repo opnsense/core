@@ -595,8 +595,7 @@ function initFormSearchUI() {
         const $form = $modal.find('form[id^="frm"]').first();
 
         function filterForm() {
-            const query = $search.val().trim().toLowerCase();
-            const terms = query === '' ? [] : query.split(/\s+/);
+            const terms = $search.val().trim().toLowerCase().split(/\s+/).filter(e => e);
             let hasResults = false;
 
             $form.find('.form-search-section').each(function() {
@@ -611,6 +610,7 @@ function initFormSearchUI() {
                     .add($rows).add($rows.children('td'));
 
                 if (terms.length === 0) {
+                    /* reset elements to their visible state before search */
                     $displayElements.each(function() {
                         const display = $(this).data('form-search-display');
                         if (display !== undefined) {
@@ -626,9 +626,8 @@ function initFormSearchUI() {
                             .removeData('form-search-collapsed');
                     }
                     return;
-                }
-
-                if (!$body.data('form-search-active')) {
+                } else if (!$body.data('form-search-active')) {
+                    /* capture initial visible state */
                     $body.data('form-search-active', true);
                     $icon.data('form-search-collapsed', $icon.hasClass('fa-angle-right'));
                     $displayElements.each(function() {
@@ -643,13 +642,12 @@ function initFormSearchUI() {
 
                 $rows.each(function() {
                     const $row = $(this);
-                    if ($row.hasClass('form-search-subheader')) {
-                        $subheader = $row;
-                        subheaderMatches = terms.every(term => $row.text().toLowerCase().includes(term));
+                    if (!$row.attr('id')) {
                         $row.hide();
                         return;
-                    }
-                    if (!$row.attr('id')) {
+                    } else if ($row.hasClass('form-search-subheader')) {
+                        $subheader = $row;
+                        subheaderMatches = terms.every(term => $row.text().toLowerCase().includes(term));
                         $row.hide();
                         return;
                     }
