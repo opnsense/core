@@ -39,7 +39,7 @@
         </patterns>
     </page-diagnostics-system-activity>
     <page-diagnostics-system-statistics>
-        <name>Diagnostics: System Statistics</name>
+        <name>System: Diagnostics: Statistics</name>
         <patterns>
             <pattern>ui/diagnostics/system/memory</pattern>
             <pattern>api/diagnostics/system/memory/*</pattern>
