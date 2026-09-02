@@ -470,21 +470,10 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 function filter_generate_scrubbing()
 {
     $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'filter', false);
-    $scruboptions = '';
     $enabled = !isset($settings['scrub_enabled']) || !empty($settings['scrub_enabled']);
 
     /* Fragment reassembly is a global option with the modern scrub syntax. */
-    if ($enabled) {
-        $scruboptions = 'set reassemble yes';
-        if (!empty($settings['scrub_no_df'])) {
-            $scruboptions .= ' no-df';
-        }
-        $scruboptions .= "\n";
-    } else {
-        $scruboptions = "set reassemble no\n";
-    }
-
-    return $scruboptions;
+    return sprintf("set reassemble %s%s\n", $enabled ? 'yes' : 'no', $enabled && !empty($settings['scrub_no_df']) ? ' no-df' : '');
 }
 
 function filter_generate_scrub_rules(&$FilterIflist)
