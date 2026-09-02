@@ -1,6 +1,6 @@
 <acl>
    <page-services-monit>
-      <name>Services: Monit System Monitoring page</name>
+      <name>Services: Monit</name>
       <description>Allow access to the 'Services: Monit System Monitoring' page.</description>
       <patterns>
          <pattern>ui/monit/*</pattern>
