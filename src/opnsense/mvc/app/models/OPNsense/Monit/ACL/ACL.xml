@@ -7,13 +7,8 @@
          <pattern>api/monit/service/*</pattern>
          <pattern>api/monit/settings/*</pattern>
          <pattern>api/monit/status/*</pattern>
-      </patterns>
-   </page-services-monit>
-   <page-diagnostics-logs-monit>
-      <name>Diagnostics: Log: Monit</name>
-      <patterns>
          <pattern>ui/diagnostics/log/core/monit/*</pattern>
          <pattern>api/diagnostics/log/core/monit/*</pattern>
       </patterns>
-   </page-diagnostics-logs-monit>
+   </page-services-monit>
 </acl>
