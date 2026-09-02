@@ -2310,6 +2310,7 @@
 /usr/local/opnsense/www/js/widgets/ThermalSensors.js
 /usr/local/opnsense/www/js/widgets/Traffic.js
 /usr/local/opnsense/www/js/widgets/Wireguard.js
+/usr/local/opnsense/www/js/widgets/Zfs.js
 /usr/local/opnsense/www/themes/opnsense-auto/build/css
 /usr/local/opnsense/www/themes/opnsense-auto/build/fonts
 /usr/local/opnsense/www/themes/opnsense-auto/build/images
