@@ -1100,6 +1100,10 @@
         // XXX: the backend normalizes this, there are no explicit validations in Filter.php for some combinations
         //      it would be better if the backend could trust the data though at some point
         $('#rule\\.action').change(function() {
+            if ($(this).val() === 'match') {
+                /* Match rules are usually not quick, since a match would stop further ruleset evaluation. */
+                $('#rule\\.quick').prop('checked', false).change();
+            }
             if ($(this).val() !== 'pass') {
                 $('#rule\\.statetype').val('none').change();
                 [

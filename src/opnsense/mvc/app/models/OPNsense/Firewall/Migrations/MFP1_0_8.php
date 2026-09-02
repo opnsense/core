@@ -95,12 +95,13 @@ class MFP1_0_8 extends BaseModelMigration
                 $protocol = !empty($legacy->proto) ? strtoupper((string)$legacy->proto) : 'any';
 
                 $rule = $model->rules->rule->Add();
-                /* Duplicate sequences are intentional; migrated match rules should remain at the beginning. */
                 $rule->setNodes([
                     'enabled' => empty($legacy->disabled) ? '1' : '0',
                     'statetype' => 'none',
+                    /* Duplicate sequences are intentional; migrated match rules should remain at the beginning. */
                     'sequence' => '1',
                     'action' => 'match',
+                    /* Match rules are usually not quick, since a match would stop further ruleset evaluation. */
                     'quick' => '0',
                     'interface' => (string)$legacy->interface,
                     'direction' => !empty($legacy->direction) ? (string)$legacy->direction : 'any',
