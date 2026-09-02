@@ -1,6 +1,6 @@
 <acl>
     <page-services-dhcprelay>
-        <name>Services: DHCRelay</name>
+        <name>Services: DHCRelay: Configuration</name>
         <patterns>
             <pattern>ui/dhcrelay/relay</pattern>
             <pattern>api/dhcrelay/*</pattern>
