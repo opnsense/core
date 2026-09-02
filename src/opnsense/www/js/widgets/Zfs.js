@@ -95,13 +95,11 @@ export default class Zfs extends BaseTableWidget {
     }
 
     formatTimestamp(timestamp) {
-        const value = Number(timestamp);
-
-        if (!Number.isFinite(value) || value <= 0) {
+        if (!Number.isFinite(timestamp) || timestamp <= 0) {
             return '';
         }
 
-        return new Date(value * 1000).toLocaleString([], {
+        return new Date(timestamp * 1000).toLocaleString([], {
             year: 'numeric',
             month: '2-digit',
             day: '2-digit',
@@ -127,8 +125,8 @@ export default class Zfs extends BaseTableWidget {
         const state = scan.state || 'UNKNOWN';
 
         if (state === 'SCANNING') {
-            const total = Number(scan.to_examine ?? 0);
-            const issued = Number(scan.issued ?? 0);
+            const total = scan.to_examine ?? 0;
+            const issued = scan.issued ?? 0;
 
             let value = `${func}: ${this.translations.running}`;
 
@@ -137,7 +135,7 @@ export default class Zfs extends BaseTableWidget {
                 total > 0 &&
                 Number.isFinite(issued)
             ) {
-                const progress = Math.max(0, (issued / total) * 100);
+                const progress = (issued / total) * 100;
                 value = `${func}: ${progress.toFixed(1)}%`;
             }
 
@@ -181,9 +179,9 @@ export default class Zfs extends BaseTableWidget {
 
         if (hasErrorCounters && children.length === 0) {
             return (
-                Number(node.read_errors ?? 0) > 0 ||
-                Number(node.write_errors ?? 0) > 0 ||
-                Number(node.checksum_errors ?? 0) > 0
+                (node.read_errors ?? 0) > 0 ||
+                (node.write_errors ?? 0) > 0 ||
+                (node.checksum_errors ?? 0) > 0
             ) ? 1 : 0;
         }
 
@@ -199,11 +197,9 @@ export default class Zfs extends BaseTableWidget {
     }
 
     getErrorSummary(pool) {
-        const dataErrors = Number(pool.error_count ?? 0);
-
         return {
             devices: this.countDeviceErrors(pool),
-            data: Number.isFinite(dataErrors) ? dataErrors : 0,
+            data: pool.error_count ?? 0,
         };
     }
 
