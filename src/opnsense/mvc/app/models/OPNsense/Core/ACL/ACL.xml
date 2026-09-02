@@ -500,7 +500,7 @@
         </patterns>
     </page-system-crlmanager>
     <page-system-trust-settings>
-        <name>System: Trust Settings</name>
+        <name>System: Trust: Settings</name>
         <patterns>
             <pattern>ui/trust/settings</pattern>
             <pattern>api/trust/settings/*</pattern>
