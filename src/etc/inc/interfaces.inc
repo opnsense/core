@@ -710,7 +710,7 @@ function interfaces_configure($verbose = false)
         /* XXX use this to figure out when bridges can be configured */
         $interfaces[$if] = $ifcfg['if'];
 
-        if (!empty($devices[$ifcfg['if']]) && !strstr($ifcfg['if'], 'bridge')) {
+        if (!empty($devices[$ifcfg['if']]) && !strstr($ifcfg['if'], 'bridge') && !strstr($ifcfg['if'], 'vlan') && !strstr($ifcfg['if'], 'qinq')) {
             $virtual[$ifcfg['if']] = $if;
             continue;
         }
