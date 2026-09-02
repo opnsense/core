@@ -486,7 +486,7 @@
         </patterns>
     </page-system-camanager>
     <page-system-certmanager>
-        <name>System: Certificate Manager</name>
+        <name>System: Trust: Certificates</name>
         <patterns>
             <pattern>ui/trust/cert</pattern>
             <pattern>api/trust/cert/*</pattern>
