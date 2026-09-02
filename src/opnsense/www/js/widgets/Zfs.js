@@ -275,9 +275,7 @@ export default class Zfs extends BaseTableWidget {
     }
 
     async onWidgetTick() {
-        const status = await this.ajaxCall(
-            '/api/diagnostics/system/zfs_status'
-        );
+        const status = await this.ajaxCall('/api/diagnostics/system/zfs_status');
 
         this.renderPools(status?.pools ?? {});
     }
