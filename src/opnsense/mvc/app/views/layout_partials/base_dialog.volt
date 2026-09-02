@@ -44,7 +44,7 @@
                 <div class="input-group form-search pull-right" style="width: 250px; margin-top: -6px; margin-right: 15px;">
                     <span class="input-group-addon"><i class="fa fa-search" aria-hidden="true"></i></span>
                     <input type="search" class="form-control" placeholder="{{ lang._('Search form') }}"
-                           aria-label="{{ lang._('Search form') }}" autocomplete="off">
+                           aria-label="{{ lang._('Search form') }}">
                 </div>
                 <h4 class="modal-title" id="{{base_dialog_id}}Label">{{label}}</h4>
             </div>
