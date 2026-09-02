@@ -27,21 +27,21 @@
 <script>
     $(document).ready(function() {
         function updateScrubOptions() {
-            $('.scrub_option').closest('tr').toggle($('#filter\\.advanced\\.scrub\\.enabled').is(':checked'));
+            $('.scrub_option').closest('tr').toggle($('#filter\\.settings\\.filter\\.scrub_enabled').is(':checked'));
         }
 
-        mapDataToFormUI({'frm_advanced': '/api/firewall/advanced/get'}).done(function() {
+        mapDataToFormUI({'frm_settings': '/api/firewall/settings/get'}).done(function() {
             updateScrubOptions();
         });
 
-        $('#filter\\.advanced\\.scrub\\.enabled').change(updateScrubOptions);
+        $('#filter\\.settings\\.filter\\.scrub_enabled').change(updateScrubOptions);
 
         $('#reconfigureAct').SimpleActionButton({
             onPreAction: function() {
                 const deferred = new $.Deferred();
                 saveFormToEndpoint(
-                    '/api/firewall/advanced/set',
-                    'frm_advanced',
+                    '/api/firewall/settings/set',
+                    'frm_settings',
                     function() { deferred.resolve(); },
                     true,
                     function() { deferred.reject(); }
@@ -52,8 +52,14 @@
     });
 </script>
 
-<div class="content-box">
-    {{ partial('layout_partials/base_form', ['fields': formAdvanced, 'id': 'frm_advanced']) }}
-</div>
+<ul class="nav nav-tabs" role="tablist" id="maintabs">
+    {{ partial('layout_partials/base_tabs_header', ['formData': formSettings]) }}
+</ul>
 
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/advanced/reconfigure'}) }}
+<form id="frm_settings">
+    <div class="content-box tab-content">
+        {{ partial('layout_partials/base_tabs_content', ['formData': formSettings]) }}
+    </div>
+</form>
+
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/settings/reconfigure'}) }}

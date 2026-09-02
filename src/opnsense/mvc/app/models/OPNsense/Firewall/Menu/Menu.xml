@@ -17,8 +17,6 @@
                 <FilterRef url="/ui/firewall/npt#*" visibility="hidden"/>
             </NPTv6>
         </NAT>
-        <Settings>
-            <AdvancedNew order="300" VisibleName="Advanced [new]" url="/ui/firewall/advanced"/>
-        </Settings>
+        <Settings order="200" url="/ui/firewall/settings" cssClass="fa fa-cogs fa-fw"/>
     </Firewall>
 </menu>

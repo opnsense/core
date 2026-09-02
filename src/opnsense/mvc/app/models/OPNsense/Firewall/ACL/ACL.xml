@@ -1,11 +1,11 @@
 <acl>
-    <page-firewall-advanced>
-        <name>Firewall: Advanced [new]</name>
+    <page-firewall-settings>
+        <name>Firewall: Settings</name>
         <patterns>
-            <pattern>ui/firewall/advanced</pattern>
-            <pattern>api/firewall/advanced/*</pattern>
+            <pattern>ui/firewall/settings</pattern>
+            <pattern>api/firewall/settings/*</pattern>
         </patterns>
-    </page-firewall-advanced>
+    </page-firewall-settings>
     <page-filter-api>
         <name>Firewall: Rules [new]</name>
         <patterns>

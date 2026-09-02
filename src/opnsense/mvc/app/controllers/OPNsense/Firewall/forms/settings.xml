@@ -1,0 +1,29 @@
+<form>
+    <tab id="filter" description="Filter">
+        <field>
+            <type>header</type>
+            <label>Scrub</label>
+        </field>
+        <field>
+            <id>filter.settings.filter.scrub_enabled</id>
+            <label>Enable scrub</label>
+            <type>checkbox</type>
+            <help>Enable default packet scrubbing and MSS clamping.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.scrub_no_df</id>
+            <label>IP Do-Not-Fragment</label>
+            <type>checkbox</type>
+            <style>scrub_option</style>
+            <help>Clear the don't-fragment bit on reassembled IPv4 packets.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.scrub_random_id</id>
+            <label>IP Random ID</label>
+            <type>checkbox</type>
+            <style>scrub_option</style>
+            <help>Replace predictable IPv4 identification values with random values.</help>
+        </field>
+    </tab>
+    <activetab>filter</activetab>
+</form>

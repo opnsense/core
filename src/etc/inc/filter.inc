@@ -378,14 +378,14 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
     $rules .= "\n";
-    $scrubsettings = $config['OPNsense']['Firewall']['Filter']['advanced']['scrub'] ?? [];
-    $rules .= filter_generate_scrubbing($scrubsettings);
+    $filtersettings = $config['OPNsense']['Firewall']['Filter']['settings']['filter'] ?? [];
+    $rules .= filter_generate_scrubbing($filtersettings);
     $rules .= "\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'head');
     $rules .= "{$natrules}\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'tail');
     /* Generated scrub matches are filter rules and must follow translation rules. */
-    $rules .= filter_generate_scrub_rules($cnfint, $scrubsettings);
+    $rules .= filter_generate_scrub_rules($cnfint, $filtersettings);
     $rules .= $fw->anchorToText('fw', 'head');
     $rules .= filter_rules_legacy($cnfint);
     $rules .= $fw->outputFilterRules();
@@ -471,12 +471,12 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 function filter_generate_scrubbing($settings)
 {
     $scruboptions = '';
-    $enabled = !isset($settings['enabled']) || !empty($settings['enabled']);
+    $enabled = !isset($settings['scrub_enabled']) || !empty($settings['scrub_enabled']);
 
     /* Fragment reassembly is a global option with the modern scrub syntax. */
     if ($enabled) {
         $scruboptions = 'set reassemble yes';
-        if (!empty($settings['no_df'])) {
+        if (!empty($settings['scrub_no_df'])) {
             $scruboptions .= ' no-df';
         }
         $scruboptions .= "\n";
@@ -490,12 +490,12 @@ function filter_generate_scrubbing($settings)
 function filter_generate_scrub_rules(&$FilterIflist, $settings)
 {
     $scrubrules = '';
-    $enabled = !isset($settings['enabled']) || !empty($settings['enabled']);
+    $enabled = !isset($settings['scrub_enabled']) || !empty($settings['scrub_enabled']);
     if (!$enabled) {
         return $scrubrules;
     }
 
-    if (!empty($settings['random_id'])) {
+    if (!empty($settings['scrub_random_id'])) {
         $scrubrules .= "match in inet all scrub ( random-id )\n";
     }
     foreach ($FilterIflist as $scrubcfg) {
@@ -506,7 +506,7 @@ function filter_generate_scrub_rules(&$FilterIflist, $settings)
              */
             $mssclampv4 = 'max-mss ' . (intval($scrubcfg['mss'] - 40));
             $mssclampv6 = 'max-mss ' . (intval($scrubcfg['mss'] - 60));
-            $random_id = !empty($settings['random_id']) ? ' random-id' : '';
+            $random_id = !empty($settings['scrub_random_id']) ? ' random-id' : '';
             $scrubrules .= "match on {$scrubcfg['if']} inet all scrub ( {$mssclampv4}{$random_id} )\n";
             $scrubrules .= "match on {$scrubcfg['if']} inet6 all scrub ( {$mssclampv6}{$random_id} )\n";
         }

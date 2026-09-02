@@ -290,10 +290,8 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/forms/dialogDomainOverride.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/forms/dialogHostOverride.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Dnsmasq/forms/general.xml
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/AdvancedController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/AliasController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/AliasUtilController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/AdvancedController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/AliasController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/AliasUtilController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/CategoryController.php
@@ -305,6 +303,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/MigrationController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/NptController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/OneToOneController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/SourceNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/CategoryController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/DNatController.php
@@ -313,8 +312,8 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/MigrationController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/NptController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/OneToOneController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/SourceNatController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/advanced.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/categoryEdit.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogDNatRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogFilterRule.xml
@@ -324,6 +323,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogSNatRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/geoIPSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/groupEdit.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/settings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Hostdiscovery/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Hostdiscovery/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Hostdiscovery/SettingsController.php
@@ -1022,7 +1022,6 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Diagnostics/vip.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Dnsmasq/leases.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Dnsmasq/settings.volt
-/usr/local/opnsense/mvc/app/views/OPNsense/Firewall/advanced.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/alias_util.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/category.volt
@@ -1030,6 +1029,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/firewall_migration.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/group.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/nat_rule.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Firewall/settings.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Hostdiscovery/settings.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/policy.volt

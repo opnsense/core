@@ -16,22 +16,22 @@
                 </OptionValues>
             </snat_mode>
         </general>
-        <advanced>
-            <scrub>
-                <enabled type="BooleanField">
+        <settings>
+            <filter>
+                <scrub_enabled type="BooleanField">
                     <Default>1</Default>
                     <Required>Y</Required>
-                </enabled>
-                <no_df type="BooleanField">
+                </scrub_enabled>
+                <scrub_no_df type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
-                </no_df>
-                <random_id type="BooleanField">
+                </scrub_no_df>
+                <scrub_random_id type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
-                </random_id>
-            </scrub>
-        </advanced>
+                </scrub_random_id>
+            </filter>
+        </settings>
         <rules>
             <rule type=".\FilterRuleField">
                 <enabled type="BooleanField">

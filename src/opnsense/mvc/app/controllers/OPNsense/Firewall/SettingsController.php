@@ -26,26 +26,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Firewall\Api;
+namespace OPNsense\Firewall;
 
-use OPNsense\Base\ApiMutableModelControllerBase;
-use OPNsense\Core\Backend;
+use OPNsense\Base\IndexController;
 
-class AdvancedController extends ApiMutableModelControllerBase
+class SettingsController extends IndexController
 {
-    protected static $internalModelName = 'filter';
-    protected static $internalModelClass = 'OPNsense\Firewall\Filter';
-
-    protected function getModelNodes()
+    public function indexAction()
     {
-        return ['advanced' => $this->getModel()->advanced->getNodes()];
-    }
-
-    public function reconfigureAction()
-    {
-        if ($this->request->isPost()) {
-            return ['status' => (new Backend())->configdRun('filter reload skip_alias')];
-        }
-        return ['status' => 'failed'];
+        $this->view->formSettings = $this->getForm('settings');
+        $this->view->pick('OPNsense/Firewall/settings');
     }
 }
