@@ -40,7 +40,7 @@ class MFP1_0_9 extends BaseModelMigration
             $legacy = Config::getInstance()->object()->system;
             /* Copy only so the legacy values remain available if migration recovery is needed. */
             $model->advanced->scrub->setNodes([
-                'disable' => !empty($legacy->scrub_interface_disable) ? '1' : '0',
+                'enabled' => empty($legacy->scrub_interface_disable) ? '1' : '0',
                 'no_df' => !empty($legacy->scrubnodf) ? '1' : '0',
                 'random_id' => !empty($legacy->scrubrnid) ? '1' : '0',
             ]);

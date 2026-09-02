@@ -471,9 +471,10 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 function filter_generate_scrubbing($settings)
 {
     $scruboptions = '';
+    $enabled = !isset($settings['enabled']) || !empty($settings['enabled']);
 
     /* Fragment reassembly is a global option with the modern scrub syntax. */
-    if (empty($settings['disable'])) {
+    if ($enabled) {
         $scruboptions = 'set reassemble yes';
         if (!empty($settings['no_df'])) {
             $scruboptions .= ' no-df';
@@ -489,7 +490,8 @@ function filter_generate_scrubbing($settings)
 function filter_generate_scrub_rules(&$FilterIflist, $settings)
 {
     $scrubrules = '';
-    if (!empty($settings['disable'])) {
+    $enabled = !isset($settings['enabled']) || !empty($settings['enabled']);
+    if (!$enabled) {
         return $scrubrules;
     }
 

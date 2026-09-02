@@ -27,14 +27,14 @@
 <script>
     $(document).ready(function() {
         function updateScrubOptions() {
-            $('.scrub_option').closest('tr').toggle(!$('#filter\\.advanced\\.scrub\\.disable').is(':checked'));
+            $('.scrub_option').closest('tr').toggle($('#filter\\.advanced\\.scrub\\.enabled').is(':checked'));
         }
 
         mapDataToFormUI({'frm_advanced': '/api/firewall/advanced/get'}).done(function() {
             updateScrubOptions();
         });
 
-        $('#filter\\.advanced\\.scrub\\.disable').change(updateScrubOptions);
+        $('#filter\\.advanced\\.scrub\\.enabled').change(updateScrubOptions);
 
         $('#reconfigureAct').SimpleActionButton({
             onPreAction: function() {

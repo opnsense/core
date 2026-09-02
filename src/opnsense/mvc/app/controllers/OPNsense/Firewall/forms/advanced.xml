@@ -4,10 +4,10 @@
         <label>Scrub</label>
     </field>
     <field>
-        <id>filter.advanced.scrub.disable</id>
-        <label>Disable interface scrub</label>
+        <id>filter.advanced.scrub.enabled</id>
+        <label>Enable interface scrub</label>
         <type>checkbox</type>
-        <help>Disable default interface scrubbing. MSS clamping is disabled as well.</help>
+        <help>Enable default interface scrubbing and MSS clamping.</help>
     </field>
     <field>
         <id>filter.advanced.scrub.no_df</id>

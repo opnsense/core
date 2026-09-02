@@ -18,10 +18,10 @@
         </general>
         <advanced>
             <scrub>
-                <disable type="BooleanField">
-                    <Default>0</Default>
+                <enabled type="BooleanField">
+                    <Default>1</Default>
                     <Required>Y</Required>
-                </disable>
+                </enabled>
                 <no_df type="BooleanField">
                     <Default>0</Default>
                     <Required>Y</Required>
