@@ -26,38 +26,44 @@
 
 <script>
     $(document).ready(function() {
-        function updateScrubOptions() {
-            $('.scrub_option').closest('tr').toggle($('#filter\\.settings\\.filter\\.scrub_enabled').is(':checked'));
-        }
-
-        mapDataToFormUI({'frm_settings': '/api/firewall/settings/get'}).done(function() {
-            updateScrubOptions();
+        // Initial setup
+        mapDataToFormUI({'frm_settings': "/api/firewall/settings/get"}).done(function() {
+            formatTokenizersUI();
+            $('.selectpicker').selectpicker('refresh');
         });
 
-        $('#filter\\.settings\\.filter\\.scrub_enabled').change(updateScrubOptions);
-
-        $('[id^="save_"]').each(function() {
-            const $button = $(this);
+        // Event binding for saving forms
+        $('[id^="save_"]').each(function () {
+            const $btn = $(this);
             const formId = this.id.replace(/^save_/, 'frm_');
 
-            $button.attr({
-                'data-label': "{{ lang._('Save') }}",
-                'data-endpoint': '/api/firewall/settings/reconfigure'
+            $btn.attr({
+                'data-label'    : "{{ lang._('Save') }}",
+                'data-endpoint' : "/api/firewall/settings/reconfigure"
             });
 
-            $button.SimpleActionButton({
-                onPreAction: function() {
-                    const deferred = new $.Deferred();
+            $btn.SimpleActionButton({
+                onPreAction: function () {
+                    const dfObj = new $.Deferred();
+
                     saveFormToEndpoint(
-                        '/api/firewall/settings/set',
+                        "/api/firewall/settings/set",
                         formId,
-                        function() { deferred.resolve(); },
+                        function () {
+                            dfObj.resolve();
+                        },
                         true,
-                        function() { deferred.reject(); }
+                        function () {
+                            dfObj.reject();
+                        }
                     );
-                    return deferred.promise();
+                    return dfObj.promise();
                 }
             });
+        });
+
+        $('#filter\\.settings\\.filter\\.scrub_enabled').change(function() {
+            $('.scrub_option').closest('tr').toggle($(this).is(':checked'));
         });
     });
 </script>
