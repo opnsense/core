@@ -30,24 +30,34 @@
             $('.scrub_option').closest('tr').toggle($('#filter\\.settings\\.filter\\.scrub_enabled').is(':checked'));
         }
 
-        mapDataToFormUI({'frm_settings': '/api/firewall/settings/get'}).done(function() {
+        mapDataToFormUI({'frm_filter': '/api/firewall/settings/get'}).done(function() {
             updateScrubOptions();
         });
 
         $('#filter\\.settings\\.filter\\.scrub_enabled').change(updateScrubOptions);
 
-        $('#reconfigureAct').SimpleActionButton({
-            onPreAction: function() {
-                const deferred = new $.Deferred();
-                saveFormToEndpoint(
-                    '/api/firewall/settings/set',
-                    'frm_settings',
-                    function() { deferred.resolve(); },
-                    true,
-                    function() { deferred.reject(); }
-                );
-                return deferred;
-            }
+        $('[id^="save_"]').each(function() {
+            const $button = $(this);
+            const formId = this.id.replace(/^save_/, 'frm_');
+
+            $button.attr({
+                'data-label': "{{ lang._('Save') }}",
+                'data-endpoint': '/api/firewall/settings/reconfigure'
+            });
+
+            $button.SimpleActionButton({
+                onPreAction: function() {
+                    const deferred = new $.Deferred();
+                    saveFormToEndpoint(
+                        '/api/firewall/settings/set',
+                        formId,
+                        function() { deferred.resolve(); },
+                        true,
+                        function() { deferred.reject(); }
+                    );
+                    return deferred.promise();
+                }
+            });
         });
     });
 </script>
@@ -56,10 +66,6 @@
     {{ partial('layout_partials/base_tabs_header', ['formData': formSettings]) }}
 </ul>
 
-<form id="frm_settings">
-    <div class="content-box tab-content">
-        {{ partial('layout_partials/base_tabs_content', ['formData': formSettings]) }}
-    </div>
-</form>
-
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/settings/reconfigure'}) }}
+<div class="content-box tab-content">
+    {{ partial('layout_partials/base_tabs_content', ['formData': formSettings]) }}
+</div>
