@@ -104,6 +104,27 @@
             <free>Free</free>
         </translations>
     </disk>
+    <zfs>
+        <filename>Zfs.js</filename>
+        <endpoints>
+            <endpoint>/api/diagnostics/system/zfs_status</endpoint>
+        </endpoints>
+        <translations>
+            <title>ZFS Status</title>
+            <errors>Errors</errors>
+            <none>None</none>
+            <device>device</device>
+            <devices>devices</devices>
+            <dataerror>data error</dataerror>
+            <dataerrors>data errors</dataerrors>
+            <scan>Scan</scan>
+            <never>Never</never>
+            <running>Running</running>
+            <scrub>Scrub</scrub>
+            <resilver>Resilver</resilver>
+            <nopools>No ZFS pools found.</nopools>
+        </translations>
+    </zfs>
     <firewall>
         <filename>Firewall.js</filename>
         <link>/ui/diagnostics/firewall/log</link>
