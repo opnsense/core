@@ -1190,6 +1190,11 @@ function system_cache_flush($verbose = false)
         @unlink($filename);
     }
 
+    /* clears template cache; latest Phaclon seems to not flush them */
+    foreach (glob('/var/lib/php/cache/*.php') as $filename) {
+        @unlink($filename);
+    }
+
     service_log("done.\n", $verbose);
 }
 
