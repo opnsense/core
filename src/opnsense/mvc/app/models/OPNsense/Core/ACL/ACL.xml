@@ -493,7 +493,7 @@
         </patterns>
     </page-system-certmanager>
     <page-system-crlmanager>
-        <name>System: CRL Manager</name>
+        <name>System: Trust: Revocation</name>
         <patterns>
             <pattern>ui/trust/crl</pattern>
             <pattern>api/trust/crl/*</pattern>
