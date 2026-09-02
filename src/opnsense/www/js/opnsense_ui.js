@@ -619,7 +619,6 @@ function initFormSearchUI() {
                         }
                     });
                     $body.removeData('form-search-active');
-                    $body.children('.dummy_row').css('display', '');
                     const wasCollapsed = $icon.data('form-search-collapsed');
                     if (wasCollapsed !== undefined) {
                         $icon.toggleClass('fa-angle-right', wasCollapsed)
@@ -642,11 +641,8 @@ function initFormSearchUI() {
                 let subheaderMatches = false;
                 let hasMatches = false;
 
-                $body.children('tr').each(function() {
+                $rows.each(function() {
                     const $row = $(this);
-                    if ($row.hasClass('dummy_row')) {
-                        return;
-                    }
                     if ($row.hasClass('form-search-subheader')) {
                         $subheader = $row;
                         subheaderMatches = terms.every(term => $row.text().toLowerCase().includes(term));
