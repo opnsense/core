@@ -591,7 +591,8 @@ function initFormSearchUI() {
         const $form = $modal.find('form[id^="frm"]').first();
 
         function filterForm() {
-            const terms = $search.val().trim().toLowerCase().split(/\s+/).filter(Boolean);
+            const query = $search.val().trim().toLowerCase();
+            const terms = query === '' ? [] : query.split(/\s+/);
 
             $form.find('.form-search-section').each(function() {
                 const $section = $(this);
