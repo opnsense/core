@@ -2771,15 +2771,20 @@ function interface_dhcpv6_configure($interface, $wancfg)
     }
 
     /* always kill rtsold in case of reconfigure */
-    killbypid('/var/run/rtsold.pid');
+    killbypid("/var/run/rtsold.{$wancfg['if']}.pid");
     @unlink("/tmp/rtsold.{$wancfg['if']}.done");
 
-    $rtsold_frmt = ['/usr/sbin/rtsold -%s -aiu -p %s -A %s -R %s'];
+    /*
+     * rtsold -a not possible to correctly select the all interfaces
+     * which requiring RS, the interfaces must be specified manually.
+     */
+    $rtsold_frmt = ['/usr/sbin/rtsold -%s -iu -p %s -A %s -R %s %s'];
     $rtsold_args = [
         $settings->dhcp6_debug->isEmpty() ? 'd' : 'D',
-        '/var/run/rtsold.pid',
+        "/var/run/rtsold.{$wancfg['if']}.pid",
         '/usr/local/opnsense/scripts/interfaces/rtsold_script.sh',
         '/usr/local/opnsense/scripts/interfaces/rtsold_resolvconf.sh',
+        $wancfg['if'],
     ];
 
     /* fire up rtsold for IPv6 RAs first */
