@@ -111,6 +111,9 @@
         </endpoints>
         <translations>
             <title>ZFS Status</title>
+            <state>State</state>
+            <healthy>Healthy</healthy>
+            <attention>Attention required</attention>
             <errors>Errors</errors>
             <none>None</none>
             <device>device</device>
