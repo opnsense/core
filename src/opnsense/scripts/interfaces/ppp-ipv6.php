@@ -49,9 +49,14 @@ if (!interface_ppps_bound($interface, $family)) {
     exit(1);
 }
 
-switch (is_ipv6_allowed() ? ($config['interfaces'][$interface]['ipaddrv6'] ?? 'none') : 'none') {
+$ifcfg = config_read_array('interfaces', $interface, false);
+
+switch (is_ipv6_allowed() ? ($ifcfg['ipaddrv6'] ?? 'none') : 'none') {
     case 'dhcp6':
     case 'slaac':
+        /* XXX the code can race between here and interface_configure(), see #10828 */
+        mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled up', $ifcfg['if']);
+
         interface_dhcpv6_prepare($interface, $config['interfaces'][$interface]);
         interface_dhcpv6_configure($interface, $config['interfaces'][$interface]);
         /* signal this succeeded to avoid triggering a newwanip event right away */
