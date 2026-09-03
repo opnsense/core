@@ -120,8 +120,7 @@
             <devices>devices</devices>
             <dataerror>data error</dataerror>
             <dataerrors>data errors</dataerrors>
-            <scan>Scan</scan>
-            <never>Never</never>
+            <action>Action</action>
             <running>Running</running>
             <scrub>Scrub</scrub>
             <resilver>Resilver</resilver>

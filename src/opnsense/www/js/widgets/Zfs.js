@@ -27,7 +27,6 @@
 export default class Zfs extends BaseTableWidget {
     constructor() {
         super();
-
         this.tickTimeout = 60;
     }
 
@@ -39,59 +38,32 @@ export default class Zfs extends BaseTableWidget {
     }
 
     poolField(name, pool) {
-        const state = pool.state || 'UNKNOWN';
         const errors = this.getErrorSummary(pool);
-
-        const healthy =
-            state === 'ONLINE' &&
-            errors.devices === 0 &&
-            errors.data === 0;
-
-        const color = healthy
-            ? 'text-success'
-            : 'text-warning';
-
-        const title = healthy
-            ? this.translations.healthy
-            : this.translations.attention;
+        const healthy = (pool.state || 'UNKNOWN') === 'ONLINE' && errors.devices === 0 && errors.data === 0;
+        const color = healthy ? 'text-success' : 'text-warning';
+        const title = healthy ? this.translations.healthy : this.translations.attention;
 
         const $status = $('<i>')
             .addClass(`fa fa-circle text-muted ${color} zfs-health-icon`)
-            .css({
-                'font-size': '11px',
-                'cursor': 'pointer',
-            })
-            .attr('data-toggle', 'tooltip')
-            .attr('title', title);
+            .css({ 'font-size': '11px', 'cursor': 'pointer' })
+            .attr({ 'data-toggle': 'tooltip', 'title': title });
 
         return $('<div>')
             .css('margin-bottom', '5px')
-            .append($status)
-            .append('&nbsp;')
-            .append($('<span>').text(name))
+            .append($status, '&nbsp;', $('<span>').text(name))
             .prop('outerHTML');
     }
 
     stateField(pool) {
-        const state = pool.state || 'UNKNOWN';
-
         return $('<div>')
-            .append($('<b>').text(this.translations.state))
-            .append('<br>')
-            .append($('<span>').text(state))
+            .append($('<b>').text(this.translations.state), '<br>', $('<span>').text(pool.state || 'UNKNOWN'))
             .prop('outerHTML');
     }
 
     scanFunction(value) {
-        if (value === 'SCRUB') {
-            return this.translations.scrub;
-        }
-
-        if (value === 'RESILVER') {
-            return this.translations.resilver;
-        }
-
-        return value || this.translations.scan;
+        if (value === 'SCRUB') return this.translations.scrub;
+        if (value === 'RESILVER') return this.translations.resilver;
+        return value || this.translations.action;
     }
 
     formatTimestamp(timestamp) {
@@ -111,14 +83,10 @@ export default class Zfs extends BaseTableWidget {
     }
 
     scanField(scan) {
-        const $field = $('<div>')
-            .append($('<b>').text(this.translations.scan));
+        const $div = $('<div>').append($('<b>').text(this.translations.action), '<br>');
 
         if (!scan) {
-            return $field
-                .append('<br>')
-                .append($('<span>').text(this.translations.never))
-                .prop('outerHTML');
+            return $div.append($('<span>').text(this.translations.none)).prop('outerHTML');
         }
 
         const func = this.scanFunction(scan.function);
@@ -127,43 +95,24 @@ export default class Zfs extends BaseTableWidget {
         if (state === 'SCANNING') {
             const total = scan.to_examine ?? 0;
             const issued = scan.issued ?? 0;
+            const progress = (Number.isFinite(total) && total > 0 && Number.isFinite(issued))
+                ? `${((issued / total) * 100).toFixed(1)}%`
+                : this.translations.running;
 
-            let value = `${func}: ${this.translations.running}`;
-
-            if (
-                Number.isFinite(total) &&
-                total > 0 &&
-                Number.isFinite(issued)
-            ) {
-                const progress = (issued / total) * 100;
-                value = `${func}: ${progress.toFixed(1)}%`;
-            }
-
-            return $field
-                .append('<br>')
-                .append($('<span>').text(value))
-                .prop('outerHTML');
+            return $div.append($('<span>').text(`${func}: ${progress}`)).prop('outerHTML');
         }
 
-        const value = state === 'FINISHED'
-            ? func
-            : `${func}: ${state}`;
-
-        $field
-            .append('<br>')
-            .append($('<span>').text(value));
+        const value = state === 'FINISHED' ? func : `${func}: ${state}`;
+        $div.append($('<span>').text(value));
 
         if (state === 'FINISHED') {
             const finished = this.formatTimestamp(scan.end_time);
-
             if (finished) {
-                $field
-                    .append('<br>')
-                    .append($('<span>').text(finished));
+                $div.append('<br>', $('<span>').text(finished));
             }
         }
 
-        return $field.prop('outerHTML');
+        return $div.prop('outerHTML');
     }
 
     countDeviceErrors(node) {
@@ -172,27 +121,18 @@ export default class Zfs extends BaseTableWidget {
         }
 
         const children = Object.values(node.vdevs ?? {});
-        const hasErrorCounters =
-            'read_errors' in node ||
-            'write_errors' in node ||
-            'checksum_errors' in node;
+        const hasErrorCounters = 'read_errors' in node || 'write_errors' in node || 'checksum_errors' in node;
 
         if (hasErrorCounters && children.length === 0) {
-            return (
-                (node.read_errors ?? 0) > 0 ||
-                (node.write_errors ?? 0) > 0 ||
-                (node.checksum_errors ?? 0) > 0
-            ) ? 1 : 0;
+            return ((node.read_errors ?? 0) > 0 || (node.write_errors ?? 0) > 0 || (node.checksum_errors ?? 0) > 0) ? 1 : 0;
         }
 
         let count = 0;
-
         for (const value of Object.values(node)) {
             if (value && typeof value === 'object') {
                 count += this.countDeviceErrors(value);
             }
         }
-
         return count;
     }
 
@@ -208,35 +148,15 @@ export default class Zfs extends BaseTableWidget {
         const parts = [];
 
         if (errors.devices > 0) {
-            parts.push(
-                `${errors.devices} ${
-                    errors.devices === 1
-                        ? this.translations.device
-                        : this.translations.devices
-                }`
-            );
+            parts.push(`${errors.devices} ${errors.devices === 1 ? this.translations.device : this.translations.devices}`);
         }
-
         if (errors.data > 0) {
-            parts.push(
-                `${errors.data} ${
-                    errors.data === 1
-                        ? this.translations.dataerror
-                        : this.translations.dataerrors
-                }`
-            );
+            parts.push(`${errors.data} ${errors.data === 1 ? this.translations.dataerror : this.translations.dataerrors}`);
         }
 
+        const content = parts.length > 0 ? parts.join(' / ') : this.translations.none;
         return $('<div>')
-            .append($('<b>').text(this.translations.errors))
-            .append('<br>')
-            .append(
-                $('<span>').text(
-                    parts.length > 0
-                        ? parts.join(' / ')
-                        : this.translations.none
-                )
-            )
+            .append($('<b>').text(this.translations.errors), '<br>', $('<span>').text(content))
             .prop('outerHTML');
     }
 
@@ -254,12 +174,7 @@ export default class Zfs extends BaseTableWidget {
         ]);
 
         if (rows.length === 0) {
-            rows.push([
-                $('<span>')
-                    .text(this.translations.nopools)
-                    .prop('outerHTML'),
-                '',
-            ]);
+            rows.push([$('<span>').text(this.translations.nopools).prop('outerHTML'), '']);
         }
 
         this.updateTable('zfs-table', rows);
@@ -268,7 +183,6 @@ export default class Zfs extends BaseTableWidget {
 
     async onWidgetTick() {
         const status = await this.ajaxCall('/api/diagnostics/system/zfs_status');
-
         this.renderPools(status?.pools ?? {});
     }
 
