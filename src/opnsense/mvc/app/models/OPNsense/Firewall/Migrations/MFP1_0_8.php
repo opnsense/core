@@ -120,6 +120,11 @@ class MFP1_0_8 extends BaseModelMigration
                     'scrub_min_ttl' => (string)$legacy->{'min-ttl'},
                     'scrub_set_tos' => (string)$legacy->{'set-tos'},
                 ]);
+                $rule->interface->normalizeValue();
+                if ($rule->interface->isEmpty()) {
+                    /* discard when only defunct interfaces to avoid creating a floating rule */
+                    $model->rules->rule->del($rule->getAttribute('uuid'));
+                }
             }
         }
 
