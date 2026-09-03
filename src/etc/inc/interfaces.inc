@@ -290,15 +290,14 @@ function _interfaces_bridge_configure($bridge, $ifconfig_details = null)
 
 function interfaces_lagg_configure($verbose = false)
 {
-    global $config;
-
-    if (!isset($config['laggs']['lagg'])) {
+    $laggs = config_read_array('laggs', 'lagg', false);
+    if (empty($laggs)) {
         return;
     }
 
     service_log('Configuring LAGG interfaces...', $verbose);
 
-    foreach ($config['laggs']['lagg'] as $lagg) {
+    foreach ($laggs as $lagg) {
         _interfaces_lagg_configure($lagg);
     }
 
@@ -556,8 +555,6 @@ function _interfaces_gif_configure($gif)
  */
 function _interfaces_hardware($device, $intf_details = null)
 {
-    global $config;
-
     if (
         str_starts_with($device, 'vlan') || str_starts_with($device, 'qinq') === 0 ||
         strstr($device, '_vlan') || str_starts_with($device, 'lo') ||
@@ -574,10 +571,10 @@ function _interfaces_hardware($device, $intf_details = null)
     }
 
     /* make a copy of the current global configuration to adjust below */
-    $hwsettings = $config['OPNsense']['Interfaces']['settings'];
+    $hwsettings = config_read_array('OPNsense', 'Interfaces', 'settings', false);
 
     /* interface overwrites */
-    foreach ($config['interfaces'] as $iface => $ifconf) {
+    foreach (config_read_array('interfaces', false) as $iface => $ifconf) {
         if (!empty($ifconf['if']) && $ifconf['if'] == $device) {
             if (!empty($ifconf['hw_settings_overwrite'])) {
                 foreach ($hwsettings as $key => $value) {
@@ -2190,15 +2187,13 @@ function interfaces_addresses_flush($device, $family = 4, $ifconfig_details = nu
 
 function interface_configure_mtu($device, $mtu, $ifconfig_details)
 {
-    global $config;
-
     if (str_starts_with($device, 'vlan') || str_starts_with($device, 'qinq') || strstr($device, '_vlan')) {
         $parent_device = interface_parent_devices($device)[0];
         $parent_mtu = $mtu + 4;
         $force = false;
 
         $ifname = convert_real_interface_to_friendly_interface_name($parent_device);
-        $parent_cfg = !empty($ifname) ? ($config['interfaces'][$ifname] ?? []) : [];
+        $parent_cfg = !empty($ifname) ? config_read_array('interfaces', $ifname, false) : [];
         if (isset($parent_cfg['enable']) && !empty($parent_cfg['mtu'])) {
             $parent_mtu = $parent_cfg['mtu'];
             $force = true;
@@ -2462,21 +2457,20 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
 function interface_track6_configure($interface, $lancfg, $reload = false)
 {
-    global $config;
-
     if (!is_array($lancfg) || empty($lancfg['track6-interface'])) {
         return;
     }
 
-    $trackcfg = $config['interfaces'][$lancfg['track6-interface']];
-    if (!isset($trackcfg['enable'])) {
+    $wancfg = config_read_array('interfaces', $lancfg['track6-interface'], false);
+
+    if (!isset($wancfg['enable'])) {
         log_msg("Interface {$interface} tracking nonexistent interface {$lancfg['track6-interface']}", LOG_ERR);
         return;
     }
 
     mwexecf('/sbin/ifconfig %s inet6 %sifdisabled', [$lancfg['if'], isset($lancfg['enable']) ? '-' : '']);
 
-    switch ($trackcfg['ipaddrv6']) {
+    switch ($wancfg['ipaddrv6']) {
         case '6to4':
             interface_track6_6to4_configure($interface, $lancfg);
             break;
@@ -2485,7 +2479,7 @@ function interface_track6_configure($interface, $lancfg, $reload = false)
             break;
         case 'dhcp6':
             if ($reload || !isset($lancfg['enable'])) {
-                interface_dhcpv6_prepare($lancfg['track6-interface'], $trackcfg);
+                interface_dhcpv6_prepare($lancfg['track6-interface'], $wancfg);
                 killbypid('/var/run/dhcp6c.pid', 'HUP');
             }
             break;
@@ -2494,14 +2488,12 @@ function interface_track6_configure($interface, $lancfg, $reload = false)
 
 function interface_track6_6rd_configure($interface, $lancfg)
 {
-    global $config;
-
     if (!isset($lancfg['enable'])) {
         /* deconfiguring is done elsewhere as it simply removes addresses */
         return;
     }
 
-    $wancfg = $config['interfaces'][$lancfg['track6-interface']];
+    $wancfg = config_read_array('interfaces', $lancfg['track6-interface'], false);
 
     if (empty($wancfg)) {
         log_msg("Interface {$interface} tracking nonexistent interface {$lancfg['track6-interface']}", LOG_ERR);
@@ -3763,9 +3755,8 @@ function get_interface_mac($interface, $ifconfig_details = null)
 
 function interfaces_neighbors_configure($interface, $ifconfig_details = null)
 {
-    global $config;
+    $ifcfg = config_read_array('interfaces', $interface, false);
 
-    $ifcfg = $config['interfaces'][$interface];
     if (empty($ifcfg['if']) || !isset($ifcfg['enable'])) {
         return;
     }
