@@ -75,7 +75,7 @@ if [ -n "${RELEASE}" ]; then
 
 	PROMPT="${RELEASE}/${PROMPT}"
 elif CHANGELOG=$(${LAUNCHER} -u reboot); then
-	echo "This update requires a reboot."
+	echo "This update requires a reboot/ power off."
 	echo
 fi
 
