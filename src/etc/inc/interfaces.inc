@@ -686,29 +686,30 @@ function interfaces_configure($verbose = false)
         'hardware' => [], /* hardware devices */
         'software' => [], /* software devices */
         'track6' => [], /* trackers without bridges */
-        /* XXX assigned bridges are going away in FreeBSD 16 */
         'bridge' => [], /* bridges that may be trackers, but not dhcp6c interfaces */
         'dhcp6c' => [], /* dhcp6c interfaces load last */
     ];
 
     foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $if => $ifcfg) {
-        if (!empty($devices[$ifcfg['if']]) && !str_starts_with($ifcfg['if'], 'bridge')) {
-            $queues['software'][$ifcfg['if']] = $if;
-            continue;
-        }
-
-        $is_track6 = !empty($ifcfg['ipaddrv6']) && in_array($ifcfg['ipaddrv6'], ['idassoc6', 'track6']);
-        if (!str_starts_with($ifcfg['if'], 'bridge') && $is_track6) {
-            $queues['track6'][$ifcfg['if']] = $if;
-            continue;
-        }
-
-        $is_dhcp6c = !empty($ifcfg['ipaddrv6']) && ($ifcfg['ipaddrv6'] == 'dhcp6' || $ifcfg['ipaddrv6'] == 'slaac');
-        if (str_starts_with($ifcfg['if'], 'bridge') && !$is_dhcp6c) {
+        $is_dhcp6c = ($ifcfg['ipaddrv6'] ?? 'none') == 'dhcp6';
+        /* XXX assigned bridges (with IP configuration) are going away in FreeBSD 16 */
+        if (!$is_dhcp6c && str_starts_with($ifcfg['if'], 'bridge')) {
             $queues['bridge'][$ifcfg['if']] = $if;
             continue;
         } elseif ($is_dhcp6c) {
             $queues['dhcp6c'][$ifcfg['if']] = $if;
+            continue;
+        }
+
+        $is_track6 = in_array($ifcfg['ipaddrv6'] ?? 'none', ['idassoc6', 'track6']);
+        if ($is_track6) {
+            $queues['track6'][$ifcfg['if']] = $if;
+            continue;
+        }
+
+        /* check with plugged devices returned earlier */
+        if (!empty($devices[$ifcfg['if']])) {
+            $queues['software'][$ifcfg['if']] = $if;
             continue;
         }
 
