@@ -2397,6 +2397,9 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     switch (is_ipv6_allowed() ? ($wancfg['ipaddrv6'] ?? 'none') : 'none') {
         case 'slaac':
         case 'dhcp6':
+            /* setting this here is mandatory in conjunction with ppp-ipv6.php, see #10828 */
+            mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled up', $device);
+
             if (!interface_ppps_bound($interface)) {
                 interface_dhcpv6_prepare($interface, $wancfg);
                 interface_dhcpv6_configure($interface, $wancfg);
@@ -2760,8 +2763,6 @@ function interface_dhcpv6_configure($interface, $wancfg)
     /* always kill rtsold in case of reconfigure */
     killbypid('/var/run/rtsold.pid');
     @unlink("/tmp/rtsold.{$wancfg['if']}.done");
-
-    mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled up', $wancfg['if']);
 
     $rtsold_frmt = ['/usr/sbin/rtsold -%s -aiu -p %s -A %s -R %s'];
     $rtsold_args = [
