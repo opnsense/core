@@ -660,6 +660,7 @@ class UIBootgrid {
 
         const scrollbarGutterOffset = 16;
         const defaultHeight = 120;
+        const minimumRowCount = 10;
 
         const tableEl = document.getElementById(this.id);
         const holderEl = tableEl?.querySelector(".tabulator-tableholder");
@@ -670,13 +671,23 @@ class UIBootgrid {
         const holderHeight = holderEl.offsetHeight;
 
         let nextContentHeight;
+        let minimumHeight = defaultHeight;
+        const visibleRows = this.table.getRows("visible");
+        if (visibleRows.length > 0) {
+            const rowsHeight = visibleRows.slice(0, minimumRowCount).reduce((height, row) => {
+                return height + (row.getElement()?.offsetHeight || 0);
+            }, 0);
+            const headerHeight = tableEl.querySelector(".tabulator-header")?.offsetHeight || 0;
+            const footerHeight = tableEl.querySelector(".tabulator-footer")?.offsetHeight || 0;
+            minimumHeight = rowsHeight + headerHeight + footerHeight;
+        }
 
         if (!this.dataAvailable && !this.loading && holderHeight > this.tableHeight) {
-            nextContentHeight = defaultHeight;
+            nextContentHeight = minimumHeight;
         } else {
             const adjustedHeight = currentTotalHeight + (this.tableHeight - holderHeight);
             nextContentHeight = Math.min(adjustedHeight, this.pageHeight);
-            nextContentHeight = Math.max(defaultHeight, nextContentHeight);
+            nextContentHeight = Math.max(minimumHeight, nextContentHeight);
         }
 
         const nextHeight = nextContentHeight + scrollbarGutterOffset;
@@ -888,9 +899,23 @@ class UIBootgrid {
         this.table.on('scrollVertical', (top) => {
             this.scrollPos = top;
         });
-        this.table.on('renderComplete', (top) => {
+        this.table.on('renderComplete', () => {
             /* tooltips may stick, remove them on redraw */
             $("div.tooltip.fade.top.in").remove();
+
+            if (this.isResizing) {
+                return;
+            }
+
+            // Schedule a dimension change to prevent recursion
+            this.isResizing = true;
+            requestAnimationFrame(() => {
+                try {
+                    this._onDimensionChange();
+                } finally {
+                    this.isResizing = false;
+                }
+            });
         });
     }
 
