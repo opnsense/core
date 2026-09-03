@@ -2515,6 +2515,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     switch (is_ipv6_allowed() ? ($wancfg['ipaddrv6'] ?? 'none') : 'none') {
         case 'slaac':
         case 'dhcp6':
+            /* setting this here is mandatory in conjunction with ppp-ipv6.php, see #10828 */
             mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled up', $device);
 
             if (!interface_ppps_bound($interface)) {
