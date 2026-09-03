@@ -131,6 +131,7 @@
 /usr/local/etc/rc.syshook.d/early/10-configd
 /usr/local/etc/rc.syshook.d/early/15-templates
 /usr/local/etc/rc.syshook.d/early/90-carp
+/usr/local/etc/rc.syshook.d/early/99-selftest
 /usr/local/etc/rc.syshook.d/import/20-importer
 /usr/local/etc/rc.syshook.d/monitor/20-recover
 /usr/local/etc/rc.syshook.d/start/10-newwanip

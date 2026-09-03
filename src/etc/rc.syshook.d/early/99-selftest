@@ -1,0 +1,75 @@
+#!/bin/sh
+
+# Run lightweight checks for early indication of problems.
+#
+# Not all firmware health checks are executed here in order
+# to not postpone bootup, but early integrity indicators are
+# being checked.
+#
+# Lastly, run preflight PHP configuration checks.
+
+CORE=$(opnsense-version -n)
+PKG="/usr/local/sbin/pkg-static"
+PRODUCT="OPNsense"
+VERSION=$(opnsense-update -v)
+
+# package manager based checks
+
+if [ -z "${CORE}" ]; then
+	echo "Selftest: could not determine core package name."
+fi
+
+if [ ! -f "${PKG}" ]; then
+	echo "Selftest: no package manager is installed to perform upgrades."
+fi
+
+if [ -z "$(${PKG} query %n ${CORE})" ]; then
+	echo "Selftest: core package \"${CORE}\" not known to package database."
+fi
+
+if [ "$(${PKG} query %R pkg)" != "OPNsense" ]; then
+	echo "Selftest: the package manager \"pkg\" is from an untrusted source."
+fi
+
+if [ "$(${PKG} query %R ${CORE})" != "OPNsense" ]; then
+	echo "Selftest: the core package is from an untrusted source."
+fi
+
+if ! pkg check -danq; then
+	echo "Selftest: missing package dependencies detected."
+fi
+
+# base / kernel integrity checks
+
+for SET in base kernel; do
+	SETVER=$(opnsense-version -v ${SET})
+
+	if [ -z "${SETVER}" -o -z "${VERSION}" ]; then
+		echo "Selftest: ${SET} failed to determine version info"
+	elif [ "${SETVER}" != "${VERSION}" ]; then
+		echo "Selftest: ${SET} version ${SETVER} is incorrect, expected: ${VERSION}"
+	fi
+
+	FILE=/usr/local/opnsense/version/${SET}.mtree
+
+	if [ ! -f ${FILE} ]; then
+		echo "Selftest: cannot verify ${SET}: missing ${FILE}"
+		continue
+	fi
+
+	if [ ! -f ${FILE}.sig ]; then
+		echo "Selftest: unverified consistency check for ${SET}: missing ${FILE}.sig"
+	elif ! opnsense-verify -q ${FILE}; then
+		output_txt "Selftest: Unverified consistency check for ${SET}: invalid ${FILE}.sig"
+	fi
+done
+
+# PHP operation and configuration checks
+
+if [ "$(pluginctl -g OPNsense | jq -e 'type == "object"')" != "true" ]; then
+	echo "Selftest: no valid configuration object returned."
+fi
+
+if [ -n "$(pluginctl -v)" ]; then
+	echo "Selftest: validation failures in configuration."
+fi
