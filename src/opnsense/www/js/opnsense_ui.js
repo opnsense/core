@@ -671,6 +671,9 @@ function initFormSearchUI() {
         }
 
         $search.on('input', filterForm);
+        $search.closest('.form-search').on('mousedown', function(event) {
+            event.stopPropagation();
+        });
 
         // restore state where relevant
         $modal.on('hidden.bs.modal', function() {

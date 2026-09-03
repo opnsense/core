@@ -140,6 +140,9 @@
 
 {# Ensure all fields stay the same width relative to each other inside the modal #}
 <style>
+    .form-search .input-group-addon {
+        cursor: default;
+    }
     .modal-dialog .bootstrap-select:not(.bs-container),
     .modal-dialog .tokenize ul.tokens-container {
         width: 100% !important;
