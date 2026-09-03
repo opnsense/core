@@ -664,7 +664,6 @@ function interfaces_hardware($verbose = false)
 function interfaces_configure($verbose = false)
 {
     $plugins_devices = plugins_devices();
-    $interfaces = [];
     $devices = [];
 
     foreach ($plugins_devices as $device) {
@@ -683,45 +682,44 @@ function interfaces_configure($verbose = false)
      * make sure that the configuration flow is as clean as possible.
      * See individual notes in the queued handling below.
      */
-
-    $hardware = []; /* hardware devices */
-    $virtual = []; /* software devices */
-    $track6 = []; /* trackers without bridges */
-    $bridge = []; /* bridges that may be trackers, but not dhcp6c interfaces */
-    $dhcp6c = []; /* dhcp6c interfaces load last */
+    $queues = [
+        'hardware' => [], /* hardware devices */
+        'software' => [], /* software devices */
+        'track6' => [], /* trackers without bridges */
+        /* XXX assigned bridges are going away in FreeBSD 16 */
+        'bridge' => [], /* bridges that may be trackers, but not dhcp6c interfaces */
+        'dhcp6c' => [], /* dhcp6c interfaces load last */
+    ];
 
     foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $if => $ifcfg) {
-        /* XXX use this to figure out when bridges can be configured */
-        $interfaces[$if] = $ifcfg['if'];
-
         if (!empty($devices[$ifcfg['if']]) && !str_starts_with($ifcfg['if'], 'bridge')) {
-            $virtual[$ifcfg['if']] = $if;
+            $queues['software'][$ifcfg['if']] = $if;
             continue;
         }
 
         $is_track6 = !empty($ifcfg['ipaddrv6']) && in_array($ifcfg['ipaddrv6'], ['idassoc6', 'track6']);
         if (!str_starts_with($ifcfg['if'], 'bridge') && $is_track6) {
-            $track6[$ifcfg['if']] = $if;
+            $queues['track6'][$ifcfg['if']] = $if;
             continue;
         }
 
         $is_dhcp6c = !empty($ifcfg['ipaddrv6']) && ($ifcfg['ipaddrv6'] == 'dhcp6' || $ifcfg['ipaddrv6'] == 'slaac');
         if (str_starts_with($ifcfg['if'], 'bridge') && !$is_dhcp6c) {
-            $bridge[$ifcfg['if']] = $if;
+            $queues['bridge'][$ifcfg['if']] = $if;
             continue;
         } elseif ($is_dhcp6c) {
-            $dhcp6c[$ifcfg['if']] = $if;
+            $queues['dhcp6c'][$ifcfg['if']] = $if;
             continue;
         }
 
-        $hardware[$ifcfg['if']] = $if;
+        $queues['hardware'][$ifcfg['if']] = $if;
     }
 
     interfaces_loopback_configure($verbose);
     interfaces_lagg_configure($verbose);
 
     /* run through priority lists */
-    foreach ([$hardware, $virtual, $track6, $bridge, $dhcp6c] as $list) {
+    foreach ($queues as $list) {
         foreach ($list as $device => $if) {
             /* pre-op: configuring the underlying parents */
             foreach (interface_parent_devices($device) as $parent) {
@@ -748,7 +746,6 @@ function interfaces_configure($verbose = false)
                     log_msg("Device $loaded reloaded by $if, already skipped", LOG_INFO);
                 }
             }
-            unset($interfaces[$if]);
         }
     }
 
