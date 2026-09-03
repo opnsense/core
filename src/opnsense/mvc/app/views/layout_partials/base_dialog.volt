@@ -41,12 +41,26 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="{{ lang._('Close') }}"><span aria-hidden="true">&times;</span></button>
+                <div class="input-group form-search pull-right" style="width: 250px; margin-top: -6px; margin-right: 15px;">
+                    <span class="input-group-addon"><i class="fa fa-search" aria-hidden="true"></i></span>
+                    <input type="search" class="form-control" placeholder="{{ lang._('Search form') }}"
+                           aria-label="{{ lang._('Search form') }}">
+                </div>
                 <h4 class="modal-title" id="{{base_dialog_id}}Label">{{label}}</h4>
             </div>
             <div class="modal-body">
                 <form id="frm_{{base_dialog_id}}">
+                <div class="table-responsive form-search-no-results" style="display: none;">
+                    <table class="table table-condensed">
+                        <tbody>
+                            <tr>
+                                <td class="text-center text-muted">{{ lang._('No matches found') }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 {% for section in fields['sections'] %}
-                  <div class="table-responsive {{section['style']|default('')}}">
+                  <div class="table-responsive form-search-section {{section['style']|default('')}}">
                     <table class="table table-striped table-condensed" style="table-layout: fixed; width: 100%;">
                         <colgroup>
                         {% if msgzone_width is defined %}
@@ -93,7 +107,7 @@
                         {% endif %}
                         {% for field in section['children']%}
                             {% if field['type'] == 'subheader' %}
-                                <tr{% if field['advanced']|default(false) %} data-advanced="true"{% endif %}>
+                                <tr class="form-search-subheader"{% if field['advanced']|default(false) %} data-advanced="true"{% endif %}>
                                     <td colspan="3">
                                         <div style="padding-bottom: 5px; padding-top: 5px; font-size: 16px; padding-left: 5px;">
                                             <i class="fa fa-ellipsis-v" aria-hidden="true"></i>

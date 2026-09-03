@@ -114,6 +114,7 @@
 
                 initFormHelpUI();
                 initFormAdvancedUI();
+                initFormSearchUI();
                 addMultiSelectClearUI();
                 initGlobalOpenShortcuts();
 
