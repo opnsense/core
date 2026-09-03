@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2026 Deciso B.V.
+ * Copyright (C) 2026 TuEye
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -270,5 +270,10 @@ export default class Zfs extends BaseTableWidget {
         const status = await this.ajaxCall('/api/diagnostics/system/zfs_status');
 
         this.renderPools(status?.pools ?? {});
+    }
+
+    onWidgetClose() {
+        $('#zfs-table .zfs-health-icon').tooltip('hide');
+        super.onWidgetClose();
     }
 }
