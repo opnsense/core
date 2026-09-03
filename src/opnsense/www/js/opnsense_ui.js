@@ -72,6 +72,11 @@ function saveFormToEndpoint(url, formid, callback_ok, disable_dialog, callback_f
 
             // if there are validation issues, update our screen and show a dialog.
             if (data['validations'] !== undefined) {
+                $(document).trigger("validation-failed", {
+                    url: url,
+                    formid: formid,
+                    data: data
+                });
                 if (!disable_dialog) {
                     const detailsid = "errorfrm" + Math.floor((Math.random() * 10000000) + 1);
                     const errorMessage = $('<div></div>');
@@ -577,6 +582,108 @@ function initFormAdvancedUI() {
                 sessionStorage.setItem('show_advanced_preset', 0);
             }
         }
+    });
+}
+
+/**
+ * Filter dialog form fields while preserving collapsed sections and advanced mode.
+ */
+function initFormSearchUI() {
+    $('.form-search input[type="search"]').each(function() {
+        const $search = $(this);
+        const $modal = $search.closest('.modal');
+        const $form = $modal.find('form[id^="frm"]').first();
+
+        function filterForm() {
+            const terms = $search.val().trim().toLowerCase().split(/\s+/).filter(e => e);
+            let hasResults = false;
+
+            $form.find('.form-search-section').each(function() {
+                const $section = $(this);
+                const $table = $section.children('table');
+                const $body = $table.children('tbody');
+                const $heading = $table.children('thead');
+                const $headingRow = $heading.children('tr');
+                const $icon = $headingRow.find('> th > div > i');
+                const $rows = $body.children('tr').not('.dummy_row');
+                const $displayElements = $section.add($heading).add($headingRow).add($body)
+                    .add($rows).add($rows.children('td'));
+
+                if (terms.length === 0) {
+                    /* reset elements to their visible state before search */
+                    $displayElements.each(function() {
+                        const display = $(this).data('form-search-display');
+                        if (display !== undefined) {
+                            this.style.display = display;
+                            $(this).removeData('form-search-display');
+                        }
+                    });
+                    $body.removeData('form-search-active');
+                    const wasCollapsed = $icon.data('form-search-collapsed');
+                    if (wasCollapsed !== undefined) {
+                        $icon.toggleClass('fa-angle-right', wasCollapsed)
+                            .toggleClass('fa-angle-down', !wasCollapsed)
+                            .removeData('form-search-collapsed');
+                    }
+                    return;
+                } else if (!$body.data('form-search-active')) {
+                    /* capture initial visible state */
+                    $body.data('form-search-active', true);
+                    $icon.data('form-search-collapsed', $icon.hasClass('fa-angle-right'));
+                    $displayElements.each(function() {
+                        $(this).data('form-search-display', this.style.display || '');
+                    });
+                }
+
+                const sectionMatches = terms.every(term => $heading.text().toLowerCase().includes(term));
+                let $subheader = $();
+                let subheaderMatches = false;
+                let hasMatches = false;
+
+                $rows.each(function() {
+                    const $row = $(this);
+                    if (!$row.attr('id')) {
+                        $row.hide();
+                        return;
+                    } else if ($row.hasClass('form-search-subheader')) {
+                        $subheader = $row;
+                        subheaderMatches = terms.every(term => $row.text().toLowerCase().includes(term));
+                        $row.hide();
+                        return;
+                    }
+
+                    const rowMatches = sectionMatches || subheaderMatches ||
+                        terms.every(term => $row.text().toLowerCase().includes(term));
+                    $row.toggle(rowMatches);
+                    if (rowMatches) {
+                        $row.add($subheader).show().children('td').css('display', '');
+                        hasMatches = true;
+                    }
+                });
+
+                $section.add($heading).add($headingRow).toggle(hasMatches);
+                $body.css('display', hasMatches ? '' : 'none');
+                $icon.removeClass('fa-angle-right').addClass('fa-angle-down');
+                hasResults = hasResults || hasMatches;
+            });
+
+            $form.find('.form-search-no-results').toggle(terms.length > 0 && !hasResults);
+        }
+
+        $search.on('input', filterForm);
+        $search.closest('.form-search').on('mousedown', function(event) {
+            event.stopPropagation();
+        });
+
+        // restore state where relevant
+        $modal.on('hidden.bs.modal', function() {
+            $search.val('');
+            filterForm();
+        });
+        $(document).on("validation-failed", function () {
+            $search.val('');
+            filterForm();
+        });
     });
 }
 
