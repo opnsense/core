@@ -121,7 +121,6 @@
             <dataerror>data error</dataerror>
             <dataerrors>data errors</dataerrors>
             <action>Action</action>
-            <none>None</none>
             <running>Running</running>
             <scrub>Scrub</scrub>
             <resilver>Resilver</resilver>
