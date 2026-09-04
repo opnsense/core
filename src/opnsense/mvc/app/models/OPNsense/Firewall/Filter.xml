@@ -509,7 +509,6 @@
                 <prio_group type="TextField" volatile="true"/>
                 <interface type="InterfaceField">
                     <Required>Y</Required>
-                    <Default>lan</Default>
                     <Filters>
                         <if>/^(?!lo0$).*/</if>
                     </Filters>
