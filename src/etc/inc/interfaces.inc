@@ -80,13 +80,18 @@ function does_interface_exist($interface, $flag = 'all')
     return !empty($interface) && in_array($interface, legacy_interface_listget($flag));
 }
 
+function _interfaces_loopback_configure($unused_but_required = null)
+{
+    legacy_interface_setaddress('lo0', '127.0.0.1/8');
+    interfaces_vips_configure('lo0', null, false);
+    legacy_interface_flags('lo0', 'up');
+}
+
 function interfaces_loopback_configure($verbose = false)
 {
     service_log('Configuring loopback interface...', $verbose);
 
-    legacy_interface_setaddress('lo0', '127.0.0.1/8');
-    interfaces_vips_configure('lo0', null, false);
-    legacy_interface_flags('lo0', 'up');
+    _interfaces_loopback_configure();
 
     service_log("done.\n", $verbose);
 }
@@ -704,6 +709,9 @@ function interfaces_dependencies($plugins_devices = null)
         'unassigned' => [], /* unassigned devices load last for historic reasons */
     ];
 
+    $queues['software'][] = $fill_data(['descr' => '(loopback)', 'if' => 'lo0', 'uuid' => null]);
+    $devices['lo0'] = '_interfaces_loopback_configure';
+
     foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $ifcfg) {
         $is_dhcp6c = ($ifcfg['ipaddrv6'] ?? 'none') == 'dhcp6';
         /* XXX assigned bridges (with IP configuration) are going away in FreeBSD 16 */
@@ -718,6 +726,11 @@ function interfaces_dependencies($plugins_devices = null)
         $is_track6 = in_array($ifcfg['ipaddrv6'] ?? 'none', ['idassoc6', 'track6']);
         if ($is_track6) {
             $queues['track6'][] = $fill_data($ifcfg);
+            continue;
+        }
+
+        if (str_starts_with($ifcfg['if'], 'lo')) {
+            $queues['loopback'][] = $fill_data($ifcfg);
             continue;
         }
 
@@ -752,7 +765,6 @@ function interfaces_configure($verbose = false)
      */
     $devices = $deps['devices'];
 
-    interfaces_loopback_configure($verbose);
     interfaces_lagg_configure($verbose);
 
     foreach ($deps['queues'] as $list) {
