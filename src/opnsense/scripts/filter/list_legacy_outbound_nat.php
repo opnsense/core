@@ -35,10 +35,8 @@ require_once('config.inc');
 
 function normalize_port($port)
 {
-    $port = (string)$port;
-    $port = str_replace('-any', '-65535', $port);
-    $port = str_replace('any-', '1-', $port);
-    return $port;
+    /* Legacy port ranges use a colon, while PortField expects a dash. */
+    return str_replace(':', '-', (string)$port);
 }
 
 function legacy_address_to_network($data)
