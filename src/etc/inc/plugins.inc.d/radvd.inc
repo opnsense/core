@@ -306,6 +306,9 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
 
         if (!$entry->nat64prefix->isEmpty()) {
             $radvdconf .= "    nat64prefix {$entry->nat64prefix->getValue()} {\n";
+            if (!$entry->AdvValidLifetime->isEmpty()) {
+                $radvdconf .= "        AdvValidLifetime {$entry->AdvValidLifetime->getValue()};\n";
+            }
             $radvdconf .= "    };\n";
         }
 
