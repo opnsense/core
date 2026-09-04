@@ -102,6 +102,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $authenticator = (new OPNsense\Auth\AuthenticationFactory())->get('Local Database');
                 $input_errors = $authenticator->checkPolicy($username, $pconfig['passwordfld0'], $pconfig['passwordfld1']);
             }
+        } elseif (!empty($_SESSION['user_shouldChangePassword'])) {
+            $input_errors[] = gettext('Your password does not match the selected security policies. Please provide a new one.');
         }
 
         if (count($input_errors) == 0) {
