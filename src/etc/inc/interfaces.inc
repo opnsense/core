@@ -661,10 +661,23 @@ function interfaces_hardware($verbose = false)
     service_log("done.\n", $verbose);
 }
 
-function interfaces_configure($verbose = false)
+function interfaces_dependencies($plugins_devices = null)
 {
-    $plugins_devices = plugins_devices();
+    $plugins_devices ??= plugins_devices();
+    $assigned = [];
     $devices = [];
+
+    $fill_data = function ($ifcfg) use (&$assigned) {
+        $ret = ['uuid' => $ifcfg['uuid'], 'descr' => $ifcfg['descr']];
+
+        /* XXX consider recursive parent devices (capped to 5 iterations) */
+        $ret['devices'] = interface_parent_devices($ifcfg['if']);
+        $ret['devices'][] = $ifcfg['if'];
+
+        array_push($assigned, ...$ret['devices']);
+
+        return $ret;
+    };
 
     foreach ($plugins_devices as $device) {
         if (empty($device['function']) || empty($device['names'])) {
@@ -688,83 +701,79 @@ function interfaces_configure($verbose = false)
         'track6' => [], /* trackers without bridges */
         'bridge' => [], /* bridges that may be trackers, but not dhcp6c interfaces */
         'dhcp6c' => [], /* dhcp6c interfaces load last */
+        'unassigned' => [], /* unassigned devices load last for historic reasons */
     ];
 
-    foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $if => $ifcfg) {
+    foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $ifcfg) {
         $is_dhcp6c = ($ifcfg['ipaddrv6'] ?? 'none') == 'dhcp6';
         /* XXX assigned bridges (with IP configuration) are going away in FreeBSD 16 */
         if (!$is_dhcp6c && str_starts_with($ifcfg['if'], 'bridge')) {
-            $queues['bridge'][$ifcfg['if']] = $if;
+            $queues['bridge'][] = $fill_data($ifcfg);
             continue;
         } elseif ($is_dhcp6c) {
-            $queues['dhcp6c'][$ifcfg['if']] = $if;
+            $queues['dhcp6c'][] = $fill_data($ifcfg);
             continue;
         }
 
         $is_track6 = in_array($ifcfg['ipaddrv6'] ?? 'none', ['idassoc6', 'track6']);
         if ($is_track6) {
-            $queues['track6'][$ifcfg['if']] = $if;
+            $queues['track6'][] = $fill_data($ifcfg);
             continue;
         }
 
         /* check with plugged devices returned earlier */
         if (!empty($devices[$ifcfg['if']])) {
-            $queues['software'][$ifcfg['if']] = $if;
+            $queues['software'][] = $fill_data($ifcfg);
             continue;
         }
 
-        $queues['hardware'][$ifcfg['if']] = $if;
+        $queues['hardware'][] = $fill_data($ifcfg);
     }
+
+    /* XXX unassigned device ordering could be wrong in edge cases */
+    foreach (array_diff(array_keys($devices), $assigned) as $unassigned) {
+        $queues['unassigned'][] = $fill_data(['descr' => '(unassigned)', 'if' => $unassigned, 'uuid' => null]);
+    }
+
+    return ['devices' => $devices, 'queues' => $queues];
+}
+
+function interfaces_configure($verbose = false)
+{
+    $plugins_devices = plugins_devices();
+
+    $deps = interfaces_dependencies($plugins_devices);
+
+    /*
+     * The array points each pluggable device to its registration
+     * function.  It is used to (re-)configure the attached devices,
+     * but also to keep track of which devices have already been
+     * configured so that we do not tear them down again.
+     */
+    $devices = $deps['devices'];
 
     interfaces_loopback_configure($verbose);
     interfaces_lagg_configure($verbose);
 
-    /* run through priority lists */
-    foreach ($queues as $list) {
-        foreach ($list as $device => $if) {
-            /* pre-op: configuring the underlying parents */
-            foreach (interface_parent_devices($device) as $parent) {
+    foreach ($deps['queues'] as $list) {
+        foreach ($list as $interface) {
+            foreach ($interface['devices'] as $parent) {
                 if (!empty($devices[$parent])) {
-                    log_msg("Device $parent required by $device, configuring now");
+                    log_msg("Device {$parent} required by {$interface['descr']}({$interface['uuid']}), configuring now");
                     call_user_func_array($devices[$parent], [$parent]);
                     unset($devices[$parent]);
                 }
             }
 
-            /* pre-op: configuring the underlying device */
-            if (!empty($devices[$device])) {
-                log_msg("Device $device required for $if, configuring now");
-                call_user_func_array($devices[$device], [$device]);
-                unset($devices[$device]);
-            }
-
-            /* post-op: removing associated devices and current interface */
-            foreach (interface_configure($verbose, $if, false, false, true, $plugins_devices) as $loaded) {
-                if (!empty($devices[$loaded])) {
-                    log_msg("Device $loaded loaded by $if, skipping now", LOG_INFO);
-                    unset($devices[$loaded]);
-                } else {
-                    log_msg("Device $loaded reloaded by $if, already skipped", LOG_INFO);
+            if (!empty($interface['uuid'])) {
+                foreach (interface_configure($verbose, $interface['uuid'], false, false, true, $plugins_devices) as $loaded) {
+                    if (!empty($devices[$loaded])) {
+                        log_msg("Device {$loaded} loaded by {$interface['descr']}({$interface['uuid']}), skipping now", LOG_INFO);
+                        unset($devices[$loaded]);
+                    }
                 }
             }
         }
-    }
-
-    /* resolve parent devices of unconfigured devices */
-    foreach (array_keys($devices) as $device) {
-        foreach (interface_parent_devices($device) as $parent) {
-            if (!empty($devices[$parent])) {
-                log_msg("Device $parent required by $device, configuring late");
-                call_user_func_array($devices[$parent], [$parent]);
-                unset($devices[$parent]);
-            }
-        }
-    }
-
-    /* last but not least start all unconfigured devices */
-    foreach (array_keys($devices) as $device) {
-        log_msg("Device $device is not assigned, configuring late");
-        call_user_func_array($devices[$device], [$device]);
     }
 
     interfaces_pfsync_configure();

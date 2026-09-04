@@ -358,6 +358,7 @@ function legacy_config_get_interfaces($filters = [], $exclude_ifs = [])
             $iface['ipaddrv6'] = !empty($iface['ipaddrv6']) ? $iface['ipaddrv6'] : null;
             $iface['ipaddr'] = !empty($iface['ipaddr']) ? $iface['ipaddr'] : null;
             $iface['if'] = !empty($iface['if']) ? $iface['if'] : null;
+            $iface['uuid'] = $ifname;
             $interfaces[$ifname] = $iface;
         }
     }

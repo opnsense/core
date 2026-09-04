@@ -3,7 +3,7 @@
 
 /*
  * Copyright (C) 2019 Deciso B.V.
- * Copyright (C) 2019-2025 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2019-2026 Franco Fichtner <franco@opnsense.org>
  * Copyright (C) 2017 Alexander Shursha <kekek2@ya.ru>
  * All rights reserved.
  *
@@ -153,12 +153,12 @@ function get_all_services($name = '', $id = '', $showall = true)
 }
 
 $jflags = JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_INVALID_UTF8_IGNORE;
-$opts = getopt('46cDdfghIiMmrqSsvXx', [], $optind);
+$opts = getopt('46cDdfghIiMmrQqSsvXx', [], $optind);
 $args = array_slice($argv, $optind);
 $ret = 0;
 
 if (isset($opts['h'])) {
-    echo "Usage: pluginctl [-4|-6|-c|-D|-d|-f|-g|-h|-I|-i|-M|-m|-r|-q|-S|-s|-v|-X|-x] ...\n\n";
+    echo "Usage: pluginctl [-46cDdfghIiMmrQqSsvXx] ...\n\n";
     echo "\t-4 IPv4 address mode, return primary address of interface\n";
     echo "\t-6 IPv4 address mode, return primary address of interface\n";
     echo "\t-c configure mode (default), executes plugin [_configure] hook\n";
@@ -171,6 +171,7 @@ if (isset($opts['h'])) {
     echo "\t-i invoke dynamic interface registration\n";
     echo "\t-M invoke model migrations in quiet mode\n";
     echo "\t-m invoke model migrations in verbose mode\n";
+    echo "\t-m queue mode returns interfaces and device dependencies\n";
     echo "\t-q quiet switch for configure mode\n";
     echo "\t-r run mode (e.g. command)\n";
     echo "\t-S service metadata dump\n";
@@ -310,6 +311,8 @@ if (isset($opts['h'])) {
     pass_safe('/usr/local/opnsense/mvc/script/run_migrations.php', [], $ret);
 } elseif (isset($opts['m'])) {
     pass_safe('/usr/local/opnsense/mvc/script/run_migrations.php -v', [], $ret);
+} elseif (isset($opts['Q'])) {
+    echo json_encode(interfaces_dependencies(), $jflags) . PHP_EOL;
 } elseif (isset($opts['v'])) {
     pass_safe('/usr/local/opnsense/mvc/script/run_validations.php', [], $ret);
 } elseif (empty($args[0])) {
