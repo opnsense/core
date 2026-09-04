@@ -1,0 +1,10 @@
+<acl>
+    <page-services-opendns>
+        <name>Services: OpenDNS</name>
+        <patterns>
+            <pattern>ui/opendns/settings</pattern>
+            <pattern>api/opendns/settings/*</pattern>
+            <pattern>api/opendns/service/*</pattern>
+        </patterns>
+    </page-services-opendns>
+</acl>
