@@ -435,7 +435,7 @@ class Filter extends BaseModel
     public function serializeToConfig($validateFullModel = false, $disable_validation = false)
     {
         $result = parent::serializeToConfig($validateFullModel, $disable_validation);
-        $mode = $this->general->snat_mode->getValue();
+        $mode = $this->settings->nat->snat_mode->getValue();
         if ((string)Config::getInstance()->object()->nat->outbound->mode !== $mode) {
             /* SimpleXML will create the node when not there */
             Config::getInstance()->object()->nat->outbound->mode = $mode;

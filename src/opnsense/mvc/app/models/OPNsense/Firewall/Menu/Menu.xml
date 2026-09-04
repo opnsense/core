@@ -17,5 +17,6 @@
                 <FilterRef url="/ui/firewall/npt#*" visibility="hidden"/>
             </NPTv6>
         </NAT>
+        <Settings order="200" url="/ui/firewall/settings" cssClass="fa fa-cogs fa-fw"/>
     </Firewall>
 </menu>

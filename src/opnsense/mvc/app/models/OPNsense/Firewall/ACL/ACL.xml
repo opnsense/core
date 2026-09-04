@@ -1,4 +1,11 @@
 <acl>
+    <page-firewall-settings>
+        <name>Firewall: Settings</name>
+        <patterns>
+            <pattern>ui/firewall/settings</pattern>
+            <pattern>api/firewall/settings/*</pattern>
+        </patterns>
+    </page-firewall-settings>
     <page-filter-api>
         <name>Firewall: Rules [new]</name>
         <patterns>

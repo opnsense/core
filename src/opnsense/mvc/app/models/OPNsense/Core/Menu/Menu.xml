@@ -89,16 +89,10 @@
         <Categories url="/ui/firewall/category" cssClass="fa fa-tags fa-fw"/>
         <Groups url="/ui/firewall/group" cssClass="fa fa-sitemap fa-fw"/>
         <NAT cssClass="fa fa-exchange fa-fw"/>
-        <Settings order="200" cssClass="fa fa-cogs fa-fw">
-            <Schedules url="/firewall_schedule.php">
-                <SchedulesEdit url="/firewall_schedule_edit.php*" visibility="hidden"/>
-            </Schedules>
-            <Normalization url="/firewall_scrub.php">
-                <NormalizationEdit url="/firewall_scrub_edit.php*" visibility="hidden"/>
-                <Normalization url="/firewall_scrub.php*" visibility="hidden"/>
-            </Normalization>
-            <Advanced url="/system_advanced_firewall.php"/>
-        </Settings>
+        <Schedules order="210" url="/firewall_schedule.php" cssClass="fa fa-calendar fa-fw">
+            <SchedulesEdit url="/firewall_schedule_edit.php*" visibility="hidden"/>
+        </Schedules>
+        <Advanced order="220" url="/system_advanced_firewall.php" cssClass="fa fa-sliders fa-fw"/>
         <Diagnostics order="500" cssClass="fa fa-medkit fa-fw">
             <Aliases url="/ui/firewall/alias_util/"/>
             <States url="/ui/diagnostics/firewall/states"/>

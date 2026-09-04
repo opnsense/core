@@ -1,21 +1,37 @@
 <model>
     <mount>//OPNsense/Firewall/Filter</mount>
-    <version>1.0.7</version>
+    <version>1.0.9</version>
     <migration_prefix>MFP</migration_prefix>
     <description>Firewall rules (new)</description>
     <items>
-        <general>
-            <snat_mode type=".\SNatModeField" volatile="true">
-                <Required>Y</Required>
-                <Default>automatic</Default>
-                <OptionValues>
-                    <automatic>Automatic Source NAT rule generation</automatic>
-                    <hybrid>Hybrid Source NAT rule generation</hybrid>
-                    <advanced>Manual Source NAT rule generation</advanced>
-                    <disabled>Disable Source NAT rule generation</disabled>
-                </OptionValues>
-            </snat_mode>
-        </general>
+        <settings>
+            <filter>
+                <scrub_enabled type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </scrub_enabled>
+                <scrub_no_df type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </scrub_no_df>
+                <scrub_random_id type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </scrub_random_id>
+            </filter>
+            <nat>
+                <snat_mode type=".\SNatModeField" volatile="true">
+                    <Required>Y</Required>
+                    <Default>automatic</Default>
+                    <OptionValues>
+                        <automatic>Automatic Source NAT rule generation</automatic>
+                        <hybrid>Hybrid Source NAT rule generation</hybrid>
+                        <advanced>Manual Source NAT rule generation</advanced>
+                        <disabled>Disable Source NAT rule generation</disabled>
+                    </OptionValues>
+                </snat_mode>
+            </nat>
+        </settings>
         <rules>
             <rule type=".\FilterRuleField">
                 <enabled type="BooleanField">

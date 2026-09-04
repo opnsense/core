@@ -240,13 +240,6 @@
             <pattern>firewall_schedule.php*</pattern>
         </patterns>
     </page-firewall-schedules>
-    <page-firewall-scrub>
-        <name>Firewall: Normalization</name>
-        <patterns>
-            <pattern>firewall_scrub.php*</pattern>
-            <pattern>firewall_scrub_edit.php*</pattern>
-        </patterns>
-    </page-firewall-scrub>
     <page-firewall-schedules-edit>
         <name>Firewall: Schedules: Edit</name>
         <patterns>
