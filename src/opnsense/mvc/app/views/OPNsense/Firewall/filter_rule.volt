@@ -515,7 +515,7 @@
                         let tooltip;
                         if (usedAdvancedFields.length > 0) {
                             iconClass = "text-warning";
-                            tooltip = htmlSafe(`{{ lang._("Advanced mode enabled") }}<br>${usedAdvancedFields.join("<br>")}`);
+                            tooltip = htmlSafe(usedAdvancedFields.join("<br>"));
                         } else {
                             iconClass = "text-muted";
                             tooltip = "{{ lang._('Advanced mode disabled') }}";
