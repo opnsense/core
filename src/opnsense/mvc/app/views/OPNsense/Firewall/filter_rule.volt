@@ -465,7 +465,7 @@
 
                         // Action
                         if (row.action === "match") {
-                            result += `<i class="fa fa-filter fa-fw text-success" data-toggle="tooltip" title="${row['%action']}"></i> `;
+                            result += `<i class="fa fa-filter fa-fw text-warning" data-toggle="tooltip" title="${row['%action']}"></i> `;
                         } else if (row.action === "block") {
                             result += `<i class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="${row['%action']}"></i> `;
                         } else if (row.action === "reject") {

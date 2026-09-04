@@ -1280,9 +1280,11 @@
 </script>
 
 <style>
-.fw-pass,
-.fw-match {
+.fw-pass {
     background: rgba(5, 142, 73, 0.3);
+}
+.fw-match {
+    background: rgba(240, 173, 78, 0.3);
 }
 .fw-block {
     background: rgba(235, 9, 9, 0.3);

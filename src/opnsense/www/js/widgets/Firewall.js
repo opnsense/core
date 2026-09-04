@@ -33,8 +33,8 @@ export default class Firewall extends BaseTableWidget {
         this.rotation = 5;
         this.configurable = true;
         this.colorScheme = 'contrast';
-        // Map actions to Classic10 color indices: red=block, green=pass/match, blue=rdr/nat/binat, gray=unknown
-        this.actionColorIndex = { block: 3, pass: 2, match: 2, rdr: 0, nat: 0, binat: 0 };
+        // Map actions to Classic10 color indices: red=block, green=pass, yellow=match, blue=rdr/nat/binat, gray=unknown
+        this.actionColorIndex = { block: 3, pass: 2, match: 8, rdr: 0, nat: 0, binat: 0 };
         this.defaultColorIndex = 7;
     }
 
@@ -144,7 +144,7 @@ export default class Firewall extends BaseTableWidget {
 
         let actIcons = {
             'pass': '<i class="fa fa-play text-success"></i>',
-            'match': '<i class="fa fa-filter text-success"></i>',
+            'match': '<i class="fa fa-filter text-warning"></i>',
             'block': '<i class="fa fa-minus-circle text-danger"></i>',
             'rdr': '<i class="fa fa-exchange text-info"></i>',
             'nat': '<i class="fa fa-exchange text-info"></i>',
