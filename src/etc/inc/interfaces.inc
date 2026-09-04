@@ -2880,7 +2880,7 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $default_id)
     } elseif ($wancfg['ipaddrv6'] == 'dhcp6') {
         $assoc_pd = [];
 
-        if (is_numeric($wancfg['dhcp6-ia-pd-len'])) {
+        if (is_numeric($wancfg['dhcp6-ia-pd-len'] ?? null)) {
             if (isset($wancfg['dhcp6-prefix-id']) && is_numeric($wancfg['dhcp6-prefix-id'])) {
                 $pd_conf  = "  prefix-interface {$wanif} {\n";
                 $pd_conf .= "    sla-id {$wancfg['dhcp6-prefix-id']};\n";
@@ -2929,7 +2929,7 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $default_id)
             $dhcp6cconf .= "  send ia-na {$default_id};\n";
         }
 
-        if (is_numeric($wancfg['dhcp6-ia-pd-len'])) {
+        if (is_numeric($wancfg['dhcp6-ia-pd-len'] ?? null)) {
             /* request prefix delegation */
             foreach (array_keys($assoc_pd) as $id) {
                 $dhcp6cconf .= "  send ia-pd {$id};\n";
