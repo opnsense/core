@@ -37,6 +37,7 @@
  #                   select_multiple    multiple item select from dropdown
  #                   hidden             hidden fields not for user interaction
  #                   info               static text (help icon, no input or editing)
+ #                   info_link          static text as a link
  #                   color              color picker for selecting a color
  #                   datetime-local     local time picker
  #                   buttons            save and cancel buttons
@@ -145,8 +146,8 @@
             <input type="password" autocomplete="new-password" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}">
         {% elseif type == "textbox" %}
             <textarea class="{{style|default('')}}" rows="{{height|default("5")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}" {% if type_formatter is defined %}type_formatter="{{type_formatter}}"{% endif %} ></textarea>
-        {% elseif type == "info" %}
-            <span  class="{{style|default('')}}" id="{{ id }}" {% if type_formatter is defined %}type_formatter="{{type_formatter}}"{% endif %}></span>
+        {% elseif type in ["info", "info_link"] %}
+            <span  class="{{style|default('')}}" id="{{ id }}" {% if type == "info_link" %}data-is_link="true"{% endif %} {% if type_formatter is defined %}type_formatter="{{type_formatter}}"{% endif %}></span>
         {% elseif type == "color" %}
             <input type="color" class="form-control {{style|default('')}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}">
         {% elseif type == "file" %}
