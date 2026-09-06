@@ -25,8 +25,8 @@
  */
 
 class BaseGaugeWidget extends BaseWidget {
-    constructor() {
-        super();
+    constructor(config) {
+        super(config);
 
         this.chart = null;
     }
