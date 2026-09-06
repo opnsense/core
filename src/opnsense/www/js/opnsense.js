@@ -229,17 +229,13 @@ function setFormData(parent,data) {
                             const value = node[keypart];
                             targetNode.empty();
                             if (targetNode.data('is_link')) {
-                                if (/^https?:\/\//i.test(value)) {
-                                    targetNode.append(
-                                        $("<a/>", {
-                                            href: value,
-                                            target: '_blank',
-                                            rel: 'noreferrer noopener'
-                                        }).text(value)
-                                    );
-                                } else {
-                                    targetNode.text(value);
-                                }
+                                targetNode.append(
+                                    $("<a/>", {
+                                        href: value,
+                                        target: '_blank',
+                                        rel: 'noreferrer noopener'
+                                    }).text(value)
+                                );
                             } else {
                                 targetNode.append(value);
                             }
