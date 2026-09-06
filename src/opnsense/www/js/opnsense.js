@@ -226,8 +226,19 @@ function setFormData(parent,data) {
                         targetNode.prop("checked", node[keypart] != 0);
                     } else if (targetNode.is("span")) {
                         if (node[keypart] != null) {
-                            targetNode.text("");
-                            targetNode.append(node[keypart]);
+                            const value = node[keypart];
+                            targetNode.empty();
+                            if (targetNode.data('is_link')) {
+                                targetNode.append(
+                                    $("<a/>", {
+                                        href: value,
+                                        target: '_blank',
+                                        rel: 'noreferrer noopener'
+                                    }).text(value)
+                                );
+                            } else {
+                                targetNode.append(value);
+                            }
                         }
                     } else if (targetNode.hasClass('json-data')) {
                         // if the input field is JSON data, serialize the data into the field

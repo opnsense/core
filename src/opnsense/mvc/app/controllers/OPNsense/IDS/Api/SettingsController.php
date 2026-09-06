@@ -226,13 +226,6 @@ class SettingsController extends ApiMutableModelControllerBase
                 $item['description'] = $fileinfo['description'];
                 $item['filename'] = $fileinfo['filename'];
                 $item['documentation_url'] = $fileinfo['documentation_url'];
-                if (!empty($fileinfo['documentation_url'])) {
-                    $item['documentation'] = "<a href='" . $item['documentation_url'] . "' target='_new'>";
-                    $item['documentation'] .= $item['documentation_url'];
-                    $item['documentation'] .= '</a>';
-                } else {
-                    $item['documentation'] = null;
-                }
 
                 if ($fileinfo['modified_local'] == null) {
                     $item['modified_local'] = null;
