@@ -149,6 +149,18 @@ output_done()
 	exit 0
 }
 
+output_restart_action()
+{
+	KEEP_LOG=${1}
+	PREFER_SHUTDOWN=${2:-0}
+
+	if [ "${PREFER_SHUTDOWN}" = "1" ]; then
+		output_shutdown "${KEEP_LOG}"
+	else
+		output_reboot "${KEEP_LOG}"
+	fi
+}
+
 output_reboot()
 {
 	KEEP_LOG=${1}
@@ -161,6 +173,20 @@ output_reboot()
 
 	sleep 5
 	/usr/local/etc/rc.reboot
+}
+
+output_shutdown()
+{
+	KEEP_LOG=${1}
+
+	echo '***POWER OFF***' >> ${LOCKFILE}
+
+	if  [ -n "${KEEP_LOG}" ]; then
+		cp ${LOCKFILE} ${LOGFILE}
+	fi
+
+	sleep 5
+	/usr/local/etc/rc.halt
 }
 
 # if output is requested clear file and set new request right away
