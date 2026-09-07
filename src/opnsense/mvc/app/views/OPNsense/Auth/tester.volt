@@ -107,11 +107,13 @@
                                 });
                             }
                         } else {
-                            tbody.append(
-                                $('<tr/>').append(
-                                    $('<td colspan="2" class="text-danger"/>').text("{{ lang._('Authentication failed') }}")
-                                )
-                            );
+                            if (data.message) {
+                                tbody.append(
+                                    $('<tr/>').append(
+                                        $('<td colspan="2" class="text-danger"/>').text(data.message)
+                                    )
+                                );
+                            }
                             $.each(data.errors || {}, (k, v) => {
                                 tbody.append(
                                     $('<tr/>').append(
@@ -139,7 +141,11 @@
         {{ partial("layout_partials/base_form",['fields':testerForm,'id':'frm_testerSettings',
         'apply_btn_id':'btn_test', 'apply_btn_title': lang._('Test')])}}
     </div>
-    <table class="table table-condensed" id="test_results" style="display:none;">
+    <table class="table table-condensed" id="test_results" style="display:none; table-layout: fixed; width: 100%; word-break: break-word;">
+        <colgroup>
+            <col style="width: 50%;" />
+            <col style="width: 50%;" />
+        </colgroup>
         <thead>
             <tr>
                 <th colspan="2">{{ lang._('Response')}}</th>

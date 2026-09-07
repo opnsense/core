@@ -95,7 +95,7 @@ class TesterController extends ApiControllerBase
                 // Config may be updated during LDAP group sync, reload before proceeding
                 Config::getInstance()->forceReload();
 
-                $canonicalUser = $authenticator->getUserName($username);
+                $canonicalUser = $authenticator->getUserName($username) ?: $username;
                 $result['groups'] = $this->getUserGroups($canonicalUser);
 
                 $privileges = [];
@@ -110,14 +110,11 @@ class TesterController extends ApiControllerBase
                     $authenticator->getLastAuthProperties()
                 );
             } else {
-                $errors = array_map(
+                $result['message'] = gettext("Authentication failed.");
+                $result['errors'] = array_map(
                     fn($v) => is_array($v) ? implode(",", $v) : $v,
                     $authenticator->getLastAuthErrors()
                 );
-
-                $result['errors'] = !empty($errors) ? $errors : [
-                    'Authentication' => gettext("Authentication failed")
-                ];
             }
         }
         return $result;
