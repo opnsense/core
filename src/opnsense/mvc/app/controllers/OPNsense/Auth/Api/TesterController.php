@@ -95,8 +95,14 @@ class TesterController extends ApiControllerBase
                 // Config may be updated during LDAP group sync, reload before proceeding
                 Config::getInstance()->forceReload();
 
-                $result['groups'] = $this->getUserGroups($authenticator->getUserName($username));
-                $result['privileges'] = (new ACL())->userUrlMasks($username);
+                $canonicalUser = $authenticator->getUserName($username);
+                $result['groups'] = $this->getUserGroups($canonicalUser);
+
+                $privileges = [];
+                foreach ((new ACL())->userUrlMasks($canonicalUser) as $item) {
+                    $privileges[] = $item;
+                }
+                $result['privileges'] = $privileges;
 
                 // Format attributes instantly
                 $result['attributes'] = array_map(
@@ -135,9 +141,11 @@ class TesterController extends ApiControllerBase
         }
 
         foreach ($configObj->system->group ?? [] as $groupNode) {
-            $members = explode(',', (string)$groupNode->member);
-            if (in_array($userUID, $members)) {
-                $member_groups[] = (string)$groupNode->name;
+            foreach ($groupNode->member as $memberNode) {
+                if (in_array($userUID, explode(',', (string)$memberNode), true)) {
+                    $member_groups[] = (string)$groupNode->name;
+                    break;
+                }
             }
         }
 

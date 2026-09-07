@@ -52,29 +52,74 @@
                         tbody.empty();
 
                         if (data.status === 'ok') {
-                            tbody.append(`<tr><td colspan="2">${data.message}</td></tr>`);
+                            tbody.append(
+                                $('<tr/>').append(
+                                    $('<td colspan="2"/>').text(data.message)
+                                )
+                            );
 
                             // Render groups
                             if (data.groups?.length) {
-                                tbody.append(`<tr class="info"><td colspan="2"><b>{{ lang._('Groups') }}</b>: ${data.groups.join(" ")}</td></tr>`);
+                                tbody.append(
+                                    $('<tr class="info"/>').append(
+                                        $('<td colspan="2"/>').append(
+                                            $('<b>').text("{{ lang._('Groups') }}: "),
+                                            document.createTextNode(data.groups.join(" "))
+                                        )
+                                    )
+                                );
                             }
 
                             // Render privileges
                             if (data.privileges?.length) {
-                                tbody.append(`<tr class="info"><td><b>{{ lang._('Uri') }}</b></td><td><b>{{ lang._('Networks') }}</b></td></tr>`);
+                                tbody.append(
+                                    $('<tr class="info"/>').append(
+                                        $('<td/>').append($('<b>').text("{{ lang._('Uri') }}")),
+                                        $('<td/>').append($('<b>').text("{{ lang._('Networks') }}"))
+                                    )
+                                );
                                 data.privileges.forEach(item => {
-                                    tbody.append(`<tr><td>${item[0]}</td><td>${item[1].join(', ')}</td></tr>`);
+                                    tbody.append(
+                                        $('<tr/>').append(
+                                            $('<td/>').text(item[0]),
+                                            $('<td/>').text(item[1].join(', '))
+                                        )
+                                    );
                                 });
                             }
 
                             // Render attributes
                             if (data.attributes && Object.keys(data.attributes).length) {
-                                tbody.append(`<tr class="info"><td colspan="2"><b>{{ lang._('Attributes received from server') }}</b></td></tr>`);
-                                $.each(data.attributes, (k, v) => tbody.append(`<tr><td>${k}</td><td>${v}</td></tr>`));
+                                tbody.append(
+                                    $('<tr class="info"/>').append(
+                                        $('<td colspan="2"/>').append(
+                                            $('<b>').text("{{ lang._('Attributes received from server') }}")
+                                        )
+                                    )
+                                );
+                                $.each(data.attributes, (k, v) => {
+                                    tbody.append(
+                                        $('<tr/>').append(
+                                            $('<td/>').text(k),
+                                            $('<td style="white-space: pre-line;"/>').text(v)
+                                        )
+                                    );
+                                });
                             }
                         } else {
-                            tbody.append(`<tr><td colspan="2" class="text-danger">{{ lang._('Authentication failed') }}</td></tr>`);
-                            $.each(data.errors || {}, (k, v) => tbody.append(`<tr><td>${k}</td><td class="text-danger">${v}</td></tr>`));
+                            tbody.append(
+                                $('<tr/>').append(
+                                    $('<td colspan="2" class="text-danger"/>').text("{{ lang._('Authentication failed') }}")
+                                )
+                            );
+                            $.each(data.errors || {}, (k, v) => {
+                                tbody.append(
+                                    $('<tr/>').append(
+                                        $('<td/>').text(k),
+                                        $('<td class="text-danger"/>').text(v)
+                                    )
+                                );
+                            });
                         }
 
                         $("#test_results").show();
