@@ -31,7 +31,7 @@ export default class Disk extends BaseGaugeWidget {
         this.detailed_chart = null;
         this.tickTimeout = 300;
         this.detailedBreakpoint = 3;
-        this.isDetailed = Boolean(this.config && this.config.w >= this.detailedBreakpoint);
+        this.isDetailed = this.config && this.config.w >= this.detailedBreakpoint;
     }
 
     _convertToBytes(sizeString) {
