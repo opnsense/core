@@ -236,6 +236,8 @@ function setFormData(parent,data) {
                                         rel: 'noreferrer noopener'
                                     }).text(value)
                                 );
+                            } else if (node['%' + keypart] !== undefined) {
+                                targetNode.append(node['%' + keypart]);
                             } else {
                                 targetNode.append(value);
                             }
