@@ -139,9 +139,12 @@ class JsonAuditField extends JsonField implements IStructuredInput
     public function getNodeData()
     {
         // Always return the full structure to prevent stale values in reused forms.
-        return array_replace_recursive(
-            self::SCHEMA,
-            $this->deserialize()
-        );
+        $ret = array_replace_recursive( self::SCHEMA, $this->deserialize());
+        foreach(['created', 'updated'] as $type) {
+            if (!empty($ret[$type]['time'])) {
+                $ret[$type]['%time'] = date('Y-m-d H:i:s', (int)$ret[$type]['time']);;
+            }
+        }
+        return $ret;
     }
 }
