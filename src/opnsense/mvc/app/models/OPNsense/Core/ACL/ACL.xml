@@ -7,10 +7,14 @@
         <patterns>
             <pattern>ui/core/backup</pattern>
             <pattern>api/core/backup/downloadConfig*</pattern>
+            <pattern>api/core/backup/download_config*</pattern>
             <pattern>api/core/backup/getSettings*</pattern>
+            <pattern>api/core/backup/get_settings*</pattern>
             <pattern>api/core/backup/setSettings*</pattern>
+            <pattern>api/core/backup/set_settings*</pattern>
             <pattern>api/core/backup/restore*</pattern>
             <pattern>api/core/backup/setupProvider/*</pattern>
+            <pattern>api/core/backup/setup_provider/*</pattern>
         </patterns>
     </page-diagnostics-backup-restore>
     <page-system-login-logout>

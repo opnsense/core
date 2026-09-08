@@ -94,164 +94,90 @@
 
             $("#btn_download_progress").addClass("fa fa-spinner fa-pulse");
 
+            var showDownloadError = function (errorData) {
+                var defaultMsg = "{{ lang._('An error occurred during download.') }}";
+                var displayMessage = function (msg) {
+                    BootstrapDialog.alert({
+                        type: BootstrapDialog.TYPE_DANGER,
+                        title: "{{ lang._('Error') }}",
+                        message: msg || defaultMsg
+                    });
+                };
+                var extractMessage = function (raw) {
+                    if (!raw) {
+                        return defaultMsg;
+                    }
+                    if (typeof raw === 'object') {
+                        return raw.message || raw.errorMessage || (typeof raw.error === 'string' ? raw.error : null) || defaultMsg;
+                    }
+                    try {
+                        var parsed = JSON.parse(raw);
+                        if (parsed && (parsed.message || parsed.errorMessage || (typeof parsed.error === 'string' ? parsed.error : null))) {
+                            return parsed.message || parsed.errorMessage || parsed.error;
+                        }
+                    } catch (e) {}
+                    return defaultMsg;
+                };
+
+                if (errorData instanceof Blob) {
+                    var reader = new FileReader();
+                    reader.onload = function () {
+                        displayMessage(extractMessage(reader.result));
+                    };
+                    reader.onerror = function () {
+                        displayMessage(defaultMsg);
+                    };
+                    reader.readAsText(errorData);
+                } else {
+                    displayMessage(extractMessage(errorData));
+                }
+            };
+
             $.ajax({
                 type: "POST",
                 url: "/api/core/backup/downloadConfig",
                 data: params,
+                dataType: 'binary',
                 xhrFields: {
                     responseType: 'blob'
+                },
+                responseFields: {
+                    binary: 'response'
                 },
                 success: function (data, status, xhr) {
                     $("#btn_download_progress").removeClass("fa fa-spinner fa-pulse");
 
-                    var contentType = xhr.getResponseHeader('Content-Type') || (data ? data.type : '') || '';
-                    var disposition = xhr.getResponseHeader('Content-Disposition');
-
-                    var showDownloadError = function (blob) {
-                        var reader = new FileReader();
-                        reader.onload = function () {
-                            var errMsg = "{{ lang._('An error occurred during download.') }}";
-                            try {
-                                var res = JSON.parse(reader.result);
-                                if (res && (res.message || res.errorMessage)) {
-                                    errMsg = res.message || res.errorMessage;
-                                }
-                            } catch (e) {}
-                            BootstrapDialog.alert({
-                                type: BootstrapDialog.TYPE_DANGER,
-                                title: "{{ lang._('Error') }}",
-                                message: errMsg
-                            });
-                        };
-                        reader.onerror = function () {
-                            BootstrapDialog.alert({
-                                type: BootstrapDialog.TYPE_DANGER,
-                                title: "{{ lang._('Error') }}",
-                                message: "{{ lang._('An error occurred during download.') }}"
-                            });
-                        };
-                        reader.readAsText(blob);
-                    };
-
-                    var triggerDownload = function () {
-                        var filename = "config.xml";
-                        if (disposition && disposition.indexOf('filename=') !== -1) {
-                            var matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
-                            if (matches != null && matches[1]) {
-                                filename = matches[1].replace(/['"]/g, '');
-                            }
-                        }
-
-                        var blob = (data instanceof Blob) ? data : new Blob([data], {type: contentType || 'application/octet-stream'});
-                        var link = document.createElement('a');
-                        link.href = window.URL.createObjectURL(blob);
-                        link.download = filename;
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        setTimeout(function () {
-                            window.URL.revokeObjectURL(link.href);
-                        }, 1000);
-                    };
-
-                    if (data instanceof Blob) {
-                        if (contentType.indexOf('application/json') !== -1) {
-                            showDownloadError(data);
-                            return;
-                        }
-
-                        // Blob inspection fallback: check if response starts with '{' (JSON)
-                        var checkSlice = data.slice(0, 1);
-                        var checkReader = new FileReader();
-                        checkReader.onload = function () {
-                            if (checkReader.result === '{') {
-                                showDownloadError(data);
-                            } else {
-                                triggerDownload();
-                            }
-                        };
-                        checkReader.onerror = function () {
-                            triggerDownload();
-                        };
-                        checkReader.readAsText(checkSlice);
-                    } else if (typeof data === 'string') {
-                        if (contentType.indexOf('application/json') !== -1 || data.trim().charAt(0) === '{') {
-                            var errMsg = "{{ lang._('An error occurred during download.') }}";
-                            try {
-                                var res = JSON.parse(data);
-                                if (res && (res.message || res.errorMessage)) {
-                                    errMsg = res.message || res.errorMessage;
-                                }
-                            } catch (e) {}
-                            BootstrapDialog.alert({
-                                type: BootstrapDialog.TYPE_DANGER,
-                                title: "{{ lang._('Error') }}",
-                                message: errMsg
-                            });
-                        } else {
-                            triggerDownload();
-                        }
-                    } else if (typeof data === 'object' && data !== null) {
-                        BootstrapDialog.alert({
-                            type: BootstrapDialog.TYPE_DANGER,
-                            title: "{{ lang._('Error') }}",
-                            message: data.message || data.errorMessage || "{{ lang._('An error occurred during download.') }}"
-                        });
+                    var contentType = (xhr.getResponseHeader('Content-Type') || (data ? data.type : '') || '').toLowerCase();
+                    if (contentType.indexOf('application/json') !== -1) {
+                        showDownloadError(data);
+                        return;
                     }
+
+                    var disposition = xhr.getResponseHeader('Content-Disposition');
+                    var filename = "config.xml";
+                    if (disposition && disposition.indexOf('filename=') !== -1) {
+                        var matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
+                        if (matches != null && matches[1]) {
+                            filename = matches[1].replace(/['"]/g, '');
+                        }
+                    }
+
+                    var blob = (data instanceof Blob) ? data : new Blob([data], {type: contentType || 'application/octet-stream'});
+                    var url = window.URL.createObjectURL(blob);
+                    var link = document.createElement('a');
+                    link.style.display = 'none';
+                    link.href = url;
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    setTimeout(function () {
+                        window.URL.revokeObjectURL(url);
+                    }, 1000);
                 },
                 error: function (xhr) {
                     $("#btn_download_progress").removeClass("fa fa-spinner fa-pulse");
-                    var defaultMsg = "{{ lang._('An error occurred during download.') }}";
-                    if (xhr.response instanceof Blob) {
-                        var reader = new FileReader();
-                        reader.onload = function () {
-                            var errMsg = defaultMsg;
-                            try {
-                                var res = JSON.parse(reader.result);
-                                if (res && (res.message || res.errorMessage)) {
-                                    errMsg = res.message || res.errorMessage;
-                                }
-                            } catch (e) {}
-                            BootstrapDialog.alert({
-                                type: BootstrapDialog.TYPE_DANGER,
-                                title: "{{ lang._('Error') }}",
-                                message: errMsg
-                            });
-                        };
-                        reader.onerror = function () {
-                            BootstrapDialog.alert({
-                                type: BootstrapDialog.TYPE_DANGER,
-                                title: "{{ lang._('Error') }}",
-                                message: defaultMsg
-                            });
-                        };
-                        reader.readAsText(xhr.response);
-                    } else if (xhr.responseJSON && (xhr.responseJSON.message || xhr.responseJSON.errorMessage)) {
-                        BootstrapDialog.alert({
-                            type: BootstrapDialog.TYPE_DANGER,
-                            title: "{{ lang._('Error') }}",
-                            message: xhr.responseJSON.message || xhr.responseJSON.errorMessage
-                        });
-                    } else if (xhr.responseText) {
-                        var errMsg = defaultMsg;
-                        try {
-                            var res = JSON.parse(xhr.responseText);
-                            if (res && (res.message || res.errorMessage)) {
-                                errMsg = res.message || res.errorMessage;
-                            }
-                        } catch (e) {}
-                        BootstrapDialog.alert({
-                            type: BootstrapDialog.TYPE_DANGER,
-                            title: "{{ lang._('Error') }}",
-                            message: errMsg
-                        });
-                    } else {
-                        BootstrapDialog.alert({
-                            type: BootstrapDialog.TYPE_DANGER,
-                            title: "{{ lang._('Error') }}",
-                            message: defaultMsg
-                        });
-                    }
+                    showDownloadError(xhr.response || xhr.responseJSON || xhr.responseText);
                 }
             });
         });
