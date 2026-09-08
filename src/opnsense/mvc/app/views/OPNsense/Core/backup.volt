@@ -104,30 +104,154 @@
                 success: function (data, status, xhr) {
                     $("#btn_download_progress").removeClass("fa fa-spinner fa-pulse");
 
-                    var filename = "config.xml";
+                    var contentType = xhr.getResponseHeader('Content-Type') || (data ? data.type : '') || '';
                     var disposition = xhr.getResponseHeader('Content-Disposition');
-                    if (disposition && disposition.indexOf('filename=') !== -1) {
-                        var matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
-                        if (matches != null && matches[1]) {
-                            filename = matches[1].replace(/['"]/g, '');
-                        }
-                    }
 
-                    var blob = new Blob([data], {type: xhr.getResponseHeader('Content-Type')});
-                    var link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(blob);
-                    link.download = filename;
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
+                    var showDownloadError = function (blob) {
+                        var reader = new FileReader();
+                        reader.onload = function () {
+                            var errMsg = "{{ lang._('An error occurred during download.') }}";
+                            try {
+                                var res = JSON.parse(reader.result);
+                                if (res && (res.message || res.errorMessage)) {
+                                    errMsg = res.message || res.errorMessage;
+                                }
+                            } catch (e) {}
+                            BootstrapDialog.alert({
+                                type: BootstrapDialog.TYPE_DANGER,
+                                title: "{{ lang._('Error') }}",
+                                message: errMsg
+                            });
+                        };
+                        reader.onerror = function () {
+                            BootstrapDialog.alert({
+                                type: BootstrapDialog.TYPE_DANGER,
+                                title: "{{ lang._('Error') }}",
+                                message: "{{ lang._('An error occurred during download.') }}"
+                            });
+                        };
+                        reader.readAsText(blob);
+                    };
+
+                    var triggerDownload = function () {
+                        var filename = "config.xml";
+                        if (disposition && disposition.indexOf('filename=') !== -1) {
+                            var matches = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/.exec(disposition);
+                            if (matches != null && matches[1]) {
+                                filename = matches[1].replace(/['"]/g, '');
+                            }
+                        }
+
+                        var blob = (data instanceof Blob) ? data : new Blob([data], {type: contentType || 'application/octet-stream'});
+                        var link = document.createElement('a');
+                        link.href = window.URL.createObjectURL(blob);
+                        link.download = filename;
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        setTimeout(function () {
+                            window.URL.revokeObjectURL(link.href);
+                        }, 1000);
+                    };
+
+                    if (data instanceof Blob) {
+                        if (contentType.indexOf('application/json') !== -1) {
+                            showDownloadError(data);
+                            return;
+                        }
+
+                        // Blob inspection fallback: check if response starts with '{' (JSON)
+                        var checkSlice = data.slice(0, 1);
+                        var checkReader = new FileReader();
+                        checkReader.onload = function () {
+                            if (checkReader.result === '{') {
+                                showDownloadError(data);
+                            } else {
+                                triggerDownload();
+                            }
+                        };
+                        checkReader.onerror = function () {
+                            triggerDownload();
+                        };
+                        checkReader.readAsText(checkSlice);
+                    } else if (typeof data === 'string') {
+                        if (contentType.indexOf('application/json') !== -1 || data.trim().charAt(0) === '{') {
+                            var errMsg = "{{ lang._('An error occurred during download.') }}";
+                            try {
+                                var res = JSON.parse(data);
+                                if (res && (res.message || res.errorMessage)) {
+                                    errMsg = res.message || res.errorMessage;
+                                }
+                            } catch (e) {}
+                            BootstrapDialog.alert({
+                                type: BootstrapDialog.TYPE_DANGER,
+                                title: "{{ lang._('Error') }}",
+                                message: errMsg
+                            });
+                        } else {
+                            triggerDownload();
+                        }
+                    } else if (typeof data === 'object' && data !== null) {
+                        BootstrapDialog.alert({
+                            type: BootstrapDialog.TYPE_DANGER,
+                            title: "{{ lang._('Error') }}",
+                            message: data.message || data.errorMessage || "{{ lang._('An error occurred during download.') }}"
+                        });
+                    }
                 },
-                error: function () {
+                error: function (xhr) {
                     $("#btn_download_progress").removeClass("fa fa-spinner fa-pulse");
-                    BootstrapDialog.alert({
-                        type: BootstrapDialog.TYPE_DANGER,
-                        title: "{{ lang._('Error') }}",
-                        message: "{{ lang._('An error occurred during download.') }}"
-                    });
+                    var defaultMsg = "{{ lang._('An error occurred during download.') }}";
+                    if (xhr.response instanceof Blob) {
+                        var reader = new FileReader();
+                        reader.onload = function () {
+                            var errMsg = defaultMsg;
+                            try {
+                                var res = JSON.parse(reader.result);
+                                if (res && (res.message || res.errorMessage)) {
+                                    errMsg = res.message || res.errorMessage;
+                                }
+                            } catch (e) {}
+                            BootstrapDialog.alert({
+                                type: BootstrapDialog.TYPE_DANGER,
+                                title: "{{ lang._('Error') }}",
+                                message: errMsg
+                            });
+                        };
+                        reader.onerror = function () {
+                            BootstrapDialog.alert({
+                                type: BootstrapDialog.TYPE_DANGER,
+                                title: "{{ lang._('Error') }}",
+                                message: defaultMsg
+                            });
+                        };
+                        reader.readAsText(xhr.response);
+                    } else if (xhr.responseJSON && (xhr.responseJSON.message || xhr.responseJSON.errorMessage)) {
+                        BootstrapDialog.alert({
+                            type: BootstrapDialog.TYPE_DANGER,
+                            title: "{{ lang._('Error') }}",
+                            message: xhr.responseJSON.message || xhr.responseJSON.errorMessage
+                        });
+                    } else if (xhr.responseText) {
+                        var errMsg = defaultMsg;
+                        try {
+                            var res = JSON.parse(xhr.responseText);
+                            if (res && (res.message || res.errorMessage)) {
+                                errMsg = res.message || res.errorMessage;
+                            }
+                        } catch (e) {}
+                        BootstrapDialog.alert({
+                            type: BootstrapDialog.TYPE_DANGER,
+                            title: "{{ lang._('Error') }}",
+                            message: errMsg
+                        });
+                    } else {
+                        BootstrapDialog.alert({
+                            type: BootstrapDialog.TYPE_DANGER,
+                            title: "{{ lang._('Error') }}",
+                            message: defaultMsg
+                        });
+                    }
                 }
             });
         });
@@ -198,7 +322,7 @@
                 contentType: false,
                 success: function (data) {
                     $("#" + formId + "_progress").removeClass("fa fa-spinner fa-pulse");
-                    if (data.status == "success") {
+                    if (data && data.status == "success") {
                         BootstrapDialog.alert({
                             type: BootstrapDialog.TYPE_INFO,
                             title: "{{ lang._('Backup Settings') }}",
@@ -208,12 +332,28 @@
                         BootstrapDialog.alert({
                             type: BootstrapDialog.TYPE_DANGER,
                             title: "{{ lang._('Backup Settings failed') }}",
-                            message: data.message || "{{ lang._('An error occurred') }}"
+                            message: (data && (data.message || data.errorMessage)) ? (data.message || data.errorMessage) : "{{ lang._('An error occurred') }}"
                         });
                     }
                 },
-                error: function () {
+                error: function (xhr) {
                     $("#" + formId + "_progress").removeClass("fa fa-spinner fa-pulse");
+                    let errMsg = "{{ lang._('An error occurred while saving provider settings.') }}";
+                    if (xhr.responseJSON && (xhr.responseJSON.message || xhr.responseJSON.errorMessage)) {
+                        errMsg = xhr.responseJSON.message || xhr.responseJSON.errorMessage;
+                    } else if (xhr.responseText) {
+                        try {
+                            let parsed = JSON.parse(xhr.responseText);
+                            if (parsed && (parsed.message || parsed.errorMessage)) {
+                                errMsg = parsed.message || parsed.errorMessage;
+                            }
+                        } catch (e) {}
+                    }
+                    BootstrapDialog.alert({
+                        type: BootstrapDialog.TYPE_DANGER,
+                        title: "{{ lang._('Backup Settings failed') }}",
+                        message: errMsg
+                    });
                 }
             });
         });
@@ -236,23 +376,21 @@
                 contentType: false,
                 success: function (data) {
                     $("#btn_restore_progress").removeClass("fa fa-spinner fa-pulse");
-                    if (data.status == "success") {
-                        if (data.message) {
-                            BootstrapDialog.show({
-                                type: BootstrapDialog.TYPE_INFO,
-                                title: "{{ lang._('Restore') }}",
-                                message: data.message,
-                                buttons: [{
-                                    label: '{{ lang._('Close') }}',
-                                    action: function (dialogRef) {
-                                        dialogRef.close();
-                                        if (data.reboot) {
-                                            window.location.reload();
-                                        }
+                    if (data && data.status == "success") {
+                        BootstrapDialog.show({
+                            type: BootstrapDialog.TYPE_INFO,
+                            title: "{{ lang._('Restore') }}",
+                            message: data.message || "{{ lang._('Configuration restored successfully.') }}",
+                            buttons: [{
+                                label: '{{ lang._('Close') }}',
+                                action: function (dialogRef) {
+                                    dialogRef.close();
+                                    if (data.reboot) {
+                                        window.location.reload();
                                     }
-                                }]
-                            });
-                        }
+                                }
+                            }]
+                        });
                         if (data.reboot) {
                             setTimeout(function () {
                                 window.location.reload();
@@ -262,12 +400,28 @@
                         BootstrapDialog.alert({
                             type: BootstrapDialog.TYPE_DANGER,
                             title: "{{ lang._('Restore failed') }}",
-                            message: data.message || "{{ lang._('An error occurred') }}"
+                            message: (data && (data.message || data.errorMessage)) ? (data.message || data.errorMessage) : "{{ lang._('An error occurred') }}"
                         });
                     }
                 },
-                error: function () {
+                error: function (xhr) {
                     $("#btn_restore_progress").removeClass("fa fa-spinner fa-pulse");
+                    let errMsg = "{{ lang._('An error occurred while restoring configuration.') }}";
+                    if (xhr.responseJSON && (xhr.responseJSON.message || xhr.responseJSON.errorMessage)) {
+                        errMsg = xhr.responseJSON.message || xhr.responseJSON.errorMessage;
+                    } else if (xhr.responseText) {
+                        try {
+                            let parsed = JSON.parse(xhr.responseText);
+                            if (parsed && (parsed.message || parsed.errorMessage)) {
+                                errMsg = parsed.message || parsed.errorMessage;
+                            }
+                        } catch (e) {}
+                    }
+                    BootstrapDialog.alert({
+                        type: BootstrapDialog.TYPE_DANGER,
+                        title: "{{ lang._('Restore failed') }}",
+                        message: errMsg
+                    });
                 }
             });
         });
@@ -431,19 +585,19 @@
                                                 {% if field['type'] == 'checkbox' %}
                                                     <input name="{{ field['name'] }}" type="checkbox" {% if field['value'] %}checked="checked"{% endif %}>
                                                 {% elseif field['type'] == 'text' %}
-                                                    <input class="form-control" name="{{ field['name'] }}" value="{{ field['value'] }}" type="text">
+                                                    <input class="form-control" name="{{ field['name'] }}" value="{{ field['value']|safe }}" type="text">
                                                 {% elseif field['type'] == 'file' %}
                                                     <input name="{{ field['name'] }}" type="file">
                                                 {% elseif field['type'] == 'password' %}
-                                                    <input class="form-control" name="{{ field['name'] }}" type="password" autocomplete="new-password" value="{{ field['value'] }}"/>
+                                                    <input class="form-control" name="{{ field['name'] }}" type="password" autocomplete="new-password" value="{{ field['value']|safe }}"/>
                                                 {% elseif field['type'] == 'textarea' %}
-                                                    <textarea class="form-control" name="{{ field['name'] }}" rows="5">{{ field['value'] }}</textarea>
+                                                    <textarea class="form-control" name="{{ field['name'] }}" rows="5">{{ field['value']|safe }}</textarea>
                                                 {% elseif field['type'] == 'passwordarea' %}
                                                     <div id="show-{{ fieldId }}-btn">
                                                         <button onclick="event.preventDefault();show_value('{{ fieldId }}');" class="btn btn-default">{{ lang._('Click to edit') }}</button>
                                                     </div>
                                                     <div id="show-{{ fieldId }}-val" style="display:none">
-                                                        <textarea id="{{ fieldId }}" class="form-control" name="{{ field['name'] }}" rows="5">{{ field['value'] }}</textarea>
+                                                        <textarea id="{{ fieldId }}" class="form-control" name="{{ field['name'] }}" rows="5">{{ field['value']|safe }}</textarea>
                                                     </div>
                                                 {% endif %}
                                                 <div class="hidden" data-for="help_for_{{ fieldId }}">

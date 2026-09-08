@@ -31,7 +31,7 @@ namespace OPNsense\Core\Migrations;
 use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Config;
 
-class M1_0_2 extends BaseModelMigration
+class MBK1_0_0 extends BaseModelMigration
 {
     public function run($model)
     {

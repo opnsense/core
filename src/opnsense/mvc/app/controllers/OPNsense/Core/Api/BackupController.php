@@ -219,6 +219,7 @@ class BackupController extends ApiControllerBase
 
     public function setSettingsAction()
     {
+        $this->throwReadOnly();
         $result = ['status' => 'failed'];
         if ($this->request->isPost()) {
             $post = $this->request->getPost('backup');
@@ -263,6 +264,14 @@ class BackupController extends ApiControllerBase
     public function downloadConfigAction()
     {
         if ($this->request->isPost()) {
+            if (!empty($this->request->getPost('encrypt'))) {
+                $password = (string)$this->request->getPost('encrypt_password');
+                if (trim($password) === '') {
+                    $this->response->setStatusCode(400, 'Bad Request');
+                    return ['status' => 'failed', 'message' => gettext('A non-empty encryption password is required.')];
+                }
+            }
+
             $config = Config::getInstance()->object();
             $hostname = "OPNsense";
             if (isset($config->system->hostname)) {
@@ -279,10 +288,6 @@ class BackupController extends ApiControllerBase
                 @unlink($tmpfile);
 
                 if (!empty($this->request->getPost('encrypt'))) {
-                    $password = (string)$this->request->getPost('encrypt_password');
-                    if (trim($password) === '') {
-                        return ['status' => 'failed', 'message' => gettext('A non-empty encryption password is required.')];
-                    }
                     $crypter = new Local();
                     $data = $crypter->encrypt($data, $password);
                 }
@@ -295,21 +300,23 @@ class BackupController extends ApiControllerBase
                 $this->response->setRawHeader("Cache-Control: private, must-revalidate");
                 $this->response->setContent($data);
                 return null;
-            } else if ($response !== null && isset($response['message'])) {
+            } else {
                 @unlink($tmpfile);
-                return $response;
+                $this->response->setStatusCode(500, 'Internal Server Error');
+                if ($response !== null && isset($response['message'])) {
+                    return $response;
+                }
+                return ['status' => 'failed', 'message' => gettext('Backend export failed.')];
             }
         }
-        return ['status' => 'failed'];
+        $this->response->setStatusCode(400, 'Bad Request');
+        return ['status' => 'failed', 'message' => gettext('Invalid request.')];
     }
 
     public function restoreAction()
     {
+        $this->throwReadOnly();
         if ($this->request->isPost() && isset($_FILES['conffile']) && is_uploaded_file($_FILES['conffile']['tmp_name'])) {
-            if ((new ACL())->hasPrivilege($this->getUserName(), 'user-config-readonly')) {
-                return ['status' => 'failed', 'message' => gettext('You do not have sufficient privileges to restore the configuration.')];
-            }
-
             $data = file_get_contents($_FILES['conffile']['tmp_name']);
 
             if (empty($data)) {
@@ -363,6 +370,7 @@ class BackupController extends ApiControllerBase
 
     public function setupProviderAction($providerName)
     {
+        $this->throwReadOnly();
         if ($this->request->isPost()) {
             $backupFactory = new \OPNsense\Backup\BackupFactory();
             $provider = $backupFactory->getProvider($providerName);

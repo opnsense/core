@@ -237,6 +237,7 @@ if (!empty($restoreareas)) {
             mwexecf('/usr/local/opnsense/scripts/system/flush_config_history');
             write_config('System restore flushed local history');
         }
+        \convert_config();
         if (\is_interface_mismatch(false)) {
             $do_reboot = false;
             echo json_encode(['status' => 'success', 'message' => gettext("The interface configuration was restored but physical interfaces could not be matched. No automatic reboot was performed."), 'reboot' => false]);

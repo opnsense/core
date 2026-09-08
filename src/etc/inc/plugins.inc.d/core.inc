@@ -309,19 +309,11 @@ function core_cron()
     /**
      * rrd graph collector, only schedule execution when enabled
      */
-    if (isset($config['rrd']['enable'])) {
+    if (!(new \OPNsense\Diagnostics\SystemHealth())->enabled->isEmpty()) {
         $jobs[]['autocron'] = [
             '/usr/local/bin/flock -n -E 0 -o /tmp/updaterrd.lock /usr/local/opnsense/scripts/health/updaterrd.php',
             '*'
         ];
-    }
-
-    if (!empty($config['system']['rrdbackup']) && $config['system']['rrdbackup'] > 0) {
-        $jobs[]['autocron'] = ['/usr/local/etc/rc.syshook.d/backup/20-rrd', '0', '*/' . $config['system']['rrdbackup']];
-    }
-
-    if (!empty($config['system']['netflowbackup']) && $config['system']['netflowbackup'] > 0) {
-        $jobs[]['autocron'] = ['/usr/local/etc/rc.syshook.d/backup/20-netflow', '0', '*/' . $config['system']['netflowbackup']];
     }
 
     $cron_minute = 0;
@@ -441,9 +433,10 @@ function core_xmlrpc_sync()
 function core_configure()
 {
     return [
+        'bootup' => ['system_powerd_configure'],
+        'crl' => ['core_trust_crl'],
         /* XXX these are all specialized and try to avoid extra script use */
         'cache_flush' => ['system_cache_flush'],
-        'crl' => ['core_trust_crl'],
         'dns_reload' => ['system_resolver_configure'],
         'firmware_reload' => ['system_firmware_configure'],
         'networking_reload' => [
@@ -471,24 +464,20 @@ function core_run()
  */
 function core_user_changed_groups($unused, $username)
 {
-    global $config;
+    foreach (config_read_array('system', 'user', false) as $user) {
+        if ($user['name'] == $username && (!empty($user['shell']) || $user['uid'] == 0)) {
+            $output = shell_safe('/usr/bin/groups %s 2> /dev/null', $username);
+            $current_groups = strlen($output) ? explode(' ', $output) : [];
 
-    if (is_array($config['system']['user'])) {
-        foreach ($config['system']['user'] as $user) {
-            if ($user['name'] == $username && (!empty($user['shell']) || $user['uid'] == 0)) {
-                $output = shell_safe('/usr/bin/groups %s 2> /dev/null', $username);
-                $current_groups = strlen($output) ? explode(' ', $output) : [];
-
-                foreach ($config['system']['group'] as $group) {
-                    $in_group = false;
-                    foreach (!empty($group['member']) ? $group['member'] : [] as $grp) {
-                        $in_group = $in_group || in_array($user['uid'], explode(',', $grp));
-                    }
-                    $to_remove = in_array($group['name'], $current_groups) && !$in_group;
-                    $to_add = !in_array($group['name'], $current_groups) && $in_group;
-                    if ($to_remove || $to_add) {
-                        local_group_set($group);
-                    }
+            foreach (config_read_array('system', 'group', false) as $group) {
+                $in_group = false;
+                foreach (!empty($group['member']) ? $group['member'] : [] as $grp) {
+                    $in_group = $in_group || in_array($user['uid'], explode(',', $grp));
+                }
+                $to_remove = in_array($group['name'], $current_groups) && !$in_group;
+                $to_add = !in_array($group['name'], $current_groups) && $in_group;
+                if ($to_remove || $to_add) {
+                    local_group_set($group);
                 }
             }
         }

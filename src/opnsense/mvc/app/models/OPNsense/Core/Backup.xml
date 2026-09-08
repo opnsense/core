@@ -1,6 +1,7 @@
 <model>
     <mount>//system/backup/settings</mount>
-    <version>1.0.2</version>
+    <migration_prefix>MBK</migration_prefix>
+    <version>1.0.0</version>
     <description>System Backup Settings</description>
     <items>
         <backupcount type="IntegerField">
