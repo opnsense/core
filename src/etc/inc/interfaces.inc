@@ -1683,17 +1683,15 @@ function _interfaces_wlan_clone($device, $wlcfg)
     return $device;
 }
 
-function interface_wlan_configure($if)
+function interface_wlan_configure($device)
 {
-    global $config;
-
-    if (strpos($if, '_wlan') === false) {
+    if (strpos($device, '_wlan') === false) {
         return;
     }
 
-    $wlcfg = (new \OPNsense\Interfaces\Wlan())->getInterface($if);
+    $wlcfg = (new \OPNsense\Interfaces\Wlan())->getInterface($device);
 
-    _interfaces_wlan_clone($if, $wlcfg);
+    _interfaces_wlan_clone($device, $wlcfg);
 
    /*
     * Open up a shell script that will be used to output the commands.
@@ -1703,7 +1701,7 @@ function interface_wlan_configure($if)
     * do not change this routine from a shell script to individual exec commands.  -sullrich
     */
 
-    $fd_set = fopen("/tmp/{$if}_setup.sh", "w");
+    $fd_set = fopen("/tmp/{$device}_setup.sh", "w");
     fwrite($fd_set, "#!/bin/sh\n");
     fwrite($fd_set, "# wireless configuration script.\n\n");
 
@@ -1723,7 +1721,7 @@ function interface_wlan_configure($if)
          * XXX: Disable ampdu for now on mwl when running in 11n mode
          * to prevent massive packet loss under certain conditions.
          */
-        if (preg_match("/^mwl/i", $if) && ($standard == "11ng" || $standard == "11na")) {
+        if (preg_match("/^mwl/i", $device) && ($standard == "11ng" || $standard == "11na")) {
             $wlcmd[] = "-ampdu";
         }
     }
@@ -1844,7 +1842,7 @@ function interface_wlan_configure($if)
         $wlcmd[] = 'authmode open wepmode off';
     }
 
-    interface_wlan_reset($if);
+    interface_wlan_reset($device);
 
     /* generate wpa_supplicant/hostap config if wpa is enabled */
     switch ($wlcfg['mode'] ?? 'bss') {
@@ -1874,19 +1872,19 @@ function interface_wlan_configure($if)
                             // Generate CA cert and client cert to file
                             foreach (config_read_array('ca', false) as $ca) {
                                 if ($wlcfg['wpa']['wpa_eap_cacertref'] == $ca['refid']) {
-                                    $all_certs["/var/etc/wpa_supplicant_{$if}_ca.crt"] =
+                                    $all_certs["/var/etc/wpa_supplicant_{$device}_ca.crt"] =
                                         base64_decode($ca['crt']);
-                                    $authentication[] = "ca_cert=\"/var/etc/wpa_supplicant_{$if}_ca.crt\"";
+                                    $authentication[] = "ca_cert=\"/var/etc/wpa_supplicant_{$device}_ca.crt\"";
                                 }
                             }
                             foreach (config_read_array('cert', false) as $cert) {
                                 if ($wlcfg['wpa']['wpa_eap_cltcertref'] == $cert['refid']) {
-                                    $all_certs["/var/etc/wpa_supplicant_{$if}_clt.crt"] =
+                                    $all_certs["/var/etc/wpa_supplicant_{$device}_clt.crt"] =
                                         base64_decode($cert['crt']);
-                                    $all_certs["/var/etc/wpa_supplicant_{$if}_clt.key"] =
+                                    $all_certs["/var/etc/wpa_supplicant_{$device}_clt.key"] =
                                         base64_decode($cert['prv']);
-                                    $authentication[] = "client_cert=\"/var/etc/wpa_supplicant_{$if}_clt.crt\"";
-                                    $authentication[] = "private_key=\"/var/etc/wpa_supplicant_{$if}_clt.key\"";
+                                    $authentication[] = "client_cert=\"/var/etc/wpa_supplicant_{$device}_clt.crt\"";
+                                    $authentication[] = "private_key=\"/var/etc/wpa_supplicant_{$device}_clt.key\"";
                                 }
                             }
                             foreach ($all_certs as $filename => $content) {
@@ -1917,7 +1915,7 @@ group={$wlcfg['wpa']['wpa_pairwise']}
 
 EOD;
 
-                @file_put_contents("/var/etc/wpa_supplicant_{$if}.conf", $wpa);
+                @file_put_contents("/var/etc/wpa_supplicant_{$device}.conf", $wpa);
                 unset($wpa);
             }
             break;
@@ -1929,17 +1927,17 @@ EOD;
             }
             if (!empty($wlcfg['wpa']['enable'])) {
                 $wpa = <<<EOD
-interface={$if}
+interface={$device}
 driver=bsd
 logger_syslog=-1
 logger_syslog_level=0
 logger_stdout=-1
 logger_stdout_level=0
-dump_file=/tmp/hostapd_{$if}.dump
+dump_file=/tmp/hostapd_{$device}.dump
 ctrl_interface=/var/run/hostapd
 ctrl_interface_group=wheel
-#accept_mac_file=/tmp/hostapd_{$if}.accept
-#deny_mac_file=/tmp/hostapd_{$if}.deny
+#accept_mac_file=/tmp/hostapd_{$device}.accept
+#deny_mac_file=/tmp/hostapd_{$device}.deny
 #macaddr_acl={$wlcfg['wpa']['macaddr_acl']}
 ssid={$wlcfg['ssid']}
 debug={$wlcfg['wpa']['debug_mode']}
@@ -1958,7 +1956,7 @@ EOD;
                     $wpa .= <<<EOD
 # Enable the next lines for preauth when roaming. Interface = wired or wireless interface talking to the AP you want to roam from/to
 rsn_preauth=1
-rsn_preauth_interfaces={$if}
+rsn_preauth_interfaces={$device}
 
 EOD;
                 }
@@ -1993,7 +1991,7 @@ EOD;
                     }
                 }
 
-                @file_put_contents("/var/etc/hostapd_{$if}.conf", $wpa);
+                @file_put_contents("/var/etc/hostapd_{$device}.conf", $wpa);
                 unset($wpa);
             }
             break;
@@ -2003,7 +2001,7 @@ EOD;
      *    all variables are set, lets start up everything
      */
 
-    $baseif = interface_get_wlan_base($if);
+    $baseif = interface_get_wlan_base($device);
     preg_match("/^(.*?)([0-9]*)$/", $baseif, $baseif_split);
     $wl_sysctl_prefix = 'dev.' . $baseif_split[1] . '.' . $baseif_split[2];
 
@@ -2017,10 +2015,9 @@ EOD;
 
     if (!empty($wlcfg['wpa']['enable'])) {
         if ($wlcfg['mode'] == "bss") {
-            fwrite($fd_set, exec_safe('/usr/local/sbin/wpa_supplicant -B -i %s -c %s', [$if, "/var/etc/wpa_supplicant_{$if}.conf"]) . PHP_EOL);
-        }
-        if ($wlcfg['mode'] == "hostap") {
-            fwrite($fd_set, exec_safe('/usr/local/sbin/hostapd -B -P %s %s', ["/var/run/hostapd_{$if}.pid", "/var/etc/hostapd_{$if}.conf"]) . PHP_EOL);
+            fwrite($fd_set, exec_safe('/usr/local/sbin/wpa_supplicant -B -i %s -c %s', [$device, "/var/etc/wpa_supplicant_{$device}.conf"]) . PHP_EOL);
+        } else if ($wlcfg['mode'] == "hostap") {
+            fwrite($fd_set, exec_safe('/usr/local/sbin/hostapd -B -P %s %s', ["/var/run/hostapd_{$device}.pid", "/var/etc/hostapd_{$device}.conf"]) . PHP_EOL);
         }
     }
 
@@ -2031,7 +2028,7 @@ EOD;
      * before applying, because changing them requires bringing
      * down all wireless networks on the interface.
      */
-    $ifconfig_str = shell_safe('/sbin/ifconfig %s', $if);
+    $ifconfig_str = shell_safe('/sbin/ifconfig %s', $device);
     $reg_changing = false;
 
     /* special case for the debug country code */
@@ -2061,17 +2058,17 @@ EOD;
         }
 
         /* find which clones are up and bring them down */
-        $ifup = legacy_interface_listget('up');
+        $devices_up = legacy_interface_listget('up');
         $clones_up = [];
         foreach ($clone_list as $clone_if) {
-            if (in_array($clone_if, $ifup)) {
+            if (in_array($clone_if, $devices_up)) {
                 $clones_up[] = $clone_if;
                 mwexecf('/sbin/ifconfig %s down', $clone_if);
             }
         }
 
         $wlregfrmt = ['/sbin/ifconfig %s'];
-        $wlregargs = [$if];
+        $wlregargs = [$device];
 
         /* set regulatory domain */
         if ($wlcfg['regdomain']) {
@@ -2103,13 +2100,10 @@ EOD;
              * is in infrastructure mode, and WPA is enabled.
              * This can be removed if wpa_supplicant stops dying when you bring the interface down.
              */
-            if ($clone_if != $if) {
-                $friendly_if = convert_real_interface_to_friendly_interface_name($clone_if);
-                if (
-                    !empty($friendly_if)
-                    && !empty($config['interfaces'][$friendly_if]['wireless']['wpa']['enable'])
-                    && $config['interfaces'][$friendly_if]['wireless']['mode'] == 'bss'
-                ) {
+            if ($clone_if != $device) {
+                $friendly = convert_real_interface_to_friendly_interface_name($clone_if);
+                $wirelesscfg = config_read_array('interfaces', $friendly, 'wireless', false);
+                if (!empty($wirelesscfg['wpa']['enable']) && $wirelesscfg['mode'] == 'bss') {
                     mwexecf('/bin/sh %s', "/tmp/{$clone_if}_setup.sh");
                 }
             }
@@ -2123,21 +2117,21 @@ EOD;
          *
          * XXX but we do not have the standard when wireless was not configured...
          */
-        mwexecf('/sbin/ifconfig %s mode %s', [$if, $standard]);
+        mwexecf('/sbin/ifconfig %s mode %s', [$device, $standard]);
     }
 
     /* configure wireless */
-    mwexecf('/sbin/ifconfig %s ' . implode(' ', $wlcmd), $if);
+    mwexecf('/sbin/ifconfig %s ' . implode(' ', $wlcmd), $device);
 
     /* configure txpower setting (it has been known to fail so run it separately) */
     if (!empty($wlcfg['txpower'])) {
-        mwexecf('/sbin/ifconfig %s txpower %s', [$if, $wlcfg['txpower']]);
+        mwexecf('/sbin/ifconfig %s txpower %s', [$device, $wlcfg['txpower']]);
     }
 
     sleep(1); /* XXX historic sleep */
 
     /* execute hostapd and wpa_supplicant if required in shell */
-    mwexecf('/bin/sh %s', "/tmp/{$if}_setup.sh");
+    mwexecf('/bin/sh %s', "/tmp/{$device}_setup.sh");
 
     return 0;
 }
