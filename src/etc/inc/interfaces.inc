@@ -2206,7 +2206,7 @@ function interface_configure_mtu($device, $mtu, $ifconfig_details)
         $force = false;
 
         $ifname = convert_real_interface_to_friendly_interface_name($parent_device);
-        $parent_cfg = !empty($ifname) ? config_read_array('interfaces', $ifname, false) : [];
+        $parent_cfg = config_read_array('interfaces', $ifname, false);
         if (isset($parent_cfg['enable']) && !empty($parent_cfg['mtu'])) {
             $parent_mtu = $parent_cfg['mtu'];
             $force = true;
@@ -3426,7 +3426,7 @@ function convert_real_interface_to_friendly_interface_name($interface = 'wan')
         return 'IPsec';
     }
 
-    return null;
+    return '';
 }
 
 function convert_friendly_interface_to_friendly_descr($interface)
