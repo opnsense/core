@@ -847,8 +847,6 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
     /* cache ifconfig now that VIPs are handled */
     $ifconfig_details = legacy_interfaces_details();
 
-    interfaces_wlan_reset($device);
-
     $track6 = array_keys(link_interface_to_track6($interface));
     if (count($track6)) {
         /* bring down radvd and dhcp6 on these interfaces */
@@ -901,8 +899,9 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
         }
     }
 
-    /* check reset of running PPP configuration inside function */
+    /* XXX pluggable reset of deamon on top of this interface */
     interface_ppps_reset($interface, $suspend, $ifcfg, $ppps);
+    interfaces_wlan_reset($device);
 
     /* clear stale state associated with this interface */
     mwexecf('/usr/local/sbin/ifctl -4c -i %s', $device);
@@ -1683,9 +1682,19 @@ function _interfaces_wlan_clone($device, $wlcfg)
     return $device;
 }
 
-function interfaces_wlan_configure($device)
+function interfaces_wlan_configure($device, $linkup = false)
 {
-    if (strpos($device, '_wlan') === false) {
+    /* Historically, $linkup early return is needed in order to
+     * fix causing link flaps when in rc.linkup, but that is only
+     * because this function tries to bring down all siblings
+     * and then puts them back up which would cause a cascasde of
+     * rc.linkup calls that never stop.
+     *
+     * A better appraoch would be to stop doing that or make a
+     * $batch variable so that we don't taint other interfaces
+     * when we don't need to.
+     */
+    if (strpos($device, '_wlan') === false || $linkup) {
         return;
     }
 
@@ -2265,10 +2274,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         interfaces_addresses_flush($realifv6, 6, $ifconfig_details);
     }
 
-    if (!$linkup) {
-        interfaces_wlan_configure($device);
-    }
-
     /* get expected and current MAC address from the configuration and system */
     $mac_prev = $ifconfig_details[$realhwif]['macaddr'] ?? '';
     $mac_next = !empty($wancfg['spoofmac']) ? $wancfg['spoofmac'] : ($ifconfig_details[$realhwif]['macaddr_hw'] ?? '');
@@ -2375,8 +2380,9 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         interface_configure_mtu($realhwif, $wancfg['mtu'], $ifconfig_details);
     }
 
-    /* since the connectivity can include IPv4 and/or IPv6 let the function decide */
+    /* XXX start additional daemons on this interface now: needs a plugin facility */
     interface_ppps_configure($interface);
+    interfaces_wlan_configure($device, $linkup);
 
     switch ($wancfg['ipaddr'] ?? 'none') {
         case 'dhcp':
