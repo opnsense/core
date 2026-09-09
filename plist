@@ -123,7 +123,6 @@
 /usr/local/etc/rc.subr.d/var
 /usr/local/etc/rc.syshook
 /usr/local/etc/rc.syshook.d/carp/20-dhcrelay
-/usr/local/etc/rc.syshook.d/carp/20-openvpn
 /usr/local/etc/rc.syshook.d/carp/20-openvpn-instances
 /usr/local/etc/rc.syshook.d/carp/20-ppp
 /usr/local/etc/rc.syshook.d/carp/20-wireguard
