@@ -3510,7 +3510,7 @@ function convert_real_interface_to_friendly_interface_name($interface = 'wan')
         return 'IPsec';
     }
 
-    return null;
+    return '';
 }
 
 function convert_friendly_interface_to_friendly_descr($interface)
