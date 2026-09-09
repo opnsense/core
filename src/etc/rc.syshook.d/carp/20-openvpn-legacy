@@ -36,21 +36,26 @@ $subsystem = !empty($argv[1]) ? $argv[1] : '';
 $type = !empty($argv[2]) ? $argv[2] : '';
 
 if (!in_array($type, ['MASTER', 'BACKUP', 'INIT'])) {
-    log_msg("Carp '$type' event unknown from source '{$subsystem}'");
+    log_msg("CARP '{$type}' event unknown from source '{$subsystem}'");
     exit(1);
 }
 
 if (!strstr($subsystem, '@')) {
-    log_msg("Carp '$type' event triggered from wrong source '{$subsystem}'");
+    log_msg("CARP '{$type}' event triggered from wrong source '{$subsystem}'");
     exit(1);
 }
 
-list ($vhid, $iface) = explode('@', $subsystem);
+list ($vhid, $device) = explode('@', $subsystem);
 
-$friendly = convert_real_interface_to_friendly_interface_name($iface);
-$carp_iface = "{$friendly}_vip{$vhid}";
-$descr = convert_friendly_interface_to_friendly_descr($carp_iface);
+$friendly = convert_real_interface_to_friendly_interface_name($device);
+if (empty($friendly)) {
+    log_msg("CARP '{$type}' event on '{$device}' not tied to an interface.");
+    exit(1);
+}
 
-log_msg(sprintf('Carp cluster member "%s (%s)" has resumed the state "%s" for vhid %s', $descr, $subsystem, $type, $vhid));
+$carp_vip = "{$friendly}_vip{$vhid}";
+$descr = convert_friendly_interface_to_friendly_descr($carp_vip);
 
-openvpn_configure_do(false, $carp_iface, true);
+log_msg("CARP cluster member '{$descr} ({$subsystem})' has resumed the state '{$type}' for VHID {$vhid}");
+
+openvpn_configure_do(false, $carp_vip, true);
