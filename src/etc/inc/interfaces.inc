@@ -847,7 +847,7 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
     /* cache ifconfig now that VIPs are handled */
     $ifconfig_details = legacy_interfaces_details();
 
-    interface_wlan_reset($device);
+    interfaces_wlan_reset($device);
 
     $track6 = array_keys(link_interface_to_track6($interface));
     if (count($track6)) {
@@ -1657,7 +1657,7 @@ function _interfaces_wlan_clone($device, $wlcfg)
     }
 
     if ($needs_clone) {
-        $baseif = interface_get_wlan_base($wlcfg['if']);
+        $baseif = interfaces_wlan_base($wlcfg['if']);
 
         legacy_interface_destroy($device);
 
@@ -1683,15 +1683,13 @@ function _interfaces_wlan_clone($device, $wlcfg)
     return $device;
 }
 
-function interface_wlan_configure($device)
+function interfaces_wlan_configure($device)
 {
     if (strpos($device, '_wlan') === false) {
         return;
     }
 
     $wlcfg = (new \OPNsense\Interfaces\Wlan())->getConfig($device);
-
-    _interfaces_wlan_clone($device, $wlcfg);
 
    /*
     * Open up a shell script that will be used to output the commands.
@@ -1842,7 +1840,7 @@ function interface_wlan_configure($device)
         $wlcmd[] = 'authmode open wepmode off';
     }
 
-    interface_wlan_reset($device);
+    interfaces_wlan_reset($device);
 
     /* generate wpa_supplicant/hostap config if wpa is enabled */
     switch ($wlcfg['mode'] ?? 'bss') {
@@ -2001,7 +1999,7 @@ EOD;
      *    all variables are set, lets start up everything
      */
 
-    $baseif = interface_get_wlan_base($device);
+    $baseif = interfaces_wlan_base($device);
     preg_match("/^(.*?)([0-9]*)$/", $baseif, $baseif_split);
     $wl_sysctl_prefix = 'dev.' . $baseif_split[1] . '.' . $baseif_split[2];
 
@@ -2135,7 +2133,7 @@ EOD;
     return 0;
 }
 
-function interface_wlan_reset($device)
+function interfaces_wlan_reset($device)
 {
     /*
      * hostapd and wpa_supplicant do not need to be running when the
@@ -2143,8 +2141,8 @@ function interface_wlan_reset($device)
      * the wireless clone gets deleted.
      */
     if (strpos($device, '_wlan') !== false) {
-        killbypid("/var/run/hostapd_{$device}.pid");
         mwexecf("/bin/pkill -f \"wpa_supplicant .*\"%s\"\\.conf\"\n", $device);
+        killbypid("/var/run/hostapd_{$device}.pid");
     }
 }
 
@@ -2268,7 +2266,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     if (!$linkup) {
-        interface_wlan_configure($device);
+        interfaces_wlan_configure($device);
     }
 
     /* get expected and current MAC address from the configuration and system */
@@ -3513,7 +3511,7 @@ function interface_parent_devices($device)
     return $parents;
 }
 
-function interface_get_wlan_base($wlif)
+function interfaces_wlan_base($wlif)
 {
     if (!strstr($wlif, '_wlan')) {
         return $wlif;

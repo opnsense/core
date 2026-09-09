@@ -31,11 +31,12 @@ require_once 'config.inc';
 require_once 'interfaces.inc';
 require_once 'util.inc';
 
-
 $ifnames = [];
+
 /* update/create configured clones */
 foreach (config_read_array('wireless', 'clone', false) as $clone) {
-    interface_wlan_configure($clone['cloneif']);
+    interfaces_wlan_clone($clone['cloneif']);
+    interfaces_wlan_configure($clone['cloneif']);
     $ifnames[] = $clone['cloneif'];
 }
 
