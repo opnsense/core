@@ -65,11 +65,11 @@ class Wlan extends BaseModel
         return $messages;
     }
 
-    public function getInterface($ifname)
+    public function getConfig($device)
     {
         $result = [];
         foreach ($this->clone->iterateItems() as $clone) {
-            if ($clone->cloneif->isEqual($ifname)) {
+            if ($clone->cloneif->isEqual($device)) {
                 $result = $clone->getNodeContent();
             }
         }

@@ -1689,7 +1689,7 @@ function interface_wlan_configure($device)
         return;
     }
 
-    $wlcfg = (new \OPNsense\Interfaces\Wlan())->getInterface($device);
+    $wlcfg = (new \OPNsense\Interfaces\Wlan())->getConfig($device);
 
     _interfaces_wlan_clone($device, $wlcfg);
 
