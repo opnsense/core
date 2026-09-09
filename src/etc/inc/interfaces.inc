@@ -2044,7 +2044,6 @@ EOD;
         $reg_changing = true;
     }
 
-
     if ($reg_changing) {
         /* build a complete list of the wireless clones for this interface */
         $clone_list = [];
