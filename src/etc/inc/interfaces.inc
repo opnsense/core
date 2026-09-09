@@ -847,15 +847,7 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
     /* cache ifconfig now that VIPs are handled */
     $ifconfig_details = legacy_interfaces_details();
 
-    /*
-     * hostapd and wpa_supplicant do not need to be running when the
-     * interface is down.  They will also use 100% CPU if running after
-     * the wireless clone gets deleted.
-     */
-    if (strpos($device, '_wlan') !== false) {
-        kill_wpasupplicant($device);
-        kill_hostapd($device);
-    }
+    interface_wlan_reset($device);
 
     $track6 = array_keys(link_interface_to_track6($interface));
     if (count($track6)) {
@@ -1852,8 +1844,7 @@ function interface_wlan_configure($if)
         $wlcmd[] = 'authmode open wepmode off';
     }
 
-    kill_wpasupplicant($if);
-    kill_hostapd($if);
+    interface_wlan_reset($if);
 
     /* generate wpa_supplicant/hostap config if wpa is enabled */
     switch ($wlcfg['mode'] ?? 'bss') {
@@ -2151,14 +2142,17 @@ EOD;
     return 0;
 }
 
-function kill_hostapd($interface)
+function interface_wlan_reset($device)
 {
-    killbypid("/var/run/hostapd_{$interface}.pid");
-}
-
-function kill_wpasupplicant($interface)
-{
-    mwexecf("/bin/pkill -f \"wpa_supplicant .*\"%s\"\\.conf\"\n", $interface);
+    /*
+     * hostapd and wpa_supplicant do not need to be running when the
+     * interface is down.  They will also use 100% CPU if running after
+     * the wireless clone gets deleted.
+     */
+    if (strpos($device, '_wlan') !== false) {
+        killbypid("/var/run/hostapd_{$device}.pid");
+        mwexecf("/bin/pkill -f \"wpa_supplicant .*\"%s\"\\.conf\"\n", $device);
+    }
 }
 
 function interface_static_configure($interface, $wancfg)
@@ -2281,7 +2275,6 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     if (!$linkup) {
-        /* XXX wireless configuration: shouldn't live in interface config */
         interface_wlan_configure($device);
     }
 
