@@ -3,6 +3,7 @@ advanced.conf:/var/unbound/advanced.conf
 blocklists.conf:/usr/local/etc/unbound/unbound-blocklists.conf
 safesearch.conf:/usr/local/etc/unbound.opnsense.d/safesearch.conf
 dot.conf:/usr/local/etc/unbound.opnsense.d/dot.conf
+hyperlocal_root.conf:/usr/local/etc/unbound.opnsense.d/hyperlocal_root.conf
 private_domains.conf:/var/unbound/private_domains.conf
 domainoverrides.conf:/usr/local/etc/unbound.opnsense.d/domainoverrides.conf
 unbound_dhcpd.conf:/usr/local/etc/unbound_dhcpd.conf
