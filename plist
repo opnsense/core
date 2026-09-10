@@ -124,7 +124,6 @@
 /usr/local/etc/rc.syshook
 /usr/local/etc/rc.syshook.d/carp/20-dhcrelay
 /usr/local/etc/rc.syshook.d/carp/20-openvpn-instances
-/usr/local/etc/rc.syshook.d/carp/20-openvpn-legacy
 /usr/local/etc/rc.syshook.d/carp/20-ppp
 /usr/local/etc/rc.syshook.d/carp/20-wireguard
 /usr/local/etc/rc.syshook.d/early/05-upgrade
