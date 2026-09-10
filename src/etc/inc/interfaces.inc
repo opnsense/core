@@ -1629,13 +1629,8 @@ function _interfaces_wlan_clone($device, $wlcfg)
      */
     $needs_clone = false;
 
-    if (!empty($wlcfg['wireless']) && !empty($wlcfg['wireless']['mode'])) {
-        /* XXX this is interfaces wireless config */
-        $wlcfg_mode = $wlcfg['wireless']['mode'];
-    } else {
-        /* XXX this is wireless clone config or fallback */
-        $wlcfg_mode = $wlcfg['mode'] ?? 'bss';
-    }
+    /* XXX historic fallback if we do not use the model */
+    $wlcfg_mode = $wlcfg['mode'] ?? 'bss';
 
     if (does_interface_exist($device)) {
         $ifconfig_str = shell_safe('/sbin/ifconfig %s', $device);
@@ -1698,7 +1693,8 @@ function interfaces_wlan_configure($device, $linkup = false)
         return;
     }
 
-    $wlcfg = (new \OPNsense\Interfaces\Wlan())->getConfig($device);
+    $wlmdl = new \OPNsense\Interfaces\Wlan();
+    $wlcfg = $wlmdl->getConfig($device);
 
    /*
     * Open up a shell script that will be used to output the commands.
@@ -1768,14 +1764,14 @@ function interfaces_wlan_configure($device, $linkup = false)
     }
 
     /* Set wireless hostap mode */
-    if (isset($wlcfg['mode']) && $wlcfg['mode'] == 'hostap') {
+    if ($wlcfg['mode'] == 'hostap') {
         $wlcmd[] = "mediaopt hostap";
     } else {
         $wlcmd[] = "-mediaopt hostap";
     }
 
     /* Set wireless adhoc mode */
-    if (isset($wlcfg['mode']) && $wlcfg['mode'] == 'adhoc') {
+    if ($wlcfg['mode'] == 'adhoc') {
         $wlcmd[] = "mediaopt adhoc";
     } else {
         $wlcmd[] = "-mediaopt adhoc";
@@ -1852,7 +1848,7 @@ function interfaces_wlan_configure($device, $linkup = false)
     interfaces_wlan_reset($device);
 
     /* generate wpa_supplicant/hostap config if wpa is enabled */
-    switch ($wlcfg['mode'] ?? 'bss') {
+    switch ($wlcfg['mode']) {
         case 'bss':
             $authentication = [];
             if (!empty($wlcfg['wpa']['enable'])) {
@@ -2021,10 +2017,15 @@ EOD;
     }
 
     if (!empty($wlcfg['wpa']['enable'])) {
-        if ($wlcfg['mode'] == "bss") {
-            fwrite($fd_set, exec_safe('/usr/local/sbin/wpa_supplicant -B -i %s -c %s', [$device, "/var/etc/wpa_supplicant_{$device}.conf"]) . PHP_EOL);
-        } else if ($wlcfg['mode'] == "hostap") {
-            fwrite($fd_set, exec_safe('/usr/local/sbin/hostapd -B -P %s %s', ["/var/run/hostapd_{$device}.pid", "/var/etc/hostapd_{$device}.conf"]) . PHP_EOL);
+        switch ($wlcfg['mode']) {
+            case 'bss':
+                fwrite($fd_set, exec_safe('/usr/local/sbin/wpa_supplicant -B -i %s -c %s', [$device, "/var/etc/wpa_supplicant_{$device}.conf"]) . PHP_EOL);
+                break;
+            case 'hostap':
+                fwrite($fd_set, exec_safe('/usr/local/sbin/hostapd -B -P %s %s', ["/var/run/hostapd_{$device}.pid", "/var/etc/hostapd_{$device}.conf"]) . PHP_EOL);
+                break;
+            default:
+                break;
         }
     }
 
@@ -2107,9 +2108,8 @@ EOD;
              * This can be removed if wpa_supplicant stops dying when you bring the interface down.
              */
             if ($clone_if != $device) {
-                $friendly = convert_real_interface_to_friendly_interface_name($clone_if);
-                $wirelesscfg = config_read_array('interfaces', $friendly, 'wireless', false);
-                if (!empty($wirelesscfg['wpa']['enable']) && $wirelesscfg['mode'] == 'bss') {
+                $_wlcfg = $wlmdl->getConfig($device);
+                if (!empty($_wlcfg['wpa']['enable']) && ($_wlcfg['mode']) == 'bss') {
                     mwexecf('/bin/sh %s', "/tmp/{$clone_if}_setup.sh");
                 }
             }
