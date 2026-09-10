@@ -2109,7 +2109,7 @@ EOD;
              */
             if ($clone_if != $device) {
                 $_wlcfg = $wlmdl->getConfig($device);
-                if (!empty($_wlcfg['wpa']['enable']) && ($_wlcfg['mode']) == 'bss') {
+                if (!empty($_wlcfg['wpa']['enable']) && $_wlcfg['mode'] == 'bss') {
                     mwexecf('/bin/sh %s', "/tmp/{$clone_if}_setup.sh");
                 }
             }
