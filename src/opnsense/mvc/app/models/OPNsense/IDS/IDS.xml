@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/IDS</mount>
-    <version>1.1.2</version>
+    <version>1.1.3</version>
     <description>Intrusion detection</description>
     <items>
         <rules>
@@ -306,6 +306,36 @@
                         </OptionValues>
                     </custom>
                 </tls>
+                <dns>
+                    <enable type="BooleanField">
+                        <Default>0</Default>
+                        <Required>Y</Required>
+                    </enable>
+                    <query type="BooleanField">
+                        <Default>1</Default>
+                        <Required>Y</Required>
+                    </query>
+                    <answer type="BooleanField">
+                        <Default>1</Default>
+                        <Required>Y</Required>
+                    </answer>
+                </dns>
+                <flow>
+                    <enable type="BooleanField">
+                        <Default>0</Default>
+                        <Required>Y</Required>
+                    </enable>
+                </flow>
+                <stats>
+                    <enable type="BooleanField">
+                        <Default>0</Default>
+                        <Required>Y</Required>
+                    </enable>
+                </stats>
+                <communityId type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </communityId>
             </eveLog>
         </general>
     </items>

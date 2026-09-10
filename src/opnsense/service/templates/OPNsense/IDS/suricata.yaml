@@ -44,7 +44,7 @@ outputs:
       filetype: regular
       filename: eve.json
       pcap-file: false
-      community-id: false
+      community-id: {{ 'true' if not helpers.empty('OPNsense.IDS.general.eveLog.communityId') else 'false' }}
       community-id-seed: 0
 
       types:
@@ -81,6 +81,21 @@ outputs:
             flows: start
 
         - ssh
+
+{%      if not helpers.empty('OPNsense.IDS.general.eveLog.dns.enable') %}
+        - dns:
+            query: {{ 'no' if helpers.empty('OPNsense.IDS.general.eveLog.dns.query') else 'yes' }}
+            answer: {{ 'no' if helpers.empty('OPNsense.IDS.general.eveLog.dns.answer') else 'yes' }}
+{%      endif %}
+{%      if not helpers.empty('OPNsense.IDS.general.eveLog.flow.enable') %}
+        - flow
+{%      endif %}
+{%      if not helpers.empty('OPNsense.IDS.general.eveLog.stats.enable') %}
+        - stats:
+            totals: yes
+            threads: no
+            deltas: no
+{%      endif %}
 
 {% if not helpers.empty('OPNsense.IDS.general.syslog_eve') %}
   - eve-log:

@@ -180,4 +180,46 @@
         <help>Custom TLS fields to include in eve-log for TLS. (Overrides extended if non-empty).</help>
         <advanced>true</advanced>
     </field>
+    <field>
+        <id>ids.general.eveLog.dns.enable</id>
+        <label>Enable eve DNS logging</label>
+        <type>checkbox</type>
+        <help>Send DNS transaction metadata to eve-log.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.dns.query</id>
+        <label>Eve DNS log queries</label>
+        <type>checkbox</type>
+        <help>Log DNS query messages.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.dns.answer</id>
+        <label>Eve DNS log answers</label>
+        <type>checkbox</type>
+        <help>Log DNS answer messages.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.flow.enable</id>
+        <label>Enable eve flow logging</label>
+        <type>checkbox</type>
+        <help>Send flow metadata to eve-log. Logs network flow records when connections end, including duration, byte counts, and protocol information.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.stats.enable</id>
+        <label>Enable eve stats logging</label>
+        <type>checkbox</type>
+        <help>Send Suricata engine statistics to eve-log. Includes capture counters, decoder stats, and memory usage for performance monitoring.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ids.general.eveLog.communityId</id>
+        <label>Enable Community ID</label>
+        <type>checkbox</type>
+        <help>Add a Community ID flow hash to eve-log events, enabling cross-tool correlation between Suricata, Zeek, and other network security tools.</help>
+        <advanced>true</advanced>
+    </field>
 </form>
