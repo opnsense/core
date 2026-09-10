@@ -260,16 +260,18 @@ class ACL
      */
     public function userUrlMasks($username)
     {
-        foreach ($this->userDatabase[$username]["priv"] as $privset) {
-            foreach ($privset as $urlmask) {
-                yield [$urlmask, []];
+        if (array_key_exists($username, $this->userDatabase)) {
+            foreach ($this->userDatabase[$username]["priv"] as $privset) {
+                foreach ($privset as $urlmask) {
+                    yield [$urlmask, []];
+                }
             }
-        }
-        foreach ($this->userDatabase[$username]["groups"] as $itemkey => $group) {
-            if (array_key_exists($group, $this->allGroupPrivs)) {
-                foreach ($this->allGroupPrivs[$group]['priv'] as $privset) {
-                    foreach ($privset as $urlmask) {
-                        yield [$urlmask, $this->allGroupPrivs[$group]['source_networks']];
+            foreach ($this->userDatabase[$username]["groups"] as $itemkey => $group) {
+                if (array_key_exists($group, $this->allGroupPrivs)) {
+                    foreach ($this->allGroupPrivs[$group]['priv'] as $privset) {
+                        foreach ($privset as $urlmask) {
+                            yield [$urlmask, $this->allGroupPrivs[$group]['source_networks']];
+                        }
                     }
                 }
             }
