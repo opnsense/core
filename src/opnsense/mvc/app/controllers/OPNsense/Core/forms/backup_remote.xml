@@ -1,0 +1,8 @@
+<form>
+    <field>
+        <id>backup.pushtime</id>
+        <label>Push Time</label>
+        <type>text</type>
+        <help>This determines the backup time used for the main backup of the day. Additional backups can be set up on the cron page.</help>
+    </field>
+</form>
