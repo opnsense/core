@@ -1,0 +1,193 @@
+/*
+ * Copyright (C) 2026 TuEye
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+export default class Zfs extends BaseTableWidget {
+    constructor() {
+        super();
+        this.tickTimeout = 60;
+    }
+
+    getMarkup() {
+        return this.createTable('zfs-table', {
+            headerPosition: 'left',
+            headerBreakpoint: 320,
+        });
+    }
+
+    poolField(name, pool) {
+        const errors = this.getErrorSummary(pool);
+        const healthy = (pool.state || 'UNKNOWN') === 'ONLINE' && errors.devices === 0 && errors.data === 0;
+        const color = healthy ? 'text-success' : 'text-warning';
+        const title = healthy ? this.translations.healthy : this.translations.attention;
+
+        const $status = $('<i>')
+            .addClass(`fa fa-circle text-muted ${color} zfs-health-icon`)
+            .css({ 'font-size': '11px', 'cursor': 'pointer' })
+            .attr({ 'data-toggle': 'tooltip', 'title': title });
+
+        return $('<div>')
+            .css('margin-bottom', '5px')
+            .append($status, '&nbsp;', $('<span>').text(name))
+            .prop('outerHTML');
+    }
+
+    stateField(pool) {
+        return $('<div>')
+            .append($('<b>').text(this.translations.state), '<br>', $('<span>').text(pool.state || 'UNKNOWN'))
+            .prop('outerHTML');
+    }
+
+    scanFunction(value) {
+        if (value === 'SCRUB') return this.translations.scrub;
+        if (value === 'RESILVER') return this.translations.resilver;
+        return value || this.translations.action;
+    }
+
+    formatTimestamp(timestamp) {
+        if (!Number.isFinite(timestamp) || timestamp <= 0) {
+            return '';
+        }
+
+        return new Date(timestamp * 1000).toLocaleString([], {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            timeZone: 'UTC',
+            timeZoneName: 'short',
+        });
+    }
+
+    scanField(scan) {
+        const $div = $('<div>').append($('<b>').text(this.translations.action), '<br>');
+
+        if (!scan) {
+            return $div.append($('<span>').text(this.translations.none)).prop('outerHTML');
+        }
+
+        const func = this.scanFunction(scan.function);
+        const state = scan.state || 'UNKNOWN';
+
+        if (state === 'SCANNING') {
+            const total = scan.to_examine ?? 0;
+            const issued = scan.issued ?? 0;
+            const progress = (Number.isFinite(total) && total > 0 && Number.isFinite(issued))
+                ? `${((issued / total) * 100).toFixed(1)}%`
+                : this.translations.running;
+
+            return $div.append($('<span>').text(`${func}: ${progress}`)).prop('outerHTML');
+        }
+
+        const value = state === 'FINISHED' ? func : `${func}: ${state}`;
+        $div.append($('<span>').text(value));
+
+        if (state === 'FINISHED') {
+            const finished = this.formatTimestamp(scan.end_time);
+            if (finished) {
+                $div.append('<br>', $('<span>').text(finished));
+            }
+        }
+
+        return $div.prop('outerHTML');
+    }
+
+    countDeviceErrors(node) {
+        if (!node || typeof node !== 'object') {
+            return 0;
+        }
+
+        const children = Object.values(node.vdevs ?? {});
+        const hasErrorCounters = 'read_errors' in node || 'write_errors' in node || 'checksum_errors' in node;
+
+        if (hasErrorCounters && children.length === 0) {
+            return ((node.read_errors ?? 0) > 0 || (node.write_errors ?? 0) > 0 || (node.checksum_errors ?? 0) > 0) ? 1 : 0;
+        }
+
+        let count = 0;
+        for (const value of Object.values(node)) {
+            if (value && typeof value === 'object') {
+                count += this.countDeviceErrors(value);
+            }
+        }
+        return count;
+    }
+
+    getErrorSummary(pool) {
+        return {
+            devices: this.countDeviceErrors(pool),
+            data: pool.error_count ?? 0,
+        };
+    }
+
+    errorField(pool) {
+        const errors = this.getErrorSummary(pool);
+        const parts = [];
+
+        if (errors.devices > 0) {
+            parts.push(`${errors.devices} ${errors.devices === 1 ? this.translations.device : this.translations.devices}`);
+        }
+        if (errors.data > 0) {
+            parts.push(`${errors.data} ${errors.data === 1 ? this.translations.dataerror : this.translations.dataerrors}`);
+        }
+
+        const content = parts.length > 0 ? parts.join(' / ') : this.translations.none;
+        return $('<div>')
+            .append($('<b>').text(this.translations.errors), '<br>', $('<span>').text(content))
+            .prop('outerHTML');
+    }
+
+    renderPools(pools) {
+        const statusSelector = '#zfs-table .zfs-health-icon';
+        $(statusSelector).tooltip('hide');
+
+        const rows = Object.entries(pools).map(([name, pool]) => [
+            this.poolField(pool.name || name, pool),
+            [
+                this.stateField(pool),
+                this.errorField(pool),
+                this.scanField(pool.scan_stats),
+            ],
+        ]);
+
+        if (rows.length === 0) {
+            rows.push([$('<span>').text(this.translations.nopools).prop('outerHTML'), '']);
+        }
+
+        this.updateTable('zfs-table', rows);
+        $(statusSelector).tooltip({container: 'body'});
+    }
+
+    async onWidgetTick() {
+        const status = await this.ajaxCall('/api/diagnostics/system/zfs_status');
+        this.renderPools(status?.pools ?? {});
+    }
+
+    onWidgetClose() {
+        $('#zfs-table .zfs-health-icon').tooltip('hide');
+        super.onWidgetClose();
+    }
+}
