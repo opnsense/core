@@ -1,0 +1,28 @@
+<model>
+    <mount>//opendns</mount>
+    <version>1.0.0</version>
+    <description>OpenDNS configuration</description>
+    <items>
+        <enable type="BooleanField">
+            <Default>0</Default>
+        </enable>
+        <standalone type="BooleanField">
+            <Default>0</Default>
+        </standalone>
+        <username type="TextField"/>
+        <password type="TextField"/>
+        <host type="TextField">
+            <Mask>/^[a-zA-Z0-9 _\-\.]+$/</Mask>
+            <ValidationMessage>Please specify a valid OpenDNS network label.</ValidationMessage>
+        </host>
+        <backup>
+            <has_backup type="BooleanField">
+                <Default>0</Default>
+            </has_backup>
+            <dnsservers type="TextField"/>
+            <dnsallowoverride type="BooleanField">
+                <Default>1</Default>
+            </dnsallowoverride>
+        </backup>
+    </items>
+</model>

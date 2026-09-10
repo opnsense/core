@@ -1,0 +1,5 @@
+<menu>
+    <Services>
+        <OpenDNS VisibleName="OpenDNS" url="/ui/opendns/settings" cssClass="fa fa-tags fa-fw"/>
+    </Services>
+</menu>

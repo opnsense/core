@@ -2,7 +2,6 @@
 
 /*
  * Copyright (C) 2026 Greelan
- * Copyright (C) 2019 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,51 +26,23 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-function opendns_configure()
+namespace OPNsense\OpenDNS\Api;
+
+use OPNsense\Base\ApiControllerBase;
+use OPNsense\Core\Backend;
+
+class ServiceController extends ApiControllerBase
 {
-    return [
-        'bootup' => ['opendns_configure_do'],
-        'local' => ['opendns_configure_do'],
-        'newwanip' => ['opendns_configure_do'],
-    ];
-}
-
-function opendns_configure_do($verbose = false)
-{
-    $mdl = new \OPNsense\OpenDNS\OpenDNS();
-
-    if (!$mdl->enable->isEmpty()) {
-        service_log('Configure OpenDNS...', $verbose);
-
-        $pconfig = [
-            'username' => (string)$mdl->username,
-            'password' => (string)$mdl->password,
-            'host' => (string)$mdl->host,
-        ];
-        $result = opendns_register($pconfig);
-        log_msg("opendns response: $result");
-
-        service_log("done.\n", $verbose);
+    /**
+     * apply OpenDNS configuration
+     * @return array
+     */
+    public function reconfigureAction()
+    {
+        $result = ['status' => 'failed'];
+        if ($this->request->isPost()) {
+            $result['status'] = trim((string)(new Backend())->configdRun('opendns configure'));
+        }
+        return $result;
     }
-}
-
-function opendns_xmlrpc_sync()
-{
-    return [[
-        'description' => gettext('OpenDNS'),
-        'section' => 'opendns',
-        'id' => 'opendns',
-    ]];
-}
-
-function opendns_register($pconfig)
-{
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, sprintf('https://updates.opendns.com/nic/update?hostname=%s', $pconfig['host']));
-    curl_setopt($ch, CURLOPT_USERPWD, sprintf('%s:%s', $pconfig['username'], $pconfig['password']));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 60);
-    $output = curl_exec($ch);
-
-    return $output;
 }
