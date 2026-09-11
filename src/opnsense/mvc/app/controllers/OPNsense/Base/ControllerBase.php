@@ -104,6 +104,7 @@ class ControllerBase extends ControllerRoot
             '/css/opnsense-bootgrid.css',
             '/css/opnsense-bootgrid-layout.css',
             '/css/opnsense-favorites.css',
+            '/css/opnsense-menusystem-layout.css',
             // Font awesome
             '/ui/assets/fontawesome/css/all.min.css',
             '/ui/assets/fontawesome/css/v4-shims.min.css',
@@ -423,12 +424,15 @@ class ControllerBase extends ControllerRoot
         $this->view->setVar('langcode', str_replace('_', '-', $this->langcode));
 
         $rewrite_uri = explode("?", $_SERVER["REQUEST_URI"])[0];
-        $menuFavorites = (new User())->getUserByName($_SESSION['Username'] ?? '')?->menu_favorites->deserialize() ?? [];
+        $userNode = (new User())->getUserByName($_SESSION['Username'] ?? '');
+        $menuFavorites = $userNode?->menu_favorites->deserialize() ?? [];
+        $menuPinned = $userNode?->menu_pinned->deserialize() ?? [];
         /* XXX generating breadcrumbs requires getItems() call */
         $this->view->menuSystem = $menu->getItems($rewrite_uri);
         $this->view->menuBreadcrumbs = $menu->getBreadcrumbs();
         $this->view->menuSelectedUrl = $menu->getSelectedUrl();
         $this->view->menuFavorites = json_encode($menuFavorites);
+        $this->view->menuPinned = $menuPinned;
         $this->view->menuSelectedIsFavorite = in_array(
             $this->view->menuSelectedUrl,
             $menuFavorites

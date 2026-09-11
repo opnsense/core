@@ -89,8 +89,8 @@ $aclObj = new \OPNsense\Core\ACL();
                           foreach($menuSystem as $topMenuItem): ?>
 <?php
                           if (count($topMenuItem->Children) >= 1 || $topMenuItem->Id === 'Favorites'): ?>
-                            <a href="#<?=$topMenuItem->Id;?>" class="<?= $topMenuItem->LinkClass; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><span style="word-break: keep-all"><?= html_safe($topMenuItem->VisibleName) ?></span></a>
-                            <div class="collapse <?=$topMenuItem->Selected ? 'active-menu in' :'';?>" id="<?=$topMenuItem->Id;?>">
+                            <a href="#<?=$topMenuItem->Id;?>" class="<?= $topMenuItem->LinkClass; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><span style="word-break: keep-all"><?= html_safe($topMenuItem->VisibleName) ?></span><?php if ($topMenuItem->Id === 'Favorites'): ?><i class="menu-pin fa fa-thumbtack <?= in_array($topMenuItem->Id, $menuPinned) ? 'pinned' : '' ?>" data-menu-id="<?=$topMenuItem->Id;?>" data-pin-text="<?= html_safe(gettext('Pin (keep expanded)')) ?>" data-unpin-text="<?= html_safe(gettext('Unpin (allow collapsing)')) ?>" data-toggle="tooltip" data-container="body" data-placement="right" title="<?= html_safe(in_array($topMenuItem->Id, $menuPinned) ? gettext('Unpin (allow collapsing)') : gettext('Pin (keep expanded)')) ?>"></i><?php endif; ?></a>
+                            <div class="collapse <?=$topMenuItem->Selected ? 'active-menu in' : (in_array($topMenuItem->Id, $menuPinned) ? 'in' : '');?>" id="<?=$topMenuItem->Id;?>">
 <?php
                             foreach($topMenuItem->Children as $subMenuItem): ?>
 <?php

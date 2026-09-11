@@ -1,0 +1,31 @@
+/*
+ * For universal layout adjustments that do not need theme compilation.
+ * No color or other variables allowed, only static layout changes.
+ */
+
+/* menu heading pin: hidden until hover, angled when unpinned, upright when pinned */
+.menu-pin {
+  float: right;
+  cursor: pointer;
+  opacity: 0;
+  transform: rotate(45deg);
+  transition: opacity 0.15s ease-in-out;
+}
+
+#mainmenu a[data-parent="#mainmenu"]:hover .menu-pin {
+  opacity: 1;
+}
+
+.menu-pin.pinned {
+  transform: none;
+}
+
+@media (hover: none) {
+  #mainmenu a[data-parent="#mainmenu"]:focus-within .menu-pin {
+    opacity: 1;
+  }
+}
+
+#navigation.col-sidebar-left .menu-pin {
+  display: none;
+}

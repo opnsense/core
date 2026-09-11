@@ -7,7 +7,9 @@ $menu = new OPNsense\Base\Menu\MenuSystem();
 $menuSystem = $menu->getItems($_SERVER['REQUEST_URI']);
 $menuBreadcrumbs = $menu->getBreadcrumbs();
 $menuSelectedUrl = $menu->getSelectedUrl();
-$menuFavorites = (new OPNsense\Auth\User)->getUserByName($_SESSION['Username'] ?? '')?->menu_favorites->deserialize() ?? [];
+$userNode = (new OPNsense\Auth\User)->getUserByName($_SESSION['Username'] ?? '');
+$menuFavorites = $userNode?->menu_favorites->deserialize() ?? [];
+$menuPinned = $userNode?->menu_pinned->deserialize() ?? [];
 $menuSelectedIsFavorite = in_array($menuSelectedUrl, $menuFavorites);
 
 if (isset($extraBreadcrumb)) {
@@ -80,6 +82,9 @@ $pagetitle .= html_safe(sprintf(' | %s.%s', $config['system']['hostname'], $conf
 
     <!-- Favorites layout -->
     <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/opnsense-favorites.css")) ?>">
+
+    <!-- Menu system layout -->
+    <link rel="stylesheet" type="text/css" href="<?= cache_safe(get_themed_filename("/css/opnsense-menusystem-layout.css")) ?>">
 
     <!-- Font awesome -->
     <link rel="stylesheet" type="text/css" href="<?= cache_safe("/ui/assets/fontawesome/css/all.min.css") ?>">

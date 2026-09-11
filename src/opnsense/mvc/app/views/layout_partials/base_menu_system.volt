@@ -6,9 +6,9 @@
                     {% for topMenuItem in menuSystem %}
                         {% if topMenuItem.Children|length >= 1 or topMenuItem.Id == 'Favorites' %}
                             <a href="#{{ topMenuItem.Id }}" class="{{ topMenuItem.LinkClass }}" data-toggle="collapse" data-parent="#mainmenu">
-                                <span class="{{ topMenuItem.CssClass }} __iconspacer"></span><span style="word-break: keep-all">{{ topMenuItem.VisibleName }}</span>
+                                <span class="{{ topMenuItem.CssClass }} __iconspacer"></span><span style="word-break: keep-all">{{ topMenuItem.VisibleName }}</span>{% if topMenuItem.Id == 'Favorites' %}<i class="menu-pin fa fa-thumbtack{% if topMenuItem.Id in menuPinned %} pinned{% endif %}" data-menu-id="{{ topMenuItem.Id }}" data-pin-text="{{ lang._('Pin (keep expanded)') }}" data-unpin-text="{{ lang._('Unpin (allow collapsing)') }}" data-toggle="tooltip" data-container="body" data-placement="right" title="{% if topMenuItem.Id in menuPinned %}{{ lang._('Unpin (allow collapsing)') }}{% else %}{{ lang._('Pin (keep expanded)') }}{% endif %}"></i>{% endif %}
                             </a>
-                            <div class="collapse  {% if topMenuItem.Selected %} active-menu in {% endif  %}" id="{{ topMenuItem.Id }}">
+                            <div class="collapse  {% if topMenuItem.Selected %} active-menu in {% elseif topMenuItem.Id in menuPinned %} in {% endif  %}" id="{{ topMenuItem.Id }}">
                                 {% for subMenuItem in topMenuItem.Children %}
                                     {% if subMenuItem.Url == '' %}
                                     {# next level items, submenu is a container #}

@@ -234,4 +234,45 @@ class MenuController extends ApiControllerBase
 
         return ['result' => 'failed'];
     }
+
+    /**
+     * pin/unpin a top-level menu container so it stays expanded
+     * @return array
+     */
+    public function setPinnedAction()
+    {
+        if (!$this->request->isPost()) {
+            return ['result' => 'failed'];
+        }
+
+        $menuId = $this->request->getPost('menuId', null, null);
+        $isPinned = $this->request->getPost('isPinned', null, null);
+
+        if ($menuId === null || $isPinned === null) {
+            return ['result' => 'failed'];
+        }
+
+        // validate that the submitted id is a real top-level menu container
+        $validIds = array_map(fn($item) => $item->Id, $this->getMenu('/'));
+        if (!in_array($menuId, $validIds)) {
+            return ['result' => 'failed'];
+        }
+
+        /* update user model with current set of valid pinned menus */
+        $user = new User();
+        if ($node = $user->getUserByName($this->getUserName())) {
+            $pinned = array_values(array_intersect($node->menu_pinned->deserialize(), $validIds));
+            $pinned = array_values(array_filter($pinned, fn($value) => $value !== $menuId));
+            if (!empty($isPinned)) {
+                $pinned[] = $menuId;
+            }
+            if ($node->menu_pinned->serialize($pinned) && $user->serializeToConfig(false, true)) {
+                /* intentionally skipping user-config-readonly check */
+                Config::getInstance()->save();
+                return ['result' => 'saved'];
+            }
+        }
+
+        return ['result' => 'failed'];
+    }
 }

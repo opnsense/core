@@ -54,6 +54,7 @@
             <descr type="DescriptionField"/>
             <dashboard type="JsonField"/>
             <menu_favorites type="JsonField"/>
+            <menu_pinned type="JsonField"/>
         </user>
     </items>
 </model>

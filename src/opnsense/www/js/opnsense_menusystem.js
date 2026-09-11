@@ -61,3 +61,59 @@ class MenuSystem {
         }
     };
 }
+
+/* wire any ".menu-pin": pinning keeps its panel expanded, persisted via set_pinned */
+$(document).ready(function () {
+    const $navigation = $('#navigation');
+
+    $('.menu-pin').each(function () {
+        const $pin = $(this);
+        const $panel = $($pin.closest('a[data-toggle="collapse"]').attr('href'));
+        const menuId = $pin.data('menu-id');
+        const pinText = $pin.data('pin-text') || 'Pin';
+        const unpinText = $pin.data('unpin-text') || 'Unpin';
+
+        if (!$panel.length || !menuId) {
+            return;
+        }
+
+        const setPinned = function (pinned) {
+            $pin.toggleClass('pinned', pinned)
+                .attr('data-original-title', pinned ? unpinText : pinText)
+                .tooltip('fixTitle').tooltip('show');
+        };
+
+        /* don't let the accordion collapse a pinned panel, except as a fly-out in the icon-only sidebar */
+        $panel.on('hide.bs.collapse', function (e) {
+            /* hide events of nested submenus bubble up, those may still collapse */
+            if (e.target === this && $pin.hasClass('pinned') && !$navigation.hasClass('col-sidebar-left')) {
+                e.preventDefault();
+            }
+        });
+
+        $pin.on('click', function (e) {
+            e.preventDefault();
+            e.stopPropagation();
+            const nowPinned = !$pin.hasClass('pinned');
+
+            setPinned(nowPinned);
+            if (nowPinned) {
+                $panel.collapse('show');
+            }
+
+            $.ajax('/api/core/menu/set_pinned/', {
+                type: 'POST',
+                dataType: 'json',
+                data: { menuId: menuId, isPinned: nowPinned ? '1' : '0' },
+                success: function (response) {
+                    if (response.result !== 'saved') {
+                        setPinned(!nowPinned);
+                    }
+                },
+                error: function () {
+                    setPinned(!nowPinned);
+                }
+            });
+        });
+    });
+});
