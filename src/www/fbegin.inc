@@ -88,7 +88,7 @@ $aclObj = new \OPNsense\Core\ACL();
 <?php
                           foreach($menuSystem as $topMenuItem): ?>
 <?php
-                          if (count($topMenuItem->Children) >= 1): ?>
+                          if (count($topMenuItem->Children) >= 1 || $topMenuItem->Id === 'Favorites'): ?>
                             <a href="#<?=$topMenuItem->Id;?>" class="<?= $topMenuItem->LinkClass; ?>" data-toggle="collapse" data-parent="#mainmenu"><span class="<?=$topMenuItem->CssClass;?> __iconspacer"></span><span style="word-break: keep-all"><?= html_safe($topMenuItem->VisibleName) ?></span></a>
                             <div class="collapse <?=$topMenuItem->Selected ? 'active-menu in' :'';?>" id="<?=$topMenuItem->Id;?>">
 <?php
@@ -163,6 +163,9 @@ $aclObj = new \OPNsense\Core\ACL();
                         endforeach; ?>
                     </div>
                 </div>
+<span id="favorites-config" data-add-text="<?=html_safe(gettext('Add Favorite'))?>" data-remove-text="<?=html_safe(gettext('Remove Favorite'))?>" data-favorites="<?=html_safe(json_encode($menuFavorites))?>"></span>
+<script src="<?= cache_safe('/ui/js/opnsense_menusystem.js') ?>"></script>
+<script src="<?= cache_safe('/ui/js/opnsense_favorites.js') ?>"></script>
             </nav>
         </div>
     </aside>
@@ -170,7 +173,7 @@ $aclObj = new \OPNsense\Core\ACL();
     <header class="page-content-head">
       <div class="container-fluid">
         <ul class="list-inline">
-          <li><h1><?= html_safe(gentitle($menuBreadcrumbs)) ?></h1></li>
+          <li><h1<?php if (!empty($menuSelectedUrl)): ?> tabindex="-1"<?php endif; ?>><?= html_safe(gentitle($menuBreadcrumbs)) ?><?php if (!empty($menuSelectedUrl)): ?><i class="menu-favorite-star <?= $menuSelectedIsFavorite ? 'fa fa-star' : 'fa fa-star-o' ?>" data-menu-url="<?= html_safe($menuSelectedUrl) ?>" data-toggle="tooltip" data-container="body" data-placement="bottom" title="<?= html_safe($menuSelectedIsFavorite ? gettext('Remove Favorite') : gettext('Add Favorite')) ?>"></i><?php endif; ?></h1></li>
           <li class="btn-group-container">
             <form method="post">
               <?php

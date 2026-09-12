@@ -54,10 +54,13 @@ class FilterRule extends Rule
         'os' => 'parsePlain, os {","}',
         'to' => 'parsePlainCurly,to ',
         'to_port' => 'parsePlainCurly, port ',
+        'scrub' => 'parseScrub',
+        'received-on' => 'parseReceivedOn',
         'icmp-type' => 'parseReplaceSimple,skip:"skip",icmp-type {,}',
         'icmp6-type' => 'parsePlain,icmp6-type {,}',
         'flags' => 'parsePlain, flags ',
         'state' => 'parseState',
+        'max-pkt-rate' => 'parsePlain, max-pkt-rate ',
         'set-prio' => 'parsePlain, set prio ',
         'prio' => 'parsePlain, prio ',
         'tos' => 'parsePlain, tos ',
@@ -99,6 +102,34 @@ class FilterRule extends Rule
         } else {
             return "";
         }
+    }
+
+    /**
+     * Render FreeBSD 15 style scrub options on a filter rule.
+     *
+     * @param string $value space-separated scrub options
+     * @return string
+     */
+    protected function parseScrub($value)
+    {
+        return empty($value) ? '' : "scrub ( {$value} ) ";
+    }
+
+    /**
+     * parse interface a packet was initially received on
+     * @param string $value logical interface name
+     * @return string
+     */
+    protected function parseReceivedOn($value)
+    {
+        if (empty($value)) {
+            return "";
+        }
+        $prefix = !empty($this->rule['received-on-not']) ? "!received-on " : "received-on ";
+        if (empty($this->interfaceMapping[$value]['if'])) {
+            return "{$prefix}##{$value}## ";
+        }
+        return $prefix . $this->interfaceMapping[$value]['if'] . " ";
     }
 
     /**
@@ -193,8 +224,10 @@ class FilterRule extends Rule
                 $this->log("Gateway protocol mismatch");
             }
             if (!empty($rule['type']) && $rule['type'] != 'pass') {
+                if (!empty($rule['gateway']) || !empty($rule['reply'])) {
+                    $this->log("Gateway not allowed for non-pass rules");
+                }
                 unset($rule['gateway'], $rule['reply']);
-                $this->log("Gateway not allowed for block rules");
             }
             if (!isset($rule['quick'])) {
                 // all rules are quick by default except floating
@@ -216,6 +249,11 @@ class FilterRule extends Rule
                         }
                     }
                 }
+            }
+            // restructure packet rate
+            if (!empty($rule['max-pkt-rate-number']) && !empty($rule['max-pkt-rate-seconds'])) {
+                $rule['max-pkt-rate'] =
+                    $rule['max-pkt-rate-number'] . "/" . $rule['max-pkt-rate-seconds'];
             }
             // restructure state settings for easier output parsing
             if (!empty($rule['statetype']) && (empty($rule['type']) || $rule['type'] == 'pass')) {

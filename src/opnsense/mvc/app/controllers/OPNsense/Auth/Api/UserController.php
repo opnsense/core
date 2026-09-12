@@ -228,18 +228,18 @@ class UserController extends ApiMutableModelControllerBase
         if ($this->request->isPost()) {
             Config::getInstance()->lock();
             $node = $this->getModel()->getNodeByReference('user.' . $uuid);
-            if ($node->scope == 'system') {
-                throw new UserException(
-                    sprintf(gettext("Not allowed to delete system user %s"), $node->name),
-                    gettext("Usermanager")
-                );
-            } elseif ($node->name == $this->getUserName()) {
-                throw new UserException(
-                    sprintf(gettext("Not allowed to remove logged in user %s"), $node->name),
-                    gettext("Usermanager")
-                );
-            }
-            if (!empty($node)) {
+            if ($node !== null) {
+                if ($node->scope == 'system') {
+                    throw new UserException(
+                        sprintf(gettext("Not allowed to delete system user %s"), $node->name),
+                        gettext("Usermanager")
+                    );
+                } elseif ($node->name == $this->getUserName()) {
+                    throw new UserException(
+                        sprintf(gettext("Not allowed to remove logged in user %s"), $node->name),
+                        gettext("Usermanager")
+                    );
+                }
                 $username = (string)$node->name;
             }
         }

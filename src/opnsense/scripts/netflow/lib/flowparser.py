@@ -188,6 +188,8 @@ class FlowParser:
                         elif key[-1] == '6':
                             record[key[:-1]] = inet_ntop(AF_INET6, record[key])
                 # calculated values
+                if record['flow_finish'] > record['sys_uptime_ms']:
+                    continue # impossible data
                 record['flow_end'] = record['recv_sec'] - (record['sys_uptime_ms'] - record['flow_finish']) / 1000.0
                 record['duration_ms'] = (record['flow_finish'] - record['flow_start'])
                 record['flow_start'] = record['flow_end'] - record['duration_ms'] / 1000.0

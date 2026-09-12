@@ -35,10 +35,8 @@ require_once('config.inc');
 
 function normalize_port($port)
 {
-    $port = (string)$port;
-    $port = str_replace('-any', '-65535', $port);
-    $port = str_replace('any-', '1-', $port);
-    return $port;
+    /* Legacy port ranges use a colon, while PortField expects a dash. */
+    return str_replace(':', '-', (string)$port);
 }
 
 function legacy_address_to_network($data)
@@ -115,6 +113,8 @@ if (count($nat_rules)) {
             'destination_port' => normalize_port($rule['dstport'] ?? ''),
             'target' => legacy_target_to_network($rule),
             'target_port' => normalize_port($rule['natport'] ?? ''),
+            'poolopts' => $rule['poolopts'] ?? '',
+            'poolopts_sourcehashkey' => $rule['poolopts_sourcehashkey'] ?? '',
             'staticnatport' => !empty($rule['staticnatport']) ? '1' : '0',
             'log' => !empty($rule['log']) ? '1' : '0',
             'categories' => $rule['category'] ?? '',

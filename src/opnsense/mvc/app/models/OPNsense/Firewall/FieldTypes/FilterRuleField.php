@@ -32,7 +32,9 @@ use OPNsense\Core\Config;
 use OPNsense\Firewall\Util;
 use OPNsense\Firewall\Group;
 use OPNsense\Base\FieldTypes\ArrayField;
+use OPNsense\Base\FieldTypes\BooleanField;
 use OPNsense\Base\FieldTypes\ContainerField;
+use OPNsense\Base\FieldTypes\ProtocolField;
 
 /**
  * Class FilterRuleContainerField
@@ -59,9 +61,9 @@ class FilterRuleContainerField extends ContainerField
         // 1-on-1 map (with type conversion if needed)
         foreach ($this->iterateItems() as $key => $node) {
             if (!in_array($key, $map_manual)) {
-                if (is_a($node, "OPNsense\\Base\\FieldTypes\\BooleanField")) {
+                if (is_a($node, BooleanField::class)) {
                     $result[$key] = !empty((string)$node);
-                } elseif (is_a($node, "OPNsense\\Base\\FieldTypes\\ProtocolField")) {
+                } elseif (is_a($node, ProtocolField::class)) {
                     if ((string)$node != 'any') {
                         $result[$key] = (string)$node;
                     }
@@ -103,6 +105,26 @@ class FilterRuleContainerField extends ContainerField
         $result['descr'] = (string)$this->description;
         $result['type'] = (string)$this->action;
         $result['reply-to'] = (string)$this->replyto;
+        $scrub_options = [];
+        foreach (
+            [
+                'scrub_no_df' => 'no-df',
+                'scrub_random_id' => 'random-id',
+                'scrub_max_mss' => 'max-mss',
+                'scrub_min_ttl' => 'min-ttl',
+                /* XXX: pf maps this legacy scrub option to "set tos", so pfctl may display both forms. */
+                'scrub_set_tos' => 'set-tos',
+            ] as $fieldname => $keyword
+        ) {
+            if (!$this->$fieldname->isEmpty()) {
+                $scrub_options[] = is_a($this->$fieldname, BooleanField::class) ?
+                    $keyword : $keyword . ' ' . $this->$fieldname->getValue();
+            }
+        }
+        if (!empty($scrub_options)) {
+            /* Scrub is a filter option and can be used by pass as well as match rules. */
+            $result['scrub'] = implode(' ', $scrub_options);
+        }
         if (!$this->disablereplyto->isEmpty()) {
             /* XXX: registerFilterRule() merges disablereplyto, which requires the item to only exist when set  */
             $result['disablereplyto'] = true;
@@ -124,18 +146,21 @@ class FilterRuleContainerField extends ContainerField
     {
         $configObj = Config::getInstance()->object();
         $interfaces = $this->interface->getValues();
-        $has_interface = false;
+        $received_on = $this->{'received-on'}->getValues();
 
-        foreach ($interfaces as $interface) {
-            if (isset($configObj?->interfaces?->$interface)) {
-                $has_interface = true;
-                break;
+        foreach ([$interfaces, $received_on] as $interface_set) {
+            $has_interface = false;
+            foreach ($interface_set as $interface) {
+                if (isset($configObj?->interfaces?->$interface)) {
+                    $has_interface = true;
+                    break;
+                }
             }
-        }
 
-        // Invalid rules (not applied by PF)
-        if (!empty($interfaces) && !$has_interface) {
-            return 600000;
+            // Invalid rules (not applied by PF)
+            if (!empty($interface_set) && !$has_interface) {
+                return 600000;
+            }
         }
 
         /* XXX this is an approximation of the complex situation and will be removed eventually */

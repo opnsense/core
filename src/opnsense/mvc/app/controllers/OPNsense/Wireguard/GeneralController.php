@@ -33,8 +33,9 @@ class GeneralController extends \OPNsense\Base\IndexController
     protected function templateJSIncludes()
     {
         $result = parent::templateJSIncludes();
-        $result[] = '/ui/js/jquery.qrcode.js';
         $result[] = '/ui/js/qrcode.js';
+        $result[] = '/ui/js/qrcode_UTF8.js';
+        $result[] = '/ui/js/jquery.qrcode.js';
         return $result;
     }
 

@@ -1,5 +1,9 @@
 <form>
     <field>
+        <type>header</type>
+        <label>Peer</label>
+    </field>
+    <field>
         <id>client.enabled</id>
         <label>Enabled</label>
         <type>checkbox</type>
@@ -67,6 +71,20 @@
         <help>Set persistent keepalive interval in seconds.</help>
         <grid_view>
             <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Peer generator</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>client.privkey</id>
+        <label>Private key</label>
+        <type>text</type>
+        <help>Private key of this peer, only used by the Peer generator. Please keep this key safe.</help>
+        <grid_view>
+            <ignore>true</ignore>
         </grid_view>
     </field>
 </form>

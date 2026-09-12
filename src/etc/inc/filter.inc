@@ -169,7 +169,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     \OPNsense\Firewall\Alias::flushCacheData();
 
     /* Use filter lock to not allow concurrent filter reloads during this run. */
-    $fobj = new \OPNsense\Core\FileObject('/tmp/rules.debug', 'a+', 0600, LOCK_EX);
+    $fobj = new \OPNsense\Core\FileObject('/tmp/rules.debug', 'a+e', 0600, LOCK_EX);
 
     /*
      * Kickstart dnctl and ipfw (no-op if shaper not configured)
@@ -199,7 +199,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         if (!empty($config['nat']['outbound']['rule'])) {
             foreach ($config['nat']['outbound']['rule'] as $rule) {
                 if (is_array($rule)) {
-                    $fw->registerSNatRule(100, $rule);
+                    $fw->registerSourceNatRule(100, $rule);
                 }
             }
         }
@@ -220,26 +220,20 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
             foreach ($networks as $network => $unused) {
                 $rule['source'] = ['network' => $network];
-                $fw->registerSNatRule(200, $rule);
+                $fw->registerSourceNatRule(200, $rule);
             }
         }
     }
 
     /* prevent redirection on ports with "lock out" protection */
-    foreach (filter_core_get_antilockout() as $lockoutif => $lockoutprts) {
-        foreach ($lockoutprts as $port) {
-            $fw->registerForwardRule(300, [
-                'descr' => 'Anti-lockout; prevent redirects for protected ports to this interface address',
-                'destination' => ['network' => "{$lockoutif}ip", 'port' => $port],
-                'interface' => $lockoutif,
-                'nordr' => true,
-                'protocol' => 'tcp',
-            ]);
-        }
+    foreach (filter_auto_destination_nat() as $rule) {
+        $fw->registerDestinationNatRule(300, $rule);
     }
 
     foreach ((new OPNsense\Firewall\DNat())->rule->sortedBy(['sequence']) as $key => $rule) {
-        $fw->registerForwardRule(600, $rule->getNodeContent());
+        $node = $rule->getNodeContent();
+        $node['local-port'] = $rule->{'local-port'}->normalizedPort();
+        $fw->registerDestinationNatRule(600, $node);
     }
 
     /**
@@ -384,11 +378,13 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
     $rules .= "\n";
-    $rules .= filter_generate_scrubbing($cnfint);
+    $rules .= filter_generate_scrubbing();
     $rules .= "\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'head');
     $rules .= "{$natrules}\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'tail');
+    /* Generated scrub matches are filter rules and must follow translation rules. */
+    $rules .= filter_generate_scrub_rules($cnfint);
     $rules .= $fw->anchorToText('fw', 'head');
     $rules .= filter_rules_legacy($cnfint);
     $rules .= $fw->outputFilterRules();
@@ -471,107 +467,39 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     service_log("done.\n", $verbose);
 }
 
-function filter_generate_scrubbing(&$FilterIflist)
+function filter_generate_scrubbing()
 {
-    global $config;
+    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'filter', false);
+    $enabled = !isset($settings['scrub_enabled']) || !empty($settings['scrub_enabled']);
 
+    /* Fragment reassembly is a global option with the modern scrub syntax. */
+    return sprintf("set reassemble %s%s\n", $enabled ? 'yes' : 'no', $enabled && !empty($settings['scrub_no_df']) ? ' no-df' : '');
+}
+
+function filter_generate_scrub_rules(&$FilterIflist)
+{
+    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'filter', false);
     $scrubrules = '';
-
-    /* custom rules must be first */
-    foreach (config_read_array('filter', 'scrub', 'rule', false) as $scrub_rule) {
-        if (isset($scrub_rule['disabled'])) {
-            continue;
-        }
-
-        $scrub_rule_out = !empty($scrub_rule['noscrub']) ? "no " : "";
-        $scrub_rule_out .= "scrub";
-        $scrub_rule_out .= !empty($scrub_rule['direction']) ? " " . $scrub_rule['direction'] : "";
-        $interfaces = [];
-        foreach (explode(',', $scrub_rule['interface']) as $interface) {
-            if (!empty($FilterIflist[$interface]['if'])) {
-                $interfaces[] = $FilterIflist[$interface]['if'];
-            }
-        }
-
-        if (count($interfaces) != 0) {
-            $scrub_rule_out .= ' on { ' . implode(' ', $interfaces) . ' } ';
-        } else {
-            # unknown interface, skip rule
-            $scrubrules .= "#";
-        }
-        switch ($scrub_rule['proto']) {
-            case 'any':
-                break;
-            case 'tcp/udp':
-                $scrub_rule_out .= " proto {tcp udp}";
-                break;
-            default:
-                $scrub_rule_out .= " proto " . $scrub_rule['proto'];
-                break;
-        }
-        $scrub_rule_out .= " from ";
-        if (is_alias($scrub_rule['src'])) {
-            $scrub_rule_out .= !empty($scrub_rule['srcnot']) ? "!" : "";
-            $scrub_rule_out .= '$' . $scrub_rule['src'];
-        } elseif (is_ipaddr($scrub_rule['src'])) {
-            $scrub_rule_out .= !empty($scrub_rule['srcnot']) ? "!" : "";
-            $scrub_rule_out .= $scrub_rule['src'] . "/" . $scrub_rule['srcmask'];
-        } else {
-            $scrub_rule_out .= "any";
-        }
-        if (!empty($scrub_rule['srcport']) && is_alias($scrub_rule['srcport'])) {
-            $scrub_rule_out .= " port $" . $scrub_rule['srcport'];
-        } else {
-            $scrub_rule_out .= !empty($scrub_rule['srcport']) ?  " port " . $scrub_rule['srcport'] : "";
-        }
-        $scrub_rule_out .= " to ";
-        if (is_alias($scrub_rule['dst'])) {
-            $scrub_rule_out .= !empty($scrub_rule['dstnot']) ? "!" : "";
-            $scrub_rule_out .= '$' . $scrub_rule['dst'];
-        } elseif (is_ipaddr($scrub_rule['dst'])) {
-            $scrub_rule_out .= !empty($scrub_rule['dstnot']) ? "!" : "";
-            $scrub_rule_out .= $scrub_rule['dst'] . "/" . $scrub_rule['dstmask'];
-        } else {
-            $scrub_rule_out .= "any";
-        }
-        if (!empty($scrub_rule['dstport']) && is_alias($scrub_rule['dstport'])) {
-            $scrub_rule_out .= " port $" . $scrub_rule['dstport'];
-        } else {
-            $scrub_rule_out .= !empty($scrub_rule['dstport']) ?  " port " . $scrub_rule['dstport'] : "";
-        }
-        if (empty($scrub_rule['noscrub'])) {
-            $scrub_rule_out .= !empty($scrub_rule['no-df']) ? " no-df " : "";
-            $scrub_rule_out .= !empty($scrub_rule['random-id']) ? " random-id " : "";
-            $scrub_rule_out .= !empty($scrub_rule['max-mss']) ? " max-mss " . $scrub_rule['max-mss'] .  " " : "";
-            $scrub_rule_out .= !empty($scrub_rule['min-ttl']) ? " min-ttl " . $scrub_rule['min-ttl'] .  " " : "";
-            $scrub_rule_out .= !empty($scrub_rule['set-tos']) ? " set-tos " . $scrub_rule['set-tos'] .  " " : "";
-        }
-        $scrub_rule_out .= "\n";
-
-        $scrubrules .= $scrub_rule_out;
+    $enabled = !isset($settings['scrub_enabled']) || !empty($settings['scrub_enabled']);
+    if (!$enabled) {
+        return $scrubrules;
     }
 
-    /* scrub per interface options */
-    if (empty($config['system']['scrub_interface_disable'])) {
-        /* scrub generic options, appended to all default rules */
-        $scrub_gen_opts = !empty($config['system']['scrubnodf']) ? ' no-df ' : '';
-        $scrub_gen_opts .= (!empty($config['system']['scrubrnid']) ? ' random-id ' : '');
-        foreach ($FilterIflist as $scrubcfg) {
-            if (is_numeric($scrubcfg['mss'] ?? '')) {
-                /**
-                 * Legacy MSS clamping on interface expects outbound packets to be scrubbed in order to work.
-                 * https://github.com/pfsense/pfsense/commit/7c382a8
-                 *
-                 * In a future release we might want to consider to move the MSS option from the interface into a
-                 * manual scrubbing rule, this is a bit intransparant.
-                 */
-                $mssclampv4 = 'max-mss ' . (intval($scrubcfg['mss'] - 40));
-                $mssclampv6 = 'max-mss ' . (intval($scrubcfg['mss'] - 60));
-                $scrubrules .= "scrub on {$scrubcfg['if']} inet all {$scrub_gen_opts} {$mssclampv4}\n";
-                $scrubrules .= "scrub on {$scrubcfg['if']} inet6 all {$scrub_gen_opts} {$mssclampv6}\n";
-            }
+    if (!empty($settings['scrub_random_id'])) {
+        $scrubrules .= "match in inet all scrub ( random-id )\n";
+    }
+    foreach ($FilterIflist as $scrubcfg) {
+        if (is_numeric($scrubcfg['mss'] ?? '')) {
+            /**
+             * The interface value is an MTU, while PF expects the TCP payload MSS.
+             * Keep random-id on these bidirectional rules to preserve the old interface scrub behavior.
+             */
+            $mssclampv4 = 'max-mss ' . (intval($scrubcfg['mss'] - 40));
+            $mssclampv6 = 'max-mss ' . (intval($scrubcfg['mss'] - 60));
+            $random_id = !empty($settings['scrub_random_id']) ? ' random-id' : '';
+            $scrubrules .= "match on {$scrubcfg['if']} inet all scrub ( {$mssclampv4}{$random_id} )\n";
+            $scrubrules .= "match on {$scrubcfg['if']} inet6 all scrub ( {$mssclampv6}{$random_id} )\n";
         }
-        $scrubrules .= "scrub in all {$scrub_gen_opts}\n";
     }
 
     return $scrubrules;

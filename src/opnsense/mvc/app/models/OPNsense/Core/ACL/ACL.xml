@@ -88,8 +88,12 @@
     <page-diagnostics-logs-system>
         <name>Diagnostics: Logs: System</name>
         <patterns>
+            <pattern>ui/diagnostics/log/core/audit/*</pattern>
+            <pattern>api/diagnostics/log/core/audit/*</pattern>
             <pattern>ui/diagnostics/log/core/configd/*</pattern>
             <pattern>api/diagnostics/log/core/configd/*</pattern>
+            <pattern>ui/diagnostics/log/core/boot/*</pattern>
+            <pattern>api/diagnostics/log/core/boot/*</pattern>
             <pattern>ui/diagnostics/log/core/system/*</pattern>
             <pattern>api/diagnostics/log/core/system/*</pattern>
             <pattern>ui/diagnostics/log/core/lighttpd/*</pattern>
@@ -236,13 +240,6 @@
             <pattern>firewall_schedule.php*</pattern>
         </patterns>
     </page-firewall-schedules>
-    <page-firewall-scrub>
-        <name>Firewall: Normalization</name>
-        <patterns>
-            <pattern>firewall_scrub.php*</pattern>
-            <pattern>firewall_scrub_edit.php*</pattern>
-        </patterns>
-    </page-firewall-scrub>
     <page-firewall-schedules-edit>
         <name>Firewall: Schedules: Edit</name>
         <patterns>
@@ -338,15 +335,10 @@
     <page-interfaces-wireless-edit>
         <name>Interfaces: Wireless edit</name>
         <patterns>
-            <pattern>interfaces_wireless_edit.php*</pattern>
+            <pattern>ui/interfaces/wireless</pattern>
+            <pattern>api/interfaces/wireless_settings/*</pattern>
         </patterns>
     </page-interfaces-wireless-edit>
-    <page-interfaces-wireless>
-        <name>Interfaces: Wireless</name>
-        <patterns>
-            <pattern>interfaces_wireless.php*</pattern>
-        </patterns>
-    </page-interfaces-wireless>
     <page-wizard-system>
         <name>System: Configuration: Wizard</name>
         <patterns>
@@ -476,26 +468,33 @@
         </patterns>
     </page-system-authservers>
     <page-system-camanager>
-        <name>System: CA Manager</name>
+        <name>System: Trust: Authorities</name>
         <patterns>
             <pattern>ui/trust/ca</pattern>
             <pattern>api/trust/ca/*</pattern>
         </patterns>
     </page-system-camanager>
     <page-system-certmanager>
-        <name>System: Certificate Manager</name>
+        <name>System: Trust: Certificates</name>
         <patterns>
             <pattern>ui/trust/cert</pattern>
             <pattern>api/trust/cert/*</pattern>
         </patterns>
     </page-system-certmanager>
     <page-system-crlmanager>
-        <name>System: CRL Manager</name>
+        <name>System: Trust: Revocation</name>
         <patterns>
             <pattern>ui/trust/crl</pattern>
             <pattern>api/trust/crl/*</pattern>
         </patterns>
     </page-system-crlmanager>
+    <page-system-trust-settings>
+        <name>System: Trust: Settings</name>
+        <patterns>
+            <pattern>ui/trust/settings</pattern>
+            <pattern>api/trust/settings/*</pattern>
+        </patterns>
+    </page-system-trust-settings>
     <page-snapshots>
         <name>System: Snapshots</name>
         <patterns>

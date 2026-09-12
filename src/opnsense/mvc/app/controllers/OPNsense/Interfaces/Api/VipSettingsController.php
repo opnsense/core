@@ -53,6 +53,9 @@ class VipSettingsController extends ApiMutableModelControllerBase
             if (count($parts) == 2 && $parts[1] != '') {
                 $overlay['subnet_bits'] = $parts[1];
             }
+        } elseif (empty($tmp['subnet']) || empty($tmp['subnet_bits'])) {
+            $overlay['subnet'] = '';
+            $overlay['subnet_bits'] = '';
         }
         return $overlay;
     }
@@ -140,6 +143,13 @@ class VipSettingsController extends ApiMutableModelControllerBase
                 ];
             }
         }
+
+        $result = $this->handleFormValidations($this->setBase('vip', 'vip', $uuid, $this->getVipOverlay()));
+        if (!empty($result['validations'])) {
+            /* skip todo registration when not applied */
+            return $result;
+        }
+
         if ($node != null && ($post_subnet != (string)$node->subnet || $post_interface != (string)$node->interface)) {
             $addr = (string)$node->subnet;
             if (Util::isLinkLocal($addr)) {
@@ -148,7 +158,7 @@ class VipSettingsController extends ApiMutableModelControllerBase
             file_put_contents("/tmp/delete_vip_{$uuid}.todo", $addr . PHP_EOL, FILE_APPEND);
         }
 
-        return $this->handleFormValidations($this->setBase('vip', 'vip', $uuid, $this->getVipOverlay()));
+        return $result;
     }
 
     public function addItemAction()

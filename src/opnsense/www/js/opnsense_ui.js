@@ -72,6 +72,11 @@ function saveFormToEndpoint(url, formid, callback_ok, disable_dialog, callback_f
 
             // if there are validation issues, update our screen and show a dialog.
             if (data['validations'] !== undefined) {
+                $(document).trigger("validation-failed", {
+                    url: url,
+                    formid: formid,
+                    data: data
+                });
                 if (!disable_dialog) {
                     const detailsid = "errorfrm" + Math.floor((Math.random() * 10000000) + 1);
                     const errorMessage = $('<div></div>');
@@ -425,15 +430,17 @@ function initFormHelpUI() {
     // handle all help messages show/hide
     let elements = $('[id*="show_all_help"]');
     elements.click(function(event) {
-        $(this).toggleClass("fa-toggle-on fa-toggle-off");
-        $(this).toggleClass("text-success text-danger");
-        if ($(this).hasClass("fa-toggle-on")) {
+        let element = $(this);
+        const $form = $(this).closest('form[id^="frm"]');
+        element.toggleClass("fa-toggle-on fa-toggle-off");
+        element.toggleClass("text-success text-danger");
+        if (element.hasClass("fa-toggle-on")) {
             if (window.sessionStorage) {
                 sessionStorage.setItem('all_help_preset', 1);
             }
-            $('[data-for*="help_for"]').addClass("show").removeClass("hidden");
+            $form.find('[data-for*="help_for"]').addClass("show").removeClass("hidden");
         } else {
-            $('[data-for*="help_for"]').addClass("hidden").removeClass("show");
+            $form.find('[data-for*="help_for"]').addClass("hidden").removeClass("show");
             if (window.sessionStorage) {
                 sessionStorage.setItem('all_help_preset', 0);
             }
@@ -560,19 +567,123 @@ function initFormAdvancedUI() {
     }
 
     elements.click(function() {
-        elements.toggleClass("fa-toggle-on fa-toggle-off");
-        elements.toggleClass("text-success text-danger");
-        if (elements.hasClass("fa-toggle-on")) {
-            $('[data-advanced*="true"]').show();
+        let element = $(this);
+        const $form = $(this).closest('form[id^="frm"]');
+        element.toggleClass("fa-toggle-on fa-toggle-off");
+        element.toggleClass("text-success text-danger");
+        if (element.hasClass("fa-toggle-on")) {
+            $form.find('[data-advanced*="true"]').show();
             if (window.sessionStorage) {
                 sessionStorage.setItem('show_advanced_preset', 1);
             }
         } else {
-            $('[data-advanced*="true"]').hide()
+            $form.find('[data-advanced*="true"]').hide()
             if (window.sessionStorage) {
                 sessionStorage.setItem('show_advanced_preset', 0);
             }
         }
+    });
+}
+
+/**
+ * Filter dialog form fields while preserving collapsed sections and advanced mode.
+ */
+function initFormSearchUI() {
+    $('.form-search input[type="search"]').each(function() {
+        const $search = $(this);
+        const $modal = $search.closest('.modal');
+        const $form = $modal.find('form[id^="frm"]').first();
+
+        function filterForm() {
+            const terms = $search.val().trim().toLowerCase().split(/\s+/).filter(e => e);
+            let hasResults = false;
+
+            $form.find('.form-search-section').each(function() {
+                const $section = $(this);
+                const $table = $section.children('table');
+                const $body = $table.children('tbody');
+                const $heading = $table.children('thead');
+                const $headingRow = $heading.children('tr');
+                const $icon = $headingRow.find('> th > div > i');
+                const $rows = $body.children('tr').not('.dummy_row');
+                const $displayElements = $section.add($heading).add($headingRow).add($body)
+                    .add($rows).add($rows.children('td'));
+
+                if (terms.length === 0) {
+                    /* reset elements to their visible state before search */
+                    $displayElements.each(function() {
+                        const display = $(this).data('form-search-display');
+                        if (display !== undefined) {
+                            this.style.display = display;
+                            $(this).removeData('form-search-display');
+                        }
+                    });
+                    $body.removeData('form-search-active');
+                    const wasCollapsed = $icon.data('form-search-collapsed');
+                    if (wasCollapsed !== undefined) {
+                        $icon.toggleClass('fa-angle-right', wasCollapsed)
+                            .toggleClass('fa-angle-down', !wasCollapsed)
+                            .removeData('form-search-collapsed');
+                    }
+                    return;
+                } else if (!$body.data('form-search-active')) {
+                    /* capture initial visible state */
+                    $body.data('form-search-active', true);
+                    $icon.data('form-search-collapsed', $icon.hasClass('fa-angle-right'));
+                    $displayElements.each(function() {
+                        $(this).data('form-search-display', this.style.display || '');
+                    });
+                }
+
+                const sectionMatches = terms.every(term => $heading.text().toLowerCase().includes(term));
+                let $subheader = $();
+                let subheaderMatches = false;
+                let hasMatches = false;
+
+                $rows.each(function() {
+                    const $row = $(this);
+                    if (!$row.attr('id')) {
+                        $row.hide();
+                        return;
+                    } else if ($row.hasClass('form-search-subheader')) {
+                        $subheader = $row;
+                        subheaderMatches = terms.every(term => $row.text().toLowerCase().includes(term));
+                        $row.hide();
+                        return;
+                    }
+
+                    const rowMatches = sectionMatches || subheaderMatches ||
+                        terms.every(term => $row.text().toLowerCase().includes(term));
+                    $row.toggle(rowMatches);
+                    if (rowMatches) {
+                        $row.add($subheader).show().children('td').css('display', '');
+                        hasMatches = true;
+                    }
+                });
+
+                $section.add($heading).add($headingRow).toggle(hasMatches);
+                $body.css('display', hasMatches ? '' : 'none');
+                $icon.removeClass('fa-angle-right').addClass('fa-angle-down');
+                hasResults = hasResults || hasMatches;
+            });
+
+            $form.find('.form-search-no-results').toggle(terms.length > 0 && !hasResults);
+        }
+
+        $search.on('input', filterForm);
+        $search.closest('.form-search').on('mousedown', function(event) {
+            event.stopPropagation();
+        });
+
+        // restore state where relevant
+        $modal.on('hidden.bs.modal', function() {
+            $search.val('');
+            filterForm();
+        });
+        $(document).on("validation-failed", function () {
+            $search.val('');
+            filterForm();
+        });
     });
 }
 
@@ -591,17 +702,22 @@ function initGlobalOpenShortcuts() {
         const searchContext = $context.length > 0 ? $context : $(document);
 
         if (e.key === 'a' || e.key === 'A') {
-            const $adv = searchContext.find('[id*="show_advanced"]').first();
-            if ($adv.length) {
-                $adv.click();
+            searchContext.find('[id*="show_advanced"]').each(function () {
+                $(this).click();
+                e.preventDefault();
+            });
+        } else if (e.key === 'f' || e.key === 'F') {
+            /* In case multiple grids are present, use the first matching action bar in the current context */
+            const $maximize = searchContext.find('[id$="-actions-group"] button[id$="-maximize"]:visible').first();
+            if ($maximize.length) {
+                $maximize.click();
                 e.preventDefault();
             }
         } else if (e.key === 'h' || e.key === 'H') {
-            const $help = searchContext.find('[id*="show_all_help"]').first();
-            if ($help.length) {
-                $help.click();
+            searchContext.find('[id*="show_all_help"]').each(function () {
+                $(this).click();
                 e.preventDefault();
-            }
+            });
         }
     });
 }
@@ -1078,7 +1194,7 @@ $.fn.replaceInputWithSelector = function (data, multiple=false) {
     this.new_item = function() {
         let $div = $("<div/>");
         let $table = $('<table style="max-width: 348px"/>');
-        let $select = $('<select name="' + that[0].name + '" data-live-search="true" data-size="5" data-width="348px"></select>');
+        let $select = $('<select name="' + that[0].name + '" data-live-search="true" data-size="5" data-width="348px" data-container="body"></select>');
         if (multiple) {
             $select.attr('multiple', 'multiple');
         }

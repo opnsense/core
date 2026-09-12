@@ -36,12 +36,39 @@
                     formatters: {
                         statusformatter: function (column, row) {
                             return $("<div/>").addClass(row[column.id])[0];
-                        }
+                        },
+                        ipv4typeformatter: function (column, row) {
+                            return row.type4 === 'staticv4' ? row.ipaddr : row['%type4'];
+                        },
+                        ipv6typeformatter: function (column, row) {
+                            return row.type6 === 'staticv6' ? row.ipaddrv6 : row['%type6'];
+                        },
                     }
                 }
             }
         );
         $("#reconfigureAct").SimpleActionButton();
+
+        $('select.ipoption').change(function(){
+            let this_id = $(this).attr('id').split('.')[1];
+            let this_value =  $(this).val();
+            let show_advanced = $("#show_advanced_dialog_dialogAssignment").hasClass('fa-toggle-on');
+            $("."+this_id).closest('tr').hide();
+            $("."+this_id + '_' + $(this).val()).each(function(){
+                let tr = $(this).closest("tr");
+                if ((tr.data('advanced') && show_advanced) || !tr.data('advanced')) {
+                    tr.show();
+                }
+            });
+        });
+
+        $("#interface\\.hw_settings_overwrite").change(function(){
+            if ($(this).is(':checked')) {
+                $(".hw_settings_overwrite").closest('tr').show();
+            } else {
+                $(".hw_settings_overwrite").closest('tr').hide();
+            }
+        });
 
     });
 </script>

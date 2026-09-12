@@ -28,6 +28,8 @@
 
 namespace OPNsense\Auth\SSOProviders;
 
+use OPNsense\Core\SanitizeFilter;
+
 class Provider
 {
     public readonly string $id;             /* unique id for this provider */
@@ -71,9 +73,16 @@ class Provider
         if (!empty($this->html_content)) {
             return $this->html_content;
         } else {
+            $login_uri = $this->login_uri;
+            // pass url parameter when offered
+            $uri = (new SanitizeFilter())->sanitize($_GET['url'] ?? '', 'local_uri');
+            if (!empty($uri)) {
+                $sep = str_contains($login_uri, '?') ? '&' : '?';
+                $login_uri .= $sep . 'redir=' . rawurlencode($uri);
+            }
             return sprintf(
                 gettext("Login using <a href='%s'>%s</a>"),
-                $this->login_uri,
+                $login_uri,
                 $this->name
             );
         }

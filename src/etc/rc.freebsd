@@ -79,10 +79,16 @@ rc_enabled()
 	esac
 }
 
+get_service_pid()
+{
+	${1} status 2>/dev/null | awk '{gsub(/[^0-9]/, "", $NF); print $NF}'
+}
+
 rc_filenames="$(${RCORDER} /etc/rc.d/* /usr/local/etc/rc.d/* 2> /dev/null)"
 rc_filenames_defer=
 rc_filenames_reverse=
 rc_filenames_skip=
+service_stop_timeout=30
 
 for rc_filename in ${rc_filenames}; do
 	eval "$(grep "^name[[:blank:]]*=" ${rc_filename})"
@@ -115,11 +121,36 @@ fi
 
 # pass all commands to script now
 for rc_filename in ${rc_filenames}; do
+	watchdog_pid=
 	eval "$(grep "^name[[:blank:]]*=" ${rc_filename})"
 
 	if ! rc_enabled ${rc_filename} ${name}; then
 		continue
 	fi
 
+	if [ "${1}" = "stop" ]; then
+		if [ -n "$(get_service_pid "${rc_filename}")" ]; then
+			# Watchdog
+			(
+				sleep "${service_stop_timeout}"
+
+				current_pid="$(get_service_pid "${rc_filename}")"
+
+				if [ -n "${current_pid}" ]; then
+					echo " Service ${name} did not stop within ${service_stop_timeout}s; killing pid ${current_pid}"
+					kill -KILL "${current_pid}" 2>/dev/null
+				else
+					echo " Service ${name} stop timed out, but pid disappeared"
+				fi
+			) &
+			watchdog_pid=$!
+		fi
+	fi
+
 	${rc_filename} ${1}
+
+	if [ -n "${watchdog_pid}" ]; then
+		kill "${watchdog_pid}" 2>/dev/null
+		wait "${watchdog_pid}" 2>/dev/null
+	fi
 done

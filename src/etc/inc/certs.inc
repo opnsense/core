@@ -249,10 +249,11 @@ function cert_get_purpose($str_crt, $decode = true)
     }
     $purpose['ca'] = in_array('CA:TRUE', $purpose['basicConstraints']) ? 'Yes' : 'No';
     $purpose['server'] = in_array('TLS Web Server Authentication', $purpose['extendedKeyUsage']) ? 'Yes' : 'No';
-    // rfc3280 extended key usage
+    // RFC 5280, section 4.2.1.12 lists these key usage bits as consistent with serverAuth
     if (
-        in_array('TLS Web Server Authentication', $purpose['extendedKeyUsage']) &&
-        in_array('Digital Signature', $purpose['keyUsage']) && (
+        in_array('TLS Web Server Authentication', $purpose['extendedKeyUsage']) && (
+            empty($purpose['keyUsage']) ||
+            in_array('Digital Signature', $purpose['keyUsage']) ||
             in_array('Key Encipherment', $purpose['keyUsage']) ||
             in_array('Key Agreement', $purpose['keyUsage'])
         )

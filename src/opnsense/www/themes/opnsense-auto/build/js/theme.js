@@ -29,6 +29,10 @@
     }
 
     if (window.matchMedia) {
+        /* write out during <head/> construction */
+        document.write(
+            '<style>html{visibility:hidden}</style>'
+        );
         switchLinks(getThemeName());
 
         document.addEventListener('DOMContentLoaded', function() {
@@ -36,6 +40,9 @@
             switchLinks(theme_name);
             switchImages(theme_name);
             window.dispatchEvent(new Event('resize'));
+        });
+        window.addEventListener("load", () => {
+            document.querySelector("html").style.visibility = "visible";
         });
 
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', themeSwitcher);

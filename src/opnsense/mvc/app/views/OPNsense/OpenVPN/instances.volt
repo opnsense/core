@@ -61,7 +61,7 @@
         });
 
         $("#instance\\.role, #instance\\.dev_type").change(function(){
-            const show_advanced = $("#show_advanced_formDialogdialog_dialogInstance").hasClass("fa-toggle-on");
+            const show_advanced = $("#show_advanced_dialog_dialogInstance").hasClass("fa-toggle-on");
             const this_role = $("#instance\\.role").val();
             const this_dev_type = $("#instance\\.dev_type").val();
             $(".role").each(function(){
@@ -73,7 +73,7 @@
                 }
             });
         });
-        $("#show_advanced_formDialogdialog_dialogInstance").click(function(){
+        $("#show_advanced_dialog_dialogInstance").click(function(){
             $("#instance\\.role").change();
         });
 

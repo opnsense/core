@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2021 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2021-2026 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -31,14 +31,14 @@ HEX_DIGITS = set("0123456789abcdef")
 
 result = list()
 unique_ids = set()
-for record in fetch_rule_labels().values():
-    if len(record['rid']) >= 32 and set(record['rid'].replace('-', '')).issubset(HEX_DIGITS):
-        if record['rid'] not in unique_ids:
-            if record['descr'] != "":
-                result.append({'id': record['rid'], 'descr': record['descr']})
+for rid, descr in fetch_rule_labels().items():
+    if len(rid) >= 32 and set(rid.replace('-', '')).issubset(HEX_DIGITS):
+        if rid not in unique_ids:
+            if descr != "":
+                result.append({'id': rid, 'descr': descr})
             else:
-                result.append({'id': record['rid'], 'descr': "-- %s" % record['rid']})
-            unique_ids.add(record['rid'])
+                result.append({'id': rid, 'descr': "-- %s" % rid})
+            unique_ids.add(rid)
 
 result = sorted(result, key=lambda k: k['descr'])
 print(ujson.dumps(result))

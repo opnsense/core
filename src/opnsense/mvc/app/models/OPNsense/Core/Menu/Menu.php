@@ -1,8 +1,7 @@
-#!/usr/local/bin/php
 <?php
 
 /*
- * Copyright (C) 2004 Scott Ullrich <sullrich@gmail.com>
+ * Copyright (C) 2026 Greelan
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,30 +26,26 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("config.inc");
-require_once("interfaces.inc");
-require_once("util.inc");
-require_once("plugins.inc.d/openvpn.inc");
+namespace OPNsense\Core\Menu;
 
-$subsystem = !empty($argv[1]) ? $argv[1] : '';
-$type = !empty($argv[2]) ? $argv[2] : '';
+use OPNsense\Auth\User;
+use OPNsense\Base\Menu\MenuContainer;
 
-if (!in_array($type, ['MASTER', 'BACKUP', 'INIT'])) {
-    log_msg("Carp '$type' event unknown from source '{$subsystem}'");
-    exit(1);
+class Menu extends MenuContainer
+{
+    public function collect()
+    {
+        if (empty($_SESSION['Username'])) {
+            return;
+        }
+        $user = new User();
+        if ($node = $user->getUserByName($_SESSION['Username'])) {
+            $favorites = $node->menu_favorites->deserialize();
+            foreach ($favorites as $idx => $url) {
+                $this->appendItem('Favorites', 'fav_' . $idx, [
+                    'linkclass' => 'menu_ref_' . md5($url),
+                ]);
+            }
+        }
+    }
 }
-
-if (!strstr($subsystem, '@')) {
-    log_msg("Carp '$type' event triggered from wrong source '{$subsystem}'");
-    exit(1);
-}
-
-list ($vhid, $iface) = explode('@', $subsystem);
-
-$friendly = convert_real_interface_to_friendly_interface_name($iface);
-$carp_iface = "{$friendly}_vip{$vhid}";
-$descr = convert_friendly_interface_to_friendly_descr($carp_iface);
-
-log_msg(sprintf('Carp cluster member "%s (%s)" has resumed the state "%s" for vhid %s', $descr, $subsystem, $type, $vhid));
-
-openvpn_configure_do(false, $carp_iface, true);

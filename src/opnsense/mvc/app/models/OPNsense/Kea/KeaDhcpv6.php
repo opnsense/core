@@ -328,7 +328,6 @@ class KeaDhcpv6 extends BaseModel
     private function getConfigSubnets($ddns_enabled = false, &$needs_no_leases_class = false, array &$flex_options = [], array &$client_classes = [])
     {
         $result = [];
-        $subnet_id = 1;
         foreach ($this->subnets->subnet6->iterateItems() as $subnet_uuid => $subnet) {
             // If subnet is dynamic, seed an initial subnet value so KEA can start
             $if = $subnet->interface->getValue();
@@ -343,7 +342,7 @@ class KeaDhcpv6 extends BaseModel
                 $subnet_value = $idassoc['prefix_allocated'] ?? '';
             }
             $record = [
-                'id' => $subnet_id++,
+                'id' => $subnet->subnet_id->asInt(),
                 'subnet' => $subnet_value,
                 'option-data' => [],
                 'pools' => [],

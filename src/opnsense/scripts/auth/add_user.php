@@ -70,7 +70,7 @@ if (isset($opts['h']) || empty($opts['u'])) {
         if ($usermdl->serializeToConfig(false, true)) {
             Config::getInstance()->save();
         }
-        configdp_run('auth user changed', [$userent['name']]);
+        configdp_run('auth user changed', [(string)$user->name]);
         echo json_encode(["status" => "ok", "uid" => (string)$user->uid, "name" => (string)$user->name]);
     } else {
         echo json_encode(["status" => "failed", "messages" => $input_errors]);

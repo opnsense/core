@@ -225,7 +225,7 @@ function core_devices()
     }
 
     $devices[] = [
-        'pattern' => '^cua|^l2tp|^ppp|^pptp', /* XXX ^cua likely doesn't match since it's a /dev node */
+        'pattern' => '^l2tp|^ppp|^pptp', /* includes ^pppoe */
         'names' => $ppp_names,
         'volatile' => true,
         'type' => 'ppp',
@@ -246,6 +246,7 @@ function core_devices()
         'pattern' => '_vlan|^vlan|^qinq',
         'names' => $vlan_names,
         'volatile' => true,
+        'reload' => false,
         'type' => 'vlan',
     ];
 
@@ -260,8 +261,9 @@ function core_devices()
     }
 
     /* also need to find implied clones that do not have explicit cloneif set */
+    /* XXX this may be obsolete / fixable in a migration now */
     foreach (legacy_config_get_interfaces() as $id => $conf) {
-        if (isset($conf['wireless']) && !isset($wlan_names[$conf['if']])) {
+        if (strpos($conf['if'], '_wlan') !== false && !isset($wlan_names[$conf['if']])) {
             $wlan_names[$conf['if']] = [
                 'descr' => sprintf('%s (%s)', $conf['if'], gettext('wireless clone')),
                 'ifdescr' => gettext('wireless clone'),

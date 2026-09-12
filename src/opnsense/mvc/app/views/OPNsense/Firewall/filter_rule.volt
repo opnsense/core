@@ -287,7 +287,10 @@
                         return '<i class="fa-solid fa-fw fa-check-square" data-toggle="tooltip" title="{{ lang._('Enabled') }}"></i>';;
                     },
                     interface: function (column) {
-                        return '<i class="fa-solid fa-fw fa-network-wired" data-toggle="tooltip" title="{{ lang._('Network interface') }}"></i>';
+                        return '<span class="text-nowrap" data-toggle="tooltip" title="{{ lang._('Interface (rule)') }}"><i class="fa-solid fa-fw fa-network-wired"></i> {{ lang._('Rule') }}</span>';
+                    },
+                    'received-on': function (column) {
+                        return '<span class="text-nowrap" data-toggle="tooltip" title="{{ lang._('Interface (origin)') }}"><i class="fa-solid fa-fw fa-network-wired"></i> {{ lang._('Origin') }}</span>';
                     },
                     evaluations: function (column) {
                         return '<i class="fa-solid fa-fw fa-bullseye" data-toggle="tooltip" title="{{ lang._('Number of rule evaluations') }}"></i>';
@@ -428,7 +431,10 @@
 
                         // Only single interfaces can be negated
                         if (!interfaces.includes(",")) {
-                            return (row.interfacenot == 1 ? "! " : "") + interfaces;
+                            const invertField = Object.keys(row).find(
+                                field => field.startsWith(column.id) && field.endsWith("not")
+                            );
+                            return (row[invertField] == 1 ? "! " : "") + interfaces;
                         }
 
                         const interfaceList = interfaces.split(",");
@@ -458,7 +464,9 @@
                         }
 
                         // Action
-                        if (row.action === "block") {
+                        if (row.action === "match") {
+                            result += `<i class="fa fa-filter fa-fw text-warning" data-toggle="tooltip" title="${row['%action']}"></i> `;
+                        } else if (row.action === "block") {
                             result += `<i class="fa fa-times fa-fw text-danger" data-toggle="tooltip" title="${row['%action']}"></i> `;
                         } else if (row.action === "reject") {
                             result += `<i class="fa fa-times-circle fa-fw text-danger" data-toggle="tooltip" title="${row['%action']}"></i> `;
@@ -507,7 +515,7 @@
                         let tooltip;
                         if (usedAdvancedFields.length > 0) {
                             iconClass = "text-warning";
-                            tooltip = `{{ lang._("Advanced mode enabled") }}<br>${usedAdvancedFields.join("<br>")}`;
+                            tooltip = htmlSafe(usedAdvancedFields.join("<br>"));
                         } else {
                             iconClass = "text-muted";
                             tooltip = "{{ lang._('Advanced mode disabled') }}";
@@ -1086,6 +1094,28 @@
                     $('#rule\\.categories').selectpicker('val', selectedCategories);
                     $('#rule\\.categories').selectpicker('refresh');
                 }
+            }
+        });
+
+        // XXX: the backend normalizes this, there are no explicit validations in Filter.php for some combinations
+        //      it would be better if the backend could trust the data though at some point
+        $('#rule\\.action').change(function(event) {
+            if (event.originalEvent === undefined) {
+                return;
+            }
+            if ($(this).val() === 'match') {
+                /* Match rules are usually not quick, since a match would stop further ruleset evaluation. */
+                $('#rule\\.quick').prop('checked', false).change();
+            }
+            if ($(this).val() !== 'pass') {
+                $('#rule\\.statetype').val('none').change();
+                [
+                    'divert-to',
+                    'gateway',
+                    'replyto',
+                ].forEach(function(fieldname) {
+                    $('#rule\\.' + fieldname).val('').change();
+                });
             }
         });
 

@@ -97,6 +97,7 @@ function plugins_devices()
     $defaults = [
         'configurable' => true, /* allow to configure IP connectivity */
         'pattern' => '^impossiblecontrolmatch$', /* never match by default */
+        'reload' => true, /* allow to reload on the fly */
         'spoofmac' => true, /* allow to change the MAC address */
         'volatile' => false, /* device known to persist */
     ];

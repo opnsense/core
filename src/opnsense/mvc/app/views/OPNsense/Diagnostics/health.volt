@@ -308,8 +308,8 @@
     </div>
     <div id="health-settings" class="tab-pane fade in">
         {{ partial("layout_partials/base_form",['fields':systemHealthForm,'id':'frm_HealthSettings'])}}
-        <button id="list-rrd" class="btn btn-default __mr" style="display: none;">{{ lang._('Show Collected Reports') }}</button>
-        <button id="reset-rrd" class="btn btn-default __mr" style="display: none;">{{ lang._('Reset RRD Data') }}</button>
+        <button id="list-rrd" class="btn btn-default __mr" style="display: none;">{{ lang._('Show collected reports') }}</button>
+        <button id="reset-rrd" class="btn btn-default __mr" style="display: none;">{{ lang._('Reset RRD data') }}</button>
     </div>
 </div>
 

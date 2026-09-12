@@ -474,7 +474,7 @@ function get_nameservers($interface = null, $with_gateway = false)
     }
 
     if (!$with_gateway) {
-        $master_list = array_unique($master_list);
+        $master_list = array_values(array_unique($master_list));
     }
 
     return $master_list;
@@ -1187,6 +1187,11 @@ function system_cache_flush($verbose = false)
 
     /* clears ALL model caches, not just model specific ones via flushCacheData() */
     foreach (glob('/var/lib/php/tmp/mdl_cache_*.json') as $filename) {
+        @unlink($filename);
+    }
+
+    /* clears template cache; latest Phaclon seems to not flush them */
+    foreach (glob('/var/lib/php/cache/*.php') as $filename) {
         @unlink($filename);
     }
 

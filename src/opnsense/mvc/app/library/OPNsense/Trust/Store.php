@@ -412,12 +412,14 @@ class Store
             }
         }
 
-        // rfc3280 purpose definitions (+ cert_type derivative field)
+        // Extended key usage purpose definitions (+ cert_type derivative field)
         $result['rfc3280_purpose'] = '';
         $result['cert_type'] = '';
+        // RFC 5280, section 4.2.1.12 lists these key usage bits as consistent with serverAuth
         if (
-            in_array('TLS Web Server Authentication', $purpose['extendedKeyUsage']) &&
-            in_array('Digital Signature', $purpose['keyUsage']) && (
+            in_array('TLS Web Server Authentication', $purpose['extendedKeyUsage']) && (
+                empty($purpose['keyUsage']) ||
+                in_array('Digital Signature', $purpose['keyUsage']) ||
                 in_array('Key Encipherment', $purpose['keyUsage']) ||
                 in_array('Key Agreement', $purpose['keyUsage'])
             )

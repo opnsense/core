@@ -313,14 +313,15 @@
     </Wireguard>
     <services>
         <filename>Services.js</filename>
+        <link>/ui/core/service</link>
         <endpoints>
             <endpoint>/api/core/service/*</endpoint>
         </endpoints>
         <translations>
             <title>Services</title>
             <noservices>No services found</noservices>
-            <running>running</running>
-            <stopped>stopped</stopped>
+            <running>Running</running>
+            <stopped>Stopped</stopped>
             <restart>Restart</restart>
             <stop>Stop</stop>
             <start>Start</start>

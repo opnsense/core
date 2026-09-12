@@ -181,7 +181,7 @@ function filter_auto_source_nat($fw = null)
     if (in_array($outbound['mode'] ?? '', ['', 'automatic', 'hybrid'])) {
         $fw ??= filter_core_get_initialized_plugin_system();
 
-        $networks = array_merge(...array_values(plugins_run('outbound_net', [$fw])));
+        $networks = array_merge(...array_values(plugins_run('networks_source_nat', [$fw])));
 
         foreach ($fw->getInterfaceMapping() as $interface => $ifcfg) {
             /* XXX VPN is allowed but not OpenVPN dropping /tmp/ovpnxy_router(v6) file */
@@ -362,7 +362,7 @@ function filter_core_rules_system($fw, $defaults)
             ['direction' => 'in', 'interface' => $intf, 'ipprotocol' => 'inet6',
             '#ref' => "interfaces.php?if=" . $intf . "#blockpriv",
             'descr' => "Block private networks from " . $intfinfo['descr'],
-            'from' => 'fd00::/8,fe80::/10,::/128',
+            'from' => 'fd00::/8,fe80::/10,::1/128',
             'disabled' => $ipv6_disabled || empty($intfinfo['blockpriv'])],
             $privtmpl
         );
@@ -651,10 +651,11 @@ function filter_core_rules_system($fw, $defaults)
                 'descr' => $dnatrule['descr']
             ];
             if (!empty($dnatrule['destination']['port']) && !empty($dnatrule['local-port'])) {
-                $tmprule['destination']['port'] = $dnatrule['local-port'];
-                $parts = explode('-', $dnatrule['destination']['port']);
+                $tmprule['destination']['port'] = $rule->{'local-port'}->normalizedPort();
+
+                $parts = explode('-', $rule->destination->port->normalizedPort());
                 if (count($parts) == 2) {
-                    $range_end = $parts[1] - $parts[0] + $dnatrule['local-port'];
+                    $range_end = $parts[1] - $parts[0] + $tmprule['destination']['port'];
                     $tmprule['destination']['port'] .= sprintf('-%s', $range_end);
                 }
             } elseif (!empty($dnatrule['local-port'])) {

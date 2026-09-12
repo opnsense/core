@@ -254,6 +254,7 @@
         <type>text</type>
     </field>
     <field>
+        <id>connection.actions</id>
         <type>buttons</type>
         <parent>ConnectionDialog</parent>
         <cancel>true</cancel>

@@ -119,7 +119,7 @@ function openssh_configure_do($verbose = false, $interface_map = null)
     }
 
     /* lock the config generation and service start/stop, also secures key generation */
-    $fobj = new \OPNsense\Core\FileObject('/usr/local/etc/ssh/sshd_config', 'a+', null, LOCK_EX);
+    $fobj = new \OPNsense\Core\FileObject('/usr/local/etc/ssh/sshd_config', 'a+e', null, LOCK_EX);
 
     openssh_stop();
 
@@ -131,24 +131,16 @@ function openssh_configure_do($verbose = false, $interface_map = null)
 
     $keys = [
         /* .pub files are implied */
-        'rsa' => 'ssh_host_rsa_key',
-        'ecdsa' => 'ssh_host_ecdsa_key',
+        'rsa' => 'ssh_host_rsa_key', /* XXX could drop this from generation */
+        'ecdsa' => 'ssh_host_ecdsa_key', /* XXX could drop this from generation */
         'ed25519' => 'ssh_host_ed25519_key',
+        'mldsa44-ed25519' => 'ssh_host_mldsa44_ed25519_key',
     ];
 
-    /* Check for all needed key files. If any are missing, the keys need to be regenerated. */
-    $generate_keys = false;
-    foreach ($keys as $name) {
+    /* Check for all needed key files. Regenerate missing ones. */
+    foreach ($keys as $type => $name) {
         $file = "/conf/sshd/{$name}";
         if (!file_exists($file) || !file_exists("{$file}.pub")) {
-            $generate_keys = true;
-            break;
-        }
-    }
-
-    if ($generate_keys) {
-        foreach ($keys as $type => $name) {
-            $file = "/conf/sshd/{$name}";
             @unlink("{$file}.pub");
             @unlink($file);
             mwexecf('/usr/local/bin/ssh-keygen -t %s -N "" -f %s', [$type, $file]);
@@ -169,6 +161,7 @@ function openssh_configure_do($verbose = false, $interface_map = null)
     $sshconf .= "PubkeyAuthentication yes\n";
     $sshconf .= "Subsystem sftp internal-sftp\n";
     $sshconf .= "AllowGroups wheel\n";
+    $sshconf .= "PubkeyAcceptedAlgorithms +ssh-mldsa44-ed25519@openssh.com\n";
 
     $sshconf .= sprintf("PermitRootLogin %s\n", isset($sshcfg['permitrootlogin']) ? 'yes' : 'no');
     $sshconf .= sprintf("ChallengeResponseAuthentication %s\n", isset($sshcfg['passwordauth']) ? 'yes' : 'no');

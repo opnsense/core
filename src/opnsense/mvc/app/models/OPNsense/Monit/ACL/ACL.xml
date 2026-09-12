@@ -1,12 +1,14 @@
 <acl>
    <page-services-monit>
-      <name>WebCfg - Services: Monit System Monitoring page</name>
+      <name>Services: Monit</name>
       <description>Allow access to the 'Services: Monit System Monitoring' page.</description>
       <patterns>
          <pattern>ui/monit/*</pattern>
          <pattern>api/monit/service/*</pattern>
          <pattern>api/monit/settings/*</pattern>
          <pattern>api/monit/status/*</pattern>
+         <pattern>ui/diagnostics/log/core/monit/*</pattern>
+         <pattern>api/diagnostics/log/core/monit/*</pattern>
       </patterns>
    </page-services-monit>
 </acl>

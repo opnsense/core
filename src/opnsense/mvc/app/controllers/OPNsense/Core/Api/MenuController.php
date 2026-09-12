@@ -30,9 +30,11 @@
 
 namespace OPNsense\Core\Api;
 
+use OPNsense\Auth\User;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Base\Menu;
 use OPNsense\Core\ACL;
+use OPNsense\Core\Config;
 
 /**
  * Class MenuController
@@ -109,7 +111,6 @@ class MenuController extends ApiControllerBase
         $this->applyACL($menu_items, $acl);
         return $menu_items;
     }
-
 
     /**
      * flatten menu structure, only returning visible entries
@@ -188,5 +189,48 @@ class MenuController extends ApiControllerBase
         $items = array();
         $this->extractMenuLeaves($menu_items, $items);
         return $items;
+    }
+
+    /**
+     * set/unset a menu item as favorite
+     * @return array
+     */
+    public function setFavoriteAction()
+    {
+        if (!$this->request->isPost()) {
+            return ['result' => 'failed'];
+        }
+
+        $menuUrl = $this->request->getPost('menuUrl', null, null);
+        $isFavorite = $this->request->getPost('isFavorite', null, null);
+
+        if ($menuUrl === null || $isFavorite === null) {
+            return ['result' => 'failed'];
+        }
+
+        // validate that the submitted URL is a visible menu item for this user
+        $menuItems = $this->getMenu('/');
+        $items = [];
+        $this->extractMenuLeaves($menuItems, $items);
+        $validUrls = array_column($items, 'Url');
+        if (!in_array($menuUrl, $validUrls)) {
+            return ['result' => 'failed'];
+        }
+
+        /* update user model with current set of valid favorites */
+        $user = new User();
+        if ($node = $user->getUserByName($this->getUserName())) {
+            $favorites = array_values(array_intersect($node->menu_favorites->deserialize(), $validUrls));
+            $favorites = array_values(array_filter($favorites, fn($value) => $value !== $menuUrl));
+            if (!empty($isFavorite)) {
+                $favorites[] = $menuUrl;
+            }
+            if ($node->menu_favorites->serialize($favorites) && $user->serializeToConfig(false, true)) {
+                Config::getInstance()->save();
+                return ['result' => 'saved'];
+            }
+        }
+
+        return ['result' => 'failed'];
     }
 }

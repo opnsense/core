@@ -1,5 +1,15 @@
 <form>
     <field>
+        <id>subnet4.subnet_id</id>
+        <label>Subnet ID</label>
+        <type>text</type>
+        <help>ID used to identify this subnet and its leases in the running configuration.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>subnet4.subnet</id>
         <label>Subnet</label>
         <type>text</type>

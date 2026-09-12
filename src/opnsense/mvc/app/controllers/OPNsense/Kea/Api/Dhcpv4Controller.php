@@ -73,7 +73,18 @@ class Dhcpv4Controller extends ApiMutableModelControllerBase
 
     public function getSubnetAction($uuid = null)
     {
-        return $this->getBase("subnet4", "subnets.subnet4", $uuid);
+        $result = $this->getBase("subnet4", "subnets.subnet4", $uuid);
+
+        // Ease cloning as subnet_id has unique constraint
+        if ($this->request->get('fetchmode') === 'copy' && !empty($result['subnet4'])) {
+            $max = 0;
+            foreach ($this->getModel()->subnets->subnet4->iterateItems() as $subnet) {
+                $max = max($subnet->subnet_id->asInt(), $max);
+            }
+            $result['subnet4']['subnet_id'] = $max + 1;
+        }
+
+        return $result;
     }
 
     public function delSubnetAction($uuid)

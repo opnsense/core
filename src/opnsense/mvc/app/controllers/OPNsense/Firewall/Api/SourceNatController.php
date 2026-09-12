@@ -35,7 +35,7 @@ class SourceNatController extends FilterBaseController
     protected static $categorysource = "snatrules.rule";
 
     /**
-     * set/get only affect general settings
+     * set/get only affect source NAT settings
      */
     public function setAction()
     {
@@ -43,8 +43,8 @@ class SourceNatController extends FilterBaseController
         if ($this->request->isPost()) {
             Config::getInstance()->lock();
             $mdl = $this->getModel();
-            $mdl->general->setNodes($this->request->getPost('filter')['general'] ?? []);
-            $result = $this->validate($mdl->general, 'filter.general');
+            $mdl->settings->nat->setNodes($this->request->getPost('filter')['settings']['nat'] ?? []);
+            $result = $this->validate($mdl->settings->nat, 'filter.settings.nat');
             if (empty($result['result'])) {
                 return $this->save(false, true);
             }
@@ -54,17 +54,18 @@ class SourceNatController extends FilterBaseController
 
     public function getAction()
     {
-        $data = parent::getAction();
         return [
             self::$internalModelName => [
-                'general' => $data[self::$internalModelName]['general']
-            ]
+                'settings' => [
+                    'nat' => $this->getModel()->settings->nat->getNodes(),
+                ],
+            ],
         ];
     }
 
     private function getAutomaticOutboundNatRules(): array
     {
-        $automatic_rules = (json_decode((new Backend())->configdRun('filter list automatic_outbound_nat'), true))['pf'] ?? [];
+        $automatic_rules = (json_decode((new Backend())->configdRun('filter list automatic_source_nat'), true))['pf'] ?? [];
         $config = Config::getInstance()->object();
         $rows = [];
         $sequence = 1;
@@ -120,7 +121,7 @@ class SourceNatController extends FilterBaseController
     public function searchRuleAction()
     {
         $category = (array)$this->request->get('category');
-        $mode = $this->getModel()->general->snat_mode->getValue();
+        $mode = $this->getModel()->settings->nat->snat_mode->getValue();
         $allrules = [];
 
         if (in_array($mode, ['hybrid', 'advanced'], true)) {
@@ -200,11 +201,11 @@ class SourceNatController extends FilterBaseController
 
     public function downloadRulesAction()
     {
-        return $this->downloadRulesBase('snatrules.rule', ['sort_order', 'prio_group']);
+        return $this->downloadRulesBase('snatrules.rule');
     }
 
     public function uploadRulesAction()
     {
-        return $this->uploadRulesBase('snatrules.rule', ['sort_order', 'prio_group']);
+        return $this->uploadRulesBase('snatrules.rule');
     }
 }

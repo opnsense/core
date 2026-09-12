@@ -195,7 +195,7 @@ class WidgetManager  {
             this.widgetClasses[id].onVisibilityChanged(!document.hidden);
         });
 
-        if (!id in this.widgetTranslations) {
+        if (!(id in this.widgetTranslations)) {
             console.error('Missing translations for widget', id);
         }
 

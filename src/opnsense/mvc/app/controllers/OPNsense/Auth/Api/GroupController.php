@@ -95,10 +95,10 @@ class GroupController extends ApiMutableModelControllerBase
             Config::getInstance()->lock();
             foreach (!empty($uuids) ? explode(",", $uuids) : [] as $uuid) {
                 $node = $this->getModel()->getNodeByReference('group.' . $uuid);
-                if ($node->scope == 'system') {
-                    throw new UserException(sprintf(gettext("Not allowed to delete system group %s"), $node->name));
-                }
-                if (!empty($node)) {
+                if ($node !== null) {
+                    if ($node->scope == 'system') {
+                        throw new UserException(sprintf(gettext("Not allowed to delete system group %s"), $node->name));
+                    }
                     $groupnames[] = (string)$node->name;
                 }
             }

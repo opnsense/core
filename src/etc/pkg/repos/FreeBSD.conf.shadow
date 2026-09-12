@@ -1,6 +1,3 @@
-# FreeBSD >=15
+FreeBSD-base: { enabled: no }
 FreeBSD-ports: { enabled: no }
 FreeBSD-ports-kmods: { enabled: no }
-# FreeBSD <=14
-FreeBSD: { enabled: no }
-FreeBSD-kmods: { enabled: no }

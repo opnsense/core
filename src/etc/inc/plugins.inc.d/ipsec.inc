@@ -1693,6 +1693,6 @@ function ipsec_get_default_nat_outbound_networks($unused_fw = null)
 function ipsec_run()
 {
     return [
-        'outbound_net' => 'ipsec_get_default_nat_outbound_networks',
+        'networks_source_nat' => 'ipsec_get_default_nat_outbound_networks',
     ];
 }

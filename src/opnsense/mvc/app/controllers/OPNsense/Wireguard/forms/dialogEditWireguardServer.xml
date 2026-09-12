@@ -1,5 +1,9 @@
 <form>
     <field>
+        <type>header</type>
+        <label>Instance</label>
+    </field>
+    <field>
         <id>server.enabled</id>
         <label>Enabled</label>
         <type>checkbox</type>
@@ -124,6 +128,38 @@
             <visible>false</visible>
             <type>boolean</type>
             <formatter>boolean</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Peer generator</label>
+        <collapse>true</collapse>
+    </field>
+    <field>
+        <id>server.endpoint</id>
+        <label>Endpoint</label>
+        <type>text</type>
+        <help>The endpoint that the instance will be reachable at, only used by the Peer generator.</help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <id>server.peer_dns</id>
+        <label>DNS Servers</label>
+        <type>text</type>
+        <help>The DNS Servers to use when peers connect, only used by the Peer generator.</help>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <id>server.allowed_ips</id>
+        <label>Allowed IPs</label>
+        <type>text</type>
+        <help>The Allowed IPs to use when peers connect, only used by the Peer generator.</help>
+        <grid_view>
+            <ignore>true</ignore>
         </grid_view>
     </field>
 </form>

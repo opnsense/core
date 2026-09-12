@@ -102,7 +102,7 @@
                                 let item = $("#"+row.categories_uuid[i]);
                                 if (item && item.data('color')) {
                                     html.push("<i class='fa fa-circle category-item' style='color:#"+
-                                           item.data('color')+"' title='"+item.text()+"'></i>");
+                                           htmlSafe(item.data('color'))+"' title='"+htmlSafe(item.text())+"'></i>");
                                 }
                             }
                             return html.join('&nbsp;');
@@ -116,7 +116,9 @@
                     },
                     alias_content: function (column, row) {
                         if (['internal', 'external', 'authgroup'].includes(row.type)) {
-                            return $("<strong/>").append($("<small>").text("{{ lang._('dynamic')}}"))[0];
+                            return $("<span/>")
+                                .append($("<i/>", {class: "fa fa-fw fa-random"}))
+                                .append(document.createTextNode(" {{ lang._('dynamic') }}"))[0];
                         } else {
                             return row[column.id];
                         }
@@ -777,7 +779,7 @@
                                     <td colspan="2" style="text-align:right;">
                                         <small>{{ lang._('full help') }} </small>
                                         <a href="#">
-                                            <i class="fa fa-toggle-off text-danger" id="show_all_help_formDialogformDialogAlias">
+                                            <i class="fa fa-toggle-off text-danger" id="show_all_help_frm_DialogAlias">
                                             </i>
                                         </a>
                                     </td>
@@ -1070,7 +1072,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">{{ lang._('Cancel') }}</button>
                 <button type="button" class="btn btn-primary" id="btn_DialogAlias_save">{{ lang._('Save') }}
-                    <i id="btn_formDialogAlias_save_progress" class=""></i></button>
+                    <i id="btn_DialogAlias_save_progress" class=""></i></button>
             </div>
         </div>
     </div>

@@ -49,7 +49,7 @@
                         if (row[column.id] != null) {
                             txt += row[column.id];
                             if (row[lbl_field]) {
-                                let label = row[lbl_field].replace('"', "'");
+                                let label = htmlSafe(row[lbl_field].replace('"', "'"));
                                 txt += "<span class=\"fa fa-fw fa-info-circle\" title=\""+label+"\" data-toggle=\"tooltip\"></span>";
                             }
                         }

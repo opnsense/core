@@ -49,7 +49,7 @@ class OptionField extends BaseListField
                 } else {
                     foreach ($value as $subkey => $subval) {
                         $this->internalOptionList[$subkey] = [
-                            'value' => strlen($subval) ? gettext($subval) : $key,
+                            'value' => strlen($subval) ? gettext($subval) : $subkey,
                             'optgroup' => gettext($key),
                         ];
                     }

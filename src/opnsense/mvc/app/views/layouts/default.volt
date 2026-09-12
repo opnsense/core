@@ -40,6 +40,9 @@
     <script src="{{ cache_safe(filename) }}"></script>
     {% endfor %}
 
+    <!-- theme JS -->
+    <script src="{{ cache_safe(theme_file_or_default('/js/theme.js', theme_name)) }}"></script>
+
     <script>
             // setup default scripting after page loading.
             $( document ).ready(function() {
@@ -84,7 +87,7 @@
                 });
 
                 // hide empty menu items
-                $('#mainmenu > div > .collapse').each(function () {
+                $('#mainmenu > div > .collapse').not('#Favorites').each(function () {
                     // cleanup empty second level menu containers
                     $(this).find("div.collapse").each(function () {
                         if ($(this).children().length == 0) {
@@ -111,6 +114,7 @@
 
                 initFormHelpUI();
                 initFormAdvancedUI();
+                initFormSearchUI();
                 addMultiSelectClearUI();
                 initGlobalOpenShortcuts();
 
@@ -221,9 +225,6 @@
 
             });
         </script>
-
-        <!-- theme JS -->
-        <script src="{{ cache_safe(theme_file_or_default('/js/theme.js', theme_name)) }}"></script>
   </head>
   <body>
   <header class="page-head">
@@ -277,12 +278,14 @@
   <main class="page-content col-sm-9 col-sm-push-3 col-lg-10 col-lg-push-2">
       <!-- menu system -->
       {{ partial("layout_partials/base_menu_system") }}
+      <!-- menu favorites -->
+      <span id="favorites-config" data-add-text="{{ lang._('Add Favorite') }}" data-remove-text="{{ lang._('Remove Favorite') }}" data-favorites="{{ menuFavorites | safe }}"></span>
       <div class="row">
         <!-- page header -->
         <header class="page-content-head">
           <div class="container-fluid">
             <ul class="list-inline">
-              <li><h1>{{title | default("")}}</h1></li>
+              <li><h1{% if menuSelectedUrl is defined and menuSelectedUrl != '' %} tabindex="-1"{% endif %}>{{title | default("")}}{% if menuSelectedUrl is defined and menuSelectedUrl != '' %}<i class="menu-favorite-star {% if menuSelectedIsFavorite %}fa fa-star{% else %}fa fa-star-o{% endif %}" data-menu-url="{{ menuSelectedUrl | safe }}" data-toggle="tooltip" data-container="body" data-placement="bottom" title="{% if menuSelectedIsFavorite %}{{ lang._('Remove Favorite') }}{% else %}{{ lang._('Add Favorite') }}{% endif %}"></i>{% endif %}</h1></li>
               <li class="btn-group-container" id="service_status_container"></li>
             </ul>
           </div>
@@ -348,7 +351,9 @@
             infos: "{{ lang._('Showing %s to %s') | format('{{ctx.start}}','{{ctx.end}}') }}",
             resetGrid: "{{ lang._('Reset grid layout') }}",
             searchColumns: "{{ lang._('Search columns') }}",
-            expand: "{{ lang._('Click to expand/collapse cell') }}"
+            expand: "{{ lang._('Click to expand/collapse cell') }}",
+            maximizeGrid: "{{ lang._('Maximize grid') }}",
+            minimizeGrid: "{{ lang._('Minimize grid') }}"
         });
 
         $.fn.selectpicker.defaults = $.fn.selectpicker.defaults || {};

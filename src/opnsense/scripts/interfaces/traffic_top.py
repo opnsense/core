@@ -135,8 +135,18 @@ if __name__ == '__main__':
         for line in iftop_data[intf].split('\n'):
             if line.find('=>') > -1 or line.find('<=') > -1:
                 parts = line.split()
-                if parts[0].find('.') == -1 and parts[0].find(':') == -1:
+                if parts and parts[0].find('.') == -1 and parts[0].find(':') == -1:
                     parts.pop(0)
+                # skip malformed/truncated iftop lines; under load iftop may
+                # emit partial rows (fewer columns) or non-host output that
+                # still contains "=>"/"<=". Require the expected column count
+                # and a valid host address before using the row.
+                if len(parts) < 6:
+                    continue
+                try:
+                    ip = ipaddress.ip_address(parts[0])
+                except ValueError:
+                    continue
                 item = {
                     'address': parts[0],
                     'rate': parts[2],
@@ -146,14 +156,10 @@ if __name__ == '__main__':
                     'tags': []
                 }
                 # attach tags (type of address)
-                try:
-                    ip = ipaddress.ip_address(parts[0])
-                    if ip in all_local_addresses:
-                        item['tags'].append('local')
-                    if ip.is_private:
-                        item['tags'].append('private')
-                except subprocess.TimeoutExpired:
-                    pass
+                if ip in all_local_addresses:
+                    item['tags'].append('local')
+                if ip.is_private:
+                    item['tags'].append('private')
 
                 if line.find('=>') > -1:
                     other_end = item

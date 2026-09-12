@@ -39,7 +39,7 @@ class SettingsController extends ApiMutableModelControllerBase
 
     public function searchRelayAction()
     {
-        $search_result = $this->searchBase('relays', ['enabled', 'interface', 'destination', 'agent_info'], 'interface');
+        $search_result = $this->searchBase('relays', ['enabled', 'interface', 'destination', 'agent_info', 'circuit_id', 'remote_id'], 'interface');
         $status_by_uuid = [];
 
         foreach (json_decode((new Backend())->configdpRun('service list', [self::$internalModelName]), true) as $service) {

@@ -163,9 +163,20 @@ class Filter extends BaseModel
                                 $rule->target->__reference
                             ));
                         }
-                        if (!empty((string)$rule->target_port) && !in_array($rule->protocol, $port_protos)) {
+                        $target_port = $rule->target_port->getValue();
+                        if (!empty($target_port) && !in_array($rule->protocol, $port_protos)) {
                             $messages->appendMessage(new Message(
                                 gettext("Target ports are only valid for tcp or udp type rules."),
+                                $rule->target_port->__reference
+                            ));
+                        }
+                        if (
+                            !empty($target_port) &&
+                            Util::isAlias($target_port) &&
+                            count(Util::getPortAlias($target_port)) != 1
+                        ) {
+                            $messages->appendMessage(new Message(
+                                gettext("Target port aliases must resolve to exactly one port or port range."),
                                 $rule->target_port->__reference
                             ));
                         }
@@ -175,8 +186,35 @@ class Filter extends BaseModel
                                 $rule->{'endpoint-independent'}->__reference
                             ));
                         }
+                        if (
+                            !$rule->poolopts_sourcehashkey->isEmpty() &&
+                            !$rule->poolopts->isEqual('source-hash')
+                        ) {
+                            $messages->appendMessage(new Message(
+                                gettext("Source Hash Key is only valid for Source Hash type."),
+                                $rule->poolopts_sourcehashkey->__reference
+                            ));
+                        }
                     } else {
                         // Additional filter validations
+                        if (!$rule->{'received-on'}->isEmpty() && $rule->direction != 'out') {
+                            $messages->appendMessage(new Message(
+                                gettext("Received-on is only valid for out direction rules."),
+                                $rule->{'received-on'}->__reference
+                            ));
+                        }
+                        if (
+                            !$rule->{'received-on-not'}->isEmpty() && (
+                                count(explode(',', $rule->{'received-on'})) != 1 ||
+                                $rule->{'received-on'}->isEmpty()
+                            )
+                        ) {
+                            $messages->appendMessage(new Message(
+                                gettext("Inverting received-on interfaces is only allowed for " .
+                                    "single targets to avoid mis-interpretations"),
+                                $rule->{'received-on-not'}->__reference
+                            ));
+                        }
                         if (empty((string)$rule->max) && ($rule->adaptivestart == '0' || $rule->adaptiveend == '0')) {
                             $messages->appendMessage(new Message(
                                 gettext('Disabling adaptive timeouts is only supported in ".
@@ -397,7 +435,7 @@ class Filter extends BaseModel
     public function serializeToConfig($validateFullModel = false, $disable_validation = false)
     {
         $result = parent::serializeToConfig($validateFullModel, $disable_validation);
-        $mode = $this->general->snat_mode->getValue();
+        $mode = $this->settings->nat->snat_mode->getValue();
         if ((string)Config::getInstance()->object()->nat->outbound->mode !== $mode) {
             /* SimpleXML will create the node when not there */
             Config::getInstance()->object()->nat->outbound->mode = $mode;

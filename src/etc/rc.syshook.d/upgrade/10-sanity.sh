@@ -2,6 +2,7 @@
 
 CORE=$(opnsense-version -n)
 PKG="/usr/local/sbin/pkg-static"
+PRODUCT="OPNsense"
 
 if [ -z "${CORE}" ]; then
 	echo "Could not determine core package name."
@@ -18,8 +19,8 @@ if [ -z "$(${PKG} query %n ${CORE})" ]; then
 	exit 1
 fi
 
-if [ "$(${PKG} query %R pkg)" = "FreeBSD" ]; then
-	echo "The Package manager \"pkg\" is incompatible and needs a reinstall."
+if [ "$(${PKG} query %R pkg)" != "${PRODUCT}" ]; then
+	echo "The package manager \"pkg\" is incompatible and needs a reinstall."
 	exit 1
 fi
 

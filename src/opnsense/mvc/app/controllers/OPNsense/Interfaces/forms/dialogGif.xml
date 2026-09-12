@@ -55,6 +55,17 @@
         </grid_view>
     </field>
     <field>
+        <id>gif.noclamp</id>
+        <label>Disable IPv6 MTU clamping</label>
+        <type>checkbox</type>
+        <help>Do not clamp the effective MTU to 1280 bytes when the outer tunnel protocol is IPv6.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>gif.link1</id>
         <label>ECN friendly behavior</label>
         <type>checkbox</type>

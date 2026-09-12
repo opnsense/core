@@ -67,16 +67,7 @@ class ARP(object):
         source = out.get("source")
         rows = out.get("rows", [])
 
-        if source == "discovery":
-            rows_iter = sorted(
-                rows,
-                key=lambda row: datetime.strptime(row[5], "%Y-%m-%dT%H:%M:%SZ"),
-                reverse=True
-            )
-        else:
-            rows_iter = rows
-
-        for row in rows_iter:
+        for row in rows:
             ip = row[2]
 
             entry = {

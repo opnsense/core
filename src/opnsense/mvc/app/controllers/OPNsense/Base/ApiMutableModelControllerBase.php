@@ -30,6 +30,7 @@
 
 namespace OPNsense\Base;
 
+use OPNsense\Base\FieldTypes\JsonAuditField;
 use OPNsense\Core\Config;
 use OPNsense\Core\Type;
 
@@ -341,6 +342,25 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
     }
 
     /**
+     * Update controller managed audit information when supported by the model node.
+     *
+     * @param $node model node to update
+     * @return void
+     */
+    protected function setAuditMetadata($node)
+    {
+        foreach ($node->iterateItems() as $field) {
+            if ($field instanceof JsonAuditField && !$field->getInternalIsVolatile()) {
+                $username = $this->getUserName();
+                if (!empty($_SERVER['REMOTE_ADDR'])) {
+                    $username .= '@' . $_SERVER['REMOTE_ADDR'];
+                }
+                $field->update($username, sprintf('%s made changes', $_SERVER['SCRIPT_NAME']));
+            }
+        }
+    }
+
+    /**
      * Hook to be overridden if the controller is to take an action when
      * setAction is called. This hook is called after a model has been
      * constructed and validated but before it serialized to the configuration
@@ -416,8 +436,9 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
         ) {
             $fields = [];
             foreach ($element->iterateItems() as $node) {
-                foreach ($node->iterateItems() as $key => $value) {
-                    $fields[] = $key;
+                $reflen = strlen($node->__reference) + 1;
+                foreach ($node->getFlatNodes() as $key => $val) {
+                    $fields[] = substr($key, $reflen);
                 }
                 break;
             }
@@ -496,6 +517,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
             $result = $this->validate($node, $post_field);
 
             if (empty($result['validations'])) {
+                $this->setAuditMetadata($node);
                 $this->setBaseHook($node);
                 // save config if validated correctly
                 $this->save(false, true);
@@ -592,6 +614,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 }
                 $result = $this->validate($node, $post_field, true);
                 if (empty($result['validations'])) {
+                    $this->setAuditMetadata($node);
                     $this->setBaseHook($node);
                     // save config if validated correctly
                     $this->save(false, true);
@@ -715,12 +738,15 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
                 $result = $node->importRecordSet($data, $keyfields, $data_callback, $node_callback);
                 $valmsgfields = [];
                 foreach ($this->getModel()->performValidation() as $msg) {
+                    $tmp = explode('.', substr($msg->getField(), strlen($path) + 1));
+                    $uuid = $tmp[0];
+                    if (!isset($result['uuids'][$uuid])) {
+                        continue; /* existing, but unvalid, record */
+                    }
                     if (str_starts_with($msg->getField(), $path) && !in_array($msg->getField(), $valmsgfields)) {
-                        $tmp = explode('.', substr($msg->getField(), strlen($path) + 1));
-                        $uuid = $tmp[0];
                         $fieldname = end($tmp);
                         $result['validations'][] = [
-                            'sequence' => $result['uuids'][$uuid] ?? null,
+                            'sequence' => $result['uuids'][$uuid],
                             'message' =>  $msg->getMessage(),
                             'field' => $fieldname
                         ];

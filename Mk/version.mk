@@ -67,6 +67,7 @@ CORE_DEPENDS?=		ca_root_nss \
 			hostwatch \
 			ifinfo \
 			iftop \
+			jq \
 			kea \
 			lighttpd \
 			monit \

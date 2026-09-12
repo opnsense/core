@@ -47,6 +47,13 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
     protected static $internalModelClass = 'OPNsense\Firewall\Filter';
     protected static $categorysource = null;
 
+    /* shared fields to ignore in csv export */
+    protected array $export_ignore = [
+        'sort_order',
+        'prio_group',
+        'audit',
+    ];
+
     /* store data for cached getters */
     private array $networks = [];
     private array $catcolors = [];
@@ -424,12 +431,12 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
      * Export a rule collection as CSV.
      *
      * @param string $node_reference: Model node reference to export, e.g. "rules.rule"
-     * @param array $ignore_fields: List of fields to omit from the exported CSV, e.g. "sort_order" as its a volatile field
+     * @param array $ignored_fields: List of fields to omit from the exported CSV, e.g. "sort_order" as its a volatile field
      * @param array $alias_fields: List of fields whose stored value is an alias UUID
      *                             but should be exported as the alias name instead, e.g. "overload" table
      * @return void
      */
-    protected function downloadRulesBase($node_reference, array $ignore_fields = [], array $alias_fields = [])
+    protected function downloadRulesBase($node_reference, array $ignored_fields = [], array $alias_fields = [])
     {
         if (!$this->request->isGet()) {
             return;
@@ -453,9 +460,11 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             $node = $node->$ref;
         }
 
+        $ignored_fields = array_merge($this->export_ignore, $ignored_fields);
+
         $this->exportCsv($node->asRecordSet(
             false,
-            $ignore_fields,
+            $ignored_fields,
             function ($node, $record) use ($categories, $aliases, $alias_fields) {
                 if (!empty($record['categories'])) {
                     $cats = [];
@@ -496,6 +505,8 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
                 $aliases[$alias->name->getValue()] = $key;
             }
         }
+
+        $ignored_fields = array_merge($this->export_ignore, $ignored_fields);
 
         return $this->importCsv(
             $node_reference,

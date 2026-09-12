@@ -289,9 +289,11 @@ class ArrayField extends BaseField
         $iterator =  $include_static ? $this->iterateItems() : parent::iterateItems();
         foreach ($iterator as $akey => $anode) {
             $record = [];
-            foreach ($anode->iterateItems() as $tag => $node) {
-                if (!in_array($tag, $exclude)) {
-                    $record[$tag] = (string)$node;
+            $reflen = strlen($anode->__reference) + 1;
+            foreach ($anode->iterateRecursiveItems() as $node) {
+                $fieldname = substr($node->__reference, $reflen);
+                if (!in_array($fieldname, $exclude)) {
+                    $record[$fieldname] = (string)$node;
                 }
             }
             if (is_callable($callback)) {
@@ -323,13 +325,12 @@ class ArrayField extends BaseField
                 }
                 $key = implode("\n", $keydata);
                 if (isset($current[$key])) {
-                    $current[$key] = null;
+                    $current[$key] = null; /* duplicate key, detach */
                 } else {
                     $current[$key] = $node;
                 }
             }
         }
-
         foreach ($records as $idx => $record) {
             $uuid = $record['@uuid'] ?? '';
             if (
@@ -377,9 +378,15 @@ class ArrayField extends BaseField
             }
             $results['uuids'][$node->getAttributes()['uuid']] = $idx;
             foreach ($record as $fieldname => $content) {
-                if (isset($node->$fieldname)) {
-                    $node->$fieldname = (string)$content;
+                $nodep = $node;
+                foreach (explode('.', $fieldname) as $step) {
+                    if (isset($nodep->{$step})) {
+                        $nodep = $nodep->{$step};
+                    } else {
+                        continue 2; /* next field */
+                    }
                 }
+                $nodep->setValue((string)$content);
             }
             if (is_callable($node_callback)) {
                 $node_callback($node);

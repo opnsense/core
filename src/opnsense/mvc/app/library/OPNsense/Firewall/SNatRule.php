@@ -102,13 +102,29 @@ class SNatRule extends Rule
             }
             foreach (array("sourceport", "dstport", "natport") as $fieldname) {
                 if (!empty($rule[$fieldname]) && Util::isAlias($rule[$fieldname])) {
-                    if (!Util::isAlias($rule[$fieldname], true)) {
-                        // unable to map port
-                        $this->log("SNAT / unable to map port " . $rule[$fieldname] . ", empty?");
-                        $rule['disabled'] = true;
+                    if ($fieldname == 'natport') {
+                        // PF translation ports accept one port or range, not an alias macro containing a list.
+                        $ports = Util::getPortAlias($rule[$fieldname]);
+                        if (count($ports) == 1) {
+                            $rule[$fieldname] = $ports[0];
+                        } else {
+                            $this->log(
+                                "SNAT / target port alias " . $rule[$fieldname] .
+                                " must resolve to exactly one port or range"
+                            );
+                            $rule['disabled'] = true;
+                            $rule[$fieldname] = '';
+                        }
+                    } else {
+                        if (!Util::isAlias($rule[$fieldname], true)) {
+                            // unable to map port
+                            $this->log("SNAT / unable to map port " . $rule[$fieldname] . ", empty?");
+                            $rule['disabled'] = true;
+                        }
+                        $rule[$fieldname] = "$" . $rule[$fieldname];
                     }
-                    $rule[$fieldname] = "$" . $rule[$fieldname];
-                } elseif (!empty($rule[$fieldname])) {
+                }
+                if (!empty($rule[$fieldname]) && !str_starts_with((string)$rule[$fieldname], '$')) {
                     $rule[$fieldname] = str_replace('-', ':', $rule[$fieldname]); // range interpretation
                 }
             }

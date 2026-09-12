@@ -25,11 +25,13 @@
  */
 
 export default class Disk extends BaseGaugeWidget {
-    constructor() {
-        super();
+    constructor(config) {
+        super(config);
 
         this.detailed_chart = null;
         this.tickTimeout = 300;
+        this.detailedBreakpoint = 3;
+        this.isDetailed = this.config && this.config.w >= this.detailedBreakpoint;
     }
 
     _convertToBytes(sizeString) {
@@ -61,12 +63,11 @@ export default class Disk extends BaseGaugeWidget {
     getMarkup() {
         return $(`
             <div class="${this.id}-chart-container">
-                <div class="canvas-container">
+                <div class="canvas-container" ${this.isDetailed ? 'style="display: none"' : ''}>
                     <canvas id="${this.id}-chart" style="display: inline-block"></canvas>
                 </div>
-                <div class="canvas-container">
+                <div class="canvas-container" ${this.isDetailed ? '' : 'style="display: none"'}>
                     <canvas id="${this.id}-detailed-chart" style="display: inline-block"></canvas>
-                </div>
                 </div>
             </div>
         `);
@@ -196,13 +197,21 @@ export default class Disk extends BaseGaugeWidget {
     onWidgetResize(elem, width, height) {
         let gsItem = elem.closest('[gs-w]');
         let gsW = gsItem ? parseInt(gsItem.getAttribute('gs-w'), 10) : null;
-        if (gsW === null || gsW < 3) {
-            $('#disk-chart').show();
-            $('#disk-detailed-chart').hide();
-        } else {
-            $('#disk-chart').hide();
-            $('#disk-detailed-chart').show();
+        let shouldBeDetailed = gsW !== null && gsW >= this.detailedBreakpoint;
+
+        if (shouldBeDetailed !== this.isDetailed) {
+            this.isDetailed = shouldBeDetailed;
+            $(`#${this.id}-chart`).parent().toggle(!this.isDetailed);
+            $(`#${this.id}-detailed-chart`).parent().toggle(this.isDetailed);
+            if (this.isDetailed) {
+                this.detailed_chart?.resize();
+            } else {
+                this.chart?.resize();
+            }
+            return true;
         }
+
+        return false;
     }
 
     onWidgetClose() {

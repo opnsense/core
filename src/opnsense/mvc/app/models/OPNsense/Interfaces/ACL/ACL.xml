@@ -3,7 +3,7 @@
         <name>Interfaces: Neighbors</name>
         <patterns>
             <pattern>ui/interfaces/neighbor</pattern>
-            <pattern>api/interfaces/neighbor/*</pattern>
+            <pattern>api/interfaces/neighbor_settings/*</pattern>
         </patterns>
     </page-interfaces-neighbor>
     <page-system-advanced-network>

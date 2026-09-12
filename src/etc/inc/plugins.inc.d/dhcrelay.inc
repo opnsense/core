@@ -187,6 +187,16 @@ function dhcrelay_configure_id($verbose = false, $id_map = null)
         $cmd_frmt[] = '-i %s';
         $cmd_args[] = $device;
 
+        if ($family == 'inet' && !$relay->circuit_id->isEmpty()) {
+            $cmd_frmt[] = '-C %s';
+            $cmd_args[] = $relay->circuit_id->getValue();
+        }
+
+        if (!$relay->remote_id->isEmpty()) {
+            $cmd_frmt[] = '-R %s';
+            $cmd_args[] = $relay->remote_id->getValue();
+        }
+
         $has_servers = false;
 
         foreach ($destination->server->getValues() as $server) {

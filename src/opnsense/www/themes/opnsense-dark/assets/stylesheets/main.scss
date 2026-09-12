@@ -308,12 +308,14 @@ main.page-content.col-lg-12 {
   width: 70px;
   overflow: hidden;
   background-color: transparent !important;
+  border: none !important;
   > div {
     &.row {
       height: 100% !important;
       > nav.page-side-nav {
         width: 70px;
         height: 100% !important;
+        border-right: 1px solid rgba(217, 217, 217, 0.5);
       }
     }
     > nav > #mainmenu > div > {
@@ -326,6 +328,7 @@ main.page-content.col-lg-12 {
         padding-right: 0px;
         padding-top: 12px;
         border-bottom: 2px transparent;
+        border-right: 1px solid rgba(217, 217, 217, 0.5);
         > span {
           &.fa, &.fa-solid, &.glyphicon {
             visibility: visible;

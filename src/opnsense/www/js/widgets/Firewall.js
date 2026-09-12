@@ -33,8 +33,8 @@ export default class Firewall extends BaseTableWidget {
         this.rotation = 5;
         this.configurable = true;
         this.colorScheme = 'contrast';
-        // Map actions to Classic10 color indices: red=block, green=pass, blue=rdr/nat/binat, gray=unknown
-        this.actionColorIndex = { block: 3, pass: 2, rdr: 0, nat: 0, binat: 0 };
+        // Map actions to Classic10 color indices: red=block, green=pass, yellow=match, blue=rdr/nat/binat, gray=unknown
+        this.actionColorIndex = { block: 3, pass: 2, match: 8, rdr: 0, nat: 0, binat: 0 };
         this.defaultColorIndex = 7;
     }
 
@@ -119,7 +119,7 @@ export default class Firewall extends BaseTableWidget {
         });
 
         $tableContainer.append($top_table);
-        $tableContainer.append(`<div style="margin-top: 2em"><b>${this.translations.events}</b><div>`);
+        $tableContainer.append(`<div style="margin-top: 2em"><b>${this.translations.events}</b></div>`);
         $tableContainer.append($rule_table);
 
         $container.append($tableContainer);
@@ -144,6 +144,7 @@ export default class Firewall extends BaseTableWidget {
 
         let actIcons = {
             'pass': '<i class="fa fa-play text-success"></i>',
+            'match': '<i class="fa fa-filter text-warning"></i>',
             'block': '<i class="fa fa-minus-circle text-danger"></i>',
             'rdr': '<i class="fa fa-exchange text-info"></i>',
             'nat': '<i class="fa fa-exchange text-info"></i>',
@@ -184,8 +185,8 @@ export default class Firewall extends BaseTableWidget {
                 /* Format time based on client browser locale */
                 (new Intl.DateTimeFormat(undefined, {hour: 'numeric', minute: 'numeric'})).format(new Date(data.__timestamp__)),
                 this.ifMap[data.interface] ?? data.interface,
-                `<span class="ip-tooltip" style="cursor: pointer; data-toggle="tooltip" title="${data.src}">${data.src}</span>`,
-                `<span class="ip-tooltip" style="cursor: pointer; data-toggle="tooltip" title="${data.dst}">${data.dst}</span>`,
+                `<span class="ip-tooltip" style="cursor: pointer;" data-toggle="tooltip" title="${data.src}">${data.src}</span>`,
+                `<span class="ip-tooltip" style="cursor: pointer;" data-toggle="tooltip" title="${data.dst}">${data.dst}</span>`,
                 data.dstport ?? ''
             ]
         ]);

@@ -42,7 +42,7 @@
             }).done(function() {
                 $('.selectpicker').selectpicker('refresh');
                 updateSnatModeUI();
-                $('#filter\\.general\\.snat_mode').change(function () {
+                $('#filter\\.settings\\.nat\\.snat_mode').change(function () {
                     $(document).trigger("settings-changed");
                 });
             });
@@ -54,7 +54,7 @@
                 return;
             }
 
-            const snatMode = $('#filter\\.general\\.snat_mode').val();
+            const snatMode = $('#filter\\.settings\\.nat\\.snat_mode').val();
             const isDisabled = snatMode === 'disabled';
             const isReadonly = snatMode === 'automatic';
 
@@ -447,7 +447,10 @@
                     title: "{{ lang._('Lookup rule reference') }}",
                     sequence: 10,
                     method: function(event, cell) {
-                        window.open(`/system_advanced_firewall.php`, "_blank", "noopener,noreferrer");
+                        const row = cell.getData();
+                        if (row?.ref) {
+                            window.open(`/${row.ref}`, "_blank", "noopener,noreferrer");
+                        }
                     },
                 },
                 move_before: {

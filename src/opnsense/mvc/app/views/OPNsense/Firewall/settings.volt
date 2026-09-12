@@ -1,0 +1,77 @@
+{#
+ # Copyright (c) 2026 Deciso B.V.
+ # All rights reserved.
+ #
+ # Redistribution and use in source and binary forms, with or without modification,
+ # are permitted provided that the following conditions are met:
+ #
+ # 1. Redistributions of source code must retain the above copyright notice,
+ #    this list of conditions and the following disclaimer.
+ #
+ # 2. Redistributions in binary form must reproduce the above copyright notice,
+ #    this list of conditions and the following disclaimer in the documentation
+ #    and/or other materials provided with the distribution.
+ #
+ # THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ # INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ # AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ # AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ # OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ # SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ # POSSIBILITY OF SUCH DAMAGE.
+ #}
+
+<script>
+    $(document).ready(function() {
+        // Initial setup
+        mapDataToFormUI({'frm_settings': "/api/firewall/settings/get"}).done(function() {
+            formatTokenizersUI();
+            $('.selectpicker').selectpicker('refresh');
+        });
+
+        // Event binding for saving forms
+        $('[id^="save_"]').each(function () {
+            const $btn = $(this);
+            const formId = this.id.replace(/^save_/, 'frm_');
+
+            $btn.attr({
+                'data-label'    : "{{ lang._('Save') }}",
+                'data-endpoint' : "/api/firewall/settings/reconfigure"
+            });
+
+            $btn.SimpleActionButton({
+                onPreAction: function () {
+                    const dfObj = new $.Deferred();
+
+                    saveFormToEndpoint(
+                        "/api/firewall/settings/set",
+                        formId,
+                        function () {
+                            dfObj.resolve();
+                        },
+                        true,
+                        function () {
+                            dfObj.reject();
+                        }
+                    );
+                    return dfObj.promise();
+                }
+            });
+        });
+
+        $('#filter\\.settings\\.filter\\.scrub_enabled').change(function() {
+            $('.scrub_option').closest('tr').toggle($(this).is(':checked'));
+        });
+    });
+</script>
+
+<ul class="nav nav-tabs" role="tablist" id="maintabs">
+    {{ partial('layout_partials/base_tabs_header', ['formData': formSettings]) }}
+</ul>
+
+<div class="content-box tab-content">
+    {{ partial('layout_partials/base_tabs_content', ['formData': formSettings]) }}
+</div>

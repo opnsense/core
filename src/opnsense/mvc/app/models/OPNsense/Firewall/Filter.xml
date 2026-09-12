@@ -1,21 +1,37 @@
 <model>
     <mount>//OPNsense/Firewall/Filter</mount>
-    <version>1.0.5</version>
+    <version>1.0.9</version>
     <migration_prefix>MFP</migration_prefix>
     <description>Firewall rules (new)</description>
     <items>
-        <general>
-            <snat_mode type=".\SNatModeField" volatile="true">
-                <Required>Y</Required>
-                <Default>automatic</Default>
-                <OptionValues>
-                    <automatic>Automatic Source NAT rule generation</automatic>
-                    <hybrid>Hybrid Source NAT rule generation</hybrid>
-                    <advanced>Manual Source NAT rule generation</advanced>
-                    <disabled>Disable Source NAT rule generation</disabled>
-                </OptionValues>
-            </snat_mode>
-        </general>
+        <settings>
+            <filter>
+                <scrub_enabled type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </scrub_enabled>
+                <scrub_no_df type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </scrub_no_df>
+                <scrub_random_id type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </scrub_random_id>
+            </filter>
+            <nat>
+                <snat_mode type=".\SNatModeField" volatile="true">
+                    <Required>Y</Required>
+                    <Default>automatic</Default>
+                    <OptionValues>
+                        <automatic>Automatic Source NAT rule generation</automatic>
+                        <hybrid>Hybrid Source NAT rule generation</hybrid>
+                        <advanced>Manual Source NAT rule generation</advanced>
+                        <disabled>Disable Source NAT rule generation</disabled>
+                    </OptionValues>
+                </snat_mode>
+            </nat>
+        </settings>
         <rules>
             <rule type=".\FilterRuleField">
                 <enabled type="BooleanField">
@@ -56,6 +72,7 @@
                         <pass>Pass</pass>
                         <block>Block</block>
                         <reject>Reject</reject>
+                        <match>Match</match>
                     </OptionValues>
                 </action>
                 <quick type="BooleanField">
@@ -73,6 +90,17 @@
                     </Filters>
                     <AllowDynamic>Y</AllowDynamic>
                 </interface>
+                <received-on-not type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </received-on-not>
+                <received-on type="InterfaceField">
+                    <Multiple>Y</Multiple>
+                    <Filters>
+                        <if>/^(?!lo0$).*/</if>
+                    </Filters>
+                    <AllowDynamic>Y</AllowDynamic>
+                </received-on>
                 <direction type="OptionField">
                     <Required>Y</Required>
                     <Default>in</Default>
@@ -260,6 +288,32 @@
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>2147483647</MaximumValue>
                 </max-src-conn-rates>
+                <max-pkt-rate-number type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>4294967</MaximumValue>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Packet rate number and seconds must either both be set or left empty.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>max-pkt-rate-seconds</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </max-pkt-rate-number>
+                <max-pkt-rate-seconds type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>2147483647</MaximumValue>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Packet rate number and seconds must either both be set or left empty.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>max-pkt-rate-number</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </max-pkt-rate-seconds>
                 <overload type="ModelRelationField">
                     <Model>
                         <aliases>
@@ -367,6 +421,23 @@
                 </categories>
                 <sched type=".\ScheduleField"/>
                 <tos type=".\TosField"/>
+                <scrub_no_df type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </scrub_no_df>
+                <scrub_random_id type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </scrub_random_id>
+                <scrub_max_mss type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>65535</MaximumValue>
+                </scrub_max_mss>
+                <scrub_min_ttl type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <MaximumValue>255</MaximumValue>
+                </scrub_min_ttl>
+                <scrub_set_tos type=".\TosField"/>
                 <shaper1 type="ModelRelationField">
                     <Model>
                         <pipes>
@@ -410,6 +481,7 @@
                     <ValidationMessage>Related pipe or queue not found.</ValidationMessage>
                 </shaper2>
                 <description type="DescriptionField"/>
+                <audit type="JsonAuditField"/>
             </rule>
         </rules>
         <snatrules>
@@ -437,7 +509,6 @@
                 <prio_group type="TextField" volatile="true"/>
                 <interface type="InterfaceField">
                     <Required>Y</Required>
-                    <Default>lan</Default>
                     <Filters>
                         <if>/^(?!lo0$).*/</if>
                     </Filters>
@@ -490,7 +561,23 @@
                 <target_port type="PortField">
                     <EnableWellKnown>Y</EnableWellKnown>
                     <EnableRanges>Y</EnableRanges>
+                    <EnableAlias>Y</EnableAlias>
+                    <ValidationMessage>Please specify a valid port number, well-known name, alias or range.</ValidationMessage>
                 </target_port>
+                <poolopts type="OptionField">
+                    <OptionValues>
+                        <p1 value="round-robin">Round Robin</p1>
+                        <p2 value="round-robin sticky-address">Round Robin with Sticky Address</p2>
+                        <p3 value="random">Random</p3>
+                        <p4 value="random sticky-address">Random with Sticky Address</p4>
+                        <p5 value="source-hash">Source Hash</p5>
+                        <p6 value="bitmask">Bitmask</p6>
+                    </OptionValues>
+                </poolopts>
+                <poolopts_sourcehashkey type="StrictTextField">
+                    <Mask>/^0x[0-9a-fA-F]{32}$/</Mask>
+                    <ValidationMessage>Source Hash Key must be 0x followed by 32 hexadecimal digits.</ValidationMessage>
+                </poolopts_sourcehashkey>
                 <staticnatport type="BooleanField"/>
                 <log type="BooleanField">
                     <Default>0</Default>
@@ -515,6 +602,7 @@
                 </tagged>
                 <endpoint-independent type="BooleanField"/>
                 <description type="DescriptionField"/>
+                <audit type="JsonAuditField"/>
             </rule>
         </snatrules>
         <npt>
@@ -581,6 +669,7 @@
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
                 <description type="DescriptionField"/>
+                <audit type="JsonAuditField"/>
             </rule>
         </npt>
         <onetoone>
@@ -656,6 +745,7 @@
                     <ValidationMessage>Related category not found.</ValidationMessage>
                 </categories>
                 <description type="DescriptionField"/>
+                <audit type="JsonAuditField"/>
             </rule>
         </onetoone>
     </items>

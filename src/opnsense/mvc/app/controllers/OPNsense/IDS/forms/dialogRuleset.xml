@@ -11,8 +11,8 @@
         <type>info</type>
     </field>
     <field>
-        <id>documentation</id>
+        <id>documentation_url</id>
         <label>Source</label>
-        <type>info</type>
+        <type>info_link</type>
     </field>
 </form>

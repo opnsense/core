@@ -107,19 +107,11 @@
                     <rule>Register rule</rule>
                 </OptionValues>
             </pass>
+            <audit type="JsonAuditField"/>
             <!-- drop in a future version (27.1?), used for migration purposes.-->
             <associated-rule-id type=".\DNatAssociatedRuleField"/>
-            <!-- handled via controller setBaseHook() -->
-            <created>
-                <username type="TextField"/>
-                <time type="TextField"/>
-                <description type="TextField"/>
-            </created>
-            <updated>
-                <username type="TextField"/>
-                <time type="TextField"/>
-                <description type="TextField"/>
-            </updated>
+            <!-- old audit data, drop in future version, bootstraps audit field -->
+            <created type="JsonAuditField" volatile="true"/>
         </rule>
     </items>
 </model>

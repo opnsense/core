@@ -123,10 +123,10 @@ class NetflowController extends ApiControllerBase
         if ($this->request->isPost()) {
             // reconfigure netflow
             $backend = new Backend();
-            $backend->configdRun('template reload OPNsense/Netflow');
             // restart netflow, by calling stop (which will always stop the collectors) and start
             // (which will only start if there are collectors configured)
             $backend->configdRun("netflow stop");
+            $backend->configdRun('template reload OPNsense/Netflow');
             $backend->configdRun("netflow start");
             $mdlNetflow = new Netflow();
             if ((string)$mdlNetflow->collect->enable == 1) {

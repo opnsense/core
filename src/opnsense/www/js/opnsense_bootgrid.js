@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2025 Deciso B.V.
+ * Copyright (C) 2025-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -540,7 +540,8 @@ class UIBootgrid {
                     title: field.label,
                     resizable: false,
                     sequence: field.sequence ?? null,
-                    frozen: true,
+                    // If a touchscreen is detected, unfreeze commands (most likely small device/tablet)
+                    frozen: !window.matchMedia('(any-pointer: coarse)').matches,
                     headerSort: false,
                     headerHozAlign: "center",
                     selectable: true
@@ -653,8 +654,13 @@ class UIBootgrid {
     }
 
     _onDimensionChange() {
+        if (this.$maximizeModal) {
+            return;
+        }
+
         const scrollbarGutterOffset = 16;
         const defaultHeight = 120;
+        const minimumRowCount = 10;
 
         const tableEl = document.getElementById(this.id);
         const holderEl = tableEl?.querySelector(".tabulator-tableholder");
@@ -665,13 +671,23 @@ class UIBootgrid {
         const holderHeight = holderEl.offsetHeight;
 
         let nextContentHeight;
+        let minimumHeight = defaultHeight;
+        const visibleRows = this.table.getRows("visible");
+        if (visibleRows.length > 0) {
+            const rowsHeight = visibleRows.slice(0, minimumRowCount).reduce((height, row) => {
+                return height + (row.getElement()?.offsetHeight || 0);
+            }, 0);
+            const headerHeight = tableEl.querySelector(".tabulator-header")?.offsetHeight || 0;
+            const footerHeight = tableEl.querySelector(".tabulator-footer")?.offsetHeight || 0;
+            minimumHeight = rowsHeight + headerHeight + footerHeight;
+        }
 
         if (!this.dataAvailable && !this.loading && holderHeight > this.tableHeight) {
-            nextContentHeight = defaultHeight;
+            nextContentHeight = minimumHeight;
         } else {
             const adjustedHeight = currentTotalHeight + (this.tableHeight - holderHeight);
             nextContentHeight = Math.min(adjustedHeight, this.pageHeight);
-            nextContentHeight = Math.max(defaultHeight, nextContentHeight);
+            nextContentHeight = Math.max(minimumHeight, nextContentHeight);
         }
 
         const nextHeight = nextContentHeight + scrollbarGutterOffset;
@@ -883,6 +899,24 @@ class UIBootgrid {
         this.table.on('scrollVertical', (top) => {
             this.scrollPos = top;
         });
+        this.table.on('renderComplete', () => {
+            /* tooltips may stick, remove them on redraw */
+            $("div.tooltip.fade.top.in").remove();
+
+            if (this.isResizing) {
+                return;
+            }
+
+            // Schedule a dimension change to prevent recursion
+            this.isResizing = true;
+            requestAnimationFrame(() => {
+                try {
+                    this._onDimensionChange();
+                } finally {
+                    this.isResizing = false;
+                }
+            });
+        });
     }
 
     _renderFooter() {
@@ -1080,6 +1114,68 @@ class UIBootgrid {
         }
     }
 
+    _showMaximized() {
+        if (this.$maximizeModal) {
+            this.$maximizeModal.modal('hide');
+            return;
+        }
+
+        const $header = $(`#${this.id}-header`);
+        const $table = this.$element;
+        const $placeholder = $('<span>').insertBefore($header);
+        const $modal = $('<div class="modal fade bootgrid-maximize-modal" role="dialog">');
+        const $maximizeBtn = $(`#${this.id}-maximize`);
+        $modal.append(`
+            <div class="modal-backdrop fade in"></div>
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-body"></div>
+                </div>
+            </div>
+        `);
+
+        $modal.find('.modal-content').css({
+            'margin-top': $("header.page-head").outerHeight(),
+            'margin-bottom': 0,
+            'margin-left': 0,
+            'margin-right': 0,
+            'height': $("#navigation").outerHeight() ||
+                // Mobile navigation collapses below 768px and reports 0 height.
+                window.innerHeight - $("header.page-head").outerHeight()
+        });
+
+        /* ensure model is "stacked" properly to allow the next dialog to overlay it */
+        $(`#${this.id}`).after($modal);
+
+        this.$maximizeModal = $modal;
+        $modal.find('.modal-body').append($header, $table);
+        $maximizeBtn.attr({
+            title: this.translations.minimizeGrid,
+            'aria-label': this.translations.minimizeGrid
+        }).find('.icon').removeClass('fa-expand').addClass('fa-xmark');
+
+        $modal.one('shown.bs.modal', () => {
+            this.table.setHeight(false);
+            $table.css({height: '', minHeight: '', maxHeight: ''});
+            $table.find('.tabulator-tableholder').css({height: '', maxHeight: ''});
+            this.table.redraw(true);
+        });
+
+        $modal.one('hidden.bs.modal', () => {
+            $placeholder.after($header, $table).remove();
+            $maximizeBtn.attr({
+                title: this.translations.maximizeGrid,
+                'aria-label': this.translations.maximizeGrid
+            }).find('.icon').removeClass('fa-xmark').addClass('fa-expand');
+            this.$maximizeModal.remove();
+            this.$maximizeModal = null;
+            this._onDimensionChange();
+            this.table.redraw(true);
+        });
+
+        $modal.modal({ backdrop: 'static', keyboard: false });
+    }
+
     _renderActionBar() {
         if (!this.options.navigation) {
             return;
@@ -1164,8 +1260,8 @@ class UIBootgrid {
         // Reset button
         if (this.options.resetButton) {
             let $resetBtn = $(`
-                <button id="${this.id}-reset" class="btn btn-default" type="button"
-                        title="${this.persistence ? this.translations.resetGrid : ''}">
+                <button id="${this.id}-reset" class="btn btn-default" type="button" data-toggle="tooltip"
+                        title="${this.translations.resetGrid}">
                     <span class="icon fa-solid fa-share-square"></span>
                 </button>
             `).on('click', (e) => {
@@ -1182,6 +1278,18 @@ class UIBootgrid {
 
             $(`#${this.id}-actions-group`).append($resetBtn);
         }
+
+        // Maximize grid button
+        const $maximizeBtn = $(`
+            <button id="${this.id}-maximize" class="btn btn-default" type="button" data-toggle="tooltip"
+                    title="${this.translations.maximizeGrid}" aria-label="${this.translations.maximizeGrid}">
+                <span class="icon fa-solid fa-expand"></span>
+            </button>
+        `).on('click', () => {
+            this._showMaximized();
+        });
+
+        $(`#${this.id}-actions-group`).append($maximizeBtn);
     }
 
     _renderFooterCommands() {
