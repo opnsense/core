@@ -991,17 +991,15 @@ function interface_ppps_hardware($device)
     $devices = [];
 
     /* avoid returning a /dev parent by excluding 'ppp' prefix */
-    if (strpos($device, 'pppoe') !== 0 && strpos($device, 'pptp') !== 0 && strpos($device, 'l2tp') !== 0) {
-        return $devices;
-    }
-
-    foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
-        if ($device == $ppp['if']) {
-            foreach (explode(',', $ppp['ports']) as $port) {
-                /* XXX ppp stores ports as configured interfaces or devices */
-                $devices[] = get_real_interface($port);
+    if (str_starts_with($device, 'pppoe') || str_starts_with($device, 'pptp') || str_starts_with($device, 'l2tp')) {
+        foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
+            if ($device == $ppp['if']) {
+                foreach (explode(',', $ppp['ports']) as $port) {
+                    /* XXX ppp stores ports as configured interfaces or devices */
+                    $devices[] = get_real_interface($port);
+                }
+                break;
             }
-            break;
         }
     }
 
