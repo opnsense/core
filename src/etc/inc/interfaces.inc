@@ -112,6 +112,13 @@ function interfaces_vlan_priorities()
     return $priorities;
 }
 
+function interfaces_vlan_match($device)
+{
+    return str_starts_with($device, 'vlan') || /* new style VLAN prefix */
+        str_starts_with($device, 'qinq') || /* new style QINQ prefix */
+        strstr($device, '_vlan'); /* legacy style VLAN infix */
+}
+
 function interfaces_vlan_configure($device)
 {
     $vlans = config_read_array('vlans', 'vlan', false);
@@ -561,8 +568,7 @@ function _interfaces_gif_configure($gif)
 function _interfaces_hardware($device, $intf_details = null)
 {
     if (
-        str_starts_with($device, 'vlan') || str_starts_with($device, 'qinq') === 0 ||
-        strstr($device, '_vlan') || str_starts_with($device, 'lo') ||
+        interfaces_vlan_match($device) || str_starts_with($device, 'lo') ||
         str_starts_with($device, 'vxlan') || str_starts_with($device, 'ipsec')
     ) {
         /* skip checksumming  */
@@ -2198,7 +2204,7 @@ function interfaces_addresses_flush($device, $family = 4, $ifconfig_details = nu
 
 function interface_configure_mtu($device, $mtu, $ifconfig_details)
 {
-    if (str_starts_with($device, 'vlan') || str_starts_with($device, 'qinq') || strstr($device, '_vlan')) {
+    if (interfaces_vlan_match($device)) {
         $parent_device = interface_parent_devices($device)[0];
         $parent_mtu = $mtu + 4;
         $force = false;
@@ -3480,7 +3486,7 @@ function interface_parent_devices($device)
 {
     $parents = [];
 
-    if (str_starts_with($device, 'vlan') || str_starts_with($device, 'qinq') || strstr($device, '_vlan')) {
+    if (interfaces_vlan_match($device)) {
         foreach (config_read_array('vlans', 'vlan', false) as $vlan) {
             if ($device == $vlan['vlanif']) {
                 $parents[] = $vlan['if'];
