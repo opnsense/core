@@ -82,7 +82,8 @@ function does_interface_exist($interface, $flag = 'all')
 
 function _interfaces_loopback_configure($unused_but_required = null)
 {
-    legacy_interface_setaddress('lo0', '127.0.0.1/8');
+    legacy_interface_setaddress('lo0', '127.0.0.1/8', 4);
+    legacy_interface_setaddress('lo0', '::1/128', 6);
     interfaces_vips_configure('lo0', null, false);
     legacy_interface_flags('lo0', 'up');
 }
