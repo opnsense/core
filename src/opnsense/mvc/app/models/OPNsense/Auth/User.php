@@ -31,6 +31,7 @@ namespace OPNsense\Auth;
 use OPNsense\Base\Messages\Message;
 use OPNsense\Base\BaseModel;
 use OPNsense\Core\Config;
+use OPNsense\Core\Syslog;
 
 /**
  * Class User
@@ -38,6 +39,33 @@ use OPNsense\Core\Config;
  */
 class User extends BaseModel
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function runMigrations()
+    {
+        $users_without_password = [];
+        foreach ($this->user->iterateItems() as $node) {
+            if ($node->password->isEmpty()) {
+                /* Keep local password login unavailable while allowing legacy UUIDs to be persisted. */
+                $node->password = '*';
+                $users_without_password[] = (string)$node->name;
+            }
+        }
+        if (!empty($users_without_password)) {
+            $this->serializeToConfig();
+            $logger = new Syslog('config', null, LOG_LOCAL2);
+            foreach ($users_without_password as $username) {
+                $logger->warning(sprintf(
+                    'Migrated user %s without a password; local password authentication remains disabled',
+                    $username
+                ));
+            }
+            return true;
+        }
+        return parent::runMigrations();
+    }
+
     /**
      * @param string $name username
      * @return User object
