@@ -303,14 +303,14 @@
         <name>Interfaces: GIF</name>
         <patterns>
             <pattern>ui/interfaces/gif</pattern>
-            <pattern>ui/interfaces/gif_settings/*</pattern>
+            <pattern>api/interfaces/gif_settings/*</pattern>
         </patterns>
     </page-interfaces-gif-edit>
     <page-interfaces-gre-edit>
         <name>Interfaces: GRE</name>
         <patterns>
             <pattern>ui/interfaces/gre</pattern>
-            <pattern>ui/interfaces/gre_settings/*</pattern>
+            <pattern>api/interfaces/gre_settings/*</pattern>
         </patterns>
     </page-interfaces-gre-edit>
     <page-interfaces-groups-edit>
