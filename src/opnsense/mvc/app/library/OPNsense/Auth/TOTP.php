@@ -127,7 +127,7 @@ trait TOTP
     private function authTOTP($secret, $code)
     {
         foreach ($this->timesToCheck() as $moment) {
-            if ($code == $this->calculateToken($moment, $secret)) {
+            if ($code === $this->calculateToken($moment, $secret)) {
                 return true;
             }
         }
