@@ -62,17 +62,17 @@ class DiskSpaceStatus extends AbstractStatus
 
         $disk_info = json_decode((new Backend())->configdRun('system diag disk'), true);
 
-        if (!isset($disk_info['storage-system-information']) || !isset($disk_info['storage-system-information']['filesystem'])) {
+        if (empty($disk_info['devices'])) {
             return;
         }
 
-        foreach ($disk_info['storage-system-information']['filesystem'] as $filesystem) {
-            if ($filesystem['mounted-on'] === '/') {
-                $usedFormatted = $this->formatBlocks($filesystem['used-blocks'], true);
-                $availableFormatted = $this->formatBlocks($filesystem['available-blocks'], true);
-                $usedPercent = intval($filesystem['used-percent']);
-                $availableBytes = $filesystem['available-blocks'] * 512;
-                $totalBytes = $filesystem['total-blocks'] * 512;
+        foreach ($disk_info['devices'] as $fs) {
+            if ($fs['mountpoint'] === '/') {
+                $usedFormatted = $fs['used'];
+                $availableFormatted = $fs['available'];
+                $usedPercent = intval($fs['used_pct']);
+                $availableBytes = $fs['available_bytes'];
+                $totalBytes = $fs['total_bytes'];
 
                 $warningThreshold = min(10 *(1024**3), 0.2 * $totalBytes);
                 $errorThreshold = min(5 *(1024**3), 0.1 * $totalBytes);
@@ -100,34 +100,5 @@ class DiskSpaceStatus extends AbstractStatus
                 break;
             }
         }
-    }
-
-    public function formatBlocks($blocks, $showUnit = true)
-    {
-        $bytes = $blocks * 512;
-
-        $units = ['B', 'K', 'M', 'G', 'T', 'P', 'E'];
-
-        $unitIndex = 0;
-        $value = $bytes;
-
-        while ($value >= 1024 && $unitIndex < count($units) - 1) {
-            $value /= 1024;
-            $unitIndex++;
-        }
-
-        if ($value >= 100) {
-            $formatted = number_format($value, 0);
-        } elseif ($value >= 10) {
-            $formatted = number_format($value, 1);
-        } else {
-            $formatted = number_format($value, 2);
-        }
-
-        if ($showUnit) {
-            $formatted = $formatted . $units[$unitIndex];
-        }
-
-        return $formatted;
     }
 }

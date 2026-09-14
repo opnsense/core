@@ -34,32 +34,6 @@ export default class Disk extends BaseGaugeWidget {
         this.isDetailed = this.config && this.config.w >= this.detailedBreakpoint;
     }
 
-    _convertToBytes(sizeString) {
-        // intentionally multiply by 1000 to retain original data format
-        const units = {
-            'B': 1,
-            'K': 1000,
-            'M': 1000 * 1000,
-            'G': 1000 * 1000 * 1000,
-            'T': 1000 * 1000 * 1000 * 1000
-        };
-
-        const match = sizeString.match(/^(\d+(?:\.\d+)?)([BKMGT])$/i);
-
-        if (!match) {
-            throw new Error("Invalid size format");
-        }
-
-        const size = parseFloat(match[1]);
-        const unit = match[2].toUpperCase();
-
-        if (!units[unit]) {
-            throw new Error("Invalid unit");
-        }
-
-        return size * units[unit];
-    }
-
     getMarkup() {
         return $(`
             <div class="${this.id}-chart-container">
@@ -172,8 +146,8 @@ export default class Disk extends BaseGaugeWidget {
             this.detailed_chart.config.data.datasets[1].data = [];
             let totals = [];
             for (const device of data.devices) {
-                let used = this._convertToBytes(device.used);
-                let total = this._convertToBytes(device.total);
+                let used = device.used_bytes;
+                let total = device.total_bytes;
                 let free = total - used;
                 if (device.mountpoint === '/') {
                     this.chart.config.data.datasets[0].pct = [device.used_pct, (100 - device.used_pct)];

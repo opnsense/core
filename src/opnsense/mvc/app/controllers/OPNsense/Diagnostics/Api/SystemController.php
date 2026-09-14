@@ -193,65 +193,25 @@ class SystemController extends ApiControllerBase
 
     public function systemDiskAction()
     {
-        $result = [];
+        $devices = [];
 
         $disk_info = json_decode((new Backend())->configdRun('system diag disk'), true);
 
-        if (!empty($disk_info['storage-system-information'])) {
-            foreach ($disk_info['storage-system-information']['filesystem'] as $fs) {
-                if (!in_array(trim($fs['type']), ['cd9660', 'msdosfs', 'tmpfs', 'ufs', 'zfs'])) {
-                    continue;
-                }
+        if (empty($disk_info['devices'])) {
+            return;
+        }
 
-                $result['devices'][] = [
-                    'device' => $fs['name'],
-                    'type' => trim($fs['type']),
-                    // "blocks" is deprecated, as the name does not and has
-                    // never made sense with what is actually returned.
-                    'blocks' => $this->formatBlocks($fs['total-blocks']),
-                    // "total_formatted" will be the new name of the old "blocks" variable
-                    'total' => $this->formatBlocks($fs['total-blocks']),
-                    'total_bytes' => $fs['total-blocks'] * 512,
-                    'used' => $this->formatBlocks($fs['used-blocks']),
-                    'used_bytes' => $fs['used-blocks'] * 512,
-                    'available' => $this->formatBlocks($fs['available-blocks']),
-                    'available_bytes' => $fs['available-blocks'] * 512,
-                    'used_pct' => $fs['used-percent'],
-                    'mountpoint' => $fs['mounted-on'],
-                ];
+        foreach ($disk_info['devices'] as $fs) {
+            if (!in_array(trim($fs['type']), ['cd9660', 'msdosfs', 'tmpfs', 'ufs', 'zfs'])) {
+                continue;
             }
+
+            $devices[] = $fs;
         }
 
-        return $result;
-    }
+        $disk_info['devices'] = $devices;
 
-    public function formatBlocks($blocks, $showUnit = true)
-    {
-        $bytes = $blocks * 512;
-
-        $units = ['B', 'K', 'M', 'G', 'T', 'P', 'E'];
-
-        $unitIndex = 0;
-        $value = $bytes;
-
-        while ($value >= 1024 && $unitIndex < count($units) - 1) {
-            $value /= 1024;
-            $unitIndex++;
-        }
-
-        if ($value >= 100) {
-            $formatted = number_format($value, 0);
-        } elseif ($value >= 10) {
-            $formatted = number_format($value, 1);
-        } else {
-            $formatted = number_format($value, 2);
-        }
-
-        if ($showUnit) {
-            $formatted = $formatted . $units[$unitIndex];
-        }
-
-        return $formatted;
+        return $disk_info;
     }
 
     public function systemMbufAction()
