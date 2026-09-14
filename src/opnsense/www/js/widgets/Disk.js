@@ -173,7 +173,7 @@ export default class Disk extends BaseGaugeWidget {
             let totals = [];
             for (const device of data.devices) {
                 let used = this._convertToBytes(device.used);
-                let total = this._convertToBytes(device.blocks);
+                let total = this._convertToBytes(device.total);
                 let free = total - used;
                 if (device.mountpoint === '/') {
                     this.chart.config.data.datasets[0].pct = [device.used_pct, (100 - device.used_pct)];
