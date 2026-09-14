@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2024 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2026 Deciso B.V.
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -25,8 +25,7 @@
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
     --------------------------------------------------------------------------------------------------------------
-    Simple CRL Distributionpoint downloader using the CA's configured in the central trust store
-    Script returns exit status 0 when nothing has changed, 1 when changes have been made so a rehash can be scheduled
+    Returns disk usage in JSON
 """
 
 import subprocess
@@ -59,7 +58,6 @@ def format_blocks(blocks, show_unit=True):
 def disk_info():
     result = {}
 
-    # Run: /bin/df -aT --libxo json
     process = subprocess.run(
         ["/bin/df", "-aT", "--libxo", "json"],
         capture_output=True,
@@ -67,7 +65,6 @@ def disk_info():
         check=True
     )
 
-    # Convert the JSON output into a Python dictionary
     disk_info = json.loads(process.stdout)
 
     storage_info = disk_info.get("storage-system-information")
@@ -77,9 +74,6 @@ def disk_info():
 
         for fs in storage_info.get("filesystem", []):
             fs_type = fs["type"].strip()
-
-            # if fs_type in ["cd9660", "msdosfs", "tmpfs", "ufs", "zfs"]:
-            #     continue
 
             result["devices"].append({
                 "device": fs["name"],
