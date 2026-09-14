@@ -279,16 +279,17 @@ abstract class Base
      * execute an authentication step, when failed, make sure we always spend the same time for the sequence.
      * This also adds a penalty for failed attempts.
      * @param callable $handler authentication handler, returns a boolean
+     * @param bool $constant_time spend the same time on success as well, when the outcome may not leak
      * @return bool
      */
-    protected function timedAuthenticate($handler)
+    protected function timedAuthenticate($handler, $constant_time = false)
     {
         $tstart = microtime(true);
         $expected_time = 2000000; /* failed login, aim at 2 seconds total time */
         $result = $handler();
 
         $timeleft = $expected_time - ((microtime(true) - $tstart) * 1000000);
-        if (!$result && $timeleft > 0) {
+        if ((!$result || $constant_time) && $timeleft > 0) {
             usleep((int)$timeleft);
         }
 

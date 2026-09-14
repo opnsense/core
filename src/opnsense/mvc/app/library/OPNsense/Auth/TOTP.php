@@ -58,6 +58,11 @@ trait TOTP
     private $passwordFirst = false;
 
     /**
+     * @var bool last authenticateFirstFactor() call matched a token code joined to the password
+     */
+    private $firstFactorComposed = false;
+
+    /**
      * use graceperiod and timeWindow to calculate which moments in time we should check
      * @return array timestamps
      */
@@ -182,18 +187,40 @@ trait TOTP
 
     /**
      * authenticate the first factor (password) of a token authentication sequence, refusing
-     * users without a token seed as in the single request flow (_authenticate). The seed
-     * check runs inside the same failed attempt penalty as a full authenticate() sequence
-     * so response time does not reveal seed provisioning state.
+     * users without a token seed as in the single request flow (_authenticate). Accepted and
+     * refused passwords spend the same sequence time, the caller only reveals the outcome
+     * after the token step, so response time may not reveal it either.
      * @param string $username username to authenticate
      * @param string $password user password
      * @return bool
      */
     public function authenticateFirstFactor($username, $password)
     {
+        $this->firstFactorComposed = false;
         return $this->timedAuthenticate(function () use ($username, $password) {
-            return $this->hasOTP($username) && parent::_authenticate($username, $password);
-        });
+            if (!$this->hasOTP($username)) {
+                return false;
+            }
+            if (parent::_authenticate($username, $password)) {
+                return true;
+            }
+            // keep accepting the single request form, a token code joined to the password,
+            // both checks share one timed sequence so response time does not tell them apart
+            if ($this->_authenticate($username, $password)) {
+                $this->firstFactorComposed = true;
+                return true;
+            }
+            return false;
+        }, true);
+    }
+
+    /**
+     * @return bool true when the last authenticateFirstFactor() call matched a token code joined
+     *              to the password, both factors are verified and no token step should follow
+     */
+    public function isFirstFactorComposed()
+    {
+        return $this->firstFactorComposed;
     }
 
     /**
@@ -201,16 +228,18 @@ trait TOTP
      * the same failed attempt penalty as a full authenticate() sequence
      * @param string $username username to authenticate
      * @param string $otp_code one-time password code
+     * @param bool $first_factor_passed outcome of the password step, when refused the token is
+     *                                  still checked but the sequence fails in the same time
      * @return bool
      */
-    public function authenticateOTP($username, $otp_code)
+    public function authenticateOTP($username, $otp_code, $first_factor_passed = true)
     {
-        return $this->timedAuthenticate(function () use ($username, $otp_code) {
+        return $this->timedAuthenticate(function () use ($username, $otp_code, $first_factor_passed) {
             $userObject = $this->getUser($username);
             if ($userObject != null && !empty($userObject->otp_seed)) {
                 $otp_seed = \Base32\Base32::decode($userObject->otp_seed);
                 if ($this->authTOTP($otp_seed, $otp_code)) {
-                    return true;
+                    return $first_factor_passed;
                 }
             }
             return false;
