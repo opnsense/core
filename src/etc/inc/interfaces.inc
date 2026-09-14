@@ -736,11 +736,6 @@ function interfaces_dependencies($plugins_devices = null)
             continue;
         }
 
-        if (str_starts_with($ifcfg['if'], 'lo')) {
-            $queues['loopback'][] = $fill_data($ifcfg);
-            continue;
-        }
-
         /* check with plugged devices returned earlier */
         if (!empty($devices[$ifcfg['if']])) {
             $queues['software'][] = $fill_data($ifcfg);
