@@ -21,6 +21,16 @@
         <help>Choose the interface that should send Router Advertisements.</help>
     </field>
     <field>
+        <id>entries.deprecateStalePrefixes</id>
+        <label>Deprecate stale prefixes</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Advertise previously delegated DHCPv6-PD track6 prefixes with zero lifetimes after they disappear (RFC 9096).</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>entries.Base6Interface</id>
         <label>Constructor</label>
         <type>dropdown</type>
