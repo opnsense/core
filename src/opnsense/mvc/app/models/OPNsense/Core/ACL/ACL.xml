@@ -23,6 +23,7 @@
             <pattern>api/diagnostics/system/system_time</pattern>
             <pattern>api/diagnostics/system/system_mbuf</pattern>
             <pattern>api/diagnostics/system/system_swap</pattern>
+            <pattern>api/diagnostics/system/zfs_status</pattern>
         </patterns>
     </page-system-login-logout>
     <page-all>
