@@ -31,7 +31,6 @@ namespace OPNsense\Diagnostics\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
-use OPNsense\System\Status\DiskSpaceStatus;
 
 /**
  * Class SystemController
@@ -195,6 +194,7 @@ class SystemController extends ApiControllerBase
     public function systemDiskAction()
     {
         $result = [];
+
         $disk_info = json_decode((new Backend())->configdRun('system diag disk'), true);
 
         if (!empty($disk_info['storage-system-information'])) {
@@ -206,8 +206,8 @@ class SystemController extends ApiControllerBase
                 $result['devices'][] = [
                     'device' => $fs['name'],
                     'type' => trim($fs['type']),
-                    // "blocks" is to be deprecated, as the name does not and has 
-                    // never made sense with what this function actually returns.
+                    // "blocks" is deprecated, as the name does not and has
+                    // never made sense with what is actually returned.
                     'blocks' => $this->humanizeBlocks($fs['total-blocks']),
                     // "total_formatted" will be the new name of the old "blocks" variable
                     'total' => $this->humanizeBlocks($fs['total-blocks']),

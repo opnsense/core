@@ -70,29 +70,27 @@ class DiskSpaceStatus extends AbstractStatus
             if ($filesystem['mounted-on'] === '/') {
                 $usedFormatted = $this->humanizeBlocks($filesystem['used-blocks'], true);
                 $availableFormatted = $this->humanizeBlocks($filesystem['available-blocks'], true);
-                var_dump($usedFormatted);
-                var_dump($availableFormatted);
                 $usedPercent = intval($filesystem['used-percent']);
-                $availableGB = $this->$filesystem['available-blocks'] * 512 *(1024**3);
-                $totalGB = $this->$filesystem['total-blocks'] * 512 *(1024**3);
+                $availableBytes = $this->$filesystem['available-blocks'] * 512;
+                $totalBytes = $this->$filesystem['total-blocks'] * 512;
 
-                $warningThreshold = min(10, 0.2 * $totalGB);
-                $errorThreshold = min(5, 0.1 * $totalGB);
+                $warningThreshold = min(10 *(1024**3), 0.2 * $totalBytes);
+                $errorThreshold = min(5 *(1024**3), 0.1 * $totalBytes);
 
-                if ($availableGB <= $warningThreshold && $availableGB > $errorThreshold) {
+                if ($availableBytes <= $warningThreshold && $availableBytes > $errorThreshold) {
                     $this->internalStatus = SystemStatusCode::WARNING;
                     $this->internalMessage = sprintf(
                         gettext('Disk space on the root filesystem is nearly full (' .
-                                '%.2f or %d%% used, %.2f available). Please consider cleaning up or expanding storage.'),
+                                '% or %d%% used, % available). Please consider cleaning up or expanding storage.'),
                         $usedFormatted,
                         $usedPercent,
                         $availableFormatted
                     );
-                } elseif ($availableGB <= $errorThreshold) {
+                } elseif ($availableBytes <= $errorThreshold) {
                     $this->internalStatus = SystemStatusCode::ERROR;
                     $this->internalMessage = sprintf(
                         gettext('Disk space on the root filesystem is critically full (' .
-                                '%.2f or %d%% used, %.2f available). Please consider cleaning up or expanding storage.'),
+                                '% or %d%% used, % available). Please consider cleaning up or expanding storage.'),
                         $usedFormatted,
                         $usedPercent,
                         $availableFormatted
@@ -104,7 +102,7 @@ class DiskSpaceStatus extends AbstractStatus
         }
     }
 
-    public function humanizeBlocks($blocks, $showUnit = false)
+    public function humanizeBlocks($blocks, $showUnit = true)
     {
         $bytes = $blocks * 512;
 
@@ -126,15 +124,11 @@ class DiskSpaceStatus extends AbstractStatus
             $formatted = number_format($value, 2);
         }
 
-        if ($showUnit == true) {
-            return $formatted . $units[$unitIndex];
-        }
-        else
-        {
-            return $formatted;
+        if ($showUnit) {
+            $formatted = $formatted . $units[$unitIndex];
         }
 
-        
+        return $formatted;
     }
 
     private function convertToGB($value)
