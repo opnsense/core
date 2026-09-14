@@ -68,8 +68,8 @@ class DiskSpaceStatus extends AbstractStatus
 
         foreach ($disk_info['storage-system-information']['filesystem'] as $filesystem) {
             if ($filesystem['mounted-on'] === '/') {
-                $usedFormatted = $this->humanizeBlocks($filesystem['used-blocks'], true);
-                $availableFormatted = $this->humanizeBlocks($filesystem['available-blocks'], true);
+                $usedFormatted = $this->formatBlocks($filesystem['used-blocks'], true);
+                $availableFormatted = $this->formatBlocks($filesystem['available-blocks'], true);
                 $usedPercent = intval($filesystem['used-percent']);
                 $availableBytes = $filesystem['available-blocks'] * 512;
                 $totalBytes = $filesystem['total-blocks'] * 512;
@@ -102,7 +102,7 @@ class DiskSpaceStatus extends AbstractStatus
         }
     }
 
-    public function humanizeBlocks($blocks, $showUnit = true)
+    public function formatBlocks($blocks, $showUnit = true)
     {
         $bytes = $blocks * 512;
 

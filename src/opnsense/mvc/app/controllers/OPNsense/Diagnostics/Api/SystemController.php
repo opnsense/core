@@ -208,13 +208,13 @@ class SystemController extends ApiControllerBase
                     'type' => trim($fs['type']),
                     // "blocks" is deprecated, as the name does not and has
                     // never made sense with what is actually returned.
-                    'blocks' => $this->humanizeBlocks($fs['total-blocks']),
+                    'blocks' => $this->formatBlocks($fs['total-blocks']),
                     // "total_formatted" will be the new name of the old "blocks" variable
-                    'total' => $this->humanizeBlocks($fs['total-blocks']),
+                    'total' => $this->formatBlocks($fs['total-blocks']),
                     'total_bytes' => $fs['total-blocks'] * 512,
-                    'used' => $this->humanizeBlocks($fs['used-blocks']),
+                    'used' => $this->formatBlocks($fs['used-blocks']),
                     'used_bytes' => $fs['used-blocks'] * 512,
-                    'available' => $this->humanizeBlocks($fs['available-blocks']),
+                    'available' => $this->formatBlocks($fs['available-blocks']),
                     'available_bytes' => $fs['available-blocks'] * 512,
                     'used_pct' => $fs['used-percent'],
                     'mountpoint' => $fs['mounted-on'],
@@ -225,7 +225,7 @@ class SystemController extends ApiControllerBase
         return $result;
     }
 
-    public function humanizeBlocks($blocks, $showUnit = true)
+    public function formatBlocks($blocks, $showUnit = true)
     {
         $bytes = $blocks * 512;
 
