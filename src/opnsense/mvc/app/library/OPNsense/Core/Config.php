@@ -563,7 +563,7 @@ class Config extends Singleton
 
     /**
      * backup current config
-     * @return string target filename
+     * @return string|null target filename, null when the backup could not be written
      */
     public function backup($timestamp = null)
     {
@@ -583,7 +583,15 @@ class Config extends Singleton
         } else {
             $target_filename = "config-" . $timestamp . ".xml";
         }
-        File::file_put_contents($target_dir . $target_filename, file_get_contents($this->config_file), 0640);
+        $data = file_get_contents($this->config_file);
+        if (
+            $data === false ||
+            File::file_put_contents($target_dir . $target_filename, $data, 0640) !== strlen($data)
+        ) {
+            /* a partial backup would shadow the older intact ones on restore */
+            @unlink($target_dir . $target_filename);
+            return null;
+        }
 
         return $target_dir . $target_filename;
     }
@@ -747,14 +755,24 @@ class Config extends Singleton
         // update revision information ROOT.revision tag, align timestamp to backup output
         $revision = $this->updateRevision($revision, null, $time);
 
+        $backup_filename = null;
+
         if ($this->config_file_handle !== null) {
             if (flock($this->config_file_handle, LOCK_EX)) {
+                $data = (string)$this;
                 fseek($this->config_file_handle, 0);
                 chmod($this->config_file, 0640);
-                ftruncate($this->config_file_handle, 0);
-                fwrite($this->config_file_handle, (string)$this);
-                // flush, unlock, but keep the handle open
-                fflush($this->config_file_handle);
+                if (
+                    !ftruncate($this->config_file_handle, 0) ||
+                    fwrite($this->config_file_handle, $data) !== strlen($data) ||
+                    !fflush($this->config_file_handle) ||
+                    !fsync($this->config_file_handle)
+                ) {
+                    /* on-disk contents are undefined now, leave the backups untouched for recovery */
+                    flock($this->config_file_handle, LOCK_UN);
+                    throw new ConfigException("Unable to write config");
+                }
+                // flushed and synced, unlock later, but keep the handle open
                 $backup_filename = $backup ? $this->backup($time) : null;
                 if ($backup_filename) {
                     $this->auditLogChange($backup_filename, $revision);
@@ -763,6 +781,9 @@ class Config extends Singleton
                     // last processed event itself. (it's merely added for debug purposes)
                     $logger = new Syslog('config', null, LOG_LOCAL5);
                     $logger->info("config-event: new_config " . $backup_filename);
+                } elseif ($backup) {
+                    $logger = new Syslog('config', null, LOG_LOCAL5);
+                    $logger->error("config saved, but no backup of it could be written");
                 }
                 flock($this->config_file_handle, LOCK_UN);
                 $this->mtime = fstat($this->config_file_handle)['mtime'];
@@ -771,8 +792,10 @@ class Config extends Singleton
             }
         }
 
-        /* cleanup backups */
-        $this->cleanupBackups();
+        /* cleanup backups, but not when the new backup could not be written */
+        if (!$backup || $backup_filename !== null) {
+            $this->cleanupBackups();
+        }
     }
 
     /**
