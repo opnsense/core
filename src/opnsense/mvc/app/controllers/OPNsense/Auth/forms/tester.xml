@@ -1,0 +1,18 @@
+<form>
+    <field>
+        <id>tester.authmode</id>
+        <label>Authentication Server</label>
+        <type>dropdown</type>
+        <help>Select authentication server to test</help>
+    </field>
+    <field>
+        <id>tester.username</id>
+        <label>Username</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>tester.password</id>
+        <label>Password</label>
+        <type>password</type>
+    </field>
+</form>

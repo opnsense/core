@@ -246,9 +246,9 @@ abstract class Base
             if ($user) {
                 return (string)$user->name;
             }
-        } else {
-            return $username;
         }
+
+        return $username;
     }
 
     /**
