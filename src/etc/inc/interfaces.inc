@@ -107,6 +107,13 @@ function interfaces_vlan_priorities()
     return $priorities;
 }
 
+function interfaces_vlan_match($device)
+{
+    return str_starts_with($device, 'vlan') || /* new style VLAN prefix */
+        str_starts_with($device, 'qinq') || /* new style QINQ prefix */
+        strstr($device, '_vlan'); /* legacy style VLAN infix */
+}
+
 function interfaces_vlan_configure($device)
 {
     $vlans = config_read_array('vlans', 'vlan', false);
@@ -2180,7 +2187,7 @@ function interfaces_addresses_flush($device, $family = 4, $ifconfig_details = nu
 
 function interface_configure_mtu($device, $mtu, $ifconfig_details)
 {
-    if (strstr($device, 'vlan') || strstr($device, 'qinq')) {
+    if (interfaces_vlan_match($device)) {
         $parent_device = interface_parent_devices($device)[0];
         $parent_mtu = $mtu + 4;
         $force = false;
@@ -3438,29 +3445,28 @@ function convert_friendly_interface_to_friendly_descr($interface)
     return $ifdesc;
 }
 
-/* collect hardware device parents for VLAN, LAGG and bridges */
-function interface_parent_devices($device, $as_interface = false)
+function interface_parent_devices($device)
 {
     $parents = [];
 
-    if (strstr($device, 'vlan') || strstr($device, 'qinq')) {
+    if (interfaces_vlan_match($device)) {
         foreach (config_read_array('vlans', 'vlan', false) as $vlan) {
             if ($device == $vlan['vlanif']) {
                 $parents[] = $vlan['if'];
                 break;
             }
         }
-    } elseif (strstr($device, 'bridge')) {
+    } elseif (str_starts_with($device, 'bridge')) {
         foreach (config_read_array('bridges', 'bridged', false) as $bridge) {
             if ($device == $bridge['bridgeif']) {
                 foreach (explode(',', $bridge['members'] ?? '') as $member) {
-                    /* bridge stores members as configured interfaces */
-                    $parents[] = $as_interface ? $member : get_real_interface($member);
+                    /* XXX bridge stores members as configured interfaces */
+                    $parents[] = get_real_interface($member);
                 }
                 break;
             }
         }
-    } elseif (strstr($device, 'lagg')) {
+    } elseif (str_starts_with($device, 'lagg')) {
         foreach (config_read_array('laggs', 'lagg', false) as $lagg) {
             if ($device == $lagg['laggif']) {
                 foreach (explode(',', $lagg['members']) as $member) {
@@ -3469,18 +3475,18 @@ function interface_parent_devices($device, $as_interface = false)
                 break;
             }
         }
-    }
-
-    foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
-        if ($device == $ppp['if']) {
-            foreach (explode(',', $ppp['ports']) as $port) {
-                /*
-                 * XXX We only have get_real_interface() here because
-                 * PPP may be assigned to an assigned interface!  :(
-                 */
-                $parents[] = get_real_interface($port);
+    } else {
+        foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
+            if ($device == $ppp['if']) {
+                foreach (explode(',', $ppp['ports']) as $port) {
+                    /*
+                     * XXX We only have get_real_interface() here because
+                     * PPP may be assigned to an assigned interface!  :(
+                     */
+                    $parents[] = get_real_interface($port);
+                }
+                break;
             }
-            break;
         }
     }
 
