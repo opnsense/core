@@ -60,46 +60,81 @@ class DiskSpaceStatus extends AbstractStatus
         }
         fclose($fd);
 
-        $backend = new Backend();
-        $output = json_decode($backend->configdRun('system diag disk'), true);
+        $disk_info = json_decode((new Backend())->configdRun('system diag disk'), true);
 
-        if (!isset($output['storage-system-information']) || !isset($output['storage-system-information']['filesystem'])) {
+        if (!isset($disk_info['storage-system-information']) || !isset($disk_info['storage-system-information']['filesystem'])) {
             return;
         }
 
-        foreach ($output['storage-system-information']['filesystem'] as $filesystem) {
+        foreach ($disk_info['storage-system-information']['filesystem'] as $filesystem) {
             if ($filesystem['mounted-on'] === '/') {
-                $used = $this->convertToGB($filesystem['used']);
-                $available = $this->convertToGB($filesystem['available']);
+                $usedFormatted = $this->humanizeBlocks($filesystem['used-blocks'], true);
+                $availableFormatted = $this->humanizeBlocks($filesystem['available-blocks'], true);
+                var_dump($usedFormatted);
+                var_dump($availableFormatted);
                 $usedPercent = intval($filesystem['used-percent']);
-                $totalSpace = $used + $available;
+                $availableGB = $this->$filesystem['available-blocks'] * 512 *(1024**3);
+                $totalGB = $this->$filesystem['total-blocks'] * 512 *(1024**3);
 
-                $warningThresholdGB = min(10, 0.2 * $totalSpace);
-                $errorThresholdGB = min(5, 0.1 * $totalSpace);
+                $warningThreshold = min(10, 0.2 * $totalGB);
+                $errorThreshold = min(5, 0.1 * $totalGB);
 
-                if ($available <= $warningThresholdGB && $available > $errorThresholdGB) {
+                if ($availableGB <= $warningThreshold && $availableGB > $errorThreshold) {
                     $this->internalStatus = SystemStatusCode::WARNING;
                     $this->internalMessage = sprintf(
                         gettext('Disk space on the root filesystem is nearly full (' .
-                                '%.2fG or %d%% used, %.2fG available). Please consider cleaning up or expanding storage.'),
-                        $used,
+                                '%.2f or %d%% used, %.2f available). Please consider cleaning up or expanding storage.'),
+                        $usedFormatted,
                         $usedPercent,
-                        $available
+                        $availableFormatted
                     );
-                } elseif ($available <= $errorThresholdGB) {
+                } elseif ($availableGB <= $errorThreshold) {
                     $this->internalStatus = SystemStatusCode::ERROR;
                     $this->internalMessage = sprintf(
                         gettext('Disk space on the root filesystem is critically full (' .
-                                '%.2fG or %d%% used, %.2fG available). Please consider cleaning up or expanding storage.'),
-                        $used,
+                                '%.2f or %d%% used, %.2f available). Please consider cleaning up or expanding storage.'),
+                        $usedFormatted,
                         $usedPercent,
-                        $available
+                        $availableFormatted
                     );
                 }
 
                 break;
             }
         }
+    }
+
+    public function humanizeBlocks($blocks, $showUnit = false)
+    {
+        $bytes = $blocks * 512;
+
+        $units = ['B', 'K', 'M', 'G', 'T', 'P', 'E'];
+
+        $unitIndex = 0;
+        $value = $bytes;
+
+        while ($value >= 1024 && $unitIndex < count($units) - 1) {
+            $value /= 1024;
+            $unitIndex++;
+        }
+
+        if ($value >= 100) {
+            $formatted = number_format($value, 0);
+        } elseif ($value >= 10) {
+            $formatted = number_format($value, 1);
+        } else {
+            $formatted = number_format($value, 2);
+        }
+
+        if ($showUnit == true) {
+            return $formatted . $units[$unitIndex];
+        }
+        else
+        {
+            return $formatted;
+        }
+
+        
     }
 
     private function convertToGB($value)

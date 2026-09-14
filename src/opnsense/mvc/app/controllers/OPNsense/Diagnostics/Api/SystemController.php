@@ -31,6 +31,7 @@ namespace OPNsense\Diagnostics\Api;
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
+use OPNsense\System\Status\DiskSpaceStatus;
 
 /**
  * Class SystemController
@@ -66,6 +67,7 @@ class SystemController extends ApiControllerBase
         if (empty($data) || !is_array($data)) {
             return [];
         }
+
         if (!empty($data['malloc-statistics']) && !empty($data['malloc-statistics']['memory'])) {
             $data['malloc-statistics']['totals'] = ['used' => 0];
             foreach ($data['malloc-statistics']['memory'] as &$item) {
@@ -193,7 +195,6 @@ class SystemController extends ApiControllerBase
     public function systemDiskAction()
     {
         $result = [];
-
         $disk_info = json_decode((new Backend())->configdRun('system diag disk'), true);
 
         if (!empty($disk_info['storage-system-information'])) {
@@ -205,9 +206,16 @@ class SystemController extends ApiControllerBase
                 $result['devices'][] = [
                     'device' => $fs['name'],
                     'type' => trim($fs['type']),
-                    'blocks' => $fs['blocks'],
-                    'used' => $fs['used'],
-                    'available' => $fs['available'],
+                    // "blocks" is to be deprecated, as the name does not and has 
+                    // never made sense with what this function actually returns.
+                    'blocks' => $this->humanizeBlocks($fs['total-blocks']),
+                    // "total_formatted" will be the new name of the old "blocks" variable
+                    'total' => $this->humanizeBlocks($fs['total-blocks']),
+                    'total_bytes' => $fs['total-blocks'] * 512,
+                    'used' => $this->humanizeBlocks($fs['used-blocks']),
+                    'used_bytes' => $fs['used-blocks'] * 512,
+                    'available' => $this->humanizeBlocks($fs['available-blocks']),
+                    'available_bytes' => $fs['available-blocks'] * 512,
                     'used_pct' => $fs['used-percent'],
                     'mountpoint' => $fs['mounted-on'],
                 ];
@@ -215,6 +223,35 @@ class SystemController extends ApiControllerBase
         }
 
         return $result;
+    }
+
+    public function humanizeBlocks($blocks, $showUnit = true)
+    {
+        $bytes = $blocks * 512;
+
+        $units = ['B', 'K', 'M', 'G', 'T', 'P', 'E'];
+
+        $unitIndex = 0;
+        $value = $bytes;
+
+        while ($value >= 1024 && $unitIndex < count($units) - 1) {
+            $value /= 1024;
+            $unitIndex++;
+        }
+
+        if ($value >= 100) {
+            $formatted = number_format($value, 0);
+        } elseif ($value >= 10) {
+            $formatted = number_format($value, 1);
+        } else {
+            $formatted = number_format($value, 2);
+        }
+
+        if ($showUnit) {
+            $formatted = $formatted . $units[$unitIndex];
+        }
+
+        return $formatted;
     }
 
     public function systemMbufAction()
