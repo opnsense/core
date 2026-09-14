@@ -121,6 +121,14 @@
 
         const healthGraph = new HealthGraph('health-chart');
 
+        const syncUrlState = () => {
+            const params = new URLSearchParams(location.search);
+            params.set('category', $('#health-category-select').val());
+            params.set('subject', $('#health-subcategory-select').val());
+            params.set('granularity', $('#detail-select').val());
+            history.replaceState(null, '', `${location.pathname}?${params.toString()}`);
+        };
+
         const reset = () => {
             $('#info-disabled').hide();
             $('#main').show();
@@ -128,6 +136,19 @@
             $('#spinner').show();
             healthGraph.initialize().then(async () => {
                 const rrdOptions = healthGraph.getRRDList();
+
+                const urlParams = new URLSearchParams(location.search);
+                const savedCategory = urlParams.get('category');
+                let savedSubject = urlParams.get('subject');
+                const savedGranularity = urlParams.get('granularity');
+
+                if (savedGranularity !== null && ['0', '1', '2', '3'].includes(savedGranularity)) {
+                    $('#detail-select').val(savedGranularity);
+                    // .val() alone doesn't fire the change handler, so seed the graph's
+                    // state directly or the first fetch below would use the old default
+                    healthGraph.currentDetailLevel = savedGranularity;
+                }
+
                 for (const [category, subitems] of Object.entries(rrdOptions.data)) {
 
                     let $select = $('#health-category-select');
@@ -155,8 +176,17 @@
                     });
 
                     $('#health-subcategory-select').selectpicker('refresh');
-                    // trigger first selection
-                    $('#health-subcategory-select').val(rrdOptions.data[selectedCategory][0]).trigger('changed.bs.select');
+
+                    // restore a saved subject on first load only, then fall back to the first entry
+                    const subjectToSelect = (savedSubject && rrdOptions.data[selectedCategory].includes(savedSubject))
+                        ? savedSubject
+                        : rrdOptions.data[selectedCategory][0];
+                    savedSubject = null;
+                    $('#health-subcategory-select').val(subjectToSelect);
+                    // bootstrap-select's button label only redraws on an explicit refresh,
+                    // not merely from a re-triggered changed.bs.select event
+                    $('#health-subcategory-select').selectpicker('refresh');
+                    $('#health-subcategory-select').trigger('changed.bs.select');
                 });
 
 
@@ -167,12 +197,18 @@
                     let system = `${sub}-${category}`;
                     await healthGraph.update(system);
                     $('#spinner').hide();
+                    syncUrlState();
                 });
 
                 $('.selectpicker').selectpicker('refresh');
 
-                // trigger event for first category
-                $('#health-category-select').val(Object.keys(rrdOptions.data)[0]).trigger('changed.bs.select');
+                // trigger event for first category, restoring a saved selection when still valid
+                const categoryToSelect = (savedCategory && rrdOptions.data.hasOwnProperty(savedCategory))
+                    ? savedCategory
+                    : Object.keys(rrdOptions.data)[0];
+                $('#health-category-select').val(categoryToSelect);
+                $('#health-category-select').selectpicker('refresh');
+                $('#health-category-select').trigger('changed.bs.select');
 
                 $("#reset-zoom").click(function() {
                     healthGraph.resetZoom();
@@ -186,6 +222,7 @@
                     $('#spinner').show();
                     await healthGraph.update(null, $(this).val());
                     $('#spinner').hide();
+                    syncUrlState();
                 });
 
                 $("#stacked-select").change(async function() {
