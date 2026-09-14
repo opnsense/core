@@ -71,8 +71,8 @@ class DiskSpaceStatus extends AbstractStatus
                 $usedFormatted = $this->humanizeBlocks($filesystem['used-blocks'], true);
                 $availableFormatted = $this->humanizeBlocks($filesystem['available-blocks'], true);
                 $usedPercent = intval($filesystem['used-percent']);
-                $availableBytes = $this->$filesystem['available-blocks'] * 512;
-                $totalBytes = $this->$filesystem['total-blocks'] * 512;
+                $availableBytes = $filesystem['available-blocks'] * 512;
+                $totalBytes = $filesystem['total-blocks'] * 512;
 
                 $warningThreshold = min(10 *(1024**3), 0.2 * $totalBytes);
                 $errorThreshold = min(5 *(1024**3), 0.1 * $totalBytes);
@@ -81,7 +81,7 @@ class DiskSpaceStatus extends AbstractStatus
                     $this->internalStatus = SystemStatusCode::WARNING;
                     $this->internalMessage = sprintf(
                         gettext('Disk space on the root filesystem is nearly full (' .
-                                '% or %d%% used, % available). Please consider cleaning up or expanding storage.'),
+                                '%s or %d%% used, %s available). Please consider cleaning up or expanding storage.'),
                         $usedFormatted,
                         $usedPercent,
                         $availableFormatted
@@ -90,7 +90,7 @@ class DiskSpaceStatus extends AbstractStatus
                     $this->internalStatus = SystemStatusCode::ERROR;
                     $this->internalMessage = sprintf(
                         gettext('Disk space on the root filesystem is critically full (' .
-                                '% or %d%% used, % available). Please consider cleaning up or expanding storage.'),
+                                '%s or %d%% used, %s available). Please consider cleaning up or expanding storage.'),
                         $usedFormatted,
                         $usedPercent,
                         $availableFormatted
@@ -129,33 +129,5 @@ class DiskSpaceStatus extends AbstractStatus
         }
 
         return $formatted;
-    }
-
-    private function convertToGB($value)
-    {
-        preg_match('/([0-9.]+)([a-zA-Z]+)/', $value, $matches);
-        if (count($matches) < 3) {
-            return floatval($value);
-        }
-
-        $number = floatval($matches[1]);
-        $unit = strtoupper($matches[2]);
-
-        switch ($unit) {
-            case 'B':
-                return $number / 1024 / 1024 / 1024;
-            case 'K':
-                return $number / 1024 / 1024;
-            case 'M':
-                return $number / 1024;
-            case 'T':
-                return $number * 1024;
-            case 'P':
-                return $number * 1024 * 1024;
-            case 'E':
-                return $number * 1024 * 1024 * 1024;
-            default:
-                return $number; // Default GB
-        }
     }
 }
