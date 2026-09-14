@@ -340,7 +340,9 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
                 $rdnss[] = $server;
             }
 
-            if (count($searchlist_tmp)) {
+            if (count($searchlist_tmp) == 1 && $searchlist_tmp[0] == '.') {
+                /* explicitly disabled */
+            } elseif (count($searchlist_tmp)) {
                 $dnssl = $searchlist_tmp;
             } elseif (!empty($config['system']['domain'])) {
                 $dnssl = [$config['system']['domain']];

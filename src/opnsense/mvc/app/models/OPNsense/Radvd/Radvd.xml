@@ -60,11 +60,7 @@
                 <AddressFamily>ipv6</AddressFamily>
                 <AsList>Y</AsList>
             </RDNSS>
-            <DNSSL type="HostnameField">
-                <IsDNSName>Y</IsDNSName>
-                <IpAllowed>N</IpAllowed>
-                <AsList>Y</AsList>
-            </DNSSL>
+            <DNSSL type="CSVListField"/>
             <dns type="BooleanField">
                 <Required>Y</Required>
                 <Default>1</Default>
