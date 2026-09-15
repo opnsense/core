@@ -66,6 +66,8 @@ class NetworkInterfaceContainerField extends ContainerField
             'dhcp6_request_dns',
             'dhcp6-prefix-id',
             'dhcp6_ifid',
+            'track6-prefix-id',
+            'track6_ifid',
             'media',
         ];
         foreach ($this->iterateItems() as $key => $node) {
@@ -76,7 +78,7 @@ class NetworkInterfaceContainerField extends ContainerField
         }
         $result['dhcp6_norequest_dns'] = $this->dhcp6_request_dns->isEmpty() ? '1' : '0';
         foreach (['dhcp6-prefix-id', 'dhcp6_ifid', 'track6-prefix-id', 'track6_ifid'] as $fld) {
-            if (!$this->$fld->isSet()) {
+            if ($this->$fld->isSet()) {
                 $result[$fld] = intval($this->$fld->getValue(), 16);
             }
         }
