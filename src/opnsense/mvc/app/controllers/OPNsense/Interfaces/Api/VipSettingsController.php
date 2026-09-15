@@ -121,8 +121,11 @@ class VipSettingsController extends ApiMutableModelControllerBase
     public function setItemAction($uuid)
     {
         Config::getInstance()->lock();
+        
         $node = $this->getModel()->getNodeByReference('vip.' . $uuid);
         $validations = [];
+        $prev_subnet = $node != null ? (string)$node->subnet : '';
+        $prev_interface = $node != null ? (string)$node->interface : '';
         $post_subnet = '';
         $post_interface = '';
         if (isset($_POST['vip'])) {
@@ -130,8 +133,8 @@ class VipSettingsController extends ApiMutableModelControllerBase
             $post_interface = !empty($_POST['vip']['interface']) ? $_POST['vip']['interface'] : '';
         }
 
-        if ($node != null && $post_subnet != (string)$node->subnet) {
-            $validations = $this->getModel()->whereUsed((string)$node->subnet);
+        if ($node != null && $post_subnet != $prev_subnet) {
+            $validations = $this->getModel()->whereUsed($prev_subnet);
             if (!empty($validations)) {
                 // XXX a bit unpractical, but we can not validate previous values from the model so
                 //     we are obligated to return this as a single error (even if the form has other issues too)
@@ -150,10 +153,10 @@ class VipSettingsController extends ApiMutableModelControllerBase
             return $result;
         }
 
-        if ($node != null && ($post_subnet != (string)$node->subnet || $post_interface != (string)$node->interface)) {
-            $addr = (string)$node->subnet;
+        if ($node != null && ($post_subnet != $prev_subnet || $post_interface != $prev_interface)) {
+            $addr = $prev_subnet;
             if (Util::isLinkLocal($addr)) {
-                $addr .= "@{$node->interface}";
+                $addr .= "@{$prev_interface}";
             }
             file_put_contents("/tmp/delete_vip_{$uuid}.todo", $addr . PHP_EOL, FILE_APPEND);
         }
