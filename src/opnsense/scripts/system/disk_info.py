@@ -91,5 +91,5 @@ def disk_info():
     return result
 
 if __name__ == "__main__":
-    disk_info = disk_info()
-    print(json.dumps(disk_info, indent=4))
+    result = disk_info()
+    print(json.dumps(result, indent=4))
