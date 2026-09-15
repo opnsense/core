@@ -31,10 +31,10 @@
                 </aggressive>
                 <version type="OptionField">
                     <Required>Y</Required>
-                    <Default>0</Default>
+                    <Default>2</Default>
                     <OptionValues>
-                        <ike value="0">IKEv1+IKEv2</ike>
-                        <ikev1 value="1">IKEv1</ikev1>
+                        <ike value="0">IKEv1+IKEv2 (allows deprecated IKEv1)</ike>
+                        <ikev1 value="1">IKEv1 (deprecated)</ikev1>
                         <ikev2 value="2">IKEv2</ikev2>
                     </OptionValues>
                 </version>
