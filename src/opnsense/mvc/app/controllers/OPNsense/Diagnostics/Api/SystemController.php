@@ -206,7 +206,8 @@ class SystemController extends ApiControllerBase
                 continue;
             }
 
-            $devices[] = $fs;
+            // Blocks is deprecated and should not be used in future applications.
+            $devices[] = ['blocks' => $fs['total_bytes']] + $fs;
         }
 
         $disk_info['devices'] = $devices;
