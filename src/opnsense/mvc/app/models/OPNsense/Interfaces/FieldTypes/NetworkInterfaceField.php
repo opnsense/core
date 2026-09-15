@@ -72,9 +72,11 @@ class NetworkInterfaceContainerField extends ContainerField
             if (in_array($key, $skiplist)) {
                 continue; /* skip otherwise processed */
             }
-            $result[$key] = $node->getValue();
+            $result[$key] = ($node instanceof BooleanField && empty($node->getValue()))
+                ? '' : $node->getValue();
         }
-        $result['dhcp6_norequest_dns'] = $this->dhcp6_request_dns->isEmpty() ? '1' : '0';
+        /* no model field of its own, it is the inverse of dhcp6_request_dns */
+        $result['dhcp6_norequest_dns'] = $this->dhcp6_request_dns->isEmpty() ? '1' : '';
         foreach (['dhcp6-prefix-id', 'dhcp6_ifid', 'track6-prefix-id', 'track6_ifid'] as $fld) {
             if (!$this->$fld->isSet()) {
                 $result[$fld] = intval($this->$fld->getValue(), 16);

@@ -29,7 +29,6 @@
 namespace OPNsense\Interfaces;
 
 use OPNsense\Base\BaseModel;
-use OPNsense\Base\FieldTypes\BooleanField;
 use OPNsense\Base\Messages\Message;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
@@ -138,10 +137,8 @@ class NetworkInterface extends BaseModel
                     $todo['pending_action'] = 'relink';
                 }
                 foreach ($todo['pending'] as $prop => $value) {
-                    if ($prop === 'dhcp6_norequest_dns' && !isset($intf->$prop)) {
-                        $curval = '0'; /* actually stored as dhcp6_request_dns in our model */
-                    } elseif (!isset($intf->$prop)) {
-                        $curval = $this->interface->$key->$prop instanceof BooleanField  ? '0' : '';
+                    if (!isset($intf->$prop)) {
+                        $curval = '';
                     } else {
                         $curval = $intf->$prop;
                     }
