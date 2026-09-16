@@ -136,7 +136,7 @@
                         <pubkey>Public Key</pubkey>
                         <eap_tls value="eap-tls">EAP TLS</eap_tls>
                         <eap_mschapv2 value="eap-mschapv2">EAP-MSCHAPv2</eap_mschapv2>
-                        <xauth_pam value="xauth-pam">Xauth PAM</xauth_pam>
+                        <xauth_pam value="xauth-pam">Xauth PAM (deprecated)</xauth_pam>
                         <eap_radius value="eap-radius">EAP RADIUS</eap_radius>
                     </OptionValues>
                 </auth>
@@ -192,7 +192,7 @@
                         <pubkey>Public Key</pubkey>
                         <eap_tls value="eap-tls">EAP TLS</eap_tls>
                         <eap_mschapv2 value="eap-mschapv2">EAP-MSCHAPv2</eap_mschapv2>
-                        <xauth_pam value="xauth-pam">Xauth PAM</xauth_pam>
+                        <xauth_pam value="xauth-pam">Xauth PAM (deprecated)</xauth_pam>
                         <eap_radius value="eap-radius">EAP RADIUS</eap_radius>
                     </OptionValues>
                 </auth>

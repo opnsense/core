@@ -50,7 +50,7 @@
     </field>
     <field>
         <id>connection.aggressive</id>
-        <label>Aggressive</label>
+        <label>Aggressive (deprecated)</label>
         <type>checkbox</type>
         <advanced>true</advanced>
         <help>
@@ -191,7 +191,7 @@
     </field>
     <field>
         <id>connection.dpd_timeout</id>
-        <label>DPD timeout (s)</label>
+        <label>DPD timeout (s) (deprecated)</label>
         <type>text</type>
         <advanced>true</advanced>
         <help>

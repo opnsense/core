@@ -59,9 +59,9 @@ class TunnelController extends ApiControllerBase
               'des' => 'DES'
         ];
         $ph1authmethods = [
-            'hybrid_rsa_server' => 'Hybrid RSA + Xauth',
-            'xauth_rsa_server' => 'Mutual RSA + Xauth',
-            'xauth_psk_server' => 'Mutual PSK + Xauth',
+            'hybrid_rsa_server' => 'Hybrid RSA + Xauth (deprecated)',
+            'xauth_rsa_server' => 'Mutual RSA + Xauth (deprecated)',
+            'xauth_psk_server' => 'Mutual PSK + Xauth (deprecated)',
             'eap-tls' => 'EAP-TLS',
             'psk_eap-tls' => 'RSA (local) + EAP-TLS (remote)',
             'eap-mschapv2' => 'EAP-MSCHAPV2',
@@ -110,7 +110,7 @@ class TunnelController extends ApiControllerBase
                     "interface" => !empty($ifs[$interface]) ? $ifs[$interface] : $interface,
                     "remote_gateway" => (string)$p1->{"remote-gateway"},
                     "mobile" => !empty((string)$p1->mobile),
-                    "mode" => (string)$p1->mode,
+                    "mode" => (string)$p1->mode === 'aggressive' ? 'aggressive (deprecated)' : (string)$p1->mode,
                     "proposal" => $ph1proposal,
                     "authentication" => $ph1authmethods[(string)$p1->authentication_method],
                     "description" => (string)$p1->descr
