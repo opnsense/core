@@ -181,7 +181,7 @@ class User extends BaseModel
                 proc_close($process);
             }
         } else {
-            $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => 11 ]);
+            $hash = password_hash($password, PASSWORD_ARGON2ID);
         }
         return $hash;
     }
