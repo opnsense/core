@@ -278,8 +278,6 @@ function recover_base($etc_group, $etc_master_passwd, $etc_shells, $etc_ttys, $p
         '/etc/master.passwd' => $etc_master_passwd,
     ];
 
-    exec('/usr/sbin/pw userdel installer 2> /dev/null');
-
     foreach ($partial_restore as $file => $content) {
         if (!file_exists($file) || filesize($file) === 0) {
             echo "===> Restoring $file\n";

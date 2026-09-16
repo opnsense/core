@@ -95,4 +95,13 @@ if (is_install_media() && sync_installer_user()) {
     }
 
     echo $greeting . "\n";
+} else {
+    $users = &config_read_array('system', 'user');
+    foreach ($users as $id => $user) {
+        if ($user['name'] == 'installer' && $user['scope'] == 'system') {
+            unset($users[$id]);
+            write_config('Remove installer user');
+        }
+    }
+    shell_safe('/usr/sbin/pw userdel installer 2> /dev/null');
 }
