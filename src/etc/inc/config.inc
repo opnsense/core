@@ -178,14 +178,6 @@ function convert_config($verbose = false)
     /* factory reset on release type and plugins if necessary */
     $function('/usr/local/opnsense/scripts/firmware/register.php sync');
 
-    $users = &config_read_array('system', 'user');
-    foreach ($users as $id => $user) {
-        if ($user['name'] == 'installer' && $user['scope'] == 'system') {
-            unset($users[$id]);
-            write_config('Remove installer user');
-        }
-    }
-
     /* reload the config as it was rewritten and saved in the script context */
     OPNsense\Core\Config::getInstance()->forceReload();
     $config = parse_config();
