@@ -1,0 +1,2 @@
+# for testing with opnsense-login only
+auth		required	pam_opnsense.so
