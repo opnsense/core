@@ -128,6 +128,8 @@ class UIBootgrid {
         this.rememberedTreeIds = new Set(JSON.parse(localStorage.getItem(this.treeStorageKey) || '[]'));
         this.isVisible = false;
         this.scrollPos = 0;
+        this.isScrolling = false;
+        this.scrollEndTimer = null;
         this.addButton = false;
         this.deleteSelectedButton = false;
 
@@ -697,6 +699,21 @@ class UIBootgrid {
         }
     }
 
+    _scheduleDimensionChange() {
+        if (this.isResizing) {
+            return;
+        }
+
+        this.isResizing = true;
+        requestAnimationFrame(() => {
+            try {
+                this._onDimensionChange();
+            } finally {
+                this.isResizing = false;
+            }
+        });
+    }
+
     _registerEvents() {
         this.table.on('dataLoading', () => {
             this._getPlaceholder().html('');
@@ -713,6 +730,7 @@ class UIBootgrid {
                 // this is mainly intended for scaling the width of the table if
                 // the width of the window changes.
                 this.table.redraw();
+                this._scheduleDimensionChange();
             }));
 
             if (!this.options.ajax) {
@@ -869,6 +887,10 @@ class UIBootgrid {
                 pageObserver.observe(pageTarget);
 
                 const tableObserver = new ResizeObserver(debounce((entries) => {
+                    if (this.isScrolling) {
+                        return;
+                    }
+
                     for (let entry of entries) {
                         if (this.tableHeight != entry.contentRect.height) {
                             this.tableHeight = entry.contentRect.height;
@@ -888,6 +910,7 @@ class UIBootgrid {
                         this.isVisible = isVisible;
                         if (isVisible) {
                             this.table.redraw();
+                            this._scheduleDimensionChange();
                         }
                     }
                 });
@@ -898,24 +921,15 @@ class UIBootgrid {
 
         this.table.on('scrollVertical', (top) => {
             this.scrollPos = top;
+            this.isScrolling = true;
+            clearTimeout(this.scrollEndTimer);
+            this.scrollEndTimer = setTimeout(() => {
+                this.isScrolling = false;
+            }, 100);
         });
         this.table.on('renderComplete', () => {
             /* tooltips may stick, remove them on redraw */
             $("div.tooltip.fade.top.in").remove();
-
-            if (this.isResizing) {
-                return;
-            }
-
-            // Schedule a dimension change to prevent recursion
-            this.isResizing = true;
-            requestAnimationFrame(() => {
-                try {
-                    this._onDimensionChange();
-                } finally {
-                    this.isResizing = false;
-                }
-            });
         });
     }
 
@@ -988,6 +1002,8 @@ class UIBootgrid {
                 if (kids.length) queue.push(...kids);
             }
         }
+
+        this._scheduleDimensionChange();
 
         // backwards compat
         this.$element.trigger("loaded.rs.jquery.bootgrid");
