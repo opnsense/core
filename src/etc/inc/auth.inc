@@ -460,7 +460,7 @@ function local_user_set_password(&$user, $password = null)
             proc_close($process);
         }
     } else {
-        $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => 11 ]);
+        $hash = password_hash($password, PASSWORD_ARGON2ID);
     }
 
     if ($hash !== false && strpos($hash, '$') === 0) {
