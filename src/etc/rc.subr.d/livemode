@@ -31,30 +31,56 @@ require_once('config.inc');
 require_once('auth.inc');
 require_once('util.inc');
 
-if (is_install_media()) {
+use OPNsense\Core\Config;
+use OPNsense\Auth\User;
+
+function sync_installer_user()
+{
+    Config::getInstance()->lock();
+
+    $usermdl = new User();
+    $ret = false;
+
+    $installer = $usermdl->getUserByName('installer');
+    $root = $usermdl->getUserByName('root');
+
+    if (!empty($installer)) {
+        /* simply test if it is usable */
+        $ret = $installer->uid->isEqual('0') && $installer->scope->isEqual('system') && $installer->disabled->isEmpty();
+        Config::getInstance()->unlock();
+    } else if (!empty($root) && $root->uid->isEqual('0') && $root->scope->isEqual('system') && $root->disabled->isEmpty()) {
+        $installer = $usermdl->user->Add();
+        $installer->setNodes($root->getNodeContent());
+        $installer->descr = 'System Installer';
+        $installer->name = 'installer';
+        $installer->uid = '0'; /* needs a reset */
+
+        if ($usermdl->serializeToConfig(false, true)) {
+            Config::getInstance()->save();
+
+            /* only sync the user, because local_sync_accounts() cannot cope with overlapping UIDs */
+            $user = $installer->getNodeContent();
+            local_user_set($user);
+
+            $ret = true;
+        }
+    } else {
+        Config::getInstance()->unlock();
+    }
+
+    return $ret;
+}
+
+if (1 || is_install_media()) {
     /*
      * Installer mode requires setting up an extra user and
      * we will protect it with root's password.  We can only
-     * do this if user does not exist, though.
+     * do this if root exists and installer does not, though.
+     *
+     * If an 'installer' account is found with the correct
+     * UID and scope we will try to use it, too.
      */
-    $root = null;
-
-    foreach (config_read_array('system', 'user', false) as $user) {
-        if ($user['name'] == 'installer') {
-            $root = null;
-            break;
-        }
-
-        if ($user['uid'] == 0) {
-            $root = $user;
-        }
-    }
-
-    if ($root) {
-        $root['shell'] = '/usr/local/sbin/opnsense-installer';
-        $root['name'] = 'installer';
-        local_user_set($root, true);
-
+    if (sync_installer_user()) {
         echo "\n";
 
         /* tailored for OPNsense to occupy same width below */
