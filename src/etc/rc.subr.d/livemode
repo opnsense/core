@@ -47,7 +47,6 @@ function sync_installer_user()
     if (!empty($installer)) {
         /* simply test if it is usable */
         $ret = $installer->uid->isEqual('0') && $installer->scope->isEqual('system') && $installer->disabled->isEmpty();
-        Config::getInstance()->unlock();
     } else if (!empty($root) && $root->uid->isEqual('0') && $root->scope->isEqual('system') && $root->disabled->isEmpty()) {
         $installer = $usermdl->user->Add();
         $installer->setNodes($root->getNodeContent());
@@ -64,9 +63,9 @@ function sync_installer_user()
 
             $ret = true;
         }
-    } else {
-        Config::getInstance()->unlock();
     }
+
+    Config::getInstance()->unlock();
 
     return $ret;
 }
