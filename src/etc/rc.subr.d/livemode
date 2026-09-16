@@ -71,30 +71,28 @@ function sync_installer_user()
     return $ret;
 }
 
-if (1 || is_install_media()) {
-    /*
-     * Installer mode requires setting up an extra user and
-     * we will protect it with root's password.  We can only
-     * do this if root exists and installer does not, though.
-     *
-     * If an 'installer' account is found with the correct
-     * UID and scope we will try to use it, too.
-     */
-    if (sync_installer_user()) {
-        echo "\n";
+/*
+ * Installer mode requires setting up an extra user and
+ * we will protect it with root's password.  We can only
+ * do this if root exists and installer does not, though.
+ *
+ * If an 'installer' account is found with the correct
+ * UID and scope we will try to use it, too.
+ */
+if (is_install_media() && sync_installer_user()) {
+    echo "\n";
 
-        /* tailored for OPNsense to occupy same width below */
-        $namex = product::getInstance()->name();
+    /* tailored for OPNsense to occupy same width below */
+    $namex = product::getInstance()->name();
 
-        $greeting = "Welcome!  {$namex} is running in live mode from install media.  Please\n" .
-                    "login as 'root' to continue in live mode, or as 'installer' to start the\n" .
-                    "installation.  Use the default or previously-imported root password for\n" .
-                    "both accounts.";
+    $greeting = "Welcome!  {$namex} is running in live mode from install media.  Please\n" .
+                "login as 'root' to continue in live mode, or as 'installer' to start the\n" .
+                "installation.  Use the default or previously-imported root password for\n" .
+                "both accounts.";
 
-        if (!isset($config['system']['ssh']['noauto']) && is_process_running('sshd')) {
-            $greeting .= "  Remote login via SSH is also enabled.";
-        }
-
-        echo $greeting . "\n";
+    if (!isset($config['system']['ssh']['noauto']) && is_process_running('sshd')) {
+        $greeting .= "  Remote login via SSH is also enabled.";
     }
+
+    echo $greeting . "\n";
 }
