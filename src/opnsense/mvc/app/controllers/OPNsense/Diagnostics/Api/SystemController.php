@@ -66,7 +66,6 @@ class SystemController extends ApiControllerBase
         if (empty($data) || !is_array($data)) {
             return [];
         }
-
         if (!empty($data['malloc-statistics']) && !empty($data['malloc-statistics']['memory'])) {
             $data['malloc-statistics']['totals'] = ['used' => 0];
             foreach ($data['malloc-statistics']['memory'] as &$item) {
