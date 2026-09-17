@@ -262,6 +262,7 @@ function plugins_configure($hook, $verbose = false, $args = [])
 {
     $logargs = [];
     $glob = '*';
+    $ret = 1; /* no hook executed */
 
     array_unshift($args, $verbose);
 
@@ -318,6 +319,7 @@ function plugins_configure($hook, $verbose = false, $args = [])
                             $argf,
                             implode(',', array_slice($logargs, 0, $argc))
                         ), LOG_DEBUG);
+                        $ret = 0;
                         try {
                             call_user_func_array($argf, array_slice($args, 0, $argc));
                         } catch (\Error $e) {
@@ -328,6 +330,8 @@ function plugins_configure($hook, $verbose = false, $args = [])
             }
         }
     }
+
+    return $ret;
 }
 
 function plugins_run($hook, $args = [])

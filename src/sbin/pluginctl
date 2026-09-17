@@ -344,7 +344,11 @@ if (isset($opts['h'])) {
     /* second argument is hook */
     $hook = array_shift($args);
     /* other arguments are passed as is */
-    plugins_configure($hook, !isset($opts['q']), $args);
+    $ret_int = plugins_configure($hook, !isset($opts['q']), $args);
+    /* cannot taint $ret in this case */
+    if ($ret_int && !isset($opts['q'])) {
+        echo "The configuration hook `$hook' is not known to the system." . PHP_EOL;
+    }
 }
 
 exit($ret);
