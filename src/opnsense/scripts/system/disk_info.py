@@ -31,7 +31,7 @@
 import subprocess
 import json
 
-def format_blocks(blocks, show_unit=True):
+def format_blocks(blocks):
     bytes_value = blocks * 512
 
     units = ["B", "K", "M", "G", "T", "P", "E"]
@@ -49,10 +49,7 @@ def format_blocks(blocks, show_unit=True):
     else:
         formatted = f"{value:.2f}"
 
-    if show_unit:
-        formatted += units[unit_index]
-
-    return formatted
+    return formatted + units[unit_index]
 
 
 def disk_info():
@@ -75,9 +72,16 @@ def disk_info():
         for fs in storage_info.get("filesystem", []):
             fs_type = fs["type"].strip()
 
+            if fs_type not in ['cd9660', 'msdosfs', 'tmpfs', 'ufs', 'zfs']:
+                continue
+
             result["devices"].append({
                 "device": fs["name"],
                 "type": fs_type,
+
+                # "blocks" is deprecated and should not be used in future applications.
+                "blocks": format_blocks(fs["total-blocks"]),
+                # Use "total" instead:
                 "total": format_blocks(fs["total-blocks"]),
                 "total_bytes": fs["total-blocks"] * 512,
                 "used": format_blocks(fs["used-blocks"]),
@@ -92,4 +96,4 @@ def disk_info():
 
 if __name__ == "__main__":
     result = disk_info()
-    print(json.dumps(result, indent=4))
+    print(json.dumps(result))

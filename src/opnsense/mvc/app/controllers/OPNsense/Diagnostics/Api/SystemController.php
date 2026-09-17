@@ -66,7 +66,6 @@ class SystemController extends ApiControllerBase
         if (empty($data) || !is_array($data)) {
             return [];
         }
-
         if (!empty($data['malloc-statistics']) && !empty($data['malloc-statistics']['memory'])) {
             $data['malloc-statistics']['totals'] = ['used' => 0];
             foreach ($data['malloc-statistics']['memory'] as &$item) {
@@ -193,26 +192,7 @@ class SystemController extends ApiControllerBase
 
     public function systemDiskAction()
     {
-        $devices = [];
-
-        $disk_info = json_decode((new Backend())->configdRun('system diag disk'), true);
-
-        if (empty($disk_info['devices'])) {
-            return;
-        }
-
-        foreach ($disk_info['devices'] as $fs) {
-            if (!in_array(trim($fs['type']), ['cd9660', 'msdosfs', 'tmpfs', 'ufs', 'zfs'])) {
-                continue;
-            }
-
-            // Blocks is deprecated and should not be used in future applications.
-            $devices[] = ['blocks' => $fs['total']] + $fs;
-        }
-
-        $disk_info['devices'] = $devices;
-
-        return $disk_info;
+        return json_decode((new Backend())->configdRun('system diag disk'), true) ?? [];
     }
 
     public function systemMbufAction()
