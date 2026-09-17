@@ -115,7 +115,7 @@ if [ -n "${CHANGELOG}" ]; then
 	CHANGELOG=$(configctl firmware changelog text ${CHANGELOG})
 fi
 if [ -n "${CHANGELOG}" ]; then
-	echo "${CHANGELOG}" | less
+	echo "${CHANGELOG}" | less -P "Viewing release notes - press UP/DOWN to read, 'q' to continue"
 	echo
 fi
 
