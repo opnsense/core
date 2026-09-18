@@ -140,11 +140,21 @@ class AssignmentController extends ApiMutableModelControllerBase
     public function reconfigureAction()
     {
         $legacybools = [
-            'enable',
-            'lock',
+            'dhcp6-ia-pd-send-hint',
+            'dhcp6-information-only',
+            'dhcp6_norequest_dns',
+            'dhcp6_rapid_commit',
+            'dhcp6prefixonly',
+            'dhcpd6track6allowoverride',
+            'dhcphonourmtu',
             'disablechecksumoffloading',
+            'disablelargereceiveoffloading',
             'disablesegmentationoffloading',
-            'disablelargereceiveoffloading'
+            'disablevlanhwfilter',
+            'enable',
+            'hw_settings_overwrite',
+            'lock',
+            'promisc',
         ];
         if ($this->request->isPost()) {
             $backend = new Backend();
