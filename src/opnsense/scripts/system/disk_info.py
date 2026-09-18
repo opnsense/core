@@ -56,7 +56,7 @@ def disk_info():
     result = {}
 
     process = subprocess.run(
-        ["/bin/df", "-aT", "--libxo", "json"],
+        ["/bin/df", "-abT", "--libxo", "json"],
         capture_output=True,
         text=True,
         check=True
@@ -79,9 +79,8 @@ def disk_info():
                 "device": fs["name"],
                 "type": fs_type,
 
-                # "blocks" is deprecated and should not be used in future applications.
+                # XXX "blocks" provided for backwards compatibility
                 "blocks": format_blocks(fs["total-blocks"]),
-                # Use "total" instead:
                 "total": format_blocks(fs["total-blocks"]),
                 "total_bytes": fs["total-blocks"] * 512,
                 "used": format_blocks(fs["used-blocks"]),
