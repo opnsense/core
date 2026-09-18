@@ -1145,7 +1145,6 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/ModelRelationFieldTest/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/NetworkAliasFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/NetworkAliasFieldTest/config.xml
-/usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/NetworkFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/OptionFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/PortFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/ProtocolFieldTest.php
