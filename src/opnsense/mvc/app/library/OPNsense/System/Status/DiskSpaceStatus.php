@@ -74,8 +74,8 @@ class DiskSpaceStatus extends AbstractStatus
                 $availableBytes = $fs['available_bytes'];
                 $totalBytes = $fs['total_bytes'];
 
-                $warningThreshold = min(10 *(1024**3), 0.2 * $totalBytes);
-                $errorThreshold = min(5 *(1024**3), 0.1 * $totalBytes);
+                $warningThreshold = min(10 * (1024 ** 3), 0.2 * $totalBytes);
+                $errorThreshold = min(5 * (1024 ** 3), 0.1 * $totalBytes);
 
                 if ($availableBytes <= $warningThreshold && $availableBytes > $errorThreshold) {
                     $this->internalStatus = SystemStatusCode::WARNING;
