@@ -70,6 +70,11 @@
             }
         });
 
+        ajaxGet('/api/interfaces/assignment/pending', {}, function(data, status) {
+            if (data['status'] == 'pending') {
+                $(document).trigger("settings-changed");
+            }
+        });
     });
 </script>
 <div class="tab-content content-box">
