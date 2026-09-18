@@ -222,4 +222,14 @@ class AssignmentController extends ApiMutableModelControllerBase
         }
         return ["status" => "failed"];
     }
+
+    /**
+     * retrieve pending status
+     */
+    public function pendingAction()
+    {
+        $backend = new Backend();
+
+        return ['status' => file_exists('/tmp/.interfaces.todo') ? 'pending' : 'ok'];
+    }
 }
