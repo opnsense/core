@@ -50,28 +50,22 @@
       <enable>1</enable>
       <if>mismatch1</if>
       <descr/>
-      <mtu/>
+      <spoofmac/>
       <ipaddr>dhcp</ipaddr>
       <ipaddrv6>dhcp6</ipaddrv6>
-      <subnet/>
-      <gateway/>
       <blockpriv>1</blockpriv>
       <blockbogons>1</blockbogons>
       <dhcphostname/>
-      <media/>
-      <mediaopt/>
       <dhcp6-ia-pd-len>0</dhcp6-ia-pd-len>
     </wan>
     <lan>
       <enable>1</enable>
       <if>mismatch0</if>
       <descr/>
+      <spoofmac/>
       <ipaddr>192.168.1.1</ipaddr>
       <subnet>24</subnet>
       <ipaddrv6>idassoc6</ipaddrv6>
-      <subnetv6>64</subnetv6>
-      <media/>
-      <mediaopt/>
       <track6-interface>wan</track6-interface>
       <track6-prefix-id>0</track6-prefix-id>
     </lan>
