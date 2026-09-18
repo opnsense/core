@@ -893,6 +893,17 @@ function ipsec_write_strongswan_conf()
 
     $strongswanTree = (new \OPNsense\IPsec\IPsec())->strongswanTree();
 
+    /*
+     * TPM 2.0 plugin: FreeBSD has no in-kernel resource manager (/dev/tpmrm0),
+     * so charon would fall back to the unavailable tabrmd TCTI and refuse to
+     * load the plugin.  Point it to the tpm(4) device instead; the device is
+     * only opened once a TPM-bound key or certificate is actually referenced,
+     * so systems without a TPM are unaffected.
+     */
+    if (empty($strongswanTree['charon']['plugins']['tpm']['tcti']['name'])) {
+        $strongswanTree['charon']['plugins']['tpm']['tcti'] = ['name' => 'device', 'opts' => '/dev/tpm0'];
+    }
+
     /* legacy overwrites for strongswan.conf */
 
     foreach ($a_phase1 as $ph1ent) {
