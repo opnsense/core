@@ -149,7 +149,6 @@
                 </OptionValues>
             </dhcp6vlanprio>
             <dhcp6-ia-pd-len type="OptionField">
-                <Required>Y</Required>
                 <Default>0</Default>
                 <OptionValues>
                     <pcp0 value="0">64</pcp0>

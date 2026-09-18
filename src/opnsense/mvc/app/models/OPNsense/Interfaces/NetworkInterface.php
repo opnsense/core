@@ -131,7 +131,7 @@ class NetworkInterface extends BaseModel
                 /* flush actions that need to be applied, for which we need history (config reflects running config) */
                 $todo = [
                     'pending' => $this->interface->$key->toLegacy(),
-                    'pending_action' => 'update'
+                    'pending_action' => 'update',
                 ];
                 $changed = false;
                 if ($intf->if != $interfaces[$key]['if']) {
@@ -141,7 +141,7 @@ class NetworkInterface extends BaseModel
                     if ($prop === 'dhcp6_norequest_dns' && !isset($intf->$prop)) {
                         $curval = '0'; /* actually stored as dhcp6_request_dns in our model */
                     } elseif (!isset($intf->$prop)) {
-                        $curval = $this->interface->$key->$prop instanceof BooleanField  ? '0' : '';
+                        $curval = ($this->interface->$key->$prop instanceof BooleanField) ? '0' : '';
                     } else {
                         $curval = $intf->$prop;
                     }
@@ -174,7 +174,7 @@ class NetworkInterface extends BaseModel
                 if ($node !== null) {
                     $this->store_if_todo($newIdentifier, [
                         'pending' => $node->toLegacy(),
-                        'pending_action' => 'update'
+                        'pending_action' => 'update',
                     ]);
 
                     /* We want the node to return the new network identifier as the uuid not
