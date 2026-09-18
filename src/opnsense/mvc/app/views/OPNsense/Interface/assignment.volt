@@ -80,5 +80,5 @@
 <div class="tab-content content-box">
     {{ partial('layout_partials/base_bootgrid_table', formGridAssignment)}}
 </div>
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/interfaces/assignment/reconfigure'}) }}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/interfaces/assignment/reconfigure', 'data_change_message_content': 'The interface configuration has been changed. Apply the pending changes in order for them to take effect.'}) }}
 {{ partial('layout_partials/base_dialog',['fields':formDialogAssignment,'id':formGridAssignment['edit_dialog_id'],'label':lang._('Edit Assignment')])}}
