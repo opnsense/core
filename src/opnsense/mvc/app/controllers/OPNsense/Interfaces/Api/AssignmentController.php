@@ -159,6 +159,10 @@ class AssignmentController extends ApiMutableModelControllerBase
             'lock',
             'promisc',
         ];
+        $legacyempties = [
+            'descr',
+            'spoofmac',
+        ];
         if ($this->request->isPost()) {
             $backend = new Backend();
             /***
@@ -187,6 +191,11 @@ class AssignmentController extends ApiMutableModelControllerBase
                         foreach ($legacybools as $legacybool) {
                             if (empty($pending[$legacybool])) {
                                 unset(Config::getInstance()->object()->interfaces->$key->$legacybool);
+                            }
+                        }
+                        foreach ($legacyempties as $legacyempty) {
+                            if (!strlen($pending[$legacyempty] ?? '')) {
+                                Config::getInstance()->object()->interfaces->$key->$legacyempty = '';
                             }
                         }
                         /* advanced dhcp settings not supported, prevent settings being used */
