@@ -140,6 +140,8 @@ class AssignmentController extends ApiMutableModelControllerBase
     public function reconfigureAction()
     {
         $legacybools = [
+            'blockbogons',
+            'blockpriv',
             'dhcp6-ia-pd-send-hint',
             'dhcp6-information-only',
             'dhcp6_norequest_dns',
