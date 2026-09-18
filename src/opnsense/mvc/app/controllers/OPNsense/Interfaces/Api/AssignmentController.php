@@ -152,6 +152,7 @@ class AssignmentController extends ApiMutableModelControllerBase
             'disablesegmentationoffloading',
             'disablevlanhwfilter',
             'enable',
+            'gateway_interface',
             'hw_settings_overwrite',
             'lock',
             'promisc',
