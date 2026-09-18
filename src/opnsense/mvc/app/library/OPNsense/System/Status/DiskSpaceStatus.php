@@ -60,73 +60,45 @@ class DiskSpaceStatus extends AbstractStatus
         }
         fclose($fd);
 
-        $backend = new Backend();
-        $output = json_decode($backend->configdRun('system diag disk'), true);
+        $disk_info = json_decode((new Backend())->configdRun('system diag disk'), true);
 
-        if (!isset($output['storage-system-information']) || !isset($output['storage-system-information']['filesystem'])) {
+        if (empty($disk_info['devices'])) {
             return;
         }
 
-        foreach ($output['storage-system-information']['filesystem'] as $filesystem) {
-            if ($filesystem['mounted-on'] === '/') {
-                $used = $this->convertToGB($filesystem['used']);
-                $available = $this->convertToGB($filesystem['available']);
-                $usedPercent = intval($filesystem['used-percent']);
-                $totalSpace = $used + $available;
+        foreach ($disk_info['devices'] as $fs) {
+            if ($fs['mountpoint'] === '/') {
+                $usedFormatted = $fs['used'];
+                $availableFormatted = $fs['available'];
+                $usedPercent = intval($fs['used_pct']);
+                $availableBytes = $fs['available_bytes'];
+                $totalBytes = $fs['total_bytes'];
 
-                $warningThresholdGB = min(10, 0.2 * $totalSpace);
-                $errorThresholdGB = min(5, 0.1 * $totalSpace);
+                $warningThreshold = min(10 * (1024 ** 3), 0.2 * $totalBytes);
+                $errorThreshold = min(5 * (1024 ** 3), 0.1 * $totalBytes);
 
-                if ($available <= $warningThresholdGB && $available > $errorThresholdGB) {
+                if ($availableBytes <= $warningThreshold && $availableBytes > $errorThreshold) {
                     $this->internalStatus = SystemStatusCode::WARNING;
                     $this->internalMessage = sprintf(
                         gettext('Disk space on the root filesystem is nearly full (' .
-                                '%.2fG or %d%% used, %.2fG available). Please consider cleaning up or expanding storage.'),
-                        $used,
+                                '%s or %d%% used, %s available). Please consider cleaning up or expanding storage.'),
+                        $usedFormatted,
                         $usedPercent,
-                        $available
+                        $availableFormatted
                     );
-                } elseif ($available <= $errorThresholdGB) {
+                } elseif ($availableBytes <= $errorThreshold) {
                     $this->internalStatus = SystemStatusCode::ERROR;
                     $this->internalMessage = sprintf(
                         gettext('Disk space on the root filesystem is critically full (' .
-                                '%.2fG or %d%% used, %.2fG available). Please consider cleaning up or expanding storage.'),
-                        $used,
+                                '%s or %d%% used, %s available). Please consider cleaning up or expanding storage.'),
+                        $usedFormatted,
                         $usedPercent,
-                        $available
+                        $availableFormatted
                     );
                 }
 
                 break;
             }
-        }
-    }
-
-    private function convertToGB($value)
-    {
-        preg_match('/([0-9.]+)([a-zA-Z]+)/', $value, $matches);
-        if (count($matches) < 3) {
-            return floatval($value);
-        }
-
-        $number = floatval($matches[1]);
-        $unit = strtoupper($matches[2]);
-
-        switch ($unit) {
-            case 'B':
-                return $number / 1024 / 1024 / 1024;
-            case 'K':
-                return $number / 1024 / 1024;
-            case 'M':
-                return $number / 1024;
-            case 'T':
-                return $number * 1024;
-            case 'P':
-                return $number * 1024 * 1024;
-            case 'E':
-                return $number * 1024 * 1024 * 1024;
-            default:
-                return $number; // Default GB
         }
     }
 }
