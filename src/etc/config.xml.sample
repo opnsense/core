@@ -49,6 +49,7 @@
     <wan>
       <enable>1</enable>
       <if>mismatch1</if>
+      <descr/>
       <mtu/>
       <ipaddr>dhcp</ipaddr>
       <ipaddrv6>dhcp6</ipaddrv6>
@@ -64,6 +65,7 @@
     <lan>
       <enable>1</enable>
       <if>mismatch0</if>
+      <descr/>
       <ipaddr>192.168.1.1</ipaddr>
       <subnet>24</subnet>
       <ipaddrv6>idassoc6</ipaddrv6>
