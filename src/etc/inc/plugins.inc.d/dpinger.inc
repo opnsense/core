@@ -135,8 +135,14 @@ function dpinger_configure_do($verbose = false, $gwname_map = null)
 
     service_log(sprintf('Setting up gateway monitor%s...', empty($gwname_map) ? '' : ' for ' . join(', ', $gwname_map)), $verbose);
 
+    $instances = dpinger_instances();
+
     foreach (dpinger_processes() as $running_gwname => $proc) {
         if (!empty($gwname_map) && !in_array($running_gwname, $gwname_map)) {
+            continue;
+        }
+        if (isset($instances[$running_gwname])) {
+            /* still configured: stopped below, once a replacement can be started */
             continue;
         }
         if (isvalidpid($proc['pidfile'])) {
@@ -152,10 +158,12 @@ function dpinger_configure_do($verbose = false, $gwname_map = null)
     $ifconfig_details = legacy_interfaces_details();
     $routes = [];
 
-    foreach (dpinger_instances() as $name => $gateway) {
+    foreach ($instances as $name => $gateway) {
         if (!empty($gwname_map) && !in_array($name, $gwname_map)) {
             continue;
         }
+
+        $pidfile = "/var/run/dpinger_{$name}.pid";
 
         foreach (['monitor', 'gateway'] as $key) {
             if (empty($gateway[$key])) {
@@ -191,7 +199,7 @@ function dpinger_configure_do($verbose = false, $gwname_map = null)
             }
 
             if (empty($gwifip)) {
-                log_msg(sprintf('The required %s IPv4 interface address could not be found, skipping.', $name), LOG_WARNING);
+                log_msg(sprintf('The required %s IPv4 interface address could not be found, %s.', $name, isvalidpid($pidfile) ? 'keeping previous instance' : 'skipping'), LOG_WARNING);
                 continue;
             }
         } elseif ($gateway['ipprotocol'] == 'inet6') {
@@ -218,7 +226,7 @@ function dpinger_configure_do($verbose = false, $gwname_map = null)
             }
 
             if (empty($gwifip)) {
-                log_msg(sprintf('The required %s IPv6 interface address could not be found, skipping.', $name), LOG_WARNING);
+                log_msg(sprintf('The required %s IPv6 interface address could not be found, %s.', $name, isvalidpid($pidfile) ? 'keeping previous instance' : 'skipping'), LOG_WARNING);
                 continue;
             }
         } else {
@@ -255,7 +263,7 @@ function dpinger_configure_do($verbose = false, $gwname_map = null)
 
         /* PID filename */
         $frmt[] = '-p %s';
-        $args[] = "/var/run/dpinger_{$name}.pid";
+        $args[] = $pidfile;
 
         /* status socket */
         $frmt[] = '-u %s';
@@ -275,6 +283,11 @@ function dpinger_configure_do($verbose = false, $gwname_map = null)
 
         $frmt[] = '%s';
         $args[] = $gateway['monitor'];
+
+        /* stop the previous instance only now that a replacement is ready to start */
+        if (isvalidpid($pidfile)) {
+            killbypid($pidfile);
+        }
 
         /* foreground mode in background to deal with tentative connectivity */
         mwexecfb($frmt, $args);
