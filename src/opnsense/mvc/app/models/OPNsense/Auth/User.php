@@ -141,9 +141,9 @@ class User extends BaseModel
                 continue;
             }
             $key = $node->__reference;
-            if ($node->uid->isEqual('0') && !$node->name->isEqual('root')) {
+            if ($node->scope->isEqual('system') && $node->name->isFieldChanged()) {
                 $messages->appendMessage(
-                    new Message(gettext("The name of the root user can not be changed"), $key . ".name")
+                    new Message(gettext('The name of a system user can not be changed.'), $key . '.name')
                 );
             }
             if ($node->password->isEmpty() && $node->scrambled_password->isEmpty()) {
@@ -181,7 +181,7 @@ class User extends BaseModel
                 proc_close($process);
             }
         } else {
-            $hash = password_hash($password, PASSWORD_BCRYPT, [ 'cost' => 11 ]);
+            $hash = password_hash($password, PASSWORD_ARGON2ID);
         }
         return $hash;
     }

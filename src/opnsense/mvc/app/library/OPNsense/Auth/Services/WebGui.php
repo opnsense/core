@@ -87,6 +87,16 @@ class WebGui implements IService
       */
     public function checkConstraints()
     {
+        $user = $this->getUserName();
+
+        if ($user == 'installer') {
+            $mdl = new \OPNsense\Auth\User();
+            $installer = $mdl->getUserByName($user);
+            if (!empty($installer)) {
+                return !$installer->scope->isEqual('system');
+            }
+        }
+
         // no constraints
         return true;
     }
