@@ -80,13 +80,19 @@ function does_interface_exist($interface, $flag = 'all')
     return !empty($interface) && in_array($interface, legacy_interface_listget($flag));
 }
 
+function _interfaces_loopback_configure($unused_but_required = null)
+{
+    legacy_interface_setaddress('lo0', '127.0.0.1/8', 4);
+    legacy_interface_setaddress('lo0', '::1/128', 6);
+    interfaces_vips_configure('lo0', null, false);
+    legacy_interface_flags('lo0', 'up');
+}
+
 function interfaces_loopback_configure($verbose = false)
 {
     service_log('Configuring loopback interface...', $verbose);
 
-    legacy_interface_setaddress('lo0', '127.0.0.1/8');
-    interfaces_vips_configure('lo0', null, false);
-    legacy_interface_flags('lo0', 'up');
+    _interfaces_loopback_configure();
 
     service_log("done.\n", $verbose);
 }
