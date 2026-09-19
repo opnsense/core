@@ -185,7 +185,7 @@
             </dhcp6_ifid>
             <dhcp6_assoc_pd type="IntegerField">
                 <MinimumValue>0</MinimumValue>
-                <ValidationMessage>Requires a valid positive number</ValidationMessage>
+                <ValidationMessage>Requires a valid positive number.</ValidationMessage>
             </dhcp6_assoc_pd>
             <dhcp6_send_options type=".\Dhcp6SendOptionsField"/>
             <dhcp6_request_options type=".\Dhcp6RequestOptionsField"/>
