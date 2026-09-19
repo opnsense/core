@@ -754,33 +754,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if (!empty($pconfig['dhcp6_assoc_pd'])) {
                         $new_config['dhcp6_assoc_pd'] = $pconfig['dhcp6_assoc_pd'];
                     }
-                    $new_config['adv_dhcp6_interface_statement_send_options'] = $pconfig['adv_dhcp6_interface_statement_send_options'];
-                    $new_config['adv_dhcp6_interface_statement_request_options'] = $pconfig['adv_dhcp6_interface_statement_request_options'];
-                    $new_config['adv_dhcp6_interface_statement_information_only_enable'] = $pconfig['adv_dhcp6_interface_statement_information_only_enable'];
-                    $new_config['adv_dhcp6_interface_statement_script'] = $pconfig['adv_dhcp6_interface_statement_script'];
-                    $new_config['adv_dhcp6_id_assoc_statement_address_enable'] = $pconfig['adv_dhcp6_id_assoc_statement_address_enable'];
-                    $new_config['adv_dhcp6_id_assoc_statement_address'] = $pconfig['adv_dhcp6_id_assoc_statement_address'];
-                    $new_config['adv_dhcp6_id_assoc_statement_address_id'] = $pconfig['adv_dhcp6_id_assoc_statement_address_id'];
-                    $new_config['adv_dhcp6_id_assoc_statement_address_pltime'] = $pconfig['adv_dhcp6_id_assoc_statement_address_pltime'];
-                    $new_config['adv_dhcp6_id_assoc_statement_address_vltime'] = $pconfig['adv_dhcp6_id_assoc_statement_address_vltime'];
-                    $new_config['adv_dhcp6_id_assoc_statement_prefix_enable'] = $pconfig['adv_dhcp6_id_assoc_statement_prefix_enable'];
-                    $new_config['adv_dhcp6_id_assoc_statement_prefix'] = $pconfig['adv_dhcp6_id_assoc_statement_prefix'];
-                    $new_config['adv_dhcp6_id_assoc_statement_prefix_id'] = $pconfig['adv_dhcp6_id_assoc_statement_prefix_id'];
-                    $new_config['adv_dhcp6_id_assoc_statement_prefix_pltime'] = $pconfig['adv_dhcp6_id_assoc_statement_prefix_pltime'];
-                    $new_config['adv_dhcp6_id_assoc_statement_prefix_vltime'] = $pconfig['adv_dhcp6_id_assoc_statement_prefix_vltime'];
-                    $new_config['adv_dhcp6_prefix_interface_statement_sla_len'] = $pconfig['adv_dhcp6_prefix_interface_statement_sla_len'];
-                    $new_config['adv_dhcp6_authentication_statement_authname'] = $pconfig['adv_dhcp6_authentication_statement_authname'];
-                    $new_config['adv_dhcp6_authentication_statement_protocol'] = $pconfig['adv_dhcp6_authentication_statement_protocol'];
-                    $new_config['adv_dhcp6_authentication_statement_algorithm'] = $pconfig['adv_dhcp6_authentication_statement_algorithm'];
-                    $new_config['adv_dhcp6_authentication_statement_rdm'] = $pconfig['adv_dhcp6_authentication_statement_rdm'];
-                    $new_config['adv_dhcp6_key_info_statement_keyname'] = $pconfig['adv_dhcp6_key_info_statement_keyname'];
-                    $new_config['adv_dhcp6_key_info_statement_realm'] = $pconfig['adv_dhcp6_key_info_statement_realm'];
-                    $new_config['adv_dhcp6_key_info_statement_keyid'] = $pconfig['adv_dhcp6_key_info_statement_keyid'];
-                    $new_config['adv_dhcp6_key_info_statement_secret'] = $pconfig['adv_dhcp6_key_info_statement_secret'];
-                    $new_config['adv_dhcp6_key_info_statement_expire'] = $pconfig['adv_dhcp6_key_info_statement_expire'];
-                    $new_config['adv_dhcp6_config_advanced'] = $pconfig['adv_dhcp6_config_advanced'];
-                    $new_config['adv_dhcp6_config_file_override'] = $pconfig['adv_dhcp6_config_file_override'];
-                    $new_config['adv_dhcp6_config_file_override_path'] = $pconfig['adv_dhcp6_config_file_override_path'];
+                    foreach ([
+                        'adv_dhcp6_authentication_statement_algorithm',
+                        'adv_dhcp6_authentication_statement_authname',
+                        'adv_dhcp6_authentication_statement_protocol',
+                        'adv_dhcp6_authentication_statement_rdm',
+                        'adv_dhcp6_config_advanced',
+                        'adv_dhcp6_config_file_override',
+                        'adv_dhcp6_config_file_override_path',
+                        'adv_dhcp6_id_assoc_statement_address',
+                        'adv_dhcp6_id_assoc_statement_address_enable',
+                        'adv_dhcp6_id_assoc_statement_address_id',
+                        'adv_dhcp6_id_assoc_statement_address_pltime',
+                        'adv_dhcp6_id_assoc_statement_address_vltime',
+                        'adv_dhcp6_id_assoc_statement_prefix',
+                        'adv_dhcp6_id_assoc_statement_prefix_enable',
+                        'adv_dhcp6_id_assoc_statement_prefix_id',
+                        'adv_dhcp6_id_assoc_statement_prefix_pltime',
+                        'adv_dhcp6_id_assoc_statement_prefix_vltime',
+                        'adv_dhcp6_interface_statement_information_only_enable',
+                        'adv_dhcp6_interface_statement_request_options',
+                        'adv_dhcp6_interface_statement_script',
+                        'adv_dhcp6_interface_statement_send_options',
+                        'adv_dhcp6_key_info_statement_expire',
+                        'adv_dhcp6_key_info_statement_keyid',
+                        'adv_dhcp6_key_info_statement_keyname',
+                        'adv_dhcp6_key_info_statement_realm',
+                        'adv_dhcp6_key_info_statement_secret',
+                        'adv_dhcp6_prefix_interface_statement_sla_len',
+                    ] as $field) {
+                        if (isset($pconfig[$field])) {
+                            $new_config[$field] = $pconfig[$field];
+                        }
+                    }
                     break;
                 case '6rd':
                     $new_config['ipaddrv6'] = '6rd';

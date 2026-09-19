@@ -3008,7 +3008,7 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif, $default_id)
     }
 
     $information_only = "";
-    if ($wancfg['adv_dhcp6_interface_statement_information_only_enable'] != '') {
+    if (!empty($wancfg['adv_dhcp6_interface_statement_information_only_enable'])) {
         $information_only = "  information-only;\n";
     }
 
@@ -3252,7 +3252,7 @@ function interface_dhcp_configure($interface = 'wan')
     $conf .= interfaces_dhcp_safe('  send host-name "%s";', $wancfg['dhcphostname'] ?? '', !empty($wancfg['dhcphostname']));
     $conf .= interfaces_dhcp_safe('  script "%s";', '/usr/local/opnsense/scripts/interfaces/dhclient-script');
     $conf .= interfaces_dhcp_safe('  supersede interface-mtu %s;', 0, empty($wancfg['dhcphonourmtu']));
-    $conf .= interfaces_dhcp_safe('  reject %s;', $wancfg['dhcprejectfrom'], !empty($wancfg['dhcprejectfrom']));
+    $conf .= interfaces_dhcp_safe('  reject %s;', $wancfg['dhcprejectfrom'] ?? '', !empty($wancfg['dhcprejectfrom']));
     $conf .= interfaces_dhcp_safe('  vlan-pcp %s;', $wancfg['dhcpvlanprio'] ?? '', isset($wancfg['dhcpvlanprio']));
     foreach (['dhcp_send_options' => 'send' , 'dhcp_request_options' => 'request'] as $prop => $tag) {
         if (!empty($wancfg[$prop])) {
