@@ -212,6 +212,17 @@
         </grid_view>
     </field>
     <field>
+        <id>subnet4.ping_check</id>
+        <label>Ping checking</label>
+        <type>checkbox</type>
+        <help>Enable Ping checking on this subnet.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <type>header</type>
         <label>Dynamic DNS</label>
         <collapse>true</collapse>

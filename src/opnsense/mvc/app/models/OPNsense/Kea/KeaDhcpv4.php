@@ -289,6 +289,12 @@ class KeaDhcpv4 extends BaseModel
 
                 $record['reservations'][] = $res;
             }
+            /* Ping check per subnet settings */
+            if (!$subnet->ping_check->isEmpty()) {
+                $record['user-context']['ping-check'] = [
+                    'enable-ping-check' => true,
+                ];
+            }
             /* DDNS per subnet settings */
             if ($ddns_enabled) {
                 if (!$subnet->ddns_qualifying_suffix->isEmpty()) {
@@ -399,6 +405,13 @@ class KeaDhcpv4 extends BaseModel
         if ($expiredLeasesConfig !== null) {
             $cnf['Dhcp4']['expired-leases-processing'] = $expiredLeasesConfig;
         }
+        /* Ping check hook */
+        $cnf['Dhcp4']['hooks-libraries'][] = [
+            'library' => '/usr/local/lib/kea/hooks/libdhcp_ping_check.so',
+            'parameters' => [
+                'enable-ping-check' => false,
+            ],
+        ];
         if (!$this->ha->enabled->isEmpty()) {
             $record = [
                 'library' => '/usr/local/lib/kea/hooks/libdhcp_ha.so',
