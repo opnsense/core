@@ -47,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['checkaliasesurlcert'] = isset($config['system']['checkaliasesurlcert']);
     $pconfig['maximumtableentries'] = !empty($config['system']['maximumtableentries']) ? $config['system']['maximumtableentries'] : null ;
     $pconfig['disablereplyto'] = isset($config['system']['disablereplyto']);
-    $pconfig['schedule_states'] = isset($config['system']['schedule_states']);
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
     $pconfig['syncookies'] = isset($config['system']['syncookies']) ? $config['system']['syncookies'] : null;
     $pconfig['syncookies_adaptstart'] = isset($config['system']['syncookies_adaptstart']) ? $config['system']['syncookies_adaptstart'] : null;
@@ -194,12 +193,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['filter']['bypassstaticroutes']);
         }
 
-        if (!empty($pconfig['schedule_states'])) {
-            $config['system']['schedule_states'] = true;
-        } elseif (isset($config['system']['schedule_states'])) {
-            unset($config['system']['schedule_states']);
-        }
-
         if (!empty($pconfig['syncookies'])) {
             $config['system']['syncookies'] = $pconfig['syncookies'];
             $config['system']['syncookies_adaptstart'] = $pconfig['syncookies_adaptstart'];
@@ -267,24 +260,6 @@ include("head.inc");
 ?>
       <section class="col-xs-12">
         <form method="post" name="iform" id="iform">
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
-                <td style="width:22%"><strong><?= gettext('Schedules') ?></strong></td>
-                <td style="width:78%"></td>
-              </tr>
-              <tr>
-                <td><a id="help_for_schedule_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Schedule States"); ?></td>
-                <td>
-                  <input name="schedule_states" type="checkbox" value="yes" <?=!empty($pconfig['schedule_states']) ? "checked=\"checked\"" :"";?> />
-                  <div class="hidden" data-for="help_for_schedule_states">
-                    <?=gettext("By default schedules clear the states of existing connections when the expiration time has come. ".
-                                        "This option overrides that behavior by not clearing states for existing connections."); ?>
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </div>
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>

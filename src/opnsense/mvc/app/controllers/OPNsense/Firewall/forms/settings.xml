@@ -62,6 +62,16 @@
             <type>checkbox</type>
             <help>Disable automatic rules which force local services to use the assigned interface gateway. The system routing table is used instead.</help>
         </field>
+        <field>
+            <type>header</type>
+            <label>Schedules</label>
+        </field>
+        <field>
+            <id>filter.settings.filter.schedule_states</id>
+            <label>Schedule States</label>
+            <type>checkbox</type>
+            <help>Keep states for existing connections when a schedule expires. By default, matching states are cleared.</help>
+        </field>
     </tab>
     <tab id="settings-nat" description="NAT">
         <field>
