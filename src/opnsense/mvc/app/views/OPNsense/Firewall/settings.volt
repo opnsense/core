@@ -30,6 +30,8 @@
         mapDataToFormUI({'frm_settings': "/api/firewall/settings/get"}).done(function() {
             formatTokenizersUI();
             $('.selectpicker').selectpicker('refresh');
+            updateScrubOptions();
+            updateSyncookiesOptions();
         });
 
         // Event binding for saving forms
@@ -63,8 +65,20 @@
         });
 
         $('#filter\\.settings\\.filter\\.scrub_enabled').change(function() {
-            $('.scrub_option').closest('tr').toggle($(this).is(':checked'));
+            updateScrubOptions();
         });
+
+        $('#filter\\.settings\\.filter\\.syncookies').change(function() {
+            updateSyncookiesOptions();
+        });
+
+        function updateScrubOptions() {
+            $('.scrub_option').closest('tr').toggle($('#filter\\.settings\\.filter\\.scrub_enabled').is(':checked'));
+        }
+
+        function updateSyncookiesOptions() {
+            $('.syncookies_adaptive').closest('tr').toggle($('#filter\\.settings\\.filter\\.syncookies').val() === 'adaptive');
+        }
     });
 </script>
 

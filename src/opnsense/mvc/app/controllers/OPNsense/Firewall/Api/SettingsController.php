@@ -47,6 +47,7 @@ class SettingsController extends ApiMutableModelControllerBase
             $backend = new Backend();
             $backend->configdRun('cron restart');
             $backend->configdRun('service restart sysctl');
+            $backend->configdRun('template reload OPNsense/Filter');
             return ['status' => $backend->configdRun('filter reload skip_alias')];
         }
         return ['status' => 'failed'];

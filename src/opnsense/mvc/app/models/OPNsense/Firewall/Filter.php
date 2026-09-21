@@ -46,6 +46,26 @@ class Filter extends BaseModel
         $port_protos = ['TCP', 'UDP', 'TCP/UDP'];
         // standard model validations
         $messages = parent::performValidation($validateFullModel);
+        $settings = $this->settings;
+        if ($settings->filter->syncookies->isEqual('adaptive')) {
+            if (
+                $settings->filter->syncookies_adaptive_start->isEmpty() ||
+                $settings->filter->syncookies_adaptive_end->isEmpty()
+            ) {
+                $messages->appendMessage(new Message(
+                    gettext("Syncookies adaptive values must be set together."),
+                    $settings->filter->syncookies_adaptive_start->__reference
+                ));
+            } elseif (
+                $settings->filter->syncookies_adaptive_start->asInt() <
+                $settings->filter->syncookies_adaptive_end->asInt()
+            ) {
+                $messages->appendMessage(new Message(
+                    gettext("Syncookies adaptive start must be higher than adaptive end."),
+                    $settings->filter->syncookies_adaptive_start->__reference
+                ));
+            }
+        }
         foreach ([$this->rules->rule, $this->snatrules->rule] as $rules) {
             foreach ($rules->iterateItems() as $rule) {
                 if ($validateFullModel || $rule->isFieldChanged()) {
