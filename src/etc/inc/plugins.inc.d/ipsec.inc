@@ -255,7 +255,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
         (string)(new \OPNsense\IPsec\IPsec())->general->disablevpnrules == '0' &&
             isset($config['ipsec']['enable']) && ipsec_legacy()
     ) {
-        $enable_replyto = empty($config['system']['disablereplyto']);
+        $enable_replyto = empty($settings_filter['disable_reply_to']);
         $enable_routeto = empty($settings_filter['pf_disable_force_gw']);
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
             if (!isset($ph1ent['disabled'])) {

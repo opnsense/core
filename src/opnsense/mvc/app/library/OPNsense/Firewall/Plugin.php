@@ -28,8 +28,6 @@
 
 namespace OPNsense\Firewall;
 
-use OPNsense\Core\Config;
-
 /**
  * Class Plugin
  * @package OPNsense\Firewall
@@ -54,7 +52,7 @@ class Plugin
         $this->systemDefaults = array("filter" => [], "forward" => [], "nat" => []);
         $settings_filter = \filter_get_settings('filter');
         $settings_nat = \filter_get_settings('nat');
-        if (!empty(Config::getInstance()->object()->system->disablereplyto)) {
+        if (!empty($settings_filter['disable_reply_to'])) {
             $this->systemDefaults['filter']['disablereplyto'] = true;
         }
         if (!empty($settings_filter['skip_rules_gw_down'])) {
