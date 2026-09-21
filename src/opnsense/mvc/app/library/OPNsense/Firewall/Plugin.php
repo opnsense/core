@@ -52,11 +52,12 @@ class Plugin
     public function __construct()
     {
         $this->systemDefaults = array("filter" => [], "forward" => [], "nat" => []);
+        $settings_filter = \filter_get_settings('filter');
         $settings_nat = \filter_get_settings('nat');
         if (!empty(Config::getInstance()->object()->system->disablereplyto)) {
             $this->systemDefaults['filter']['disablereplyto'] = true;
         }
-        if (!empty(Config::getInstance()->object()->system->skip_rules_gw_down)) {
+        if (!empty($settings_filter['skip_rules_gw_down'])) {
             $this->systemDefaults['filter']['skip_rules_gw_down'] = true;
         }
         if (!empty($settings_nat['reflection_dnat'])) {
