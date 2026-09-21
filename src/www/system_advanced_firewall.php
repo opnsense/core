@@ -48,7 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['maximumtableentries'] = !empty($config['system']['maximumtableentries']) ? $config['system']['maximumtableentries'] : null ;
     $pconfig['disablereplyto'] = isset($config['system']['disablereplyto']);
     $pconfig['schedule_states'] = isset($config['system']['schedule_states']);
-    $pconfig['skip_rules_gw_down'] = isset($config['system']['skip_rules_gw_down']);
     $pconfig['lb_use_sticky'] = isset($config['system']['lb_use_sticky']);
     $pconfig['pf_share_forward'] = isset($config['system']['pf_share_forward']);
     $pconfig['pf_disable_force_gw'] = isset($config['system']['pf_disable_force_gw']);
@@ -229,12 +228,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['schedule_states']);
         }
 
-        if (!empty($pconfig['skip_rules_gw_down'])) {
-            $config['system']['skip_rules_gw_down'] = true;
-        } elseif (isset($config['system']['skip_rules_gw_down'])) {
-            unset($config['system']['skip_rules_gw_down']);
-        }
-
         if (!empty($pconfig['syncookies'])) {
             $config['system']['syncookies'] = $pconfig['syncookies'];
             $config['system']['syncookies_adaptstart'] = $pconfig['syncookies_adaptstart'];
@@ -302,26 +295,6 @@ include("head.inc");
 ?>
       <section class="col-xs-12">
         <form method="post" name="iform" id="iform">
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
-                <td style="width:22%"><strong><?= gettext('Gateway Monitoring') ?></strong></td>
-                <td style="width:78%"></td>
-              </tr>
-              <tr>
-                <td><a id="help_for_skip_rules_gw_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Skip rules");?> </td>
-                <td>
-                  <input name="skip_rules_gw_down" type="checkbox" id="skip_rules_gw_down" value="yes" <?=!empty($pconfig['skip_rules_gw_down']) ? "checked=\"checked\"" : "";?> />
-                  <?=gettext("Skip rules when gateway is down"); ?>
-                  <div class="hidden" data-for="help_for_skip_rules_gw_down">
-                    <?=gettext("By default, when a rule has a specific gateway set, and this gateway is down, ".
-                                        "rule is created and traffic is sent to default gateway. This option overrides that behavior ".
-                                        "and the rule is not created when gateway is down"); ?>
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </div>
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
