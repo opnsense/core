@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Firewall/Filter</mount>
-    <version>1.0.9</version>
+    <version>1.1.0</version>
     <migration_prefix>MFP</migration_prefix>
     <description>Firewall rules (new)</description>
     <items>
@@ -20,6 +20,18 @@
                 </scrub_random_id>
             </filter>
             <nat>
+                <reflection_dnat type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </reflection_dnat>
+                <reflection_binat type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </reflection_binat>
+                <reflection_snat type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </reflection_snat>
                 <snat_mode type=".\SNatModeField" volatile="true">
                     <Required>Y</Required>
                     <Default>automatic</Default>
