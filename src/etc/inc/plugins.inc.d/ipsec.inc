@@ -250,6 +250,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
     global $config;
 
     $settings_filter = filter_get_settings('filter');
+    $settings_logging = filter_get_settings('logging');
     if (
         (string)(new \OPNsense\IPsec\IPsec())->general->disablevpnrules == '0' &&
             isset($config['ipsec']['enable']) && ipsec_legacy()
@@ -282,7 +283,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                     }
                     $interface = explode('_vip', $ph1ent['interface'])[0];
                     $baserule = array("interface" => $interface,
-                                      "log" => !isset($config['syslog']['nologdefaultpass']),
+                                      "log" => !empty($settings_logging['default_pass']),
                                       "quick" => false,
                                       "type" => "pass",
                                       "statetype" => "keep",

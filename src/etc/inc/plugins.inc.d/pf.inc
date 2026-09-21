@@ -111,8 +111,10 @@ function pf_firewall($fw)
 {
     global $config;
 
+    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
+    $settings_logging = filter_get_settings('logging');
     $defaults = [];
-    $defaults['pass'] = ['type' => 'pass', 'log' => !isset($config['syslog']['nologdefaultpass'])];
+    $defaults['pass'] = ['type' => 'pass', 'log' => !empty($settings_logging['default_pass'])];
 
     /*
      *  pass traffic between statically routed subnets and the subnet on the

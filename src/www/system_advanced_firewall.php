@@ -57,14 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['no_port0_block'] = isset($config['system']['no_port0_block']);
     $pconfig['no_sshlockout'] = isset($config['system']['no_sshlockout']);
     $pconfig['no_virusprot'] = isset($config['system']['no_virusprot']);
-
-
-    /* XXX wrong storage location */
-    $pconfig['logdefaultblock'] = empty($config['syslog']['nologdefaultblock']);
-    $pconfig['logdefaultpass'] = empty($config['syslog']['nologdefaultpass']);
-    $pconfig['logoutboundnat'] = !empty($config['syslog']['logoutboundnat']);
-    $pconfig['logbogons'] = empty($config['syslog']['nologbogons']);
-    $pconfig['logprivatenets'] = empty($config['syslog']['nologprivatenets']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     $input_errors = array();
@@ -206,16 +198,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $config['system']['keepcounters'] = !empty($pconfig['keepcounters']);
         $config['system']['pfdebug'] = !empty($pconfig['pfdebug']) ? $pconfig['pfdebug'] : '';
 
-        if (empty($config['syslog'])) {
-            $config['syslog'] = [];
-        }
-
-        $config['syslog']['nologdefaultblock'] = empty($pconfig['logdefaultblock']);
-        $config['syslog']['nologdefaultpass'] = empty($pconfig['logdefaultpass']);
-        $config['syslog']['nologbogons'] = empty($pconfig['logbogons']);
-        $config['syslog']['nologprivatenets'] = empty($pconfig['logprivatenets']);
-        $config['syslog']['logoutboundnat'] = !empty($pconfig['logoutboundnat']);
-
         if (write_config()) {
             configd_run('cron restart');
             configd_run('service restart sysctl');
@@ -260,55 +242,6 @@ include("head.inc");
 ?>
       <section class="col-xs-12">
         <form method="post" name="iform" id="iform">
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
-                <td style="width:22%"><strong><?= gettext('Logging') ?></strong></td>
-                <td style="width:78%"></td>
-              </tr>
-              <tr>
-                <td><a id="help_for_logdefaultblock" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Default block') ?></td>
-                <td>
-                  <input name="logdefaultblock" type="checkbox" value="yes" <?=!empty($pconfig['logdefaultblock']) ? "checked=\"checked\"" : ""; ?> />
-                  <?=gettext("Log packets matched from the default block rules");?>
-                  <div class="hidden" data-for="help_for_logdefaultblock">
-                    <?=gettext("Packets that are blocked by the implicit default block rule will not be logged if you uncheck this option. Per-rule logging options are still respected.");?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_logdefaultpass" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Default pass') ?></td>
-                <td>
-                  <input name="logdefaultpass" type="checkbox" id="logdefaultpass" value="yes" <?=!empty($pconfig['logdefaultpass']) ? "checked=\"checked\"" :""; ?> />
-                  <?=gettext("Log packets matched from the default pass rules");?>
-                  <div class="hidden" data-for="help_for_logdefaultpass">
-                    <?=gettext("Packets that are allowed by the implicit default pass rule will be logged if you check this option. Per-rule logging options are still respected.");?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Outbound NAT') ?></td>
-                <td>
-                  <input name="logoutboundnat" type="checkbox" id="logoutboundnat" value="yes" <?= !empty($pconfig['logoutboundnat']) ? 'checked="checked"' : '' ?> />
-                  <?= gettext('Log packets matched by automatic outbound NAT rules') ?>
-                </td>
-              </tr>
-              <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Bogon networks') ?></td>
-                <td>
-                  <input name="logbogons" type="checkbox" id="logbogons" value="yes" <?=!empty($pconfig['logbogons']) ? "checked=\"checked\"" : ""; ?> />
-                  <?=gettext("Log packets blocked by 'Block Bogon Networks' rules");?>
-                </td>
-              </tr>
-              <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Private networks') ?></td>
-                <td>
-                  <input name="logprivatenets" type="checkbox" id="logprivatenets" value="yes" <?= !empty($pconfig['logprivatenets']) ? 'checked="checked"' : '' ?> />
-                  <?=gettext("Log packets blocked by 'Block Private Networks' rules");?>
-                </td>
-              </tr>
-            </table>
-          </div>
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
