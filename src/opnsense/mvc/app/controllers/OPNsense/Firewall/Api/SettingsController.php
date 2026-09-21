@@ -44,7 +44,9 @@ class SettingsController extends ApiMutableModelControllerBase
     public function reconfigureAction()
     {
         if ($this->request->isPost()) {
-            return ['status' => (new Backend())->configdRun('filter reload skip_alias')];
+            $backend = new Backend();
+            $backend->configdRun('cron restart');
+            return ['status' => $backend->configdRun('filter reload skip_alias')];
         }
         return ['status' => 'failed'];
     }
