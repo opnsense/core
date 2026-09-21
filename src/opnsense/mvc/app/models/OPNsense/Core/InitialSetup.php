@@ -135,7 +135,7 @@ class InitialSetup extends BaseModel
             $this->interfaces->lan->disable = '1';
         }
         $settings = (new Filter())->settings;
-        if (!$settings->filter->pf_disable_force_gw->isEmpty() || $this->getConfigItem('system.disablereplyto', true)) {
+        if (!$settings->filter->pf_disable_force_gw->isEmpty() || !$settings->filter->disable_reply_to->isEmpty()) {
             $this->deployment_type->multiwan = '0';
         } else {
             $this->deployment_type->multiwan = '1';
@@ -428,10 +428,10 @@ class InitialSetup extends BaseModel
         $settings = $model->settings;
         if ($this->deployment_type->multiwan->isEmpty()) {
             $settings->filter->pf_disable_force_gw = '1';
-            $target->system->disablereplyto = '1';
+            $settings->filter->disable_reply_to = '1';
         } else {
             $settings->filter->pf_disable_force_gw = '0';
-            unset($target->system->disablereplyto);
+            $settings->filter->disable_reply_to = '0';
         }
         $model->serializeToConfig(false, true);
 

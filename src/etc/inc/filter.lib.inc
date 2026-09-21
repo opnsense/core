@@ -91,7 +91,8 @@ function filter_core_get_antilockout()
 {
     global $config;
 
-    if (isset($config['system']['webgui']['noantilockout'])) {
+    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
+    if (!empty($settings['filter']['no_antilockout'])) {
         return [];
     }
 
@@ -222,13 +223,13 @@ function filter_core_rules_system($fw, $defaults)
         $defaults['block']
     );
 
-    if (empty($config['system']['no_ipv6_rfc4890_req'])) {
+    if (empty($settings['filter']['no_ipv6_rfc4890_req'])) {
         // IPv6 ICMP requirements
         $fw->registerFilterRule(
             1,
             ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '1,2,3,4,135,136',
                 'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'disabled' => $ipv6_disabled,
-                '#ref' => 'system_advanced_firewall.php#no_ipv6_rfc4890_req'],
+                '#ref' => 'ui/firewall/settings#settings-filter'],
             $defaults['pass']
         );
         // Allow only bare essential icmpv6 packets
@@ -237,7 +238,7 @@ function filter_core_rules_system($fw, $defaults)
             ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,129,133,134,135,136',
                 'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => '(self)',
                 'to' => 'fe80::/10,ff02::/16', 'direction' => 'out', 'disabled' => $ipv6_disabled,
-                '#ref' => 'system_advanced_firewall.php#no_ipv6_rfc4890_req'],
+                '#ref' => 'ui/firewall/settings#settings-filter'],
             $defaults['pass']
         );
         $fw->registerFilterRule(
@@ -245,7 +246,7 @@ function filter_core_rules_system($fw, $defaults)
             ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
                 'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => 'fe80::/10',
                 'to' => 'fe80::/10,ff02::/16', 'direction' => 'in', 'disabled' => $ipv6_disabled,
-                '#ref' => 'system_advanced_firewall.php#no_ipv6_rfc4890_req'],
+                '#ref' => 'ui/firewall/settings#settings-filter'],
             $defaults['pass']
         );
         $fw->registerFilterRule(
@@ -253,7 +254,7 @@ function filter_core_rules_system($fw, $defaults)
             ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
                 'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => 'ff02::/16',
                 'to' => 'fe80::/10', 'direction' => 'in', 'disabled' => $ipv6_disabled,
-                '#ref' => 'system_advanced_firewall.php#no_ipv6_rfc4890_req'],
+                '#ref' => 'ui/firewall/settings#settings-filter'],
             $defaults['pass']
         );
         $fw->registerFilterRule(
@@ -261,20 +262,20 @@ function filter_core_rules_system($fw, $defaults)
             ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
                 'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => '::',
                 'to' => 'ff02::/16', 'direction' => 'in', 'disabled' => $ipv6_disabled,
-                '#ref' => 'system_advanced_firewall.php#no_ipv6_rfc4890_req'],
+                '#ref' => 'ui/firewall/settings#settings-filter'],
             $defaults['pass']
         );
     }
 
     // block all targeting port 0
-    if (empty($config['system']['no_port0_block'])) {
+    if (empty($settings['filter']['no_port0_block'])) {
         foreach (['from_port', 'to_port'] as $target) {
             $fw->registerFilterRule(
                 1,
                 /* XXX get rid of inet46 it should pertain to all */
                 ['ipprotocol' => 'inet46', 'protocol' => 'tcp/udp', $target => '0',
                     'descr' => 'block all targeting port 0',
-                    '#ref' => 'system_advanced_firewall.php#no_port0_block'],
+                    '#ref' => 'ui/firewall/settings#settings-filter'],
                 $defaults['block']
             );
         }
@@ -292,12 +293,12 @@ function filter_core_rules_system($fw, $defaults)
     }
 
     // Lockout rules
-    if (empty($config['system']['no_sshlockout'])) {
+    if (empty($settings['filter']['no_sshlockout'])) {
         $fw->registerFilterRule(
             1,
             ['protocol' => 'tcp', 'from' => '<sshlockout>', 'to' => '(self)' , 'descr' => 'sshlockout', 'direction' => 'in',
             'to_port' => !empty($config['system']['ssh']['port']) ? $config['system']['ssh']['port'] : 22,
-            '#ref' => 'system_advanced_firewall.php#no_sshlockout'],
+            '#ref' => 'ui/firewall/settings#settings-filter'],
             $defaults['block']
         );
         $webport = '443';
@@ -310,17 +311,17 @@ function filter_core_rules_system($fw, $defaults)
             1,
             ['protocol' => 'tcp', 'from' => '<sshlockout>', 'to' => '(self)' , 'descr' => 'sshlockout',
             'direction' => 'in','to_port' => $webport,
-            '#ref' => 'system_advanced_firewall.php#no_sshlockout'],
+            '#ref' => 'ui/firewall/settings#settings-filter'],
             $defaults['block']
         );
     }
 
     // block all in alias <virusprot>
-    if (empty($config['system']['no_virusprot'])) {
+    if (empty($settings['filter']['no_virusprot'])) {
         $fw->registerFilterRule(
             1,
             ['from' => '<virusprot>', 'descr' => 'virusprot overload table',
-            '#ref' => 'system_advanced_firewall.php#no_virusprot'],
+            '#ref' => 'ui/firewall/settings#settings-filter'],
             $defaults['block']
         );
     }
@@ -589,7 +590,7 @@ function filter_core_rules_system($fw, $defaults)
                     'to' => '(self)',
                     'to_port' => $to_port,
                     'descr' => 'anti-lockout rule',
-                    '#ref' => 'system_advanced_firewall.php#noantilockout'
+                    '#ref' => 'ui/firewall/settings#settings-filter'
                 ],
                 $defaults['pass']
             );

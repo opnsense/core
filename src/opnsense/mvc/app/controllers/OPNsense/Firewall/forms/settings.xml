@@ -72,6 +72,46 @@
             <type>checkbox</type>
             <help>Keep states for existing connections when a schedule expires. By default, matching states are cleared.</help>
         </field>
+        <field>
+            <type>header</type>
+            <label>Automatic rules</label>
+        </field>
+        <field>
+            <id>filter.settings.filter.disable_reply_to</id>
+            <label>Disable reply-to</label>
+            <type>checkbox</type>
+            <help>Disable reply-to on WAN rules. This is required for bridged setups where the WAN gateway differs from the gateway used by hosts behind the bridge.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.no_antilockout</id>
+            <label>Disable anti-lockout</label>
+            <type>checkbox</type>
+            <help>Disable the automatic administration anti-lockout rule. Ensure user-defined rules allow access to the web interface or SSH first.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.no_ipv6_rfc4890_req</id>
+            <label>Disable RFC4890 requirement rules</label>
+            <type>checkbox</type>
+            <help>Do not create automatic IPv6 RFC4890 requirement rules.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.no_port0_block</id>
+            <label>Disable port 0 block</label>
+            <type>checkbox</type>
+            <help>Do not create the automatic rule blocking port 0.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.no_sshlockout</id>
+            <label>Disable sshlockout</label>
+            <type>checkbox</type>
+            <help>Do not create automatic rules blocking failed login attempts. Custom rules can still use the sshlockout table.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.no_virusprot</id>
+            <label>Disable rate limit rule</label>
+            <type>checkbox</type>
+            <help>Do not create the automatic rule blocking rate-limited sessions. Custom rules can still use the virusprot table.</help>
+        </field>
     </tab>
     <tab id="settings-nat" description="NAT">
         <field>
