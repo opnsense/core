@@ -56,16 +56,14 @@ function pf_configure()
 
 function pf_cron()
 {
-    global $config;
-
     $jobs = [];
+    $filter = new OPNsense\Firewall\Filter(true);
 
-    if ((new OPNsense\Firewall\Filter(true))->hasSchedule()) {
+    if ($filter->hasSchedule()) {
         $jobs[]['autocron'] = ['/usr/bin/logger "reload filter for configured schedules" ; /usr/local/etc/rc.filter_configure', '1,16,31,46'];
     }
 
-    /* bogons fetch always set in default config.xml */
-    switch ($config['system']['bogons']['interval']) {
+    switch ($filter->settings->alias->bogons_interval->getValue()) {
         case 'daily':
             $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d filter schedule bogons', '1', '3', '*', '*', '*'];
             break;

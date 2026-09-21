@@ -59,5 +59,13 @@
             <help>Choose how source NAT rules are handled. Automatic mode generates rules for you, hybrid mode combines manual and automatic rules, manual mode only uses configured rules, and disabled mode turns source NAT off.</help>
         </field>
     </tab>
+    <tab id="settings-alias" description="Aliases">
+        <field>
+            <id>filter.settings.alias.bogons_interval</id>
+            <label>Bogon Update Frequency</label>
+            <type>dropdown</type>
+            <help>The frequency of updating the lists of IP addresses that are reserved (but not RFC 1918) or not yet assigned by IANA.</help>
+        </field>
+    </tab>
     <activetab>settings-filter</activetab>
 </form>
