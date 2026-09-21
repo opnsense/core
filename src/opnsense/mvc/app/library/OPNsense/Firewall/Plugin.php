@@ -133,6 +133,7 @@ class Plugin
      */
     public function setGatewayGroups($groups)
     {
+        $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
         if (is_array($groups)) {
             foreach ($groups as $key => $gwgr) {
                 $routeto = [];
@@ -162,7 +163,7 @@ class Plugin
                         $routetologic .= " {$gwgr[0]['poolopts']} ";
                     } elseif (count($routeto) > 1) {
                         $routetologic .= " round-robin ";
-                        if (!empty(Config::getInstance()->object()->system->lb_use_sticky)) {
+                        if (!empty($settings['filter']['lb_use_sticky'])) {
                             $routetologic .= " sticky-address ";
                         }
                     }

@@ -237,12 +237,13 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
 {
     global $config;
 
+    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
     if (
         (string)(new \OPNsense\IPsec\IPsec())->general->disablevpnrules == '0' &&
             isset($config['ipsec']['enable']) && ipsec_legacy()
     ) {
         $enable_replyto = empty($config['system']['disablereplyto']);
-        $enable_routeto = empty($config['system']['pf_disable_force_gw']);
+        $enable_routeto = empty($settings['filter']['pf_disable_force_gw']);
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
             if (!isset($ph1ent['disabled'])) {
                 // detect remote ip

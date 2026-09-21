@@ -33,6 +33,7 @@ use OPNsense\Base\BaseModel;
 use OPNsense\Base\Messages\Message;
 use OPNsense\Core\Config;
 use OPNsense\Dnsmasq\Dnsmasq;
+use OPNsense\Firewall\Filter;
 use OPNsense\Firewall\Util;
 use OPNsense\Routing\Gateways;
 
@@ -133,10 +134,8 @@ class InitialSetup extends BaseModel
             $this->interfaces->lan->configure_dhcp = '0';
             $this->interfaces->lan->disable = '1';
         }
-        if (
-            $this->getConfigItem('system.pf_disable_force_gw', true) ||
-            $this->getConfigItem('system.disablereplyto', true)
-        ) {
+        $settings = (new Filter())->settings;
+        if (!$settings->filter->pf_disable_force_gw->isEmpty() || $this->getConfigItem('system.disablereplyto', true)) {
             $this->deployment_type->multiwan = '0';
         } else {
             $this->deployment_type->multiwan = '1';
@@ -425,13 +424,16 @@ class InitialSetup extends BaseModel
     private function flush_deployment_type()
     {
         $target = Config::getInstance()->object();
+        $model = new Filter();
+        $settings = $model->settings;
         if ($this->deployment_type->multiwan->isEmpty()) {
-            $target->system->pf_disable_force_gw = '1';
+            $settings->filter->pf_disable_force_gw = '1';
             $target->system->disablereplyto = '1';
         } else {
-            unset($target->system->pf_disable_force_gw);
+            $settings->filter->pf_disable_force_gw = '0';
             unset($target->system->disablereplyto);
         }
+        $model->serializeToConfig(false, true);
 
         if (!$this->deployment_type->dhcp_dns_registration->isEmpty()) {
             /* only configure when set (do not touch otherwise) */
