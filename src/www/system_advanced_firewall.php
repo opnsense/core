@@ -54,9 +54,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['pf_share_forward'] = isset($config['system']['pf_share_forward']);
     $pconfig['pf_disable_force_gw'] = isset($config['system']['pf_disable_force_gw']);
     $pconfig['srctrack'] = !empty($config['system']['srctrack']) ? $config['system']['srctrack'] : null;
-    $pconfig['natreflection'] = empty($config['system']['disablenatreflection']);
-    $pconfig['enablebinatreflection'] = !empty($config['system']['enablebinatreflection']);
-    $pconfig['enablenatreflectionhelper'] = isset($config['system']['enablenatreflectionhelper']) ? $config['system']['enablenatreflectionhelper'] : null;
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
     $pconfig['syncookies'] = isset($config['system']['syncookies']) ? $config['system']['syncookies'] : null;
     $pconfig['syncookies_adaptstart'] = isset($config['system']['syncookies_adaptstart']) ? $config['system']['syncookies_adaptstart'] : null;
@@ -202,29 +199,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['checkaliasesurlcert']);
         }
 
-        /* setting is inverted on the page */
-        if (empty($pconfig['natreflection'])) {
-            $config['system']['disablenatreflection'] = 'yes';
-        } elseif (isset($config['system']['disablenatreflection'])) {
-            unset($config['system']['disablenatreflection']);
-        }
-
-        if (!empty($pconfig['enablebinatreflection'])) {
-            $config['system']['enablebinatreflection'] = "yes";
-        } elseif (isset($config['system']['enablebinatreflection'])) {
-            unset($config['system']['enablebinatreflection']);
-        }
-
         if (!empty($pconfig['disablereplyto'])) {
             $config['system']['disablereplyto'] = $pconfig['disablereplyto'];
         } elseif (isset($config['system']['disablereplyto'])) {
             unset($config['system']['disablereplyto']);
-        }
-
-        if (!empty($pconfig['enablenatreflectionhelper'])) {
-            $config['system']['enablenatreflectionhelper'] = "yes";
-        } elseif (isset($config['system']['enablenatreflectionhelper']))  {
-            unset($config['system']['enablenatreflectionhelper']);
         }
 
         if (!empty($pconfig['state-policy'])) {
@@ -329,43 +307,6 @@ include("head.inc");
 ?>
       <section class="col-xs-12">
         <form method="post" name="iform" id="iform">
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
-                <td style="width:22%"><strong><?= gettext('Network Address Translation') ?></strong></td>
-                <td style="width:78%"></td>
-              </tr>
-              <tr>
-                <td><a id="help_for_natreflection" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection for destination NAT");?></td>
-                <td>
-                  <input name="natreflection" type="checkbox" id="natreflection" value="yes" <?= !empty($pconfig['natreflection']) ? 'checked="checked"' : '' ?>/>
-                  <div class="hidden" data-for="help_for_natreflection">
-                    <?=gettext("When enabled, this automatically creates additional NAT redirect rules for access to port forwards on your external IP addresses from within your internal networks.");?>
-                    <?=gettext("Individual rules may be configured to override this system setting on a per-rule basis.");?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_enablebinatreflection" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection for 1:1");?></td>
-                <td>
-                  <input name="enablebinatreflection" type="checkbox" id="enablebinatreflection" value="yes" <?=!empty($pconfig['enablebinatreflection']) ? "checked=\"checked\"" : "";?>/>
-                  <div class="hidden" data-for="help_for_enablebinatreflection">
-                    <?=gettext("Enables the automatic creation of additional NAT redirect rules for access to 1:1 mappings of your external IP addresses from within your internal networks.");?>
-                    <?=gettext("Individual rules may be configured to override this system setting on a per-rule basis.");?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_enablenatreflectionhelper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Automatic outbound NAT for Reflection");?></td>
-                <td>
-                  <input name="enablenatreflectionhelper" type="checkbox" id="enablenatreflectionhelper" value="yes" <?=!empty($pconfig['enablenatreflectionhelper']) ? "checked=\"checked\"" : "";?> />
-                  <div class="hidden" data-for="help_for_enablenatreflectionhelper">
-                    <?=gettext("Automatically create outbound NAT rules which assist inbound NAT rules that direct traffic back out to the same subnet it originated from.");?>
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </div>
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>

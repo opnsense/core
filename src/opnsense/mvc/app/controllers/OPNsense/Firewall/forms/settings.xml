@@ -25,5 +25,39 @@
             <help>Replace predictable IPv4 identification values with random values.</help>
         </field>
     </tab>
+    <tab id="settings-nat" description="NAT">
+        <field>
+            <type>header</type>
+            <label>NAT reflection</label>
+        </field>
+        <field>
+            <id>filter.settings.nat.reflection_dnat</id>
+            <label>Reflection for destination NAT</label>
+            <type>checkbox</type>
+            <help>When enabled, this automatically creates additional NAT redirect rules for access to port forwards on your external IP addresses from within your internal networks. Individual rules may override this system setting.</help>
+        </field>
+        <field>
+            <id>filter.settings.nat.reflection_binat</id>
+            <label>Reflection for 1:1</label>
+            <type>checkbox</type>
+            <help>Enables the automatic creation of additional NAT redirect rules for access to 1:1 mappings of your external IP addresses from within your internal networks. Individual rules may override this system setting.</help>
+        </field>
+        <field>
+            <id>filter.settings.nat.reflection_snat</id>
+            <label>Automatic source NAT for Reflection</label>
+            <type>checkbox</type>
+            <help>Automatically create source NAT rules which assist destination NAT rules that direct traffic back out to the same subnet it originated from.</help>
+        </field>
+        <field>
+            <type>header</type>
+            <label>Source NAT</label>
+        </field>
+        <field>
+            <id>filter.settings.nat.snat_mode</id>
+            <label>Mode</label>
+            <type>dropdown</type>
+            <help>Choose how source NAT rules are handled. Automatic mode generates rules for you, hybrid mode combines manual and automatic rules, manual mode only uses configured rules, and disabled mode turns source NAT off.</help>
+        </field>
+    </tab>
     <activetab>settings-filter</activetab>
 </form>
