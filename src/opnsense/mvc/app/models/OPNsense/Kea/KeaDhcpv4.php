@@ -200,10 +200,10 @@ class KeaDhcpv4 extends BaseModel
             if (!$subnet->allocator->isEmpty()) {
                 $record['allocator'] = $subnet->allocator->getValue();
             }
-            /* add description and other custom keys - not parsed by KEA */
-            $record['user-context'] = ['uuid' => $subnet->getAttribute('uuid')];
+            /* opnsense metadata is not parsed by Kea; hooks may parse other user-context entries. */
+            $record['user-context']['opnsense'] = ['uuid' => $subnet->getAttribute('uuid')];
             if (!$subnet->description->isEmpty()) {
-                $record['user-context']['description'] = $subnet->description->getValue();
+                $record['user-context']['opnsense']['description'] = $subnet->description->getValue();
             }
             /* add pools */
             foreach ($subnet->pools->getValues() as $pool) {
@@ -281,10 +281,10 @@ class KeaDhcpv4 extends BaseModel
                     $res['option-data'] = $optdata;
                 }
 
-                /* add description and other custom keys - not parsed by KEA */
-                $res['user-context'] = ['uuid' => $reservation->getAttribute('uuid')];
+                /* opnsense metadata is not parsed by Kea; hooks may parse other user-context entries. */
+                $res['user-context']['opnsense'] = ['uuid' => $reservation->getAttribute('uuid')];
                 if (!$reservation->description->isEmpty()) {
-                    $res['user-context']['description'] = $reservation->description->getValue();
+                    $res['user-context']['opnsense']['description'] = $reservation->description->getValue();
                 }
 
                 $record['reservations'][] = $res;
