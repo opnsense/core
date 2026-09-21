@@ -29,11 +29,10 @@
 
 function pf_services()
 {
-    global $config;
-
     $services = [];
+    $settings_filter = filter_get_settings('filter');
 
-    if (!isset($config['system']['disablefilter'])) {
+    if (empty($settings_filter['disable_filter'])) {
         $services[] = [
             'description' => gettext('Packet Filter'),
             'configd' => [
@@ -149,7 +148,7 @@ function pf_firewall($fw)
                             'protocol' => 'tcp','flags' => 'any', 'from' => $network['from'],
                             'to' => $network['to'], 'quick' => false,
                             'descr' => "pass traffic between statically routed subnets",
-                            '#ref' => 'system_advanced_firewall.php#bypassstaticroutes'],
+                            '#ref' => 'ui/firewall/settings#settings-filter'],
                         $defaults['pass']
                     );
                     $fw->registerFilterRule(
@@ -157,7 +156,7 @@ function pf_firewall($fw)
                         ['interface' => $gw['interface'], 'statetype' => 'sloppy', 'ipprotocol' => $proto,
                             'from' => $network['from'],'to' => $network['to'], 'quick' => false,
                             'descr' => "pass traffic between statically routed subnets",
-                            '#ref' => 'system_advanced_firewall.php#bypassstaticroutes'],
+                            '#ref' => 'ui/firewall/settings#settings-filter'],
                         $defaults['pass']
                     );
                 }

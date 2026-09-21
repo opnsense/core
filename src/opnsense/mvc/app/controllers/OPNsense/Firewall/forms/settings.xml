@@ -112,6 +112,94 @@
             <type>checkbox</type>
             <help>Do not create the automatic rule blocking rate-limited sessions. Custom rules can still use the virusprot table.</help>
         </field>
+        <field>
+            <type>header</type>
+            <label>Stateful Firewall</label>
+        </field>
+        <field>
+            <id>filter.settings.filter.disable_filter</id>
+            <label>Disable firewall</label>
+            <type>checkbox</type>
+            <help>Disable all packet filtering and NAT.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.optimization</id>
+            <label>Optimization</label>
+            <type>dropdown</type>
+            <help>Select the state table optimization to use.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.state_policy</id>
+            <label>Bind states to interface</label>
+            <type>checkbox</type>
+            <help>Bind states to the interface where they were created instead of allowing them to float.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.adaptive_start</id>
+            <label>Adaptive start</label>
+            <type>text</type>
+            <help>Start scaling state timeouts when this number of states is exceeded. Leave empty for the default.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.adaptive_end</id>
+            <label>Adaptive end</label>
+            <type>text</type>
+            <help>Expire all state timeouts when this number of states is reached. Leave empty for the default.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.maximum_states</id>
+            <label>Maximum states</label>
+            <type>text</type>
+            <help>Maximum number of connections to hold in the firewall state table. Leave empty for the default.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.maximum_table_entries</id>
+            <label>Maximum table entries</label>
+            <type>text</type>
+            <help>Maximum number of entries in firewall tables. Leave empty for the default.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.bypass_static_routes</id>
+            <label>Static route filtering</label>
+            <type>checkbox</type>
+            <help>Bypass firewall rules for traffic between statically routed subnets on the same interface.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.keep_counters</id>
+            <label>Keep counters</label>
+            <type>checkbox</type>
+            <help>Preserve rule counters across ruleset updates.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.maximum_fragments</id>
+            <label>Maximum fragments</label>
+            <type>text</type>
+            <help>Maximum number of entries in the fragment reassembly memory pool. Leave empty for the default.</help>
+        </field>
+        <field>
+            <type>header</type>
+            <label>Syncookies</label>
+        </field>
+        <field>
+            <id>filter.settings.filter.syncookies</id>
+            <label>Mode</label>
+            <type>dropdown</type>
+            <help>Enable syncookies for all state-tracked TCP connections or adaptively based on state table usage.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.syncookies_adaptive_start</id>
+            <label>Adaptive start</label>
+            <type>text</type>
+            <style>syncookies_adaptive</style>
+            <help>State table usage percentage at which syncookies are enabled in adaptive mode.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.syncookies_adaptive_end</id>
+            <label>Adaptive end</label>
+            <type>text</type>
+            <style>syncookies_adaptive</style>
+            <help>State table usage percentage at which syncookies are always used in adaptive mode.</help>
+        </field>
     </tab>
     <tab id="settings-nat" description="NAT">
         <field>
@@ -182,6 +270,12 @@
             <type>checkbox</type>
             <help>Log packets blocked by Block Private Networks rules.</help>
         </field>
+        <field>
+            <id>filter.settings.logging.debug</id>
+            <label>Debug</label>
+            <type>dropdown</type>
+            <help>Set the packet filter debug verbosity.</help>
+        </field>
     </tab>
     <tab id="settings-alias" description="Aliases">
         <field>
@@ -189,6 +283,18 @@
             <label>Bogon Update Frequency</label>
             <type>dropdown</type>
             <help>The frequency of updating the lists of IP addresses that are reserved (but not RFC 1918) or not yet assigned by IANA.</help>
+        </field>
+        <field>
+            <id>filter.settings.alias.aliases_resolve_interval</id>
+            <label>Alias resolve interval</label>
+            <type>text</type>
+            <help>Interval in seconds used to resolve hostnames configured in aliases.</help>
+        </field>
+        <field>
+            <id>filter.settings.alias.check_aliases_url_cert</id>
+            <label>Alias check URL certificates</label>
+            <type>checkbox</type>
+            <help>Verify HTTPS certificates when downloading alias URLs.</help>
         </field>
     </tab>
     <activetab>settings-filter</activetab>
