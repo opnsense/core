@@ -56,7 +56,7 @@ class Plugin
         if (!empty(Config::getInstance()->object()->system->disablereplyto)) {
             $this->systemDefaults['filter']['disablereplyto'] = true;
         }
-        if (!empty(Config::getInstance()->object()->system->skip_rules_gw_down)) {
+        if (!empty($settings['filter']['skip_rules_gw_down'])) {
             $this->systemDefaults['filter']['skip_rules_gw_down'] = true;
         }
         if (!empty($settings['nat']['reflection_dnat'])) {
