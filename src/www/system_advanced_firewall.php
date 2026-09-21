@@ -48,10 +48,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['maximumtableentries'] = !empty($config['system']['maximumtableentries']) ? $config['system']['maximumtableentries'] : null ;
     $pconfig['disablereplyto'] = isset($config['system']['disablereplyto']);
     $pconfig['schedule_states'] = isset($config['system']['schedule_states']);
-    $pconfig['lb_use_sticky'] = isset($config['system']['lb_use_sticky']);
-    $pconfig['pf_share_forward'] = isset($config['system']['pf_share_forward']);
-    $pconfig['pf_disable_force_gw'] = isset($config['system']['pf_disable_force_gw']);
-    $pconfig['srctrack'] = !empty($config['system']['srctrack']) ? $config['system']['srctrack'] : null;
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
     $pconfig['syncookies'] = isset($config['system']['syncookies']) ? $config['system']['syncookies'] : null;
     $pconfig['syncookies_adaptstart'] = isset($config['system']['syncookies_adaptstart']) ? $config['system']['syncookies_adaptstart'] : null;
@@ -120,24 +116,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
     if (count($input_errors) == 0) {
-        if (!empty($pconfig['pf_share_forward'])) {
-            $config['system']['pf_share_forward'] = true;
-        } elseif (isset($config['system']['pf_share_forward'])) {
-            unset($config['system']['pf_share_forward']);
-        }
-
-        if (!empty($pconfig['pf_disable_force_gw'])) {
-            $config['system']['pf_disable_force_gw'] = true;
-        } elseif (isset($config['system']['pf_disable_force_gw'])) {
-            unset($config['system']['pf_disable_force_gw']);
-        }
-
-        if (!empty($pconfig['lb_use_sticky'])) {
-            $config['system']['lb_use_sticky'] = true;
-        } elseif (isset($config['system']['lb_use_sticky'])) {
-            unset($config['system']['lb_use_sticky']);
-        }
-
         if (!empty($pconfig['noantilockout'])) {
             $config['system']['webgui']['noantilockout'] = true;
         } elseif (isset($config['system']['webgui']['noantilockout'])) {
@@ -166,12 +144,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $config['system']['no_virusprot'] = true;
         } elseif (isset($config['system']['no_virusprot'])) {
             unset($config['system']['no_virusprot']);
-        }
-
-        if (!empty($pconfig['srctrack'])) {
-            $config['system']['srctrack'] = $pconfig['srctrack'];
-        } elseif (isset($config['system']['srctrack'])) {
-            unset($config['system']['srctrack']);
         }
 
         if (!empty($pconfig['disablefilter'])) {
@@ -295,66 +267,6 @@ include("head.inc");
 ?>
       <section class="col-xs-12">
         <form method="post" name="iform" id="iform">
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
-                <td style="width:22%"><strong><?= gettext('Multi-WAN') ?></strong></td>
-                <td style="width:78%"></td>
-              </tr>
-              <tr>
-                <td><a id="help_for_lb_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky connections");?> </td>
-                <td>
-                  <input name="lb_use_sticky" type="checkbox" id="lb_use_sticky" value="yes" <?= !empty($pconfig['lb_use_sticky']) ? 'checked="checked"' : '';?>/>
-                  <?=gettext("Use sticky connections"); ?>
-                  <div class="hidden" data-for="help_for_lb_use_sticky">
-                    <?=gettext("Successive connections will be redirected to the servers " .
-                                        "in a round-robin manner with connections from the same " .
-                                        "source being sent to the same gateway. This 'sticky " .
-                                        "connection' will exist as long as there are states that " .
-                                        "refer to this connection. Once the states expire, so will " .
-                                        "the sticky connection. Further connections from that host " .
-                                        "will be redirected to the next gateway in the round-robin."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td></td>
-                <td>
-                  <input placeholder="<?=gettext("Source tracking timeout");?>" title="<?=gettext("Source tracking timeout");?>" name="srctrack" id="srctrack" type="text" value="<?= !empty($pconfig['srctrack']) ? $pconfig['srctrack'] : "";?>"/>
-                  <div class="hidden" data-for="help_for_lb_use_sticky">
-                    <?=gettext("Set the source tracking timeout for sticky connections in seconds. " .
-                                        "By default this is 0, so source tracking is removed as soon as the state expires. " .
-                                        "Setting this timeout higher will cause the source/destination relationship to persist for longer periods of time."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_pf_share_forward" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Shared forwarding');?> </td>
-                <td>
-                  <input name="pf_share_forward" type="checkbox" id="pf_share_forward" value="yes" <?= !empty($pconfig['pf_share_forward']) ? 'checked="checked"' : '' ?>/>
-                  <?=gettext('Use shared forwarding between packet filter, traffic shaper and captive portal'); ?>
-                  <div class="hidden" data-for="help_for_pf_share_forward">
-                    <?= gettext('Using policy routing in the packet filter rules causes packets to skip ' .
-                                'processing for the traffic shaper and captive portal tasks. ' .
-                                'Using this option enables the sharing of such forwarding decisions ' .
-                                'between all components to accommodate complex setups.') ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_pf_disable_force_gw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable force gateway');?> </td>
-                <td>
-                  <input name="pf_disable_force_gw" type="checkbox" id="pf_disable_force_gw" value="yes" <?= !empty($pconfig['pf_disable_force_gw']) ? 'checked="checked"' : '' ?>/>
-                  <?=gettext('Disable automatic rules which force local services to use the assigned interface gateway.'); ?>
-                  <div class="hidden" data-for="help_pf_disable_force_gw">
-                    <?= gettext('Outgoing packets from this firewall on an interface which has a gateway ' .
-                                'will normally use the specified gateway for that interface. ' .
-                                'When this option is set the route will be selected by the system routing table instead.') ?>
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </div>
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>

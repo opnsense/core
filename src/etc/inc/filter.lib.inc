@@ -46,7 +46,6 @@ function filter_core_bootstrap($fw)
     filter_core_rules_system($fw, $filter_rule_defaults);
 }
 
-
 /**
  * Initialize firewall plugin system with interfaces and gateways
  * @return \OPNsense\Firewall\Plugin
@@ -201,6 +200,7 @@ function filter_core_rules_system($fw, $defaults)
 {
     global $config;
 
+    $settings_filter = legacy_filter_settings('filter');
     $ipv6_disabled = !is_ipv6_allowed();
 
     $dhcrelay6_interfaces = plugins_run('dhcrelay_interfaces', ['inet6']);
@@ -582,7 +582,7 @@ function filter_core_rules_system($fw, $defaults)
     // [out from this Firewall, using the selected gateway].
     // Our default setting has been to force traffic leaving a specific interface to use the associated gateway.
     // This behaviour can be disabled, so settings can be customized using manual firewall rules.
-    if (empty($config['system']['pf_disable_force_gw'])) {
+    if (empty($settings_filter['pf_disable_force_gw'])) {
         foreach ($fw->getInterfaceMapping() as $ifdescr => $ifcfg) {
             if (!isset($ifcfg['internal_dynamic']) && $ifcfg['if'] != 'lo0') {
                 $protos_found = [];
@@ -606,7 +606,7 @@ function filter_core_rules_system($fw, $defaults)
                                     'statetype' => 'keep',
                                     'allowopts' => true,
                                     'quick' => false,
-                                    '#ref' => 'system_advanced_firewall.php#pf_disable_force_gw',
+                                    '#ref' => 'ui/firewall/settings#settings-filter',
                                     'descr' => "let out anything from firewall host itself (force gw)"],
                                     $defaults['pass']
                                 );

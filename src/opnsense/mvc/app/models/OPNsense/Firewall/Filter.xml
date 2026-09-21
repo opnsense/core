@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Firewall/Filter</mount>
-    <version>1.1.2</version>
+    <version>1.1.3</version>
     <migration_prefix>MFP</migration_prefix>
     <description>Firewall rules (new)</description>
     <items>
@@ -22,6 +22,22 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </skip_rules_gw_down>
+                <lb_use_sticky type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </lb_use_sticky>
+                <source_tracking_timeout type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <ValidationMessage>Source tracking timeout must be a non-negative integer.</ValidationMessage>
+                </source_tracking_timeout>
+                <pf_share_forward type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </pf_share_forward>
+                <pf_disable_force_gw type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </pf_disable_force_gw>
             </filter>
             <nat>
                 <reflection_dnat type="BooleanField">

@@ -52,6 +52,8 @@ class Plugin
     public function __construct()
     {
         $this->systemDefaults = ['filter' => [], 'forward' => [], 'nat' => []];
+
+        /* XXX attach to class */
         $settings = (new Filter(true))->settings->getNodeContent();
 
         if (!empty(Config::getInstance()->object()->system->disablereplyto)) {
@@ -135,6 +137,9 @@ class Plugin
     public function setGatewayGroups($groups)
     {
         if (is_array($groups)) {
+            /* XXX attach to class */
+            $settings = (new Filter(true))->settings->getNodeContent();
+
             foreach ($groups as $key => $gwgr) {
                 $routeto = [];
                 $proto = null;
@@ -163,7 +168,7 @@ class Plugin
                         $routetologic .= " {$gwgr[0]['poolopts']} ";
                     } elseif (count($routeto) > 1) {
                         $routetologic .= " round-robin ";
-                        if (!empty(Config::getInstance()->object()->system->lb_use_sticky)) {
+                        if (!empty($settings['filter']['lb_use_sticky'])) {
                             $routetologic .= " sticky-address ";
                         }
                     }
