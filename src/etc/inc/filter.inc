@@ -184,6 +184,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     /* initialize fw plugin object */
     $fw = filter_core_get_initialized_plugin_system();
+    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
+    $settings_filter = filter_get_settings('filter');
     filter_core_bootstrap($fw);
     $cnfint = iterator_to_array($fw->getInterfaceMapping());
     plugins_firewall($fw);
@@ -342,8 +344,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set limit frags {$config['system']['maximumfrags']}\n";
     }
 
-    if (isset($config['system']['lb_use_sticky']) && is_numeric($config['system']['srctrack'] ?? null) && ($config['system']['srctrack'] > 0)) {
-        $limitrules .= "set timeout src.track {$config['system']['srctrack']}\n";
+    if (!empty($settings_filter['lb_use_sticky']) && !empty($settings_filter['source_tracking_timeout'])) {
+        $limitrules .= "set timeout src.track " . $settings_filter['source_tracking_timeout'] . "\n";
     }
 
     if (!empty($config['system']['syncookies'])) {

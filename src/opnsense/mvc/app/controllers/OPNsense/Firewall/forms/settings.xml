@@ -34,6 +34,34 @@
             <type>checkbox</type>
             <help>By default, when a rule has a specific gateway set and this gateway is down, the rule is created and traffic is sent to the default gateway. This option overrides that behavior and the rule is not created when the gateway is down.</help>
         </field>
+        <field>
+            <type>header</type>
+            <label>Multi-WAN</label>
+        </field>
+        <field>
+            <id>filter.settings.filter.lb_use_sticky</id>
+            <label>Sticky connections</label>
+            <type>checkbox</type>
+            <help>Successive connections are redirected in round-robin fashion while connections from the same source are sent to the same gateway for as long as matching states exist.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.source_tracking_timeout</id>
+            <label>Source tracking timeout</label>
+            <type>text</type>
+            <help>Set the source tracking timeout for sticky connections in seconds. The default of zero removes source tracking as soon as the state expires.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.pf_share_forward</id>
+            <label>Shared forwarding</label>
+            <type>checkbox</type>
+            <help>Share forwarding decisions between the packet filter, traffic shaper, and captive portal to support policy routing in complex setups.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.pf_disable_force_gw</id>
+            <label>Disable force gateway</label>
+            <type>checkbox</type>
+            <help>Disable automatic rules which force local services to use the assigned interface gateway. The system routing table is used instead.</help>
+        </field>
     </tab>
     <tab id="settings-nat" description="NAT">
         <field>
