@@ -28,17 +28,17 @@
 
 function filter_core_bootstrap($fw)
 {
-    global $config;
+    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
     // set defaults
     $filter_rule_defaults = [];
     $filter_rule_defaults['pass'] = [
       "type" => "pass",
-      "log" => !isset($config['syslog']['nologdefaultpass']),
+      "log" => !empty($settings['logging']['default_pass']),
       "disablereplyto" => 1 // don't generate "reply-to" tags on internal rules by default
     ];
     $filter_rule_defaults['block'] = [
       "type" => "block",
-      "log" => !isset($config['syslog']['nologdefaultblock']),
+      "log" => !empty($settings['logging']['default_block']),
       "disablereplyto" => 1 // don't generate "reply-to" tags on internal rules by default
     ];
 
@@ -326,8 +326,8 @@ function filter_core_rules_system($fw, $defaults)
     }
 
     // block bogons and private nets
-    $bogontmpl = ['type' => 'block', 'log' => !isset($config['syslog']['nologbogons']), 'disablereplyto' => 1];
-    $privtmpl = ['type' => 'block', 'log' => !isset($config['syslog']['nologprivatenets']), 'disablereplyto' => 1];
+    $bogontmpl = ['type' => 'block', 'log' => !empty($settings['logging']['bogons']), 'disablereplyto' => 1];
+    $privtmpl = ['type' => 'block', 'log' => !empty($settings['logging']['private_networks']), 'disablereplyto' => 1];
     foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
         // only render disabled rules for actual interfaces that can have a bogon option set
         if (!empty($intfinfo['virtual'])) {

@@ -215,7 +215,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
                 'dstport' => $dstport,
                 'interface' => $interface,
                 'ipprotocol' => 'inet',
-                'log' => !empty($config['syslog']['logoutboundnat']),
+                'log' => !empty($settings['logging']['source_nat']),
                 'staticnatport' => !empty($dstport),
             ];
 
@@ -565,7 +565,8 @@ function filter_rules_legacy(&$FilterIflist)
 {
     global $config;
 
-    $log = !isset($config['syslog']['nologdefaultblock']) ? 'log' : '';
+    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
+    $log = !empty($settings['logging']['default_block']) ? 'log' : '';
     $bridge_interfaces = [];
     $ipfrules = '';
 
