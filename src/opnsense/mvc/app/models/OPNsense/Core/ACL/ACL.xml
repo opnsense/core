@@ -441,12 +441,6 @@
             <pattern>system_advanced_admin.php*</pattern>
         </patterns>
     </page-system-advanced-admin>
-    <page-system-advanced-firewall>
-        <name>System: Advanced: Firewall and NAT</name>
-        <patterns>
-            <pattern>system_advanced_firewall.php*</pattern>
-        </patterns>
-    </page-system-advanced-firewall>
     <page-system-advanced-misc>
         <name>System: Advanced: Miscellaneous</name>
         <patterns>

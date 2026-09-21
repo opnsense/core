@@ -29,11 +29,10 @@
 
 function pf_services()
 {
-    global $config;
-
     $services = [];
+    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
 
-    if (!isset($config['system']['disablefilter'])) {
+    if (empty($settings['filter']['disable_filter'])) {
         $services[] = [
             'description' => gettext('Packet Filter'),
             'configd' => [
@@ -120,7 +119,7 @@ function pf_firewall($fw)
      *  interface in question to avoid problems with complicated routing
      *  topologies
      */
-    if (isset($config['filter']['bypassstaticroutes']) && count(config_read_array('staticroutes', 'route', false))) {
+    if (!empty($settings['filter']['bypass_static_routes']) && count(config_read_array('staticroutes', 'route', false))) {
         $ifdetails = $fw->getIfconfigDetails();
         $GatewaysList = $fw->getGateways()->gatewaysIndexedByName(false, true);
 
@@ -148,7 +147,7 @@ function pf_firewall($fw)
                             'protocol' => 'tcp','flags' => 'any', 'from' => $network['from'],
                             'to' => $network['to'], 'quick' => false,
                             'descr' => "pass traffic between statically routed subnets",
-                            '#ref' => 'system_advanced_firewall.php#bypassstaticroutes'],
+                            '#ref' => 'ui/firewall/settings#settings-filter'],
                         $defaults['pass']
                     );
                     $fw->registerFilterRule(
@@ -156,7 +155,7 @@ function pf_firewall($fw)
                         ['interface' => $gw['interface'], 'statetype' => 'sloppy', 'ipprotocol' => $proto,
                             'from' => $network['from'],'to' => $network['to'], 'quick' => false,
                             'descr' => "pass traffic between statically routed subnets",
-                            '#ref' => 'system_advanced_firewall.php#bypassstaticroutes'],
+                            '#ref' => 'ui/firewall/settings#settings-filter'],
                         $defaults['pass']
                     );
                 }

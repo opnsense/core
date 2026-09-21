@@ -47,7 +47,7 @@ class SettingsController extends ApiMutableModelControllerBase
             $backend = new Backend();
             $backend->configdRun('cron restart');
             $backend->configdRun('service restart sysctl');
-            return ['status' => $backend->configdRun('filter reload skip_alias')];
+            return ['status' => $backend->configdRun('filter reload')];
         }
         return ['status' => 'failed'];
     }
