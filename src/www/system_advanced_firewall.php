@@ -47,7 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['checkaliasesurlcert'] = isset($config['system']['checkaliasesurlcert']);
     $pconfig['maximumtableentries'] = !empty($config['system']['maximumtableentries']) ? $config['system']['maximumtableentries'] : null ;
     $pconfig['disablereplyto'] = isset($config['system']['disablereplyto']);
-    $pconfig['bogonsinterval'] = !empty($config['system']['bogons']['interval']) ? $config['system']['bogons']['interval'] : null;
     $pconfig['schedule_states'] = isset($config['system']['schedule_states']);
     $pconfig['skip_rules_gw_down'] = isset($config['system']['skip_rules_gw_down']);
     $pconfig['lb_use_sticky'] = isset($config['system']['lb_use_sticky']);
@@ -224,10 +223,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['filter']['bypassstaticroutes']);
         }
 
-        if ($pconfig['bogonsinterval'] != $config['system']['bogons']['interval']) {
-            $config['system']['bogons']['interval'] = $pconfig['bogonsinterval'];
-        }
-
         if (!empty($pconfig['schedule_states'])) {
             $config['system']['schedule_states'] = true;
         } elseif (isset($config['system']['schedule_states'])) {
@@ -307,33 +302,6 @@ include("head.inc");
 ?>
       <section class="col-xs-12">
         <form method="post" name="iform" id="iform">
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
-                <td style="width:22%"><strong><?= gettext('Bogon Networks') ?></strong></td>
-                <td style="width:78%"></td>
-              </tr>
-              <tr>
-                <td><a id="help_for_bogonsinterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Update Frequency");?></td>
-                <td>
-                  <select name="bogonsinterval" class="selectpicker" data-style="btn-default">
-                  <option value="monthly" <?=empty($pconfig['bogonsinterval']) || $pconfig['bogonsinterval'] == 'monthly' ? "selected=\"selected\"" : "";?>>
-                    <?=gettext("Monthly"); ?>
-                  </option>
-                  <option value="weekly" <?=$pconfig['bogonsinterval'] == 'weekly' ? "selected=\"selected\"" :"";?>>
-                    <?=gettext("Weekly"); ?>
-                  </option>
-                  <option value="daily" <?=$pconfig['bogonsinterval'] == 'daily' ? "selected=\"selected\"" : "";?>>
-                    <?=gettext("Daily"); ?>
-                  </option>
-                  </select>
-                  <div class="hidden" data-for="help_for_bogonsinterval">
-                    <?=gettext("The frequency of updating the lists of IP addresses that are reserved (but not RFC 1918) or not yet assigned by IANA.");?>
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </div>
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>
