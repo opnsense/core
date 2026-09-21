@@ -77,9 +77,9 @@
 </script>
 
 <div class="content-box">
-    <div class="content-box-main">
+    <div>
         <div class="table-responsive">
-            <div  class="col-sm-12">
+            <div class="col-sm-12">
                 <div class="table-responsive">
                     <table id="grid-routes" class="table table-condensed table-hover table-striped table-responsive">
                         <thead>

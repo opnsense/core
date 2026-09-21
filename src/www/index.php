@@ -68,7 +68,7 @@ if (isset($config['trigger_initial_wizard']) || isset($_GET['wizard_done'])):
                 <img src="<?= cache_safe(get_themed_filename('/images/default-logo.png')) ?>" border="0" alt="logo" style="max-width:380px;" />
   <?php endif ?>
                 <br />
-                <div class="content-box-main" style="padding-bottom:0px;">
+                <div>
                   <?php
                       if (isset($config['trigger_initial_wizard'])) {
                           echo '<p>' . sprintf(gettext('Welcome to %s!'), $product->name()) . "</p>\n";

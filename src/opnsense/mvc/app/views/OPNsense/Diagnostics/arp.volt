@@ -68,7 +68,7 @@
 </script>
 
 <div class="content-box">
-    <div class="content-box-main">
+    <div>
         <div class="table-responsive">
             <div  class="col-sm-12">
                 <table id="grid-arp" class="table table-condensed table-hover table-striped table-responsive">
