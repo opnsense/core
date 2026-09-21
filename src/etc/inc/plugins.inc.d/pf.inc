@@ -273,7 +273,7 @@ function filter_auto_destination_nat()
                 'interface' => $lockoutif,
                 'nordr' => true,
                 'protocol' => 'tcp',
-                '#ref' => 'system_advanced_firewall.php#noantilockout',
+                '#ref' => 'ui/firewall/settings#settings-filter',
             ];
         }
     }

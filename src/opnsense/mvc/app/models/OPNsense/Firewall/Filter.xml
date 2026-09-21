@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Firewall/Filter</mount>
-    <version>1.1.5</version>
+    <version>1.1.6</version>
     <migration_prefix>MFP</migration_prefix>
     <description>Firewall rules (new)</description>
     <items>
@@ -42,6 +42,30 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </schedule_states>
+                <disable_reply_to type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </disable_reply_to>
+                <no_antilockout type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </no_antilockout>
+                <no_ipv6_rfc4890_req type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </no_ipv6_rfc4890_req>
+                <no_port0_block type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </no_port0_block>
+                <no_sshlockout type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </no_sshlockout>
+                <no_virusprot type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </no_virusprot>
             </filter>
             <nat>
                 <reflection_dnat type="BooleanField">
