@@ -385,6 +385,16 @@ class KeaDhcpv4 extends BaseModel
                 ],
                 'subnet4' => $this->getConfigSubnets($ddns_enabled, $flex_options, $client_classes),
                 'hooks-libraries' => [
+                    /*
+                     * Hook loading order can be important in some cases:
+                     * https://kea.readthedocs.io/en/latest/arm/hooks.html#binding-variables
+                     */
+                    [
+                        'library' => '/usr/local/lib/kea/hooks/libdhcp_ping_check.so',
+                        'parameters' => [
+                            'enable-ping-check' => false,
+                        ],
+                    ],
                     ['library' => '/usr/local/lib/kea/hooks/libdhcp_lease_cmds.so'],
                     ['library' => '/usr/local/lib/kea/hooks/libdhcp_host_cmds.so'],
                 ],
@@ -405,13 +415,6 @@ class KeaDhcpv4 extends BaseModel
         if ($expiredLeasesConfig !== null) {
             $cnf['Dhcp4']['expired-leases-processing'] = $expiredLeasesConfig;
         }
-        /* Ping check hook */
-        $cnf['Dhcp4']['hooks-libraries'][] = [
-            'library' => '/usr/local/lib/kea/hooks/libdhcp_ping_check.so',
-            'parameters' => [
-                'enable-ping-check' => false,
-            ],
-        ];
         if (!$this->ha->enabled->isEmpty()) {
             $record = [
                 'library' => '/usr/local/lib/kea/hooks/libdhcp_ha.so',
