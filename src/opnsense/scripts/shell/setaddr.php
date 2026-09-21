@@ -556,8 +556,10 @@ if ($config['system']['webgui']['protocol'] == 'https') {
 }
 
 if (console_prompt_for_yn('Restore web GUI access defaults?', 'n')) {
-    if (isset($config['system']['webgui']['noantilockout'])) {
-        unset($config['system']['webgui']['noantilockout']);
+    $filter = new OPNsense\Firewall\Filter();
+    if (!$filter->settings->filter->disable_anti_lockout->isEmpty()) {
+        $filter->settings->filter->disable_anti_lockout = '0';
+        $filter->serializeToConfig(false, true);
         $restart_webgui = true;
     }
     if (isset($config['system']['webgui']['interfaces'])) {
