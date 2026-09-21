@@ -107,6 +107,42 @@
             <help>Choose how source NAT rules are handled. Automatic mode generates rules for you, hybrid mode combines manual and automatic rules, manual mode only uses configured rules, and disabled mode turns source NAT off.</help>
         </field>
     </tab>
+    <tab id="settings-logging" description="Logging">
+        <field>
+            <type>header</type>
+            <label>Logging</label>
+        </field>
+        <field>
+            <id>filter.settings.logging.default_block</id>
+            <label>Default block</label>
+            <type>checkbox</type>
+            <help>Log packets matched by the implicit default block rule. Per-rule logging options are still respected.</help>
+        </field>
+        <field>
+            <id>filter.settings.logging.default_pass</id>
+            <label>Default pass</label>
+            <type>checkbox</type>
+            <help>Log packets matched by implicit default pass rules. Per-rule logging options are still respected.</help>
+        </field>
+        <field>
+            <id>filter.settings.logging.source_nat</id>
+            <label>Source NAT</label>
+            <type>checkbox</type>
+            <help>Log packets matched by automatic source NAT rules.</help>
+        </field>
+        <field>
+            <id>filter.settings.logging.bogons</id>
+            <label>Bogon networks</label>
+            <type>checkbox</type>
+            <help>Log packets blocked by Block Bogon Networks rules.</help>
+        </field>
+        <field>
+            <id>filter.settings.logging.private_networks</id>
+            <label>Private networks</label>
+            <type>checkbox</type>
+            <help>Log packets blocked by Block Private Networks rules.</help>
+        </field>
+    </tab>
     <tab id="settings-alias" description="Aliases">
         <field>
             <id>filter.settings.alias.bogons_interval</id>
