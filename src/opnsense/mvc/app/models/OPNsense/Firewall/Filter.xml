@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Firewall/Filter</mount>
-    <version>1.1.6</version>
+    <version>1.1.7</version>
     <migration_prefix>MFP</migration_prefix>
     <description>Firewall rules (new)</description>
     <items>
@@ -66,6 +66,85 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </no_virusprot>
+                <disable_filter type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </disable_filter>
+                <optimization type="OptionField">
+                    <Default>normal</Default>
+                    <Required>Y</Required>
+                    <OptionValues>
+                        <normal/>
+                        <high-latency/>
+                        <aggressive/>
+                        <conservative/>
+                    </OptionValues>
+                </optimization>
+                <state_policy type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </state_policy>
+                <adaptive_start type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <ValidationMessage>Adaptive start must be a non-negative integer.</ValidationMessage>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Adaptive timeouts must be set together.</ValidationMessage>
+                            <type>SetConstraint</type>
+                            <addFields>
+                                <field1>adaptive_end</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </adaptive_start>
+                <adaptive_end type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <ValidationMessage>Adaptive end must be a non-negative integer.</ValidationMessage>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Adaptive timeouts must be set together.</ValidationMessage>
+                            <type>SetConstraint</type>
+                            <addFields>
+                                <field1>adaptive_start</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </adaptive_end>
+                <maximum_states type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <ValidationMessage>Maximum states must be a positive integer.</ValidationMessage>
+                </maximum_states>
+                <maximum_fragments type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <ValidationMessage>Maximum fragments must be a positive integer.</ValidationMessage>
+                </maximum_fragments>
+                <maximum_table_entries type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <ValidationMessage>Maximum table entries must be a positive integer.</ValidationMessage>
+                </maximum_table_entries>
+                <bypass_static_routes type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </bypass_static_routes>
+                <syncookies type="OptionField">
+                    <BlankDesc>never (default)</BlankDesc>
+                    <OptionValues>
+                        <always/>
+                        <adaptive/>
+                    </OptionValues>
+                </syncookies>
+                <syncookies_adaptive_start type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <ValidationMessage>Syncookies adaptive start must be a non-negative integer.</ValidationMessage>
+                </syncookies_adaptive_start>
+                <syncookies_adaptive_end type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <ValidationMessage>Syncookies adaptive end must be a non-negative integer.</ValidationMessage>
+                </syncookies_adaptive_end>
+                <keep_counters type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </keep_counters>
             </filter>
             <nat>
                 <reflection_dnat type="BooleanField">
@@ -112,6 +191,16 @@
                     <Default>1</Default>
                     <Required>Y</Required>
                 </private_networks>
+                <debug type="OptionField">
+                    <Default>urgent</Default>
+                    <Required>Y</Required>
+                    <OptionValues>
+                        <none/>
+                        <urgent/>
+                        <misc/>
+                        <loud/>
+                    </OptionValues>
+                </debug>
             </logging>
             <alias>
                 <bogons_interval type="OptionField">
@@ -123,6 +212,15 @@
                         <daily>Daily</daily>
                     </OptionValues>
                 </bogons_interval>
+                <aliases_resolve_interval type="IntegerField">
+                    <Default>300</Default>
+                    <MinimumValue>1</MinimumValue>
+                    <ValidationMessage>Aliases resolve interval must be a positive integer.</ValidationMessage>
+                </aliases_resolve_interval>
+                <check_aliases_url_cert type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </check_aliases_url_cert>
             </alias>
         </settings>
         <rules>

@@ -281,7 +281,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     service_log('.', $verbose);
 
     /* enable pf if we need to, otherwise disable */
-    if (!isset($config['system']['disablefilter'])) {
+    if (empty($settings['filter']['disable_filter'])) {
         mwexecfm('/sbin/pfctl -e');
     } else {
         mwexecfm('/sbin/pfctl -d');
@@ -299,9 +299,10 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     $limitrules = '';
 
-    if (!empty($config['system']['maximumtableentries'])) {
-        $limitrules .= "set limit table-entries {$config['system']['maximumtableentries']}\n";
-        set_single_sysctl('net.pf.request_maxcount', $config['system']['maximumtableentries']);
+    if (!empty($settings['filter']['maximum_table_entries'])) {
+        $maximumTableEntries = $settings['filter']['maximum_table_entries'];
+        $limitrules .= "set limit table-entries {$maximumTableEntries}\n";
+        set_single_sysctl('net.pf.request_maxcount', $maximumTableEntries);
     } else {
         $max_table_entries = filter_current_table_entries();
         $req_table_entries = filter_default_table_entries();
@@ -313,46 +314,55 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
 
-    if ($config['system']['optimization'] != '') {
-        $limitrules .= "set optimization {$config['system']['optimization']}\n";
-        if ($config['system']['optimization'] == "conservative") {
+    if (!empty($settings['filter']['optimization'])) {
+        $limitrules .= "set optimization " . $settings['filter']['optimization'] . "\n";
+        if ($settings['filter']['optimization'] === 'conservative') {
             $limitrules .= "set timeout { udp.first 300, udp.single 150, udp.multiple 900 }\n";
         }
     } else {
         $limitrules .= "set optimization normal\n";
     }
 
-    if (!empty($config['system']['adaptivestart']) && !empty($config['system']['adaptiveend'])) {
-        $limitrules .= "set timeout { adaptive.start {$config['system']['adaptivestart']}, adaptive.end {$config['system']['adaptiveend']} }\n";
+    if (isset($settings['filter']['adaptive_start'], $settings['filter']['adaptive_end'])) {
+        $limitrules .= sprintf(
+            "set timeout { adaptive.start %s, adaptive.end %s }\n",
+            $settings['filter']['adaptive_start'],
+            $settings['filter']['adaptive_end']
+        );
     } else {
         $limitrules .= "set timeout { adaptive.start 0, adaptive.end 0 }\n";
     }
-    if (!empty($config['system']['state-policy'])) {
+    if (!empty($settings['filter']['state_policy'])) {
         $limitrules .= "set state-policy if-bound\n";
     }
 
-    if (!empty($config['system']['maximumstates'])) {
-        $limitrules .= "set limit states {$config['system']['maximumstates']}\n";
-        $limitrules .= "set limit src-nodes {$config['system']['maximumstates']}\n";
+    if (!empty($settings['filter']['maximum_states'])) {
+        $maximumStates = $settings['filter']['maximum_states'];
+        $limitrules .= "set limit states {$maximumStates}\n";
+        $limitrules .= "set limit src-nodes {$maximumStates}\n";
     } else {
         $max_states = filter_default_state_size();
         $limitrules .= "set limit states {$max_states}\n";
         $limitrules .= "set limit src-nodes {$max_states}\n";
     }
-    if (!empty($config['system']['maximumfrags'])) {
-        $limitrules .= "set limit frags {$config['system']['maximumfrags']}\n";
+    if (!empty($settings['filter']['maximum_fragments'])) {
+        $limitrules .= "set limit frags " . $settings['filter']['maximum_fragments'] . "\n";
     }
 
     if (!empty($settings['filter']['lb_use_sticky']) && !empty($settings['filter']['source_tracking_timeout'])) {
         $limitrules .= "set timeout src.track " . $settings['filter']['source_tracking_timeout'] . "\n";
     }
 
-    if (!empty($config['system']['syncookies'])) {
+    if (!empty($settings['filter']['syncookies'])) {
         $arange = "";
-        if ($config['system']['syncookies'] == "adaptive") {
-            $arange = "(start {$config['system']['syncookies_adaptstart']}%, end {$config['system']['syncookies_adaptend']}%)";
+        if ($settings['filter']['syncookies'] === 'adaptive') {
+            $arange = sprintf(
+                "(start %s%%, end %s%%)",
+                $settings['filter']['syncookies_adaptive_start'],
+                $settings['filter']['syncookies_adaptive_end']
+            );
         }
-        $limitrules .= "set syncookies {$config['system']['syncookies']} {$arange}\n";
+        $limitrules .= "set syncookies " . $settings['filter']['syncookies'] . " {$arange}\n";
     }
 
     /* if pf already generated a hostid, reuse it */
@@ -361,10 +371,9 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set hostid {$current_hostid}\n";
     }
 
-    $pfdebug = !empty($config['system']['pfdebug']) ? $config['system']['pfdebug'] : 'urgent';
-    $limitrules .= "set debug {$pfdebug}\n";
+    $limitrules .= "set debug " . $settings['logging']['debug'] . "\n";
 
-    if (!empty($config['system']['keepcounters'])) {
+    if (!empty($settings['filter']['keep_counters'])) {
         $limitrules .= "set keepcounters\n";
     }
 
