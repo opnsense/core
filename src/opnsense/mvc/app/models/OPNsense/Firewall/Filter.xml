@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Firewall/Filter</mount>
-    <version>1.1.4</version>
+    <version>1.1.5</version>
     <migration_prefix>MFP</migration_prefix>
     <description>Firewall rules (new)</description>
     <items>
@@ -67,6 +67,28 @@
                     </OptionValues>
                 </snat_mode>
             </nat>
+            <logging>
+                <default_block type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </default_block>
+                <default_pass type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </default_pass>
+                <source_nat type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </source_nat>
+                <bogons type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </bogons>
+                <private_networks type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </private_networks>
+            </logging>
             <alias>
                 <bogons_interval type="OptionField">
                     <Required>Y</Required>

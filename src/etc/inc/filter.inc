@@ -185,6 +185,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     /* initialize fw plugin object */
     $fw = filter_core_get_initialized_plugin_system();
     $settings_filter = legacy_filter_settings('filter');
+    $settings_logging = legacy_filter_settings('logging');
     filter_core_bootstrap($fw);
     $cnfint = iterator_to_array($fw->getInterfaceMapping());
     plugins_firewall($fw);
@@ -215,7 +216,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
                 'dstport' => $dstport,
                 'interface' => $interface,
                 'ipprotocol' => 'inet',
-                'log' => !empty($config['syslog']['logoutboundnat']),
+                'log' => !empty($settings_logging['source_nat']),
                 'staticnatport' => !empty($dstport),
             ];
 
@@ -361,8 +362,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set hostid {$current_hostid}\n";
     }
 
-    $pfdebug = !empty($config['system']['pfdebug']) ? $config['system']['pfdebug'] : 'urgent';
-    $limitrules .= "set debug {$pfdebug}\n";
+    $limitrules .= "set debug " . $settings_logging['debug'] . "\n";
 
     if (!empty($config['system']['keepcounters'])) {
         $limitrules .= "set keepcounters\n";
@@ -570,9 +570,8 @@ function filter_generate_aliases()
 
 function filter_rules_legacy(&$FilterIflist)
 {
-    global $config;
-
-    $log = !isset($config['syslog']['nologdefaultblock']) ? 'log' : '';
+    $settings_logging = legacy_filter_settings('logging');
+    $log = !empty($settings_logging['default_block']) ? 'log' : '';
     $bridge_interfaces = [];
     $ipfrules = '';
 
