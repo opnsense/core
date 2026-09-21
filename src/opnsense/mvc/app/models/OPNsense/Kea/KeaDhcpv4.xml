@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Kea/dhcp4</mount>
-    <version>1.0.6</version>
+    <version>1.0.7</version>
     <description>Kea DHCPv4 configuration</description>
     <items>
         <general>
@@ -185,6 +185,10 @@
                     </OptionValues>
                 </allocator>
                 <pools type=".\KeaPoolsField"/>
+                <ping_check type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </ping_check>
                 <ddns_forward_zone type="HostnameField">
                     <IpAllowed>N</IpAllowed>
                     <Constraints>
