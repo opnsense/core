@@ -58,6 +58,17 @@
         </grid_view>
     </field>
     <field>
+        <id>subnet4.ping_check</id>
+        <label>ICMP ping</label>
+        <type>checkbox</type>
+        <help>When enabled, the DHCP server will use a ping to ensure that an address is not in use before allocating it to a host.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <type>header</type>
         <label>DHCP option data</label>
     </field>
