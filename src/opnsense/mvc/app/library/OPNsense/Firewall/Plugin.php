@@ -52,19 +52,20 @@ class Plugin
     public function __construct()
     {
         $this->systemDefaults = array("filter" => [], "forward" => [], "nat" => []);
+        $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
         if (!empty(Config::getInstance()->object()->system->disablereplyto)) {
             $this->systemDefaults['filter']['disablereplyto'] = true;
         }
         if (!empty(Config::getInstance()->object()->system->skip_rules_gw_down)) {
             $this->systemDefaults['filter']['skip_rules_gw_down'] = true;
         }
-        if (empty(Config::getInstance()->object()->system->disablenatreflection)) {
+        if (!empty($settings['nat']['reflection_dnat'])) {
             $this->systemDefaults['forward']['natreflection'] = "enable";
         }
-        if (!empty(Config::getInstance()->object()->system->enablebinatreflection)) {
+        if (!empty($settings['nat']['reflection_binat'])) {
             $this->systemDefaults['nat']['natreflection'] = "enable";
         }
-        if (!empty(Config::getInstance()->object()->system->enablenatreflectionhelper)) {
+        if (!empty($settings['nat']['reflection_snat'])) {
             $this->systemDefaults['forward']['enablenatreflectionhelper'] = true;
             $this->systemDefaults['nat']['enablenatreflectionhelper'] = true;
         }
