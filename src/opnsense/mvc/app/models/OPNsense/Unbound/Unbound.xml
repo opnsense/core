@@ -1,7 +1,7 @@
 <model>
     <mount>//OPNsense/unboundplus</mount>
     <description>Unbound configuration</description>
-    <version>1.0.15</version>
+    <version>1.0.16</version>
     <items>
         <general>
             <enabled type="BooleanField">
@@ -33,7 +33,16 @@
             <noregrecords type="BooleanField"/>
             <txtsupport type="BooleanField"/>
             <cacheflush type="BooleanField"/>
-            <safesearch type="BooleanField"/>
+            <safesearch type="OptionField">
+                <Multiple>Y</Multiple>
+                <OptionValues>
+                    <google>Google</google>
+                    <duckduckgo>DuckDuckGo</duckduckgo>
+                    <bing>Bing</bing>
+                    <youtube>YouTube</youtube>
+                    <pixabay>Pixabay</pixabay>
+                </OptionValues>
+            </safesearch>
             <local_zone_type type="OptionField">
                 <Default>transparent</Default>
                 <Required>Y</Required>
