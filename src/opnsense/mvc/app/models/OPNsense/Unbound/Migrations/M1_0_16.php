@@ -43,6 +43,9 @@ class M1_0_16 extends BaseModelMigration
                 'bing',
                 'youtube',
                 'pixabay',
+                'brave',
+                'ecosia',
+                'startpage',
             ]);
         } elseif ($current === '0') {
             $model->general->safesearch = '';

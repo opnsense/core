@@ -41,6 +41,9 @@
                     <bing>Bing</bing>
                     <youtube>YouTube</youtube>
                     <pixabay>Pixabay</pixabay>
+                    <brave>Brave</brave>
+                    <ecosia>Ecosia</ecosia>
+                    <startpage>Startpage</startpage>
                 </OptionValues>
             </safesearch>
             <local_zone_type type="OptionField">
