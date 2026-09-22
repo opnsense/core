@@ -568,11 +568,9 @@ function _interfaces_gif_configure($gif)
  */
 function _interfaces_hardware($device, $intf_details = null)
 {
-    /* XXX this needs fixing, lots of devices are not capable */
     if (
-        strstr($device, 'vlan') || strpos($device, 'qinq') === 0 ||
-        strpos($device, 'lo') === 0 || strpos($device, 'vxlan') === 0 ||
-        strpos($device, 'ipsec') === 0 || strpos($device, '/') === 0
+        interfaces_vlan_match($device) || str_starts_with($device, 'lo') ||
+        str_starts_with($device, 'vxlan') || str_starts_with($device, 'ipsec')
     ) {
         /* skip checksumming  */
         return;
@@ -982,19 +980,18 @@ function interface_ppps_capable($ifcfg, $ppps)
 
 function interface_ppps_hardware($device)
 {
-    $devices = [$device];
+    $devices = [];
 
-    foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
-        if ($device == $ppp['if']) {
-            $devices = [];
-            foreach (explode(',', $ppp['ports']) as $port) {
-                /*
-                 * XXX We only have get_real_interface() here because
-                 * PPP may be assigned to an assigned interface!  :(
-                 */
-                $devices[] = get_real_interface($port);
+    /* avoid returning a /dev parent by excluding 'ppp' prefix */
+    if (str_starts_with($device, 'pppoe') || str_starts_with($device, 'pptp') || str_starts_with($device, 'l2tp')) {
+        foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
+            if ($device == $ppp['if']) {
+                foreach (explode(',', $ppp['ports']) as $port) {
+                    /* XXX ppp stores ports as configured interfaces or devices */
+                    $devices[] = get_real_interface($port);
+                }
+                break;
             }
-            break;
         }
     }
 
@@ -2228,13 +2225,15 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $wandescr = !empty($wancfg['descr']) ? $wancfg['descr'] : strtoupper($interface);
     $ifdescr = sprintf('%s (%s)', $wandescr, $interface);
 
-    $device = $wancfg['if'];
+    $device = $realhwif = $wancfg['if'];
     $realifv6 = get_real_interface($interface, 'inet6');
 
     $all_devices = plugins_devices();
 
-    /* get the correct hardware interface if PPP is involved or return the one we have */
-    $realhwif = interface_ppps_hardware($device)[0]; /* XXX support all MLPPP devices */
+    $ppps_hardware = interface_ppps_hardware($device);
+    if (count($ppps_hardware)) {
+        $realhwif = $ppps_hardware[0]; /* XXX support all MLPPP devices */
+    }
 
     if ($reload) {
         foreach ($all_devices as $one_device) {
@@ -2250,15 +2249,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     $ifconfig_details = legacy_interfaces_details();
-    if (
-        (strpos($realhwif, '/') === false && empty($ifconfig_details[$realhwif])) ||
-        (strpos($realhwif, '/') === 0 && !file_exists($realhwif))
-    ) {
+    if ($device != $realhwif && empty($ifconfig_details[$realhwif])) {
         log_msg(sprintf('Unable to configure nonexistent interface %s (%s)', $interface, $realhwif), LOG_ERR);
         return $loaded;
     }
-
-    /* XXX mpd5 $realhwif may be a device node path */
 
     service_log(sprintf('Configuring %s interface...', $wandescr), $verbose);
 
@@ -2369,10 +2363,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         mwexecf('/sbin/ifconfig %s %spromisc', [$realhwif, empty($wancfg['promisc']) ? '-' : '']);
     }
 
-    /* apply interface hardware settings (tso, lro, ..) */
+    /* apply interface hardware settings (TSO, LRO, ..) */
     _interfaces_hardware($realhwif, $ifconfig_details);
 
-    if (!empty($wancfg['mtu']) && strpos($realhwif, '/') === false) {
+    if (!empty($wancfg['mtu'])) {
         interface_configure_mtu($realhwif, $wancfg['mtu'], $ifconfig_details);
     }
 
@@ -3484,17 +3478,8 @@ function interface_parent_devices($device)
             }
         }
     } else {
-        foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
-            if ($device == $ppp['if']) {
-                foreach (explode(',', $ppp['ports']) as $port) {
-                    /*
-                     * XXX We only have get_real_interface() here because
-                     * PPP may be assigned to an assigned interface!  :(
-                     */
-                    $parents[] = get_real_interface($port);
-                }
-                break;
-            }
+        foreach (interface_ppps_hardware($device) as $parent) {
+            $parents[] = $parent;
         }
     }
 
