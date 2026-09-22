@@ -257,6 +257,7 @@ class TunnelController extends ApiControllerBase
     public function delPhase1Action($ikeid)
     {
         if ($this->request->isPost()) {
+            $this->throwReadOnly();
             $phase_ids = [];
             Config::getInstance()->lock();
             $config = Config::getInstance()->object();
@@ -294,6 +295,7 @@ class TunnelController extends ApiControllerBase
     public function togglePhase1Action($ikeid, $enabled = null)
     {
         if ($this->request->isPost()) {
+            $this->throwReadOnly();
             Config::getInstance()->lock();
             $config = Config::getInstance()->object();
             if (!empty($config->ipsec->phase1)) {
@@ -329,6 +331,7 @@ class TunnelController extends ApiControllerBase
     public function delPhase2Action($seqid)
     {
         if ($this->request->isPost()) {
+            $this->throwReadOnly();
             Config::getInstance()->lock();
             $config = Config::getInstance()->object();
             if ((string)intval($seqid) == $seqid && isset($config->ipsec->phase2[intval($seqid)])) {
@@ -348,6 +351,7 @@ class TunnelController extends ApiControllerBase
     public function togglePhase2Action($seqid, $enabled = null)
     {
         if ($this->request->isPost()) {
+            $this->throwReadOnly();
             Config::getInstance()->lock();
             $config = Config::getInstance()->object();
             if ((string)intval($seqid) == $seqid && isset($config->ipsec->phase2[intval($seqid)])) {
@@ -377,6 +381,7 @@ class TunnelController extends ApiControllerBase
     public function toggleAction($enabled = null)
     {
         if ($this->request->isPost()) {
+            $this->throwReadOnly();
             Config::getInstance()->lock();
             $config = Config::getInstance()->object();
             if ($enabled == "0" || $enabled == "1") {

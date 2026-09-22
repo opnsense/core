@@ -164,6 +164,7 @@ class AssignmentController extends ApiMutableModelControllerBase
             'spoofmac',
         ];
         if ($this->request->isPost()) {
+            $this->throwReadOnly();
             $backend = new Backend();
             /***
              * Interface apply and final configuration update are separated steps to avoid
