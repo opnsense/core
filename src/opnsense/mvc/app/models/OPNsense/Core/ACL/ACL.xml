@@ -529,8 +529,8 @@
     <page-system-gatewaygroups>
         <name>System: Gateway Groups</name>
         <patterns>
-            <pattern>ui/routing/groups</pattern>
-            <pattern>api/routing/groupsettings/*</pattern>
+            <pattern>ui/routing/gateway_groups</pattern>
+            <pattern>api/routing/group_settings/*</pattern>
         </patterns>
     </page-system-gatewaygroups>
     <page-system-generalsetup>
