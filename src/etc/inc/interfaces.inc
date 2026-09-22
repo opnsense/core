@@ -2213,7 +2213,7 @@ function interface_configure_mtu($device, $mtu, $ifconfig_details)
     }
 }
 
-function interface_configure($verbose = false, $interface = 'wan', $reload = false, $linkup = false, $batch = false)
+function interface_configure($verbose = false, $interface = 'wan', $reload = false, $linkup = false, $batch = false, $all_devices = null)
 {
     $wancfg = config_read_array('interfaces', $interface, false);
     $loaded = [];
@@ -2228,7 +2228,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     $device = $realhwif = $wancfg['if'];
     $realifv6 = get_real_interface($interface, 'inet6');
 
-    $all_devices = plugins_devices();
+    $all_devices ??= plugins_devices();
 
     $ppps_hardware = interface_ppps_hardware($device);
     if (count($ppps_hardware)) {
