@@ -110,14 +110,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             } elseif (isset($config['system']['user'][$userindex[$username]]['language'])) {
                 unset($config['system']['user'][$userindex[$username]]['language']);
             }
-            if (!empty($_SESSION['user_shouldChangePassword'])) {
-                session_start();
-                unset($_SESSION['user_shouldChangePassword']);
-                session_write_close();
-            }
             if ($pconfig['passwordfld1'] !== '' || $pconfig['passwordfld2'] !== '') {
                 local_user_set_password($config['system']['user'][$userindex[$username]], $pconfig['passwordfld1']);
                 local_user_set($config['system']['user'][$userindex[$username]]);
+
+                if (!empty($_SESSION['user_shouldChangePassword'])) {
+                    session_start();
+                    unset($_SESSION['user_shouldChangePassword']);
+                    session_write_close();
+                }
             }
 
             write_config();
