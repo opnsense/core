@@ -3334,8 +3334,10 @@ function DHCP_Config_File_Advanced($interface, $wancfg, $wanif)
          * 'append' only but has been abused since forever, e.g.
          * https://github.com/opnsense/core/issues/3085 so for now
          * limit this to 'media' keyword causing special concern.
+         *
+         * Additional note: dhclient parses keywords case-insensitive.
          */
-        $conf .= interfaces_dhcp_safe(sprintf('  %s;', implode(' ', $option['frmt'])), $option['args'], !in_array('media', $option['args']));
+        $conf .= interfaces_dhcp_safe(sprintf('  %s;', implode(' ', $option['frmt'])), $option['args'], !in_array('media', array_map('strtolower', $option['args'])));
     }
     $conf .= interfaces_dhcp_safe('  # standard settings');
     $conf .= interfaces_dhcp_safe('  send host-name "%s";', $wancfg['dhcphostname'], !empty($wancfg['dhcphostname']));
