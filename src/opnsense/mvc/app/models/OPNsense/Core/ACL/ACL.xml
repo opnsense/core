@@ -199,19 +199,6 @@
             <pattern>api/firewall/category/*</pattern>
         </patterns>
     </page-firewall-categories>
-    <page-firewall-nat-outbound>
-        <name>Firewall: NAT: Outbound</name>
-        <patterns>
-            <pattern>firewall_nat_out.php*</pattern>
-            <pattern>api/firewall/category/search_item*</pattern>
-        </patterns>
-    </page-firewall-nat-outbound>
-    <page-firewall-nat-outbound-edit>
-        <name>Firewall: NAT: Outbound: Edit</name>
-        <patterns>
-            <pattern>firewall_nat_out_edit.php*</pattern>
-        </patterns>
-    </page-firewall-nat-outbound-edit>
     <page-firewall-nat-portforward-edit>
         <name>Firewall: NAT: Destination NAT</name>
         <patterns>
@@ -228,12 +215,6 @@
             <pattern>api/firewall/filter_util/rule_stats*</pattern>
         </patterns>
     </page-firewall-rules>
-    <page-firewall-rules-edit>
-        <name>Firewall: Rules: Edit</name>
-        <patterns>
-            <pattern>firewall_rules_edit.php*</pattern>
-        </patterns>
-    </page-firewall-rules-edit>
     <page-firewall-schedules>
         <name>Firewall: Schedules</name>
         <patterns>

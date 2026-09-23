@@ -2574,8 +2574,6 @@
 /usr/local/www/diag_authentication.php
 /usr/local/www/diag_backup.php
 /usr/local/www/fbegin.inc
-/usr/local/www/firewall_nat_out.php
-/usr/local/www/firewall_nat_out_edit.php
 /usr/local/www/firewall_rule_lookup.php
 /usr/local/www/firewall_schedule.php
 /usr/local/www/firewall_schedule_edit.php
