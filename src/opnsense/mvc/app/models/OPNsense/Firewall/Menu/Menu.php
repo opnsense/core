@@ -112,7 +112,7 @@ class Menu extends MenuContainer
         if (file_exists('/usr/local/www/firewall_nat_out.php')) {
             $this->appendItem('Firewall.NAT', 'Outbound', [
                 'url' => '/firewall_nat_out.php',
-                'fixedname' => gettext('Outbound'),
+                'fixedname' => gettext('Outbound [legacy]'),
                 'order' => 300,
             ]);
         }
