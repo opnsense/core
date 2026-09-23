@@ -60,6 +60,7 @@ class InitialSetupController extends ApiMutableModelControllerBase
     public function abortAction()
     {
         if ($this->request->isPost()) {
+            $this->throwReadOnly();
             if (isset(Config::getInstance()->object()->trigger_initial_wizard)) {
                 unset(Config::getInstance()->object()->trigger_initial_wizard);
                 Config::getInstance()->save();
