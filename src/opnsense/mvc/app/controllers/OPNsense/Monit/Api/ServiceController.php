@@ -72,24 +72,29 @@ class ServiceController extends ApiMutableServiceControllerBase
     public function reconfigureAction()
     {
         if ($this->request->isPost()) {
-            $result['function'] = "reconfigure";
-            $result['status'] = 'failed';
             $backend = new Backend();
             $status = $this->statusAction();
-            $result = $this->checkAction(); /* XXX this overwrites the reconfigure $result */
-            if ((string)$this->getModel()->general->enabled == '1') {
-                if ($result['template'] == 'OK' && preg_match('/^Control file syntax OK$/', $result['result']) == 1) {
-                    if ($status['status'] != 'running') {
-                        $result['status'] = trim($backend->configdRun('monit start'));
-                    } else {
-                        $result['status'] = trim($backend->configdRun('monit reload'));
-                    }
-                } else {
-                    return $result;
-                }
-            } else {
+            /* renders the template and runs "monit -t", its output is only used as a message */
+            $result = $this->checkAction();
+            $result['function'] = 'reconfigure';
+            $action = null;
+            if (!$this->serviceEnabled()) {
                 if ($status['status'] == 'running') {
-                    $result['status'] = trim($backend->configdRun('monit stop'));
+                    $action = 'stop';
+                }
+            } elseif ($result['template'] == 'OK') {
+                /*
+                 * rc(8) runs monit_setup and, for a reload, "monit -t" first; monit itself refuses
+                 * to start with an invalid control file. Their exit status is the verdict.
+                 */
+                $action = $status['status'] == 'running' ? 'reload' : 'start';
+            }
+            $response = $action !== null ? trim($backend->configdRun('monit ' . $action)) : 'OK';
+            $result['status'] = $result['template'] == 'OK' && $response == 'OK' ? 'ok' : 'failed';
+            if ($result['status'] != 'ok') {
+                $result['status_msg'] = $result['result'];
+                if ($response != 'OK') {
+                    $result['status_msg'] .= "\n" . sprintf(gettext('"monit %s" returned: %s'), $action, $response);
                 }
             }
             return $result;
