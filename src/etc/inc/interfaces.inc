@@ -997,7 +997,7 @@ function interface_ppps_hardware($device)
         foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
             if ($device == $ppp['if']) {
                 foreach (explode(',', $ppp['ports']) as $port) {
-                    /* XXX ppp stores ports as configured interfaces or devices */
+                    /* XXX PPP stores ports as configured interfaces or devices */
                     $devices[] = get_real_interface($port);
                 }
                 break;
