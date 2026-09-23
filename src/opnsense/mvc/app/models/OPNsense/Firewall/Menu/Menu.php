@@ -108,8 +108,8 @@ class Menu extends MenuContainer
             ]);
         }
 
-        /* XXX do not hide the legacy outbound NAT rules GUI when the plugin is installed */
-        if ($has_legacy_outbound_nat && file_exists('/usr/local/www/firewall_nat_out.php')) {
+        /* do not hide the legacy outbound NAT rules GUI when the plugin is installed */
+        if (file_exists('/usr/local/www/firewall_nat_out.php')) {
             $this->appendItem('Firewall.NAT', 'Outbound', [
                 'url' => '/firewall_nat_out.php',
                 'fixedname' => gettext('Outbound'),
