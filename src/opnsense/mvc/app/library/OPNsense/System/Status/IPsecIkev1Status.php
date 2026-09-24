@@ -37,7 +37,7 @@ class IPsecIkev1Status extends AbstractStatus
 {
     public function __construct()
     {
-        $this->internalPriority = 2;
+        $this->internalPriority = 3;
         $this->internalPersistent = false;
         $this->internalTitle = gettext('IPsec IKEv1 deprecation');
         $this->internalIsBanner = true;
@@ -61,7 +61,11 @@ class IPsecIkev1Status extends AbstractStatus
 
         if (!$has_ikev1) {
             $config = Config::getInstance()->object();
-            if (isset($config->ipsec->enable) && !empty($config->ipsec->phase1)) {
+            if (
+                file_exists('/usr/local/www/vpn_ipsec_phase1.php') &&
+                isset($config->ipsec->enable) &&
+                !empty($config->ipsec->phase1)
+            ) {
                 foreach ($config->ipsec->phase1 as $p1) {
                     $iketype = !empty((string)$p1->iketype) ? (string)$p1->iketype : 'ikev1';
                     if (

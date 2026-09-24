@@ -36,7 +36,7 @@
           options: {
               formatters: {
                   description: function (column, row) {
-                      let descr = $('<div>').text(row.description ?? '').html();
+                      let descr = row.description ?? '';
                       const version = String(row.version ?? '');
 
                       if (version === '0' || version === '1') {
