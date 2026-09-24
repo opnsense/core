@@ -32,6 +32,7 @@ use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Interfaces\NetworkInterface;
 
 class AssignmentController extends ApiMutableModelControllerBase
 {
@@ -139,30 +140,6 @@ class AssignmentController extends ApiMutableModelControllerBase
 
     public function reconfigureAction()
     {
-        $legacybools = [
-            'blockbogons',
-            'blockpriv',
-            'dhcp6-ia-pd-send-hint',
-            'dhcp6-information-only',
-            'dhcp6_norequest_dns',
-            'dhcp6_rapid_commit',
-            'dhcp6prefixonly',
-            'dhcpd6track6allowoverride',
-            'dhcphonourmtu',
-            'disablechecksumoffloading',
-            'disablelargereceiveoffloading',
-            'disablesegmentationoffloading',
-            'disablevlanhwfilter',
-            'enable',
-            'gateway_interface',
-            'hw_settings_overwrite',
-            'lock',
-            'promisc',
-        ];
-        $legacyempties = [
-            'descr',
-            'spoofmac',
-        ];
         if ($this->request->isPost()) {
             $this->throwReadOnly();
             $backend = new Backend();
@@ -189,12 +166,13 @@ class AssignmentController extends ApiMutableModelControllerBase
                                 unset(Config::getInstance()->object()->interfaces->$key->$akey);
                             }
                         }
-                        foreach ($legacybools as $legacybool) {
+                        /* XXX should be in toLegacy() */
+                        foreach (NetworkInterface::$legacybools as $legacybool) {
                             if (empty($pending[$legacybool])) {
                                 unset(Config::getInstance()->object()->interfaces->$key->$legacybool);
                             }
                         }
-                        foreach ($legacyempties as $legacyempty) {
+                        foreach (NetworkInterface::$legacyempties as $legacyempty) {
                             if (!strlen($pending[$legacyempty] ?? '')) {
                                 Config::getInstance()->object()->interfaces->$key->$legacyempty = '';
                             }

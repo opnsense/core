@@ -32,6 +32,8 @@ require_once("system.inc");
 require_once("config.inc");
 require_once("util.inc");
 
+use OPNsense\Interfaces\NetworkInterface;
+
 if (is_array($config['interfaces'])) {
     if (is_file('/tmp/.interfaces.todo')) {
         $todos = (new \OPNsense\Core\FileObject('/tmp/.interfaces.todo', 'r'))->readJson() ?? [];
@@ -71,9 +73,15 @@ if (is_array($config['interfaces'])) {
                 unset($config['interfaces'][$ifname][$key]);
             }
         }
-        foreach (['enable', 'lock'] as $legacybool) {
+        /* XXX should be toLegacy() */
+        foreach (NetworkInterface::$legacybools as $legacybool) {
             if (empty($pending[$legacybool])) {
                 unset($config['interfaces'][$ifname][$legacybool]);
+            }
+        }
+        foreach (NetworkInterface::$legacyempties as $legacyempty) {
+            if (!strlen($pending[$legacyempty] ?? '')) {
+                $config['interfaces'][$ifname][$legacybool][$legacyempty] = '';
             }
         }
         /* Reload all for the interface. */
