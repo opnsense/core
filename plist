@@ -597,6 +597,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/FirewallStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/HostDiscoveryStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/IDSOverrideStatus.php
+/usr/local/opnsense/mvc/app/library/OPNsense/System/Status/IPsecIkev1Status.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/IPsecOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/LiveMediaStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/MonitOverrideStatus.php
