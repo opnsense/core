@@ -38,31 +38,6 @@ use OPNsense\Routing\Gateways;
 
 class NetworkInterface extends BaseModel
 {
-    public static $legacybools = [
-        'blockbogons',
-        'blockpriv',
-        'dhcp6-ia-pd-send-hint',
-        'dhcp6-information-only',
-        'dhcp6_norequest_dns',
-        'dhcp6_rapid_commit',
-        'dhcp6prefixonly',
-        'dhcpd6track6allowoverride',
-        'dhcphonourmtu',
-        'disablechecksumoffloading',
-        'disablelargereceiveoffloading',
-        'disablesegmentationoffloading',
-        'disablevlanhwfilter',
-        'enable',
-        'gateway_interface',
-        'hw_settings_overwrite',
-        'lock',
-        'promisc',
-    ];
-    public static $legacyempties = [
-        'descr',
-        'spoofmac',
-    ];
-
     var $todo_file = '/tmp/.interfaces.todo';
 
     /**
@@ -155,7 +130,6 @@ class NetworkInterface extends BaseModel
                 $intf->descr = $interfaces[$key]['descr'];
                 /* flush actions that need to be applied, for which we need history (config reflects running config) */
                 $todo = [
-                    /* XXX toLegacy() unfortunately isn't legacy yet, which matters in apply_pending_if_changes.php */
                     'pending' => $this->interface->$key->toLegacy(),
                     'pending_action' => 'update',
                 ];
@@ -163,7 +137,8 @@ class NetworkInterface extends BaseModel
                 if ($intf->if != $interfaces[$key]['if']) {
                     $todo['pending_action'] = 'relink';
                 }
-                foreach ($todo['pending'] as $prop => $value) {
+                /* need to work on an unsanitized copy to figure out actual changes */
+                foreach ($this->interface->$key->toLegacy(false) as $prop => $value) {
                     if ($prop === 'dhcp6_norequest_dns' && !isset($intf->$prop)) {
                         $curval = '0'; /* actually stored as dhcp6_request_dns in our model */
                     } elseif ($prop === 'disablevlanhwfilter' && !isset($intf->$prop)) {

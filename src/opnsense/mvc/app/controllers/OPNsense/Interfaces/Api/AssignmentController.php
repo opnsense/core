@@ -32,7 +32,6 @@ use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
-use OPNsense\Interfaces\NetworkInterface;
 
 class AssignmentController extends ApiMutableModelControllerBase
 {
@@ -158,36 +157,27 @@ class AssignmentController extends ApiMutableModelControllerBase
                         unset(Config::getInstance()->object()->interfaces->$key);
                     } else {
                         /* update pending changes */
-                        $pending = $this->getModel()->interface->$key?->toLegacy() ?? [];
-                        foreach ($pending as $akey => $avalue) {
-                            if ($avalue !== '') {
+                        $pending = $this->getModel()->interface->$key?->toLegacy() ?? null;
+                        if ($pending !== null) {
+                            /* advanced dhcp settings not supported, prevent settings being used */
+                            $removals = [
+                                'adv_dhcp6_config_advanced',
+                                'adv_dhcp6_config_file_override',
+                                'adv_dhcp_config_advanced',
+                                'adv_dhcp_config_file_override'
+                            ];
+                            foreach (Config::getInstance()->object()->interfaces->$key->children() as $remove) {
+                                if (!in_array($remove->getName(), array_keys($pending))) {
+                                    $removals[] = $remove->getName();
+                                }
+                            }
+                            foreach ($removals as $remove) {
+                                if (isset(Config::getInstance()->object()->interfaces->$key->$remove)) {
+                                    unset(Config::getInstance()->object()->interfaces->$key->$remove);
+                                }
+                            }
+                            foreach ($pending as $akey => $avalue) {
                                 Config::getInstance()->object()->interfaces->$key->$akey = $avalue;
-                            } elseif (isset(Config::getInstance()->object()->interfaces->$key->$akey)) {
-                                unset(Config::getInstance()->object()->interfaces->$key->$akey);
-                            }
-                        }
-                        /* XXX should be in toLegacy() */
-                        foreach (NetworkInterface::$legacybools as $legacybool) {
-                            if (empty($pending[$legacybool])) {
-                                unset(Config::getInstance()->object()->interfaces->$key->$legacybool);
-                            }
-                        }
-                        foreach (NetworkInterface::$legacyempties as $legacyempty) {
-                            if (!strlen($pending[$legacyempty] ?? '')) {
-                                Config::getInstance()->object()->interfaces->$key->$legacyempty = '';
-                            }
-                        }
-                        /* advanced dhcp settings not supported, prevent settings being used */
-                        foreach (
-                            [
-                            'adv_dhcp6_config_file_override',
-                            'adv_dhcp6_config_advanced',
-                            'adv_dhcp_config_advanced',
-                            'adv_dhcp_config_file_override'
-                            ] as $unset
-                        ) {
-                            if (isset(Config::getInstance()->object()->interfaces->$key->$unset)) {
-                                unset(Config::getInstance()->object()->interfaces->$key->$unset);
                             }
                         }
                     }
