@@ -32,16 +32,14 @@ require_once("system.inc");
 require_once("config.inc");
 require_once("util.inc");
 
-use OPNsense\Interfaces\NetworkInterface;
-
 if (is_array($config['interfaces'])) {
+    $to_configure = [];
+    $todos = [];
+
     if (is_file('/tmp/.interfaces.todo')) {
         $todos = (new \OPNsense\Core\FileObject('/tmp/.interfaces.todo', 'r'))->readJson() ?? [];
-    } else {
-        $todos = [];
     }
 
-    $to_configure = [];
     foreach ($config['interfaces'] as $id => $ifcfg) {
         if (!isset($todos[$id])) {
             continue;
@@ -58,6 +56,7 @@ if (is_array($config['interfaces'])) {
             interface_reset($id, false, !empty($ifcfg['enable']) && !empty($todos[$id]['enable']));
         }
     }
+
     foreach (array_keys($todos) as $id) {
         if (!isset($config['interfaces'][$id])) {
             $to_configure[] = $id; /* new interface */
@@ -65,25 +64,7 @@ if (is_array($config['interfaces'])) {
     }
 
     foreach ($to_configure as $ifname) {
-        $pending = $todos[$ifname]['pending'];
-        foreach ($pending as $key => $value) {
-            if ($value !== '') {
-                $config['interfaces'][$ifname][$key] = $value;
-            } elseif (isset($config['interfaces'][$ifname][$key])) {
-                unset($config['interfaces'][$ifname][$key]);
-            }
-        }
-        /* XXX should be toLegacy() */
-        foreach (NetworkInterface::$legacybools as $legacybool) {
-            if (empty($pending[$legacybool])) {
-                unset($config['interfaces'][$ifname][$legacybool]);
-            }
-        }
-        foreach (NetworkInterface::$legacyempties as $legacyempty) {
-            if (!strlen($pending[$legacyempty] ?? '')) {
-                $config['interfaces'][$ifname][$legacybool][$legacyempty] = '';
-            }
-        }
+        $config['interfaces'][$ifname] = $todos[$ifname]['pending'];
     }
 
     foreach ($to_configure as $ifname) {
