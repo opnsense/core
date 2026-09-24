@@ -465,12 +465,17 @@ class FirmwareController extends ApiMutableModelControllerBase
         if ($this->request->isPost()) {
             $this->getLogger('audit')->notice(sprintf("[Firmware] User %s executed a firmware update", $this->getUserName()));
             $backend->configdRun('firmware flush');
-            $response['msg_uuid'] = trim($backend->configdRun('firmware update', true));
+
+            $cmd = 'firmware update';
+            if ($this->request->getPost('shutdown') === '1') {
+                $cmd .= ' shutdown';
+            }
+
+            $response['msg_uuid'] = trim($backend->configdRun($cmd, true));
             $response['status'] = 'ok';
         } else {
             $response['status'] = 'failure';
         }
-
         return $response;
     }
 
@@ -486,12 +491,17 @@ class FirmwareController extends ApiMutableModelControllerBase
         if ($this->request->isPost()) {
             $this->getLogger('audit')->notice(sprintf("[Firmware] User %s executed a firmware upgrade", $this->getUserName()));
             $backend->configdRun('firmware flush');
-            $response['msg_uuid'] = trim($backend->configdRun('firmware upgrade', true));
+
+            $cmd = 'firmware upgrade';
+            if ($this->request->getPost('shutdown') === '1') {
+                $cmd .= ' shutdown';
+            }
+
+            $response['msg_uuid'] = trim($backend->configdRun($cmd, true));
             $response['status'] = 'ok';
         } else {
             $response['status'] = 'failure';
         }
-
         return $response;
     }
 
@@ -768,6 +778,8 @@ class FirmwareController extends ApiMutableModelControllerBase
             $result['status'] = 'done';
         } elseif (strpos($cmd_result, '***REBOOT***') !== false) {
             $result['status'] = 'reboot';
+        } elseif (strpos($cmd_result, '***POWER OFF***') !== false) {
+            $result['status'] = 'shutdown';
         }
 
         return $result;
