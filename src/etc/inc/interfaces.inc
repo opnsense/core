@@ -1388,29 +1388,43 @@ function interfaces_pfsync_configure()
     }
 
     if (!empty($syncdev)) {
+        $pfsync = legacy_interface_details('pfsync0');
+        $want = [
+            'syncdev' => $syncdev,
+            'syncpeer' => '',
+            'defer' => !empty($config['hasync']['pfsyncdefer']) ? 'on' : 'off'
+        ];
+
         $ifcfrmt = ['/sbin/ifconfig pfsync0 syncdev %s'];
         $ifcargs = [$syncdev];
 
         if (!empty($config['hasync']['pfsyncpeerip']) && is_ipaddrv4($config['hasync']['pfsyncpeerip'])) {
             $ifcfrmt[] = 'syncpeer %s';
             $ifcargs[] = $config['hasync']['pfsyncpeerip'];
+            $want['syncpeer'] = $config['hasync']['pfsyncpeerip'];
         } else {
             $ifcfrmt[] = '-syncpeer';
         }
         if (!empty($config['hasync']['pfsyncversion'])) {
             $ifcfrmt[] = 'version %s';
             $ifcargs[] = $config['hasync']['pfsyncversion'];
+            $want['version'] = $config['hasync']['pfsyncversion'];
         }
 
         $ifcfrmt[] = !empty($config['hasync']['pfsyncdefer']) ? 'defer' : '-defer';
         $ifcfrmt[] = 'up';
 
-        mwexecf($ifcfrmt, $ifcargs);
+        /* Reapplying unchanged sync settings triggers an unnecessary bulk update. */
+        if (array_diff_assoc($want, $pfsync['pfsync'] ?? [])) {
+            mwexecf($ifcfrmt, $ifcargs);
+        }
 
         /*
          * Fix presumed replication issue when outgoing MTU
          * is smaller than what is set in pfsync0, also see
          * https://github.com/opnsense/core/commit/15acbad935
+         *
+         * Issuing an MTU change does not initiate a pfsync bulk.
          */
         $intf_stats = legacy_interface_details($syncdev);
         if (!empty($intf_stats['mtu'])) {

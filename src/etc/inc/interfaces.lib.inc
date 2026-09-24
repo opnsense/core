@@ -489,6 +489,20 @@ function legacy_interfaces_details($intf = null)
                 $result[$current_interface]["carp"][$line_parts[3]]['peer'] = $matches[1];
                 $result[$current_interface]["carp"][$line_parts[3]]['peer6'] = $matches[2];
             }
+        } elseif (preg_match("/\tsyncdev: (\w+)(?: syncpeer: ([\d\.]+))? maxupd: (\d+) defer: (\w+) version: (\d+).*/", $line, $matches)) {
+            if (empty($result[$current_interface]["pfsync"])) {
+                $result[$current_interface]["pfsync"] = [];
+            }
+            $result[$current_interface]["pfsync"]["syncdev"] = $matches[1];
+            $result[$current_interface]["pfsync"]["syncpeer"] = $matches[2] ?? ''; /* not present if directed multicast is used */
+            $result[$current_interface]["pfsync"]["maxupd"] = $matches[3];
+            $result[$current_interface]["pfsync"]["defer"] = $matches[4];
+            $result[$current_interface]["pfsync"]["version"] = $matches[5];
+        } elseif (strpos($line, "\tsyncok: ") !== false) {
+            if (empty($result[$current_interface]["pfsync"])) {
+                $result[$current_interface]["pfsync"] = [];
+            }
+            $result[$current_interface]["pfsync"]["syncok"] = $line_parts[1];
         } elseif (strpos($line, "\tvxlan") !== false) {
             if (empty($result[$current_interface]["vxlan"])) {
                 $result[$current_interface]["vxlan"] = [];
