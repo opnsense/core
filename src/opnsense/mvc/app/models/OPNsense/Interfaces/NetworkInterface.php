@@ -132,8 +132,10 @@ class NetworkInterface extends BaseModel
                 continue;
             }
 
-            /* XXX required for comparison and/or side effect? if so better fold into below  */
-            $intf->descr = $interfaces[$key]['descr'];
+            /* proactively save the fields that have no direct influence on operation */
+            foreach (['descr', 'lock'] as $ignore) {
+                $intf->$ignore = $interfaces[$key][$ignore];
+            }
 
             /* compare config on an unsanitized copy to figure out actual changes */
             foreach ($this->interface->$key->toLegacy(false) as $prop => $value) {
