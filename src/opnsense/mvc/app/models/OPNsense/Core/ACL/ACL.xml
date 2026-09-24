@@ -47,7 +47,8 @@
     <page-diagnostics-authentication>
         <name>Diagnostics: Authentication</name>
         <patterns>
-            <pattern>diag_authentication.php*</pattern>
+            <pattern>ui/auth/tester*</pattern>
+            <pattern>api/auth/tester/*</pattern>
         </patterns>
     </page-diagnostics-authentication>
     <page-diagnostics-configurationhistory>
