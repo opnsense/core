@@ -301,6 +301,8 @@ function core_cron()
             $cmd = [exec_safe('/sbin/pfctl -qt %s -T expire %s', [$alias->name, $alias->expire])];
             if ($alias->expire->asFloat() >= 3600) {
                 $cmd[] = '0,15,30,45';  /* every 15 minute cleanup */
+            } else {
+                $cmd[] = '*';
             }
             $jobs[]['autocron'] = $cmd;
         }
