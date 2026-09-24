@@ -166,6 +166,8 @@ class NetworkInterface extends BaseModel
                 foreach ($todo['pending'] as $prop => $value) {
                     if ($prop === 'dhcp6_norequest_dns' && !isset($intf->$prop)) {
                         $curval = '0'; /* actually stored as dhcp6_request_dns in our model */
+                    } elseif ($prop === 'disablevlanhwfilter' && !isset($intf->$prop)) {
+                        $curval = '0'; /* legacy omits writing '0' due to empty() */
                     } elseif (!isset($intf->$prop)) {
                         $curval = ($this->interface->$key->$prop instanceof BooleanField) ? '0' : '';
                     } else {
