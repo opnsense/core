@@ -37,16 +37,9 @@ class M1_0_16 extends BaseModelMigration
         $current = (string)$model->general->safesearch;
 
         if ($current === '1') {
-            $model->general->safesearch->setValues([
-                'google',
-                'duckduckgo',
-                'bing',
-                'youtube',
-                'pixabay',
-                'brave',
-                'ecosia',
-                'startpage',
-            ]);
+            $model->general->safesearch->setValues(
+                array_keys($model->general->safesearch->getNodeData())
+            );
         } elseif ($current === '0') {
             $model->general->safesearch = '';
         }
