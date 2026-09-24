@@ -103,7 +103,7 @@
         </help>
     </field>
     <field>
-        <id>unbound.general.safesearch</id>
+        <id>unbound.general.safesearch_providers</id>
         <label>SafeSearch</label>
         <type>select_multiple</type>
         <hint>Disabled</hint>

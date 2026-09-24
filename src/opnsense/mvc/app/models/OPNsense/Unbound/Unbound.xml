@@ -33,7 +33,7 @@
             <noregrecords type="BooleanField"/>
             <txtsupport type="BooleanField"/>
             <cacheflush type="BooleanField"/>
-            <safesearch type="OptionField">
+            <safesearch_providers type="OptionField">
                 <Multiple>Y</Multiple>
                 <OptionValues>
                     <google>Google</google>
@@ -45,7 +45,7 @@
                     <ecosia>Ecosia</ecosia>
                     <startpage>Startpage</startpage>
                 </OptionValues>
-            </safesearch>
+            </safesearch_providers>
             <local_zone_type type="OptionField">
                 <Default>transparent</Default>
                 <Required>Y</Required>

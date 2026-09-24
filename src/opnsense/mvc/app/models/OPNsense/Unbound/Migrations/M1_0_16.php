@@ -29,19 +29,23 @@
 namespace OPNsense\Unbound\Migrations;
 
 use OPNsense\Base\BaseModelMigration;
+use OPNsense\Core\Config;
 
 class M1_0_16 extends BaseModelMigration
 {
     public function run($model)
     {
-        $current = (string)$model->general->safesearch;
+        $config = Config::getInstance()->object();
+        $old_safesearch = (string)(
+            $config->OPNsense->unboundplus->general->safesearch ??
+            $config->OPNsense->unboundplus->dnsbl->safesearch ??
+            '0'
+        );
 
-        if ($current === '1') {
-            $model->general->safesearch->setValues(
-                array_keys($model->general->safesearch->getNodeData())
+        if ($old_safesearch === '1') {
+            $model->general->safesearch_providers->setValues(
+                array_keys($model->general->safesearch_providers->getNodeData())
             );
-        } elseif ($current === '0') {
-            $model->general->safesearch = '';
         }
     }
 }
