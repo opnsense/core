@@ -84,7 +84,10 @@ if (is_array($config['interfaces'])) {
                 $config['interfaces'][$ifname][$legacybool][$legacyempty] = '';
             }
         }
-        /* Reload all for the interface. */
-        interface_configure(false, $ifname, true);
+    }
+
+    foreach ($to_configure as $ifname) {
+        /* XXX maybe we can micromanage $reload = true here in the future */
+        interface_configure(true, $ifname, true);
     }
 }
