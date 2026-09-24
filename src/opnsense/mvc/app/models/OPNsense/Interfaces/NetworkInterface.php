@@ -122,43 +122,48 @@ class NetworkInterface extends BaseModel
         /* flush and annotate configuration */
         $interfaces = $this->interface->getNodeContent();
         $existing_ifnames = [];
+
         /* mark pending actions as we need to wait for "apply" in order to persist them */
         foreach ($this->iterate_assignments() as $key => $intf) {
+            $changed = false;
+
             if (!isset($interfaces[$key])) {
                 $this->store_if_todo($key, ['pending_action' => 'delete']);
-            } else {
-                $intf->descr = $interfaces[$key]['descr'];
-                /* flush actions that need to be applied, for which we need history (config reflects running config) */
-                $todo = [
-                    'pending' => $this->interface->$key->toLegacy(),
-                    'pending_action' => 'update',
-                ];
-                $changed = false;
-                if ($intf->if != $interfaces[$key]['if']) {
-                    $todo['pending_action'] = 'relink';
+                continue;
+            }
+
+            /* XXX required for comparison and/or side effect? if so better fold into below  */
+            $intf->descr = $interfaces[$key]['descr'];
+
+            /* compare config on an unsanitized copy to figure out actual changes */
+            foreach ($this->interface->$key->toLegacy(false) as $prop => $value) {
+                if ($prop === 'dhcp6_norequest_dns' && !isset($intf->$prop)) {
+                    $curval = '0'; /* actually stored as dhcp6_request_dns in our model */
+                } elseif ($prop === 'disablevlanhwfilter' && !isset($intf->$prop)) {
+                    $curval = '0'; /* legacy omits writing '0' due to empty() */
+                } elseif (!isset($intf->$prop)) {
+                    $curval = ($this->interface->$key->$prop instanceof BooleanField) ? '0' : '';
+                } else {
+                    $curval = $intf->$prop;
                 }
-                /* need to work on an unsanitized copy to figure out actual changes */
-                foreach ($this->interface->$key->toLegacy(false) as $prop => $value) {
-                    if ($prop === 'dhcp6_norequest_dns' && !isset($intf->$prop)) {
-                        $curval = '0'; /* actually stored as dhcp6_request_dns in our model */
-                    } elseif ($prop === 'disablevlanhwfilter' && !isset($intf->$prop)) {
-                        $curval = '0'; /* legacy omits writing '0' due to empty() */
-                    } elseif (!isset($intf->$prop)) {
-                        $curval = ($this->interface->$key->$prop instanceof BooleanField) ? '0' : '';
-                    } else {
-                        $curval = $intf->$prop;
-                    }
-                    if ($curval != $value) {
-                        $changed = true;
-                        break;
-                    }
-                }
-                if ($changed) {
-                    $this->store_if_todo($key, $todo);
+
+                if ($curval != $value) {
+                    $changed = true;
+                    break;
                 }
             }
+
+            /* flush actions that need to be applied */
+            if ($changed) {
+                $this->store_if_todo($key, [
+                    'pending_action' => $intf->if != $interfaces[$key]['if'] ? 'relink' : 'update',
+                    'pending' => $this->interface->$key->toLegacy(),
+                ]);
+            }
+
             $existing_ifnames[] = $key;
         }
+
         $next_if = 1;
         while (in_array('opt' . $next_if, $existing_ifnames)) {
             $next_if++;
