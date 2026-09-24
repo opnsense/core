@@ -1427,7 +1427,7 @@ function interfaces_pfsync_configure()
          * Issuing an MTU change does not initiate a pfsync bulk.
          */
         $intf_stats = legacy_interface_details($syncdev);
-        if (!empty($intf_stats['mtu'])) {
+        if (!empty($intf_stats['mtu']) && $intf_stats['mtu'] != ($pfsync['mtu'] ?? null)) {
             mwexecf('/sbin/ifconfig pfsync0 mtu %s', [$intf_stats['mtu']]);
         }
     } else {
