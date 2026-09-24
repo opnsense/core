@@ -76,6 +76,7 @@
             <serveexpiredttlreset type="BooleanField"/>
             <serveexpiredclienttimeout type="NumericField"/>
             <qnameminstrict type="BooleanField"/>
+            <hyperlocalroot type="BooleanField"/>
             <extendedstatistics type="BooleanField"/>
             <logqueries type="BooleanField"/>
             <logreplies type="BooleanField"/>
