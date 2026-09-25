@@ -1010,7 +1010,7 @@ class UIBootgrid {
     }
 
     _onCellRendered(cell, formatterParams) {
-        if (!$.isEmptyObject(this.options.statusMapping)) {
+        if (cell.getType() != "header" && !$.isEmptyObject(this.options.statusMapping)) {
             // XXX this fully assumes a row has a 'status' property
             $(cell.getElement()).addClass(this.options.statusMapping[cell.getData()['status']]);
         }
