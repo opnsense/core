@@ -837,6 +837,10 @@ $.fn.SimpleActionButton = function (params) {
         let hideCheckTimeout;
 
         $(document).on("settings-changed", function () {
+            $(document).trigger("settings-changed-internal");
+        });
+
+        $(document).on("settings-changed-internal", function () {
             $('#change_message_base_form').show().parent('.alert').addClass('alert-info').removeClass('content-box');
         });
 
