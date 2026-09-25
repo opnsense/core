@@ -80,6 +80,11 @@ class LegacyCSRF
     public function checkToken()
     {
         $result = false; // default, not valid
+        if (empty($_SESSION['$PHALCON/CSRF/KEY$']) || empty($_SESSION['$PHALCON/CSRF$'])) {
+            // no token issued for this session, nothing to validate against
+            session_write_close();
+            return $result;
+        }
         $securityTokenKey = $_SESSION['$PHALCON/CSRF/KEY$'];
         if (empty($_POST[$securityTokenKey])) {
             if (!empty($_SERVER['HTTP_X_CSRFTOKEN'])) {
