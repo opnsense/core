@@ -211,6 +211,8 @@
                 dataTreeChildField    : "children",
                 dataTreeElementColumn : category_key,
                 dataTreeStartExpanded : (row, level) => row.getData()._expanded,
+                dataTreeCollapseElement:"<i class='fas fa-minus-square custom-tree-control-collapse'></i>",
+                dataTreeExpandElement:"<i class='fas fa-plus-square custom-tree-control-expand'></i>",
                 rowFormatter: function(row) {
                     const data = row.getData();
                     const $element = $(row.getElement());
@@ -686,10 +688,10 @@
         $('#expand_tree_button').on('click', function () {
             const $table = $('#{{ formGridRule["table_id"] }}');
 
-            if ($table.find('.tabulator-data-tree-control-expand').length) {
-                $table.find('.tabulator-data-tree-control-expand').trigger('click');
+            if ($table.find('.custom-tree-control-expand').length) {
+                $table.find('.custom-tree-control-expand').trigger('click');
             } else {
-                $table.find('.tabulator-data-tree-control-collapse').trigger('click');
+                $table.find('.custom-tree-control-collapse').trigger('click');
             }
         });
 
@@ -830,9 +832,10 @@
         white-space: nowrap !important;
         text-overflow: clip !important;
     }
-    .bucket-row .tabulator-data-tree-control,
-    .bucket-row .tabulator-data-tree-control * {
+    .bucket-row .custom-tree-control-expand,
+    .bucket-row .custom-tree-control-collapse {
         pointer-events: auto;
+        cursor: pointer;
     }
     .row-no-select .tabulator-row-header input[type="checkbox"] {
         visibility: hidden;

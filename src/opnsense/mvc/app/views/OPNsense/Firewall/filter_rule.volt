@@ -226,6 +226,8 @@
                 dataTreeChildField    : "children",
                 dataTreeElementColumn : "categories",
                 dataTreeStartExpanded : (row, level) => row.getData()._expanded,
+                dataTreeCollapseElement:"<i class='fas fa-minus-square custom-tree-control-collapse'></i>",
+                dataTreeExpandElement:"<i class='fas fa-plus-square custom-tree-control-expand'></i>",
                 rowFormatter: function(row) {
                     const data = row.getData();
                     const $element = $(row.getElement());
@@ -1028,10 +1030,10 @@
             const $table = $('#{{ formGridFilterRule["table_id"] }}');
 
             // If there are any collapsed controls, expand them all, otherwise collapse them all
-            if ($table.find('.tabulator-data-tree-control-expand').length) {
-                $table.find('.tabulator-data-tree-control-expand').trigger('click');
+            if ($table.find('.custom-tree-control-expand').length) {
+                $table.find('.custom-tree-control-expand').trigger('click');
             } else {
-                $table.find('.tabulator-data-tree-control-collapse').trigger('click');
+                $table.find('.custom-tree-control-collapse').trigger('click');
             }
         });
 
@@ -1215,9 +1217,10 @@
     }
 
     /* keep only the collapse toggle clickable */
-    .bucket-row .tabulator-data-tree-control,
-    .bucket-row .tabulator-data-tree-control * {
+    .bucket-row .custom-tree-control-expand,
+    .bucket-row .custom-tree-control-collapse {
         pointer-events: auto;
+        cursor: pointer;
     }
 
     /* hide the row selection checkbox for internal and dataTree group rules */
