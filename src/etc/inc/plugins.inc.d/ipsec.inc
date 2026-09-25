@@ -78,9 +78,9 @@ function ipsec_p1_ealgos()
 function ipsec_p1_authentication_methods()
 {
     return array(
-        'hybrid_rsa_server' => array( 'name' => 'Hybrid RSA + Xauth', 'mobile' => true ),
-        'xauth_rsa_server' => array( 'name' => 'Mutual RSA + Xauth', 'mobile' => true ),
-        'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
+        'hybrid_rsa_server' => array( 'name' => 'Hybrid RSA + Xauth (deprecated)', 'mobile' => true ),
+        'xauth_rsa_server' => array( 'name' => 'Mutual RSA + Xauth (deprecated)', 'mobile' => true ),
+        'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth (deprecated)', 'mobile' => true ),
         'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
         'psk_eap-tls' => array( 'name' => 'RSA (local) + EAP-TLS (remote)', 'mobile' => true),
         'eap-mschapv2' => array( 'name' => 'EAP-MSCHAPV2', 'mobile' => true),

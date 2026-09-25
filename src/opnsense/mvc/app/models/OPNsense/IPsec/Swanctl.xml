@@ -31,10 +31,10 @@
                 </aggressive>
                 <version type="OptionField">
                     <Required>Y</Required>
-                    <Default>0</Default>
+                    <Default>2</Default>
                     <OptionValues>
-                        <ike value="0">IKEv1+IKEv2</ike>
-                        <ikev1 value="1">IKEv1</ikev1>
+                        <ike value="0">IKEv1+IKEv2 (allows deprecated IKEv1)</ike>
+                        <ikev1 value="1">IKEv1 (deprecated)</ikev1>
                         <ikev2 value="2">IKEv2</ikev2>
                     </OptionValues>
                 </version>
@@ -136,7 +136,7 @@
                         <pubkey>Public Key</pubkey>
                         <eap_tls value="eap-tls">EAP TLS</eap_tls>
                         <eap_mschapv2 value="eap-mschapv2">EAP-MSCHAPv2</eap_mschapv2>
-                        <xauth_pam value="xauth-pam">Xauth PAM</xauth_pam>
+                        <xauth_pam value="xauth-pam">Xauth PAM (deprecated)</xauth_pam>
                         <eap_radius value="eap-radius">EAP RADIUS</eap_radius>
                     </OptionValues>
                 </auth>
@@ -192,7 +192,7 @@
                         <pubkey>Public Key</pubkey>
                         <eap_tls value="eap-tls">EAP TLS</eap_tls>
                         <eap_mschapv2 value="eap-mschapv2">EAP-MSCHAPv2</eap_mschapv2>
-                        <xauth_pam value="xauth-pam">Xauth PAM</xauth_pam>
+                        <xauth_pam value="xauth-pam">Xauth PAM (deprecated)</xauth_pam>
                         <eap_radius value="eap-radius">EAP RADIUS</eap_radius>
                     </OptionValues>
                 </auth>
