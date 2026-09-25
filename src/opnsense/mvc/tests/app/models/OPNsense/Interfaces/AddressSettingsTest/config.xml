@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<opnsense>
+  <interfaces>
+    <lan>
+      <if>vtnet0</if>
+      <descr>lan</descr>
+      <enable>1</enable>
+      <ipaddr>192.0.2.1</ipaddr>
+      <subnet>24</subnet>
+    </lan>
+    <opt1>
+      <if>vtnet1</if>
+      <descr>lab</descr>
+    </opt1>
+  </interfaces>
+  <staticroutes>
+    <route>
+      <network>198.51.100.0/24</network>
+    </route>
+  </staticroutes>
+</opnsense>

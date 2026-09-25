@@ -266,6 +266,12 @@
             <pattern>api/interfaces/assignment/*</pattern>
         </patterns>
     </page-interfaces-assignnetworkports>
+    <page-interfaces-address-settings>
+        <name>Interfaces: Address Settings</name>
+        <patterns>
+            <pattern>api/interfaces/address_settings/*</pattern>
+        </patterns>
+    </page-interfaces-address-settings>
     <page-interfaces-bridge-edit>
         <name>Interfaces: Bridge</name>
         <patterns>

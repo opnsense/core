@@ -1,0 +1,58 @@
+<model>
+    <mount>:memory:</mount>
+    <version>0.0.1</version>
+    <description>Interface address settings</description>
+    <items>
+        <settings type="ArrayField">
+            <descr type=".\IfDescField">
+                <Mask>/^[a-z_0-9]{0,255}$/i</Mask>
+            </descr>
+            <identifier type="TextField"/>
+            <if type="TextField" volatile="true"/>
+            <enable type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </enable>
+            <type type="OptionField">
+                <Default>none</Default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <none>None</none>
+                    <staticv4>Static IPv4</staticv4>
+                    <dhcp>DHCP</dhcp>
+                </OptionValues>
+            </type>
+            <ipaddr type="NetworkField">
+                <AddressFamily>ipv4</AddressFamily>
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <WildcardEnabled>N</WildcardEnabled>
+            </ipaddr>
+            <subnet type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>32</MaximumValue>
+            </subnet>
+            <gateway type="TextField"/>
+            <type6 type="OptionField">
+                <Default>none</Default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <none>None</none>
+                    <staticv6>Static IPv6</staticv6>
+                    <dhcp6>DHCPv6</dhcp6>
+                    <slaac>SLAAC</slaac>
+                    <linklocal>Link-local</linklocal>
+                </OptionValues>
+            </type6>
+            <ipaddrv6 type="NetworkField">
+                <AddressFamily>ipv6</AddressFamily>
+                <NetMaskAllowed>N</NetMaskAllowed>
+                <WildcardEnabled>N</WildcardEnabled>
+            </ipaddrv6>
+            <subnetv6 type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>128</MaximumValue>
+            </subnetv6>
+            <gatewayv6 type="TextField"/>
+        </settings>
+    </items>
+</model>
