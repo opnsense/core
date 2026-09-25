@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Firewall/Filter</mount>
-    <version>1.0.9</version>
+    <version>1.1.7</version>
     <migration_prefix>MFP</migration_prefix>
     <description>Firewall rules (new)</description>
     <items>
@@ -18,8 +18,147 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </scrub_random_id>
+                <skip_rules_gw_down type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </skip_rules_gw_down>
+                <lb_use_sticky type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </lb_use_sticky>
+                <source_tracking_timeout type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <ValidationMessage>Source tracking timeout must be a non-negative integer.</ValidationMessage>
+                </source_tracking_timeout>
+                <pf_share_forward type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </pf_share_forward>
+                <pf_disable_force_gw type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </pf_disable_force_gw>
+                <schedule_states type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </schedule_states>
+                <disable_reply_to type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </disable_reply_to>
+                <no_antilockout type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </no_antilockout>
+                <no_ipv6_rfc4890_req type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </no_ipv6_rfc4890_req>
+                <no_port0_block type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </no_port0_block>
+                <no_sshlockout type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </no_sshlockout>
+                <no_virusprot type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </no_virusprot>
+                <disable_filter type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </disable_filter>
+                <optimization type="OptionField">
+                    <Default>normal</Default>
+                    <Required>Y</Required>
+                    <OptionValues>
+                        <normal/>
+                        <high-latency/>
+                        <aggressive/>
+                        <conservative/>
+                    </OptionValues>
+                </optimization>
+                <state_policy type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </state_policy>
+                <adaptive_start type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <ValidationMessage>Adaptive start must be a non-negative integer.</ValidationMessage>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Adaptive timeouts must be set together.</ValidationMessage>
+                            <type>SetConstraint</type>
+                            <addFields>
+                                <field1>adaptive_end</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </adaptive_start>
+                <adaptive_end type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <ValidationMessage>Adaptive end must be a non-negative integer.</ValidationMessage>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Adaptive timeouts must be set together.</ValidationMessage>
+                            <type>SetConstraint</type>
+                            <addFields>
+                                <field1>adaptive_start</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </adaptive_end>
+                <maximum_states type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <ValidationMessage>Maximum states must be a positive integer.</ValidationMessage>
+                </maximum_states>
+                <maximum_fragments type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <ValidationMessage>Maximum fragments must be a positive integer.</ValidationMessage>
+                </maximum_fragments>
+                <maximum_table_entries type="IntegerField">
+                    <MinimumValue>1</MinimumValue>
+                    <ValidationMessage>Maximum table entries must be a positive integer.</ValidationMessage>
+                </maximum_table_entries>
+                <bypass_static_routes type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </bypass_static_routes>
+                <syncookies type="OptionField">
+                    <BlankDesc>never (default)</BlankDesc>
+                    <OptionValues>
+                        <always/>
+                        <adaptive/>
+                    </OptionValues>
+                </syncookies>
+                <syncookies_adaptive_start type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <ValidationMessage>Syncookies adaptive start must be a non-negative integer.</ValidationMessage>
+                </syncookies_adaptive_start>
+                <syncookies_adaptive_end type="IntegerField">
+                    <MinimumValue>0</MinimumValue>
+                    <ValidationMessage>Syncookies adaptive end must be a non-negative integer.</ValidationMessage>
+                </syncookies_adaptive_end>
+                <keep_counters type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </keep_counters>
             </filter>
             <nat>
+                <reflection_dnat type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </reflection_dnat>
+                <reflection_binat type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </reflection_binat>
+                <reflection_snat type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </reflection_snat>
                 <snat_mode type=".\SNatModeField" volatile="true">
                     <Required>Y</Required>
                     <Default>automatic</Default>
@@ -31,6 +170,58 @@
                     </OptionValues>
                 </snat_mode>
             </nat>
+            <logging>
+                <default_block type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </default_block>
+                <default_pass type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </default_pass>
+                <source_nat type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </source_nat>
+                <bogons type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </bogons>
+                <private_networks type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </private_networks>
+                <debug type="OptionField">
+                    <Default>urgent</Default>
+                    <Required>Y</Required>
+                    <OptionValues>
+                        <none/>
+                        <urgent/>
+                        <misc/>
+                        <loud/>
+                    </OptionValues>
+                </debug>
+            </logging>
+            <alias>
+                <bogons_interval type="OptionField">
+                    <Required>Y</Required>
+                    <Default>monthly</Default>
+                    <OptionValues>
+                        <monthly>Monthly</monthly>
+                        <weekly>Weekly</weekly>
+                        <daily>Daily</daily>
+                    </OptionValues>
+                </bogons_interval>
+                <aliases_resolve_interval type="IntegerField">
+                    <Default>300</Default>
+                    <MinimumValue>1</MinimumValue>
+                    <ValidationMessage>Aliases resolve interval must be a positive integer.</ValidationMessage>
+                </aliases_resolve_interval>
+                <check_aliases_url_cert type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </check_aliases_url_cert>
+            </alias>
         </settings>
         <rules>
             <rule type=".\FilterRuleField">

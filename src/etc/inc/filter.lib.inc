@@ -28,17 +28,17 @@
 
 function filter_core_bootstrap($fw)
 {
-    global $config;
+    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
     // set defaults
     $filter_rule_defaults = [];
     $filter_rule_defaults['pass'] = [
       "type" => "pass",
-      "log" => !isset($config['syslog']['nologdefaultpass']),
+      "log" => !empty($settings['logging']['default_pass']),
       "disablereplyto" => 1 // don't generate "reply-to" tags on internal rules by default
     ];
     $filter_rule_defaults['block'] = [
       "type" => "block",
-      "log" => !isset($config['syslog']['nologdefaultblock']),
+      "log" => !empty($settings['logging']['default_block']),
       "disablereplyto" => 1 // don't generate "reply-to" tags on internal rules by default
     ];
 
@@ -91,7 +91,8 @@ function filter_core_get_antilockout()
 {
     global $config;
 
-    if (isset($config['system']['webgui']['noantilockout'])) {
+    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
+    if (!empty($settings['filter']['no_antilockout'])) {
         return [];
     }
 
@@ -201,6 +202,7 @@ function filter_core_rules_system($fw, $defaults)
 {
     global $config;
 
+    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
     $ipv6_disabled = !is_ipv6_allowed();
 
     $dhcrelay6_interfaces = plugins_run('dhcrelay_interfaces', ['inet6']);
@@ -221,13 +223,13 @@ function filter_core_rules_system($fw, $defaults)
         $defaults['block']
     );
 
-    if (empty($config['system']['no_ipv6_rfc4890_req'])) {
+    if (empty($settings['filter']['no_ipv6_rfc4890_req'])) {
         // IPv6 ICMP requirements
         $fw->registerFilterRule(
             1,
             ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '1,2,3,4,135,136',
                 'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'disabled' => $ipv6_disabled,
-                '#ref' => 'system_advanced_firewall.php#no_ipv6_rfc4890_req'],
+                '#ref' => 'ui/firewall/settings#settings-filter'],
             $defaults['pass']
         );
         // Allow only bare essential icmpv6 packets
@@ -236,7 +238,7 @@ function filter_core_rules_system($fw, $defaults)
             ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,129,133,134,135,136',
                 'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => '(self)',
                 'to' => 'fe80::/10,ff02::/16', 'direction' => 'out', 'disabled' => $ipv6_disabled,
-                '#ref' => 'system_advanced_firewall.php#no_ipv6_rfc4890_req'],
+                '#ref' => 'ui/firewall/settings#settings-filter'],
             $defaults['pass']
         );
         $fw->registerFilterRule(
@@ -244,7 +246,7 @@ function filter_core_rules_system($fw, $defaults)
             ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
                 'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => 'fe80::/10',
                 'to' => 'fe80::/10,ff02::/16', 'direction' => 'in', 'disabled' => $ipv6_disabled,
-                '#ref' => 'system_advanced_firewall.php#no_ipv6_rfc4890_req'],
+                '#ref' => 'ui/firewall/settings#settings-filter'],
             $defaults['pass']
         );
         $fw->registerFilterRule(
@@ -252,7 +254,7 @@ function filter_core_rules_system($fw, $defaults)
             ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
                 'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => 'ff02::/16',
                 'to' => 'fe80::/10', 'direction' => 'in', 'disabled' => $ipv6_disabled,
-                '#ref' => 'system_advanced_firewall.php#no_ipv6_rfc4890_req'],
+                '#ref' => 'ui/firewall/settings#settings-filter'],
             $defaults['pass']
         );
         $fw->registerFilterRule(
@@ -260,20 +262,20 @@ function filter_core_rules_system($fw, $defaults)
             ['ipprotocol' => 'inet6', 'protocol' => 'ipv6-icmp', 'icmp6-type' => '128,133,134,135,136',
                 'statetype' => 'keep', 'descr' => 'IPv6 RFC4890 requirements (ICMP)', 'from' => '::',
                 'to' => 'ff02::/16', 'direction' => 'in', 'disabled' => $ipv6_disabled,
-                '#ref' => 'system_advanced_firewall.php#no_ipv6_rfc4890_req'],
+                '#ref' => 'ui/firewall/settings#settings-filter'],
             $defaults['pass']
         );
     }
 
     // block all targeting port 0
-    if (empty($config['system']['no_port0_block'])) {
+    if (empty($settings['filter']['no_port0_block'])) {
         foreach (['from_port', 'to_port'] as $target) {
             $fw->registerFilterRule(
                 1,
                 /* XXX get rid of inet46 it should pertain to all */
                 ['ipprotocol' => 'inet46', 'protocol' => 'tcp/udp', $target => '0',
                     'descr' => 'block all targeting port 0',
-                    '#ref' => 'system_advanced_firewall.php#no_port0_block'],
+                    '#ref' => 'ui/firewall/settings#settings-filter'],
                 $defaults['block']
             );
         }
@@ -291,12 +293,12 @@ function filter_core_rules_system($fw, $defaults)
     }
 
     // Lockout rules
-    if (empty($config['system']['no_sshlockout'])) {
+    if (empty($settings['filter']['no_sshlockout'])) {
         $fw->registerFilterRule(
             1,
             ['protocol' => 'tcp', 'from' => '<sshlockout>', 'to' => '(self)' , 'descr' => 'sshlockout', 'direction' => 'in',
             'to_port' => !empty($config['system']['ssh']['port']) ? $config['system']['ssh']['port'] : 22,
-            '#ref' => 'system_advanced_firewall.php#no_sshlockout'],
+            '#ref' => 'ui/firewall/settings#settings-filter'],
             $defaults['block']
         );
         $webport = '443';
@@ -309,24 +311,24 @@ function filter_core_rules_system($fw, $defaults)
             1,
             ['protocol' => 'tcp', 'from' => '<sshlockout>', 'to' => '(self)' , 'descr' => 'sshlockout',
             'direction' => 'in','to_port' => $webport,
-            '#ref' => 'system_advanced_firewall.php#no_sshlockout'],
+            '#ref' => 'ui/firewall/settings#settings-filter'],
             $defaults['block']
         );
     }
 
     // block all in alias <virusprot>
-    if (empty($config['system']['no_virusprot'])) {
+    if (empty($settings['filter']['no_virusprot'])) {
         $fw->registerFilterRule(
             1,
             ['from' => '<virusprot>', 'descr' => 'virusprot overload table',
-            '#ref' => 'system_advanced_firewall.php#no_virusprot'],
+            '#ref' => 'ui/firewall/settings#settings-filter'],
             $defaults['block']
         );
     }
 
     // block bogons and private nets
-    $bogontmpl = ['type' => 'block', 'log' => !isset($config['syslog']['nologbogons']), 'disablereplyto' => 1];
-    $privtmpl = ['type' => 'block', 'log' => !isset($config['syslog']['nologprivatenets']), 'disablereplyto' => 1];
+    $bogontmpl = ['type' => 'block', 'log' => !empty($settings['logging']['bogons']), 'disablereplyto' => 1];
+    $privtmpl = ['type' => 'block', 'log' => !empty($settings['logging']['private_networks']), 'disablereplyto' => 1];
     foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
         // only render disabled rules for actual interfaces that can have a bogon option set
         if (!empty($intfinfo['virtual'])) {
@@ -588,7 +590,7 @@ function filter_core_rules_system($fw, $defaults)
                     'to' => '(self)',
                     'to_port' => $to_port,
                     'descr' => 'anti-lockout rule',
-                    '#ref' => 'system_advanced_firewall.php#noantilockout'
+                    '#ref' => 'ui/firewall/settings#settings-filter'
                 ],
                 $defaults['pass']
             );
@@ -598,7 +600,7 @@ function filter_core_rules_system($fw, $defaults)
     // [out from this Firewall, using the selected gateway].
     // Our default setting has been to force traffic leaving a specific interface to use the associated gateway.
     // This behaviour can be disabled, so settings can be customized using manual firewall rules.
-    if (empty($config['system']['pf_disable_force_gw'])) {
+    if (empty($settings['filter']['pf_disable_force_gw'])) {
         foreach ($fw->getInterfaceMapping() as $ifdescr => $ifcfg) {
             if (!isset($ifcfg['internal_dynamic']) && $ifcfg['if'] != 'lo0') {
                 $protos_found = [];
@@ -622,7 +624,7 @@ function filter_core_rules_system($fw, $defaults)
                                     'statetype' => 'keep',
                                     'allowopts' => true,
                                     'quick' => false,
-                                    '#ref' => 'system_advanced_firewall.php#pf_disable_force_gw',
+                                    '#ref' => 'ui/firewall/settings#settings-filter',
                                     'descr' => "let out anything from firewall host itself (force gw)"],
                                     $defaults['pass']
                                 );

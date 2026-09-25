@@ -26,29 +26,43 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Firewall\Api;
+namespace OPNsense\Firewall\Migrations;
 
-use OPNsense\Base\ApiMutableModelControllerBase;
-use OPNsense\Core\Backend;
+use OPNsense\Base\BaseModelMigration;
+use OPNsense\Core\Config;
+use OPNsense\Firewall\Filter;
 
-class SettingsController extends ApiMutableModelControllerBase
+class MFP1_1_5 extends BaseModelMigration
 {
-    protected static $internalModelName = 'filter';
-    protected static $internalModelClass = 'OPNsense\Firewall\Filter';
-
-    protected function getModelNodes()
+    public function run($model)
     {
-        return ['settings' => $this->getModel()->settings->getNodes()];
+        if ($model instanceof Filter) {
+            $config = Config::getInstance()->object();
+            $legacy_syslog = $config->syslog;
+            $model->settings->logging->setNodes([
+                'default_block' => empty($legacy_syslog->nologdefaultblock) ? '1' : '0',
+                'default_pass' => empty($legacy_syslog->nologdefaultpass) ? '1' : '0',
+                'source_nat' => !empty($legacy_syslog->logoutboundnat) ? '1' : '0',
+                'bogons' => empty($legacy_syslog->nologbogons) ? '1' : '0',
+                'private_networks' => empty($legacy_syslog->nologprivatenets) ? '1' : '0',
+            ]);
+        }
+
+        parent::run($model);
     }
 
-    public function reconfigureAction()
+    public function post($model)
     {
-        if ($this->request->isPost()) {
-            $backend = new Backend();
-            $backend->configdRun('cron restart');
-            $backend->configdRun('service restart sysctl');
-            return ['status' => $backend->configdRun('filter reload')];
+        if ($model instanceof Filter) {
+            $config = Config::getInstance()->object();
+            $legacy_syslog = $config->syslog;
+            unset(
+                $legacy_syslog->nologdefaultblock,
+                $legacy_syslog->nologdefaultpass,
+                $legacy_syslog->logoutboundnat,
+                $legacy_syslog->nologbogons,
+                $legacy_syslog->nologprivatenets,
+            );
         }
-        return ['status' => 'failed'];
     }
 }

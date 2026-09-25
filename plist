@@ -798,6 +798,14 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_4.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_8.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_9.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_1.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_2.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_3.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_4.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_5.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_6.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_7.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/static_aliases/core.json
 /usr/local/opnsense/mvc/app/models/OPNsense/Hostdiscovery/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Hostdiscovery/Hostwatch.php
@@ -2606,7 +2614,6 @@
 /usr/local/www/services_opendns.php
 /usr/local/www/status_wireless.php
 /usr/local/www/system_advanced_admin.php
-/usr/local/www/system_advanced_firewall.php
 /usr/local/www/system_advanced_misc.php
 /usr/local/www/system_authservers.php
 /usr/local/www/system_general.php

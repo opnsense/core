@@ -28,8 +28,6 @@
 
 namespace OPNsense\Firewall;
 
-use OPNsense\Core\Config;
-
 /**
  * Class Plugin
  * @package OPNsense\Firewall
@@ -52,19 +50,20 @@ class Plugin
     public function __construct()
     {
         $this->systemDefaults = array("filter" => [], "forward" => [], "nat" => []);
-        if (!empty(Config::getInstance()->object()->system->disablereplyto)) {
+        $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
+        if (!empty($settings['filter']['disable_reply_to'])) {
             $this->systemDefaults['filter']['disablereplyto'] = true;
         }
-        if (!empty(Config::getInstance()->object()->system->skip_rules_gw_down)) {
+        if (!empty($settings['filter']['skip_rules_gw_down'])) {
             $this->systemDefaults['filter']['skip_rules_gw_down'] = true;
         }
-        if (empty(Config::getInstance()->object()->system->disablenatreflection)) {
+        if (!empty($settings['nat']['reflection_dnat'])) {
             $this->systemDefaults['forward']['natreflection'] = "enable";
         }
-        if (!empty(Config::getInstance()->object()->system->enablebinatreflection)) {
+        if (!empty($settings['nat']['reflection_binat'])) {
             $this->systemDefaults['nat']['natreflection'] = "enable";
         }
-        if (!empty(Config::getInstance()->object()->system->enablenatreflectionhelper)) {
+        if (!empty($settings['nat']['reflection_snat'])) {
             $this->systemDefaults['forward']['enablenatreflectionhelper'] = true;
             $this->systemDefaults['nat']['enablenatreflectionhelper'] = true;
         }
@@ -132,6 +131,7 @@ class Plugin
      */
     public function setGatewayGroups($groups)
     {
+        $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
         if (is_array($groups)) {
             foreach ($groups as $key => $gwgr) {
                 $routeto = [];
@@ -161,7 +161,7 @@ class Plugin
                         $routetologic .= " {$gwgr[0]['poolopts']} ";
                     } elseif (count($routeto) > 1) {
                         $routetologic .= " round-robin ";
-                        if (!empty(Config::getInstance()->object()->system->lb_use_sticky)) {
+                        if (!empty($settings['filter']['lb_use_sticky'])) {
                             $routetologic .= " sticky-address ";
                         }
                     }
