@@ -226,8 +226,8 @@
                 dataTreeChildField    : "children",
                 dataTreeElementColumn : "categories",
                 dataTreeStartExpanded : (row, level) => row.getData()._expanded,
-                dataTreeCollapseElement:"<i class='fas fa-minus-square custom-tree-control-collapse'></i>",
-                dataTreeExpandElement:"<i class='fas fa-plus-square custom-tree-control-expand'></i>",
+                dataTreeCollapseElement:"<i class='fa-regular fa-square-minus custom-tree-control-collapse'></i>",
+                dataTreeExpandElement:"<i class='fa-regular fa-square-plus custom-tree-control-expand'></i>",
                 rowFormatter: function(row) {
                     const data = row.getData();
                     const $element = $(row.getElement());

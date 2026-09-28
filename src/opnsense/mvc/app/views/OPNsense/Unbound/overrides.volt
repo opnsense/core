@@ -139,8 +139,8 @@ $( document ).ready(function() {
         tabulatorOptions: {
             dataTree: true,
             dataTreeElementColumn:"tree",
-            dataTreeCollapseElement:"<i class='fas fa-minus-square'></i>",
-            dataTreeExpandElement:"<i class='fas fa-plus-square'></i>",
+            dataTreeCollapseElement:"<i class='fa-regular fa-square-minus'></i>",
+            dataTreeExpandElement:"<i class='fa-regular fa-square-plus'></i>",
             rowFormatter: function(row) {
                 const data = row.getData();
                 const $element = $(row.getElement());
