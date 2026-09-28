@@ -1388,6 +1388,7 @@ function interfaces_pfsync_configure()
     }
 
     if (!empty($syncdev)) {
+        /* XXX work on receiving the interface details from above */
         $pfsync = legacy_interface_details('pfsync0');
         $want = [
             'syncdev' => $syncdev,
