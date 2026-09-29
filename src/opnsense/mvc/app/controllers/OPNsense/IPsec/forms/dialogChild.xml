@@ -130,6 +130,13 @@
         <advanced>true</advanced>
     </field>
     <field>
+        <id>child.replay_window</id>
+        <label>Replay window</label>
+        <type>text</type>
+        <help>IPsec replay window size for this CHILD_SA. Set to 0 to disable IPsec replay protection.</help>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <id>child.description</id>
         <label>Description</label>
         <type>text</type>
