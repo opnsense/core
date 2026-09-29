@@ -292,7 +292,7 @@ function local_sync_accounts()
     if (is_array($config['system']['user'])) {
         foreach ($config['system']['user'] as $user) {
             $userattrs = !empty($current_data['user'][$user['uid']]) ? $current_data['user'][$user['uid']] : [];
-            local_user_set($user, false, $userattrs);
+            local_user_set($user, $userattrs);
         }
     }
 
@@ -305,7 +305,7 @@ function local_sync_accounts()
     }
 }
 
-function local_user_set(&$user, $force_password = false, $userattrs = null)
+function local_user_set(&$user, $userattrs = null)
 {
     if (empty($user['password'])) {
         auth_log("Cannot set user {$user['name']}: password is missing");
@@ -317,8 +317,6 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
 
     @mkdir('/home', 0755);
 
-    /* integrated authentication handles passwords unless 'installer' user needs it locally */
-    $user_pass = $force_password ? $user['password'] : '*';
     $user_name = $user['name'];
     $user_uid = $user['uid'];
     $comment = str_replace([':', '!', '@'], ' ', $user['descr']);
@@ -342,10 +340,20 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
         $lock_account = 'unlock';
     }
 
-    if ($user_uid == 0) {
-        $user_shell = !empty($user['shell']) ? $user['shell'] : '/usr/local/sbin/opnsense-shell';
+    if ($user_uid == 0 && $user['scope'] == 'system') {
+        switch ($user['name']) {
+            case 'installer':
+                $user_shell = !empty($user['shell']) ? $user['shell'] : '/usr/local/sbin/opnsense-installer';
+                break;
+            case 'root':
+                $user_shell = !empty($user['shell']) ? $user['shell'] : '/usr/local/sbin/opnsense-shell';
+                break;
+            default:
+                $user_shell = '/usr/sbin/nologin';
+                break;
+        }
         $user_group = 'wheel';
-        $user_home = '/root';
+        $user_home = '/root'; /* share a home between all UID 0 accounts */
     } else {
         $is_admin = userIsAdmin($user['name']);
         $user_shell = $is_admin && !empty($user['shell']) ? $user['shell'] : '/usr/sbin/nologin';
@@ -356,15 +364,13 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
     // XXX: primary group id can only be wheel or nobody, otherwise we should map the correct numbers for comparison
     $user_gid = $user_group == 'wheel' ? 0 : 65534;
 
-    if (!$force_password) {
-        /* read from pw db if not provided (batch mode) */
-        if ($userattrs === null) {
-            $fd = popen(exec_safe('/usr/sbin/pw usershow -n %s', $user_name), 'r');
-            $pwread = fgets($fd);
-            pclose($fd);
-            if (substr_count($pwread, ':')) {
-                $userattrs = explode(':', trim($pwread));
-            }
+    /* read from pw db if not provided (batch mode) */
+    if ($userattrs === null) {
+        $fd = popen(exec_safe('/usr/sbin/pw usershow -n %s', $user_name), 'r');
+        $pwread = fgets($fd);
+        pclose($fd);
+        if (substr_count($pwread, ':')) {
+            $userattrs = explode(':', trim($pwread));
         }
     }
 
@@ -395,7 +401,8 @@ function local_user_set(&$user, $force_password = false, $userattrs = null)
             $user_frmt,
             [$user_op, $user_uid, $user_name, $user_group, $user_shell, $user_home, $comment]
         ), 'w');
-        fwrite($fd, $user_pass);
+        /* integrated authentication handles passwords */
+        fwrite($fd, '*');
         pclose($fd);
     }
 
