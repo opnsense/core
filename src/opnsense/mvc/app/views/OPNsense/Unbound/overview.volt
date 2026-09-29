@@ -800,7 +800,6 @@
                 }).on("load.rs.jquery.bootgrid", function (e) {
                     settings_promise.done(function (data) {
                         const g_settings = data.frm_UnboundReportingSettings.unbound.general;
-                        console.log(g_settings);
                         $("#grid-queries").bootgrid(g_settings.dnssec == 1 ? "setColumns" : "unsetColumns", ['dnssec_status']);
                     }).fail(function (jqXHR, textStatus) {
                         console.error("Could not load Unbound settings:", textStatus);
