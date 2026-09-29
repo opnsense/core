@@ -68,7 +68,19 @@ if (is_array($config['interfaces'])) {
     }
 
     foreach ($to_configure as $ifname) {
-        /* XXX maybe we can micromanage $reload = true here in the future */
-        interface_configure(true, $ifname, true);
+        interface_configure(true, $ifname, true, false, true);
+    }
+
+    if (!empty($to_configure)) {
+        system_routing_configure(true, $to_configure);
+
+        plugins_configure('ipsec', true, $to_configure);
+        plugins_configure('dhcp', true);
+        plugins_configure('dns', true);
+        /* XXX not ideal but avoids "errors" in the log */
+        plugins_configure('newwanip:rfc2136', true, [$to_configure]);
+
+        interfaces_pfsync_configure();
+        interface_proxyarp_configure();
     }
 }

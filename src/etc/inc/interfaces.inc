@@ -2460,7 +2460,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
 
     service_log("done.\n", $verbose);
 
-    if ($reload) {
+    if ($reload && !$batch) {
         system_routing_configure($verbose, $interface);
         plugins_configure('ipsec', $verbose, [$interface]);
         plugins_configure('dhcp', $verbose);
