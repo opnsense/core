@@ -77,7 +77,7 @@ if (isset($opts['h']) || empty($opts['u'])) {
     /* add or update when found */
     if ($update_user) {
         /* without a shell configured, local_user_set() will just return */
-        local_user_set($update_user, false, $localusers[$username] ?? []);
+        local_user_set($update_user, $localusers[$username] ?? []);
         /**
          * Signal backend that the user has changed.
          * When the user has shell access, this will update the local group database.
