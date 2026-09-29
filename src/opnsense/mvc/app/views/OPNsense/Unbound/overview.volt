@@ -801,8 +801,6 @@
                     settings_promise.done(function (data) {
                         const g_settings = data.frm_UnboundReportingSettings.unbound.general;
                         $("#grid-queries").bootgrid(g_settings.dnssec == 1 ? "setColumns" : "unsetColumns", ['dnssec_status']);
-                    }).fail(function (jqXHR, textStatus) {
-                        console.error("Could not load Unbound settings:", textStatus);
                     });
                 }
                 }).on("loaded.rs.jquery.bootgrid", function (e) {
