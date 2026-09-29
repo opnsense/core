@@ -767,11 +767,6 @@
 
                             return request;
                         },
-                        headerFormatters: {
-                            dnssec_status: function(column) {
-                                return '<th data-column-id="dnssec_status" data-width="11em" data-type="string"> {{ lang._('DNSsec Status') }}</th> <i class="fa fa-info-circle fa-sm fa-fw text-primary" data-toggle="tooltip" data-html="true" title="{{ lang._('Insecure means the website doesn\'t use DNSSEC. This is normal and expected for most sites. It\'s not a vulnerability.<br> Bogus means the DNSSEC verification couldn\'t complete, which is usually just a misconfiguration on the website\'s side.') }}"></i>';
-                            }
-                        },
                         formatters: {
                             "timeformatter": function (column, row) {
                                 return moment.unix(row.time).local().format('YYYY-MM-DD HH:mm:ss');
@@ -802,7 +797,6 @@
                         const g_settings = data.frm_UnboundReportingSettings.unbound.general;
                         $("#grid-queries").bootgrid(g_settings.dnssec == 1 ? "setColumns" : "unsetColumns", ['dnssec_status']);
                     });
-                }
                 }).on("loaded.rs.jquery.bootgrid", function (e) {
                     if (g_clientFilter != null && g_timeFilter != null && !$('#searchFilter').length) {
                         // Add a badge to signify we're in a drill-down
@@ -1026,7 +1020,7 @@
                     <th data-column-id="rcode" data-width="7em" data-type="string">{{ lang._('Return Code') }}</th>
                     <th data-column-id="resolve_time_ms" data-width="8em" data-type="string" data-formatter="resolveformatter">{{ lang._('Resolve time') }}</th>
                     <th data-column-id="ttl" data-width="4em" data-type="string">{{ lang._('TTL') }}</th>
-                    <th data-column-id="dnssec_status" data-width="11em" data-type="string" data-visible="false">{{ lang._('DNSsec Status') }}</th>
+                    <th data-column-id="dnssec_status" data-width="9em" data-type="string" data-visible="false">{{ lang._('DNSsec Status') }}</th>
                     <th data-column-id="blocklist" data-type="string" data-formatter="blocklist">{{ lang._('Blocklist') }}</th>
                     <th data-column-id="policy" data-type="string">{{ lang._('Policy') }}</th>
                     <th data-column-id="" data-width="100" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
