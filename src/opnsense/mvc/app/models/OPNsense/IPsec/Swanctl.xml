@@ -315,7 +315,7 @@
                 <replay_window type="IntegerField">
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>32</MaximumValue>
-                    <ValidationMessage>Please enter a value between 0 and 32</ValidationMessage>
+                    <ValidationMessage>Please enter a value between 0 and 32.</ValidationMessage>
                 </replay_window>
                 <description type="DescriptionField"/>
             </child>
