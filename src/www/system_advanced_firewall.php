@@ -356,11 +356,11 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><a id="help_for_enablenatreflectionhelper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Automatic outbound NAT for Reflection");?></td>
+                <td><a id="help_for_enablenatreflectionhelper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Automatic source NAT for Reflection");?></td>
                 <td>
                   <input name="enablenatreflectionhelper" type="checkbox" id="enablenatreflectionhelper" value="yes" <?=!empty($pconfig['enablenatreflectionhelper']) ? "checked=\"checked\"" : "";?> />
                   <div class="hidden" data-for="help_for_enablenatreflectionhelper">
-                    <?=gettext("Automatically create outbound NAT rules which assist inbound NAT rules that direct traffic back out to the same subnet it originated from.");?>
+                    <?=gettext("Automatically create source NAT rules to assist NAT rules, so that it directs traffic back out to the same subnet it originated from.");?>
                   </div>
                 </td>
               </tr>
@@ -518,10 +518,10 @@ include("head.inc");
                 </td>
               </tr>
               <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Outbound NAT') ?></td>
+                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Source NAT') ?></td>
                 <td>
                   <input name="logoutboundnat" type="checkbox" id="logoutboundnat" value="yes" <?= !empty($pconfig['logoutboundnat']) ? 'checked="checked"' : '' ?> />
-                  <?= gettext('Log packets matched by automatic outbound NAT rules') ?>
+                  <?= gettext('Log packets matched by automatic source NAT rules') ?>
                 </td>
               </tr>
               <tr>
@@ -637,8 +637,8 @@ include("head.inc");
                     <?= gettext('Warning: This will convert into a routing-only platform!') ?><br />
                     <?= gettext('Warning: This will also turn off NAT!') ?><br />
                     <?=sprintf(
-                      gettext('If you only want to disable NAT, and not firewall rules, visit the %sOutbound NAT%s page.'),
-                      '<a href="/firewall_nat_out.php">', '</a>'
+                      gettext('If you only want to disable NAT, and not firewall rules, visit the %ssource NAT%s page.'),
+                      '<a href="/ui/firewall/source_nat">', '</a>'
                     )?>
                   </div>
                 </td>
