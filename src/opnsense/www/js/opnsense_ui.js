@@ -900,14 +900,14 @@ $.fn.SimpleActionButton = function (params) {
                               message: data['status_msg'] ? data['status_msg'] : data['status'],
                               draggable: true
                           });
-                        setIcon(icon, 'fa fa-check fa-spinner fa-pulse', 'fa fa-spinner fa-pulse');
+                        setIcon(icon, 'fa fa-check fa-spinner fa-pulse');
                     } else {
                         setIcon(icon, 'fa fa-spinner fa-pulse', 'fa fa-check');
                         $("#change_message_base_form").hide();
                         this_button.parent('.alert').addClass('content-box').removeClass('alert-info');
 
                         hideCheckTimeout = setTimeout(function () {
-                            setIcon(icon, 'fa fa-check', '');
+                            setIcon(icon, 'fa fa-check');
                         }, 4000);
                     }
 
@@ -921,7 +921,7 @@ $.fn.SimpleActionButton = function (params) {
                     updateSystemStatus();
                 });
             }).fail(function () {
-                setIcon(icon, 'fa fa-check fa-spinner fa-pulse', '');
+                setIcon(icon, 'fa fa-check fa-spinner fa-pulse');
             });
         });
     }
