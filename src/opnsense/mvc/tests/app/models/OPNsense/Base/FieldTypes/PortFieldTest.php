@@ -182,4 +182,17 @@ class PortFieldTest extends Field_Framework_TestCase
         $field->setValue('http,https');
         $this->assertEquals('http,https', $field->normalizedPort());
     }
+
+    /**
+     * static well-known name to port mapping
+     */
+    public function testNormalizePort()
+    {
+        $this->assertSame('80', PortField::normalizePort('http'));
+        $this->assertSame('8080', PortField::normalizePort('8080'));
+        $this->assertSame('8080', PortField::normalizePort(8080));
+        $this->assertSame('kerberos', PortField::normalizePort('kerberos'));
+        $this->assertSame('80:90', PortField::normalizePort('80:90'));
+        $this->assertSame('', PortField::normalizePort(null));
+    }
 }

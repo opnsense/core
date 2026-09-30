@@ -117,9 +117,9 @@ class ForwardRule extends Rule
                 $tmp['disabled'] = true;
                 $this->log("Invalid target");
             }
-            // parse our local port
+            // parse our local port, "any" preserves the destination port (no translation)
             if (
-                !empty($tmp['local-port']) && !empty($tmp['protocol'])
+                !empty($tmp['local-port']) && $tmp['local-port'] != 'any' && !empty($tmp['protocol'])
                   && in_array($tmp['protocol'], array('tcp/udp', 'udp', 'tcp'))
             ) {
                 if (Util::isAlias($tmp['local-port'])) {
@@ -134,21 +134,33 @@ class ForwardRule extends Rule
                         $tmp_port = Util::getPortAlias($tmp['local-port']);
                         if (!empty($tmp_port)) {
                             $tmp['localport'] = $tmp_port[0];
+                        } else {
+                            $tmp['disabled'] = true;
+                            $this->log("Unable to map port {$tmp['local-port']}, empty?");
                         }
                     }
-                } elseif (Util::isPort($tmp['local-port'])) {
-                    $tmp['localport'] = $tmp['local-port'];
-                    if (!empty($tmp['to_port']) && strpos($tmp['to_port'], ':') !== false) {
-                        $to_ports = explode(':', $tmp['to_port']);
-                        $tmp['localport'] .= ':' . min($tmp['local-port'] + $to_ports[1] - $to_ports[0], 65535);
-                    }
                 } else {
-                    $known = PortField::getWellKnown($tmp['local-port']);
-                    if (!empty($known)) {
-                        $tmp['local-port'] = array_shift($known);
+                    $tmp['local-port'] = PortField::normalizePort($tmp['local-port']);
+                    if (!Util::isPort($tmp['local-port'])) {
+                        $tmp['disabled'] = true;
+                        $this->log("Unable to map port {$tmp['local-port']}, config error?");
+                    } elseif (
+                        !empty($tmp['to_port']) && strpos($tmp['to_port'], ':') !== false
+                          && strpos($tmp['local-port'], ':') === false
+                    ) {
+                        // destination is a port range, map it onto a range starting at the local port
+                        $to_ports = array_map([PortField::class, 'normalizePort'], explode(':', $tmp['to_port']));
+                        $range_end = count($to_ports) == 2 && ctype_digit($to_ports[0]) && ctype_digit($to_ports[1])
+                            && ctype_digit($tmp['local-port']) && (int)$to_ports[0] <= (int)$to_ports[1]
+                            ? (int)$tmp['local-port'] + (int)$to_ports[1] - (int)$to_ports[0] : null;
+                        if ($range_end === null) {
+                            $tmp['disabled'] = true;
+                            $this->log("Unable to map port range {$tmp['to_port']} to {$tmp['local-port']}");
+                        } else {
+                            $tmp['localport'] = $tmp['local-port'] . ':' . min($range_end, 65535);
+                        }
                     } else {
-                        $rule['disabled'] = true;
-                        $this->log("Unable to map port {$port}, config error?");
+                        $tmp['localport'] = $tmp['local-port'];
                     }
                 }
             }
