@@ -64,6 +64,21 @@
                         } else {
                             return '<span class="fa fa-remove fa-fw text-danger" data-toggle="tooltip" title="{{ lang._('Disconnected') }}"></span>';
                         }
+                    },
+                    version: function (column, row) {
+                        const version = String(row.version ?? '');
+                        const escapedVersion = $('<div>').text(version).html();
+
+                        if (version === '1' || version.toLowerCase().includes('ikev1')) {
+                            const deprecated = $('<div>')
+                                .text("{{ lang._('deprecated') }}")
+                                .html();
+
+                            return '<span class="text-warning">' +
+                                escapedVersion + ' (' + deprecated + ')</span>';
+                        }
+
+                        return escapedVersion;
                     }
                 }
             }
@@ -138,7 +153,7 @@
               <th data-column-id="name" data-type="string" data-sortable="false" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
               <th data-column-id="connected" data-width="6em" data-type="string" data-width="3em"  data-formatter="status">{{ lang._('Status') }}</th>
               <th data-column-id="phase1desc" data-type="string">{{ lang._('Connection') }}</th>
-              <th data-column-id="version" data-width="6em"  data-type="string">{{ lang._('Version') }}</th>
+              <th data-column-id="version" data-width="8em" data-type="string" data-formatter="version">{{ lang._('Version') }}</th>
               <th data-column-id="local-id" data-type="string">{{ lang._('Local ID') }}</th>
               <th data-column-id="local-addrs" data-type="string">{{ lang._('Local IP') }}</th>
               <th data-column-id="remote-id" data-type="string">{{ lang._('Remote ID') }}</th>
