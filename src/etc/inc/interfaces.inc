@@ -2405,19 +2405,17 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      * Unconditional actions on interface include:
      *
      * 1. Disable accepting router advertisements (SLAAC) on main device
-     * 2. Enable duplicate address detection (DAD) on main device
-     * 3. Set interface description to get more useful ifconfig output
-     * 4. Set "up" flag for UP/RUNNING requirement, adding an address
+     * 2. Set interface description to get more useful ifconfig output
+     * 3. Set "up" flag for UP/RUNNING requirement, adding an address
      *    already does that so at this point try to be more consistent.
      */
-    /* we do not set "ifdisabled" to avoid clobbering assigned tunnel devices */
-    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv -no_dad description %s up', [$device, $ifdescr]);
+    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s up', [$device, $ifdescr]);
 
     switch (is_ipv6_allowed() ? ($wancfg['ipaddrv6'] ?? 'none') : 'none') {
         case 'slaac':
         case 'dhcp6':
             /* setting this here is mandatory in conjunction with ppp-ipv6.php, see #10828 */
-            mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled up', $device);
+            mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -no_dad -ifdisabled up', $device);
 
             if (!interface_ppps_bound($interface)) {
                 interface_dhcpv6_prepare($interface, $wancfg);
@@ -2425,19 +2423,22 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             }
             break;
         case 'linklocal':
-            mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv -ifdisabled up', $device);
+            mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv -no_dad -ifdisabled up', $device);
             break;
         case '6rd':
             interface_6rd_configure($interface, $wancfg, $reload || $linkup);
-            mwexecf('/sbin/ifconfig %s inet6 description %s up', [$realifv6, $ifdescr]);
+            mwexecf('/sbin/ifconfig %s inet6 -no_dad description %s up', [$realifv6, $ifdescr]);
             break;
         case '6to4':
             interface_6to4_configure($interface, $wancfg, $reload || $linkup);
-            mwexecf('/sbin/ifconfig %s inet6 description %s up', [$realifv6, $ifdescr]);
+            mwexecf('/sbin/ifconfig %s inet6 -no_dad description %s up', [$realifv6, $ifdescr]);
             break;
         case 'idassoc6':
         case 'track6':
             interface_track6_configure($interface, $wancfg, $reload || $linkup);
+            break;
+        case 'none':
+            /* no extra changes: "no_dad" and "ifdisabled" is not touched esp. relevant for tunnels */
             break;
         default:
             if (!interface_ppps_bound($interface)) {
@@ -2486,7 +2487,7 @@ function interface_track6_configure($interface, $lancfg, $reload = false)
         return;
     }
 
-    mwexecf('/sbin/ifconfig %s inet6 %sifdisabled', [$lancfg['if'], isset($lancfg['enable']) ? '-' : '']);
+    mwexecf('/sbin/ifconfig %s inet6 %sifdisabled -no_dad', [$lancfg['if'], isset($lancfg['enable']) ? '-' : '']);
 
     switch ($wancfg['ipaddrv6']) {
         case '6to4':
