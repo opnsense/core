@@ -2153,8 +2153,6 @@ EOD;
 
     /* execute hostapd and wpa_supplicant if required in shell */
     mwexecf('/bin/sh %s', "/tmp/{$device}_setup.sh");
-
-    return 0;
 }
 
 function interfaces_wlan_reset($device)
