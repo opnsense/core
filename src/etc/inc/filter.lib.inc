@@ -659,8 +659,8 @@ function filter_core_rules_system($fw, $defaults)
                     $range_end = min($parts[1] - $parts[0] + $tmprule['destination']['port'], 65535);
                     $tmprule['destination']['port'] .= sprintf('-%s', $range_end);
                 }
-            } elseif (!empty($dnatrule['local-port'])) {
-                $tmprule['destination']['port'] = $dnatrule['local-port'];
+            } elseif (!empty($local_port)) {
+                $tmprule['destination']['port'] = $local_port;
             } elseif (!empty($dnatrule['destination']['port'])) {
                 $tmprule['destination']['port'] = $dnatrule['destination']['port'];
             }
