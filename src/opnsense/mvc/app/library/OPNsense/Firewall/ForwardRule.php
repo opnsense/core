@@ -140,7 +140,7 @@ class ForwardRule extends Rule
                     $tmp['localport'] = $tmp['local-port'];
                     if (!empty($tmp['to_port']) && strpos($tmp['to_port'], ':') !== false) {
                         $to_ports = explode(':', $tmp['to_port']);
-                        $tmp['localport'] .= ':' . ($tmp['local-port'] + $to_ports[1] - $to_ports[0]);
+                        $tmp['localport'] .= ':' . min($tmp['local-port'] + $to_ports[1] - $to_ports[0], 65535);
                     }
                 } else {
                     $known = PortField::getWellKnown($tmp['local-port']);
