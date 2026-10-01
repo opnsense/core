@@ -303,6 +303,9 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
 
         $result['aliases']['items'] += $aliases;
 
+        /* a port alias takes precedence over a well-known port with the same name */
+        $result['ports']['items'] = array_diff_key($result['ports']['items'], $aliases);
+
         return $result;
     }
 
