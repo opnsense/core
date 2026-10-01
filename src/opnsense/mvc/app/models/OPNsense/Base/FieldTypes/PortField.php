@@ -190,7 +190,7 @@ class PortField extends BaseListField
     public function setValue($value)
     {
         $tmp = trim(strtolower($value));
-        if ($this->enableWellKnown && ($tmp === 'any' || isset(self::$wellknownservices[$tmp]))) {
+        if ($this->enableWellKnown && ($tmp == 'any' || isset(self::$wellknownservices[$tmp]))) {
             return parent::setValue($tmp);
         } else {
             return parent::setValue($value);
