@@ -275,6 +275,9 @@ class PortField extends BaseListField
     {
         /* XXX this does not support multiple values */
         $value = $this->getValue();
+        if ($value == 'any') {
+            return '';
+        }
 
         $known = self::getWellKnown($value);
         if (!empty($known)) {

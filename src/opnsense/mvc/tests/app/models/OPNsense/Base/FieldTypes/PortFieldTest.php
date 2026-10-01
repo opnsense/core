@@ -168,6 +168,8 @@ class PortFieldTest extends Field_Framework_TestCase
     public function testNormalizeValue()
     {
         $field = new PortField();
+        $field->setValue('any');
+        $this->assertEquals('', $field->normalizedPort());
         $field->setValue('');
         $this->assertEquals('', $field->normalizedPort());
         $field->setValue('http');
