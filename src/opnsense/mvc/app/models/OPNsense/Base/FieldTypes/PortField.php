@@ -137,7 +137,8 @@ class PortField extends BaseListField
         if (empty(self::$internalCacheOptionList[$setid])) {
             self::$internalCacheOptionList[$setid] = [];
             if ($this->enableWellKnown) {
-                foreach (['any'] + array_keys(self::$wellknownservices) as $wellknown) {
+                self::$internalCacheOptionList[$setid]['any'] = 'any';
+                foreach (array_keys(self::$wellknownservices) as $wellknown) {
                     self::$internalCacheOptionList[$setid][(string)$wellknown] = $wellknown;
                 }
             }
@@ -189,7 +190,7 @@ class PortField extends BaseListField
     public function setValue($value)
     {
         $tmp = trim(strtolower($value));
-        if ($this->enableWellKnown && in_array($tmp, ['any'] + array_keys(self::$wellknownservices))) {
+        if ($this->enableWellKnown && ($tmp === 'any' || isset(self::$wellknownservices[$tmp]))) {
             return parent::setValue($tmp);
         } else {
             return parent::setValue($value);
