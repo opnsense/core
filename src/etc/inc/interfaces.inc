@@ -2410,12 +2410,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      * Unconditional actions on interface include:
      *
      * 1. Disable accepting router advertisements (SLAAC) on main device
-     * 2. Enable duplicate address detection (DAD) on main device
-     * 3. Set interface description to get more useful ifconfig output
-     * 4. Set "up" flag for UP/RUNNING requirement, adding an address
+     * 2. Set interface description to get more useful ifconfig output
+     * 3. Set "up" flag for UP/RUNNING requirement, adding an address
      *    already does that so at this point try to be more consistent.
      */
-    /* we do not set "ifdisabled" to avoid clobbering assigned tunnel devices */
     mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s up', [$device, $ifdescr]);
 
     switch (is_ipv6_allowed() ? ($wancfg['ipaddrv6'] ?? 'none') : 'none') {
@@ -2445,7 +2443,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             interface_track6_configure($interface, $wancfg, $reload || $linkup);
             break;
         case 'none':
-            /* no extra changes: e.g. no_dad is not touched esp. relevant for tunnels */
+            /* no extra changes: "no_dad" and "ifdisabled" is not touched esp. relevant for tunnels */
             break;
         default:
             if (!interface_ppps_bound($interface)) {
