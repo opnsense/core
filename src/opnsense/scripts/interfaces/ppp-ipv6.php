@@ -55,7 +55,7 @@ switch (is_ipv6_allowed() ? ($ifcfg['ipaddrv6'] ?? 'none') : 'none') {
     case 'dhcp6':
     case 'slaac':
         /* the code can race between here and interface_configure(), see #10828 */
-        mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled up', $ifcfg['if']);
+        mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -no_dad -ifdisabled up', $ifcfg['if']);
 
         interface_dhcpv6_prepare($interface, $ifcfg);
         interface_dhcpv6_configure($interface, $ifcfg);
