@@ -139,7 +139,7 @@ class PortField extends BaseListField
             if ($this->enableWellKnown) {
                 self::$internalCacheOptionList[$setid]['any'] = 'any';
                 foreach (array_keys(self::$wellknownservices) as $wellknown) {
-                    self::$internalCacheOptionList[$setid][(string)$wellknown] = $wellknown;
+                    self::$internalCacheOptionList[$setid][$wellknown] = $wellknown;
                 }
             }
             if ($this->enableAlias) {
