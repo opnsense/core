@@ -86,6 +86,21 @@ class PortFieldTest extends Field_Framework_TestCase
     }
 
     /**
+     * every well-known service name (and "any") is valid and normalized to lowercase
+     */
+    public function testAllWellKnownValid()
+    {
+        $field = new PortField();
+        $field->setEnableWellKnown("Y");
+        $field->eventPostLoading();
+        foreach (array_merge(['any'], array_keys(PortField::getWellKnown())) as $value) {
+            $field->setValue(strtoupper($value));
+            $this->assertEquals($value, (string)$field);
+            $this->assertEmpty($this->validate($field), "{$value} should be valid");
+        }
+    }
+
+    /**
      * reject whitespaces around port numbers
      */
     public function testWhitespaceInvalid()
