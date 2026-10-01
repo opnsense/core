@@ -2466,8 +2466,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         plugins_configure('ipsec', $verbose, [$interface]);
         plugins_configure('dhcp', $verbose);
         plugins_configure('dns', $verbose);
-        /* XXX not ideal but avoids "errors" in the log */
-        plugins_configure('newwanip:rfc2136', $verbose, [[$interface]]);
+        plugins_configure('updateip', $verbose, [[$interface]]);
     }
 
     /* XXX device dependency plugin hook */
