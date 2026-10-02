@@ -564,12 +564,20 @@ function system_interface_route($gw, $routes)
     $device = $gw['if'];
     $family = 'inet';
 
-    if (!is_ipaddrv4($gateway)) {
+    if (is_ipaddrv6($gateway)) {
+        $family = 'inet6';
+    } elseif (!is_ipaddrv4($gateway)) {
         log_msg("ROUTING: not a valid {$interface} interface gateway address: '{$gateway}'", LOG_ERR);
         return;
     }
 
-    if (!$far) {
+    /*
+     * IPv6 is more complicated due to possible link-local routing
+     * and likely not worth the risk adding a far autodetect here.
+     * It was originally added for DHCPv4 which some providers use
+     * to hand out /32 leases, which then do not work without this.
+     */
+    if ($family == 'inet' && !$far) {
         /* special case tries to turn on far gateway when required for dynamic gateway */
         $dynamicgw = OPNsense\Interface\Autoconf::getRouter($device, 'inet');
         if (!empty($dynamicgw) && $gateway === $dynamicgw) {
@@ -595,7 +603,9 @@ function system_interface_route($gw, $routes)
         /* find host routes on the link for the underlying device */
         if ($route['netif'] != $device) {
             continue;
-        } elseif ($route['proto'] != 'ipv4') {
+        } elseif ($family == 'inet' && $route['proto'] != 'ipv4') {
+            continue;
+        } elseif ($family == 'inet6' && $route['proto'] != 'ipv6') {
             continue;
         } elseif (strpos($route['gateway'], 'link#') !== 0) {
             continue;
@@ -777,7 +787,7 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
                     $cmd[] = '-inet6'; /* RFC 5549: gateway protocol differs */
                 }
 
-                if (!empty($gateway['fargw']) && $gateway['ipprotocol'] != 'inet6') {
+                if (!empty($gateway['fargw'])) {
                     mwexecfm('/sbin/route delete -%s %s -interface %s ', [$ipproto, $gatewayip, $interfacegw]);
                     mwexecfm('/sbin/route add -%s %s -interface %s', [$ipproto, $gatewayip, $interfacegw]);
                 } elseif (is_linklocal($gatewayip) && strpos($gatewayip, '%') === false) {
