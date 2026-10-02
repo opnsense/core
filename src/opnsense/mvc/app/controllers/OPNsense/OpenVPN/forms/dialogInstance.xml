@@ -371,6 +371,16 @@
         </grid_view>
     </field>
     <field>
+        <id>instance.web_auth_provider</id>
+        <label>Web authentication provider</label>
+        <type>dropdown</type>
+        <style>selectpicker role role_server</style>
+        <help>Select a single sign-on provider for browser-based authentication. This cannot be combined with password authentication.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>instance.local_group</id>
         <label>Enforce local group</label>
         <type>dropdown</type>

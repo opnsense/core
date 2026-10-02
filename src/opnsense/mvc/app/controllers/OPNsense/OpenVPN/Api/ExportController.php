@@ -118,7 +118,9 @@ class ExportController extends ApiControllerBase
                 $name .= " " . $node->proto . ":" . $node->port;
                 yield [
                     'name' => $name,
-                    'mode' => !empty((string)$node->authmode) ? 'server_tls_user' : '',
+                    'mode' => !empty((string)$node->authmode) || !empty((string)$node->web_auth_provider)
+                        ? 'server_tls_user'
+                        : '',
                     'vpnid' => $node_uuid
                 ];
             }

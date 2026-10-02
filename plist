@@ -586,8 +586,10 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/BaseExporter.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ExportFactory.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/IExportProvider.php
+/usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/IWebAuthProvider.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/PlainOpenVPN.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ViscosityVisz.php
+/usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/WebAuth.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/AbstractStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/CaptivePortalStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/ConfigdProxyOverrideStatus.php
@@ -912,6 +914,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/FieldTypes/OpenVPNServerField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/FieldTypes/RemoteHostField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/FieldTypes/VPNIdField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/FieldTypes/WebAuthProviderField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/OpenVPN.php
 /usr/local/opnsense/mvc/app/models/OPNsense/OpenVPN/OpenVPN.xml
@@ -1112,6 +1115,7 @@
 /usr/local/opnsense/mvc/tests/app/library/OPNsense/Firewall/FilterRuleTest/testIcmp.conf
 /usr/local/opnsense/mvc/tests/app/library/OPNsense/Firewall/FilterRuleTest/testProtocol.conf
 /usr/local/opnsense/mvc/tests/app/library/OPNsense/Interface/IdassocTest.php
+/usr/local/opnsense/mvc/tests/app/library/OPNsense/OpenVPN/WebAuthTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/ACL/AclConfig/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/ACL/AclTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/BaseModel/Migrations/M0_0_1.php

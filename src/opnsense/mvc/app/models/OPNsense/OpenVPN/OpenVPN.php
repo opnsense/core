@@ -125,7 +125,7 @@ class OpenVPN extends BaseModel
                             $key . ".verify_client_cert"
                         ));
                     }
-                } elseif (empty((string)$instance->authmode)) {
+                } elseif ($instance->authmode->isEmpty() && $instance->web_auth_provider->isEmpty()) {
                     $messages->appendMessage(new Message(
                         gettext(
                             'Please select an authentication option, at least one type of authentication is required.'
@@ -133,7 +133,47 @@ class OpenVPN extends BaseModel
                         $key . ".verify_client_cert"
                     ));
                 }
-                if (!$instance->username_as_common_name->isEmpty() && $instance->authmode->isEmpty()) {
+                if (!$instance->authmode->isEmpty() && !$instance->web_auth_provider->isEmpty()) {
+                    $messages->appendMessage(new Message(
+                        gettext('Password and web authentication cannot be combined.'),
+                        $key . '.web_auth_provider'
+                    ));
+                }
+                if (!$instance->web_auth_provider->isEmpty()) {
+                    $provider = WebAuth::getProvider((string)$instance->web_auth_provider);
+                    if ($provider === null) {
+                        $messages->appendMessage(new Message(
+                            gettext('The selected web authentication provider is not available.'),
+                            $key . '.web_auth_provider'
+                        ));
+                    } else {
+                        try {
+                            WebAuth::getConfigOptions($provider);
+                        } catch (\InvalidArgumentException) {
+                            $messages->appendMessage(new Message(
+                                gettext('The selected web authentication provider has an invalid configuration.'),
+                                $key . '.web_auth_provider'
+                            ));
+                        }
+                    }
+                    if (!$instance->local_group->isEmpty()) {
+                        $messages->appendMessage(new Message(
+                            gettext('Local group enforcement is not available with web authentication.'),
+                            $key . '.local_group'
+                        ));
+                    }
+                    if ((string)$instance->strictusercn !== '0') {
+                        $messages->appendMessage(new Message(
+                            gettext('Strict User/CN Matching is not available with web authentication.'),
+                            $key . '.strictusercn'
+                        ));
+                    }
+                }
+                if (
+                    !$instance->username_as_common_name->isEmpty() &&
+                    $instance->authmode->isEmpty() &&
+                    $instance->web_auth_provider->isEmpty()
+                ) {
                     $messages->appendMessage(new Message(
                         gettext('Username as CN requires one or more authentication modes.'),
                         $key . ".authmode"
@@ -436,6 +476,7 @@ class OpenVPN extends BaseModel
                     'role' => (string)$node->role,
                     'vpnid' => (string)$node->vpnid,
                     'authmode' => (string)$node->authmode,
+                    'web_auth_provider' => (string)$node->web_auth_provider,
                     'local_group' => $local_group,
                     'cso_login_matching' => (string)$node->username_as_common_name,
                     'strictusercn' => (string)$node->strictusercn,
@@ -443,7 +484,9 @@ class OpenVPN extends BaseModel
                     'topology_subnet' => $node->topology == 'subnet' ? '1' : '0',
                     'local_port' =>  (string)$node->port,
                     'protocol' => (string)$node->proto,
-                    'mode' => !$node->authmode->isEmpty() ? 'server_tls_user' : '',
+                    'mode' => !$node->authmode->isEmpty() || !$node->web_auth_provider->isEmpty()
+                        ? 'server_tls_user'
+                        : '',
                     'reneg-sec' => (string)$node->{'reneg-sec'},
                     'tls' => $this_tls,
                     'tlsmode' => $this_mode,
@@ -646,6 +689,18 @@ class OpenVPN extends BaseModel
                     // hook event handlers
                     if (!$node->authmode->isEmpty()) {
                         $options['auth-user-pass-verify'] = "\"{$event_script} --defer '{$node_uuid}'\" via-env";
+                        $options['learn-address'] =  "\"{$event_script} '{$node->vpnid}'\"";
+                    } elseif (!$node->web_auth_provider->isEmpty()) {
+                        $provider = WebAuth::getProvider((string)$node->web_auth_provider);
+                        if ($provider === null) {
+                            throw new \RuntimeException(sprintf(
+                                "OpenVPN web authentication provider '%s' is not available.",
+                                (string)$node->web_auth_provider
+                            ));
+                        }
+                        foreach (WebAuth::getConfigOptions($provider) as $key => $value) {
+                            $options[$key] = $value;
+                        }
                         $options['learn-address'] =  "\"{$event_script} '{$node->vpnid}'\"";
                     } else {
                         // client specific profiles are being deployed using the connect event when no auth is used
