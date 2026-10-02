@@ -26,29 +26,39 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Firewall\Api;
+namespace OPNsense\Firewall\Migrations;
 
-use OPNsense\Base\ApiMutableModelControllerBase;
-use OPNsense\Core\Backend;
+use OPNsense\Base\BaseModelMigration;
+use OPNsense\Core\Config;
+use OPNsense\Firewall\Filter;
 
-class SettingsController extends ApiMutableModelControllerBase
+class MFP1_1_0 extends BaseModelMigration
 {
-    protected static $internalModelName = 'filter';
-    protected static $internalModelClass = 'OPNsense\Firewall\Filter';
-
-    protected function getModelNodes()
+    public function run($model)
     {
-        return ['settings' => $this->getModel()->settings->getNodes()];
+        if ($model instanceof Filter) {
+            $config = Config::getInstance()->object();
+            $legacy_system = $config->system;
+            $model->settings->nat->setNodes([
+                'reflection_dnat' => empty($legacy_system->disablenatreflection) ? '1' : '0',
+                'reflection_binat' => !empty($legacy_system->enablebinatreflection) ? '1' : '0',
+                'reflection_snat' => !empty($legacy_system->enablenatreflectionhelper) ? '1' : '0',
+            ]);
+        }
+
+        parent::run($model);
     }
 
-    public function reconfigureAction()
+    public function post($model)
     {
-        if ($this->request->isPost()) {
-            $backend = new Backend();
-            $backend->configdRun('cron restart');
-            $backend->configdRun('service restart sysctl');
-            return ['status' => $backend->configdRun('filter reload')];
+        if ($model instanceof Filter) {
+            $config = Config::getInstance()->object();
+            $legacy_system = $config->system;
+            unset(
+                $legacy_system->disablenatreflection,
+                $legacy_system->enablebinatreflection,
+                $legacy_system->enablenatreflectionhelper,
+            );
         }
-        return ['status' => 'failed'];
     }
 }

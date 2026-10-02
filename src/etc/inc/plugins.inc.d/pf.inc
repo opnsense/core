@@ -29,11 +29,10 @@
 
 function pf_services()
 {
-    global $config;
-
     $services = [];
+    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
 
-    if (!isset($config['system']['disablefilter'])) {
+    if (empty($settings['filter']['disable_filter'])) {
         $services[] = [
             'description' => gettext('Packet Filter'),
             'configd' => [
@@ -56,16 +55,14 @@ function pf_configure()
 
 function pf_cron()
 {
-    global $config;
-
     $jobs = [];
+    $filter = new OPNsense\Firewall\Filter(true);
 
-    if ((new OPNsense\Firewall\Filter(true))->hasSchedule()) {
+    if ($filter->hasSchedule()) {
         $jobs[]['autocron'] = ['/usr/bin/logger "reload filter for configured schedules" ; /usr/local/etc/rc.filter_configure', '1,16,31,46'];
     }
 
-    /* bogons fetch always set in default config.xml */
-    switch ($config['system']['bogons']['interval']) {
+    switch ($filter->settings->alias->bogons_interval->getValue()) {
         case 'daily':
             $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d filter schedule bogons', '1', '3', '*', '*', '*'];
             break;
@@ -113,15 +110,16 @@ function pf_firewall($fw)
 {
     global $config;
 
+    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
     $defaults = [];
-    $defaults['pass'] = ['type' => 'pass', 'log' => !isset($config['syslog']['nologdefaultpass'])];
+    $defaults['pass'] = ['type' => 'pass', 'log' => !empty($settings['logging']['default_pass'])];
 
     /*
      *  pass traffic between statically routed subnets and the subnet on the
      *  interface in question to avoid problems with complicated routing
      *  topologies
      */
-    if (isset($config['filter']['bypassstaticroutes']) && count(config_read_array('staticroutes', 'route', false))) {
+    if (!empty($settings['filter']['bypass_static_routes']) && count(config_read_array('staticroutes', 'route', false))) {
         $ifdetails = $fw->getIfconfigDetails();
         $GatewaysList = $fw->getGateways()->gatewaysIndexedByName(false, true);
 
@@ -149,7 +147,7 @@ function pf_firewall($fw)
                             'protocol' => 'tcp','flags' => 'any', 'from' => $network['from'],
                             'to' => $network['to'], 'quick' => false,
                             'descr' => "pass traffic between statically routed subnets",
-                            '#ref' => 'system_advanced_firewall.php#bypassstaticroutes'],
+                            '#ref' => 'ui/firewall/settings#settings-filter'],
                         $defaults['pass']
                     );
                     $fw->registerFilterRule(
@@ -157,7 +155,7 @@ function pf_firewall($fw)
                         ['interface' => $gw['interface'], 'statetype' => 'sloppy', 'ipprotocol' => $proto,
                             'from' => $network['from'],'to' => $network['to'], 'quick' => false,
                             'descr' => "pass traffic between statically routed subnets",
-                            '#ref' => 'system_advanced_firewall.php#bypassstaticroutes'],
+                            '#ref' => 'ui/firewall/settings#settings-filter'],
                         $defaults['pass']
                     );
                 }
@@ -274,7 +272,7 @@ function filter_auto_destination_nat()
                 'interface' => $lockoutif,
                 'nordr' => true,
                 'protocol' => 'tcp',
-                '#ref' => 'system_advanced_firewall.php#noantilockout',
+                '#ref' => 'ui/firewall/settings#settings-filter',
             ];
         }
     }

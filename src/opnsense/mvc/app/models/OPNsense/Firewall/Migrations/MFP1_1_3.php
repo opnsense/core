@@ -26,29 +26,41 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Firewall\Api;
+namespace OPNsense\Firewall\Migrations;
 
-use OPNsense\Base\ApiMutableModelControllerBase;
-use OPNsense\Core\Backend;
+use OPNsense\Base\BaseModelMigration;
+use OPNsense\Core\Config;
+use OPNsense\Firewall\Filter;
 
-class SettingsController extends ApiMutableModelControllerBase
+class MFP1_1_3 extends BaseModelMigration
 {
-    protected static $internalModelName = 'filter';
-    protected static $internalModelClass = 'OPNsense\Firewall\Filter';
-
-    protected function getModelNodes()
+    public function run($model)
     {
-        return ['settings' => $this->getModel()->settings->getNodes()];
+        if ($model instanceof Filter) {
+            $config = Config::getInstance()->object();
+            $legacy_system = $config->system;
+            $model->settings->filter->setNodes([
+                'lb_use_sticky' => !empty($legacy_system->lb_use_sticky) ? '1' : '0',
+                'source_tracking_timeout' => (string)$legacy_system->srctrack,
+                'pf_share_forward' => !empty($legacy_system->pf_share_forward) ? '1' : '0',
+                'pf_disable_force_gw' => !empty($legacy_system->pf_disable_force_gw) ? '1' : '0',
+            ]);
+        }
+
+        parent::run($model);
     }
 
-    public function reconfigureAction()
+    public function post($model)
     {
-        if ($this->request->isPost()) {
-            $backend = new Backend();
-            $backend->configdRun('cron restart');
-            $backend->configdRun('service restart sysctl');
-            return ['status' => $backend->configdRun('filter reload')];
+        if ($model instanceof Filter) {
+            $config = Config::getInstance()->object();
+            $legacy_system = $config->system;
+            unset(
+                $legacy_system->lb_use_sticky,
+                $legacy_system->srctrack,
+                $legacy_system->pf_share_forward,
+                $legacy_system->pf_disable_force_gw,
+            );
         }
-        return ['status' => 'failed'];
     }
 }

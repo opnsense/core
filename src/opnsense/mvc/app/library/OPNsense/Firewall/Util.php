@@ -671,7 +671,8 @@ class Util
     public static function getAntiLockout()
     {
         $cfg = Config::getInstance()->object();
-        if (isset($cfg->system->webgui->noantilockout)) {
+        $settings = (new Filter(true))->settings;
+        if (!$settings->filter->disable_anti_lockout->isEmpty()) {
             return [];
         }
 

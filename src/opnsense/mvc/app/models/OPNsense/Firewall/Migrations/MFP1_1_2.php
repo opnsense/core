@@ -26,29 +26,35 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Firewall\Api;
+namespace OPNsense\Firewall\Migrations;
 
-use OPNsense\Base\ApiMutableModelControllerBase;
-use OPNsense\Core\Backend;
+use OPNsense\Base\BaseModelMigration;
+use OPNsense\Core\Config;
+use OPNsense\Firewall\Filter;
 
-class SettingsController extends ApiMutableModelControllerBase
+class MFP1_1_2 extends BaseModelMigration
 {
-    protected static $internalModelName = 'filter';
-    protected static $internalModelClass = 'OPNsense\Firewall\Filter';
-
-    protected function getModelNodes()
+    public function run($model)
     {
-        return ['settings' => $this->getModel()->settings->getNodes()];
+        if ($model instanceof Filter) {
+            $config = Config::getInstance()->object();
+            $legacy_system = $config->system;
+            $model->settings->filter->setNodes([
+                'skip_rules_gw_down' => !empty($legacy_system->skip_rules_gw_down) ? '1' : '0',
+            ]);
+        }
+
+        parent::run($model);
     }
 
-    public function reconfigureAction()
+    public function post($model)
     {
-        if ($this->request->isPost()) {
-            $backend = new Backend();
-            $backend->configdRun('cron restart');
-            $backend->configdRun('service restart sysctl');
-            return ['status' => $backend->configdRun('filter reload')];
+        if ($model instanceof Filter) {
+            $config = Config::getInstance()->object();
+            $legacy_system = $config->system;
+            unset(
+                $legacy_system->skip_rules_gw_down,
+            );
         }
-        return ['status' => 'failed'];
     }
 }
