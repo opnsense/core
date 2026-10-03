@@ -30,6 +30,7 @@
 require_once('script/load_phalcon.php');
 require_once('util.inc');
 require_once('interfaces.inc');
+require_once('plugins.inc');
 
 
 function setup_interface($instance)

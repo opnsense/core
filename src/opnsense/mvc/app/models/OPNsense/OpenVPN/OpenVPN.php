@@ -839,6 +839,13 @@ class OpenVPN extends BaseModel
                     ];
                 }
 
+                // Plugins may append options, but cannot replace core-managed values.
+                foreach (plugins_run('openvpn_instance_config', [$node_uuid]) as $plugin_options) {
+                    if (is_array($plugin_options)) {
+                        $options += $plugin_options;
+                    }
+                }
+
                 // dump to file
                 $this->writeConfig($node->cnfFilename, $options);
             }
