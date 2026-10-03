@@ -250,15 +250,17 @@ class Util
     }
 
     /**
+     * @param string $name name
+     * @param boolean $valid only accept port aliases with content
      * @return boolean true when alias exists and is a port type
      */
-    public static function isPortAlias($name)
+    public static function isPortAlias($name, $valid = true)
     {
 
         $alias = self::getAliasByName($name);
         if ($alias != null) {
             // check validity for port type aliases
-            if ((string)$alias->type == 'port' && !empty((string)$alias->content)) {
+            if ((string)$alias->type == 'port' && (!$valid || !empty((string)$alias->content))) {
                 return true;
             }
         }

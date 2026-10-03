@@ -28,7 +28,9 @@
 
 namespace tests\OPNsense\Firewall;
 
+use OPNsense\Firewall\Alias;
 use OPNsense\Firewall\FilterRule;
+use OPNsense\Firewall\Util;
 
 class FilterRuleTest extends \PHPUnit\Framework\TestCase
 {
@@ -94,5 +96,33 @@ class FilterRuleTest extends \PHPUnit\Framework\TestCase
         $rules[] = new FilterRule(self::$ifmap, self::$gwmap, ['protocol' => 'a/n']);
 
         $this->assertEquals(join('', $rules), $this->getConf(__FUNCTION__));
+    }
+
+    /**
+     * a port alias takes precedence over a service name with the same name
+     */
+    public function testPortAliasOverridesService()
+    {
+        $alias = new Alias();
+        $node = $alias->aliases->alias->Add();
+        $node->setNodes(['enabled' => '1', 'name' => 'ftp', 'type' => 'port', 'content' => "20\n21\n20000:20099"]);
+        $node = $alias->aliases->alias->Add();
+        $node->setNodes(['enabled' => '1', 'name' => 'pop3', 'type' => 'port', 'content' => '']);
+        /* only port aliases override a service name */
+        $node = $alias->aliases->alias->Add();
+        $node->setNodes(['enabled' => '1', 'name' => 'http', 'type' => 'host', 'content' => '192.168.1.1']);
+        Util::attachAliasObject($alias);
+
+        $rule = (string)(new FilterRule(self::$ifmap, self::$gwmap, ['protocol' => 'tcp', 'to_port' => 'ftp']));
+        $this->assertStringContainsString('port $ftp', $rule);
+        $rule = (string)(new FilterRule(self::$ifmap, self::$gwmap, ['protocol' => 'tcp', 'to_port' => 'pop3']));
+        /* an empty port alias disables the rule instead of falling back to the service */
+        $this->assertStringContainsString('# pass in quick proto tcp from {any} to {any} port $pop3', $rule);
+        $rule = (string)(new FilterRule(self::$ifmap, self::$gwmap, ['protocol' => 'tcp', 'to_port' => 'http']));
+        $this->assertStringContainsString('port {http}', $rule);
+        $rule = (string)(new FilterRule(self::$ifmap, self::$gwmap, ['protocol' => 'tcp', 'to_port' => 'https']));
+        $this->assertStringContainsString('port {https}', $rule);
+
+        Util::attachAliasObject(null);
     }
 }

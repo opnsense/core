@@ -98,6 +98,11 @@ class PortField extends BaseListField
     private static $internalCacheOptionList = [];
 
     /**
+     * @var array|null cached port alias names
+     */
+    private static $internalCachePortAliases = null;
+
+    /**
      * @var bool enable well known ports
      */
     private $enableWellKnown = false;
@@ -184,13 +189,36 @@ class PortField extends BaseListField
     }
 
     /**
-     * always lowercase known portnames
+     * @param string $name
+     * @return bool true when aliases are enabled and a port alias with exactly this name exists
+     */
+    private function isPortAlias($name)
+    {
+        if (!$this->enableAlias) {
+            return false;
+        }
+        if (self::$internalCachePortAliases === null) {
+            self::$internalCachePortAliases = [];
+            foreach (self::getArrayReference(Alias::getCachedData(), 'aliases.alias') as $alias) {
+                if ($alias['type'] == 'port') {
+                    self::$internalCachePortAliases[$alias['name']] = true;
+                }
+            }
+        }
+        return isset(self::$internalCachePortAliases[$name]);
+    }
+
+    /**
+     * always lowercase known portnames, unless a port alias with the same name exists
      * @param string $value
      */
     public function setValue($value)
     {
         $tmp = trim(strtolower($value));
-        if ($this->enableWellKnown && ($tmp == 'any' || isset(self::$wellknownservices[$tmp]))) {
+        if (
+            $this->enableWellKnown && ($tmp == 'any' || isset(self::$wellknownservices[$tmp])) &&
+            !$this->isPortAlias(trim($value))
+        ) {
             return parent::setValue($tmp);
         } else {
             return parent::setValue($value);
@@ -280,7 +308,7 @@ class PortField extends BaseListField
         }
 
         $known = self::getWellKnown($value);
-        if (!empty($known)) {
+        if (!empty($known) && !$this->isPortAlias($value)) {
             $value = array_shift($known);
         }
 

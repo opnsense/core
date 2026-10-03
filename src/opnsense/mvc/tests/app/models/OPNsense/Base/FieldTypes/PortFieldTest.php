@@ -33,6 +33,8 @@ require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
 use OPNsense\Base\FieldTypes\PortField;
+use OPNsense\Core\AppConfig;
+use OPNsense\Core\Config;
 
 class PortFieldTest extends Field_Framework_TestCase
 {
@@ -181,5 +183,42 @@ class PortFieldTest extends Field_Framework_TestCase
         /* XXX this will fail when multiple values are supported */
         $field->setValue('http,https');
         $this->assertEquals('http,https', $field->normalizedPort());
+    }
+
+    /**
+     * a port alias named after a well-known port takes precedence over the well-known port
+     */
+    public function testPortAliasOverridesWellKnown()
+    {
+        (new AppConfig())->update('application.configDir', __DIR__ . '/PortFieldTest');
+        Config::getInstance()->forceReload();
+        (new \ReflectionProperty(PortField::class, 'internalCachePortAliases'))->setValue(null, null);
+
+        $field = new PortField();
+        $field->setEnableWellKnown("Y");
+        $field->setEnableAlias("Y");
+        $field->eventPostLoading();
+        foreach (['FTP' => 'FTP', 'rfb' => 'rfb', 'Ftp' => 'ftp', 'HTTP' => 'http'] as $value => $expected) {
+            $field->setValue($value);
+            $this->assertEquals($expected, (string)$field);
+            $this->assertEmpty($this->validate($field), "{$value} should be valid");
+        }
+        $field->setValue('FTP');
+        $this->assertEquals('FTP', $field->normalizedPort());
+        $field->setValue('rfb');
+        $this->assertEquals('rfb', $field->normalizedPort());
+        $field->setValue('Ftp');
+        $this->assertEquals('21', $field->normalizedPort());
+        $field->setValue('HTTP');
+        $this->assertEquals('80', $field->normalizedPort());
+
+        /* without aliases the well-known port is used */
+        $field = new PortField();
+        $field->setEnableWellKnown("Y");
+        $field->eventPostLoading();
+        $field->setValue('FTP');
+        $this->assertEquals('ftp', (string)$field);
+        $field->setValue('rfb');
+        $this->assertEquals('5900', $field->normalizedPort());
     }
 }

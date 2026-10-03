@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<opnsense>
+    <OPNsense>
+        <Firewall>
+            <Alias version="1.0.0" persisted_at="1759312800.00">
+                <aliases>
+                    <alias uuid="5b1f0a5e-7c4b-4d0e-9a51-2f6d8a0c1e01">
+                        <enabled>1</enabled>
+                        <name>FTP</name>
+                        <type>port</type>
+                        <proto/>
+                        <counters>0</counters>
+                        <updatefreq/>
+                        <content>20
+21
+20000:20099</content>
+                        <description>FTP</description>
+                    </alias>
+                    <alias uuid="5b1f0a5e-7c4b-4d0e-9a51-2f6d8a0c1e02">
+                        <enabled>1</enabled>
+                        <name>rfb</name>
+                        <type>port</type>
+                        <proto/>
+                        <counters>0</counters>
+                        <updatefreq/>
+                        <content>5900:5901</content>
+                        <description>rfb</description>
+                    </alias>
+                    <alias uuid="5b1f0a5e-7c4b-4d0e-9a51-2f6d8a0c1e03">
+                        <enabled>1</enabled>
+                        <name>HTTP</name>
+                        <type>host</type>
+                        <proto/>
+                        <counters>0</counters>
+                        <updatefreq/>
+                        <content>192.168.1.1</content>
+                        <description>HTTP</description>
+                    </alias>
+                </aliases>
+            </Alias>
+        </Firewall>
+    </OPNsense>
+</opnsense>
