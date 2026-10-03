@@ -191,13 +191,13 @@ class InterfaceController extends ApiControllerBase
     {
         if (
             $this->request->isPost() && $this->request->hasPost('destination')
-              && $this->request->hasPost('gateway')
+              && $this->request->hasPost('gateway') && $this->request->hasPost('family')
         ) {
             $backend = new Backend();
             $dest = $this->request->getPost('destination', 'striptags', null);
             $gw = $this->request->getPost('gateway', 'striptags', null);
             $af = $this->request->getPost('family', 'striptags', null);
-            $response = trim($backend->configdpRun('interface route del', [$af, $dest, $gw, $nm]));
+            $response = trim($backend->configdpRun('interface route del', [$af, $dest, $gw]));
             return ['message' => $response == 'OK' ? 'found' : 'not_found'];
         } else {
             return ['message' => 'error'];
