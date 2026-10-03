@@ -128,6 +128,18 @@ class PortField extends BaseListField
     }
 
     /**
+     * map a single well-known service name to its port number, other values are returned unchanged
+     * @param string|int|null $value port number or name
+     * @return string
+     */
+    public static function normalizePort($value)
+    {
+        $value = (string)$value;
+        $known = self::getWellKnown($value);
+        return !empty($known) ? (string)array_shift($known) : $value;
+    }
+
+    /**
      * generate validation data (list of port numbers and well know ports)
      */
     protected function actionPostLoadingEvent()
@@ -279,11 +291,6 @@ class PortField extends BaseListField
             return '';
         }
 
-        $known = self::getWellKnown($value);
-        if (!empty($known)) {
-            $value = array_shift($known);
-        }
-
-        return $value;
+        return self::normalizePort($value);
     }
 }
