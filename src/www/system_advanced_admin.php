@@ -1100,7 +1100,7 @@ $(document).ready(function() {
                   <input name="noroot" type="checkbox" value="yes" <?= empty($pconfig['noroot']) ? '' : 'checked="checked"' ?> />
                   <?=gettext("(Experimental)"); ?>
                   <div class="hidden" data-for="help_for_noroot">
-                    <?=gettext("Make security stricter by running the webserver as a non-root user. Not all components may be compatible with this feature.") ?>
+                    <?=gettext("Make security stricter by running the web GUI as a non-root user. Not all components may be compatible with this feature.") ?>
                   </div>
                 </td>
               </tr>
