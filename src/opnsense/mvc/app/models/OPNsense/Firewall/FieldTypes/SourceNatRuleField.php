@@ -70,7 +70,7 @@ class SourceNatRuleContainerField extends ContainerField
                         $result[$target_fieldname] = (string)$node;
                     }
                 } elseif ($key == 'target_port' && is_a($node, PortField::class) && $node->getValue() != '') {
-                    $result[$target_fieldname] = (string)$node->normalizedPort();
+                    $result[$target_fieldname] = $node->normalizedPort();
                 } elseif ((string)$node != '') {
                     /*
                      * XXX: Omit empty values to allow array_merge() to overlay default values in Plugin.php.

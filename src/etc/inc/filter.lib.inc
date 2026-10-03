@@ -650,7 +650,7 @@ function filter_core_rules_system($fw, $defaults)
                 'log' => $dnatrule['log'],
                 'descr' => $dnatrule['descr']
             ];
-            $local_port = (string)$rule->{'local-port'}->normalizedPort();
+            $local_port = $rule->{'local-port'}->normalizedPort();
             if (!empty($dnatrule['destination']['port']) && ctype_digit($local_port)) {
                 $tmprule['destination']['port'] = $local_port;
 
