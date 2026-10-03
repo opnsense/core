@@ -99,7 +99,7 @@ class LogController extends ApiControllerBase
                     [$offset, $searchPhrase, $module, $scope, $severities],
                     [
                         'Content-Type: text/event-stream',
-                        'Cache-Control: no-cache'
+                        'Cache-Control: no-cache',
                     ],
                     60 /* XXX */
                 );
