@@ -58,10 +58,11 @@ if __name__ == '__main__':
         if parts[0] != inputargs.destination:
             continue;
 
+        # route entry found, try to delete
         if not inputargs.gateway:
             subprocess.run(['/sbin/route', 'delete', '-host', destination], capture_output=True)
         elif parts[1] == inputargs.gateway:
-            # route entry found, try to delete
+            # XXX when in -n mode gatway could be a valid hostname but almost impossible to guess
             try:
                 ipaddress.ip_address(inputargs.gateway)
                 # gateway is an ip address (v4/v6)
