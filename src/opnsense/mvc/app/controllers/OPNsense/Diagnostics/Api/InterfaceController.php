@@ -177,7 +177,7 @@ class InterfaceController extends ApiControllerBase
                 }
 
                 /* stitch together a sensible unique datakey for identification */
-                $routingentry['id'] = implode(',', $routingentry['proto'], $routingentry['destination'], $routingentry['gateway']);
+                $routingentry['id'] = implode(',', [$routingentry['proto'], $routingentry['destination'], $routingentry['gateway']]);
             }
         }
         return $routingtable;
