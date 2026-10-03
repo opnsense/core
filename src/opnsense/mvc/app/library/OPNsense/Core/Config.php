@@ -583,7 +583,8 @@ class Config extends Singleton
         } else {
             $target_filename = "config-" . $timestamp . ".xml";
         }
-        File::file_put_contents($target_dir . $target_filename, file_get_contents($this->config_file), 0640);
+        $owner = (new AppConfig())->globals->owner;
+        File::file_put_contents($target_dir . $target_filename, file_get_contents($this->config_file), 0640, 0, $owner);
 
         return $target_dir . $target_filename;
     }
