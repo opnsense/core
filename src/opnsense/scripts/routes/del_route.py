@@ -36,44 +36,26 @@ import ipaddress
 
 
 if __name__ == '__main__':
-    # parse input arguments
     parser = argparse.ArgumentParser()
     parser.add_argument('--family', help='IP address family', required=True)
     parser.add_argument('--destination', help='Route destination to remove', required=True)
     parser.add_argument('--gateway', help='Match gateway or none for host route')
-    parser.add_argument('--names', help='Resolve names')
     inputargs = parser.parse_args()
 
     inet = '-6' if inputargs.family == 'ipv6' else '-4'
-    flags = '-rW'
+    runargs = ['/sbin/route', 'delete', inet]
 
-    if inputargs.names:
-       flags += 'n'
+    if not inputargs.gateway:
+        runargs.append('-host');
 
-    sp = subprocess.run(['/usr/bin/netstat', inet, flags], capture_output=True, text=True)
-    for line in sp.stdout.split("\n"):
-        parts = line.split()
-        if len(parts) <= 2:
-            continue
-        if parts[0] != inputargs.destination:
-            continue;
+    runargs.append(inputargs.destination);
 
-        # route entry found, try to delete
-        if not inputargs.gateway:
-            subprocess.run(['/sbin/route', 'delete', '-host', destination], capture_output=True)
-        elif parts[1] == inputargs.gateway:
-            # XXX when in -n mode gatway could be a valid hostname but almost impossible to guess
-            try:
-                ipaddress.ip_address(inputargs.gateway)
-                # gateway is an ip address (v4/v6)
-                subprocess.run(['/sbin/route', 'delete', inet, inputargs.destination, inputargs.gateway, capture_output=True)
-            except ValueError:
-                subprocess.run(['/sbin/route', 'delete', inet, inputargs.destination], capture_output=True)
-        else:
-            continue
+    if inputargs.gateawy:
+        try:
+            ipaddress.ip_address(inputargs.gateway)
+            # gateway is an ip address (v4/v6), but we may discard a valid hostname from -n output
+            runargs.append(inputargs.gateway);
+        except ValueError:
+            pass
 
-        # found
-        sys.exit(0)
-
-    # not found
-    sys.exit(1)
+    sys.exit(subprocess.run(runargs, capture_output=True).returncode)

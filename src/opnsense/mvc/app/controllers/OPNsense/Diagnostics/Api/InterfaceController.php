@@ -160,11 +160,8 @@ class InterfaceController extends ApiControllerBase
     public function getRoutesAction()
     {
         $backend = new Backend();
-        $resolved = '';
-
         if (empty($this->request->get('resolve'))) {
             $response = $backend->configdRun('interface routes list -n json');
-            $resolved = 'yes';
         } else {
             $response = $backend->configdRun('interface routes list json');
         }
@@ -180,7 +177,7 @@ class InterfaceController extends ApiControllerBase
                 }
 
                 /* stitch together a sensible unique datakey for identification */
-                $routingentry['id'] = implode(',', $routingentry['proto'], $routingentry['destination'], $routingentry['gateway'], $resolved);
+                $routingentry['id'] = implode(',', $routingentry['proto'], $routingentry['destination'], $routingentry['gateway']);
             }
         }
         return $routingtable;
@@ -200,7 +197,6 @@ class InterfaceController extends ApiControllerBase
             $dest = $this->request->getPost('destination', 'striptags', null);
             $gw = $this->request->getPost('gateway', 'striptags', null);
             $af = $this->request->getPost('family', 'striptags', null);
-            $nm = $this->request->getPost('names', 'striptags', null);
             $response = trim($backend->configdpRun('interface route del', [$af, $dest, $gw, $nm]));
             return ['message' => $response == 'OK' ? 'found' : 'not_found'];
         } else {

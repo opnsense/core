@@ -44,7 +44,7 @@
                                         '{{ lang._('Yes') }}',
                                         '{{ lang._('No') }}',
                                         function() {
-                            let req = {'destination': route[1], 'gateway': route[2], 'family': route[0], 'names': route[3]};
+                            let req = {'family': route[0], 'destination': route[1], 'gateway': route[2]};
                             ajaxCall('/api/diagnostics/interface/del_route/', req, function (data, status) {
                                 // reload grid after delete
                                 $("#update").click();
