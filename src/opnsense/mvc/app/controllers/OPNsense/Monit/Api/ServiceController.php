@@ -30,7 +30,6 @@
 namespace OPNsense\Monit\Api;
 
 use OPNsense\Base\ApiMutableServiceControllerBase;
-use OPNsense\Core\Backend;
 
 /**
  * Class ServiceController
@@ -42,61 +41,6 @@ class ServiceController extends ApiMutableServiceControllerBase
     protected static $internalServiceEnabled = 'general.enabled';
     protected static $internalServiceTemplate = 'OPNsense/Monit';
     protected static $internalServiceName = 'monit';
-
-    /**
-     * test monit configuration
-     * @return array
-     */
-    public function checkAction()
-    {
-        if ($this->request->isPost()) {
-            $result['status'] = 'ok';
-            $backend = new Backend();
-            $result['function'] = 'check';
-            $result['template'] = trim($backend->configdRun('template reload OPNsense/Monit'));
-            if ($result['template'] != 'OK') {
-                $result['result'] = "Template error: " . $result['template'];
-                return $result;
-            }
-            $result['result'] = trim($backend->configdRun('monit check'));
-            return $result;
-        } else {
-            return array('status' => 'failed');
-        }
-    }
-
-    /**
-     * reconfigure monit
-     * @return array
-     */
-    public function reconfigureAction()
-    {
-        if ($this->request->isPost()) {
-            $result['function'] = "reconfigure";
-            $result['status'] = 'failed';
-            $backend = new Backend();
-            $status = $this->statusAction();
-            $result = $this->checkAction(); /* XXX this overwrites the reconfigure $result */
-            if ((string)$this->getModel()->general->enabled == '1') {
-                if ($result['template'] == 'OK' && preg_match('/^Control file syntax OK$/', $result['result']) == 1) {
-                    if ($status['status'] != 'running') {
-                        $result['status'] = trim($backend->configdRun('monit start'));
-                    } else {
-                        $result['status'] = trim($backend->configdRun('monit reload'));
-                    }
-                } else {
-                    return $result;
-                }
-            } else {
-                if ($status['status'] == 'running') {
-                    $result['status'] = trim($backend->configdRun('monit stop'));
-                }
-            }
-            return $result;
-        } else {
-            return array('status' => 'failed');
-        }
-    }
 
      /**
       * avoid restarting Monit on reconfigure
