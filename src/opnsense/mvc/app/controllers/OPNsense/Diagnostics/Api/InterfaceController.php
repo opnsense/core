@@ -160,8 +160,11 @@ class InterfaceController extends ApiControllerBase
     public function getRoutesAction()
     {
         $backend = new Backend();
+        $resolved = '';
+
         if (empty($this->request->get('resolve'))) {
             $response = $backend->configdRun('interface routes list -n json');
+            $resolved = 'yes';
         } else {
             $response = $backend->configdRun('interface routes list json');
         }
@@ -176,8 +179,8 @@ class InterfaceController extends ApiControllerBase
                     $routingentry['intf_description'] = "";
                 }
 
-                // also stitch together a sensible unique datakey for identification purposes in the frontend
-                $routingentry['id'] = $routingentry['destination'] . ',' . $routingentry['gateway'];
+                /* stitch together a sensible unique datakey for identification */
+                $routingentry['id'] = implode(',', $routingentry['proto'], $routingentry['destination'], $routingentry['gateway'], $resolved);
             }
         }
         return $routingtable;
@@ -196,7 +199,9 @@ class InterfaceController extends ApiControllerBase
             $backend = new Backend();
             $dest = $this->request->getPost('destination', 'striptags', null);
             $gw = $this->request->getPost('gateway', 'striptags', null);
-            $response = trim($backend->configdpRun('interface route del', [$dest, $gw]));
+            $af = $this->request->getPost('family', 'striptags', null);
+            $nm = $this->request->getPost('names', 'striptags', null);
+            $response = trim($backend->configdpRun('interface route del', [$af, $dest, $gw, $nm]));
             return ['message' => $response == 'OK' ? 'found' : 'not_found'];
         } else {
             return ['message' => 'error'];

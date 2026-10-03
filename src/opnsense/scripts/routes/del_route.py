@@ -38,25 +38,41 @@ import ipaddress
 if __name__ == '__main__':
     # parse input arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('--destination', help='destination', required=True)
-    parser.add_argument('--gateway', help='gateway', required=True)
+    parser.add_argument('--family', help='IP address family', required=True)
+    parser.add_argument('--destination', help='Route destination to remove', required=True)
+    parser.add_argument('--gateway', help='Match gateway or none for host route')
+    parser.add_argument('--names', help='Resolve names')
     inputargs = parser.parse_args()
 
-    sp = subprocess.run(['/usr/bin/netstat', '-rWn'], capture_output=True, text=True)
+    inet = '-6' if inputargs.family == 'ipv6' else '-4'
+    flags = '-rW'
+
+    if inputargs.names:
+       flags += 'n'
+
+    sp = subprocess.run(['/usr/bin/netstat', inet, flags], capture_output=True, text=True)
     for line in sp.stdout.split("\n"):
         parts = line.split()
-        if len(parts) > 2 and parts[0] == inputargs.destination and parts[1] == inputargs.gateway:
-            # route entry found, try to delete
-            inet = '-6' if parts[0].find(':') > 0 else '-4'
-            try:
-                ipaddress.ip_address(parts[1])
-                # gateway is an ip address (v4/v6)
-                subprocess.run(['/sbin/route', inet, 'delete', parts[0], parts[1]], capture_output=True)
-            except ValueError:
-                subprocess.run(['/sbin/route', inet, 'delete', parts[0]], capture_output=True)
+        if len(parts) <= 2:
+            continue
+        if parts[0] != inputargs.destination:
+            continue;
 
-            # found
-            sys.exit(0)
+        if not inputargs.gateway:
+            subprocess.run(['/sbin/route', 'delete', '-host', destination], capture_output=True)
+        elif parts[1] == inputargs.gateway:
+            # route entry found, try to delete
+            try:
+                ipaddress.ip_address(inputargs.gateway)
+                # gateway is an ip address (v4/v6)
+                subprocess.run(['/sbin/route', 'delete', inet, inputargs.destination, inputargs.gateway, capture_output=True)
+            except ValueError:
+                subprocess.run(['/sbin/route', 'delete', inet, inputargs.destination], capture_output=True)
+        else:
+            continue
+
+        # found
+        sys.exit(0)
 
     # not found
     sys.exit(1)
