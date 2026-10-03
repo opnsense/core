@@ -55,7 +55,7 @@ class TrafficController extends ApiControllerBase
             [$poll_interval],
             [
                 'Content-Type: text/event-stream',
-                'Cache-Control: no-cache',
+                'Cache-Control: no-cache'
             ],
             $poll_interval + 1
         );
