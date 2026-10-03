@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     runargs.append(inputargs.destination);
 
-    if inputargs.gateawy:
+    if inputargs.gateway:
         try:
             ipaddress.ip_address(inputargs.gateway)
             # gateway is an ip address (v4/v6), but we may discard a valid hostname from -n output
