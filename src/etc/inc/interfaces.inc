@@ -716,24 +716,29 @@ function interfaces_dependencies($plugins_devices = null)
         'unassigned' => [], /* unassigned devices load last for historic reasons */
     ];
 
+    $queues['software'][] = $fill_data(['descr' => '(loopback)', 'if' => 'lo0', 'uuid' => null]);
+    $devices['lo0'] = '_interfaces_loopback_configure';
+
     foreach (legacy_config_get_interfaces(['enable' => true, 'virtual' => false]) as $ifcfg) {
-        if (!empty($devices[$ifcfg['if']]) && !strstr($ifcfg['if'], 'bridge') && !strstr($ifcfg['if'], 'vlan') && !strstr($ifcfg['if'], 'qinq')) {
-            $queues['software'][] = $fill_data($ifcfg);
-            continue;
-        }
-
-        $is_track6 = !empty($ifcfg['ipaddrv6']) && in_array($ifcfg['ipaddrv6'], ['idassoc6', 'track6']);
-        if (!strstr($ifcfg['if'], 'bridge') && $is_track6) {
-            $queues['track6'][] = $fill_data($ifcfg);
-            continue;
-        }
-
-        $is_dhcp6c = !empty($ifcfg['ipaddrv6']) && ($ifcfg['ipaddrv6'] == 'dhcp6' || $ifcfg['ipaddrv6'] == 'slaac');
-        if (strstr($ifcfg['if'], 'bridge') && !$is_dhcp6c) {
+        $is_dhcp6c = ($ifcfg['ipaddrv6'] ?? 'none') == 'dhcp6';
+        /* XXX assigned bridges (with IP configuration) are going away in FreeBSD 16 */
+        if (!$is_dhcp6c && str_starts_with($ifcfg['if'], 'bridge')) {
             $queues['bridge'][] = $fill_data($ifcfg);
             continue;
         } elseif ($is_dhcp6c) {
             $queues['dhcp6c'][] = $fill_data($ifcfg);
+            continue;
+        }
+
+        $is_track6 = in_array($ifcfg['ipaddrv6'] ?? 'none', ['idassoc6', 'track6']);
+        if ($is_track6) {
+            $queues['track6'][] = $fill_data($ifcfg);
+            continue;
+        }
+
+        /* check with plugged devices returned earlier */
+        if (!empty($devices[$ifcfg['if']])) {
+            $queues['software'][] = $fill_data($ifcfg);
             continue;
         }
 
@@ -762,7 +767,6 @@ function interfaces_configure($verbose = false)
      */
     $devices = $deps['devices'];
 
-    interfaces_loopback_configure($verbose);
     interfaces_lagg_configure($verbose);
 
     foreach ($deps['queues'] as $list) {
