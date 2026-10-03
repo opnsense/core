@@ -258,7 +258,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (write_config()) {
             foreach ($staleroutes as $staleroute) {
                 /* explicit flush before proceeding */
-                system_host_route($staleroute, null);
+                configdp_run('interface route del', [is_ipaddrv4($staleroute) ? 'ipv4' : 'ipv6', $staleroute]);
             }
 
             configd_run('service restart timezone'); /* time zone change first */
