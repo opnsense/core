@@ -1177,13 +1177,29 @@ EOD;
     $mpdconf .= "  set iface down-script /usr/local/opnsense/scripts/interfaces/ppp-linkdown.sh\n";
 
     if ($ipv4_mode == 'enable') {
+        $localip = '0.0.0.0';
+        $localnet = '0';
+        $remoteip = '0.0.0.0';
+        $remotenet = '0';
+
+        /* IPCP is the same for multi-link so this block only checks the global field and expects only a single value */
         if ($ppp['type'] == 'ppp') {
-            $localip = is_ipaddr($ppp['localip']) ? $ppp['localip'] : '0.0.0.0';
-            $gateway = is_ipaddr($ppp['gateway']) ? $ppp['gateway'] : "10.64.64.{$idx}";
-            $mpdconf .= "  set ipcp ranges {$localip}/0 {$gateway}/0\n";
-        } else {
-            $mpdconf .= "  set ipcp ranges 0.0.0.0/0 0.0.0.0/0\n";
+            $localip = is_ipaddr($ppp['localip']) ? $ppp['localip'] : $localip;
+            /* "subnet" should have been used for localip, but it is dangerous since it defaulted to 31 */
+            $remoteip = is_ipaddr($ppp['gateway']) ? $ppp['gateway'] : "10.64.64.{$idx}";
+            /* "remotenet" was never available before, so do not use it until requested */
+        } elseif ($ppp['type'] == 'pppoe') {
+            if (is_ipaddr($ppp['localip'])) {
+                $localnet = ctype_digit($ppp['subnet']) && $ppp['subnet'] >= 0 && $ppp['subnet'] <= 32 ? $ppp['subnet'] : $localnet;
+                $localip = $ppp['localip'];
+            }
+            if (is_ipaddr($ppp['gateway'])) {
+                $remotenet = ctype_digit($ppp['remotenet']) && $ppp['remotenet'] >= 0 && $ppp['remotenet'] <= 32 ? $ppp['remotenet'] : $remotenet;
+                $remoteip = $ppp['gateway'];
+            }
         }
+
+        $mpdconf .= "  set ipcp ranges {$localip}/{$localnet} {$remoteip}/{$remotenet}\n";
 
         if (isset($ppp['vjcomp'])) {
             $mpdconf .= "  set ipcp no vjcomp\n";
@@ -1305,7 +1321,7 @@ EOD;
             $mpdconf .= "  " . $mpdconf_opt . "\n";
         }
 
-        $mpdconf .= "\topen\n";
+        $mpdconf .= "  open\n";
     }
 
     /* stop the service as a precaution */
