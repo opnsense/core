@@ -664,6 +664,11 @@ function filter_core_rules_system($fw, $defaults)
             } elseif (!empty($dnatrule['destination']['port'])) {
                 $tmprule['destination']['port'] = $dnatrule['destination']['port'];
             }
+
+            if (empty($dnatrule['target'])) {
+                /* without target, use destination network, should only appear on no-rdr rules */
+                $tmprule['destination']['network'] = $dnatrule['destination']['network'];
+            }
             $fw->registerFilterRule(500000, $tmprule); /* automatic at the end of our ruleset */
         }
     }
