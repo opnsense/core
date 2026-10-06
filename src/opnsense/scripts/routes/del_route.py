@@ -36,28 +36,26 @@ import ipaddress
 
 
 if __name__ == '__main__':
-    # parse input arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('--destination', help='destination', required=True)
-    parser.add_argument('--gateway', help='gateway', required=True)
+    parser.add_argument('--family', help='IP address family', required=True)
+    parser.add_argument('--destination', help='Route destination to remove', required=True)
+    parser.add_argument('--gateway', help='Match gateway or none for host route')
     inputargs = parser.parse_args()
 
-    for flags in ['-rWn', '-rW']:
-        sp = subprocess.run(['/usr/bin/netstat', flags], capture_output=True, text=True)
-        for line in sp.stdout.split("\n"):
-            parts = line.split()
-            if len(parts) > 2 and parts[0] == inputargs.destination and parts[1] == inputargs.gateway:
-                # route entry found, try to delete
-                print ("found")
-                inet = '-6' if parts[0].find(':') > 0 else '-4'
-                try:
-                    ipaddress.ip_address(parts[1])
-                    # gateway is an ip address (v4/v6)
-                    subprocess.run(['/sbin/route', inet, 'delete', parts[0], parts[1]], capture_output=True)
-                except ValueError:
-                    subprocess.run(['/sbin/route', inet, 'delete', parts[0]], capture_output=True)
+    inet = '-6' if inputargs.family == 'ipv6' else '-4'
+    runargs = ['/sbin/route', 'delete', inet]
 
-                sys.exit(0)
+    if not inputargs.gateway:
+        runargs.append('-host');
 
-    # not found
-    print ("not_found")
+    runargs.append(inputargs.destination);
+
+    if inputargs.gateway:
+        try:
+            ipaddress.ip_address(inputargs.gateway)
+            # gateway is an ip address (v4/v6), but we may discard a valid hostname from -n output
+            runargs.append(inputargs.gateway);
+        except ValueError:
+            pass
+
+    sys.exit(subprocess.run(runargs, capture_output=True).returncode)

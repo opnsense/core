@@ -176,8 +176,8 @@ class InterfaceController extends ApiControllerBase
                     $routingentry['intf_description'] = "";
                 }
 
-                // also stitch together a sensible unique datakey for identification purposes in the frontend
-                $routingentry['id'] = $routingentry['destination'] . ',' . $routingentry['gateway'];
+                /* stitch together a sensible unique datakey for identification */
+                $routingentry['id'] = implode(',', [$routingentry['proto'], $routingentry['destination'], $routingentry['gateway']]);
             }
         }
         return $routingtable;
@@ -190,16 +190,17 @@ class InterfaceController extends ApiControllerBase
     public function delRouteAction()
     {
         if (
-            $this->request->isPost() && $this->request->hasPost("destination")
-              && $this->request->hasPost("gateway")
+            $this->request->isPost() && $this->request->hasPost('destination')
+              && $this->request->hasPost('gateway') && $this->request->hasPost('family')
         ) {
             $backend = new Backend();
-            $dest = $this->request->getPost("destination", "striptags", null);
-            $gw = $this->request->getPost("gateway", "striptags", null);
-            $response = trim($backend->configdpRun("interface route del", array($dest, $gw)));
-            return array("message" => $response);
+            $dest = $this->request->getPost('destination', 'striptags', null);
+            $gw = $this->request->getPost('gateway', 'striptags', null);
+            $af = $this->request->getPost('family', 'striptags', null);
+            $response = trim($backend->configdpRun('interface route del', [$af, $dest, $gw]));
+            return ['message' => $response == 'OK' ? 'found' : 'not_found'];
         } else {
-            return array("message" => "error");
+            return ['message' => 'error'];
         }
     }
 
