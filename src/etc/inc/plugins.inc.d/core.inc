@@ -288,8 +288,6 @@ function core_devices()
 
 function core_cron()
 {
-    global $config;
-
     $jobs = [];
 
     $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d syslog archive', '1'];
@@ -308,9 +306,6 @@ function core_cron()
         }
     }
 
-    /**
-     * rrd graph collector, only schedule execution when enabled
-     */
     if (!(new \OPNsense\Diagnostics\SystemHealth())->enabled->isEmpty()) {
         $jobs[]['autocron'] = [
             '/usr/local/bin/flock -n -E 0 -o /tmp/updaterrd.lock /usr/local/opnsense/scripts/health/updaterrd.php',
