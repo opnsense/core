@@ -1336,6 +1336,7 @@
 /usr/local/opnsense/scripts/interfaces/reconfigure_gres.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_laggs.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_neighbors.php
+/usr/local/opnsense/scripts/interfaces/reconfigure_ppp.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vips.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vlans.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_wlan.php

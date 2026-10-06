@@ -1030,8 +1030,8 @@ function interface_ppps_configure($interface)
 {
     global $config;
 
-    $ifcfg = $config['interfaces'][$interface] ?? null;
-    $ppps = $config['ppps']['ppp'] ?? null;
+    $ifcfg = config_read_array('interfaces', $interface, false);
+    $ppps = config_read_array('ppps', 'ppp', false);
 
     if (!interface_ppps_capable($ifcfg, $ppps)) {
         return;
