@@ -330,7 +330,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     interface_configure(false, $ifapply, true);
                 }
 
-                system_routing_configure(false, array_keys($toapplylist));
                 configd_run('filter reload');
                 configd_run('webgui restart 3', true);
             }
