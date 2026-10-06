@@ -733,6 +733,8 @@ class OpenVPN extends BaseModel
                 $options['persist-key'] = null;
                 if (!$node->keepalive_interval->isEmpty() && !$node->keepalive_timeout->isEmpty()) {
                     $options['keepalive'] = "{$node->keepalive_interval} {$node->keepalive_timeout}";
+                } elseif (!$node->keepalive_interval->isEqual('0') && $node->role->isEqual('server')) {
+                    $options['keepalive'] = "10 60";
                 }
 
                 $options['dev-type'] = $node->dev_type == 'ovpn' ? 'tun' : (string)$node->dev_type;
