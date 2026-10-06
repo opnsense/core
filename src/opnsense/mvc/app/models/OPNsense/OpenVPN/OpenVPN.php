@@ -189,6 +189,11 @@ class OpenVPN extends BaseModel
                     gettext('Timeout must be at least twice the interval value.'),
                     $key . ".keepalive_timeout"
                 ));
+            } elseif ($instance->keepalive_interval->isEmpty() xor $instance->keepalive_timeout->isEmpty()) {
+                $messages->appendMessage(new Message(
+                    gettext('To configure keepalive, both interval and timout need to be specified.'),
+                    $key . ".keepalive_timeout"
+                ));
             }
 
             if ($instance->dev_type == 'ovpn' && strpos($instance->proto, 'udp') === false) {
