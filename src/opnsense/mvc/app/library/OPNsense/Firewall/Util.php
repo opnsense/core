@@ -375,7 +375,9 @@ class Util
                 return false;
             }
         }
-        if (($allow_range && count($tmp) <= 2) || count($tmp) == 1) {
+        if (($allow_range && count($tmp) == 2)) {
+            return $tmp[0] < $tmp[1];
+        } elseif (count($tmp) == 1) {
             return true;
         }
         return false;
