@@ -296,7 +296,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $iflist = get_configured_interface_with_descr();
             foreach ($iflist as $pppif => $ifdescr) {
                 if ($config['interfaces'][$pppif]['if'] == $ppp['if']) {
-                    interface_ppps_configure($pppif);
+                    configdp_run('interface ppp configure', [$pppif]);
+                    break;
                 }
             }
         }
