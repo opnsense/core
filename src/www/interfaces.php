@@ -323,19 +323,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!is_subsystem_dirty('interfaces')) {
             $intput_errors[] = gettext("You have already applied your settings!");
         } else {
-            if (file_exists('/var/lib/php/tmp/.interfaces.apply')) {
-                $toapplylist = unserialize(file_get_contents('/var/lib/php/tmp/.interfaces.apply'), ['allowed_classes' => false]);
-                foreach ($toapplylist as $ifapply => $ifcfgo) {
-                    interface_reset($ifapply, $ifcfgo, isset($ifcfgo['enable']));
-                    interface_configure(false, $ifapply, true);
-                }
-
-                configd_run('filter reload');
-                configd_run('webgui restart 3', true);
-            }
-
-            clear_subsystem_dirty('interfaces');
-            @unlink('/var/lib/php/tmp/.interfaces.apply');
+            configd_run('interface legacy apply');
         }
         if (!empty($ifgroup)) {
             header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
