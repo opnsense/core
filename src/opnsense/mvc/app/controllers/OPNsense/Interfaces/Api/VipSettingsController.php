@@ -121,7 +121,7 @@ class VipSettingsController extends ApiMutableModelControllerBase
     public function setItemAction($uuid)
     {
         Config::getInstance()->lock();
-        
+
         $node = $this->getModel()->getNodeByReference('vip.' . $uuid);
         $validations = [];
         $prev_subnet = $node != null ? (string)$node->subnet : '';
