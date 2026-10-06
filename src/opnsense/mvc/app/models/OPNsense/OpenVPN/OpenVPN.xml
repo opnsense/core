@@ -359,7 +359,7 @@
                     <MinimumValue>0</MinimumValue>
                 </keepalive_interval>
                 <keepalive_timeout type="IntegerField">
-                    <MinimumValue>0</MinimumValue>
+                    <MinimumValue>1</MinimumValue>
                 </keepalive_timeout>
                 <reneg-sec type="IntegerField">
                     <MinimumValue>0</MinimumValue>
