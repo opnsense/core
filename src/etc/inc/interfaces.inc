@@ -1189,11 +1189,11 @@ EOD;
             $remoteip = is_ipaddr($ppp['gateway']) ? $ppp['gateway'] : "10.64.64.{$idx}";
             /* "remotenet" was never available before, so do not use it until requested */
         } elseif ($ppp['type'] == 'pppoe') {
-            if (is_ipaddr($ppp['localip'] ?? '')) {
+            if (is_ipaddr($ppp['localip'])) {
                 $localnet = ctype_digit($ppp['subnet']) && $ppp['subnet'] >= 0 && $ppp['subnet'] <= 32 ? $ppp['subnet'] : $localnet;
                 $localip = $ppp['localip'];
             }
-            if (is_ipaddr($ppp['gateway'] ?? '')) {
+            if (is_ipaddr($ppp['gateway'])) {
                 $remotenet = ctype_digit($ppp['remotenet']) && $ppp['remotenet'] >= 0 && $ppp['remotenet'] <= 32 ? $ppp['remotenet'] : $remotenet;
                 $remoteip = $ppp['gateway'];
             }
