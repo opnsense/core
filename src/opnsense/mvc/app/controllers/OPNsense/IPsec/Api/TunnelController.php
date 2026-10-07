@@ -42,7 +42,11 @@ class TunnelController extends ApiControllerBase
      */
     public function searchPhase1Action()
     {
-        $ph1type = ['ikev1' => 'IKE', 'ikev2' => 'IKEv2', 'ike' => 'auto'];
+        $ph1type = [
+            'ikev1' => 'IKE (deprecated)',
+            'ikev2' => 'IKEv2',
+            'ike' => 'auto (allows deprecated IKEv1)'
+        ];
         $ph1algos = [
               'aes' => 'AES',
               'aes128gcm16' => '128 bit AES-GCM with 128 bit ICV',
@@ -55,9 +59,9 @@ class TunnelController extends ApiControllerBase
               'des' => 'DES'
         ];
         $ph1authmethods = [
-            'hybrid_rsa_server' => 'Hybrid RSA + Xauth',
-            'xauth_rsa_server' => 'Mutual RSA + Xauth',
-            'xauth_psk_server' => 'Mutual PSK + Xauth',
+            'hybrid_rsa_server' => 'Hybrid RSA + Xauth (deprecated)',
+            'xauth_rsa_server' => 'Mutual RSA + Xauth (deprecated)',
+            'xauth_psk_server' => 'Mutual PSK + Xauth (deprecated)',
             'eap-tls' => 'EAP-TLS',
             'psk_eap-tls' => 'RSA (local) + EAP-TLS (remote)',
             'eap-mschapv2' => 'EAP-MSCHAPV2',
@@ -102,11 +106,11 @@ class TunnelController extends ApiControllerBase
                     "seqid" => $idx,
                     "enabled" => empty((string)$p1->disabled) ? "1" : "0",
                     "protocol" => $p1->protocol == "inet46" ? "IPv4+6" : ($p1->protocol == "inet6" ? "IPv6" : "IPv4"),
-                    "iketype" => $ph1type[(string)$p1->iketype],
+                    "iketype" => $ph1type[!empty((string)$p1->iketype) ? (string)$p1->iketype : 'ikev1'] ?? $ph1type['ikev1'],
                     "interface" => !empty($ifs[$interface]) ? $ifs[$interface] : $interface,
                     "remote_gateway" => (string)$p1->{"remote-gateway"},
                     "mobile" => !empty((string)$p1->mobile),
-                    "mode" => (string)$p1->mode,
+                    "mode" => (string)$p1->mode === 'aggressive' ? 'aggressive (deprecated)' : (string)$p1->mode,
                     "proposal" => $ph1proposal,
                     "authentication" => $ph1authmethods[(string)$p1->authentication_method],
                     "description" => (string)$p1->descr

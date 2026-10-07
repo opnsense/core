@@ -31,14 +31,14 @@
         </field>
         <field>
             <id>ipsec.general.user_source</id>
-            <label>Authentication (Xauth)</label>
+            <label>Authentication (Xauth) (deprecated)</label>
             <type>select_multiple</type>
             <style>selectpicker</style>
             <help>Select authentication methods to use, leave empty if no challenge response authentication is needed.</help>
         </field>
         <field>
             <id>ipsec.general.local_group</id>
-            <label>Enforce local group (Xauth)</label>
+            <label>Enforce local group (Xauth) (deprecated)</label>
             <type>dropdown</type>
             <style>selectpicker</style>
             <help>Restrict access to users in the selected local group. Please be aware that other authentication backends will refuse to authenticate when using this option.</help>
@@ -63,7 +63,7 @@
             <type>checkbox</type>
         </field>
     </tab>
-    <tab id="ipsec-xauth-pam" description="xauth-pam">
+    <tab id="ipsec-xauth-pam" description="xauth-pam (deprecated)">
         <field>
             <id>ipsec.charon.plugins.xauth-pam.pam_service</id>
             <label>Pam_service</label>
@@ -86,7 +86,7 @@
     <tab id="ipsec-charon" description="Charon">
         <field>
             <id>ipsec.charon.max_ikev1_exchanges</id>
-            <label>Maximum IKEv1 phase 2 exchanges</label>
+            <label>Maximum IKEv1 phase 2 exchanges (deprecated)</label>
             <type>text</type>
             <help>
                 Maximum number of IKEv1 phase 2 exchanges per IKE_SA to keep state about and track concurrently.
@@ -146,7 +146,7 @@
         </field>
         <field>
             <id>ipsec.charon.cisco_unity</id>
-            <label>Cisco Unity</label>
+            <label>Cisco Unity (deprecated)</label>
             <type>checkbox</type>
             <help>Send Cisco Unity vendor ID payload (IKEv1 only).</help>
         </field>
@@ -331,7 +331,7 @@
         </field>
         <field>
             <type>header</type>
-            <label>Cisco Unity</label>
+            <label>Cisco Unity (deprecated)</label>
         </field>
         <field>
             <id>ipsec.charon.plugins.attr.split-include</id>

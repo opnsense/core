@@ -50,7 +50,7 @@
     </field>
     <field>
         <id>connection.aggressive</id>
-        <label>Aggressive</label>
+        <label>Aggressive (deprecated)</label>
         <type>checkbox</type>
         <advanced>true</advanced>
         <help>
@@ -66,7 +66,7 @@
         <help>
           IKE major version to use for connection. 1 uses IKEv1 aka ISAKMP, 2 uses IKEv2.
           A connection using IKEv1+IKEv2 accepts both IKEv1 and IKEv2 as a responder
-          and initiates the connection actively with IKEv2
+          and initiates the connection actively with IKEv2 (responder-side IKEv1 is deprecated).
         </help>
     </field>
     <field>
@@ -191,7 +191,7 @@
     </field>
     <field>
         <id>connection.dpd_timeout</id>
-        <label>DPD timeout (s)</label>
+        <label>DPD timeout (s) (deprecated)</label>
         <type>text</type>
         <advanced>true</advanced>
         <help>
