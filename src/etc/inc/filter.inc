@@ -325,11 +325,13 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set optimization normal\n";
     }
 
-    if (isset($settings_filter['adaptive_start'], $settings_filter['adaptive_end'])) {
+    $adaptive_start = $settings_filter['adaptive_start'] ?? '';
+    $adaptive_end = $settings_filter['adaptive_end'] ?? '';
+    if ($adaptive_start !== '' && $adaptive_end !== '') {
         $limitrules .= sprintf(
             "set timeout { adaptive.start %s, adaptive.end %s }\n",
-            $settings_filter['adaptive_start'],
-            $settings_filter['adaptive_end']
+            $adaptive_start,
+            $adaptive_end
         );
     } else {
         $limitrules .= "set timeout { adaptive.start 0, adaptive.end 0 }\n";
