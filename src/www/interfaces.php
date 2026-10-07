@@ -351,8 +351,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             if (empty($toapplylist[$if])) {
                 // only flush if the running config is not in our list yet
+                $toapplylist[$if]['devices'] = get_real_interface($if, 'both');
                 $toapplylist[$if]['ifcfg'] = $a_interfaces[$if];
-                $toapplylist[$if]['ifcfg']['devices'] = get_real_interface($if, 'both');
                 $toapplylist[$if]['ppps'] = $a_ppps;
                 file_safe('/var/lib/php/tmp/.interfaces.apply', serialize($toapplylist));
             }
@@ -817,6 +817,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
                 if (empty($toapplylist[$if])) {
                     // only flush if the running config is not in our list yet
+                    $toapplylist[$if]['devices'] = $old_config['devices'];
+                    unset($old_config['devices']);
                     $toapplylist[$if]['ifcfg'] = $old_config;
                     $toapplylist[$if]['ppps'] = $a_ppps;
                     file_safe('/var/lib/php/tmp/.interfaces.apply', serialize($toapplylist));
