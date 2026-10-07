@@ -56,8 +56,8 @@ foreach ($iflist as $ifname => $ifcfg) {
         case 'pppoe':
             $class = '/PPPoE';
             break;
-        case 'pptp':
-            $class = '/PPTP';
+        case 'ppp':
+            $class = '/PPP';
             break;
         case 'l2tp':
             $class = '/L2TP';

@@ -158,7 +158,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
             break;
         case "l2tp":
-        case "pptp":
             if (!empty($pconfig['ondemand'])) {
                 $reqdfields = explode(" ", "ports username password localip subnet gateway remotenet ondemand idletimeout");
                 $reqdfieldsn = array(gettext("Link Interface(s)"),gettext("Username"),gettext("Password"),gettext("Local IP address"),gettext("Subnet"),gettext("Remote IP address"),gettext("Dial on demand"),gettext("Idle timeout value"));
@@ -265,7 +264,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     $ppp['hostuniq'] = $pconfig['hostuniq'];
                 }
                 /* FALLTHROUGH */
-            case "pptp":
             case "l2tp":
                 $ppp['localip'] = implode(',', $port_data['localip']);
                 $ppp['subnet'] = implode(',', $port_data['subnet']);
@@ -479,7 +477,7 @@ include("head.inc");
                         <td>
                           <select name="type" class="selectpicker" id="type">
 <?php
-                          $types = array("ppp" => "PPP", "pppoe" => "PPPoE", "pptp" => "PPTP",  "l2tp" => "L2TP");
+                          $types = ['ppp' => 'PPP', 'pppoe' => 'PPPoE', 'l2tp' => 'L2TP'];
                           foreach ($types as $key => $opt):?>
                             <option value="<?=$key;?>" <?=$key == $pconfig['type'] ? "selected=\"selected\"" : "";?>><?=$opt;?></option>
 <?php

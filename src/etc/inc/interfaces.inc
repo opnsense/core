@@ -940,7 +940,6 @@ function interface_ppps_bound($interface, $family = null)
     switch ($ifcfg['ipaddr'] ?? 'none') {
         case 'ppp':
         case 'pppoe':
-        case 'pptp':
         case 'l2tp':
             $ipv4_mode = true;
             break;
@@ -993,7 +992,7 @@ function interface_ppps_hardware($device)
     $devices = [];
 
     /* avoid returning a /dev parent by excluding 'ppp' prefix */
-    if (str_starts_with($device, 'pppoe') || str_starts_with($device, 'pptp') || str_starts_with($device, 'l2tp')) {
+    if (str_starts_with($device, 'pppoe') || str_starts_with($device, 'l2tp')) {
         foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
             if ($device == $ppp['if']) {
                 foreach (explode(',', $ppp['ports']) as $port) {
@@ -1046,7 +1045,6 @@ function interface_ppps_configure($interface)
     switch ($ifcfg['ipaddr'] ?? 'none') {
         case 'ppp':
         case 'pppoe':
-        case 'pptp':
         case 'l2tp':
             $ipv4_mode = 'enable';
             break;
@@ -1095,15 +1093,17 @@ function interface_ppps_configure($interface)
     $mtus = !empty($ppp['mtu']) ? explode(',', $ppp['mtu']) : [];
 
     /*
-     * We bring up the parent interface first because if DHCP is configured on the parent we need
-     * to obtain an address first so we can write it in the mpd .conf file for PPTP and L2TP configs
+     * XXX L2TP is slated for removal since it is misusing 'localip'
+     *
+     * We bring up the parent interface first because if DHCP is
+     * configuredon the parent we need to obtain an address first
+     * so we can write it in the mpd .conf file for L2TP configs.
      */
     foreach ($ports as $pid => $port) {
         switch ($ppp['type']) {
             case 'pppoe':
                 legacy_interface_flags($port, 'up');
                 break;
-            case 'pptp':
             case 'l2tp':
                 /* configure interface */
                 if (is_ipaddr($localips[$pid])) {
@@ -1115,11 +1115,11 @@ function interface_ppps_configure($interface)
                 }
 
                 if (!is_ipaddr($localips[$pid])) {
-                    log_msg("Could not get a Local IP address for PPTP/L2TP link on {$port}. Using 0.0.0.0!", LOG_WARNING);
+                    log_msg("Could not get a Local IP address for L2TP link on {$port}. Using 0.0.0.0!", LOG_WARNING);
                     $localips[$pid] = '0.0.0.0';
                 }
                 if (!is_ipaddr($gateways[$pid])) {
-                    log_msg("Could not get a Remote IP address for PPTP/L2TP link on {$port}.", LOG_WARNING);
+                    log_msg("Could not get a Remote IP address for L2TP link on {$port}.", LOG_WARNING);
                     return;
                 }
                 break;
@@ -1312,7 +1312,7 @@ EOD;
             }
             $mpdconf_arr[] = "set pppoe service \"{$hostuniq}{$provider}\"";
             $mpdconf_arr[] = "set pppoe iface {$port}";
-        } elseif ($ppp['type'] == "pptp" || $ppp['type'] == "l2tp") {
+        } elseif ($ppp['type'] == 'l2tp') {
             $mpdconf_arr[] = "set {$ppp['type']} self {$localips[$pid]}";
             $mpdconf_arr[] = "set {$ppp['type']} peer {$gateways[$pid]}";
         }
@@ -3466,9 +3466,6 @@ function convert_friendly_interface_to_friendly_descr($interface)
     switch ($interface) {
         case 'l2tp':
             $ifdesc = 'L2TP';
-            break;
-        case 'pptp':
-            $ifdesc = 'PPTP';
             break;
         case 'pppoe':
             $ifdesc = 'PPPoE';

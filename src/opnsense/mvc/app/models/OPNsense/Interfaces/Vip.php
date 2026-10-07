@@ -60,7 +60,7 @@ class Vip extends BaseModel
     {
         $messages = parent::performValidation($validateFullModel);
 
-        $virtual_types = ['lo', 'ipsec', 'l2tp', 'ppp', 'pppoe', 'pptp'];
+        $virtual_types = ['lo', 'ipsec', 'l2tp', 'ppp', 'pppoe'];
         $unique_addrs = [];
         $carp_vhids = [];
         $vips = [];

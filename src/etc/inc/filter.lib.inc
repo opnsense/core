@@ -401,22 +401,6 @@ function filter_core_rules_system($fw, $defaults)
 
         // IPv4
         switch ($intfinfo['ipaddr'] ?? 'none') {
-            case "pptp":
-                $fw->registerFilterRule(
-                    1,
-                    ['protocol' => 'tcp','to_port' => 1723, 'direction' => 'in', 'statetype' => 'modulate', 'quick' => false,
-                        '#ref' => "interfaces.php?if=" . $intf . "#type",
-                        'interface' => $intf, 'flags' => 'S/SA', 'descr' => 'allow PPTP client on ' . $intfinfo['descr']],
-                    $defaults['pass']
-                );
-                $fw->registerFilterRule(
-                    1,
-                    ['protocol' => 'gre', 'direction' => 'in', 'statetype' => 'keep', 'quick' => false,
-                        '#ref' => "interfaces.php?if=" . $intf . "#type",
-                        'interface' => $intf, 'descr' => 'allow PPTP client on ' . $intfinfo['descr']],
-                    $defaults['pass']
-                );
-                break;
             case "dhcp":
                 $fw->registerFilterRule(
                     1,

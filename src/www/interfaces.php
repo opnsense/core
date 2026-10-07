@@ -686,7 +686,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 case 'l2tp':
                 case 'ppp':
                 case 'pppoe':
-                case 'pptp':
                     $new_config['ipaddr'] = $pconfig['type'];
                     break;
             }
@@ -866,9 +865,6 @@ if (!interface_ppps_capable($a_interfaces[$if], $a_ppps)) {
             $types4['pppoe'] = gettext('PPPoE');
             $types6['pppoev6'] = gettext('PPPoEv6');
             break;
-        case 'pptp':
-            $types4['pptp'] = gettext('PPTP');
-            break;
         case 'l2tp':
             $types4['l2tp'] = gettext('L2TP');
             break;
@@ -902,14 +898,13 @@ include("head.inc");
 
       $("#type").change(function () {
           $('#staticv4, #dhcp, #ppp').hide();
-          if ($(this).val() == 'l2tp' || $(this).val() == 'pptp' || $(this).val() == 'pppoe') {
+          if ($(this).val() == 'l2tp' || $(this).val() == 'pppoe') {
               $("#ppp").show();
           } else {
               $("#" +$(this).val()).show();
           }
           switch ($(this).val()) {
             case "pppoe":
-            case "pptp":
               $("#mtu_calc").show();
               break;
             default:

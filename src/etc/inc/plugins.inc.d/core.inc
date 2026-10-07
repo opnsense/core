@@ -225,7 +225,7 @@ function core_devices()
     }
 
     $devices[] = [
-        'pattern' => '^l2tp|^ppp|^pptp', /* includes ^pppoe */
+        'pattern' => '^l2tp|^ppp', /* includes ^pppoe */
         'names' => $ppp_names,
         'volatile' => true,
         'type' => 'ppp',

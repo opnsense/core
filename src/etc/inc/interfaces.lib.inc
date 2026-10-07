@@ -585,7 +585,6 @@ function interfaces_virtual_patterns()
         'plip',
         'ppp',
         'pppoe',
-        'pptp',
         'qinq',
         'tap',
         'tun',
