@@ -39,12 +39,18 @@ class MFP1_1_3 extends BaseModelMigration
         if ($model instanceof Filter) {
             $config = Config::getInstance()->object();
             $legacy_system = $config->system;
-            $model->settings->filter->setNodes([
-                'lb_use_sticky' => !empty($legacy_system->lb_use_sticky) ? '1' : '0',
-                'source_tracking_timeout' => (string)$legacy_system->srctrack,
-                'pf_share_forward' => !empty($legacy_system->pf_share_forward) ? '1' : '0',
-                'pf_disable_force_gw' => !empty($legacy_system->pf_disable_force_gw) ? '1' : '0',
-            ]);
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->lb_use_sticky)) {
+                $model->settings->filter->lb_use_sticky = !empty($legacy_system->lb_use_sticky) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->source_tracking_timeout)) {
+                $model->settings->filter->source_tracking_timeout = (string)$legacy_system->srctrack;
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->pf_share_forward)) {
+                $model->settings->filter->pf_share_forward = !empty($legacy_system->pf_share_forward) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->pf_disable_force_gw)) {
+                $model->settings->filter->pf_disable_force_gw = !empty($legacy_system->pf_disable_force_gw) ? '1' : '0';
+            }
         }
 
         parent::run($model);

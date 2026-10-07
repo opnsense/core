@@ -40,28 +40,54 @@ class MFP1_1_7 extends BaseModelMigration
             $config = Config::getInstance()->object();
             $legacy_system = $config->system;
             $legacy_filter = $config->filter;
-            $model->settings->filter->setNodes([
-                'disable_filter' => !empty($legacy_system->disablefilter) ? '1' : '0',
-                'optimization' => !empty($legacy_system->optimization) ? (string)$legacy_system->optimization : 'normal',
-                'state_policy' => !empty($legacy_system->{'state-policy'}) ? '1' : '0',
-                'adaptive_start' => !empty($legacy_system->adaptivestart) ? (string)$legacy_system->adaptivestart : '',
-                'adaptive_end' => !empty($legacy_system->adaptiveend) ? (string)$legacy_system->adaptiveend : '',
-                'maximum_states' => !empty($legacy_system->maximumstates) ? (string)$legacy_system->maximumstates : '',
-                'maximum_fragments' => !empty($legacy_system->maximumfrags) ? (string)$legacy_system->maximumfrags : '',
-                'maximum_table_entries' => !empty($legacy_system->maximumtableentries) ? (string)$legacy_system->maximumtableentries : '',
-                'bypass_static_routes' => !empty($legacy_filter->bypassstaticroutes) ? '1' : '0',
-                'syncookies' => (string)$legacy_system->syncookies,
-                'syncookies_adaptive_start' => (string)$legacy_system->syncookies_adaptstart,
-                'syncookies_adaptive_end' => (string)$legacy_system->syncookies_adaptend,
-                'keep_counters' => !empty($legacy_system->keepcounters) ? '1' : '0',
-            ]);
-            $model->settings->alias->setNodes([
-                'aliases_resolve_interval' => !empty($legacy_system->aliasesresolveinterval) ? (string)$legacy_system->aliasesresolveinterval : '300',
-                'check_aliases_url_cert' => !empty($legacy_system->checkaliasesurlcert) ? '1' : '0',
-            ]);
-            $model->settings->logging->setNodes([
-                'debug' => !empty($legacy_system->pfdebug) ? (string)$legacy_system->pfdebug : 'urgent',
-            ]);
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->disable_filter)) {
+                $model->settings->filter->disable_filter = !empty($legacy_system->disablefilter) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->optimization)) {
+                $model->settings->filter->optimization = !empty($legacy_system->optimization) ? (string)$legacy_system->optimization : 'normal';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->state_policy)) {
+                $model->settings->filter->state_policy = !empty($legacy_system->{'state-policy'}) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->adaptive_start)) {
+                $model->settings->filter->adaptive_start = !empty($legacy_system->adaptivestart) ? (string)$legacy_system->adaptivestart : '';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->adaptive_end)) {
+                $model->settings->filter->adaptive_end = !empty($legacy_system->adaptiveend) ? (string)$legacy_system->adaptiveend : '';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->maximum_states)) {
+                $model->settings->filter->maximum_states = !empty($legacy_system->maximumstates) ? (string)$legacy_system->maximumstates : '';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->maximum_fragments)) {
+                $model->settings->filter->maximum_fragments = !empty($legacy_system->maximumfrags) ? (string)$legacy_system->maximumfrags : '';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->maximum_table_entries)) {
+                $model->settings->filter->maximum_table_entries = !empty($legacy_system->maximumtableentries) ? (string)$legacy_system->maximumtableentries : '';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->bypass_static_routes)) {
+                $model->settings->filter->bypass_static_routes = !empty($legacy_filter->bypassstaticroutes) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->syncookies)) {
+                $model->settings->filter->syncookies = (string)$legacy_system->syncookies;
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->syncookies_adaptive_start)) {
+                $model->settings->filter->syncookies_adaptive_start = (string)$legacy_system->syncookies_adaptstart;
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->syncookies_adaptive_end)) {
+                $model->settings->filter->syncookies_adaptive_end = (string)$legacy_system->syncookies_adaptend;
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->keep_counters)) {
+                $model->settings->filter->keep_counters = !empty($legacy_system->keepcounters) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->alias->aliases_resolve_interval)) {
+                $model->settings->alias->aliases_resolve_interval = !empty($legacy_system->aliasesresolveinterval) ? (string)$legacy_system->aliasesresolveinterval : '300';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->alias->check_aliases_url_cert)) {
+                $model->settings->alias->check_aliases_url_cert = !empty($legacy_system->checkaliasesurlcert) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->logging->debug)) {
+                $model->settings->logging->debug = !empty($legacy_system->pfdebug) ? (string)$legacy_system->pfdebug : 'urgent';
+            }
         }
 
         parent::run($model);

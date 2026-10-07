@@ -39,9 +39,9 @@ class MFP1_1_1 extends BaseModelMigration
         if ($model instanceof Filter) {
             $config = Config::getInstance()->object();
             $legacy_system = $config->system;
-            $model->settings->alias->setNodes([
-                'bogons_interval' => !empty($legacy_system->bogons->interval) ? (string)$legacy_system->bogons->interval : 'monthly',
-            ]);
+            if (!isset($config->OPNsense->Firewall->Filter->settings->alias->bogons_interval)) {
+                $model->settings->alias->bogons_interval = !empty($legacy_system->bogons->interval) ? (string)$legacy_system->bogons->interval : 'monthly';
+            }
         }
 
         parent::run($model);

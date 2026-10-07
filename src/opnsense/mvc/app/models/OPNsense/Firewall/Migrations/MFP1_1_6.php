@@ -39,14 +39,24 @@ class MFP1_1_6 extends BaseModelMigration
         if ($model instanceof Filter) {
             $config = Config::getInstance()->object();
             $legacy_system = $config->system;
-            $model->settings->filter->setNodes([
-                'disable_reply_to' => !empty($legacy_system->disablereplyto) ? '1' : '0',
-                'no_antilockout' => !empty($legacy_system->webgui->noantilockout) ? '1' : '0',
-                'no_ipv6_rfc4890_req' => !empty($legacy_system->no_ipv6_rfc4890_req) ? '1' : '0',
-                'no_port0_block' => !empty($legacy_system->no_port0_block) ? '1' : '0',
-                'no_sshlockout' => !empty($legacy_system->no_sshlockout) ? '1' : '0',
-                'no_virusprot' => !empty($legacy_system->no_virusprot) ? '1' : '0',
-            ]);
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->disable_reply_to)) {
+                $model->settings->filter->disable_reply_to = !empty($legacy_system->disablereplyto) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->no_antilockout)) {
+                $model->settings->filter->no_antilockout = !empty($legacy_system->webgui->noantilockout) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->no_ipv6_rfc4890_req)) {
+                $model->settings->filter->no_ipv6_rfc4890_req = !empty($legacy_system->no_ipv6_rfc4890_req) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->no_port0_block)) {
+                $model->settings->filter->no_port0_block = !empty($legacy_system->no_port0_block) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->no_sshlockout)) {
+                $model->settings->filter->no_sshlockout = !empty($legacy_system->no_sshlockout) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->no_virusprot)) {
+                $model->settings->filter->no_virusprot = !empty($legacy_system->no_virusprot) ? '1' : '0';
+            }
         }
 
         parent::run($model);

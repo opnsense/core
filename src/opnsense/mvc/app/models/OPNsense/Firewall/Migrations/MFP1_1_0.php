@@ -39,11 +39,15 @@ class MFP1_1_0 extends BaseModelMigration
         if ($model instanceof Filter) {
             $config = Config::getInstance()->object();
             $legacy_system = $config->system;
-            $model->settings->nat->setNodes([
-                'reflection_dnat' => empty($legacy_system->disablenatreflection) ? '1' : '0',
-                'reflection_binat' => !empty($legacy_system->enablebinatreflection) ? '1' : '0',
-                'reflection_snat' => !empty($legacy_system->enablenatreflectionhelper) ? '1' : '0',
-            ]);
+            if (!isset($config->OPNsense->Firewall->Filter->settings->nat->reflection_dnat)) {
+                $model->settings->nat->reflection_dnat = empty($legacy_system->disablenatreflection) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->nat->reflection_binat)) {
+                $model->settings->nat->reflection_binat = !empty($legacy_system->enablebinatreflection) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->nat->reflection_snat)) {
+                $model->settings->nat->reflection_snat = !empty($legacy_system->enablenatreflectionhelper) ? '1' : '0';
+            }
         }
 
         parent::run($model);

@@ -39,9 +39,9 @@ class MFP1_1_4 extends BaseModelMigration
         if ($model instanceof Filter) {
             $config = Config::getInstance()->object();
             $legacy_system = $config->system;
-            $model->settings->filter->setNodes([
-                'schedule_states' => !empty($legacy_system->schedule_states) ? '1' : '0',
-            ]);
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->schedule_states)) {
+                $model->settings->filter->schedule_states = !empty($legacy_system->schedule_states) ? '1' : '0';
+            }
         }
 
         parent::run($model);

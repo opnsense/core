@@ -39,9 +39,9 @@ class MFP1_1_2 extends BaseModelMigration
         if ($model instanceof Filter) {
             $config = Config::getInstance()->object();
             $legacy_system = $config->system;
-            $model->settings->filter->setNodes([
-                'skip_rules_gw_down' => !empty($legacy_system->skip_rules_gw_down) ? '1' : '0',
-            ]);
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->skip_rules_gw_down)) {
+                $model->settings->filter->skip_rules_gw_down = !empty($legacy_system->skip_rules_gw_down) ? '1' : '0';
+            }
         }
 
         parent::run($model);
