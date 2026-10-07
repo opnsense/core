@@ -50,20 +50,21 @@ class Plugin
     public function __construct()
     {
         $this->systemDefaults = array("filter" => [], "forward" => [], "nat" => []);
-        $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
-        if (!empty($settings['filter']['disable_reply_to'])) {
+        $settings_filter = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'filter', false);
+        $settings_nat = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'nat', false);
+        if (!empty($settings_filter['disable_reply_to'] ?? '0')) {
             $this->systemDefaults['filter']['disablereplyto'] = true;
         }
-        if (!empty($settings['filter']['skip_rules_gw_down'])) {
+        if (!empty($settings_filter['skip_rules_gw_down'] ?? '0')) {
             $this->systemDefaults['filter']['skip_rules_gw_down'] = true;
         }
-        if (!empty($settings['nat']['reflection_dnat'])) {
+        if (!empty($settings_nat['reflection_dnat'] ?? '1')) {
             $this->systemDefaults['forward']['natreflection'] = "enable";
         }
-        if (!empty($settings['nat']['reflection_binat'])) {
+        if (!empty($settings_nat['reflection_binat'] ?? '0')) {
             $this->systemDefaults['nat']['natreflection'] = "enable";
         }
-        if (!empty($settings['nat']['reflection_snat'])) {
+        if (!empty($settings_nat['reflection_snat'] ?? '0')) {
             $this->systemDefaults['forward']['enablenatreflectionhelper'] = true;
             $this->systemDefaults['nat']['enablenatreflectionhelper'] = true;
         }
@@ -131,7 +132,7 @@ class Plugin
      */
     public function setGatewayGroups($groups)
     {
-        $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
+        $settings_filter = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'filter', false);
         if (is_array($groups)) {
             foreach ($groups as $key => $gwgr) {
                 $routeto = [];
@@ -161,7 +162,7 @@ class Plugin
                         $routetologic .= " {$gwgr[0]['poolopts']} ";
                     } elseif (count($routeto) > 1) {
                         $routetologic .= " round-robin ";
-                        if (!empty($settings['filter']['lb_use_sticky'])) {
+                        if (!empty($settings_filter['lb_use_sticky'] ?? '1')) {
                             $routetologic .= " sticky-address ";
                         }
                     }

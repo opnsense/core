@@ -225,7 +225,7 @@ function kea_syslog()
 
 function kea_firewall($fw)
 {
-    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
+    $settings_logging = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'logging', false);
     $keav4 = new \OPNsense\Kea\KeaDhcpv4();
     $keav6 = new \OPNsense\Kea\KeaDhcpv6();
 
@@ -243,7 +243,7 @@ function kea_firewall($fw)
                     'to_port' => 67,
                     'interface' => $intf,
                     'descr' => 'allow access to DHCP server',
-                    'log' => !empty($settings['logging']['default_pass']),
+                    'log' => !empty($settings_logging['default_pass'] ?? '1'),
                 ]
             );
             $fw->registerFilterRule(
@@ -257,7 +257,7 @@ function kea_firewall($fw)
                     'to_port' => 67,
                     'interface' => $intf,
                     'descr' => 'allow access to DHCP server',
-                    'log' => !empty($settings['logging']['default_pass']),
+                    'log' => !empty($settings_logging['default_pass'] ?? '1'),
                 ]
             );
         }
@@ -271,7 +271,7 @@ function kea_firewall($fw)
                 'interface' => $intf,
                 '#ref' => 'ui/kea/dhcp/v6',
                 'descr' => 'allow access to DHCPv6 server',
-                'log' => !empty($settings['logging']['default_pass']),
+                'log' => !empty($settings_logging['default_pass'] ?? '1'),
             ];
             $fw->registerFilterRule(
                 1,

@@ -67,7 +67,7 @@ function system_sysctl_defaults()
 {
     global $config;
 
-    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
+    $settings_filter = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'filter', false);
 
     /* notes:
      *  - always set 'default' so the backend can use it and the user can see it
@@ -128,8 +128,8 @@ function system_sysctl_defaults()
         'net.link.tap.user_open' => [ 'default' => '1' ],
         'net.link.vlan.mtag_pcp' => [ 'default' => '1' ],
         'net.local.dgram.maxdgram' => [ 'default' => '8192' ],
-        'net.pf.share_forward' => [ 'default' => !empty($settings['filter']['pf_share_forward']) ? '1' : '0' ],
-        'net.pf.share_forward6' => [ 'default' => !empty($settings['filter']['pf_share_forward']) ? '1' : '0' ],
+        'net.pf.share_forward' => [ 'default' => !empty($settings_filter['pf_share_forward'] ?? '1') ? '1' : '0' ],
+        'net.pf.share_forward6' => [ 'default' => !empty($settings_filter['pf_share_forward'] ?? '1') ? '1' : '0' ],
         'net.route.multipath' => [ 'default' => '0' ],
         'security.bsd.see_other_gids' => [ 'default' => '0' ],
         'security.bsd.see_other_uids' => [ 'default' => '0' ],

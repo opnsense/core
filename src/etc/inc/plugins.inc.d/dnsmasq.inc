@@ -98,7 +98,7 @@ function dnsmasq_xmlrpc_sync()
  */
 function dnsmasq_firewall(\OPNsense\Firewall\Plugin $fw)
 {
-    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
+    $settings_logging = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'logging', false);
     $mdl = new \OPNsense\Dnsmasq\Dnsmasq();
     if (!$mdl->enable->isEmpty() && !$mdl->dhcp->default_fw_rules->isEmpty()) {
         $dhcp_ifs = $mdl->getDhcpInterfaces();
@@ -111,7 +111,7 @@ function dnsmasq_firewall(\OPNsense\Firewall\Plugin $fw)
                 $baserule = [
                     'interface' => $intf,
                     'protocol' => 'udp',
-                    'log' => !empty($settings['logging']['default_pass']),
+                    'log' => !empty($settings_logging['default_pass'] ?? '1'),
                     '#ref' => "ui/dnsmasq/settings#general",
                     'descr' => 'allow access to DHCP server',
                 ];

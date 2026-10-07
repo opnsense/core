@@ -237,13 +237,14 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
 {
     global $config;
 
-    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
+    $settings_filter = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'filter', false);
+    $settings_logging = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'logging', false);
     if (
         (string)(new \OPNsense\IPsec\IPsec())->general->disablevpnrules == '0' &&
             isset($config['ipsec']['enable']) && ipsec_legacy()
     ) {
-        $enable_replyto = empty($settings['filter']['disable_reply_to']);
-        $enable_routeto = empty($settings['filter']['pf_disable_force_gw']);
+        $enable_replyto = empty($settings_filter['disable_reply_to'] ?? '0');
+        $enable_routeto = empty($settings_filter['pf_disable_force_gw'] ?? '0');
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
             if (!isset($ph1ent['disabled'])) {
                 // detect remote ip
@@ -270,7 +271,7 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                     }
                     $interface = explode('_vip', $ph1ent['interface'])[0];
                     $baserule = array("interface" => $interface,
-                                      "log" => !empty($settings['logging']['default_pass']),
+                                      "log" => !empty($settings_logging['default_pass'] ?? '1'),
                                       "quick" => false,
                                       "type" => "pass",
                                       "statetype" => "keep",
