@@ -120,4 +120,24 @@ class AclTest extends \PHPUnit\Framework\TestCase
     {
         $this->assertFalse(AclTest::$acl->isPageAccessible('test1', '/ui/diagnostics/interface/arp/'));
     }
+
+    /**
+     * @depends testCanBeCreated
+     */
+    public function test_userUrlMasks_known()
+    {
+        $masks = iterator_to_array(AclTest::$acl->userUrlMasks('test2'), false);
+        $this->assertNotEmpty($masks);
+        $this->assertIsArray($masks[0]);
+        $this->assertCount(2, $masks[0]);
+    }
+
+    /**
+     * @depends testCanBeCreated
+     */
+    public function test_userUrlMasks_unknown()
+    {
+        $masks = iterator_to_array(AclTest::$acl->userUrlMasks('unknown_user'), false);
+        $this->assertEmpty($masks);
+    }
 }
