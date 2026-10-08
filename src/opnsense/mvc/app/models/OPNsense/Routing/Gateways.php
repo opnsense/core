@@ -300,9 +300,13 @@ class Gateways extends BaseModel
         // default
         if ($ipproto == "inet") {
             return !empty($ifcfg['ipaddr']) && !Util::isIpAddress($ifcfg['ipaddr']) ? $ifcfg['ipaddr'] : null;
-        } else {
-            return !empty($ifcfg['ipaddrv6']) && !Util::isIpAddress($ifcfg['ipaddrv6']) ? $ifcfg['ipaddrv6'] : null;
+        } elseif (!empty($ifcfg['ipaddrv6']) && !Util::isIpAddress($ifcfg['ipaddrv6'])) {
+            return $ifcfg['ipaddrv6'];
+        } elseif (!empty($ifcfg['gateway_interface']) && self::convertType('inet', $ifcfg) === null) {
+            // IPv4 already takes the generic name, use the VPN type so the IPv6 gateway isn't hidden behind it
+            return 'VPNv6';
         }
+        return null;
     }
 
     /**
@@ -393,8 +397,7 @@ class Gateways extends BaseModel
                     $descr = !empty($ifcfg['descr']) ? $ifcfg['descr'] : $ifname;
                     $device = Util::getRealInterface($ifname, $ipproto);
                     $ctype = self::convertType($ipproto, $ifcfg);
-                    // both families can be generated for one interface, keep their names apart
-                    $ctype = $ctype != null ? $ctype : ($ipproto == "inet6" ? "GWv6" : "GW");
+                    $ctype = $ctype != null ? $ctype : "GW";
                     // default configuration, when not set in gateway_item
                     $thisconf = [
                         "interface" => $ifname,
