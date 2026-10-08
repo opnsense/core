@@ -393,7 +393,8 @@ class Gateways extends BaseModel
                     $descr = !empty($ifcfg['descr']) ? $ifcfg['descr'] : $ifname;
                     $device = Util::getRealInterface($ifname, $ipproto);
                     $ctype = self::convertType($ipproto, $ifcfg);
-                    $ctype = $ctype != null ? $ctype : "GW";
+                    // both families can be generated for one interface, keep their names apart
+                    $ctype = $ctype != null ? $ctype : ($ipproto == "inet6" ? "GWv6" : "GW");
                     // default configuration, when not set in gateway_item
                     $thisconf = [
                         "interface" => $ifname,
