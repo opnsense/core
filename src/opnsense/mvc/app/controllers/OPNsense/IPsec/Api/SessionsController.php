@@ -50,58 +50,78 @@ class SessionsController extends ApiControllerBase
      */
     public function searchPhase1Action()
     {
-        $records = [];
-        $config = Config::getInstance()->object();
-        $data = $this->list_status();
-        $phase1s = [];
-        if (!empty($config->ipsec->phase1)) {
-            foreach ($config->ipsec->phase1 as $p1) {
-                if (!empty((string)$p1->ikeid)) {
-                    $phase1s[(string)$p1->ikeid] = (string)$p1->descr;
-                }
-            }
-        }
-        foreach ((new Swanctl())->Connections->Connection->iterateItems() as $node_uuid => $node) {
-            $phase1s[(string)$node_uuid] = (string)$node->description;
-        }
-        if (!empty($data)) {
-            foreach ($data as $conn => $payload) {
-                $record = $payload;
-                if (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $conn) == 1) {
-                    $record['ikeid'] = $conn;
-                } else {
-                    $record['ikeid'] = substr(explode('-', $conn)[0], 3);
-                }
-                $record['phase1desc'] = null;
-                $record['name'] = $conn;
-                if (!empty($phase1s[$record['ikeid']])) {
-                    $record['phase1desc'] = $phase1s[$record['ikeid']];
-                }
-                $record['connected'] = !empty($record['sas']);
-                /* aggregate child-sas [phase2] information */
-                $agg_fields = [
-                    'bytes-in' => 0,
-                    'bytes-out' => 0,
-                    'packets-in' => 0,
-                    'packets-out' => 0
-                ];
-                $record['install-time'] = null;
-                foreach ($record['sas'] as $sa) {
-                    if (!empty($sa['child-sas'])) {
-                        foreach ($sa['child-sas'] as $csa) {
-                            foreach (array_keys($agg_fields) as $fieldname) {
-                                $agg_fields[$fieldname] += $csa[$fieldname];
-                            }
-                            $record['install-time'] = max($record['install-time'], $csa['install-time']);
-                        }
-                    }
-                }
-                $record = array_merge($record, $agg_fields);
-                unset($record['children']);
-                unset($record['sas']);
-                $records[] = $record;
-            }
-        }
+        // $records = [];
+        // $config = Config::getInstance()->object();
+        // $data = $this->list_status();
+        // $phase1s = [];
+        // if (!empty($config->ipsec->phase1)) {
+        //     foreach ($config->ipsec->phase1 as $p1) {
+        //         if (!empty((string)$p1->ikeid)) {
+        //             $phase1s[(string)$p1->ikeid] = (string)$p1->descr;
+        //         }
+        //     }
+        // }
+        // foreach ((new Swanctl())->Connections->Connection->iterateItems() as $node_uuid => $node) {
+        //     $phase1s[(string)$node_uuid] = (string)$node->description;
+        // }
+        // if (!empty($data)) {
+        //     foreach ($data as $conn => $payload) {
+        //         $record = $payload;
+        //         if (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $conn) == 1) {
+        //             $record['ikeid'] = $conn;
+        //         } else {
+        //             $record['ikeid'] = substr(explode('-', $conn)[0], 3);
+        //         }
+        //         $record['phase1desc'] = null;
+        //         $record['name'] = $conn;
+        //         if (!empty($phase1s[$record['ikeid']])) {
+        //             $record['phase1desc'] = $phase1s[$record['ikeid']];
+        //         }
+        //         $record['connected'] = !empty($record['sas']);
+        //         /* aggregate child-sas [phase2] information */
+        //         $agg_fields = [
+        //             'bytes-in' => 0,
+        //             'bytes-out' => 0,
+        //             'packets-in' => 0,
+        //             'packets-out' => 0
+        //         ];
+        //         $record['install-time'] = null;
+        //         foreach ($record['sas'] as $sa) {
+        //             if (!empty($sa['child-sas'])) {
+        //                 foreach ($sa['child-sas'] as $csa) {
+        //                     foreach (array_keys($agg_fields) as $fieldname) {
+        //                         $agg_fields[$fieldname] += $csa[$fieldname];
+        //                     }
+        //                     $record['install-time'] = max($record['install-time'], $csa['install-time']);
+        //                 }
+        //             }
+        //         }
+        //         $record = array_merge($record, $agg_fields);
+        //         unset($record['children']);
+        //         unset($record['sas']);
+        //         $records[] = $record;
+        //     }
+        // }
+        $records = [
+            [
+                'ikeid' => '1',
+                'phase1desc' => 'MobileIPsec',
+                'name' => 'con1',
+                'connected' => true,
+            ],
+            [
+                'remote-addrs' => '192.168.1.68',
+                'version' => '2',
+                'routed' => false,
+                'ikeid' => 'named)',
+                'phase1desc' => null,
+                'name' => '(unnamed)',
+                'connected' => true,
+                'install-time' => null,
+                'bytes-in' => 0,
+                'bytes-out' => 0,
+            ],
+        ];
         return $this->searchRecordsetBase($records);
     }
 
