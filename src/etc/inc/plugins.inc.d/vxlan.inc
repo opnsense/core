@@ -47,6 +47,7 @@ function vxlan_devices()
 
     return [[
         'function' => 'vxlan_configure_device',
+        'typedescr' => gettext('VXLAN'),
         'configurable' => true,
         'pattern' => '^vxlan',
         'volatile' => true,

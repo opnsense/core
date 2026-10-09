@@ -152,7 +152,7 @@ function ipsec_services()
     if (!empty($config['ipsec']['enable']) || (new \OPNsense\IPsec\Swanctl())->isEnabled()) {
         $pconfig = [];
         $pconfig['name'] = 'strongswan';
-        $pconfig['description'] = gettext('IPsec VPN');
+        $pconfig['description'] = gettext('IPsec');
         $pconfig['pidfile'] = '/var/run/charon.pid';
         $pconfig['configd'] = array(
           'restart' => array('ipsec restart'),
@@ -221,6 +221,7 @@ function ipsec_devices()
 
     $devices[] = [
         'function' => 'ipsec_configure_device',
+        'typedescr' => gettext('IPsec'),
         'configurable' => false,
         'pattern' => '^ipsec',
         'volatile' => true,
@@ -1153,7 +1154,7 @@ function ipsec_configure_do($verbose = false, $interface_map = null)
     }
     mwexecf('/sbin/ifconfig enc0 up');
 
-    service_log('Configuring IPsec VPN...', $verbose);
+    service_log('Configuring IPsec...', $verbose);
 
     /* cleanup legacy ipsec.conf bits but then recreate structure to mute charon complaints */
     mwexecf('rm -rf /usr/local/etc/ipsec.d');

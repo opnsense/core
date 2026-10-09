@@ -47,7 +47,7 @@ function list_devices()
     foreach (get_interface_list() as $key => $item) {
         $interfaces[$key] = [
             'value' => $key . ' (' . $item['mac'] . ')',
-            'optgroup' => 'hardware'
+            'optgroup' => gettext('Hardware'),
         ];
         if (!empty($ifdetails[$key]) && ($ifdetails[$key]['status'] ?? '') != 'active') {
             $interfaces[$key]['data'] = ['icon' => 'fa fa-plug text-danger'];
@@ -63,7 +63,7 @@ function list_devices()
                 if (!empty($values)) {
                     $interfaces[$key] = [
                         'value' => $values['descr'] ,
-                        'optgroup' => $device['type'],
+                        'optgroup' => $device['type_label'] ?? $device['type'],
                         'data' => [
                             'icon' => 'fa fa-plug text-success'
                         ]

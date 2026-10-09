@@ -64,6 +64,7 @@ function loopback_devices()
 
     return [[
         'function' => 'loopback_configure_device',
+        'typedescr' => gettext('Loopback'),
         'configurable' => true,
         'pattern' => '^lo',
         'volatile' => true,
