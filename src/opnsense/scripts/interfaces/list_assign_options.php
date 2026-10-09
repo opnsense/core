@@ -63,7 +63,7 @@ function list_devices()
                 if (!empty($values)) {
                     $interfaces[$key] = [
                         'value' => $values['descr'] ,
-                        'optgroup' => $device['type_label'] ?? $device['type'],
+                        'optgroup' => $device['typedescr'] ?? $device['type'],
                         'data' => [
                             'icon' => 'fa fa-plug text-success'
                         ]
