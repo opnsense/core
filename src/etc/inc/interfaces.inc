@@ -1048,11 +1048,12 @@ function interface_ppps_configure($interface)
     $ppps = config_read_array('ppps', 'ppp', false);
 
     if (!interface_ppps_capable($ifcfg, $ppps)) {
-        return;
+        return true;
     }
 
     if (!isset($ifcfg['enable'])) {
-        return;
+        log_msg("PPP {$ifcfg['if']} is not enabled but attempted start.", LOG_ERR);
+        return false;
     }
 
     $ipv4_mode = $ipv6_mode = 'disable';
@@ -1078,7 +1079,8 @@ function interface_ppps_configure($interface)
     }
 
     if ($ipv4_mode != 'enable' && $ipv6_mode != 'enable') {
-        return;
+        log_msg("PPP {$ifcfg['if']} found no supported IP configuration mode.", LOG_ERR);
+        return false;
     }
 
     $ppp = null;
@@ -1097,7 +1099,8 @@ function interface_ppps_configure($interface)
         foreach ($ports as $pid => $port) {
             $ports[$pid] = get_real_interface($port);
             if (empty($ports[$pid])) {
-                return;
+                log_msg("PPP {$ifcfg['if']} port {$ports[$pid]} resolves to empty device.", LOG_ERR);
+                return false;
             }
         }
     }
@@ -1134,14 +1137,14 @@ function interface_ppps_configure($interface)
                     $localips[$pid] = '0.0.0.0';
                 }
                 if (!is_ipaddr($gateways[$pid])) {
-                    log_msg("Could not get a Remote IP address for L2TP link on {$port}.", LOG_WARNING);
+                    log_msg("Could not get a Remote IP address for L2TP link on {$port}.", LOG_ERR);
                     return;
                 }
                 break;
             case 'ppp':
                 if (!file_exists($port)) {
                     log_msg("Device {$port} does not exist. PPP link cannot start without the modem device.", LOG_ERR);
-                    return;
+                    return false;
                 }
                 break;
             default:
@@ -1150,7 +1153,12 @@ function interface_ppps_configure($interface)
         }
     }
 
-    // Construct the mpd.conf file
+    if (product::getInstance()->booting()) {
+        log_msg("PPP start deferred during boot on '{$ifcfg['if']}'");
+        file_put_contents('/tmp/pppconfigure_' . $interface, $interface);
+        return false;
+    }
+
     $mpdconf = <<<EOD
 startup:
   # configure the console
@@ -1389,6 +1397,8 @@ EOD;
             legacy_interface_mtu($ifcfg['if'], $mtus[0]);
             break;
     }
+
+    return true;
 }
 
 function interfaces_pfsync_configure()
@@ -2417,7 +2427,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /* XXX start additional daemons on this interface now: needs a plugin facility */
-    interface_ppps_configure($interface);
+    if (!interface_ppps_configure($interface)) {
+        /* return early since PPP is not going to come up either way */
+        return $loaded;
+    }
     interfaces_wlan_configure($device, $linkup);
 
     switch ($wancfg['ipaddr'] ?? 'none') {
