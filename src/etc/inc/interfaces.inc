@@ -1329,13 +1329,6 @@ EOD;
     /* write the configuration */
     @file_put_contents("/var/etc/mpd_{$interface}.conf", $mpdconf);
 
-    /* create the uptime log if requested */
-    if (isset($ppp['uptime'])) {
-        @touch("/conf/{$ifcfg['if']}.log");
-    } else {
-        @unlink("/conf/{$ifcfg['if']}.log");
-    }
-
     /* clean up old lock files */
     foreach ($ports as $port) {
         @unlink('/var/spool/lock/LCK..' . basename($port));

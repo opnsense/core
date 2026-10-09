@@ -101,7 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $id = $_GET['id'];
     }
     // plain 1-on-1 copy
-    $copy_fields = array('ptpid', 'type', 'username', 'idletimeout', 'uptime', 'descr', 'simpin', 'pin-wait',
+    $copy_fields = array('ptpid', 'type', 'username', 'idletimeout', 'descr', 'simpin', 'pin-wait',
                         'apn', 'apnum', 'phone', 'connect-timeout', 'provider', 'hostuniq');
     foreach ($copy_fields as $fieldname) {
         if (isset($a_ppps[$id][$fieldname])) {
@@ -220,7 +220,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!empty($pconfig['idletimeout'])) {
             $ppp['idletimeout'] = $pconfig['idletimeout'];
         }
-        $ppp['uptime'] = !empty($pconfig['uptime']);
         if (!empty($pconfig['descr'])) {
             $ppp['descr'] = $pconfig['descr'];
         }
@@ -710,16 +709,6 @@ include("head.inc");
                           <input name="connect-timeout" type="text" id="connect-timeout" value="<?=$pconfig['connect-timeout'];?>" />
                           <div class="hidden" data-for="help_for_connect-timeout">
                             <?= gettext("Note: Enter timeout in seconds for connection to be established (sec.) Default is 45 sec."); ?>
-                          </div>
-                        </td>
-                      </tr>
-                      <tr style="display:none" class="act_show_advanced">
-                        <td><a id="help_for_uptime" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?= gettext("Uptime Logging"); ?></td>
-                        <td>
-                          <input type="checkbox" value="on" id="uptime" name="uptime" <?=!empty($pconfig['uptime']) ? "checked=\"checked\"" : ""; ?> />
-                          <?= gettext("Enable persistent logging of connection uptime."); ?>
-                          <div class="hidden" data-for="help_for_uptime">
-                            <?= gettext("This option causes cumulative uptime to be recorded and displayed on the Status Interfaces page."); ?>
                           </div>
                         </td>
                       </tr>
