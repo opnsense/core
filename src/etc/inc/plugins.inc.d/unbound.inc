@@ -39,7 +39,7 @@ function unbound_configure()
 {
     return [
         'bootup' => ['unbound_configure_do'],
-        'dns' => ['unbound_configure_do'],
+        'dns' => ['unbound_configure_do:2'],
         'early' => ['unbound_cache_flush'],
         'local' => ['unbound_configure_do'],
         'newwanip' => ['unbound_configure_do:2'],

@@ -2491,7 +2491,9 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         system_routing_configure($verbose, $interface);
         plugins_configure('ipsec', $verbose, [$interface]);
         plugins_configure('dhcp', $verbose);
-        plugins_configure('dns', $verbose);
+        /* a link event does not change addresses; tell DNS plugins which
+           interface it was so they can skip restarts they do not need */
+        plugins_configure('dns', $verbose, $linkup ? [[$interface]] : []);
         plugins_configure('updateip', $verbose, [[$interface]]);
     }
 
