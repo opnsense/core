@@ -71,10 +71,10 @@ class MFP1_1_7 extends BaseModelMigration
                 $model->settings->filter->syncookies = (string)$legacy_system->syncookies;
             }
             if (!isset($config->OPNsense->Firewall->Filter->settings->filter->syncookies_adaptive_start)) {
-                $model->settings->filter->syncookies_adaptive_start = (string)$legacy_system->syncookies_adaptstart;
+                $model->settings->filter->syncookies_adaptive_start = !empty($legacy_system->syncookies_adaptstart) ? (string)$legacy_system->syncookies_adaptstart : '0';
             }
             if (!isset($config->OPNsense->Firewall->Filter->settings->filter->syncookies_adaptive_end)) {
-                $model->settings->filter->syncookies_adaptive_end = (string)$legacy_system->syncookies_adaptend;
+                $model->settings->filter->syncookies_adaptive_end = !empty($legacy_system->syncookies_adaptend) ? (string)$legacy_system->syncookies_adaptend : '0';
             }
             if (!isset($config->OPNsense->Firewall->Filter->settings->filter->keep_counters)) {
                 $model->settings->filter->keep_counters = !empty($legacy_system->keepcounters) ? '1' : '0';

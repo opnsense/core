@@ -12,6 +12,7 @@
 /usr/local/etc/inc/console.inc
 /usr/local/etc/inc/filter.inc
 /usr/local/etc/inc/filter.lib.inc
+/usr/local/etc/inc/filter_settings.inc
 /usr/local/etc/inc/interfaces.inc
 /usr/local/etc/inc/interfaces.lib.inc
 /usr/local/etc/inc/legacy_bindings.inc

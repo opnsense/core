@@ -134,10 +134,12 @@
                     </OptionValues>
                 </syncookies>
                 <syncookies_adaptive_start type="IntegerField">
+                    <Default>0</Default>
                     <MinimumValue>0</MinimumValue>
                     <ValidationMessage>Syncookies adaptive start must be a non-negative integer.</ValidationMessage>
                 </syncookies_adaptive_start>
                 <syncookies_adaptive_end type="IntegerField">
+                    <Default>0</Default>
                     <MinimumValue>0</MinimumValue>
                     <ValidationMessage>Syncookies adaptive end must be a non-negative integer.</ValidationMessage>
                 </syncookies_adaptive_end>

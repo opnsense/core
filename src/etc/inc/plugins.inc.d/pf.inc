@@ -27,12 +27,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+require_once('filter_settings.inc');
 function pf_services()
 {
     $services = [];
-    $settings_filter = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'filter', false);
+    $settings_filter = filter_get_settings('filter');
 
-    if (empty($settings_filter['disable_filter'] ?? '0')) {
+    if (empty($settings_filter['disable_filter'])) {
         $services[] = [
             'description' => gettext('Packet Filter'),
             'configd' => [
@@ -110,17 +111,17 @@ function pf_firewall($fw)
 {
     global $config;
 
-    $settings_filter = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'filter', false);
-    $settings_logging = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'logging', false);
+    $settings_filter = filter_get_settings('filter');
+    $settings_logging = filter_get_settings('logging');
     $defaults = [];
-    $defaults['pass'] = ['type' => 'pass', 'log' => !empty($settings_logging['default_pass'] ?? '1')];
+    $defaults['pass'] = ['type' => 'pass', 'log' => !empty($settings_logging['default_pass'])];
 
     /*
      *  pass traffic between statically routed subnets and the subnet on the
      *  interface in question to avoid problems with complicated routing
      *  topologies
      */
-    if (!empty($settings_filter['bypass_static_routes'] ?? '0') && count(config_read_array('staticroutes', 'route', false))) {
+    if (!empty($settings_filter['bypass_static_routes']) && count(config_read_array('staticroutes', 'route', false))) {
         $ifdetails = $fw->getIfconfigDetails();
         $GatewaysList = $fw->getGateways()->gatewaysIndexedByName(false, true);
 

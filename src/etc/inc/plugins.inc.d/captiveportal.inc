@@ -26,6 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+require_once('filter_settings.inc');
 function captiveportal_services()
 {
     $services = [];
@@ -63,7 +64,7 @@ function captiveportal_auto_rules()
     if (!$cp->isEnabled()) {
         return $rules;
     }
-    $settings_logging = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'logging', false);
+    $settings_logging = filter_get_settings('logging');
 
     foreach ($cp->zones->zone->iterateItems() as $zone) {
         if ($zone->enabled->isEmpty()) {
@@ -87,7 +88,7 @@ function captiveportal_auto_rules()
                 'to' => '(self)',
                 'to_port' => 53,
                 'descr' => "Allow DNS for Captive Portal (zone {$zoneid})",
-                'log' => !empty($settings_logging['default_pass'] ?? '1'),
+                'log' => !empty($settings_logging['default_pass']),
                 '#ref' => "ui/captiveportal#edit={$uuid}",
                 '#priority' => 1,
             ];
@@ -146,7 +147,7 @@ function captiveportal_auto_rules()
                     'to' => '(self)',
                     'to_port' => $rdr_port,
                     'descr' => "Allow access to Captive Portal over {$proto} (zone {$zoneid})",
-                    'log' => !empty($settings_logging['default_pass'] ?? '1'),
+                    'log' => !empty($settings_logging['default_pass']),
                     '#ref' => "ui/captiveportal#edit={$uuid}",
                     '#priority' => 2,
                 ];
@@ -161,7 +162,7 @@ function captiveportal_auto_rules()
                 'to' => "<__captiveportal_zone_{$zoneid}>",
                 'to_not' => true,
                 'descr' => "Default Captive Portal block rule (zone {$zoneid})",
-                'log' => !empty($settings_logging['default_block'] ?? '1'),
+                'log' => !empty($settings_logging['default_block']),
                 '#ref' => "ui/captiveportal#edit={$uuid}",
                 '#priority' => 6,
             ];
