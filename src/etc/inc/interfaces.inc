@@ -1344,6 +1344,21 @@ EOD;
     /* precaution for post-start 'up' check */
     legacy_interface_flags($ifcfg['if'], 'down', false);
 
+    /* wait for functional parent (only the first) */
+    $max = 10;
+    $i = 0;
+    while ($i < $max) {
+        sleep(1);
+        if (does_interface_exist($ports[0], 'up')) {
+            break;
+        }
+        $i++;
+    }
+
+    if ($i >= $max) {
+        log_msg("interface_ppps_configure() waiting threshold exceeded - device {$ports[0]} is still not up", LOG_WARNING);
+    }
+
     /* fire up mpd */
     mwexecf(
         '/usr/local/sbin/mpd5 -b -d /var/etc -f %s -p %s -s ppp %s',
