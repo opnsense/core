@@ -22,7 +22,7 @@ for PPP in $(find /tmp -type f -name "pppconfigure_*"); do
 
 	echo "Dialing PPP on ${INTERFACE}"
 	# XXX run without -d to avoid code races for now:
-	configctl -q ppp configure ${INTERFACE}
+	configctl -q interface ppp configure ${INTERFACE}
 	# XXX if ppp configure is inadequate we still need this:
 	#configctl -q interface reconfigure ${INTERFACE}
 done
