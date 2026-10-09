@@ -1022,6 +1022,26 @@ function interface_ppps_reset($interface, $suspend, $ifcfg, $ppps)
     }
 }
 
+function interfaces_device_wait($device, $message = null, $timeout = 20, $flag = 'up')
+{
+    $delay = 250; /* ms */
+
+    $max = $timeout * (1000 / $delay);
+    $i = 0;
+
+    while ($i < $max) {
+        usleep($delay * 1000);
+        if (does_interface_exist($device, $flag)) {
+            break;
+        }
+        $i++;
+    }
+
+    if ($i >= $max && $message !== null) {
+        log_msg($message, LOG_WARNING);
+    }
+}
+
 function interface_ppps_configure($interface)
 {
     $ifcfg = config_read_array('interfaces', $interface, false);
@@ -1345,19 +1365,7 @@ EOD;
     legacy_interface_flags($ifcfg['if'], 'down', false);
 
     /* wait for functional parent (only the first) */
-    $max = 10;
-    $i = 0;
-    while ($i < $max) {
-        sleep(1);
-        if (does_interface_exist($ports[0], 'up')) {
-            break;
-        }
-        $i++;
-    }
-
-    if ($i >= $max) {
-        log_msg("interface_ppps_configure() waiting threshold exceeded - device {$ports[0]} is still not up", LOG_WARNING);
-    }
+    interfaces_device_wait($ports[0], "interface_ppps_configure() waiting threshold exceeded - device {$ports[0]} is still not up");
 
     /* fire up mpd */
     mwexecf(
@@ -1368,20 +1376,8 @@ EOD;
     /* appease netgraph by setting the correct node name */
     mwexecfb('/usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
 
-    /* wait for functional device */
-    $max = 20;
-    $i = 0;
-    while ($i < $max) {
-        sleep(1);
-        if (does_interface_exist($ifcfg['if'], 'up')) {
-            break;
-        }
-        $i++;
-    }
-
-    if ($i >= $max) {
-        log_msg("interface_ppps_configure() waiting threshold exceeded - device {$ifcfg['if']} is still not up", LOG_WARNING);
-    }
+    /* wait for functional PPP device */
+    interfaces_device_wait($ifcfg['if'], "interface_ppps_configure() waiting threshold exceeded - device {$ifcfg['if']} is still not up");
 
     switch ($ppp['type']) {
         case 'pppoe':
