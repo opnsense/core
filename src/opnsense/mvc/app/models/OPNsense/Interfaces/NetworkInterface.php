@@ -244,12 +244,7 @@ class NetworkInterface extends BaseModel
                     $key . ".type4"
                 ));
             }
-            if (!empty($if->pppType()) && !in_array($if->type6->getValue(), ['none', 'pppoev6'])) {
-                $messages->appendMessage(new Message(
-                    sprintf(gettext('This device only supports "%s" as type'), 'pppoev6'),
-                    $key . ".type6"
-                ));
-            } elseif (empty($if->pppType()) && in_array($if->type6->getValue(), ['pppoev6'])) {
+            if (empty($if->pppType()) && in_array($if->type6->getValue(), ['pppoev6'])) {
                 $messages->appendMessage(new Message(
                     gettext('PPP types belong to their respective devices'),
                     $key . ".type6"
