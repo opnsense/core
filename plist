@@ -1331,7 +1331,6 @@
 /usr/local/opnsense/scripts/interfaces/ppp-linkdown.sh
 /usr/local/opnsense/scripts/interfaces/ppp-linkup.sh
 /usr/local/opnsense/scripts/interfaces/ppp-rename.sh
-/usr/local/opnsense/scripts/interfaces/ppp-uptime.sh
 /usr/local/opnsense/scripts/interfaces/reconfigure_bridges.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_gifs.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_gres.php

@@ -37,6 +37,4 @@ elif [ "${AF}" = "inet6" ]; then
 	fi
 fi
 
-touch /tmp/${IF}_uptime
-
 exit 0
