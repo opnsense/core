@@ -52,24 +52,18 @@ class UidField extends IntegerField
      */
     public function setValue($value)
     {
-        $in_scope = false;
-        $uids = [];
-
-        if ($this->fieldLoaded) {
+        if (empty((string)$this) && $this->fieldLoaded) {
+            $uids = [];
             foreach ($this->getParentModel()->user->iterateItems() as $user) {
                 $uids[] = $user->uid->asInt();
             }
-            $in_scope = !$this->getParentNode()->scope->isEqual('system');
-        }
-
-        if (!$this->isSet() || !$in_scope) {
-            for ($i = 2000; $in_scope; $i++) {
+            for ($i = 2000; true; $i++) {
                 if (!in_array($i, $uids)) {
                     parent::setValue((string)$i);
-                    return;
+                    break;
                 }
             }
-
+        } elseif (empty((string)$this)) {
             parent::setValue($value);
         }
     }
@@ -92,6 +86,7 @@ class UidField extends IntegerField
         $this->fieldLoaded = true;
         $this->setValue(null);
     }
+
 
     /**
      * retrieve field validators for this field type
