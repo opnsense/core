@@ -101,14 +101,16 @@
                         $("#mainmenu").find('[href="#' + $(this).attr('id') + '"]').remove();
                     }
                 });
-                // hide submenu items
+                // hide submenu items when toggling main menu sections
                 $('#mainmenu .list-group-item').click(function(){
-                    if($(this).attr('href').substring(0,1) == '#') {
-                        $('#mainmenu .list-group-item').each(function(){
-                            if ($(this).attr('aria-expanded') == 'true'  && $(this).data('parent') != '#mainmenu') {
-                                $("#"+$(this).attr('href').substring(1,999)).collapse('hide');
-                            }
-                        });
+                    if ($(this).attr('href').substring(0,1) == '#') {
+                        if ($(this).data('parent') == '#mainmenu') {
+                            $('#mainmenu .list-group-item').each(function(){
+                                if ($(this).attr('aria-expanded') == 'true'  && $(this).data('parent') != '#mainmenu') {
+                                    $("#"+$(this).attr('href').substring(1,999)).collapse('hide');
+                                }
+                            });
+                        }
                     }
                 });
 
