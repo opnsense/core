@@ -235,12 +235,12 @@ class NetworkInterface extends BaseModel
             }
             if (!empty($if->pppType()) && !in_array($if->type4->getValue(), ['none', $if->pppType()])) {
                 $messages->appendMessage(new Message(
-                    sprintf(gettext('This device only supports "%s" as a type.'), $if->pppType()),
+                    sprintf(gettext('This device only supports "%s" as its type.'), $if->pppType()),
                     $key . ".type4"
                 ));
             } elseif (empty($if->pppType()) && in_array($if->type4->getValue(), ['ppp', 'pppoe', 'l2tp'])) {
                 $messages->appendMessage(new Message(
-                    gettext('A PPP type only work with a matching device.'),
+                    gettext('A point-to-point type only works with a matching device.'),
                     $key . ".type4"
                 ));
             }
