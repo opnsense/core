@@ -240,7 +240,7 @@ class TunnelController extends ApiControllerBase
                     "uniqid" => (string)$p2->uniqid, // XXX: a bit convoluted, should probably replace id at some point
                     "ikeid" => $ikeid,
                     "reqid" => (string)$p2->reqid,
-                    "enabled" => empty((string)$p2->enabled) ? "0" : "1",
+                    "enabled" => empty((string)$p2->disabled) ? "1" : "0",
                     "protocol" => $p2->protocol == "esp" ? "ESP" : "AH",
                     "mode" => $p2mode,
                     "local_subnet" => $local_subnet,
