@@ -77,8 +77,7 @@ if (is_array($config['interfaces'])) {
         plugins_configure('ipsec', true, $to_configure);
         plugins_configure('dhcp', true);
         plugins_configure('dns', true);
-        /* XXX not ideal but avoids "errors" in the log */
-        plugins_configure('newwanip:rfc2136', true, [$to_configure]);
+        plugins_configure('updateip', true, [$to_configure]);
 
         interfaces_pfsync_configure();
         interface_proxyarp_configure();

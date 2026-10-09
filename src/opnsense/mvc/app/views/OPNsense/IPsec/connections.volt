@@ -33,6 +33,25 @@
           add:'/api/ipsec/connections/set_connection/',
           del:'/api/ipsec/connections/del_connection/',
           toggle:'/api/ipsec/connections/toggle_connection/',
+          options: {
+              formatters: {
+                  description: function (column, row) {
+                      let descr = row.description ?? '';
+                      const version = String(row.version ?? '');
+
+                      if (version === '0' || version === '1') {
+                          const label = version === '0'
+                              ? "{{ lang._('Allows deprecated IKEv1') }}"
+                              : "{{ lang._('IKEv1 (deprecated)') }}";
+
+                          descr += ' <span class="label label-warning">' +
+                              $('<div>').text(label).html() + '</span>';
+                      }
+
+                      return descr;
+                  }
+              }
+          }
         });
 
         let grid_pools = $("#grid-pools").UIBootgrid({
@@ -220,7 +239,7 @@
               <tr>
                 <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('UUID') }}</th>
                 <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
-                <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
+                <th data-column-id="description" data-type="string" data-formatter="description">{{ lang._('Description') }}</th>
                 <th data-column-id="local_addrs" data-type="string">{{ lang._('Local') }}</th>
                 <th data-column-id="remote_addrs" data-type="string">{{ lang._('Remote') }}</th>
                 <th data-column-id="local_ts" data-type="string">{{ lang._('Local Nets') }}</th>

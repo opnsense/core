@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2024 Franco Fichtner <franco@opnsense.org>
+ * Copyright (C) 2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,43 +27,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once 'config.inc';
-require_once 'util.inc';
-require_once 'system.inc';
-require_once 'interfaces.inc';
-require_once 'filter.inc';
-require_once 'auth.inc';
+require_once("interfaces.inc");
+require_once("system.inc");
+require_once("config.inc");
+require_once("util.inc");
 
-if (empty($argv[1]) || empty($argv[2])) {
-    exit(1);
-}
+# XXX at the moment the reconfiguration is for one device only
+# XXX with the script in place we can consider adding CARP glue
 
-$interface = convert_real_interface_to_friendly_interface_name($argv[1]);
-$family = $argv[2];
+interface_ppps_configure($argv[1] ?? '');
 
-if (empty($interface) || ($family != 4 && $family != 6)) {
-    exit(1);
-}
-
-if (!interface_ppps_bound($interface, $family)) {
-    exit(1);
-}
-
-$ifcfg = config_read_array('interfaces', $interface, false);
-
-switch (is_ipv6_allowed() ? ($ifcfg['ipaddrv6'] ?? 'none') : 'none') {
-    case 'dhcp6':
-    case 'slaac':
-        /* the code can race between here and interface_configure(), see #10828 */
-        mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -no_dad -ifdisabled up', $ifcfg['if']);
-
-        interface_dhcpv6_prepare($interface, $ifcfg);
-        interface_dhcpv6_configure($interface, $ifcfg);
-        /* signal this succeeded to avoid triggering a newwanip event right away */
-        exit(0);
-    default:
-        interface_static6_configure($interface, $ifcfg);
-        system_routing_configure(false, $interface, true, 'inet6');
-}
-
-exit(1);
+exit(0);

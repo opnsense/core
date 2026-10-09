@@ -180,7 +180,7 @@ class AliasUtilController extends ApiControllerBase
                     // add mask
                     $address .= "/" . (strpos($address, ":") ? '128' : '32');
                 }
-                if (!array_search($address, $items)) {
+                if (array_search($address, $items) === false) {
                     $items[] = $address;
                     $cnfAlias->content = implode("\n", $items);
                     $this->getModel()->serializeToConfig();

@@ -68,6 +68,7 @@
         <id>interface.promisc</id>
         <label>Promiscuous mode</label>
         <type>checkbox</type>
+        <advanced>true</advanced>
         <help>Put interface into permanently promiscuous mode. Only to be used for specific usecases requiring the interface to receive all packets being received. When unsure, leave this disabled.</help>
         <grid_view>
             <type>boolean</type>

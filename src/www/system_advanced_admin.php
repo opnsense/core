@@ -1098,9 +1098,8 @@ $(document).ready(function() {
                 <td><a id="help_for_noroot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Strict security"); ?></td>
                 <td>
                   <input name="noroot" type="checkbox" value="yes" <?= empty($pconfig['noroot']) ? '' : 'checked="checked"' ?> />
-                  <?=gettext("(Experimental)"); ?>
                   <div class="hidden" data-for="help_for_noroot">
-                    <?=gettext("Stricten security by running the webserver as non root user, not all components may be compatible with this feature.") ?>
+                    <?=gettext("Make security stricter by running the web GUI as a non-root user. Not all components may be compatible with this feature.") ?>
                   </div>
                 </td>
               </tr>

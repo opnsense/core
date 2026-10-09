@@ -597,6 +597,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/FirewallStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/HostDiscoveryStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/IDSOverrideStatus.php
+/usr/local/opnsense/mvc/app/library/OPNsense/System/Status/IPsecIkev1Status.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/IPsecOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/LiveMediaStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/MonitOverrideStatus.php
@@ -1304,6 +1305,7 @@
 /usr/local/opnsense/scripts/health/library/OPNsense/RRD/Types/Wireless.php
 /usr/local/opnsense/scripts/health/listReports.py
 /usr/local/opnsense/scripts/health/updaterrd.php
+/usr/local/opnsense/scripts/interfaces/apply_legacy_if_changes.php
 /usr/local/opnsense/scripts/interfaces/apply_pending_if_changes.php
 /usr/local/opnsense/scripts/interfaces/capture.py
 /usr/local/opnsense/scripts/interfaces/carp_global_status.php
@@ -1335,6 +1337,7 @@
 /usr/local/opnsense/scripts/interfaces/reconfigure_gres.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_laggs.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_neighbors.php
+/usr/local/opnsense/scripts/interfaces/reconfigure_ppp.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vips.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vlans.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_wlan.php

@@ -814,9 +814,10 @@ function interface_vip_bring_down($vip)
 
 function interface_reset($interface, $ifacecfg = false, $suspend = false)
 {
-    global $config;
+    $ifcfg = config_read_array('interfaces', $interface, false);
+    $ppps = config_read_array('ppps', 'ppp', false);
 
-    if (!isset($config['interfaces'][$interface]) || ($ifacecfg !== false && !is_array($ifacecfg))) {
+    if (empty($ifcfg) || ($ifacecfg !== false && !is_array($ifacecfg))) {
         return;
     }
 
@@ -827,15 +828,13 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
      * split between a suspend and reset mode in order to accommodate the need.
      */
     if ($ifacecfg === false) {
-        $ifcfg = $config['interfaces'][$interface];
-        $ppps = isset($config['ppps']['ppp']) ? $config['ppps']['ppp'] : [];
         $device = $ifcfg['if'];
         $realifv6 = get_real_interface($interface, 'inet6');
     } else {
+        $device = reset($ifacecfg['devices']);
+        $realifv6 = end($ifacecfg['devices']);
         $ifcfg = $ifacecfg['ifcfg'];
         $ppps = $ifacecfg['ppps'];
-        $device = reset($ifcfg['devices']);
-        $realifv6 = end($ifcfg['devices']);
     }
 
     if (!$suspend) {
@@ -924,10 +923,8 @@ function interface_suspend($interface)
 
 function interface_ppps_bound($interface, $family = null)
 {
-    global $config;
-
-    $ifcfg = $config['interfaces'][$interface] ?? null;
-    $ppps = $config['ppps']['ppp'] ?? null;
+    $ifcfg = config_read_array('interfaces', $interface, false);
+    $ppps = config_read_array('ppps', 'ppp', false);
     $bound = false;
 
     if (!interface_ppps_capable($ifcfg, $ppps)) {
@@ -940,7 +937,6 @@ function interface_ppps_bound($interface, $family = null)
     switch ($ifcfg['ipaddr'] ?? 'none') {
         case 'ppp':
         case 'pppoe':
-        case 'pptp':
         case 'l2tp':
             $ipv4_mode = true;
             break;
@@ -993,7 +989,7 @@ function interface_ppps_hardware($device)
     $devices = [];
 
     /* avoid returning a /dev parent by excluding 'ppp' prefix */
-    if (str_starts_with($device, 'pppoe') || str_starts_with($device, 'pptp') || str_starts_with($device, 'l2tp')) {
+    if (str_starts_with($device, 'pppoe') || str_starts_with($device, 'l2tp')) {
         foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
             if ($device == $ppp['if']) {
                 foreach (explode(',', $ppp['ports']) as $port) {
@@ -1028,10 +1024,8 @@ function interface_ppps_reset($interface, $suspend, $ifcfg, $ppps)
 
 function interface_ppps_configure($interface)
 {
-    global $config;
-
-    $ifcfg = $config['interfaces'][$interface] ?? null;
-    $ppps = $config['ppps']['ppp'] ?? null;
+    $ifcfg = config_read_array('interfaces', $interface, false);
+    $ppps = config_read_array('ppps', 'ppp', false);
 
     if (!interface_ppps_capable($ifcfg, $ppps)) {
         return;
@@ -1046,7 +1040,6 @@ function interface_ppps_configure($interface)
     switch ($ifcfg['ipaddr'] ?? 'none') {
         case 'ppp':
         case 'pppoe':
-        case 'pptp':
         case 'l2tp':
             $ipv4_mode = 'enable';
             break;
@@ -1095,15 +1088,17 @@ function interface_ppps_configure($interface)
     $mtus = !empty($ppp['mtu']) ? explode(',', $ppp['mtu']) : [];
 
     /*
-     * We bring up the parent interface first because if DHCP is configured on the parent we need
-     * to obtain an address first so we can write it in the mpd .conf file for PPTP and L2TP configs
+     * XXX L2TP is slated for removal since it is misusing 'localip'
+     *
+     * We bring up the parent interface first because if DHCP is
+     * configuredon the parent we need to obtain an address first
+     * so we can write it in the mpd .conf file for L2TP configs.
      */
     foreach ($ports as $pid => $port) {
         switch ($ppp['type']) {
             case 'pppoe':
                 legacy_interface_flags($port, 'up');
                 break;
-            case 'pptp':
             case 'l2tp':
                 /* configure interface */
                 if (is_ipaddr($localips[$pid])) {
@@ -1115,11 +1110,11 @@ function interface_ppps_configure($interface)
                 }
 
                 if (!is_ipaddr($localips[$pid])) {
-                    log_msg("Could not get a Local IP address for PPTP/L2TP link on {$port}. Using 0.0.0.0!", LOG_WARNING);
+                    log_msg("Could not get a Local IP address for L2TP link on {$port}. Using 0.0.0.0!", LOG_WARNING);
                     $localips[$pid] = '0.0.0.0';
                 }
                 if (!is_ipaddr($gateways[$pid])) {
-                    log_msg("Could not get a Remote IP address for PPTP/L2TP link on {$port}.", LOG_WARNING);
+                    log_msg("Could not get a Remote IP address for L2TP link on {$port}.", LOG_WARNING);
                     return;
                 }
                 break;
@@ -1177,19 +1172,36 @@ EOD;
     $mpdconf .= "  set iface down-script /usr/local/opnsense/scripts/interfaces/ppp-linkdown.sh\n";
 
     if ($ipv4_mode == 'enable') {
+        $localip = '0.0.0.0';
+        $localnet = '0';
+        $remoteip = '0.0.0.0';
+        $remotenet = '0';
+
+        /* IPCP is the same for multi-link so this block only checks the global field and expects only a single value */
         if ($ppp['type'] == 'ppp') {
-            $localip = is_ipaddr($ppp['localip']) ? $ppp['localip'] : '0.0.0.0';
-            $gateway = is_ipaddr($ppp['gateway']) ? $ppp['gateway'] : "10.64.64.{$idx}";
-            $mpdconf .= "  set ipcp ranges {$localip}/0 {$gateway}/0\n";
-        } else {
-            $mpdconf .= "  set ipcp ranges 0.0.0.0/0 0.0.0.0/0\n";
+            $localip = is_ipaddr($ppp['localip']) ? $ppp['localip'] : $localip;
+            /* "subnet" should have been used for localip, but it is dangerous since it defaulted to 31 */
+            $remoteip = is_ipaddr($ppp['gateway']) ? $ppp['gateway'] : "10.64.64.{$idx}";
+            /* "remotenet" was never available before, so do not use it until requested */
+        } elseif ($ppp['type'] == 'pppoe') {
+            if (is_ipaddr($ppp['localip'])) {
+                $localnet = ctype_digit($ppp['subnet']) && $ppp['subnet'] >= 0 && $ppp['subnet'] <= 32 ? $ppp['subnet'] : $localnet;
+                $localip = $ppp['localip'];
+            }
+            if (is_ipaddr($ppp['gateway'])) {
+                $remotenet = ctype_digit($ppp['remotenet']) && $ppp['remotenet'] >= 0 && $ppp['remotenet'] <= 32 ? $ppp['remotenet'] : $remotenet;
+                $remoteip = $ppp['gateway'];
+            }
         }
+
+        $mpdconf .= "  set ipcp ranges {$localip}/{$localnet} {$remoteip}/{$remotenet}\n";
 
         if (isset($ppp['vjcomp'])) {
             $mpdconf .= "  set ipcp no vjcomp\n";
         }
 
-        if (!empty($config['system']['dnsallowoverride'])) {
+        $systemcfg = config_read_array('system', false);
+        if (!empty($systemcfg['dnsallowoverride'])) {
             $mpdconf .= "  set ipcp enable req-pri-dns\n";
             $mpdconf .= "  set ipcp enable req-sec-dns\n";
         }
@@ -1296,7 +1308,7 @@ EOD;
             }
             $mpdconf_arr[] = "set pppoe service \"{$hostuniq}{$provider}\"";
             $mpdconf_arr[] = "set pppoe iface {$port}";
-        } elseif ($ppp['type'] == "pptp" || $ppp['type'] == "l2tp") {
+        } elseif ($ppp['type'] == 'l2tp') {
             $mpdconf_arr[] = "set {$ppp['type']} self {$localips[$pid]}";
             $mpdconf_arr[] = "set {$ppp['type']} peer {$gateways[$pid]}";
         }
@@ -1305,7 +1317,7 @@ EOD;
             $mpdconf .= "  " . $mpdconf_opt . "\n";
         }
 
-        $mpdconf .= "\topen\n";
+        $mpdconf .= "  open\n";
     }
 
     /* stop the service as a precaution */
@@ -2153,8 +2165,6 @@ EOD;
 
     /* execute hostapd and wpa_supplicant if required in shell */
     mwexecf('/bin/sh %s', "/tmp/{$device}_setup.sh");
-
-    return 0;
 }
 
 function interfaces_wlan_reset($device)
@@ -2412,19 +2422,17 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      * Unconditional actions on interface include:
      *
      * 1. Disable accepting router advertisements (SLAAC) on main device
-     * 2. Enable duplicate address detection (DAD) on main device
-     * 3. Set interface description to get more useful ifconfig output
-     * 4. Set "up" flag for UP/RUNNING requirement, adding an address
+     * 2. Set interface description to get more useful ifconfig output
+     * 3. Set "up" flag for UP/RUNNING requirement, adding an address
      *    already does that so at this point try to be more consistent.
      */
-    /* we do not set "ifdisabled" to avoid clobbering assigned tunnel devices */
-    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv -no_dad description %s up', [$device, $ifdescr]);
+    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s up', [$device, $ifdescr]);
 
     switch (is_ipv6_allowed() ? ($wancfg['ipaddrv6'] ?? 'none') : 'none') {
         case 'slaac':
         case 'dhcp6':
             /* setting this here is mandatory in conjunction with ppp-ipv6.php, see #10828 */
-            mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -ifdisabled up', $device);
+            mwexecf('/sbin/ifconfig %s inet6 accept_rtadv -no_dad -ifdisabled up', $device);
 
             if (!interface_ppps_bound($interface)) {
                 interface_dhcpv6_prepare($interface, $wancfg);
@@ -2432,19 +2440,22 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             }
             break;
         case 'linklocal':
-            mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv -ifdisabled up', $device);
+            mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv -no_dad -ifdisabled up', $device);
             break;
         case '6rd':
             interface_6rd_configure($interface, $wancfg, $reload || $linkup);
-            mwexecf('/sbin/ifconfig %s inet6 description %s up', [$realifv6, $ifdescr]);
+            mwexecf('/sbin/ifconfig %s inet6 -no_dad description %s up', [$realifv6, $ifdescr]);
             break;
         case '6to4':
             interface_6to4_configure($interface, $wancfg, $reload || $linkup);
-            mwexecf('/sbin/ifconfig %s inet6 description %s up', [$realifv6, $ifdescr]);
+            mwexecf('/sbin/ifconfig %s inet6 -no_dad description %s up', [$realifv6, $ifdescr]);
             break;
         case 'idassoc6':
         case 'track6':
             interface_track6_configure($interface, $wancfg, $reload || $linkup);
+            break;
+        case 'none':
+            /* no extra changes: "no_dad" and "ifdisabled" is not touched esp. relevant for tunnels */
             break;
         default:
             if (!interface_ppps_bound($interface)) {
@@ -2466,8 +2477,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         plugins_configure('ipsec', $verbose, [$interface]);
         plugins_configure('dhcp', $verbose);
         plugins_configure('dns', $verbose);
-        /* XXX not ideal but avoids "errors" in the log */
-        plugins_configure('newwanip:rfc2136', $verbose, [[$interface]]);
+        plugins_configure('updateip', $verbose, [[$interface]]);
     }
 
     /* XXX device dependency plugin hook */
@@ -2493,7 +2503,7 @@ function interface_track6_configure($interface, $lancfg, $reload = false)
         return;
     }
 
-    mwexecf('/sbin/ifconfig %s inet6 %sifdisabled', [$lancfg['if'], isset($lancfg['enable']) ? '-' : '']);
+    mwexecf('/sbin/ifconfig %s inet6 %sifdisabled -no_dad', [$lancfg['if'], isset($lancfg['enable']) ? '-' : '']);
 
     switch ($wancfg['ipaddrv6']) {
         case '6to4':
@@ -3452,9 +3462,6 @@ function convert_friendly_interface_to_friendly_descr($interface)
     switch ($interface) {
         case 'l2tp':
             $ifdesc = 'L2TP';
-            break;
-        case 'pptp':
-            $ifdesc = 'PPTP';
             break;
         case 'pppoe':
             $ifdesc = 'PPPoE';

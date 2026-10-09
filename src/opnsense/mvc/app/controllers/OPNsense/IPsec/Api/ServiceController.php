@@ -58,6 +58,6 @@ class ServiceController extends ApiMutableServiceControllerBase
      */
     protected function reconfigureForceRestart()
     {
-        return 0;
+        return false;
     }
 }

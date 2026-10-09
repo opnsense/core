@@ -109,7 +109,7 @@
                     interface_reload: {
                         filter: (cell) => {
                             const data = cell.getData();
-                            return 'link_type' in data && ["dhcp", "pppoe", "pptp", "l2tp", "ppp"].includes(data.link_type);
+                            return 'link_type' in data && ["dhcp", "pppoe", "l2tp", "ppp"].includes(data.link_type);
                         },
                         method: (event, cell) => {
                             const data = cell.getData();
