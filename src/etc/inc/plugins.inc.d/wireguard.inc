@@ -112,10 +112,11 @@ function wireguard_devices()
     }
     return [[
         'function' => 'wireguard_prepare', /* XXX only (empty) device creation */
+        'typedescr' => gettext('WireGuard'),
         'configurable' => false,
-        'pattern' => '^wg',
         'type' => 'wireguard',
         'volatile' => true,
+        'pattern' => '^wg',
         'names' => $names,
     ]];
 }
