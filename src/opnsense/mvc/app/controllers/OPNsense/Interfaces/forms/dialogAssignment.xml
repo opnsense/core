@@ -8,7 +8,7 @@
         <label>Status</label>
         <type>ignore</type>
         <grid_view>
-            <width>5em</width>
+            <width>60</width>
             <formatter>statusformatter</formatter>
         </grid_view>
     </field>
@@ -18,7 +18,7 @@
         <type>info</type>
         <help>Technical identifier of the interface, used by hasync for example.</help>
         <grid_view>
-            <width>10em</width>
+            <width>75</width>
         </grid_view>
     </field>
     <field>
@@ -54,7 +54,7 @@
         <label>Type</label>
         <type>ignore</type>
         <grid_view>
-            <width>15em</width>
+            <width>105</width>
         </grid_view>
     </field>
     <field>
