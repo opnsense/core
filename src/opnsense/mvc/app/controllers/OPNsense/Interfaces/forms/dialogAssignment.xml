@@ -17,6 +17,9 @@
         <label>Identifier</label>
         <type>info</type>
         <help>Technical identifier of the interface, used by hasync for example.</help>
+        <grid_view>
+            <width>10em</width>
+        </grid_view>
     </field>
     <field>
         <id>interface.enable</id>
@@ -51,7 +54,7 @@
         <label>Type</label>
         <type>ignore</type>
         <grid_view>
-            <width>5em</width>
+            <width>15em</width>
         </grid_view>
     </field>
     <field>
