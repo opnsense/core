@@ -226,6 +226,7 @@ class MenuController extends ApiControllerBase
                 $favorites[] = $menuUrl;
             }
             if ($node->menu_favorites->serialize($favorites) && $user->serializeToConfig(false, true)) {
+                /* intentionally skipping user-config-readonly check */
                 Config::getInstance()->save();
                 return ['result' => 'saved'];
             }

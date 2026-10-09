@@ -180,7 +180,7 @@
 </style>
 
 <div class="content-box">
-    <div class="content-box-main">
+    <div>
         <div class="col-sm-12 __mt">
            <label>
                 <input id="auto_refresh" type="checkbox" checked="checked">

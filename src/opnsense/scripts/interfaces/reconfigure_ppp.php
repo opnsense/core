@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2021 Deciso B.V.
+ * Copyright (C) 2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,44 +27,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("config.inc");
 require_once("interfaces.inc");
+require_once("system.inc");
+require_once("config.inc");
 require_once("util.inc");
 
-exit_on_bootup();
+# XXX at the moment the reconfiguration is for one device only
+# XXX with the script in place we can consider adding CARP glue
 
-$a_hasync = config_read_array('hasync', false);
-if (empty($a_hasync['disconnectppps'])) {
-    exit(0);
-}
+interface_ppps_configure($argv[1] ?? '');
 
-$subsystem = !empty($argv[1]) ? $argv[1] : '';
-$type = !empty($argv[2]) ? $argv[2] : '';
-
-if (!in_array($type, ['BACKUP', 'INIT', 'MASTER'])) {
-   log_msg("CARP '$type' event unknown from source '{$subsystem}'");
-   exit(1);
-} elseif (!strstr($subsystem, '@')) {
-   log_msg("CARP '$type' event triggered from wrong source '{$subsystem}'");
-   exit(1);
-}
-
-list ($vhid, $iface) = explode('@', $subsystem);
-
-foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
-    /* XXX this ignores MLPPP but also reduces complexity */
-    if ($ppp['ports'] != $iface) {
-        continue;
-    }
-
-    foreach (config_read_array('interfaces', false) as $ifkey => $interface) {
-        if ($ppp['if'] == $interface['if']) {
-            log_msg("{$iface} is connected to ppp interface {$ifkey} set new status {$type}");
-            if (in_array($type, ['BACKUP', 'INIT'])) {
-                interface_suspend($ifkey);
-            } else {
-                interface_ppps_configure($ifkey);
-            }
-        }
-    }
-}
+exit(0);

@@ -56,6 +56,7 @@ class ServiceController extends ApiMutableServiceControllerBase
     {
         $status = "failed";
         if ($this->request->isPost()) {
+            $this->throwReadOnly();
             $mdlIDS = $this->getModel();
             $runStatus = $this->statusAction();
             // we should always have a cron item configured for IDS, let's create one upon first reconfigure.

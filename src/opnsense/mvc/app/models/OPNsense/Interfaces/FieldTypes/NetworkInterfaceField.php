@@ -38,7 +38,7 @@ class NetworkInterfaceContainerField extends ContainerField
 {
     static $pppDevices = null;
 
-    public function toLegacy()
+    public function toLegacy($sanitize = true)
     {
         $result = [];
         if ($this->type4->isEqual('staticv4')) {
@@ -66,6 +66,8 @@ class NetworkInterfaceContainerField extends ContainerField
             'dhcp6_request_dns',
             'dhcp6-prefix-id',
             'dhcp6_ifid',
+            'track6-prefix-id',
+            'track6_ifid',
             'media',
         ];
         foreach ($this->iterateItems() as $key => $node) {
@@ -76,7 +78,7 @@ class NetworkInterfaceContainerField extends ContainerField
         }
         $result['dhcp6_norequest_dns'] = $this->dhcp6_request_dns->isEmpty() ? '1' : '0';
         foreach (['dhcp6-prefix-id', 'dhcp6_ifid', 'track6-prefix-id', 'track6_ifid'] as $fld) {
-            if (!$this->$fld->isSet()) {
+            if ($this->$fld->isSet()) {
                 $result[$fld] = intval($this->$fld->getValue(), 16);
             }
         }
@@ -85,6 +87,42 @@ class NetworkInterfaceContainerField extends ContainerField
             $result['media'] = $parts[0];
             $result['mediaopt'] = $parts[1] ?? '';
         }
+
+        if ($sanitize) {
+            foreach ($result as $key => $value) {
+                if ($value === '' && !in_array($key, ['descr', 'spoofmac'])) {
+                    unset($result[$key]);
+                }
+            }
+
+            /* unset when empty */
+            $legacybools = [
+                'blockbogons',
+                'blockpriv',
+                'dhcp6-ia-pd-send-hint',
+                'dhcp6-information-only',
+                'dhcp6_norequest_dns',
+                'dhcp6_rapid_commit',
+                'dhcp6prefixonly',
+                'dhcpd6track6allowoverride',
+                'dhcphonourmtu',
+                'disablechecksumoffloading',
+                'disablelargereceiveoffloading',
+                'disablesegmentationoffloading',
+                'disablevlanhwfilter', /* not a bool but '0' not stored due to empty() */
+                'enable',
+                'gateway_interface',
+                'hw_settings_overwrite',
+                'lock',
+                'promisc',
+            ];
+            foreach ($legacybools as $legacybool) {
+                if (empty($result[$legacybool])) {
+                    unset($result[$legacybool]);
+                }
+            }
+        }
+
         return $result;
     }
 

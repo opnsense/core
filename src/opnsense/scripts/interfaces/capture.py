@@ -228,7 +228,7 @@ if __name__ == '__main__':
         result['status'] = 'ok'
         zfh = zipfile.ZipFile(result['filename'], mode='w')
         for filename in glob.glob("%s%s*" % (TEMP_DIR, cmd_args.job)):
-            if not filename.endswith('.zip'):
+            if not filename.endswith('.zip') and os.path.realpath(filename).startswith(TEMP_DIR):
                 zfh.write(filename, os.path.basename(filename))
         zfh.close()
 

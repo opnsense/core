@@ -251,8 +251,8 @@
 </ul>
 <div class="tab-content content-box">
     <div id="activity" class="tab-pane fade in active">
-        <div class="content-box-main">
-            <div  class="col-xs-12">
+        <div>
+            <div class="col-xs-12">
                 <div class="pull-right">
                     <table>
                         <tr>

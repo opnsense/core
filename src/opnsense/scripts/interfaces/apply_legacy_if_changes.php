@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2021 Deciso B.V.
+ * Copyright (C) 2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -27,44 +27,28 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once("config.inc");
 require_once("interfaces.inc");
+require_once("system.inc");
+require_once("config.inc");
 require_once("util.inc");
 
-exit_on_bootup();
+$interfaces_apply = '/var/lib/php/tmp/.interfaces.apply';
 
-$a_hasync = config_read_array('hasync', false);
-if (empty($a_hasync['disconnectppps'])) {
+if (!file_exists($interfaces_apply)) {
     exit(0);
 }
 
-$subsystem = !empty($argv[1]) ? $argv[1] : '';
-$type = !empty($argv[2]) ? $argv[2] : '';
+$toapplylist = unserialize(file_get_contents($interfaces_apply), ['allowed_classes' => false]);
 
-if (!in_array($type, ['BACKUP', 'INIT', 'MASTER'])) {
-   log_msg("CARP '$type' event unknown from source '{$subsystem}'");
-   exit(1);
-} elseif (!strstr($subsystem, '@')) {
-   log_msg("CARP '$type' event triggered from wrong source '{$subsystem}'");
-   exit(1);
+foreach ($toapplylist as $ifapply => $ifcfgo) {
+    interface_reset($ifapply, $ifcfgo, isset($ifcfgo['enable']));
+    interface_configure(true, $ifapply, true);
 }
 
-list ($vhid, $iface) = explode('@', $subsystem);
+configd_run('filter reload');
+configd_run('webgui restart 3', true);
 
-foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
-    /* XXX this ignores MLPPP but also reduces complexity */
-    if ($ppp['ports'] != $iface) {
-        continue;
-    }
+clear_subsystem_dirty('interfaces');
+@unlink($interfaces_apply);
 
-    foreach (config_read_array('interfaces', false) as $ifkey => $interface) {
-        if ($ppp['if'] == $interface['if']) {
-            log_msg("{$iface} is connected to ppp interface {$ifkey} set new status {$type}");
-            if (in_array($type, ['BACKUP', 'INIT'])) {
-                interface_suspend($ifkey);
-            } else {
-                interface_ppps_configure($ifkey);
-            }
-        }
-    }
-}
+exit(0);

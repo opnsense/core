@@ -107,4 +107,4 @@ if __name__ == '__main__':
                         subprocess.run(['/sbin/pfctl', '-t', inputargs.pf_table, '-T', 'add', str(ip)],
                                          capture_output=True)
                         # kill active state(s) for this ip address as well.
-                        subprocess.run(['/sbin/pfctl', '-k', ip], capture_output=True)
+                        subprocess.run(['/sbin/pfctl', '-k', str(ip)], capture_output=True)

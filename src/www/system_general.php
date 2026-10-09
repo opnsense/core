@@ -258,7 +258,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (write_config()) {
             foreach ($staleroutes as $staleroute) {
                 /* explicit flush before proceeding */
-                system_host_route($staleroute, null);
+                configdp_run('interface route del', [is_ipaddrv4($staleroute) ? 'ipv4' : 'ipv6', $staleroute]);
             }
 
             configd_run('service restart timezone'); /* time zone change first */
@@ -484,7 +484,7 @@ $( document ).ready(function() {
                 </table>
                 <div class="hidden" data-for="help_for_dnsservers">
                   <?=gettext("Enter IP addresses to be used by the system for DNS resolution. " .
-                  "These are also used for the DHCP service, DNS services and for PPTP VPN clients."); ?>
+                  "These are also used for the DHCP service, DNS services and possibly VPN clients."); ?>
                   <br />
                   <br />
                   <?=gettext("In addition, optionally select the gateway for each DNS server. " .

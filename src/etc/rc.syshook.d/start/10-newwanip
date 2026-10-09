@@ -15,3 +15,14 @@ for IPV6 in $(find /tmp -type f -name "newwanipv6_*"); do
 	echo "Reconfiguring IPv6 on ${INTERFACE}"
 	configctl -dq interface newipv6 ${INTERFACE} force
 done
+
+for PPP in $(find /tmp -type f -name "pppconfigure_*"); do
+	INTERFACE=$(cat "${PPP}")
+	rm "${PPP}"
+
+	echo "Dialing PPP on ${INTERFACE}"
+	# XXX run without -d to avoid code races for now:
+	configctl -q ppp configure ${INTERFACE}
+	# XXX if ppp configure is inadequate we still need this:
+	#configctl -q interface reconfigure ${INTERFACE}
+done

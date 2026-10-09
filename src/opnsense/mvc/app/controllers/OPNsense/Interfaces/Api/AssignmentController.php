@@ -139,14 +139,8 @@ class AssignmentController extends ApiMutableModelControllerBase
 
     public function reconfigureAction()
     {
-        $legacybools = [
-            'enable',
-            'lock',
-            'disablechecksumoffloading',
-            'disablesegmentationoffloading',
-            'disablelargereceiveoffloading'
-        ];
         if ($this->request->isPost()) {
+            $this->throwReadOnly();
             $backend = new Backend();
             /***
              * Interface apply and final configuration update are separated steps to avoid
@@ -163,30 +157,27 @@ class AssignmentController extends ApiMutableModelControllerBase
                         unset(Config::getInstance()->object()->interfaces->$key);
                     } else {
                         /* update pending changes */
-                        $pending = $this->getModel()->interface->$key?->toLegacy() ?? [];
-                        foreach ($pending as $akey => $avalue) {
-                            if ($avalue !== '') {
+                        $pending = $this->getModel()->interface->$key?->toLegacy() ?? null;
+                        if ($pending !== null) {
+                            /* advanced dhcp settings not supported, prevent settings being used */
+                            $removals = [
+                                'adv_dhcp6_config_advanced',
+                                'adv_dhcp6_config_file_override',
+                                'adv_dhcp_config_advanced',
+                                'adv_dhcp_config_file_override'
+                            ];
+                            foreach (Config::getInstance()->object()->interfaces->$key->children() as $remove) {
+                                if (!in_array($remove->getName(), array_keys($pending))) {
+                                    $removals[] = $remove->getName();
+                                }
+                            }
+                            foreach ($removals as $remove) {
+                                if (isset(Config::getInstance()->object()->interfaces->$key->$remove)) {
+                                    unset(Config::getInstance()->object()->interfaces->$key->$remove);
+                                }
+                            }
+                            foreach ($pending as $akey => $avalue) {
                                 Config::getInstance()->object()->interfaces->$key->$akey = $avalue;
-                            } elseif (isset(Config::getInstance()->object()->interfaces->$key->$akey)) {
-                                unset(Config::getInstance()->object()->interfaces->$key->$akey);
-                            }
-                        }
-                        foreach ($legacybools as $legacybool) {
-                            if (empty($pending[$legacybool])) {
-                                unset(Config::getInstance()->object()->interfaces->$key->$legacybool);
-                            }
-                        }
-                        /* advanced dhcp settings not supported, prevent settings being used */
-                        foreach (
-                            [
-                            'adv_dhcp6_config_file_override',
-                            'adv_dhcp6_config_advanced',
-                            'adv_dhcp_config_advanced',
-                            'adv_dhcp_config_file_override'
-                            ] as $unset
-                        ) {
-                            if (isset(Config::getInstance()->object()->interfaces->$key->$unset)) {
-                                unset(Config::getInstance()->object()->interfaces->$key->$unset);
                             }
                         }
                     }
@@ -199,5 +190,15 @@ class AssignmentController extends ApiMutableModelControllerBase
             }
         }
         return ["status" => "failed"];
+    }
+
+    /**
+     * retrieve pending status
+     */
+    public function pendingAction()
+    {
+        $backend = new Backend();
+
+        return ['status' => file_exists('/tmp/.interfaces.todo') ? 'pending' : 'ok'];
     }
 }

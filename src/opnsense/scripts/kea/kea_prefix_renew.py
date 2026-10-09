@@ -42,7 +42,8 @@ if __name__ == "__main__":
         subnet6 = config.get("arguments", {}).get("Dhcp6", {}).get("subnet6", [])
 
         for subnet in subnet6:
-            if subnet.get("id") is not None and subnet.get("user-context", {}).get("dynamic_prefix") is True:
+            context = subnet.get("user-context", {}).get("opnsense", {})
+            if subnet.get("id") is not None and context.get("dynamic_prefix") is True:
                 subnet_id = int(subnet.get("id"))
                 KeaCtrl.send_command("lease6-wipe", {"subnet-id": subnet_id}, "dhcp6")
 

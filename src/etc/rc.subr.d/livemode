@@ -31,44 +31,76 @@ require_once('config.inc');
 require_once('auth.inc');
 require_once('util.inc');
 
-if (is_install_media()) {
-    /*
-     * Installer mode requires setting up an extra user and
-     * we will protect it with root's password.  We can only
-     * do this if user does not exist, though.
-     */
-    $root = null;
+use OPNsense\Core\Config;
+use OPNsense\Auth\User;
 
-    foreach (config_read_array('system', 'user', false) as $user) {
-        if ($user['name'] == 'installer') {
-            $root = null;
-            break;
-        }
+function sync_installer_user()
+{
+    Config::getInstance()->lock();
 
-        if ($user['uid'] == 0) {
-            $root = $user;
+    $usermdl = new User();
+    $ret = false;
+
+    $installer = $usermdl->getUserByName('installer');
+    $root = $usermdl->getUserByName('root');
+
+    if (!empty($installer)) {
+        /* simply test if it is usable */
+        $ret = $installer->uid->isEqual('0') && $installer->scope->isEqual('system') && $installer->disabled->isEmpty();
+    } else if (!empty($root) && $root->uid->isEqual('0') && $root->scope->isEqual('system') && $root->disabled->isEmpty()) {
+        $installer = $usermdl->user->Add();
+        $installer->setNodes($root->getNodeContent());
+        $installer->descr = 'System Installer';
+        $installer->name = 'installer';
+        $installer->uid = '0'; /* needs a reset */
+
+        if ($usermdl->serializeToConfig(false, true)) {
+            Config::getInstance()->save();
+
+            /* only sync the user, because local_sync_accounts() cannot cope with overlapping UIDs */
+            $user = $installer->getNodeContent();
+            local_user_set($user);
+
+            $ret = true;
         }
     }
 
-    if ($root) {
-        $root['shell'] = '/usr/local/sbin/opnsense-installer';
-        $root['name'] = 'installer';
-        local_user_set($root, true);
+    Config::getInstance()->unlock();
 
-        echo "\n";
+    return $ret;
+}
 
-        /* tailored for OPNsense to occupy same width below */
-        $namex = product::getInstance()->name();
+/*
+ * Installer mode requires setting up an extra user and
+ * we will protect it with root's password.  We can only
+ * do this if root exists and installer does not, though.
+ *
+ * If an 'installer' account is found with the correct
+ * UID and scope we will try to use it, too.
+ */
+if (is_install_media() && sync_installer_user()) {
+    echo "\n";
 
-        $greeting = "Welcome!  {$namex} is running in live mode from install media.  Please\n" .
-                    "login as 'root' to continue in live mode, or as 'installer' to start the\n" .
-                    "installation.  Use the default or previously-imported root password for\n" .
-                    "both accounts.";
+    /* tailored for OPNsense to occupy same width below */
+    $namex = product::getInstance()->name();
 
-        if (!isset($config['system']['ssh']['noauto']) && is_process_running('sshd')) {
-            $greeting .= "  Remote login via SSH is also enabled.";
-        }
+    $greeting = "Welcome!  {$namex} is running in live mode from install media.  Please\n" .
+                "login as 'root' to continue in live mode, or as 'installer' to start the\n" .
+                "installation.  Use the default or previously-imported root password for\n" .
+                "both accounts.";
 
-        echo $greeting . "\n";
+    if (!isset($config['system']['ssh']['noauto']) && is_process_running('sshd')) {
+        $greeting .= "  Remote login via SSH is also enabled.";
     }
+
+    echo $greeting . "\n";
+} else {
+    $users = &config_read_array('system', 'user');
+    foreach ($users as $id => $user) {
+        if ($user['name'] == 'installer' && $user['scope'] == 'system') {
+            unset($users[$id]);
+            write_config('Remove installer user');
+        }
+    }
+    shell_safe('/usr/sbin/pw userdel installer 2> /dev/null');
 }

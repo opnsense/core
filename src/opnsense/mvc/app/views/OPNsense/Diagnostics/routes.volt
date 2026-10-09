@@ -44,7 +44,8 @@
                                         '{{ lang._('Yes') }}',
                                         '{{ lang._('No') }}',
                                         function() {
-                            ajaxCall('/api/diagnostics/interface/del_route/', {'destination': route[0], 'gateway': route[1]},function(data,status){
+                            let req = {'family': route[0], 'destination': route[1], 'gateway': route[2]};
+                            ajaxCall('/api/diagnostics/interface/del_route/', req, function (data, status) {
                                 // reload grid after delete
                                 $("#update").click();
                             });
@@ -77,9 +78,9 @@
 </script>
 
 <div class="content-box">
-    <div class="content-box-main">
+    <div>
         <div class="table-responsive">
-            <div  class="col-sm-12">
+            <div class="col-sm-12">
                 <div class="table-responsive">
                     <table id="grid-routes" class="table table-condensed table-hover table-striped table-responsive">
                         <thead>

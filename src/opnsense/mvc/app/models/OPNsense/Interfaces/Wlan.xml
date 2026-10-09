@@ -26,18 +26,21 @@
                 <Required>Y</Required>
                 <Default>auto</Default>
                 <OptionValues>
-                    <!-- https://github.com/opnsense/src/blob/cda7faa147a81233c0b6f40b089c587ed7db6a1d/sbin/ifconfig/ifieee80211.c#L160-L175 -->
-                    <p0 value="auto">auto</p0>
-                    <p1 value="11b">11a</p1>
-                    <p2 value="11b">11b</p2>
-                    <p3 value="fh">fh</p3>
-                    <p4 value="turboA">turboA</p4>
-                    <p5 value="turboG">turboG</p5>
-                    <p6 value="sturbo">sturbo</p6>
-                    <p7 value="11na">11na</p7>
-                    <p8 value="11ng">11ng</p8>
-                    <p9 value="11acg">11acg</p9>
-                    <p10 value="11ac">11ac</p10>
+                    <!-- https://github.com/opnsense/src/blob/cda7faa147a81/sbin/ifconfig/ifieee80211.c#L160-L175 -->
+                    <p0 value="auto"/>
+                    <p1 value="11a"/>
+                    <p2 value="11b"/>
+                    <!-- XXX 11g -->
+                    <p3 value="fh"/>
+                    <p4 value="turboA"/>
+                    <p5 value="turboG"/>
+                    <p6 value="sturbo"/>
+                    <p7 value="11na"/>
+                    <p8 value="11ng"/>
+                    <!-- XXX half -->
+                    <!-- XXX quarter -->
+                    <p9 value="11acg"/>
+                    <p10 value="11ac"/>
                 </OptionValues>
             </standard>
             <pureg type="BooleanField"/>
@@ -154,8 +157,8 @@
                     <Required>Y</Required>
                     <Default>MD5</Default>
                     <OptionValues>
-                        <MD5>MD5</MD5>
-                        <MSCHAPv2>MSCHAPv2</MSCHAPv2>
+                        <MD5/>
+                        <MSCHAPv2/>
                     </OptionValues>
                 </wpa_eap_p2_auth>
                 <wpa_eap_cacertref type="CertificateField">
@@ -166,18 +169,16 @@
                     <Required>Y</Required>
                     <Default>CCMP TKIP</Default>
                     <OptionValues>
-                        <p1 value="CCMP TKIP">Both</p1>
-                        <p2 value="CCMP">AES (recommended)</p2>
-                        <p3 value="TKIP">TKIP</p3>
+                        <p1 value="CCMP TKIP">Both (legacy)</p1>
+                        <p2 value="CCMP">AES (modern)</p2>
+                        <p3 value="TKIP">TKIP (insecure)</p3>
                     </OptionValues>
                 </wpa_pairwise>
                 <wpa_group_rekey type="IntegerField">
-                    <Default>60</Default>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>9999</MaximumValue>
                 </wpa_group_rekey>
                 <wpa_gmk_rekey type="IntegerField">
-                    <Default>60</Default>
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>9999</MaximumValue>
                 </wpa_gmk_rekey>

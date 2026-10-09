@@ -597,6 +597,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/FirewallStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/HostDiscoveryStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/IDSOverrideStatus.php
+/usr/local/opnsense/mvc/app/library/OPNsense/System/Status/IPsecIkev1Status.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/IPsecOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/LiveMediaStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/MonitOverrideStatus.php
@@ -1304,6 +1305,7 @@
 /usr/local/opnsense/scripts/health/library/OPNsense/RRD/Types/Wireless.php
 /usr/local/opnsense/scripts/health/listReports.py
 /usr/local/opnsense/scripts/health/updaterrd.php
+/usr/local/opnsense/scripts/interfaces/apply_legacy_if_changes.php
 /usr/local/opnsense/scripts/interfaces/apply_pending_if_changes.php
 /usr/local/opnsense/scripts/interfaces/capture.py
 /usr/local/opnsense/scripts/interfaces/carp_global_status.php
@@ -1335,6 +1337,7 @@
 /usr/local/opnsense/scripts/interfaces/reconfigure_gres.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_laggs.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_neighbors.php
+/usr/local/opnsense/scripts/interfaces/reconfigure_ppp.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vips.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vlans.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_wlan.php
@@ -1448,6 +1451,7 @@
 /usr/local/opnsense/scripts/system/certctl.py
 /usr/local/opnsense/scripts/system/cpu.py
 /usr/local/opnsense/scripts/system/crl_fetch.py
+/usr/local/opnsense/scripts/system/disk_info.py
 /usr/local/opnsense/scripts/system/factory_defaults.php
 /usr/local/opnsense/scripts/system/flush_config_history
 /usr/local/opnsense/scripts/system/get_locales.php
@@ -1553,6 +1557,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Auth/sshd.pam
 /usr/local/opnsense/service/templates/OPNsense/Auth/sudoers
 /usr/local/opnsense/service/templates/OPNsense/Auth/system.pam
+/usr/local/opnsense/service/templates/OPNsense/Auth/webgui.pam
 /usr/local/opnsense/service/templates/OPNsense/Captiveportal/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Captiveportal/captiveportal.conf
 /usr/local/opnsense/service/templates/OPNsense/Captiveportal/lighttpd-api-dispatcher.conf
@@ -2587,8 +2592,6 @@
 /usr/local/www/diag_authentication.php
 /usr/local/www/diag_backup.php
 /usr/local/www/fbegin.inc
-/usr/local/www/firewall_nat_out.php
-/usr/local/www/firewall_nat_out_edit.php
 /usr/local/www/firewall_rule_lookup.php
 /usr/local/www/firewall_schedule.php
 /usr/local/www/firewall_schedule_edit.php

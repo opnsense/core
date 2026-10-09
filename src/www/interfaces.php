@@ -323,20 +323,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!is_subsystem_dirty('interfaces')) {
             $intput_errors[] = gettext("You have already applied your settings!");
         } else {
-            if (file_exists('/tmp/.interfaces.apply')) {
-                $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
-                foreach ($toapplylist as $ifapply => $ifcfgo) {
-                    interface_reset($ifapply, $ifcfgo, isset($ifcfgo['enable']));
-                    interface_configure(false, $ifapply, true);
-                }
-
-                system_routing_configure(false, array_keys($toapplylist));
-                configd_run('filter reload');
-                configd_run('webgui restart 3', true);
-            }
-
-            clear_subsystem_dirty('interfaces');
-            @unlink('/tmp/.interfaces.apply');
+            configd_run('interface legacy apply');
         }
         if (!empty($ifgroup)) {
             header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
@@ -357,17 +344,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         if (write_config("Interface {$pconfig['descr']}({$if}) is now disabled.")) {
             mark_subsystem_dirty('interfaces');
-            if (file_exists('/tmp/.interfaces.apply')) {
-                $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
+            if (file_exists('/var/lib/php/tmp/.interfaces.apply')) {
+                $toapplylist = unserialize(file_get_contents('/var/lib/php/tmp/.interfaces.apply'), ['allowed_classes' => false]);
             } else {
                 $toapplylist = [];
             }
             if (empty($toapplylist[$if])) {
                 // only flush if the running config is not in our list yet
+                $toapplylist[$if]['devices'] = get_real_interface($if, 'both');
                 $toapplylist[$if]['ifcfg'] = $a_interfaces[$if];
-                $toapplylist[$if]['ifcfg']['devices'] = get_real_interface($if, 'both');
                 $toapplylist[$if]['ppps'] = $a_ppps;
-                file_safe('/tmp/.interfaces.apply', serialize($toapplylist));
+                file_safe('/var/lib/php/tmp/.interfaces.apply', serialize($toapplylist));
             }
         }
         if (!empty($ifgroup)) {
@@ -382,13 +369,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 $input_errors[] = gettext("An interface with the specified description already exists.");
                 break;
             }
-        }
-
-        if (isset($config['dhcpd'][$if]['enable']) && !preg_match('/^staticv4/', $pconfig['type'])) {
-            $input_errors[] = gettext("The DHCP Server is active on this interface and it can be used only with a static IP configuration. Please disable the DHCP Server service on this interface first, then change the interface configuration.");
-        }
-        if (isset($config['dhcpdv6'][$if]['enable']) && !preg_match('/^staticv6/', $pconfig['type6']) && !isset($pconfig['dhcpd6track6allowoverride']) && $config['dhcpdv6'][$if]['enable'] != '-1') {
-            $input_errors[] = gettext("The DHCPv6 Server is active on this interface and it can be used only with a static IPv6 configuration. Please disable the DHCPv6 Server service on this interface first, then change the interface configuration.");
         }
 
         foreach (plugins_devices() as $device) {
@@ -706,7 +686,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 case 'l2tp':
                 case 'ppp':
                 case 'pppoe':
-                case 'pptp':
                     $new_config['ipaddr'] = $pconfig['type'];
                     break;
             }
@@ -754,33 +733,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     if (!empty($pconfig['dhcp6_assoc_pd'])) {
                         $new_config['dhcp6_assoc_pd'] = $pconfig['dhcp6_assoc_pd'];
                     }
-                    $new_config['adv_dhcp6_interface_statement_send_options'] = $pconfig['adv_dhcp6_interface_statement_send_options'];
-                    $new_config['adv_dhcp6_interface_statement_request_options'] = $pconfig['adv_dhcp6_interface_statement_request_options'];
-                    $new_config['adv_dhcp6_interface_statement_information_only_enable'] = $pconfig['adv_dhcp6_interface_statement_information_only_enable'];
-                    $new_config['adv_dhcp6_interface_statement_script'] = $pconfig['adv_dhcp6_interface_statement_script'];
-                    $new_config['adv_dhcp6_id_assoc_statement_address_enable'] = $pconfig['adv_dhcp6_id_assoc_statement_address_enable'];
-                    $new_config['adv_dhcp6_id_assoc_statement_address'] = $pconfig['adv_dhcp6_id_assoc_statement_address'];
-                    $new_config['adv_dhcp6_id_assoc_statement_address_id'] = $pconfig['adv_dhcp6_id_assoc_statement_address_id'];
-                    $new_config['adv_dhcp6_id_assoc_statement_address_pltime'] = $pconfig['adv_dhcp6_id_assoc_statement_address_pltime'];
-                    $new_config['adv_dhcp6_id_assoc_statement_address_vltime'] = $pconfig['adv_dhcp6_id_assoc_statement_address_vltime'];
-                    $new_config['adv_dhcp6_id_assoc_statement_prefix_enable'] = $pconfig['adv_dhcp6_id_assoc_statement_prefix_enable'];
-                    $new_config['adv_dhcp6_id_assoc_statement_prefix'] = $pconfig['adv_dhcp6_id_assoc_statement_prefix'];
-                    $new_config['adv_dhcp6_id_assoc_statement_prefix_id'] = $pconfig['adv_dhcp6_id_assoc_statement_prefix_id'];
-                    $new_config['adv_dhcp6_id_assoc_statement_prefix_pltime'] = $pconfig['adv_dhcp6_id_assoc_statement_prefix_pltime'];
-                    $new_config['adv_dhcp6_id_assoc_statement_prefix_vltime'] = $pconfig['adv_dhcp6_id_assoc_statement_prefix_vltime'];
-                    $new_config['adv_dhcp6_prefix_interface_statement_sla_len'] = $pconfig['adv_dhcp6_prefix_interface_statement_sla_len'];
-                    $new_config['adv_dhcp6_authentication_statement_authname'] = $pconfig['adv_dhcp6_authentication_statement_authname'];
-                    $new_config['adv_dhcp6_authentication_statement_protocol'] = $pconfig['adv_dhcp6_authentication_statement_protocol'];
-                    $new_config['adv_dhcp6_authentication_statement_algorithm'] = $pconfig['adv_dhcp6_authentication_statement_algorithm'];
-                    $new_config['adv_dhcp6_authentication_statement_rdm'] = $pconfig['adv_dhcp6_authentication_statement_rdm'];
-                    $new_config['adv_dhcp6_key_info_statement_keyname'] = $pconfig['adv_dhcp6_key_info_statement_keyname'];
-                    $new_config['adv_dhcp6_key_info_statement_realm'] = $pconfig['adv_dhcp6_key_info_statement_realm'];
-                    $new_config['adv_dhcp6_key_info_statement_keyid'] = $pconfig['adv_dhcp6_key_info_statement_keyid'];
-                    $new_config['adv_dhcp6_key_info_statement_secret'] = $pconfig['adv_dhcp6_key_info_statement_secret'];
-                    $new_config['adv_dhcp6_key_info_statement_expire'] = $pconfig['adv_dhcp6_key_info_statement_expire'];
-                    $new_config['adv_dhcp6_config_advanced'] = $pconfig['adv_dhcp6_config_advanced'];
-                    $new_config['adv_dhcp6_config_file_override'] = $pconfig['adv_dhcp6_config_file_override'];
-                    $new_config['adv_dhcp6_config_file_override_path'] = $pconfig['adv_dhcp6_config_file_override_path'];
+                    foreach ([
+                        'adv_dhcp6_authentication_statement_algorithm',
+                        'adv_dhcp6_authentication_statement_authname',
+                        'adv_dhcp6_authentication_statement_protocol',
+                        'adv_dhcp6_authentication_statement_rdm',
+                        'adv_dhcp6_config_advanced',
+                        'adv_dhcp6_config_file_override',
+                        'adv_dhcp6_config_file_override_path',
+                        'adv_dhcp6_id_assoc_statement_address',
+                        'adv_dhcp6_id_assoc_statement_address_enable',
+                        'adv_dhcp6_id_assoc_statement_address_id',
+                        'adv_dhcp6_id_assoc_statement_address_pltime',
+                        'adv_dhcp6_id_assoc_statement_address_vltime',
+                        'adv_dhcp6_id_assoc_statement_prefix',
+                        'adv_dhcp6_id_assoc_statement_prefix_enable',
+                        'adv_dhcp6_id_assoc_statement_prefix_id',
+                        'adv_dhcp6_id_assoc_statement_prefix_pltime',
+                        'adv_dhcp6_id_assoc_statement_prefix_vltime',
+                        'adv_dhcp6_interface_statement_information_only_enable',
+                        'adv_dhcp6_interface_statement_request_options',
+                        'adv_dhcp6_interface_statement_script',
+                        'adv_dhcp6_interface_statement_send_options',
+                        'adv_dhcp6_key_info_statement_expire',
+                        'adv_dhcp6_key_info_statement_keyid',
+                        'adv_dhcp6_key_info_statement_keyname',
+                        'adv_dhcp6_key_info_statement_realm',
+                        'adv_dhcp6_key_info_statement_secret',
+                        'adv_dhcp6_prefix_interface_statement_sla_len',
+                    ] as $field) {
+                        if (isset($pconfig[$field])) {
+                            $new_config[$field] = $pconfig[$field];
+                        }
+                    }
                     break;
                 case '6rd':
                     $new_config['ipaddrv6'] = '6rd';
@@ -824,17 +809,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if (write_config()) {
                 // log changes for apply action
                 // (it would be better to diff the physical situation with the new config for changes)
-                if (file_exists('/tmp/.interfaces.apply')) {
-                    $toapplylist = unserialize(file_get_contents('/tmp/.interfaces.apply'), ['allowed_classes' => false]);
+                if (file_exists('/var/lib/php/tmp/.interfaces.apply')) {
+                    $toapplylist = unserialize(file_get_contents('/var/lib/php/tmp/.interfaces.apply'), ['allowed_classes' => false]);
                 } else {
                     $toapplylist = [];
                 }
 
                 if (empty($toapplylist[$if])) {
                     // only flush if the running config is not in our list yet
+                    $toapplylist[$if]['devices'] = $old_config['devices'];
+                    unset($old_config['devices']);
                     $toapplylist[$if]['ifcfg'] = $old_config;
                     $toapplylist[$if]['ppps'] = $a_ppps;
-                    file_safe('/tmp/.interfaces.apply', serialize($toapplylist));
+                    file_safe('/var/lib/php/tmp/.interfaces.apply', serialize($toapplylist));
                 }
 
                 mark_subsystem_dirty('interfaces');
@@ -880,9 +867,6 @@ if (!interface_ppps_capable($a_interfaces[$if], $a_ppps)) {
             $types4['pppoe'] = gettext('PPPoE');
             $types6['pppoev6'] = gettext('PPPoEv6');
             break;
-        case 'pptp':
-            $types4['pptp'] = gettext('PPTP');
-            break;
         case 'l2tp':
             $types4['l2tp'] = gettext('L2TP');
             break;
@@ -916,14 +900,13 @@ include("head.inc");
 
       $("#type").change(function () {
           $('#staticv4, #dhcp, #ppp').hide();
-          if ($(this).val() == 'l2tp' || $(this).val() == 'pptp' || $(this).val() == 'pppoe') {
+          if ($(this).val() == 'l2tp' || $(this).val() == 'pppoe') {
               $("#ppp").show();
           } else {
               $("#" +$(this).val()).show();
           }
           switch ($(this).val()) {
             case "pppoe":
-            case "pptp":
               $("#mtu_calc").show();
               break;
             default:

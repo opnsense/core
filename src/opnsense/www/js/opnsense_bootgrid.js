@@ -1010,7 +1010,7 @@ class UIBootgrid {
     }
 
     _onCellRendered(cell, formatterParams) {
-        if (!$.isEmptyObject(this.options.statusMapping)) {
+        if (cell.getType() != "header" && !$.isEmptyObject(this.options.statusMapping)) {
             // XXX this fully assumes a row has a 'status' property
             $(cell.getElement()).addClass(this.options.statusMapping[cell.getData()['status']]);
         }
@@ -1377,7 +1377,7 @@ class UIBootgrid {
             let item = $(`
                 <li>
                     <label class="dropdown-item">
-                        <input class="dropdown-item-checkbox" id="${this.id}-columnselect-input" name="${definition.field}" type="checkbox" value="1" ${column.isVisible() ? 'checked="checked"' : ''}/>
+                        <input class="dropdown-item-checkbox ${this.id}-columnselect-input" name="${definition.field}" type="checkbox" value="1" ${column.isVisible() ? 'checked="checked"' : ''}/>
                         ${definition.title || definition.field || "&nbsp;"}
                     </label>
                 </li>
@@ -2452,6 +2452,7 @@ class UIBootgrid {
                 redraw = true;
                 col._silentToggle = true;
                 col.show();
+                $(`input.${this.id}-columnselect-input[name="${def.field}"]`).prop('checked', true);
                 delete col._silentToggle;
             }
         });
@@ -2469,6 +2470,7 @@ class UIBootgrid {
                 redraw = true;
                 col._silentToggle = true;
                 col.hide();
+                $(`input.${this.id}-columnselect-input[name="${def.field}"]`).prop('checked', false);
                 delete col._silentToggle;
             }
         });

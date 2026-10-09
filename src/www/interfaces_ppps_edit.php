@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
     // fields containing array data (comma-separated)
-    $explode_fields = array('mtu', 'mru', 'mrru', 'bandwidth', 'localip', 'gateway', 'localip', 'subnet', 'ports');
+    $explode_fields = array('mtu', 'mru', 'mrru', 'bandwidth', 'localip', 'gateway', 'localip', 'subnet', 'ports', 'remotenet');
     foreach ($explode_fields as $fieldname) {
         if (isset($a_ppps[$id][$fieldname])) {
             $pconfig[$fieldname] = explode(",", $a_ppps[$id][$fieldname]);
@@ -158,12 +158,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
             break;
         case "l2tp":
-        case "pptp":
             if (!empty($pconfig['ondemand'])) {
-                $reqdfields = explode(" ", "ports username password localip subnet gateway ondemand idletimeout");
+                $reqdfields = explode(" ", "ports username password localip subnet gateway remotenet ondemand idletimeout");
                 $reqdfieldsn = array(gettext("Link Interface(s)"),gettext("Username"),gettext("Password"),gettext("Local IP address"),gettext("Subnet"),gettext("Remote IP address"),gettext("Dial on demand"),gettext("Idle timeout value"));
             } else {
-                $reqdfields = explode(" ", "ports username password localip subnet gateway");
+                $reqdfields = explode(" ", "ports username password localip subnet gateway remotenet");
                 $reqdfieldsn = array(gettext("Link Interface(s)"),gettext("Username"),gettext("Password"),gettext("Local IP address"),gettext("Subnet"),gettext("Remote IP address"));
             }
             do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
@@ -227,8 +226,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         // Loop through fields associated with a individual link/port and make an array of the data
-        $port_fields = array("localip", "gateway", "subnet", "bandwidth", "mtu", "mru", "mrru");
-        $port_data = array();
+        $port_fields = ['localip', 'gateway', 'subnet', 'bandwidth', 'mtu', 'mru', 'mrru', 'remotenet'];
+        $port_data = [];
         foreach ($pconfig['ports'] as $iface_idx => $iface) {
             foreach ($port_fields as $field_label) {
                 if (!isset($port_data[$field_label])) {
@@ -264,12 +263,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if (!empty($pconfig['hostuniq'])) {
                     $ppp['hostuniq'] = $pconfig['hostuniq'];
                 }
-                break;
-            case "pptp":
+                /* FALLTHROUGH */
             case "l2tp":
                 $ppp['localip'] = implode(',', $port_data['localip']);
                 $ppp['subnet'] = implode(',', $port_data['subnet']);
                 $ppp['gateway'] = implode(',', $port_data['gateway']);
+                $ppp['remotenet'] = implode(',', $port_data['remotenet']);
                 break;
             default:
                 break;
@@ -295,7 +294,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             $iflist = get_configured_interface_with_descr();
             foreach ($iflist as $pppif => $ifdescr) {
                 if ($config['interfaces'][$pppif]['if'] == $ppp['if']) {
-                    interface_ppps_configure($pppif);
+                    configdp_run('interface ppp configure', [$pppif]);
+                    break;
                 }
             }
         }
@@ -370,7 +370,7 @@ include("head.inc");
             // add item text
             var i=0;
             $('#ports :selected').each(function () {
-              $(".intf_select_txt_"+i).html('( '+ $(this).val() + ' )');
+              $(".intf_select_txt_"+i).html('('+ $(this).val() + ')');
               i++;
             });
         });
@@ -477,7 +477,7 @@ include("head.inc");
                         <td>
                           <select name="type" class="selectpicker" id="type">
 <?php
-                          $types = array("ppp" => "PPP", "pppoe" => "PPPoE", "pptp" => "PPTP",  "l2tp" => "L2TP");
+                          $types = ['ppp' => 'PPP', 'pppoe' => 'PPPoE', 'l2tp' => 'L2TP'];
                           foreach ($types as $key => $opt):?>
                             <option value="<?=$key;?>" <?=$key == $pconfig['type'] ? "selected=\"selected\"" : "";?>><?=$opt;?></option>
 <?php
@@ -611,12 +611,12 @@ include("head.inc");
 <?php
                       for ($intf_idx=0; $intf_idx <= count($portlist) ; ++$intf_idx):?>
                       <tr style="display:none" class="intf_select_<?=$intf_idx;?>">
-                        <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Local IP");?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
+                        <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?= gettext('Local IP') ?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
                         <td style="width:78%">
                           <input name="localip[]" type="text" class="intf_select_<?=$intf_idx;?>" value="<?=isset($pconfig['localip'][$intf_idx]) ? $pconfig['localip'][$intf_idx] : "";?>" />
                           /
                           <select name="subnet[]" class="intf_select_<?=$intf_idx;?>">
-                          <?php for ($i = 31; $i > 0; $i--): ?>
+                          <?php for ($i = 0; $i <= 32; $i++): ?>
                             <option value="<?=$i;?>" <?= isset($pconfig['subnet'][$intf_idx]) && $i == $pconfig['subnet'][$intf_idx] ? "selected=\"selected\"" : "";?>>
                               <?=$i;?>
                             </option>
@@ -625,9 +625,17 @@ include("head.inc");
                         </td>
                       </tr>
                       <tr style="display:none" class="intf_select_<?=$intf_idx;?>">
-                        <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?=gettext("Gateway");?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
+                        <td style="width:22%"><i class="fa fa-info-circle text-muted"></i> <?= gettext('Remote IP') ?> <span class="intf_select_txt_<?=$intf_idx;?>"> </span></td>
                         <td style="width:78%">
                           <input name="gateway[]" type="text" class="intf_select_<?=$intf_idx;?>" value="<?=isset($pconfig['gateway'][$intf_idx]) ? $pconfig['gateway'][$intf_idx] : "";?>" />
+                          /
+                          <select name="remotenet[]" class="intf_select_<?=$intf_idx;?>">
+                          <?php for ($i = 0; $i <= 32; $i++): ?>
+                            <option value="<?=$i;?>" <?= isset($pconfig['remotenet'][$intf_idx]) && $i == $pconfig['remotenet'][$intf_idx] ? "selected=\"selected\"" : "";?>>
+                              <?=$i;?>
+                            </option>
+                          <?php endfor; ?>
+                          </select>
                         </td>
                       </tr>
 <?php

@@ -317,7 +317,7 @@
 </script>
 
 <div class="content-box">
-    <div class="content-box-main">
+    <div>
         <div class="table-responsive">
             <div class="col-sm-12">
                 <div class="pull-right">

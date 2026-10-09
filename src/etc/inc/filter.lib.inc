@@ -401,22 +401,6 @@ function filter_core_rules_system($fw, $defaults)
 
         // IPv4
         switch ($intfinfo['ipaddr'] ?? 'none') {
-            case "pptp":
-                $fw->registerFilterRule(
-                    1,
-                    ['protocol' => 'tcp','to_port' => 1723, 'direction' => 'in', 'statetype' => 'modulate', 'quick' => false,
-                        '#ref' => "interfaces.php?if=" . $intf . "#type",
-                        'interface' => $intf, 'flags' => 'S/SA', 'descr' => 'allow PPTP client on ' . $intfinfo['descr']],
-                    $defaults['pass']
-                );
-                $fw->registerFilterRule(
-                    1,
-                    ['protocol' => 'gre', 'direction' => 'in', 'statetype' => 'keep', 'quick' => false,
-                        '#ref' => "interfaces.php?if=" . $intf . "#type",
-                        'interface' => $intf, 'descr' => 'allow PPTP client on ' . $intfinfo['descr']],
-                    $defaults['pass']
-                );
-                break;
             case "dhcp":
                 $fw->registerFilterRule(
                     1,
@@ -650,18 +634,24 @@ function filter_core_rules_system($fw, $defaults)
                 'log' => $dnatrule['log'],
                 'descr' => $dnatrule['descr']
             ];
-            if (!empty($dnatrule['destination']['port']) && !empty($dnatrule['local-port'])) {
-                $tmprule['destination']['port'] = $rule->{'local-port'}->normalizedPort();
+            $local_port = $rule->{'local-port'}->normalizedPort();
+            if (!empty($dnatrule['destination']['port']) && ctype_digit($local_port)) {
+                $tmprule['destination']['port'] = $local_port;
 
                 $parts = explode('-', $rule->destination->port->normalizedPort());
-                if (count($parts) == 2) {
-                    $range_end = $parts[1] - $parts[0] + $tmprule['destination']['port'];
+                if (count($parts) == 2 && ctype_digit($parts[0]) && ctype_digit($parts[1])) {
+                    $range_end = min($parts[1] - $parts[0] + $tmprule['destination']['port'], 65535);
                     $tmprule['destination']['port'] .= sprintf('-%s', $range_end);
                 }
-            } elseif (!empty($dnatrule['local-port'])) {
-                $tmprule['destination']['port'] = $dnatrule['local-port'];
+            } elseif (!empty($local_port)) {
+                $tmprule['destination']['port'] = $local_port;
             } elseif (!empty($dnatrule['destination']['port'])) {
                 $tmprule['destination']['port'] = $dnatrule['destination']['port'];
+            }
+
+            if (empty($dnatrule['target'])) {
+                /* without target, use destination network, should only appear on no-rdr rules */
+                $tmprule['destination']['network'] = $dnatrule['destination']['network'];
             }
             $fw->registerFilterRule(500000, $tmprule); /* automatic at the end of our ruleset */
         }

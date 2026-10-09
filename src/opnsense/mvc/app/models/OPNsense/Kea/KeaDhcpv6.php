@@ -363,16 +363,16 @@ class KeaDhcpv6 extends BaseModel
             if (!$subnet->allocator->isEmpty()) {
                 $record['allocator'] = $subnet->allocator->getValue();
             }
-            /* add description and other custom keys - not parsed by KEA */
-            $record['user-context'] = ['uuid' => $subnet->getAttribute('uuid')];
+            /* opnsense metadata is not parsed by Kea; hooks may parse other user-context entries. */
+            $record['user-context']['opnsense'] = ['uuid' => $subnet->getAttribute('uuid')];
             if (!$subnet->description->isEmpty()) {
-                $record['user-context']['description'] = $subnet->description->getValue();
+                $record['user-context']['opnsense']['description'] = $subnet->description->getValue();
             }
             if (!$subnet->dynamic_prefix->isEmpty()) {
-                // Used by hook script to know which subnets have a dynamic prefix, it reads the running conf from socket
-                $record['user-context']['dynamic_prefix'] = true;
-                $record['user-context']['prefix_valid'] = $idassoc['prefix_valid'] ?? false;
-                $record['user-context']['prefix_source'] = $idassoc['prefix_source'] ?? $if;
+                // Used by kea_prefix_renew.py to know which subnets have a dynamic prefix, it reads the running conf from socket
+                $record['user-context']['opnsense']['dynamic_prefix'] = true;
+                $record['user-context']['opnsense']['prefix_valid'] = $idassoc['prefix_valid'] ?? false;
+                $record['user-context']['opnsense']['prefix_source'] = $idassoc['prefix_source'] ?? $if;
                 // If the prefix is temporary placeholder, we will not send leases to any client
                 if (empty($idassoc['prefix_valid'])) {
                     $record['client-classes'] = ['NO_LEASES_PLEASE'];
@@ -442,10 +442,10 @@ class KeaDhcpv6 extends BaseModel
                         'delegated-len' => $pdpool->delegated_len->asInt()
                     ];
                 }
-                /* add description and other custom keys - not parsed by KEA */
-                $entry['user-context'] = ['uuid' => $pdpool->getAttribute('uuid')];
+                /* opnsense metadata is not parsed by Kea; hooks may parse other user-context entries. */
+                $entry['user-context']['opnsense'] = ['uuid' => $pdpool->getAttribute('uuid')];
                 if (!$pdpool->description->isEmpty()) {
-                    $entry['user-context']['description'] = $pdpool->description->getValue();
+                    $entry['user-context']['opnsense']['description'] = $pdpool->description->getValue();
                 }
                 $record['pd-pools'][] = $entry;
             }
@@ -504,10 +504,10 @@ class KeaDhcpv6 extends BaseModel
                         ),
                     ]);
                 }
-                /* add description and other custom keys - not parsed by KEA */
-                $res['user-context'] = ['uuid' => $reservation->getAttribute('uuid')];
+                /* opnsense metadata is not parsed by Kea; hooks may parse other user-context entries. */
+                $res['user-context']['opnsense'] = ['uuid' => $reservation->getAttribute('uuid')];
                 if (!$reservation->description->isEmpty()) {
-                    $res['user-context']['description'] = $reservation->description->getValue();
+                    $res['user-context']['opnsense']['description'] = $reservation->description->getValue();
                 }
                 $record['reservations'][] = $res;
             }

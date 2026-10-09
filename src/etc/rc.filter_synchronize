@@ -348,8 +348,8 @@ if (!empty($config['hasync'])) {
         if ($client->query('opnsense.list_services', [])) {
             foreach ($client->getResponse() as $service) {
                 $client->query('opnsense.restart_service', [
-                    "service" => $service['name'],
-                    "id" => isset($service['id']) ? $service['name'] : ""
+                    'service' => $service['name'],
+                    'id' => $service['id'] ?? '',
                 ]);
             }
         }

@@ -122,7 +122,7 @@
         <label>Keep alive interval</label>
         <advanced>true</advanced>
         <type>text</type>
-        <help>Ping interval in seconds. 0 to disable keep alive</help>
+        <help>Ping interval in seconds. 0 to disable keep alive, in server mode defaults to 10 (with a timeout of 60)</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>

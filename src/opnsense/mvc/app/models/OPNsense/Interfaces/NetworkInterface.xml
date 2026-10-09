@@ -68,9 +68,8 @@
                     <staticv4>Static IPv4</staticv4>
                     <dhcp>DHCP</dhcp>
                     <!-- Require PPP type-->
-                    <ppp>PPP</ppp>
                     <pppoe>PPPoE</pppoe>
-                    <pptp>PPTP</pptp>
+                    <ppp>PPP</ppp>
                     <l2tp>L2TP</l2tp>
                 </OptionValues>
             </type4>
@@ -149,8 +148,6 @@
                 </OptionValues>
             </dhcp6vlanprio>
             <dhcp6-ia-pd-len type="OptionField">
-                <Required>Y</Required>
-                <Default>0</Default>
                 <OptionValues>
                     <pcp0 value="0">64</pcp0>
                     <pcp1 value="1">63</pcp1>
@@ -187,7 +184,7 @@
             </dhcp6_ifid>
             <dhcp6_assoc_pd type="IntegerField">
                 <MinimumValue>0</MinimumValue>
-                <ValidationMessage>Requires a valid positive number</ValidationMessage>
+                <ValidationMessage>Requires a valid positive number.</ValidationMessage>
             </dhcp6_assoc_pd>
             <dhcp6_send_options type=".\Dhcp6SendOptionsField"/>
             <dhcp6_request_options type=".\Dhcp6RequestOptionsField"/>

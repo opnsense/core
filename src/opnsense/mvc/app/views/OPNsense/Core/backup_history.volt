@@ -213,7 +213,7 @@
                 <tbody>
                     <tr>
                         <td>
-                            <select id="providers" class="selectpicker">
+                            <select id="providers" class="selectpicker" data-live-search="true">
                                 <option value="this" selected>{{ lang._('This Firewall')}}</option>
                             </select>
                         </td>
