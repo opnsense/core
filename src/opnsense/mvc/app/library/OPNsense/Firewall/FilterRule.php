@@ -218,7 +218,7 @@ class FilterRule extends Rule
                 !empty($rule['gateway']) &&
                   !empty($this->gatewayMapping[$rule['gateway']]) &&
                   !empty($rule['ipprotocol']) &&
-                  !empty($this->gatewayMapping[$rule['gateway']]['gateway']) &&
+                  !empty($this->gatewayMapping[$rule['gateway']]['proto']) &&
                   $this->gatewayMapping[$rule['gateway']]['proto'] != $rule['ipprotocol']
             ) {
                 $rule['disabled'] = true;
