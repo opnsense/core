@@ -6008,6 +6008,7 @@ button.close {
   text-decoration: none;
   background-color: #ECECEC;
   border-radius: 3px;
+  overflow-wrap: anywhere;
 }
 
 .tooltip-arrow {
