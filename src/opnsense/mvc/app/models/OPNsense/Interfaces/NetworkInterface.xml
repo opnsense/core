@@ -6,6 +6,12 @@
         <interface type=".\NetworkInterfaceField">
             <descr type=".\IfDescField">
                 <Mask>/^[a-z_0-9]{0,255}$/i</Mask>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>Device descriptions must be unique.</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                    </check001>
+                </Constraints>
             </descr>
             <identifier type="TextField"/>
             <pending_action type="TextField"/>
