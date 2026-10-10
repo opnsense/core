@@ -69,6 +69,15 @@ class UidField extends IntegerField
     }
 
     /**
+     * (forcefully) update value ignoring default behavior
+     * @param string $value set field value
+     */
+    public function updateValue($value)
+    {
+        parent::setValue($value);
+    }
+
+    /**
      * {@inheritdoc}
      */
     protected function actionPostLoadingEvent()
