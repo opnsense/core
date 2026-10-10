@@ -233,7 +233,7 @@ class NetworkInterface extends BaseModel
                     ));
                 }
             }
-            if (!empty($if->pppType()) && !in_array($if->type4->getValue(), ['none', $if->pppType()])) {
+            if (!empty($if->pppType()) && !in_array($if->type4->getValue(), ['', $if->pppType()])) {
                 $messages->appendMessage(new Message(
                     sprintf(gettext('This device only supports "%s" as its type.'), $if->pppType()),
                     $key . ".type4"
@@ -244,7 +244,7 @@ class NetworkInterface extends BaseModel
                     $key . ".type4"
                 ));
             }
-            if ($if->pppType() != 'pppoe' && $if->type6->getValue() == 'pppoev6') {
+            if ($if->pppType() != 'pppoe' && $if->type6->isEqual('pppoev6')) {
                 $messages->appendMessage(new Message(
                     gettext('PPPoEv6 only works with a PPPoE device.'),
                     $key . ".type6"
