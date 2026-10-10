@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2026 Konstantinos Spartalis <cspartalis@potatonetworks.com>
  * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
@@ -40,6 +41,11 @@ class AuthenticationFactory
      * @var IAuthConnector|null last used authentication method in authenticate()
      */
     var $lastUsedAuth = null;
+
+    /**
+     * @var bool authenticateStep1() verified the password and a token step must follow
+     */
+    public $secondFactorPending = false;
 
     /**
      * list installed auth connectors
@@ -178,13 +184,220 @@ class AuthenticationFactory
     }
 
     /**
+     * check if an authenticator consumes time based one time passwords, traversing the class
+     * hierarchy since class_uses() only reports traits used by the class itself.
+     * @param IAuthConnector|null $authenticator authenticator to inspect
+     * @return bool
+     */
+    private function usesTOTP($authenticator)
+    {
+        if ($authenticator === null) {
+            return false;
+        }
+        for ($classname = get_class($authenticator); $classname !== false; $classname = get_parent_class($classname)) {
+            if (isset(class_uses($classname)[TOTP::class])) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * combine password and one time password into the composed secret the authenticator
+     * expects, connectors which do not consume tokens receive the bare password.
+     * @param IAuthConnector $authenticator authenticator to inspect
+     * @param $password string user password
+     * @param $otp_code string|null one time password when offered separately
+     * @return string secret to authenticate with
+     */
+    public function composeLoginSecret($authenticator, $password, $otp_code = null)
+    {
+        if (!empty($otp_code) && $this->usesTOTP($authenticator)) {
+            return $authenticator->composeLoginSecret($password, $otp_code);
+        }
+        return $password;
+    }
+
+    /**
+     * run password policy checks using the appropriate method (handling TOTP traits)
+     * @param IAuthConnector $authenticator authenticator to use
+     * @param string $username username
+     * @param string $password password
+     * @return boolean
+     */
+    public function shouldChangePassword($authenticator, $username, $password)
+    {
+        if ($authenticator !== null) {
+            if ($this->usesTOTP($authenticator) && !$authenticator->isFirstFactorComposed()) {
+                return $authenticator->shouldChangePasswordStep1($username, $password);
+            }
+            return $authenticator->shouldChangePassword($username, $password);
+        }
+        return false;
+    }
+
+    /**
+     * Find the first configured authenticator able to verify a one time password for this user,
+     * which is the authenticator authenticateStep2() will use to check the token.
+     * @param string $service_name service name
+     * @param string $username username
+     * @return string|null authenticator name or null when no authenticator holds a token seed
+     */
+    public function findOTPAuthenticator($service_name, $username)
+    {
+        $service = $this->getService($service_name);
+        if ($service !== null) {
+            $service->setUserName($username);
+            foreach ($service->supportedAuthenticators() as $authname) {
+                $authenticator = $this->get($authname);
+                if ($authenticator !== null && $this->usesTOTP($authenticator)) {
+                    if ($authenticator->hasOTP($service->getUserName())) {
+                        return $authname;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Check if a specific user has OTP enabled for any of the configured authenticators
+     * @param string $service_name service name
+     * @param string $username username
+     * @return boolean
+     */
+    public function userUsesOTP($service_name, $username)
+    {
+        return $this->findOTPAuthenticator($service_name, $username) !== null;
+    }
+
+    /**
+     * Authenticate user's first factor (password) only
+     * @param string $service_name service name
+     * @param string $username username
+     * @param string $password password
+     * @return boolean
+     */
+    public function authenticateStep1($service_name, $username, $password)
+    {
+        $this->secondFactorPending = false;
+        openlog("audit", LOG_ODELAY, LOG_AUTH);
+        $service = $this->getService($service_name);
+        if ($service !== null) {
+            // users holding a token seed must pass both steps on the authenticator verifying their
+            // token, another authenticator accepting the password may not start the token step.
+            $otp_authname = $this->findOTPAuthenticator($service_name, $username);
+            $service->setUserName($username);
+            foreach ($service->supportedAuthenticators() as $authname) {
+                if ($otp_authname !== null && $authname != $otp_authname) {
+                    continue;
+                }
+                $authenticator = $this->get($authname);
+                if ($authenticator === null) {
+                    continue;
+                }
+                if ($this->usesTOTP($authenticator)) {
+                    // TOTP authenticators only serve users holding a token seed, as in the single
+                    // request flow (_authenticate), users without a seed are refused here instead
+                    // of being silently downgraded to password-only authentication.
+                    $authenticated = $authenticator->authenticateFirstFactor($service->getUserName(), $password);
+                } else {
+                    // Normal authenticators: verify password normally
+                    $authenticated = $authenticator->authenticate($service->getUserName(), $password);
+                }
+                if ($authenticated) {
+                    $this->lastUsedAuth = $authenticator;
+                    if (!$service->checkConstraints()) {
+                        syslog(LOG_WARNING, sprintf(
+                            "user %s could not authenticate for %s, failed constraints on %s authenticated via %s",
+                            $username,
+                            $service_name,
+                            get_class($service),
+                            get_class($authenticator)
+                        ));
+                        return false;
+                    }
+                    // a token code joined to the password already verified both factors
+                    $composed = $this->usesTOTP($authenticator) && $authenticator->isFirstFactorComposed();
+                    $this->secondFactorPending = !$composed && $otp_authname !== null;
+                    if (!$this->secondFactorPending) {
+                        // authentication is complete, log as the single request flow would.
+                        // when a token collection step follows, its completion logs instead.
+                        syslog(LOG_NOTICE, sprintf(
+                            "user %s authenticated successfully for %s [using %s + %s]",
+                            $username,
+                            $service_name,
+                            get_class($service),
+                            get_class($authenticator)
+                        ));
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Authenticate user's second factor (OTP) only. The caller should pass the authenticator
+     * name collected via findOTPAuthenticator() in step 1 to bind both steps to the same
+     * authenticator.
+     * @param string $service_name service name
+     * @param string $username username
+     * @param string $otp_code one-time password code
+     * @param string|null $authname when offered, only this authenticator may verify the token
+     * @param bool $first_factor_passed outcome of step 1, a refused password fails this step
+     *                                  after the token check so both failures look the same
+     * @return boolean
+     */
+    public function authenticateStep2(
+        $service_name,
+        $username,
+        $otp_code,
+        $authname = null,
+        $first_factor_passed = true
+    ) {
+        openlog("audit", LOG_ODELAY, LOG_AUTH);
+        $service = $this->getService($service_name);
+        if ($service !== null) {
+            $service->setUserName($username);
+            foreach ($service->supportedAuthenticators() as $thisname) {
+                if ($authname !== null && $thisname != $authname) {
+                    continue;
+                }
+                $authenticator = $this->get($thisname);
+                if ($authenticator !== null && $this->usesTOTP($authenticator)) {
+                    // We check if this authenticator can verify the OTP for this user
+                    if ($authenticator->hasOTP($service->getUserName())) {
+                        if ($authenticator->authenticateOTP($service->getUserName(), $otp_code, $first_factor_passed)) {
+                            if ($service->checkConstraints()) {
+                                syslog(LOG_NOTICE, sprintf(
+                                    "user %s authenticated successfully for %s [using %s OTP]",
+                                    $username,
+                                    $service_name,
+                                    get_class($authenticator)
+                                ));
+                                $this->lastUsedAuth = $authenticator;
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * Authenticate user for requested service
      * @param $service_name string service name to use, defined in Services directory
      * @param $username string username
      * @param $password string password
+     * @param $otp_code string|null one time password when collected separately, combined
+     *                              with the password according to the authenticator its settings
      * @return boolean
      */
-    public function authenticate($service_name, $username, $password)
+    public function authenticate($service_name, $username, $password, $otp_code = null)
     {
         openlog("audit", LOG_ODELAY, LOG_AUTH);
         $service = $this->getService($service_name);
@@ -194,7 +407,8 @@ class AuthenticationFactory
                 $authenticator = $this->get($authname);
                 if ($authenticator !== null) {
                     $this->lastUsedAuth = $authenticator;
-                    if ($authenticator->authenticate($service->getUserName(), $password)) {
+                    $secret = $this->composeLoginSecret($authenticator, $password, $otp_code);
+                    if ($authenticator->authenticate($service->getUserName(), $secret)) {
                         if ($service->checkConstraints()) {
                             syslog(LOG_NOTICE, sprintf(
                                 "user %s authenticated successfully for %s [using %s + %s]",
