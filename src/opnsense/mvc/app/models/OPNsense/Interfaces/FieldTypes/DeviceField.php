@@ -71,7 +71,7 @@ class DeviceField extends BaseListField
     {
         $value = $this->getValue();
         if (isset(static::$interfaces[$value])) {
-            return static::$interfaces[$value]['configurable'] ?? false;
+            return static::$interfaces[$value]['configurable'];
         }
         return false;
     }
@@ -80,7 +80,7 @@ class DeviceField extends BaseListField
     {
         $value = $this->getValue();
         if (isset(static::$interfaces[$value])) {
-            return static::$interfaces[$value]['spoofmac'] ?? false;
+            return static::$interfaces[$value]['spoofmac'];
         }
         return false;
     }

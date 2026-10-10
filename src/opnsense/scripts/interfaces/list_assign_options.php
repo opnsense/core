@@ -31,10 +31,7 @@ require_once("interfaces.inc");
 require_once("config.inc");
 require_once("util.inc");
 
-
-/**
- * XXX: needs to be refactored at some point, but for now keep it 100% compatible with legacy code.
- */
+/* XXX needs to be refactored at some point, but for now keep it 100% compatible with legacy code */
 
 function list_devices()
 {

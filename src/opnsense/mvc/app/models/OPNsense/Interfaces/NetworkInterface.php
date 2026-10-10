@@ -314,14 +314,14 @@ class NetworkInterface extends BaseModel
             if (!$if->if->isConfigurable()) {
                 if (!$if->type4->isEmpty()) {
                     $messages->appendMessage(new Message(
-                            gettext('Cannot assign an IP configuration type to a tunnel interface.'),
-                            $key . ".type4"
+                        gettext('Cannot assign an IP configuration type to a tunnel interface.'),
+                        $key . ".type4"
                     ));
                 }
                 if (!$if->type6->isEmpty()) {
                     $messages->appendMessage(new Message(
-                            gettext('Cannot assign an IP configuration type to a tunnel interface.'),
-                            $key . ".type6"
+                        gettext('Cannot assign an IP configuration type to a tunnel interface.'),
+                        $key . ".type6"
                     ));
                 }
             }
