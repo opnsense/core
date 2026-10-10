@@ -33,11 +33,33 @@ require_once 'system.inc';
 require_once 'interfaces.inc';
 require_once 'filter.inc';
 
+use OPNsense\Core\FileObject;
+
 exit_on_bootup();
 
 /* when called with an argument we are in gateway switch mode */
 $monitor_hook = !empty($argv[1]);
 $monitor_gws = $argv[2] ?? '';
+
+/**
+ * remove routes in the order they where altered or removed from the UI
+ */
+$cmds = [];
+$fobj = new FileObject('/tmp/.static_routes.todo', 'a+', 0600, LOCK_EX);
+foreach (($fobj->readJson() ?? []) as $record) {
+    if (empty($record['network']) || empty($record['gateway'])) {
+        continue;
+    }
+    $inet = is_subnetv6($record['network']) ? 'inet6' : 'inet';
+    $cmd= [$inet, $record['network']];
+    if (in_array($cmd, $cmds)) {
+        continue; /* prevent duplicate execution of the same command */
+    }
+    mwexecfm('/sbin/route delete -%s %s', $cmd);
+    $cmds[] = $cmd;
+}
+$fobj->truncate(0);
+unset($fobj); /* unlock */
 
 /* drop deleted routes */
 foreach (glob("/tmp/delete_route_*.todo") as $filename) {
