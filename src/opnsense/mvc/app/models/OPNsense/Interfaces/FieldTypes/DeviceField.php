@@ -66,4 +66,22 @@ class DeviceField extends BaseListField
         }
         parent::setValue($value);
     }
+
+    public function isConfigurable()
+    {
+        $value = $this->getValue();
+        if (isset(static::$interfaces[$value])) {
+            return static::$interfaces[$value]['configurable'] ?? false;
+        }
+        return false;
+    }
+
+    public function canSpoofmac()
+    {
+        $value = $this->getValue();
+        if (isset(static::$interfaces[$value])) {
+            return static::$interfaces[$value]['spoofmac'] ?? false;
+        }
+        return false;
+    }
 }

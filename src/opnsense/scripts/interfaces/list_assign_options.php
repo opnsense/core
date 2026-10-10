@@ -64,6 +64,8 @@ function list_devices()
                     $interfaces[$key] = [
                         'value' => $values['descr'] ,
                         'optgroup' => $device['typedescr'] ?? $device['type'],
+                        'configurable' => $device['configurable'],
+                        'spoofmac' => $device['spoofmac'],
                         'data' => [
                             'icon' => 'fa fa-plug text-success'
                         ]
