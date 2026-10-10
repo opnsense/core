@@ -32,21 +32,24 @@ use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Filter;
 
-class MFP1_0_9 extends BaseModelMigration
+class MFP1_1_3 extends BaseModelMigration
 {
     public function run($model)
     {
         if ($model instanceof Filter) {
             $config = Config::getInstance()->object();
-            $legacy = $config->system;
-            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->scrub_enabled)) {
-                $model->settings->filter->scrub_enabled = empty($legacy->scrub_interface_disable) ? '1' : '0';
+            $legacy_system = $config->system;
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->lb_use_sticky)) {
+                $model->settings->filter->lb_use_sticky = !empty($legacy_system->lb_use_sticky) ? '1' : '0';
             }
-            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->scrub_no_df)) {
-                $model->settings->filter->scrub_no_df = !empty($legacy->scrubnodf) ? '1' : '0';
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->source_tracking_timeout)) {
+                $model->settings->filter->source_tracking_timeout = (string)$legacy_system->srctrack;
             }
-            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->scrub_random_id)) {
-                $model->settings->filter->scrub_random_id = !empty($legacy->scrubrnid) ? '1' : '0';
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->pf_share_forward)) {
+                $model->settings->filter->pf_share_forward = !empty($legacy_system->pf_share_forward) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->pf_disable_force_gw)) {
+                $model->settings->filter->pf_disable_force_gw = !empty($legacy_system->pf_disable_force_gw) ? '1' : '0';
             }
         }
 
@@ -56,11 +59,13 @@ class MFP1_0_9 extends BaseModelMigration
     public function post($model)
     {
         if ($model instanceof Filter) {
-            $legacy = Config::getInstance()->object()->system;
+            $config = Config::getInstance()->object();
+            $legacy_system = $config->system;
             unset(
-                $legacy->scrub_interface_disable,
-                $legacy->scrubnodf,
-                $legacy->scrubrnid,
+                $legacy_system->lb_use_sticky,
+                $legacy_system->srctrack,
+                $legacy_system->pf_share_forward,
+                $legacy_system->pf_disable_force_gw,
             );
         }
     }

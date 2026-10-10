@@ -26,6 +26,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+require_once('filter_settings.inc');
 function kea_services()
 {
     $services = [];
@@ -225,8 +226,7 @@ function kea_syslog()
 
 function kea_firewall($fw)
 {
-    global $config;
-
+    $settings_logging = filter_get_settings('logging');
     $keav4 = new \OPNsense\Kea\KeaDhcpv4();
     $keav6 = new \OPNsense\Kea\KeaDhcpv6();
 
@@ -244,7 +244,7 @@ function kea_firewall($fw)
                     'to_port' => 67,
                     'interface' => $intf,
                     'descr' => 'allow access to DHCP server',
-                    'log' => !isset($config['syslog']['nologdefaultpass'])
+                    'log' => !empty($settings_logging['default_pass']),
                 ]
             );
             $fw->registerFilterRule(
@@ -258,7 +258,7 @@ function kea_firewall($fw)
                     'to_port' => 67,
                     'interface' => $intf,
                     'descr' => 'allow access to DHCP server',
-                    'log' => !isset($config['syslog']['nologdefaultpass'])
+                    'log' => !empty($settings_logging['default_pass']),
                 ]
             );
         }
@@ -272,7 +272,7 @@ function kea_firewall($fw)
                 'interface' => $intf,
                 '#ref' => 'ui/kea/dhcp/v6',
                 'descr' => 'allow access to DHCPv6 server',
-                'log' => !isset($config['syslog']['nologdefaultpass'])
+                'log' => !empty($settings_logging['default_pass']),
             ];
             $fw->registerFilterRule(
                 1,

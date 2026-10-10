@@ -26,42 +26,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Firewall\Migrations;
-
-use OPNsense\Base\BaseModelMigration;
-use OPNsense\Core\Config;
 use OPNsense\Firewall\Filter;
 
-class MFP1_0_9 extends BaseModelMigration
+/* Compatibility helper for legacy callers while settings move to the model. */
+function filter_get_settings($section)
 {
-    public function run($model)
-    {
-        if ($model instanceof Filter) {
-            $config = Config::getInstance()->object();
-            $legacy = $config->system;
-            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->scrub_enabled)) {
-                $model->settings->filter->scrub_enabled = empty($legacy->scrub_interface_disable) ? '1' : '0';
-            }
-            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->scrub_no_df)) {
-                $model->settings->filter->scrub_no_df = !empty($legacy->scrubnodf) ? '1' : '0';
-            }
-            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->scrub_random_id)) {
-                $model->settings->filter->scrub_random_id = !empty($legacy->scrubrnid) ? '1' : '0';
-            }
-        }
+    static $settings = null;
 
-        parent::run($model);
+    if ($settings === null) {
+        $settings = (new Filter(true))->settings->getNodeContent();
     }
-
-    public function post($model)
-    {
-        if ($model instanceof Filter) {
-            $legacy = Config::getInstance()->object()->system;
-            unset(
-                $legacy->scrub_interface_disable,
-                $legacy->scrubnodf,
-                $legacy->scrubrnid,
-            );
-        }
-    }
+    return $settings[$section] ?? [];
 }

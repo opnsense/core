@@ -32,21 +32,27 @@ use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Filter;
 
-class MFP1_0_9 extends BaseModelMigration
+class MFP1_1_5 extends BaseModelMigration
 {
     public function run($model)
     {
         if ($model instanceof Filter) {
             $config = Config::getInstance()->object();
-            $legacy = $config->system;
-            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->scrub_enabled)) {
-                $model->settings->filter->scrub_enabled = empty($legacy->scrub_interface_disable) ? '1' : '0';
+            $legacy_syslog = $config->syslog;
+            if (!isset($config->OPNsense->Firewall->Filter->settings->logging->default_block)) {
+                $model->settings->logging->default_block = empty($legacy_syslog->nologdefaultblock) ? '1' : '0';
             }
-            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->scrub_no_df)) {
-                $model->settings->filter->scrub_no_df = !empty($legacy->scrubnodf) ? '1' : '0';
+            if (!isset($config->OPNsense->Firewall->Filter->settings->logging->default_pass)) {
+                $model->settings->logging->default_pass = empty($legacy_syslog->nologdefaultpass) ? '1' : '0';
             }
-            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->scrub_random_id)) {
-                $model->settings->filter->scrub_random_id = !empty($legacy->scrubrnid) ? '1' : '0';
+            if (!isset($config->OPNsense->Firewall->Filter->settings->logging->source_nat)) {
+                $model->settings->logging->source_nat = !empty($legacy_syslog->logoutboundnat) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->logging->bogons)) {
+                $model->settings->logging->bogons = empty($legacy_syslog->nologbogons) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->logging->private_networks)) {
+                $model->settings->logging->private_networks = empty($legacy_syslog->nologprivatenets) ? '1' : '0';
             }
         }
 
@@ -56,11 +62,14 @@ class MFP1_0_9 extends BaseModelMigration
     public function post($model)
     {
         if ($model instanceof Filter) {
-            $legacy = Config::getInstance()->object()->system;
+            $config = Config::getInstance()->object();
+            $legacy_syslog = $config->syslog;
             unset(
-                $legacy->scrub_interface_disable,
-                $legacy->scrubnodf,
-                $legacy->scrubrnid,
+                $legacy_syslog->nologdefaultblock,
+                $legacy_syslog->nologdefaultpass,
+                $legacy_syslog->logoutboundnat,
+                $legacy_syslog->nologbogons,
+                $legacy_syslog->nologprivatenets,
             );
         }
     }

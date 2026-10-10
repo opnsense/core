@@ -30,6 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+require_once('filter_settings.inc');
 function dnsmasq_enabled()
 {
     global $config;
@@ -98,8 +99,7 @@ function dnsmasq_xmlrpc_sync()
  */
 function dnsmasq_firewall(\OPNsense\Firewall\Plugin $fw)
 {
-    global $config;
-
+    $settings_logging = filter_get_settings('logging');
     $mdl = new \OPNsense\Dnsmasq\Dnsmasq();
     if (!$mdl->enable->isEmpty() && !$mdl->dhcp->default_fw_rules->isEmpty()) {
         $dhcp_ifs = $mdl->getDhcpInterfaces();
@@ -112,9 +112,9 @@ function dnsmasq_firewall(\OPNsense\Firewall\Plugin $fw)
                 $baserule = [
                     'interface' => $intf,
                     'protocol' => 'udp',
-                    'log' => !isset($config['syslog']['nologdefaultpass']),
+                    'log' => !empty($settings_logging['default_pass']),
                     '#ref' => "ui/dnsmasq/settings#general",
-                    'descr' => 'allow access to DHCP server'
+                    'descr' => 'allow access to DHCP server',
                 ];
                 $fw->registerFilterRule(
                     1,

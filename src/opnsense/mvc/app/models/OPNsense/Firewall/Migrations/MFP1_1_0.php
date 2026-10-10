@@ -32,21 +32,21 @@ use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Filter;
 
-class MFP1_0_9 extends BaseModelMigration
+class MFP1_1_0 extends BaseModelMigration
 {
     public function run($model)
     {
         if ($model instanceof Filter) {
             $config = Config::getInstance()->object();
-            $legacy = $config->system;
-            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->scrub_enabled)) {
-                $model->settings->filter->scrub_enabled = empty($legacy->scrub_interface_disable) ? '1' : '0';
+            $legacy_system = $config->system;
+            if (!isset($config->OPNsense->Firewall->Filter->settings->nat->reflection_dnat)) {
+                $model->settings->nat->reflection_dnat = empty($legacy_system->disablenatreflection) ? '1' : '0';
             }
-            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->scrub_no_df)) {
-                $model->settings->filter->scrub_no_df = !empty($legacy->scrubnodf) ? '1' : '0';
+            if (!isset($config->OPNsense->Firewall->Filter->settings->nat->reflection_binat)) {
+                $model->settings->nat->reflection_binat = !empty($legacy_system->enablebinatreflection) ? '1' : '0';
             }
-            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->scrub_random_id)) {
-                $model->settings->filter->scrub_random_id = !empty($legacy->scrubrnid) ? '1' : '0';
+            if (!isset($config->OPNsense->Firewall->Filter->settings->nat->reflection_snat)) {
+                $model->settings->nat->reflection_snat = !empty($legacy_system->enablenatreflectionhelper) ? '1' : '0';
             }
         }
 
@@ -56,11 +56,12 @@ class MFP1_0_9 extends BaseModelMigration
     public function post($model)
     {
         if ($model instanceof Filter) {
-            $legacy = Config::getInstance()->object()->system;
+            $config = Config::getInstance()->object();
+            $legacy_system = $config->system;
             unset(
-                $legacy->scrub_interface_disable,
-                $legacy->scrubnodf,
-                $legacy->scrubrnid,
+                $legacy_system->disablenatreflection,
+                $legacy_system->enablebinatreflection,
+                $legacy_system->enablenatreflectionhelper,
             );
         }
     }

@@ -32,21 +32,30 @@ use OPNsense\Base\BaseModelMigration;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Filter;
 
-class MFP1_0_9 extends BaseModelMigration
+class MFP1_1_6 extends BaseModelMigration
 {
     public function run($model)
     {
         if ($model instanceof Filter) {
             $config = Config::getInstance()->object();
-            $legacy = $config->system;
-            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->scrub_enabled)) {
-                $model->settings->filter->scrub_enabled = empty($legacy->scrub_interface_disable) ? '1' : '0';
+            $legacy_system = $config->system;
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->disable_reply_to)) {
+                $model->settings->filter->disable_reply_to = !empty($legacy_system->disablereplyto) ? '1' : '0';
             }
-            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->scrub_no_df)) {
-                $model->settings->filter->scrub_no_df = !empty($legacy->scrubnodf) ? '1' : '0';
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->no_antilockout)) {
+                $model->settings->filter->no_antilockout = !empty($legacy_system->webgui->noantilockout) ? '1' : '0';
             }
-            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->scrub_random_id)) {
-                $model->settings->filter->scrub_random_id = !empty($legacy->scrubrnid) ? '1' : '0';
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->no_ipv6_rfc4890_req)) {
+                $model->settings->filter->no_ipv6_rfc4890_req = !empty($legacy_system->no_ipv6_rfc4890_req) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->no_port0_block)) {
+                $model->settings->filter->no_port0_block = !empty($legacy_system->no_port0_block) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->no_sshlockout)) {
+                $model->settings->filter->no_sshlockout = !empty($legacy_system->no_sshlockout) ? '1' : '0';
+            }
+            if (!isset($config->OPNsense->Firewall->Filter->settings->filter->no_virusprot)) {
+                $model->settings->filter->no_virusprot = !empty($legacy_system->no_virusprot) ? '1' : '0';
             }
         }
 
@@ -56,11 +65,15 @@ class MFP1_0_9 extends BaseModelMigration
     public function post($model)
     {
         if ($model instanceof Filter) {
-            $legacy = Config::getInstance()->object()->system;
+            $config = Config::getInstance()->object();
+            $legacy_system = $config->system;
             unset(
-                $legacy->scrub_interface_disable,
-                $legacy->scrubnodf,
-                $legacy->scrubrnid,
+                $legacy_system->disablereplyto,
+                $legacy_system->webgui->noantilockout,
+                $legacy_system->no_ipv6_rfc4890_req,
+                $legacy_system->no_port0_block,
+                $legacy_system->no_sshlockout,
+                $legacy_system->no_virusprot,
             );
         }
     }
