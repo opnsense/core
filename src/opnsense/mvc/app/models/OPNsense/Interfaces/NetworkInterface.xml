@@ -61,23 +61,18 @@
                 <ValidationMessage>The MSS must be greater than 576 bytes.</ValidationMessage>
             </mss>
             <type4 type="OptionField">
-                <Required>Y</Required>
-                <Default>none</Default>
+                <BlankDesc>None</BlankDesc>
                 <OptionValues>
-                    <none>None</none>
                     <staticv4>Static IPv4</staticv4>
                     <dhcp>DHCP</dhcp>
-                    <!-- Require PPP type-->
                     <pppoe>PPPoE</pppoe>
                     <ppp>PPP</ppp>
                     <l2tp>L2TP</l2tp>
                 </OptionValues>
             </type4>
             <type6 type="OptionField">
-                <Required>Y</Required>
-                <Default>none</Default>
+                <BlankDesc>None</BlankDesc>
                 <OptionValues>
-                    <none>None</none>
                     <staticv6>Static IPv6</staticv6>
                     <dhcp6>DHCPv6</dhcp6>
                     <linklocal>Link-local</linklocal>
