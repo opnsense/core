@@ -71,6 +71,7 @@
             <retransmit_limit type="IntegerField"/>
             <reqid_base type="IntegerField"/>
             <retry_initiate_interval type="IntegerField">
+                <Default>30</Default>
                 <MinimumValue>0</MinimumValue>
             </retry_initiate_interval>
             <syslog>
