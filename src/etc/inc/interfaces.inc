@@ -1365,8 +1365,10 @@ EOD;
     /* precaution for post-start 'up' check */
     legacy_interface_flags($ifcfg['if'], 'down', false);
 
-    /* wait for functional parent (only the first) */
-    interfaces_device_wait($ports[0], "interface_ppps_configure() waiting threshold exceeded - device {$ports[0]} is still not up");
+    /* wait for functional parent (only the first port's first parent or the port itself) */
+    $parents = interface_parent_devices($ports[0]);
+    $parents[] = $ports[0];
+    interfaces_device_wait($parents[0], "interface_ppps_configure() waiting threshold exceeded - device {$parents[0]} is still not up");
 
     /* fire up mpd */
     mwexecf(
