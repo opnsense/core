@@ -70,6 +70,9 @@
             <retransmit_jitter type="IntegerField"/>
             <retransmit_limit type="IntegerField"/>
             <reqid_base type="IntegerField"/>
+            <retry_initiate_interval type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+            </retry_initiate_interval>
             <syslog>
                 <daemon>
                     <ike_name type="BooleanField">
