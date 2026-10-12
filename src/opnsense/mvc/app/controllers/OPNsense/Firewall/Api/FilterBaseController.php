@@ -320,15 +320,16 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
      * Moves the selected rules so that they appear immediately before the target rule.
      *
      * Uses integer gap numbering to update the sequence for only the moved rules.
-     * All selected rules receive the same sequence calculated for the first moved rule.
-     * Rules will be renumbered within the selected range to prevent movements causing overlaps,
+     * All selected rules receive the same sequence calculated for the first moved rule intentionally.
+     *
+     * Surrounding rules will be renumbered within the selected range to prevent movements causing overlaps,
      * but try to keep the changes as minimal as possible.
      *
      * @param string $selected_uuids    Comma-separated UUIDs of the rules to be moved.
      * @param string $target_uuid       The UUID of the target rule (the rule before which the selected rule is to be placed).
      * @param string $node_reference    Node reference prefix, e.g. "onetoone.rule".
      * @param string $sort_key          Sort key field, e.g. "sequence".
-     * @param string|null $group_key    Optional field restricting moves to rules in the same group.
+     * @param string|null $group_key    Optional field restricting moves to rules in the same group, e.g. "prio_group".
      * @return array Returns ["status" => "ok"] on success, throws a UserException otherwise.
      */
     public function moveRuleBeforeBase($selected_uuids, $target_uuid, $node_reference, $sort_key, $group_key = null)
