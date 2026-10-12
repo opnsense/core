@@ -147,7 +147,7 @@ class ForwardRule extends Rule
                     if (!empty($known)) {
                         $tmp['local-port'] = array_shift($known);
                     } else {
-                        $rule['disabled'] = true;
+                        $tmp['disabled'] = true;
                         $this->log("Unable to map port {$tmp['local-port']}, config error?");
                     }
                 }
