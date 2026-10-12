@@ -360,7 +360,11 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     if (!empty($settings_filter['syncookies'])) {
         $arange = "";
-        if ($settings_filter['syncookies'] === 'adaptive') {
+        if (
+            $settings_filter['syncookies'] === 'adaptive' &&
+            $settings_filter['syncookies_adaptive_start'] !== '' &&
+            $settings_filter['syncookies_adaptive_end'] !== ''
+        ) {
             $arange = sprintf(
                 "(start %s%%, end %s%%)",
                 $settings_filter['syncookies_adaptive_start'],
