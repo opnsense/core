@@ -158,6 +158,12 @@
             <help>Value of the first reqid to be automatically assigned to a CHILD_SA.</help>
         </field>
         <field>
+            <id>ipsec.charon.retry_initiate_interval</id>
+            <label>Retry initiate interval</label>
+            <type>text</type>
+            <help>Seconds between retries when the remote address cannot be resolved. Empty or 0 disables retries.</help>
+        </field>
+        <field>
             <type>header</type>
             <label>Retransmission</label>
         </field>
