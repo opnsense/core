@@ -173,10 +173,7 @@ class SourceNatController extends FilterBaseController
 
     public function getRuleAction($uuid = null)
     {
-        return $this->setCopySequence(
-            $this->getBase("rule", "snatrules.rule", $uuid),
-            $this->getModel()->snatrules->rule
-        );
+        return $this->getBase("rule", "snatrules.rule", $uuid);
     }
 
     public function delRuleAction($uuid)
