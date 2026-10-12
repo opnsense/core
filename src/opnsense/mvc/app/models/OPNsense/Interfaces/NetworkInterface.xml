@@ -87,7 +87,6 @@
                     <_6to4 value="6to4">6to4 Tunnel</_6to4>
                     <idassoc6>Identity association</idassoc6>
                     <track6>Track Interface (legacy)</track6>
-                    <!-- Require PPP type-->
                     <pppoev6>PPPoEv6</pppoev6>
                 </OptionValues>
             </type6>
