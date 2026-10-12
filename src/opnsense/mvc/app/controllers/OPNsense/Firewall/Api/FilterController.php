@@ -246,19 +246,6 @@ class FilterController extends FilterBaseController
         return $this->toggleRuleLogBase($uuid, $log, 'rules.rule');
     }
 
-    /**
-     * Moves the selected rules so that they appear immediately before the target rule.
-     *
-     * Uses integer gap numbering to update the sequence for only the moved rules.
-     * Rules will be renumbered within the selected range to prevent movements causing overlaps,
-     * but try to keep the changes as minimal as possible.
-     *
-     * Floating, Group, and Interface rules cannot be moved before another.
-     *
-     * @param string $selected_uuids Comma-separated UUIDs of the rules to be moved.
-     * @param string $target_uuid   The UUID of the target rule (the rule before which the selected rule is to be placed).
-     * @return array Returns ["status" => "ok"] on success, throws a userexception otherwise.
-     */
     public function moveRuleBeforeAction($selected_uuids, $target_uuid)
     {
         return $this->moveRuleBeforeBase($selected_uuids, $target_uuid, 'rules.rule', 'sequence', 'prio_group');
