@@ -73,10 +73,7 @@ class OneToOneController extends FilterBaseController
 
     public function getRuleAction($uuid = null)
     {
-        return $this->setCopySequence(
-            $this->getBase('rule', 'onetoone.rule', $uuid),
-            $this->getModel()->onetoone->rule
-        );
+        return $this->getBase('rule', 'onetoone.rule', $uuid);
     }
 
     public function delRuleAction($uuid)
