@@ -862,7 +862,7 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
             break;
         case 'idassoc6':
         case 'track6':
-            interface_track6_configure($interface, $ifcfg);
+            interface_track6_configure($interface, $ifcfg, false, true);
             break;
         default:
             break;
@@ -2509,7 +2509,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     return $loaded;
 }
 
-function interface_track6_configure($interface, $lancfg, $reload = false)
+function interface_track6_configure($interface, $lancfg, $reload = false, $exclude = true)
 {
     if (!is_array($lancfg) || empty($lancfg['track6-interface'])) {
         return;
@@ -2532,8 +2532,8 @@ function interface_track6_configure($interface, $lancfg, $reload = false)
             interface_track6_6rd_configure($interface, $lancfg);
             break;
         case 'dhcp6':
-            if ($reload || !isset($lancfg['enable'])) {
-                interface_dhcpv6_prepare($lancfg['track6-interface'], $wancfg);
+            interface_dhcpv6_prepare($lancfg['track6-interface'], $wancfg, false, $exclude ? [$interface] : []);
+            if ($reload) {
                 killbypid('/var/run/dhcp6c.pid', 'HUP');
             }
             break;
@@ -2864,7 +2864,7 @@ function interface_dhcpv6_id($interface): string
     return '';
 }
 
-function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
+function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false, $exclude = [])
 {
     if (!is_array($wancfg)) {
         return;
@@ -2893,9 +2893,9 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
             log_msg("DHCP6 config file override does not exist: '{$dhcp6cfile}'", LOG_ERR);
         }
     } elseif (!empty($wancfg['adv_dhcp6_config_advanced'])) {
-        $dhcp6cconf .= DHCP6_Config_File_Advanced($interface, $wancfg, $device, $default_id);
+        $dhcp6cconf .= DHCP6_Config_File_Advanced($interface, $wancfg, $device, $default_id, $exclude);
     } else {
-        $dhcp6cconf .= DHCP6_Config_File_Basic($interface, $wancfg, $device, $default_id);
+        $dhcp6cconf .= DHCP6_Config_File_Basic($interface, $wancfg, $device, $default_id, $exclude);
     }
 
     if (!$cleanup) {
@@ -2920,7 +2920,7 @@ function interface_dhcpv6_prepare($interface, $wancfg, $cleanup = false)
     @file_put_contents('/var/etc/dhcp6c.conf', $dhcp6cconf);
 }
 
-function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $default_id)
+function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $default_id, $exclude)
 {
     $dhcp6cconf = '';
 
@@ -2950,6 +2950,9 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $default_id)
             }
 
             foreach (link_interface_to_track6($interface) as $friendly => $lancfg) {
+                if (in_array($friendly, $exclude)) {
+                    continue;
+                }
                 if (is_numeric($lancfg['track6-prefix-id'])) {
                     $trackifv6 = get_real_interface($friendly, 'inet6');
                     $pd_conf  = "  prefix-interface {$trackifv6} {\n";
@@ -3032,7 +3035,7 @@ function DHCP6_Config_File_Basic($interface, $wancfg, $wanif, $default_id)
     return $dhcp6cconf;
 }
 
-function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif, $default_id)
+function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif, $default_id, $exclude)
 {
     $send_options = "";
 
@@ -3141,6 +3144,9 @@ function DHCP6_Config_File_Advanced($interface, $wancfg, $wanif, $default_id)
         }
 
         foreach (link_interface_to_track6($interface) as $friendly => $lancfg) {
+            if (in_array($friendly, $exclude)) {
+                continue;
+            }
             if (is_numeric($lancfg['track6-prefix-id'])) {
                 $trackifv6 = get_real_interface($friendly, 'inet6');
                 $id_assoc_statement_prefix .= "  prefix-interface {$trackifv6} {\n";
