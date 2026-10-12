@@ -45,6 +45,9 @@ class DeviceField extends BaseListField
             $response = (new Backend())->configdRun('interface list assign-opts', false, 20);
             $response = json_decode($response, true) ?? [];
             foreach ($response as $key => $value) {
+                if (!empty($value['optgroup'])) {
+                    $value['optgroup'] = gettext($value['optgroup']);
+                }
                 self::$interfaces[$key] = $value;
             }
         }
