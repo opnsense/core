@@ -194,6 +194,9 @@ fi
 # write /var/run/dmesg.boot
 /etc/rc.d/dmesg onestart
 
+# write /var/run/os-release
+/usr/local/etc/rc.subr.d/os-release
+
 # all sorts of maintenance tasks for /tmp
 /usr/local/etc/rc.subr.d/tmp
 
