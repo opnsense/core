@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/IPsec</mount>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <description>IPsec settings</description>
     <items>
         <general>
