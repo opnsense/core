@@ -52,8 +52,8 @@ if (is_array($config['interfaces'])) {
             }
         } else {
             $to_configure[] = $id;
-            /* suspend only when we're changing the enabled status */
-            interface_reset($id, false, !empty($ifcfg['enable']) && !empty($todos[$id]['enable']));
+            /* suspend only when we are changing the enabled status */
+            interface_reset($id, false, !empty($ifcfg['enable']) && !empty($todos[$id]['pending']['enable']));
         }
     }
 
