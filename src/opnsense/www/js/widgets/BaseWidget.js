@@ -102,12 +102,8 @@ class BaseWidget {
     /* Public virtual/override functions */
 
     getGridOptions() {
-        // Keep most dashboard widgets on a common height tier. Widgets with
-        // genuinely variable content can explicitly enable sizeToContent.
-        return {
-            h: 400,
-            sizeToContent: false
-        };
+        // per-widget gridstack options override
+        return {};
     }
 
     get dialogTitle() {

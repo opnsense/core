@@ -32,9 +32,8 @@ export default class Announcements extends BaseTableWidget {
 
     getGridOptions() {
         return {
-            ...super.getGridOptions(),
-            h: 250,
-            maxH: 350
+            // trigger overflow-y:scroll after 650px height
+            sizeToContent: 350
         }
     }
 

@@ -39,7 +39,6 @@ export default class LiveLog extends BaseTableWidget {
 
     getGridOptions() {
         return {
-            ...super.getGridOptions(),
             sizeToContent: 650
         };
     }

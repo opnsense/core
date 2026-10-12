@@ -32,9 +32,7 @@ export default class Notes extends BaseWidget {
 
     getGridOptions() {
         return {
-            ...super.getGridOptions(),
             minH: 82,
-            sizeToContent: 650
         }
     }
 

@@ -30,6 +30,13 @@ export default class IpsecLeases extends BaseTableWidget {
         this.tickTimeout = 4;
     }
 
+    getGridOptions() {
+        return {
+            // Automatically triggers vertical scrolling after reaching 650px in height
+            sizeToContent: 650
+        };
+    }
+
     getMarkup() {
         let $container = $('<div></div>');
         let $ipsecLeaseTable = this.createTable('ipsecLeaseTable', {

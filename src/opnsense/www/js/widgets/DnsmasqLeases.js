@@ -32,6 +32,12 @@ export default class DnsmasqLeases extends BaseTableWidget {
         this.configChanged = false;
     }
 
+    getGridOptions() {
+        return {
+            sizeToContent: 650
+        };
+    }
+
     getMarkup() {
         return this.createTable('dnsmasqLeasesTable', {
             headerPosition: 'left'

@@ -373,13 +373,8 @@
             } = this.persistedConfig;
             const gridOptions = {...this.widget.getGridOptions()};
 
-            if (persistedGridConfig.sizeToContent === false) {
-                gridOptions.sizeToContent = false;
-                gridOptions.h = persistedGridConfig.h ?? gridOptions.h;
-            } else if (gridOptions.sizeToContent && 'h' in persistedGridConfig) {
+            if ('sizeToContent' in gridOptions && 'h' in persistedGridConfig) {
                 gridOptions.sizeToContent = persistedGridConfig.h;
-            } else if (gridOptions.sizeToContent === false && 'h' in persistedGridConfig) {
-                gridOptions.h = persistedGridConfig.h;
             }
 
             return {
@@ -440,8 +435,7 @@
             return {
                 id: this.id,
                 type: this.typeId,
-                widget: await this.widget.getWidgetConfig(),
-                ...(this.persistedConfig.sizeToContent === false ? {sizeToContent: false} : {})
+                widget: await this.widget.getWidgetConfig()
             };
         }
 
@@ -483,11 +477,6 @@
 
         getResizeHandles() {
             return this.widget.getResizeHandles();
-        }
-
-        setFixedHeight(height) {
-            this.persistedConfig.h = height;
-            this.persistedConfig.sizeToContent = false;
         }
 
         requestResize() {
@@ -728,7 +717,7 @@
 
                     for (const id of instanceIds) {
                         const element = this.instances.get(id)?.element;
-                        if (element?.gridstackNode?.sizeToContent) {
+                        if (element) {
                             this.grid.resizeToContent(element);
                         }
                     }
@@ -926,19 +915,9 @@
             this.currentColumnCount = this.grid.getColumn();
             this.grid.cellHeight(1);
 
-            for (const eventName of ['dragstop', 'dropped', 'removed']) {
+            for (const eventName of ['dragstop', 'dropped', 'removed', 'resizestop']) {
                 this.grid.on(eventName, () => this._markDirty());
             }
-
-            this.grid.on('resizestop', (event, element) => {
-                const node = element?.gridstackNode;
-                const instance = node ? this.instances.get(node.id) : null;
-                if (node && instance) {
-                    node.sizeToContent = false;
-                    instance.setFixedHeight(node.h);
-                }
-                this._markDirty();
-            });
 
             this.grid.on('change', () => this._syncResponsiveLayout());
 

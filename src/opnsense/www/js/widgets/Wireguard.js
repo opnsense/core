@@ -30,6 +30,13 @@ export default class Wireguard extends BaseTableWidget {
         super();
     }
 
+    getGridOptions() {
+        return {
+            // Automatically triggers vertical scrolling after reaching 650px in height
+            sizeToContent: 650
+        };
+    }
+
     getMarkup() {
         let $container = $('<div></div>');
         let $wgTunnelTable = this.createTable('wgTunnelTable', {
