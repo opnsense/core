@@ -30,13 +30,6 @@ export default class IpsecTunnels extends BaseTableWidget {
         this.locked = false; // Add a lock mechanism
     }
 
-    getGridOptions() {
-        return {
-            // Automatically triggers vertical scrolling after reaching 650px in height
-            sizeToContent: 650
-        };
-    }
-
     getMarkup() {
         let $container = $('<div></div>');
         let $ipsecTunnelTable = this.createTable('ipsecTunnelTable', {

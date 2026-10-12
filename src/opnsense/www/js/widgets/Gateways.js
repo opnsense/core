@@ -32,13 +32,6 @@ export default class Gateways extends BaseTableWidget {
         this.cachedGateways = []; // prevent fetch when loading options
     }
 
-    getGridOptions() {
-        return {
-            // trigger overflow-y:scroll after 650px height
-            sizeToContent: 650,
-        };
-    }
-
     getMarkup() {
         let $gateway_table = this.createTable('gateway-table', {
             headerPosition: 'left',

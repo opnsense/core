@@ -57,6 +57,16 @@ class DashboardController extends ApiControllerBase
         return true;
     }
 
+    private function getWidgetTypeId($widget)
+    {
+        if (!is_array($widget)) {
+            return null;
+        }
+
+        // Legacy dashboard entries use id for both the module and instance.
+        return $widget['type'] ?? $widget['id'] ?? null;
+    }
+
     private function getMetadata()
     {
         $combinedXml = new \DOMDocument('1.0');
@@ -149,7 +159,7 @@ class DashboardController extends ApiControllerBase
         // filter widgets according to metadata
         $moduleIds = array_column($result['modules'], 'id');
         $filteredWidgets = array_filter($dashboard['widgets'], function ($widget) use ($moduleIds) {
-            return in_array($widget['id'], $moduleIds);
+            return in_array($this->getWidgetTypeId($widget), $moduleIds, true);
         });
         $dashboard['widgets'] = array_values($filteredWidgets);
         $result['dashboard'] = $dashboard;

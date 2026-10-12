@@ -29,12 +29,6 @@ export default class OpenVPNServers extends BaseTableWidget {
         super();
     }
 
-    getGridOptions() {
-        return {
-            sizeToContent: 650
-        };
-    }
-
     getMarkup() {
         let $container = $('<div id="ovpn-server-table-container"></div>');
         let $clientTable = this.createTable('ovpn-server-table', {

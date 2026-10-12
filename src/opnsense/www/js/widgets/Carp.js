@@ -29,13 +29,6 @@ export default class Carp extends BaseTableWidget {
         super();
     }
 
-    getGridOptions() {
-        return {
-            // trigger overflow-y:scroll after 650px height
-            sizeToContent: 650
-        }
-    }
-
     getMarkup() {
         let $carp_table = this.createTable('carp-table', {
             headerPosition: 'left',

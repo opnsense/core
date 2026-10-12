@@ -30,13 +30,6 @@ export default class Services extends BaseTableWidget {
         this.locked = false;
     }
 
-    getGridOptions() {
-        return {
-            // trigger overflow-y:scroll after 650px height
-            sizeToContent: 650,
-        }
-    }
-
     getMarkup() {
         return $(`<div id="services-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));"></div>`);
     }

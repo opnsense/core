@@ -31,7 +31,7 @@
 <link href="{{ cache_safe('/ui/css/gridstack-extra.min.css') }}" rel="stylesheet">
 <!-- gridstack core -->
 <script src="{{ cache_safe('/ui/js/gridstack-all.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/opnsense_widget_manager.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/opnsense_widgets.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/moment-with-locales.min.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/chart.umd.min.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/chartjs-plugin-colorschemes.min.js') }}"></script>
@@ -45,6 +45,64 @@
 
 <script>
 $( document ).ready(function() {
+    class MainDashboardRepository extends Widgets.BaseRepository {
+        constructor() {
+            super('/api/core/dashboard');
+        }
+
+        async load() {
+            const response = await $.ajax(`${this.baseUrl}/get_dashboard`, {
+                type: 'GET',
+                dataType: 'json'
+            });
+
+            return this._normalize(response);
+        }
+
+        async save({options = {}, widgets = [], layouts = {}} = {}) {
+            const response = await $.ajax(`${this.baseUrl}/save_widgets`, {
+                type: 'POST',
+                dataType: 'json',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({options, widgets, layouts})
+            });
+
+            if (response.result !== 'saved') {
+                throw new Error('Failed to save dashboard');
+            }
+
+            return response;
+        }
+
+        async restoreDefaults() {
+            const response = await $.ajax(`${this.baseUrl}/restore_defaults`, {
+                type: 'POST',
+                dataType: 'json'
+            });
+
+            if (response.result !== 'saved') {
+                throw new Error('Failed to restore default dashboard');
+            }
+
+            return response;
+        }
+
+        _normalize(response) {
+            const dashboard = response.dashboard ?? {};
+
+            return {
+                modules: (response.modules ?? []).map(module => ({...module})),
+                options: dashboard.options ?? {},
+                widgets: (dashboard.widgets ?? []).map(widget => ({
+                    ...widget,
+                    // Older configurations use the module id as the instance id.
+                    type: widget.type ?? widget.id
+                })),
+                layouts: dashboard.layouts ?? {}
+            };
+        }
+    }
+
     let chartBackgroundColor = getComputedStyle(document.body).getPropertyValue('--chart-js-background-color').trim();
     let chartBorderColor = getComputedStyle(document.body).getPropertyValue('--chart-js-border-color').trim();
     let chartFontColor = getComputedStyle(document.body).getPropertyValue('--chart-js-font-color').trim();
@@ -53,7 +111,8 @@ $( document ).ready(function() {
     if (chartBorderColor) Chart.defaults.borderColor = chartBorderColor;
     if (chartFontColor) Chart.defaults.color = chartFontColor;
 
-    let widgetManager = new WidgetManager({
+    const repository = new MainDashboardRepository();
+    const widgetManager = new Widgets.WidgetManager(repository, {
         float: false,
         columnOpts: {
             breakpoints: [{w: 500, c:1}, {w:900, c:3}, {w:9999, c:12}]

@@ -43,6 +43,8 @@ class BaseGaugeWidget extends BaseWidget {
 
     getGridOptions() {
         return {
+            ...super.getGridOptions(),
+            h: 250,
             minW: 1
         };
     }

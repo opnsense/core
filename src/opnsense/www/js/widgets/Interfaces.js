@@ -29,13 +29,6 @@ export default class Interfaces extends BaseTableWidget {
         super();
     }
 
-    getGridOptions() {
-        return {
-            // trigger overflow-y:scroll after 650px height
-            sizeToContent: 650
-        }
-    }
-
     getMarkup() {
         let $container = $('<div></div>');
         let $if_table = this.createTable('if-table', {

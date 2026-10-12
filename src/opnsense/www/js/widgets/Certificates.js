@@ -33,12 +33,6 @@ export default class Certificates extends BaseTableWidget {
         this.configChanged = false;
     }
 
-    getGridOptions() {
-        return {
-            sizeToContent: 650
-        };
-    }
-
     getMarkup() {
         const $container = $('<div></div>');
         const $certificateTable = this.createTable('certificateTable', {

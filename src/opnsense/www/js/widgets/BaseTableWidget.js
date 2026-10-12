@@ -32,6 +32,13 @@ class BaseTableWidget extends BaseWidget {
         this.curSize = null;
     }
 
+    getGridOptions() {
+        return {
+            ...super.getGridOptions(),
+            maxH: 650
+        };
+    }
+
     _calculateColumnWidth() {
         const tableObj = this;
         if (tableObj.options.headerPosition === 'left') {

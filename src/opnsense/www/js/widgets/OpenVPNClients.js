@@ -31,12 +31,6 @@ export default class OpenVPNClients extends BaseTableWidget {
         this.locked = false;
     }
 
-    getGridOptions() {
-        return {
-            sizeToContent: 650
-        };
-    }
-
     getMarkup() {
         let $container = $('<div id="ovpn-client-table-container"></div>');
         let $clientTable = this.createTable('ovpn-client-table', {
