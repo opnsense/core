@@ -377,6 +377,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         $new_key = null;
         $prev_record = null;
 
+        /* Find a sequence before the target, only renumbering when no gap is available. */
         $sort_keys = $group_key === null ? [$sort_key] : [$group_key, $sort_key];
         foreach ($this->getModel()->getNodeByReference($node_reference)->sortedBy($sort_keys) as $record) {
             if ($group_key !== null && !$record->$group_key->isEqual($target_node->$group_key)) {
@@ -405,6 +406,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         }
 
         if ($new_key !== null) {
+            /* Keep the selection together by assigning every selected rule the same sequence. */
             foreach ($selected_nodes as $selected_node) {
                 $selected_node->$sort_key = (string)$new_key;
             }
