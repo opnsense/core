@@ -92,6 +92,9 @@ class Alias extends BaseModel
                     }
                     break;
             }
+            if ($alias->type->isEqual('port') && $alias->content->isEmpty()) {
+                $messages->appendMessage(new Message(gettext('The selected alias type requires content.'), $ref . '.content'));
+            }
         }
 
         return $messages;
