@@ -458,30 +458,29 @@
                 move_before: {
                     filter: (cell) => commandFilter(cell),
                     method: function(event) {
-                        const selected = $("#{{ formGridRule['table_id'] }}").bootgrid("getSelectedRows");
-                        if (selected.length !== 1) {
+                        const selectedUuids = $("#{{ formGridRule['table_id'] }}").bootgrid("getSelectedRows");
+                        if (selectedUuids.length === 0) {
                             showDialogAlert(
                                 BootstrapDialog.TYPE_WARNING,
                                 "{{ lang._('Selection Error') }}",
-                                "{{ lang._('Please select exactly one rule to move.') }}"
+                                "{{ lang._('Please select at least one rule to move.') }}"
                             );
                             return;
                         }
 
-                        const selectedUuid = selected[0];
                         const targetUuid = $(this).data("row-id");
 
-                        if (selectedUuid === targetUuid) {
+                        if (selectedUuids.includes(targetUuid)) {
                             showDialogAlert(
                                 BootstrapDialog.TYPE_WARNING,
                                 "{{ lang._('Move Error') }}",
-                                "{{ lang._('Cannot move a rule before itself.') }}"
+                                "{{ lang._('Cannot move rules before one of the selected rules.') }}"
                             );
                             return;
                         }
 
                         ajaxCall(
-                            "/api/firewall/" + entrypoint + "/move_rule_before/" + selectedUuid + "/" + targetUuid,
+                            "/api/firewall/" + entrypoint + "/move_rule_before/" + selectedUuids.join(',') + "/" + targetUuid,
                             {},
                             function(data, status) {
                                 if (data.status === "ok") {
@@ -500,7 +499,7 @@
                         );
                     },
                     classname: 'fa fa-fw fa-arrow-left',
-                    title: "{{ lang._('Move selected rule before this rule') }}",
+                    title: "{{ lang._('Move selected rules before this rule') }}",
                     sequence: 10
                 },
                 toggle_log: {

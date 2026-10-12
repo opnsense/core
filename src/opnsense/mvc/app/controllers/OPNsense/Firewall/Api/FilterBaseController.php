@@ -31,6 +31,7 @@ namespace OPNsense\Firewall\Api;
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\FieldTypes\PortField;
 use OPNsense\Base\UserException;
+use OPNsense\Base\UserWarningException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Alias;
@@ -316,30 +317,58 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
     }
 
     /**
-     * Moves the selected rule so that it appears immediately before the target rule.
+     * Moves the selected rules so that they appear immediately before the target rule.
      *
-     * Uses integer gap numbering to update the sequence for only the moved rule.
+     * Uses integer gap numbering to update the sequence for only the moved rules.
+     * All selected rules receive the same sequence calculated for the first moved rule.
      * Rules will be renumbered within the selected range to prevent movements causing overlaps,
      * but try to keep the changes as minimal as possible.
      *
-     * @param string $selected_uuid     The UUID of the rule to be moved.
+     * @param string $selected_uuids    Comma-separated UUIDs of the rules to be moved.
      * @param string $target_uuid       The UUID of the target rule (the rule before which the selected rule is to be placed).
      * @param string $node_reference    Node reference prefix, e.g. "onetoone.rule".
      * @param string $sort_key          Sort key field, e.g. "sequence".
+     * @param string|null $group_key    Optional field restricting moves to rules in the same group.
      * @return array Returns ["status" => "ok"] on success, throws a UserException otherwise.
      */
-    public function moveRuleBeforeBase($selected_uuid, $target_uuid, $node_reference, $sort_key)
+    public function moveRuleBeforeBase($selected_uuids, $target_uuid, $node_reference, $sort_key, $group_key = null)
     {
         if (!$this->request->isPost()) {
             return ["status" => "error", "message" => gettext("Invalid request method")];
         }
 
-        $target_node   = $this->getModel()->getNodeByReference($node_reference . '.' . $target_uuid);
-        $selected_node = $this->getModel()->getNodeByReference($node_reference . '.' . $selected_uuid);
+        $target_node = $this->getModel()->getNodeByReference($node_reference . '.' . $target_uuid);
+        $selected_nodes = [];
+        foreach (array_filter(explode(',', $selected_uuids), 'strlen') as $uuid) {
+            $selected_node = $this->getModel()->getNodeByReference($node_reference . '.' . $uuid);
+            if ($selected_node === null) {
+                $selected_nodes = [];
+                break;
+            }
+            $selected_nodes[$uuid] = $selected_node;
+        }
 
-        if ($target_node === null || $selected_node === null) {
+        if ($target_node === null || empty($selected_nodes)) {
             throw new UserException(
                 gettext("Either source or destination is not a rule managed with this component")
+            );
+        } elseif (isset($selected_nodes[$target_uuid])) {
+            throw new UserException(gettext("Cannot move to the same spot."));
+        }
+
+        foreach ($selected_nodes as $selected_node) {
+            if ($group_key === null || $selected_node->$group_key->isEqual($target_node->$group_key)) {
+                continue;
+            }
+            $type_names = [
+                '2' => gettext("Floating"),
+                '3' => gettext("Group"),
+                '4' => gettext("Interface")
+            ];
+            $selected_type = $type_names[substr($selected_node->$group_key, 0, 1)] ?? gettext("Unknown");
+            $target_type = $type_names[substr($target_node->$group_key, 0, 1)] ?? gettext("Unknown");
+            throw new UserWarningException(
+                sprintf(gettext("Cannot move '%s Rule' before '%s Rule'."), $selected_type, $target_type)
             );
         }
 
@@ -347,7 +376,11 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         $new_key = null;
         $prev_record = null;
 
-        foreach ($this->getModel()->getNodeByReference($node_reference)->sortedBy([$sort_key]) as $record) {
+        $sort_keys = $group_key === null ? [$sort_key] : [$group_key, $sort_key];
+        foreach ($this->getModel()->getNodeByReference($node_reference)->sortedBy($sort_keys) as $record) {
+            if ($group_key !== null && !$record->$group_key->isEqual($target_node->$group_key)) {
+                continue;
+            }
             $uuid = $record->getAttribute('uuid');
 
             if ($target_uuid === $uuid) {
@@ -371,7 +404,9 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         }
 
         if ($new_key !== null) {
-            $selected_node->$sort_key = (string)$new_key;
+            foreach ($selected_nodes as $selected_node) {
+                $selected_node->$sort_key = (string)$new_key;
+            }
             $this->save();
         }
 
