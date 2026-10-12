@@ -73,18 +73,20 @@ class DeviceField extends BaseListField
     public function isConfigurable()
     {
         $value = $this->getValue();
-        if (isset(static::$interfaces[$value])) {
+        if (isset(static::$interfaces[$value]['configurable'])) {
             return static::$interfaces[$value]['configurable'];
         }
-        return false;
+        /* default as per plugins_devices() */
+        return true;
     }
 
     public function canSpoofmac()
     {
         $value = $this->getValue();
-        if (isset(static::$interfaces[$value])) {
+        if (isset(static::$interfaces[$value]['spoofmac'])) {
             return static::$interfaces[$value]['spoofmac'];
         }
-        return false;
+        /* default as per plugins_devices() */
+        return true;
     }
 }
