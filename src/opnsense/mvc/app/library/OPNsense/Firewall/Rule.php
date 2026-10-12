@@ -110,15 +110,10 @@ abstract class Rule
                 }
                 if ($port == 'any') {
                     $rule[$pfield] = null;
+                } elseif (Util::isPortAlias($port)) {
+                    $rule[$pfield] = '$' . $port;
                 } elseif (Util::isPort($port)) {
                     $rule[$pfield] = $port;
-                } elseif (Util::isAlias($port)) {
-                    $rule[$pfield] = '$' . $port;
-                    if (!Util::isAlias($port, true)) {
-                        // unable to map port
-                        $rule['disabled'] = true;
-                        $this->log("Unable to map port {$port}, empty?");
-                    }
                 } elseif (!empty($port)) {
                     $known = PortField::getWellKnown($rule[$pfield]);
                     if (!empty($known)) {
