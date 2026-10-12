@@ -229,7 +229,7 @@ function core_devices()
     }
 
     $devices[] = [
-        'pattern' => '^l2tp|^ppp', /* includes ^pppoe */
+        'pattern' => '^ppp', /* includes ^pppoe */
         'typedescr' => gettext('Point-to-point'),
         'names' => $ppp_names,
         'volatile' => true,

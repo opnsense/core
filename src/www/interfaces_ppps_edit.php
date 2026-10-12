@@ -157,7 +157,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             do_input_validation($pconfig, $reqdfields, $reqdfieldsn, $input_errors);
             break;
-        case "l2tp":
+        case "l2tp": /* XXX */
             if (!empty($pconfig['ondemand'])) {
                 $reqdfields = explode(" ", "ports username password localip subnet gateway remotenet ondemand idletimeout");
                 $reqdfieldsn = array(gettext("Link Interface(s)"),gettext("Username"),gettext("Password"),gettext("Local IP address"),gettext("Subnet"),gettext("Remote IP address"),gettext("Dial on demand"),gettext("Idle timeout value"));
@@ -262,8 +262,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 if (!empty($pconfig['hostuniq'])) {
                     $ppp['hostuniq'] = $pconfig['hostuniq'];
                 }
-                /* FALLTHROUGH */
-            case "l2tp":
                 $ppp['localip'] = implode(',', $port_data['localip']);
                 $ppp['subnet'] = implode(',', $port_data['subnet']);
                 $ppp['gateway'] = implode(',', $port_data['gateway']);
@@ -475,12 +473,9 @@ include("head.inc");
                         <td><i class="fa fa-info-circle text-muted"></i> <?= gettext("Link Type"); ?></td>
                         <td>
                           <select name="type" class="selectpicker" id="type">
-<?php
-                          $types = ['ppp' => 'PPP', 'pppoe' => 'PPPoE', 'l2tp' => 'L2TP'];
-                          foreach ($types as $key => $opt):?>
+<?php foreach (['pppoe' => 'PPPoE', 'ppp' => 'PPP'] as $key => $opt): ?>
                             <option value="<?=$key;?>" <?=$key == $pconfig['type'] ? "selected=\"selected\"" : "";?>><?=$opt;?></option>
-<?php
-                          endforeach;?>
+<?php endforeach ?>
                           </select>
                         </td>
                       </tr>
@@ -488,13 +483,11 @@ include("head.inc");
                         <td><a id="help_for_ports" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a>  <?= gettext("Link interface(s)"); ?></td>
                         <td>
                           <select class="selectpicker" multiple="multiple" size="3" name="ports[]" id="ports" >
-<?php
-                          foreach (serial_devices() as $port => $port_info):?>
+<?php foreach (serial_devices() as $port => $port_info): ?>
                             <option data-type="serial" value="<?=$port;?>" <?=in_array($port, $pconfig['ports']) ? "selected=\"selected\"" : "";?> >
                               <?=$port;?>  <?=!empty($port_info['descr']) ?  "(".$port_info['descr'].")" : "" ;?>
                             </option>
-<?php
-                          endforeach;?>
+<?php endforeach ?>
 <?php
                           $portlist = get_interface_list();
                           $iflist = get_configured_interface_with_descr();

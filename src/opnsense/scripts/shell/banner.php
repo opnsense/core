@@ -59,9 +59,6 @@ foreach ($iflist as $ifname => $ifcfg) {
         case 'ppp':
             $class = '/PPP';
             break;
-        case 'l2tp':
-            $class = '/L2TP';
-            break;
     }
 
     $class6 = null;

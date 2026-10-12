@@ -574,7 +574,6 @@ function interfaces_virtual_patterns()
         'gre',
         'ipfw', /* ipfw logging device, not enabled by default */
         'ipsec',
-        'l2tp',
         'lagg',
         'lo',
         'ng',

@@ -73,7 +73,6 @@
                     <dhcp>DHCP</dhcp>
                     <pppoe>PPPoE</pppoe>
                     <ppp>PPP</ppp>
-                    <l2tp>L2TP</l2tp>
                 </OptionValues>
             </type4>
             <type6 type="OptionField">

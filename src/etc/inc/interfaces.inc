@@ -937,7 +937,6 @@ function interface_ppps_bound($interface, $family = null)
     switch ($ifcfg['ipaddr'] ?? 'none') {
         case 'ppp':
         case 'pppoe':
-        case 'l2tp':
             $ipv4_mode = true;
             break;
         default:
@@ -989,7 +988,7 @@ function interface_ppps_hardware($device)
     $devices = [];
 
     /* avoid returning a /dev parent by excluding 'ppp' prefix */
-    if (str_starts_with($device, 'pppoe') || str_starts_with($device, 'l2tp')) {
+    if (str_starts_with($device, 'pppoe')) {
         foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
             if ($device == $ppp['if']) {
                 foreach (explode(',', $ppp['ports']) as $port) {
@@ -1061,7 +1060,6 @@ function interface_ppps_configure($interface)
     switch ($ifcfg['ipaddr'] ?? 'none') {
         case 'ppp':
         case 'pppoe':
-        case 'l2tp':
             $ipv4_mode = 'enable';
             break;
         default:
@@ -1105,41 +1103,10 @@ function interface_ppps_configure($interface)
         }
     }
 
-    $localips = isset($ppp['localip']) ? explode(',', $ppp['localip']) : [];
-    $gateways = isset($ppp['gateway']) ? explode(',', $ppp['gateway']) : [];
-    $subnets = isset($ppp['subnet']) ? explode(',', $ppp['subnet']) : [];
-    $mtus = !empty($ppp['mtu']) ? explode(',', $ppp['mtu']) : [];
-
-    /*
-     * XXX L2TP is slated for removal since it is misusing 'localip'
-     *
-     * We bring up the parent interface first because if DHCP is
-     * configuredon the parent we need to obtain an address first
-     * so we can write it in the mpd .conf file for L2TP configs.
-     */
     foreach ($ports as $pid => $port) {
         switch ($ppp['type']) {
             case 'pppoe':
                 legacy_interface_flags($port, 'up');
-                break;
-            case 'l2tp':
-                /* configure interface */
-                if (is_ipaddr($localips[$pid])) {
-                    // Manually configure interface IP/subnet
-                    legacy_interface_setaddress($port, "{$localips[$pid]}/{$subnets[$pid]}");
-                    legacy_interface_flags($port, 'up');
-                } elseif (empty($localips[$pid])) {
-                    $localips[$pid] = get_interface_ip($port); // try to get the interface IP from the port
-                }
-
-                if (!is_ipaddr($localips[$pid])) {
-                    log_msg("Could not get a Local IP address for L2TP link on {$port}. Using 0.0.0.0!", LOG_WARNING);
-                    $localips[$pid] = '0.0.0.0';
-                }
-                if (!is_ipaddr($gateways[$pid])) {
-                    log_msg("Could not get a Remote IP address for L2TP link on {$port}.", LOG_ERR);
-                    return;
-                }
                 break;
             case 'ppp':
                 if (!file_exists($port)) {
@@ -1263,11 +1230,13 @@ EOD;
         $mpdconf_arr[] = "set link disable chap pap";
         $mpdconf_arr[] = "set link accept chap pap eap";
         $mpdconf_arr[] = "set link disable incoming";
+
+        /* XXX bandwidth, mtu, mru and mrru are per port */
         $bandwidths = !empty($ppp['bandwidth']) ? explode(',', $ppp['bandwidth']) : null;
         if (!empty($bandwidths[$pid])) {
             $mpdconf_arr[] = "set link bandwidth {$bandwidths[$pid]}";
         }
-
+        $mtus = !empty($ppp['mtu']) ? explode(',', $ppp['mtu']) : null;
         if (empty($mtus[$pid])) {
             /* subtract default header when deriving from interface config (as shown there) */
             $mtus[$pid] = !empty($ifcfg['mtu']) ? intval($ifcfg['mtu']) - 8 : 1492;
@@ -1336,9 +1305,6 @@ EOD;
             }
             $mpdconf_arr[] = "set pppoe service \"{$hostuniq}{$provider}\"";
             $mpdconf_arr[] = "set pppoe iface {$port}";
-        } elseif ($ppp['type'] == 'l2tp') {
-            $mpdconf_arr[] = "set {$ppp['type']} self {$localips[$pid]}";
-            $mpdconf_arr[] = "set {$ppp['type']} peer {$gateways[$pid]}";
         }
 
         foreach ($mpdconf_arr as $mpdconf_opt) {
@@ -3479,9 +3445,6 @@ function convert_friendly_interface_to_friendly_descr($interface)
     $ifdesc = $interface;
 
     switch ($interface) {
-        case 'l2tp':
-            $ifdesc = 'L2TP';
-            break;
         case 'pppoe':
             $ifdesc = 'PPPoE';
             break;

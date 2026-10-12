@@ -683,7 +683,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $new_config['dhcpvlanprio'] = $pconfig['dhcpvlanprio'];
                     }
                     break;
-                case 'l2tp':
                 case 'ppp':
                 case 'pppoe':
                     $new_config['ipaddr'] = $pconfig['type'];
@@ -867,9 +866,6 @@ if (!interface_ppps_capable($a_interfaces[$if], $a_ppps)) {
             $types4['pppoe'] = gettext('PPPoE');
             $types6['pppoev6'] = gettext('PPPoEv6');
             break;
-        case 'l2tp':
-            $types4['l2tp'] = gettext('L2TP');
-            break;
         default:
             break;
     }
@@ -900,7 +896,7 @@ include("head.inc");
 
       $("#type").change(function () {
           $('#staticv4, #dhcp, #ppp').hide();
-          if ($(this).val() == 'l2tp' || $(this).val() == 'pppoe') {
+          if ($(this).val() == 'pppoe') {
               $("#ppp").show();
           } else {
               $("#" +$(this).val()).show();
