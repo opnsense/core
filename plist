@@ -2278,7 +2278,7 @@
 /usr/local/opnsense/www/js/opnsense_status.js
 /usr/local/opnsense/www/js/opnsense_theme.js
 /usr/local/opnsense/www/js/opnsense_ui.js
-/usr/local/opnsense/www/js/opnsense_widget_manager.js
+/usr/local/opnsense/www/js/opnsense_widgets.js
 /usr/local/opnsense/www/js/polyfills.js
 /usr/local/opnsense/www/js/qrcode.js
 /usr/local/opnsense/www/js/qrcode_UTF8.js
@@ -2300,6 +2300,7 @@
 /usr/local/opnsense/www/js/widgets/Firewall.js
 /usr/local/opnsense/www/js/widgets/FirewallStates.js
 /usr/local/opnsense/www/js/widgets/Gateways.js
+/usr/local/opnsense/www/js/widgets/HealthGraph.js
 /usr/local/opnsense/www/js/widgets/InterfaceStatistics.js
 /usr/local/opnsense/www/js/widgets/Interfaces.js
 /usr/local/opnsense/www/js/widgets/IpsecLeases.js
