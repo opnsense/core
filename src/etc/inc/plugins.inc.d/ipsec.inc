@@ -165,6 +165,17 @@ function ipsec_services()
     return $services;
 }
 
+function ipsec_cron()
+{
+    $jobs = [];
+
+    if (ipsec_legacy()) {
+        $jobs[]['autocron'] = ['/usr/local/sbin/ping_hosts.sh', '*/4'];
+    }
+
+    return $jobs;
+}
+
 function ipsec_interfaces()
 {
     global $config;
@@ -1126,12 +1137,12 @@ function ipsec_configure_do($verbose = false, $interface_map = null)
 
     $ipsec_mdl = new \OPNsense\IPsec\IPsec();
 
-    /* configure VTI if needed */
     ipsec_configure_vti();
-    /* setup "ping" cron job*/
-    ipsec_setup_pinghosts();
 
-    //  Prefer older IPsec SAs (advanced setting)
+    if (ipsec_legacy()) {
+        ipsec_setup_pinghosts();
+    }
+
     if (!empty((string)$ipsec_mdl->general->preferred_oldsa)) {
         set_single_sysctl('net.key.preferred_oldsa', '-30');
     } else {
