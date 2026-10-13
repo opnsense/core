@@ -169,6 +169,7 @@ class UIBootgrid {
             virtualDOM: false,
             selection: true,
             multiSelect: true,
+            selectionOrder: false,
             batchToggle: true,
             batchToggleSize: 40,
             batchDelete: true,
@@ -276,6 +277,7 @@ class UIBootgrid {
         this.options.batchToggleSize = bootGridOptions?.batchToggleSize ?? 40;
         this.options.batchDelete = bootGridOptions?.batchDelete ?? true;
         this.options.batchDeleteSize = bootGridOptions?.batchDeleteSize ?? 40;
+        this.options.selectionOrder = bootGridOptions?.selectionOrder ?? false;
 
         if (bootGridOptions?.stickySelect ?? false) {
             this.options.stickySelect = true;
@@ -715,6 +717,19 @@ class UIBootgrid {
     }
 
     _registerEvents() {
+        if (this.options.selectionOrder) {
+            this.table.on('rowSelectionChanged', (data, rows) => {
+                this.$element.find('.bootgrid-selection-order').remove();
+                rows.forEach((row, index) => {
+                    $(row.getElement()).find('.tabulator-row-header')
+                        .prepend($('<span>', {
+                            class: 'bootgrid-selection-order',
+                            text: index + 1
+                        }));
+                });
+            });
+        }
+
         this.table.on('dataLoading', () => {
             this._getPlaceholder().html('');
             if (!this.navigationRendered) {

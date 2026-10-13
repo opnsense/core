@@ -243,6 +243,7 @@
                 virtualDOM: true,
                 responsive: true,
                 sorting: false,
+                selectionOrder: true,
                 rowCount: [500,20,50,100,200,1000,2000,-1],
                 initialSearchPhrase: getUrlHash('search'),
                 requestHandler: function(request){
