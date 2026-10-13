@@ -32,9 +32,10 @@ OUTPUT=
 
 DO_CHECK=
 DO_ORIGIN=
+DO_OSRELEASE=
 DO_RAW=
 
-while getopts AaCceHilNnOR:stVvwx OPT; do
+while getopts AaCceHilNnOoR:stVvwx OPT; do
 	case ${OPT} in
 	A)
 		OUTPUT="${OUTPUT} \${product_arch}"
@@ -68,6 +69,13 @@ while getopts AaCceHilNnOR:stVvwx OPT; do
 		;;
 	O)
 		DO_ORIGIN="-O"
+		;;
+	o)
+		if [ "$(id -u)" != "0" ]; then
+			echo "Must be root to use '-o'."
+			exit 1
+		fi
+		DO_OSRELEASE="-o"
 		;;
 	R)
 		if [ "$(id -u)" != "0" ]; then
@@ -130,6 +138,13 @@ fi
 
 if [ -n "${DO_ORIGIN}" ]; then
 	cat ${VERSION}
+	exit 0
+elif [ -n "${DO_OSRELEASE}" ]; then
+	/etc/rc.d/os-release onestart 2> /dev/null
+	cat >> /var/run/os-release << EOF
+VARIANT="$(/usr/local/sbin/opnsense-version)"
+VARIANT_ID="$(/usr/local/sbin/opnsense-version -n)"
+EOF
 	exit 0
 fi
 
