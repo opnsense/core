@@ -57,7 +57,7 @@ class CertController extends ApiMutableModelControllerBase
         $error = false;
         if (!$node->prv_payload->isEmpty()) {
             /** private key manually offered */
-            $matches = CertStore::splitPrivs((string)$node->prv_payload);
+            $matches = CertStore::splitCerts((string)$node->prv_payload);
             if (count($matches) != 1) {
                 $error = sprintf(
                     gettext('Only a single private key is allowed (found %d sections)'),
