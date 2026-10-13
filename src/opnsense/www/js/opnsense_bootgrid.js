@@ -1033,20 +1033,22 @@ class UIBootgrid {
         const $cell = $(cell.getElement())
         $cell.find('.bootgrid-tooltip').each((i, el) => {
             const $el = $(el);
-
             const existingTitle = $el.attr('title');
             const command = el.className.match(/command-([^\s]+)/)?.[1];
+            const tooltipOptions = {container: 'body', trigger: 'hover'};
 
             if (command && !existingTitle) {
                 const cmdobj = this._getCommands()[command] ?? null;
                 if (!cmdobj || !cmdobj?.title) {
                     console.error(`No tooltip match for command ${command}`);
+                } else if (typeof cmdobj.title === "function") {
+                    tooltipOptions.title = () => cmdobj.title(cell);
                 } else {
-                    $el.attr('title', typeof cmdobj.title === "function" ? cmdobj.title(cell) : cmdobj.title);
+                    $el.attr('title', cmdobj.title);
                 }
             }
             // XXX consider a dedicated invisible overlay for bootgrid tooltips
-            $el.tooltip({container: 'body', trigger: 'hover'});
+            $el.tooltip(tooltipOptions);
         });
 
         let actions = $cell.find('[class*="command-"]');
@@ -1930,8 +1932,7 @@ class UIBootgrid {
                     }
 
                     if (has_option) {
-                        const title = typeof command?.title === "function"
-                            ? command?.title(cell) : command?.title;
+                        const title = typeof command?.title === "function" ? "" : command?.title;
 
                         const classname = typeof command.classname === "function"
                             ? command.classname(cell) : command.classname;

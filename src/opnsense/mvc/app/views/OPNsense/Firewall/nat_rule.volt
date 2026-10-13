@@ -491,7 +491,13 @@
                         );
                     },
                     classname: 'fa fa-fw fa-arrow-left',
-                    title: "{{ lang._('Move selected rules before this rule') }}",
+                    title: () => {
+                        const count = $("#{{ formGridRule['table_id'] }}").bootgrid("getSelectedRows").length;
+                        if (count === 0) {
+                            return "{{ lang._('Select rules to move before this rule') }}";
+                        }
+                        return "{{ lang._('Move %s rule(s) before this rule in selection order') }}".replace('%s', count);
+                    },
                     sequence: 10
                 },
                 toggle_log: {
