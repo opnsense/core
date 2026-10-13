@@ -1134,8 +1134,11 @@
             }
         });
 
+        // Avoid loading the rule model twice while the initial grid request is in progress.
+        grid.one('loaded.rs.jquery.bootgrid', function () {
+            populateCategoriesSelectpicker();
+        });
         populateInterfaceSelectpicker();
-        populateCategoriesSelectpicker();
 
     });
 </script>
