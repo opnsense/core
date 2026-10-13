@@ -718,14 +718,17 @@ class UIBootgrid {
 
     _registerEvents() {
         if (this.options.selectionOrder) {
-            this.table.on('rowSelectionChanged', (data, rows) => {
-                this.$element.find('.bootgrid-selection-order').remove();
+            this.table.on('rowSelectionChanged', (data, rows, selected, deselected) => {
+                deselected.forEach((row) => {
+                    $(row.getElement()).find('.bootgrid-selection-order').remove();
+                });
                 rows.forEach((row, index) => {
-                    $(row.getElement()).find('.tabulator-row-header')
-                        .prepend($('<span>', {
-                            class: 'bootgrid-selection-order',
-                            text: index + 1
-                        }));
+                    const $header = $(row.getElement()).find('.tabulator-row-header');
+                    let $order = $header.find('.bootgrid-selection-order');
+                    if ($order.length === 0) {
+                        $order = $('<span>', {class: 'bootgrid-selection-order'}).prependTo($header);
+                    }
+                    $order.text(index + 1);
                 });
             });
         }
