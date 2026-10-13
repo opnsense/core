@@ -221,9 +221,9 @@ class DNatController extends FilterBaseController
         return $result;
     }
 
-    public function moveRuleBeforeAction($selected_uuid, $target_uuid)
+    public function moveRuleBeforeAction($selected_uuids, $target_uuid)
     {
-        return $this->moveRuleBeforeBase($selected_uuid, $target_uuid, 'rule', 'sequence');
+        return $this->moveRuleBeforeBase($selected_uuids, $target_uuid, 'rule', 'sequence');
     }
 
     public function toggleRuleLogAction($uuid, $log)

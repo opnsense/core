@@ -27,7 +27,6 @@
  */
 namespace OPNsense\Firewall\Api;
 
-use OPNsense\Base\UserWarningException;
 use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
 use OPNsense\Firewall\Category;
@@ -247,96 +246,9 @@ class FilterController extends FilterBaseController
         return $this->toggleRuleLogBase($uuid, $log, 'rules.rule');
     }
 
-    /**
-     * iterate rules for a prio_group, yield this record and the next in line (if any)
-     */
-    protected function ittrRules($prio_group)
+    public function moveRuleBeforeAction($selected_uuids, $target_uuid)
     {
-        $prev_record = null;
-        foreach ($this->getModel()->rules->rule->sortedBy(['prio_group', 'sequence']) as $record) {
-            if ($record->prio_group->isEqual($prio_group)) {
-                yield ['this' => $record, 'prev' => $prev_record];
-                $prev_record = $record;
-            } elseif ($prev_record !== null) {
-                /* last of selected group */
-                break;
-            }
-        }
-    }
-
-    /**
-     * Moves the selected rule so that it appears immediately before the target rule.
-     *
-     * Uses integer gap numbering to update the sequence for only the moved rule.
-     * Rules will be renumbered within the selected range to prevent movements causing overlaps,
-     * but try to keep the changes as minimal as possible.
-     *
-     * Floating, Group, and Interface rules cannot be moved before another.
-     *
-     * @param string $selected_uuid The UUID of the rule to be moved.
-     * @param string $target_uuid   The UUID of the target rule (the rule before which the selected rule is to be placed).
-     * @return array Returns ["status" => "ok"] on success, throws a userexception otherwise.
-     */
-    public function moveRuleBeforeAction($selected_uuid, $target_uuid)
-    {
-        if (!$this->request->isPost()) {
-            return ["status" => "error", "message" => gettext("Invalid request method")];
-        }
-        /* validate */
-        $target_node = $this->getModel()->getNodeByReference('rules.rule.' . $target_uuid);
-        $selected_node = $this->getModel()->getNodeByReference('rules.rule.' . $selected_uuid);
-        if ($target_node === null || $selected_node === null) {
-            throw new UserWarningException(
-                gettext("Either source or destination is not a rule managed with this component"),
-                gettext("Filter")
-            );
-        } elseif (!$selected_node->prio_group->isEqual($target_node->prio_group)) {
-            /* types don't match */
-            $typeNames = [
-                '2' => gettext("Floating"),
-                '3' => gettext("Group"),
-                '4' => gettext("Interface")
-            ];
-            $selectedType = $typeNames[substr($selected_node->prio_group, 0, 1)] ?? gettext("Unknown");
-            $targetType   = $typeNames[substr($target_node->prio_group, 0, 1)] ?? gettext("Unknown");
-            throw new UserWarningException(
-                sprintf(
-                    gettext("Cannot move '%s Rule' before '%s Rule'."),
-                    $selectedType,
-                    $targetType
-                ),
-                gettext("Filter")
-            );
-        } elseif ($selected_uuid === $target_uuid) {
-            throw new UserWarningException(gettext("Cannot move to the same spot."), gettext("Filter"));
-        }
-        /* move the rule and optionally reorganize*/
-        $step_size = 50;
-        $new_key = null;
-        foreach ($this->ittrRules($target_node->prio_group) as $item) {
-            $uuid = $item['this']->getAttribute('uuid');
-            if ($target_uuid === $uuid) {
-                $prev_sequence = (($item['prev']?->sequence->asFloat()) ?? 1);
-                $distance = $item['this']->sequence->asFloat() - $prev_sequence;
-                if ($distance > 2) {
-                    $new_key = intdiv($distance, 2) + $prev_sequence;
-                    break;
-                } else {
-                    $new_key = $item['prev'] === null ? 1 : ($prev_sequence + $step_size);
-                    $item['this']->sequence = (string)($new_key + $step_size);
-                }
-            } elseif ($new_key !== null) {
-                if ($item['this']->sequence->asFloat() < $item['prev']?->sequence->asFloat()) {
-                    $item['this']->sequence = (string)($item['prev']?->sequence->asFloat() + $step_size);
-                }
-            }
-        }
-        if ($new_key !== null) {
-            $selected_node->sequence = (string)$new_key;
-            $this->save();
-        }
-
-        return ["status" => "ok"];
+        return $this->moveRuleBeforeBase($selected_uuids, $target_uuid, 'rules.rule', 'sequence', 'prio_group');
     }
 
     /**

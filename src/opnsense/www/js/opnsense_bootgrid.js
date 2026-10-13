@@ -169,6 +169,7 @@ class UIBootgrid {
             virtualDOM: false,
             selection: true,
             multiSelect: true,
+            selectionOrder: false,
             batchToggle: true,
             batchToggleSize: 40,
             batchDelete: true,
@@ -276,6 +277,7 @@ class UIBootgrid {
         this.options.batchToggleSize = bootGridOptions?.batchToggleSize ?? 40;
         this.options.batchDelete = bootGridOptions?.batchDelete ?? true;
         this.options.batchDeleteSize = bootGridOptions?.batchDeleteSize ?? 40;
+        this.options.selectionOrder = bootGridOptions?.selectionOrder ?? false;
 
         if (bootGridOptions?.stickySelect ?? false) {
             this.options.stickySelect = true;
@@ -715,6 +717,22 @@ class UIBootgrid {
     }
 
     _registerEvents() {
+        if (this.options.selectionOrder) {
+            this.table.on('rowSelectionChanged', (data, rows, selected, deselected) => {
+                deselected.forEach((row) => {
+                    $(row.getElement()).find('.bootgrid-selection-order').remove();
+                });
+                rows.forEach((row, index) => {
+                    const $header = $(row.getElement()).find('.tabulator-row-header');
+                    let $order = $header.find('.bootgrid-selection-order');
+                    if ($order.length === 0) {
+                        $order = $('<span>', {class: 'bootgrid-selection-order'}).prependTo($header);
+                    }
+                    $order.text(index + 1);
+                });
+            });
+        }
+
         this.table.on('dataLoading', () => {
             this._getPlaceholder().html('');
             if (!this.navigationRendered) {
@@ -1018,20 +1036,22 @@ class UIBootgrid {
         const $cell = $(cell.getElement())
         $cell.find('.bootgrid-tooltip').each((i, el) => {
             const $el = $(el);
-
             const existingTitle = $el.attr('title');
             const command = el.className.match(/command-([^\s]+)/)?.[1];
+            const tooltipOptions = {container: 'body', trigger: 'hover'};
 
             if (command && !existingTitle) {
                 const cmdobj = this._getCommands()[command] ?? null;
                 if (!cmdobj || !cmdobj?.title) {
                     console.error(`No tooltip match for command ${command}`);
+                } else if (typeof cmdobj.title === "function") {
+                    tooltipOptions.title = () => cmdobj.title(cell);
                 } else {
-                    $el.attr('title', typeof cmdobj.title === "function" ? cmdobj.title(cell) : cmdobj.title);
+                    $el.attr('title', cmdobj.title);
                 }
             }
             // XXX consider a dedicated invisible overlay for bootgrid tooltips
-            $el.tooltip({container: 'body', trigger: 'hover'});
+            $el.tooltip(tooltipOptions);
         });
 
         let actions = $cell.find('[class*="command-"]');
@@ -1915,8 +1935,7 @@ class UIBootgrid {
                     }
 
                     if (has_option) {
-                        const title = typeof command?.title === "function"
-                            ? command?.title(cell) : command?.title;
+                        const title = typeof command?.title === "function" ? "" : command?.title;
 
                         const classname = typeof command.classname === "function"
                             ? command.classname(cell) : command.classname;

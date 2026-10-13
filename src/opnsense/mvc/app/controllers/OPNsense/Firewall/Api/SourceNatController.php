@@ -184,9 +184,9 @@ class SourceNatController extends FilterBaseController
         return $this->toggleBase("snatrules.rule", $uuid, $enabled);
     }
 
-    public function moveRuleBeforeAction($selected_uuid, $target_uuid)
+    public function moveRuleBeforeAction($selected_uuids, $target_uuid)
     {
-        return $this->moveRuleBeforeBase($selected_uuid, $target_uuid, 'snatrules.rule', 'sequence');
+        return $this->moveRuleBeforeBase($selected_uuids, $target_uuid, 'snatrules.rule', 'sequence');
     }
 
     public function toggleRuleLogAction($uuid, $log)
