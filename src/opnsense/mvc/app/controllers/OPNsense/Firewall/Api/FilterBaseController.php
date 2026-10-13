@@ -320,8 +320,6 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
      * Moves the selected rules so that they appear immediately before the target rule.
      *
      * Uses integer gap numbering to update the sequence for only the moved rules.
-     * All selected rules receive the same sequence calculated for the first moved rule intentionally.
-     *
      * Surrounding rules will be renumbered within the selected range to prevent movements causing overlaps,
      * but try to keep the changes as minimal as possible.
      *
@@ -338,6 +336,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             return ["status" => "error", "message" => gettext("Invalid request method")];
         }
 
+        /* Resolve the rules involved in the move. */
         $target_node = $this->getModel()->getNodeByReference($node_reference . '.' . $target_uuid);
         $selected_nodes = [];
         foreach (array_filter(explode(',', $selected_uuids), 'strlen') as $uuid) {
@@ -349,6 +348,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             $selected_nodes[$uuid] = $selected_node;
         }
 
+        /* Validate the rules involved in the move. */
         if ($target_node === null || empty($selected_nodes)) {
             throw new UserException(
                 gettext("Either source or destination is not a rule managed with this component")
@@ -373,11 +373,11 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             );
         }
 
+        /* Find a sequence before the target, only renumbering when no gap is available. */
         $step_size = 50;
         $new_key = null;
         $prev_record = null;
 
-        /* Find a sequence before the target, only renumbering when no gap is available. */
         $sort_keys = $group_key === null ? [$sort_key] : [$group_key, $sort_key];
         foreach ($this->getModel()->getNodeByReference($node_reference)->sortedBy($sort_keys) as $record) {
             if ($group_key !== null && !$record->$group_key->isEqual($target_node->$group_key)) {
@@ -386,8 +386,8 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             $uuid = $record->getAttribute('uuid');
 
             if ($target_uuid === $uuid) {
-                $prev_sequence = (($prev_record?->$sort_key->asFloat()) ?? 1);
-                $distance = $record->$sort_key->asFloat() - $prev_sequence;
+                $prev_sequence = $prev_record?->$sort_key->asInt() ?? 1;
+                $distance = $record->$sort_key->asInt() - $prev_sequence;
 
                 if ($distance > 2) {
                     $new_key = intdiv($distance, 2) + $prev_sequence;
@@ -397,8 +397,9 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
                     $record->$sort_key = (string)($new_key + $step_size);
                 }
             } elseif ($new_key !== null) {
-                if ($record->$sort_key->asFloat() < $prev_record?->$sort_key->asFloat()) {
-                    $record->$sort_key = (string)($prev_record?->$sort_key->asFloat() + $step_size);
+                $prev_sequence = $prev_record->$sort_key->asInt();
+                if ($record->$sort_key->asInt() < $prev_sequence) {
+                    $record->$sort_key = (string)($prev_sequence + $step_size);
                 }
             }
 
@@ -406,7 +407,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
         }
 
         if ($new_key !== null) {
-            /* Keep the selection together by assigning every selected rule the same sequence. */
+            /* Keep the selection together by assigning every selected rule the same sequence intentionally. */
             foreach ($selected_nodes as $selected_node) {
                 $selected_node->$sort_key = (string)$new_key;
             }
