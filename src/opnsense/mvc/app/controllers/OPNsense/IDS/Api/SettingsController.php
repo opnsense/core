@@ -160,9 +160,9 @@ class SettingsController extends ApiMutableModelControllerBase
             $row['enabled'] = $this->getModel()->getRuleStatus($row['sid'], $row['enabled']);
             $row['action'] = $this->getModel()->getRuleAction($row['sid'], $row['action']);
             //
+            $row['reference_html'] = '';
             if (isset($row['reference']) && $row['reference'] != '') {
                 // browser friendly reference data
-                $row['reference_html'] = '';
                 foreach (explode("\n", $row['reference']) as $ref) {
                     $ref = preg_replace('/[^a-z_0-9._~,\/\%]/i', '', $ref);
                     $item_html = '<small><a href="%url%" target="_blank">%ref%</a></small>';
@@ -177,6 +177,12 @@ class SettingsController extends ApiMutableModelControllerBase
                         continue;
                     }
                     $row['reference_html'] .= $item_html . '<br/>';
+                }
+            }
+            /* remove empty values */
+            foreach (array_keys($row) as $key) {
+                if ($row[$key] === '') {
+                    unset($row[$key]);
                 }
             }
             ksort($row);
