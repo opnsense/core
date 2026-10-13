@@ -298,7 +298,6 @@ function core_cron()
     $jobs = [];
 
     $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d syslog archive', '1'];
-    $jobs[]['autocron'] = ['/usr/local/sbin/ping_hosts.sh', '*/4'];
     $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d firmware changelog cron', '0', '22'];
 
     foreach ((new \OPNsense\Firewall\Alias(true))->aliases->alias->iterateItems() as $alias) {

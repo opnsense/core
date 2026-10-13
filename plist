@@ -2574,7 +2574,6 @@
 /usr/local/sbin/opnsense-log
 /usr/local/sbin/opnsense-shell
 /usr/local/sbin/opnsense-version
-/usr/local/sbin/ping_hosts.sh
 /usr/local/sbin/pluginctl
 /usr/local/share/man/man8/configctl.8.gz
 /usr/local/share/man/man8/ifctl.8.gz
