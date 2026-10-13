@@ -269,6 +269,8 @@
             const hasTextarea = Object.values(options).some(option => option.type === 'textarea');
             return new Promise((resolve, reject) => {
                 let settled = false;
+                let submitted = false;
+                let submittedValues = null;
                 BootstrapDialog.show({
                     title,
                     draggable: true,
@@ -277,25 +279,16 @@
                     buttons: [{
                         label: translations.ok,
                         hotkey: hasTextarea ? undefined : 13,
-                        action: async dialog => {
-                            const values = {};
+                        action: dialog => {
+                            submittedValues = {};
                             for (const [key, {option, field}] of fields) {
                                 const value = option.type === 'checkbox' ? field.is(':checked') : field.val();
-                                values[key] = option.type === 'select_multiple'
+                                submittedValues[key] = option.type === 'select_multiple'
                                     ? (value?.length ? value : option.default)
                                     : (value ?? option.default);
                             }
-
-                            try {
-                                await onSave(values);
-                                settled = true;
-                                resolve(true);
-                                dialog.close();
-                            } catch (error) {
-                                settled = true;
-                                reject(error);
-                                dialog.close();
-                            }
+                            submitted = true;
+                            dialog.close();
                         }
                     }, {
                         label: translations.cancel,
@@ -307,10 +300,26 @@
                             field.off('.widgetOptions');
                         }
                         $content.find('.widget-options-select').selectpicker('destroy');
-                        if (!settled) {
+                        if (!settled && !submitted) {
                             settled = true;
                             resolve(false);
                         }
+                    },
+                    onhidden: () => {
+                        if (!submitted || settled) {
+                            return;
+                        }
+
+                        Promise.resolve()
+                            .then(() => onSave(submittedValues))
+                            .then(() => {
+                                settled = true;
+                                resolve(true);
+                            })
+                            .catch(error => {
+                                settled = true;
+                                reject(error);
+                            });
                     }
                 });
             });
@@ -1150,6 +1159,7 @@
                 );
             }
 
+            let submittedTypeIds = [];
             BootstrapDialog.show({
                 title: this.translations.addwidget,
                 draggable: true,
@@ -1158,21 +1168,25 @@
                 buttons: [{
                     label: this.translations.add,
                     hotkey: 13,
-                    action: async dialog => {
-                        const typeIds = $select.val() ?? [];
-                        try {
-                            await Promise.all(typeIds.map(typeId => this.addInstance(typeId)));
-                            dialog.close();
-                        } catch (error) {
-                            console.error('Could not add widget', error);
-                        }
+                    action: dialog => {
+                        submittedTypeIds = $select.val() ?? [];
+                        dialog.close();
                     }
                 }, {
                     label: this.translations.cancel,
                     action: dialog => dialog.close()
                 }],
                 onshown: () => $select.selectpicker(),
-                onhide: () => $select.selectpicker('destroy')
+                onhide: () => $select.selectpicker('destroy'),
+                onhidden: () => {
+                    if (submittedTypeIds.length === 0) {
+                        return;
+                    }
+
+                    Promise.resolve()
+                        .then(() => Promise.all(submittedTypeIds.map(typeId => this.addInstance(typeId))))
+                        .catch(error => console.error('Could not add widget', error));
+                }
             });
         }
 
