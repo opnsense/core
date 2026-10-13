@@ -140,7 +140,7 @@ if [ -n "${DO_ORIGIN}" ]; then
 	cat ${VERSION}
 	exit 0
 elif [ -n "${DO_OSRELEASE}" ]; then
-	/etc/rc.d/os-release onestart 2> /dev/null
+	/etc/rc.d/os-release onestart > /dev/null
 	cat >> /var/run/os-release << EOF
 VARIANT="$(/usr/local/sbin/opnsense-version)"
 VARIANT_ID="$(/usr/local/sbin/opnsense-version -n)"
