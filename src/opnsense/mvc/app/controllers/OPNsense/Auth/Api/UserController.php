@@ -256,6 +256,56 @@ class UserController extends ApiMutableModelControllerBase
         return $this->searchRecordsetBase($this->getModel()->getApiKeys());
     }
 
+    public function getApiKeyAction($id = null)
+    {
+        $key = $id !== null ? base64_decode($id, true) : false;
+        if ($key !== false) {
+            $user = $this->getModel()->getUserByApiKey($key);
+            if ($user !== null) {
+                $item = $user->apikeys->get($key);
+                if (!empty($item)) {
+                    return [
+                        'apikey' => [
+                            'username' => (string)$user->name,
+                            'key' => $item['key'],
+                            'descr' => $item['descr']
+                        ]
+                    ];
+                }
+            }
+        }
+        return [
+            'apikey' => [
+                'username' => '',
+                'key' => '',
+                'descr' => ''
+            ]
+        ];
+    }
+
+    public function setApiKeyAction($id)
+    {
+        /* id is a base64 encoded string, we need to encode 'key' to prevent mangling data in the request */
+        $key = base64_decode($id, true);
+        if ($key !== false && $this->request->isPost()) {
+            Config::getInstance()->lock();
+            $user = $this->getModel()->getUserByApiKey($key);
+            $descr = (string)($this->request->getPost('apikey')['descr'] ?? $this->request->getPost('descr', null, ''));
+            if ($user !== null) {
+                $user->apikeys->setDescr($key, $descr);
+                $result = $this->validate($user->apikeys, 'apikey.descr');
+                if (empty($result['validations'])) {
+                    return $this->save(false, true);
+                }
+                Config::getInstance()->unlock();
+                return $result;
+            }
+            Config::getInstance()->unlock();
+            return ['result' => 'not found'];
+        }
+        return ["result" => "failed"];
+    }
+
     public function delApiKeyAction($id)
     {
         /* id is a base64 encoded string, we need to encode 'key' to prevent mangling data in the request */
@@ -280,7 +330,13 @@ class UserController extends ApiMutableModelControllerBase
             Config::getInstance()->lock();
             $user = $this->getModel()->getUserByName($username);
             if ($user != null) {
-                $tmp = $user->apikeys->add();
+                $descr = (string)($this->request->getPost('apikey')['descr'] ?? $this->request->getPost('descr', null, ''));
+                $tmp = $user->apikeys->add($descr);
+                $result = $this->validate($user->apikeys, 'apikey.descr');
+                if (!empty($result['validations'])) {
+                    Config::getInstance()->unlock();
+                    return $result;
+                }
                 if (!empty($tmp)) {
                     $this->save(false, true);
                     return array_merge(['result' => 'ok', 'hostname' => $this->getHostname()], $tmp);

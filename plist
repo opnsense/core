@@ -172,6 +172,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/GroupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/PrivController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/UserController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/forms/dialogApiKey.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/forms/dialogGroup.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/forms/dialogPriv.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/forms/dialogUser.xml

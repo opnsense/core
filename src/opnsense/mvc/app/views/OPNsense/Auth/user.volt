@@ -54,24 +54,35 @@
                 apikey: {
                     method: function(event){
                         let refid = $(this).data("row-id") !== undefined ? $(this).data("row-id") : '';
-                        stdDialogConfirm(
-                            '{{ lang._('API key') }}',
-                            '{{ lang._('Generate and download API key?') }}',
-                            '{{ lang._('Yes') }}', '{{ lang._('Cancel') }}', function () {
-                                ajaxGet('/api/auth/user/get/' + refid, {}, function(data){
-                                    if (data.user) {
-                                        let username = data.user.name;
-                                        ajaxCall('/api/auth/user/add_api_key/' + username, {}, function(data){
-                                            const payload = 'key='+data.key +'\n' + 'secret='+data.secret +'\n';
-                                            let filename = data.hostname + '_' + username + '_apikey.txt';
-                                            download_content(payload, filename, 'text/plain;charset=utf8');
-                                            $("#grid-apikey").bootgrid('reload');
-                                        });
+                        ajaxGet('/api/auth/user/get/' + refid, {}, function(data){
+                            if (data.user) {
+                                let username = data.user.name;
+                                clearFormValidation('frm_DialogApiKey');
+                                $("#apikey\\.username").text(username);
+                                $("#apikey\\.descr").val('');
+                                $("#row_apikey\\.key").hide();
+                                $("#DialogApiKey").modal({backdrop: 'static', keyboard: false});
+                                let saveDlg = $("#btn_DialogApiKey_save").unbind('click');
+                                saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
+                                saveDlg.click(function(){
+                                    if (saveDlg.find('i').hasClass('fa-spinner')) {
+                                        return;
                                     }
+                                    saveDlg.find('i').addClass("fa fa-spinner fa-pulse");
+                                    saveFormToEndpoint('/api/auth/user/add_api_key/' + username, 'frm_DialogApiKey', function(data){
+                                        $("#DialogApiKey").modal('hide');
+                                        const payload = 'key='+data.key +'\n' + 'secret='+data.secret +'\n';
+                                        const safeDescr = data.descr ? '_' + data.descr.trim().replace(/[^a-zA-Z0-9._-]+/g, '_') : '';
+                                        let filename = data.hostname + '_' + username + safeDescr + '_apikey.txt';
+                                        download_content(payload, filename, 'text/plain;charset=utf8');
+                                        $("#grid-apikey").bootgrid('reload');
+                                        saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
+                                    }, true, function(){
+                                        saveDlg.find('i').removeClass("fa fa-spinner fa-pulse");
+                                    });
                                 });
                             }
-                        );
-
+                        });
                     },
                     classname: 'fa fa-fw fa-ticket',
                     title: "{{ lang._('Create and download API key for this user') }}",
@@ -128,8 +139,23 @@
 
         let grid_apikey = $("#grid-apikey").UIBootgrid({
             search:'/api/auth/user/search_api_key/',
+            get:'/api/auth/user/get_api_key/',
+            set:'/api/auth/user/set_api_key/',
             del:'/api/auth/user/del_api_key/',
-            datakey: 'id'
+            datakey: 'id',
+            commands: {
+                copy: {
+                    classname: undefined
+                }
+            },
+            options: {
+                onBeforeRenderDialog: function() {
+                    let dfObj = new $.Deferred();
+                    $("#row_apikey\\.key").show();
+                    dfObj.resolve();
+                    return dfObj;
+                }
+            }
         });
 
         /**
@@ -229,12 +255,14 @@
         }}
     </div>
     <div id="apikeys" class="tab-pane fade in">
-        <table id="grid-apikey" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogUser">
+        <table id="grid-apikey" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogApiKey">
             <thead>
                 <tr>
                     <th data-column-id="id" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                     <th data-column-id="username" data-type="string">{{ lang._('Username') }}</th>
                     <th data-column-id="key" data-type="string">{{ lang._('Api key') }}</th>
+                    <th data-column-id="created" data-type="string" data-formatter="datetime">{{ lang._('Created') }}</th>
+                    <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>
                     <th data-column-id="commands" data-width="11em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                 </tr>
             </thead>
@@ -253,3 +281,4 @@
 </div>
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditUser,'id':formGridUser['edit_dialog_id'],'label':lang._('Edit User')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditApiKey,'id':'DialogApiKey','label':lang._('API key')])}}
