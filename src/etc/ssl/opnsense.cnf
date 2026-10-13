@@ -170,7 +170,7 @@ unstructuredName		= An optional company name
 basicConstraints=CA:FALSE
 
 # This is typical in keyUsage for a client certificate.
-keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+keyUsage = critical, nonRepudiation, digitalSignature, keyEncipherment
 
 # This will be displayed in Netscape's comment listbox.
 nsComment			= "OPNsense Generated Client Certificate"
@@ -295,7 +295,7 @@ nsComment			= "OPNsense Generated Server Certificate"
 subjectKeyIdentifier=hash
 authorityKeyIdentifier=keyid,issuer:always
 extendedKeyUsage=serverAuth,1.3.6.1.5.5.8.2.2
-keyUsage = digitalSignature, keyEncipherment
+keyUsage = critical, digitalSignature, keyEncipherment
 
 ###OPNsense:subjectAltName###
 ###OPNsense:authorityInfoAccess###
@@ -308,7 +308,7 @@ subjectKeyIdentifier   = hash
 authorityKeyIdentifier = keyid,issuer:always
 extendedKeyUsage       = clientAuth,serverAuth,1.3.6.1.5.5.8.2.2
 # This is typical in keyUsage for a client certificate.
-keyUsage               = nonRepudiation, digitalSignature, keyEncipherment
+keyUsage               = critical, nonRepudiation, digitalSignature, keyEncipherment
 
 ###OPNsense:subjectAltName###
 ###OPNsense:authorityInfoAccess###
