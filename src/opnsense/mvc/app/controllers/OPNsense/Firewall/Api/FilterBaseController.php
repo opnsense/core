@@ -336,84 +336,91 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             return ["status" => "error", "message" => gettext("Invalid request method")];
         }
 
-        /* Resolve the rules involved in the move. */
-        $target_node = $this->getModel()->getNodeByReference($node_reference . '.' . $target_uuid);
-        $selected_nodes = [];
-        foreach (array_filter(explode(',', $selected_uuids), 'strlen') as $uuid) {
-            $selected_node = $this->getModel()->getNodeByReference($node_reference . '.' . $uuid);
-            if ($selected_node === null) {
-                $selected_nodes = [];
+        /* XXX: The step size is arbitrary, but keep in mind MaximumValue of sequence in model */
+        $step = 50;
+        $uuids = array_values(array_filter(explode(',', $selected_uuids), 'strlen'));
+        $count = count($uuids);
+
+        /* Validations */
+        if (!$count || $count !== count(array_unique($uuids))) {
+            throw new UserException(gettext("Invalid rule selection."));
+        }
+        if ($count > $step) {
+            throw new UserException(sprintf(gettext("A maximum of %d rules can be moved at once."), $step));
+        }
+        if (in_array($target_uuid, $uuids, true)) {
+            throw new UserException(gettext("Cannot move rule to the same spot."));
+        }
+
+        $model = $this->getModel();
+        $target = $model->getNodeByReference($node_reference . '.' . $target_uuid);
+        if ($target === null) {
+            throw new UserException(gettext("Target rule not found."));
+        }
+
+        $selected = [];
+        foreach ($uuids as $uuid) {
+            $node = $model->getNodeByReference($node_reference . '.' . $uuid);
+            if ($node === null) {
+                throw new UserException(gettext("Selected rule not found."));
+            }
+            if ($group_key !== null && !$node->$group_key->isEqual($target->$group_key)) {
+                throw new UserWarningException(gettext("Cannot move rules between priority groups."));
+            }
+            $selected[$uuid] = $node;
+        }
+
+        /* Find the target while ignoring the selected rules. */
+        $previous = null;
+        $start = null;
+        $next = null;
+        $sort_keys = $group_key === null ? [$sort_key] : [$group_key, $sort_key];
+
+        foreach ($model->getNodeByReference($node_reference)->sortedBy($sort_keys) as $record) {
+            if ($group_key !== null && !$record->$group_key->isEqual($target->$group_key)) {
+                continue;
+            }
+
+            $uuid = $record->getAttribute('uuid');
+            if (isset($selected[$uuid])) {
+                continue;
+            }
+
+            if ($start === null) {
+                if ($uuid !== $target_uuid) {
+                    $previous = $record->$sort_key->asInt();
+                    continue;
+                }
+
+                /* Use the existing gap if it fits the entire selection. */
+                $start = ($previous ?? 0) + 1;
+                if ($record->$sort_key->asInt() >= $start + $count) {
+                    break;
+                }
+
+                /* Otherwise reserve space and shift collisions forward. */
+                $start = $previous === null ? 1 : $previous + $step;
+                $next = $start + $step;
+            }
+
+            if ($record->$sort_key->asInt() >= $next) {
                 break;
             }
-            $selected_nodes[$uuid] = $selected_node;
+
+            $record->$sort_key = (string)$next;
+            $next += $step;
         }
 
-        /* Validate the rules involved in the move. */
-        if ($target_node === null || empty($selected_nodes)) {
-            throw new UserException(
-                gettext("Either source or destination is not a rule managed with this component")
-            );
-        } elseif (isset($selected_nodes[$target_uuid])) {
-            throw new UserException(gettext("Cannot move to the same spot."));
+        if ($start === null) {
+            throw new UserException(gettext("Cannot locate the target rule."));
         }
 
-        foreach ($selected_nodes as $selected_node) {
-            if ($group_key === null || $selected_node->$group_key->isEqual($target_node->$group_key)) {
-                continue;
-            }
-            $type_names = [
-                '2' => gettext("Floating"),
-                '3' => gettext("Group"),
-                '4' => gettext("Interface")
-            ];
-            $selected_type = $type_names[substr($selected_node->$group_key, 0, 1)] ?? gettext("Unknown");
-            $target_type = $type_names[substr($target_node->$group_key, 0, 1)] ?? gettext("Unknown");
-            throw new UserWarningException(
-                sprintf(gettext("Cannot move '%s Rule' before '%s Rule'."), $selected_type, $target_type)
-            );
+        /* Assign consecutive sequences in the order supplied by selected_uuids. */
+        foreach ($selected as $node) {
+            $node->$sort_key = (string)$start++;
         }
 
-        /* Find a sequence before the target, only renumbering when no gap is available. */
-        $step_size = 50;
-        $new_key = null;
-        $prev_record = null;
-
-        $sort_keys = $group_key === null ? [$sort_key] : [$group_key, $sort_key];
-        foreach ($this->getModel()->getNodeByReference($node_reference)->sortedBy($sort_keys) as $record) {
-            if ($group_key !== null && !$record->$group_key->isEqual($target_node->$group_key)) {
-                continue;
-            }
-            $uuid = $record->getAttribute('uuid');
-
-            if ($target_uuid === $uuid) {
-                $prev_sequence = $prev_record?->$sort_key->asInt() ?? 1;
-                $distance = $record->$sort_key->asInt() - $prev_sequence;
-
-                if ($distance > 2) {
-                    $new_key = intdiv($distance, 2) + $prev_sequence;
-                    break;
-                } else {
-                    $new_key = $prev_record === null ? 1 : ($prev_sequence + $step_size);
-                    $record->$sort_key = (string)($new_key + $step_size);
-                }
-            } elseif ($new_key !== null) {
-                $prev_sequence = $prev_record->$sort_key->asInt();
-                if ($record->$sort_key->asInt() < $prev_sequence) {
-                    $record->$sort_key = (string)($prev_sequence + $step_size);
-                }
-            }
-
-            $prev_record = $record;
-        }
-
-        if ($new_key !== null) {
-            /* Keep the selection together by assigning every selected rule the same sequence intentionally. */
-            foreach ($selected_nodes as $selected_node) {
-                $selected_node->$sort_key = (string)$new_key;
-            }
-            $this->save();
-        }
-
+        $this->save();
         return ["status" => "ok"];
     }
 
