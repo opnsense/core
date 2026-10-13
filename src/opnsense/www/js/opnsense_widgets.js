@@ -701,17 +701,11 @@
             }
         }
 
-        async addInstance(typeId, persistedConfig = {}, {markDirty = true, configure = false} = {}) {
+        async addInstance(typeId, persistedConfig = {}, {markDirty = true} = {}) {
             const instance = this._createInstance(typeId, persistedConfig);
 
             let element = null;
             try {
-                if (configure && instance.isConfigurable() && !await instance.showOptionsDialog(this.translations)) {
-                    this.instances.delete(instance.id);
-                    await instance.destroy();
-                    return null;
-                }
-
                 const layout = this.layouts[this.currentColumnCount]?.[instance.id] ?? {};
                 element = this.grid.addWidget(instance.createGridItem(layout));
                 this._mountInstance(instance, element);
@@ -1166,17 +1160,12 @@
                     hotkey: 13,
                     action: async dialog => {
                         const typeIds = $select.val() ?? [];
-                        dialog.close();
-                        setTimeout(async () => {
-                            for (const typeId of typeIds) {
-                                try {
-                                    const type = this.types.get(typeId);
-                                    await this.addInstance(typeId, {}, {configure: type?.configureOnAdd === true});
-                                } catch (error) {
-                                    console.error('Could not add widget', error);
-                                }
-                            }
-                        }, 0);
+                        try {
+                            await Promise.all(typeIds.map(typeId => this.addInstance(typeId)));
+                            dialog.close();
+                        } catch (error) {
+                            console.error('Could not add widget', error);
+                        }
                     }
                 }, {
                     label: this.translations.cancel,

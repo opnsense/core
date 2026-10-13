@@ -85,7 +85,6 @@
         <filename>HealthGraph.js</filename>
         <link>/ui/diagnostics/systemhealth</link>
         <multiple>true</multiple>
-        <configureOnAdd>true</configureOnAdd>
         <endpoints>
             <endpoint>/api/diagnostics/systemhealth/*</endpoint>
         </endpoints>

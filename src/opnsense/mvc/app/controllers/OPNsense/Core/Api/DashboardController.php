@@ -131,7 +131,6 @@ class DashboardController extends ApiControllerBase
                 $fname = (string)$metadataAttributes->filename;
                 $link = (string)$metadataAttributes->link;
                 $multiple = filter_var((string)$metadataAttributes->multiple, FILTER_VALIDATE_BOOLEAN);
-                $configureOnAdd = filter_var((string)$metadataAttributes->configureOnAdd, FILTER_VALIDATE_BOOLEAN);
                 $endpoints = (array)($metadataAttributes->endpoints->endpoint ?? []);
                 $translations = (array)($metadataAttributes->translations ?? []);
 
@@ -154,7 +153,6 @@ class DashboardController extends ApiControllerBase
                     'module' => $fname,
                     'link' => $link,
                     'multiple' => $multiple,
-                    'configureOnAdd' => $configureOnAdd,
                     'translations' => $translations
                 ];
             }
