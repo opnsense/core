@@ -55,10 +55,31 @@ class CertController extends ApiMutableModelControllerBase
             $node->refid = uniqid();
         }
         $error = false;
-        if (!empty((string)$node->prv_payload)) {
+        if (!$node->prv_payload->isEmpty()) {
             /** private key manually offered */
+            $matches = CertStore::splitPrivs((string)$node->prv_payload);
+            if (count($matches) != 1) {
+                $error = sprintf(
+                    gettext('Only a single private key is allowed (found %d sections)'),
+                    count($matches)
+                );
+                throw new UserException($error, "Certificate error");
+            }
             $node->prv = base64_encode((string)$node->prv_payload);
+
         }
+        if (!$node->crt_payload->isEmpty()) {
+            /** certificate manually offered, early validation */
+            $matches = CertStore::splitCerts((string)$node->crt_payload);
+            if (count($matches) != 1) {
+                $error = sprintf(
+                    gettext('Only a single certificate is allowed (found %d sections)'),
+                    count($matches)
+                );
+                throw new UserException($error, "Certificate error");
+            }
+        }
+
         switch ((string)$node->action) {
             case 'internal':
                 $data = CertStore::createCert(
@@ -172,7 +193,7 @@ class CertController extends ApiMutableModelControllerBase
         if ($error !== false) {
             throw new UserException($error, "Certificate error");
         } else {
-                $this->getModel()->linkCaRefs($node->refid);
+            $this->getModel()->linkCaRefs($node->refid);
         }
     }
 

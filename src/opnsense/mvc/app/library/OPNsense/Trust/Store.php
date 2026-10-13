@@ -521,6 +521,32 @@ class Store
     }
 
     /**
+     * @param string pem encoded certificates
+     */
+    public static function splitCerts($certs)
+    {
+        return preg_split(
+            '/(-----BEGIN CERTIFICATE-----.*?-----END CERTIFICATE-----)/s',
+            trim($certs),
+            -1,
+            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
+        );
+    }
+
+    /**
+     * @param string pem encoded private keys
+     */
+    public static function splitPrivs($certs)
+    {
+        return preg_split(
+            '/(-----BEGIN PRIVATE KEY-----.*?-----END PRIVATE KEY-----)/s',
+            trim($certs),
+            -1,
+            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
+        );
+    }
+
+    /**
      * @param string $certificate
      * @param string $private_key
      * @param string $friendly_name
