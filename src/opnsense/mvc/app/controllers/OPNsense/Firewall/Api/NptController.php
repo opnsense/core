@@ -80,9 +80,9 @@ class NptController extends FilterBaseController
         return $this->toggleBase("npt.rule", $uuid, $enabled);
     }
 
-    public function moveRuleBeforeAction($selected_uuid, $target_uuid)
+    public function moveRuleBeforeAction($selected_uuids, $target_uuid)
     {
-        return $this->moveRuleBeforeBase($selected_uuid, $target_uuid, 'npt.rule', 'sequence');
+        return $this->moveRuleBeforeBase($selected_uuids, $target_uuid, 'npt.rule', 'sequence');
     }
 
     public function toggleRuleLogAction($uuid, $log)
