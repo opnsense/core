@@ -85,6 +85,7 @@ class FilterController extends FilterBaseController
     {
         $categories = $this->request->get('category');
         $show_all = !empty($this->request->get('show_all'));
+        $search_phrase = trim((string)$this->request->getPost('searchPhrase', null, ''));
         if (!$this->request->has('interface')) {
             // ALL rules
             $interfaces = null;
@@ -114,7 +115,30 @@ class FilterController extends FilterBaseController
             $rule_stats = [];
         }
 
-        $filter_funct_rs = function (&$record) use ($categories, $interfaces, $rule_stats) {
+        $decorate_funct_rs = function (&$record, $r_categories = null) {
+            if ($r_categories === null) {
+                $r_categories = !empty($record['categories']) ?
+                    array_map('trim', explode(',', $record['categories'])) : [];
+            }
+
+            /* frontend can format categories with colors */
+            $record['category_colors'] = $this->getCategoryColors($r_categories);
+
+            /* frontend can format aliases with an alias icon */
+            foreach (['source_net','source_port','destination_net','destination_port'] as $field) {
+                if (!empty($record[$field])) {
+                    $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
+                }
+            }
+        };
+
+        $filter_funct_rs = function (&$record) use (
+            $categories,
+            $interfaces,
+            $rule_stats,
+            $search_phrase,
+            $decorate_funct_rs
+        ) {
             /* Filter criteria */
             $r_categories = !empty($record['categories']) ? array_map('trim', explode(',', $record['categories'])) : [];
             $is_cat = empty($categories) || array_intersect($r_categories, $categories);
@@ -170,14 +194,9 @@ class FilterController extends FilterBaseController
                 $record = array_merge($record, $rule_stats[$record['uuid']]);
             }
 
-            /* frontend can format categories with colors */
-            $record['category_colors'] = $this->getCategoryColors($r_categories);
-
-            /* frontend can format aliases with an alias icon */
-            foreach (['source_net','source_port','destination_net','destination_port'] as $field) {
-                if (!empty($record[$field])) {
-                    $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
-                }
+            /* Preserve searches over presentation metadata while avoiding the work for empty searches. */
+            if ($search_phrase !== '') {
+                $decorate_funct_rs($record, $r_categories);
             }
 
             return true;
@@ -191,7 +210,6 @@ class FilterController extends FilterBaseController
 
         $search_clauses = [];
         $backend = new Backend();
-        $search_phrase = trim((string)$this->request->getPost('searchPhrase', null, ''));
         foreach (preg_split('/\s+/', $search_phrase, -1, PREG_SPLIT_NO_EMPTY) as $token) {
             // XXX: ideally this should get its own parameter and not reuse show_all
             if ($show_all && Util::isIpAddress($token)) {
@@ -213,6 +231,12 @@ class FilterController extends FilterBaseController
             SORT_NATURAL | SORT_FLAG_CASE,
             $search_clauses
         );
+        if ($search_phrase === '') {
+            foreach ($result['rows'] as &$record) {
+                $decorate_funct_rs($record);
+            }
+            unset($record);
+        }
 
         return $result;
     }
