@@ -31,7 +31,6 @@ namespace OPNsense\Firewall\Api;
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\FieldTypes\PortField;
 use OPNsense\Base\UserException;
-use OPNsense\Base\UserWarningException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Firewall\Alias;
@@ -365,7 +364,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
                 throw new UserException(gettext("Selected rule not found."));
             }
             if ($group_key !== null && !$node->$group_key->isEqual($target->$group_key)) {
-                throw new UserWarningException(gettext("Cannot move rules between priority groups."));
+                throw new UserException(gettext("Cannot move rules between priority groups."));
             }
             $selected[$uuid] = $node;
         }

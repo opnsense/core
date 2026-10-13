@@ -686,20 +686,12 @@
                         ajaxCall(
                             "/api/firewall/filter/move_rule_before/" + selectedUuids.join(',') + "/" + targetUuid,
                             {},
-                            function(data, status) {
+                            function(data) {
                                 if (data.status === "ok") {
                                     $("#{{ formGridFilterRule['table_id'] }}").bootgrid("reload");
                                     $(document).trigger("settings-changed");
                                 }
-                            },
-                            function(xhr, textStatus, errorThrown) {
-                                showDialogAlert(
-                                    BootstrapDialog.TYPE_DANGER,
-                                    "{{ lang._('Request Failed') }}",
-                                    errorThrown
-                                );
-                            },
-                            'POST'
+                            }
                         );
                     },
                     classname: 'fa fa-fw fa-arrow-left',
