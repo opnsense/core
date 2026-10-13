@@ -36,8 +36,12 @@
 <script src="{{ cache_safe('/ui/js/chart.umd.min.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/chartjs-plugin-colorschemes.min.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/chartjs-adapter-moment.min.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/chartjs-plugin-zoom.min.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/luxon.min.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/chartjs-scale-timestack.min.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/chartjs-plugin-streaming.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/smoothie.js') }}"></script>
+<script src="{{ cache_safe('/ui/js/opnsense_health.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/widgets/BaseWidget.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/widgets/BaseTableWidget.js') }}"></script>
 <script src="{{ cache_safe('/ui/js/widgets/BaseGaugeWidget.js') }}"></script>
@@ -136,6 +140,7 @@ $( document ).ready(function() {
         'cancel': "{{ lang._('Cancel') }}",
         'failed': "{{ lang._('Failed to load widget') }}",
         'options': "{{ lang._('Options') }}",
+        'duplicate': "{{ lang._('Duplicate widget') }}",
         'edit': "{{ lang._('Edit Dashboard') }}",
     });
     widgetManager.initialize();

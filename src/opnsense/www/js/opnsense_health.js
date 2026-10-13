@@ -26,8 +26,17 @@
 
 
 class HealthGraph {
-    constructor(canvasId, chartConfig = {}, datasetOptions = {}) {
-        this.ctx = $(`#${canvasId}`)[0].getContext('2d');
+    constructor(canvas, chartConfig = {}, datasetOptions = {}) {
+        if (typeof canvas === 'string') {
+            canvas = document.getElementById(canvas);
+        } else if (canvas instanceof jQuery) {
+            canvas = canvas[0];
+        }
+        if (!(canvas instanceof HTMLCanvasElement)) {
+            throw new Error('HealthGraph requires a canvas element');
+        }
+
+        this.ctx = canvas.getContext('2d');
         this.chartConfig = { ...this._defaultChartOptions(), ...chartConfig };
         this.datasetOptions = { ...this._defaultDatasetOptions(), ...datasetOptions };
         this.chart = null;
@@ -59,7 +68,7 @@ class HealthGraph {
         return this.rrdList;
     }
 
-    async update(system = null, detailLevel = null, stacked = null) {
+    async update(system = null, detailLevel = null, stacked = null, resetZoom = true) {
         if (system === null) {
             system = this.currentSystem;
         } else {
@@ -87,7 +96,9 @@ class HealthGraph {
         this.chart.options.plugins.title.text = data['title'];
         this.chart.options.plugins.zoom.limits.x.minRange = this._getMinRange(stepSize * 1000);
         this.chart.update();
-        this.chart.resetZoom();
+        if (resetZoom) {
+            this.chart.resetZoom();
+        }
     }
 
     resetZoom() {
@@ -96,6 +107,13 @@ class HealthGraph {
 
     exportData() {
         window.open(`/api/diagnostics/systemhealth/export_as_csv/${this.currentSystem}/${this.currentDetailLevel}`);
+    }
+
+    destroy() {
+        if (this.chart) {
+            this.chart.destroy();
+            this.chart = null;
+        }
     }
 
     async _fetchRRDList() {

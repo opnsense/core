@@ -54,6 +54,8 @@
             link = '',
             titleVisible = true,
             configurable = false,
+            cloneable = false,
+            duplicateTitle = '',
             failedMessage = ''
         }) {
             this.instanceId = instanceId;
@@ -62,6 +64,8 @@
             this.link = link;
             this.titleVisible = titleVisible;
             this.configurable = configurable;
+            this.cloneable = cloneable;
+            this.duplicateTitle = duplicateTitle;
             this.failedMessage = failedMessage;
             this.root = null;
             this.errorVisible = false;
@@ -100,6 +104,16 @@
                 );
             }
 
+            if (this.cloneable) {
+                $commands.append(
+                    $('<div>').addClass('clone-handle').attr({
+                        id: `clone-handle-${this.instanceId}`,
+                        title: this.duplicateTitle,
+                        'data-toggle': 'tooltip'
+                    }).hide().append($('<i>').addClass('fa fa-clone'))
+                );
+            }
+
             $commands.append(
                 $('<div>').addClass('close-handle').attr('id', `close-handle-${this.instanceId}`)
                     .hide()
@@ -129,6 +143,8 @@
                 throw new Error(`Widget view not found for instance: ${this.instanceId}`);
             }
 
+            this._control('.clone-handle').tooltip({placement: 'bottom', container: 'body'});
+
             return this.root;
         }
 
@@ -140,9 +156,14 @@
             this._control('.edit-handle').off('click.widgetView').on('click.widgetView', callback);
         }
 
+        onClone(callback) {
+            this._control('.clone-handle').off('click.widgetView').on('click.widgetView', callback);
+        }
+
         setEditMode(enabled) {
             this._control('.close-handle').toggle(enabled);
             this._control('.edit-handle').toggle(enabled);
+            this._control('.clone-handle').toggle(enabled);
             this._control('.link-handle').toggle(!enabled);
             this._content().css('cursor', enabled ? 'grab' : 'default');
 
@@ -197,6 +218,11 @@
             this._control('.link-handle').toggle(link !== '');
         }
 
+        setTitle(title) {
+            this.title = title;
+            this._content().find('.widget-title b').text(title);
+        }
+
         showOptionsDialog({options, config, title, translations, onSave}) {
             const fields = new Map();
             const $content = $('<div>').addClass('widget-options');
@@ -217,6 +243,29 @@
                 fields.set(key, {option, field: $field});
             }
 
+            for (const {option, field} of fields.values()) {
+                if (!option.dependsOn || !fields.has(option.dependsOn)) {
+                    continue;
+                }
+
+                const parentField = fields.get(option.dependsOn).field;
+                const updateOptions = () => {
+                    const configuredValue = field.val();
+                    const choices = option.optionsByValue?.[parentField.val()] ?? [];
+                    field.empty();
+                    for (const choice of choices) {
+                        field.append($('<option>').val(choice.value).text(choice.label));
+                    }
+                    const availableValues = choices.map(choice => `${choice.value}`);
+                    field.val(availableValues.includes(`${configuredValue}`) ? configuredValue : choices[0]?.value);
+                    if (field.data('selectpicker')) {
+                        field.selectpicker('refresh');
+                    }
+                };
+                parentField.on('change.widgetOptions', updateOptions);
+                updateOptions();
+            }
+
             const hasTextarea = Object.values(options).some(option => option.type === 'textarea');
             return new Promise((resolve, reject) => {
                 let settled = false;
@@ -231,7 +280,7 @@
                         action: async dialog => {
                             const values = {};
                             for (const [key, {option, field}] of fields) {
-                                const value = field.val();
+                                const value = option.type === 'checkbox' ? field.is(':checked') : field.val();
                                 values[key] = option.type === 'select_multiple'
                                     ? (value?.length ? value : option.default)
                                     : (value ?? option.default);
@@ -254,6 +303,9 @@
                     }],
                     onshown: () => $content.find('.widget-options-select').selectpicker(),
                     onhide: () => {
+                        for (const {field} of fields.values()) {
+                            field.off('.widgetOptions');
+                        }
                         $content.find('.widget-options-select').selectpicker('destroy');
                         if (!settled) {
                             settled = true;
@@ -265,7 +317,10 @@
         }
 
         destroy() {
-            this._control('.close-handle, .edit-handle').off('.widgetView');
+            if (this.root) {
+                this._control('.clone-handle').tooltip('destroy');
+                this._control('.close-handle, .edit-handle, .clone-handle').off('.widgetView');
+            }
             this.root = null;
             this.errorVisible = false;
         }
@@ -305,6 +360,9 @@
                     'min-height': option.minHeight || '150px',
                     'box-sizing': 'border-box'
                 }).val(configuredValue || '');
+            }
+            if (option.type === 'checkbox') {
+                return $('<input>').attr('type', 'checkbox').prop('checked', configuredValue ?? option.default ?? false);
             }
             return null;
         }
@@ -346,7 +404,8 @@
                 ...persistedConfig,
                 callbacks: {
                     ...(persistedConfig.callbacks ?? {}),
-                    updateGrid: () => this.requestResize()
+                    updateGrid: () => this.requestResize(),
+                    updateTitle: title => this.view?.setTitle(title)
                 }
             };
             this.widget = new WidgetClass(config);
@@ -360,6 +419,8 @@
                 link: metadata.link ?? '',
                 titleVisible: this.widget.isTitleVisible(),
                 configurable: this.widget.isConfigurable(),
+                cloneable: metadata.multiple === true,
+                duplicateTitle: translations.duplicate ?? '',
                 failedMessage: translations.failed ?? ''
             });
         }
@@ -388,7 +449,7 @@
             };
         }
 
-        mount(gridElement, {onClose, onEdit, editMode = false} = {}) {
+        mount(gridElement, {onClose, onEdit, onClone, editMode = false} = {}) {
             if (this.destroyed) {
                 throw new Error(`Cannot mount destroyed widget instance: ${this.id}`);
             }
@@ -401,6 +462,9 @@
             }
             if (onEdit && this.widget.isConfigurable()) {
                 this.view.onEdit(() => onEdit(this.id));
+            }
+            if (onClone && this.view.cloneable) {
+                this.view.onClone(() => onClone(this.id));
             }
 
             this.view.setEditMode(editMode);
@@ -467,6 +531,7 @@
 
         setEditMode(enabled) {
             this.view.setEditMode(enabled);
+            this.widget.onEditModeChanged?.(enabled);
         }
 
         onVisibilityChanged(visible) {
@@ -636,11 +701,17 @@
             }
         }
 
-        async addInstance(typeId, persistedConfig = {}, {markDirty = true} = {}) {
+        async addInstance(typeId, persistedConfig = {}, {markDirty = true, configure = false} = {}) {
             const instance = this._createInstance(typeId, persistedConfig);
 
             let element = null;
             try {
+                if (configure && instance.isConfigurable() && !await instance.showOptionsDialog(this.translations)) {
+                    this.instances.delete(instance.id);
+                    await instance.destroy();
+                    return null;
+                }
+
                 const layout = this.layouts[this.currentColumnCount]?.[instance.id] ?? {};
                 element = this.grid.addWidget(instance.createGridItem(layout));
                 this._mountInstance(instance, element);
@@ -666,15 +737,22 @@
             if (!source) {
                 throw new Error(`Widget instance not found: ${sourceId}`);
             }
+            if (this.types.get(source.typeId)?.multiple !== true) {
+                throw new Error(`Widget type is not repeatable: ${source.typeId}`);
+            }
 
             const node = source.element?.gridstackNode ?? {};
-            return this.addInstance(source.typeId, {
+            const clone = await this.addInstance(source.typeId, {
                 id: this._createInstanceId(source.typeId),
                 widget: await source.cloneConfig(),
                 w: node.w,
                 h: node.h,
                 autoPosition: true
             });
+            if (clone && node.w) {
+                this.grid.update(clone.element, {w: node.w});
+            }
+            return clone;
         }
 
         async removeInstance(instanceId) {
@@ -905,6 +983,9 @@
                 onEdit: id => this.editInstance(id).catch(error =>
                     console.error(`Could not edit widget instance: ${id}`, error)
                 ),
+                onClone: id => this.cloneInstance(id).catch(error =>
+                    console.error(`Could not duplicate widget instance: ${id}`, error)
+                ),
                 editMode: this.editMode
             });
             this._configureResizeHandles(instance);
@@ -1054,7 +1135,8 @@
 
         _showAddDialog() {
             const availableTypes = [...this.types.values()]
-                .filter(type => ![...this.instances.values()].some(instance => instance.typeId === type.id))
+                .filter(type => type.multiple === true ||
+                    ![...this.instances.values()].some(instance => instance.typeId === type.id))
                 .sort((left, right) =>
                     (left.translations?.title ?? left.id).localeCompare(right.translations?.title ?? right.id)
                 );
@@ -1064,8 +1146,13 @@
             });
 
             for (const type of availableTypes) {
+                const instanceCount = [...this.instances.values()]
+                    .filter(instance => instance.typeId === type.id).length;
+                const title = type.translations?.title ?? type.id;
                 $select.append(
-                    $('<option>').val(type.id).text(type.translations?.title ?? type.id)
+                    $('<option>').val(type.id).text(
+                        type.multiple === true && instanceCount > 0 ? `${title} (${instanceCount})` : title
+                    )
                 );
             }
 
@@ -1079,12 +1166,17 @@
                     hotkey: 13,
                     action: async dialog => {
                         const typeIds = $select.val() ?? [];
-                        try {
-                            await Promise.all(typeIds.map(typeId => this.addInstance(typeId)));
-                            dialog.close();
-                        } catch (error) {
-                            console.error('Could not add widget', error);
-                        }
+                        dialog.close();
+                        setTimeout(async () => {
+                            for (const typeId of typeIds) {
+                                try {
+                                    const type = this.types.get(typeId);
+                                    await this.addInstance(typeId, {}, {configure: type?.configureOnAdd === true});
+                                } catch (error) {
+                                    console.error('Could not add widget', error);
+                                }
+                            }
+                        }, 0);
                     }
                 }, {
                     label: this.translations.cancel,

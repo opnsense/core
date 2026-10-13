@@ -140,6 +140,10 @@ class BaseWidget {
         }
     }
 
+    onEditModeChanged(enabled) {
+        return null;
+    }
+
     async getWidgetOptions() {
         return {};
     }
