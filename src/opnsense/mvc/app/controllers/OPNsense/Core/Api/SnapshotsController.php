@@ -161,7 +161,7 @@ class SnapshotsController extends ApiControllerBase
             }
         }
         // new or not found
-        return ['name' => date('YmdHis'), 'uuid' => ''];
+        return ['name' => date('YmdHis'), 'uuid' => '', 'note' => ''];
     }
 
     /**
