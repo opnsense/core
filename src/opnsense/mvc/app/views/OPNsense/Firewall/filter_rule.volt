@@ -682,16 +682,6 @@
                         // The rule the button was pressed on
                         const targetUuid = $(this).data("row-id");
 
-                        // Prevent moving rules before one of the selected rules
-                        if (selectedUuids.includes(targetUuid)) {
-                            showDialogAlert(
-                                BootstrapDialog.TYPE_WARNING,
-                                "{{ lang._('Move Error') }}",
-                                "{{ lang._('Cannot move rules before one of the selected rules.') }}"
-                            );
-                            return;
-                        }
-
                         ajaxCall(
                             "/api/firewall/filter/move_rule_before/" + selectedUuids.join(',') + "/" + targetUuid,
                             {},

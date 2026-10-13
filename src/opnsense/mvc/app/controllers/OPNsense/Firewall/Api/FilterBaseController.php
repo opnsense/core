@@ -349,7 +349,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             throw new UserException(sprintf(gettext("A maximum of %d rules can be moved at once."), $step));
         }
         if (in_array($target_uuid, $uuids, true)) {
-            throw new UserException(gettext("Cannot move rule to the same spot."));
+            throw new UserException(gettext("Cannot move rule to the same spot as a currently selected rule."));
         }
 
         $model = $this->getModel();

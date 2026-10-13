@@ -470,15 +470,6 @@
 
                         const targetUuid = $(this).data("row-id");
 
-                        if (selectedUuids.includes(targetUuid)) {
-                            showDialogAlert(
-                                BootstrapDialog.TYPE_WARNING,
-                                "{{ lang._('Move Error') }}",
-                                "{{ lang._('Cannot move rules before one of the selected rules.') }}"
-                            );
-                            return;
-                        }
-
                         ajaxCall(
                             "/api/firewall/" + entrypoint + "/move_rule_before/" + selectedUuids.join(',') + "/" + targetUuid,
                             {},
