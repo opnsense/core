@@ -336,7 +336,7 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             return ["status" => "error", "message" => gettext("Invalid request method")];
         }
 
-        /* XXX: The step size is arbitrary, but keep in mind MaximumValue of sequence in model */
+        /* XXX: The step size is arbitrary, but keep in mind MaximumValue of sequence in model and the step size in the FilterSequenceField */
         $step = 50;
         $uuids = array_values(array_filter(explode(',', $selected_uuids), 'strlen'));
         $count = count($uuids);
