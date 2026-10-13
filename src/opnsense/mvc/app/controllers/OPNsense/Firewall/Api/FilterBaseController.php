@@ -411,10 +411,6 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
             $next += $step;
         }
 
-        if ($start === null) {
-            throw new UserException(gettext("Cannot locate the target rule."));
-        }
-
         /* Assign consecutive sequences in the order supplied by selected_uuids. */
         foreach ($selected as $node) {
             $node->$sort_key = (string)$start++;
