@@ -141,6 +141,12 @@ class User extends BaseModel
                 continue;
             }
             $key = $node->__reference;
+            if ($node->scope->isFieldChanged() && !$node->scope->isDefault()) {
+                /* the scope of a user can not be changed away from the default */
+                $messages->appendMessage(
+                    new Message(gettext('Scope can not be changed.'), $key . '.scope')
+                );
+            }
             if ($node->scope->isEqual('system') && $node->name->isFieldChanged()) {
                 $messages->appendMessage(
                     new Message(gettext('The name of a system user can not be changed.'), $key . '.name')
@@ -149,7 +155,6 @@ class User extends BaseModel
             if ($node->password->isEmpty() && $node->scrambled_password->isEmpty()) {
                 $messages->appendMessage(new Message(gettext("A password is required"), $key . ".password"));
             }
-            /* XXX: validate reserved users? (/etc/passwd)*/
         }
         return $messages;
     }
