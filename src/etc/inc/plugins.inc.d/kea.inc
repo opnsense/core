@@ -30,6 +30,7 @@ function kea_services()
 {
     $services = [];
     $template = [
+        'broker' => ['name' => gettext('Kea DHCP')],
         'configd' => [
             'restart' => ['kea restart'],
             'start' => ['kea start'],
