@@ -171,6 +171,5 @@ export default class KeaLeases extends BaseTableWidget {
 
     async onWidgetOptionsChanged() {
         this.configChanged = true;
-        await this.onWidgetTick();
     }
 }

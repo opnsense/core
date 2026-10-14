@@ -408,6 +408,7 @@
             this.started = false;
             this.destroyed = false;
             this.tickRunning = false;
+            this.refreshPending = false;
 
             const config = {
                 ...persistedConfig,
@@ -504,7 +505,7 @@
 
                 this.view.hideLoading();
                 this._startResizeObserver();
-                await this._runTick();
+                await this.refresh();
             } catch (error) {
                 this._handleError(error);
             }
@@ -525,7 +526,7 @@
         async setWidgetConfig(config) {
             this.widget.setWidgetConfig(config);
             await this.widget.onWidgetOptionsChanged(config);
-            this.requestResize();
+            await this.refresh();
         }
 
         isConfigurable() {
@@ -533,9 +534,10 @@
         }
 
         async showOptionsDialog(translations) {
+            const options = await this.widget.getWidgetOptions();
             const changed = await this.view.showOptionsDialog({
-                options: await this.widget.getWidgetOptions(),
-                config: await this.widget.getWidgetConfig(),
+                options,
+                config: await this.widget.getWidgetConfig(options),
                 title: this.widget.dialogTitle || translations.options,
                 translations,
                 onSave: config => this.setWidgetConfig(config)
@@ -565,6 +567,21 @@
             }
         }
 
+        async refresh() {
+            if (this.destroyed) {
+                return;
+            }
+
+            clearTimeout(this.tickTimer);
+            this.tickTimer = null;
+            if (this.tickRunning) {
+                this.refreshPending = true;
+                return;
+            }
+
+            await this._runTick();
+        }
+
         async destroy() {
             if (this.destroyed) {
                 return;
@@ -574,6 +591,7 @@
             this.started = false;
             clearTimeout(this.tickTimer);
             this.tickTimer = null;
+            this.refreshPending = false;
             this.resizeObserver?.disconnect();
             this.resizeObserver = null;
             clearTimeout(this.resizeTimer);
@@ -635,9 +653,12 @@
                 this._handleError(error);
             } finally {
                 this.tickRunning = false;
-                if (!this.destroyed) {
+                if (this.refreshPending && !this.destroyed) {
+                    this.refreshPending = false;
+                    global.queueMicrotask(() => this.refresh());
+                } else if (!this.destroyed) {
                     this.tickTimer = setTimeout(
-                        () => this._runTick(),
+                        () => this.refresh(),
                         this.widget.tickTimeout * 1000
                     );
                 }

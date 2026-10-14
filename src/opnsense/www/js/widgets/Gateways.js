@@ -56,11 +56,6 @@ export default class Gateways extends BaseTableWidget {
         return data.rows;
     }
 
-    async onWidgetOptionsChanged(options) {
-        // Intentionally not awaited to avoid blocking dialog close
-        this._updateGateways();
-    }
-
     async getWidgetOptions() {
         const gateways = this.cachedGateways.length > 0 ? this.cachedGateways : await this._fetchGateways();
 

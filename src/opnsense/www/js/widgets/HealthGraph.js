@@ -33,8 +33,8 @@ export default class HealthGraphWidget extends BaseWidget {
         this.graph = null;
         this.rrdList = null;
         this.root = null;
-        this.lastUpdate = 0;
         this.editMode = false;
+        this.resetZoomOnUpdate = true;
     }
 
     get dialogTitle() {
@@ -85,14 +85,14 @@ export default class HealthGraphWidget extends BaseWidget {
             .tooltip({placement: 'bottom', container: 'body'})
             .on('click.healthGraph', () => this.graph?.exportData());
 
-        await this._updateGraph(true);
     }
 
     async onWidgetTick() {
-        if (!this.graph || Date.now() - this.lastUpdate < this.tickTimeout * 1000) {
+        if (!this.graph) {
             return;
         }
-        await this._updateGraph(false);
+        await this._updateGraph(this.resetZoomOnUpdate);
+        this.resetZoomOnUpdate = false;
     }
 
     onEditModeChanged(enabled) {
@@ -154,14 +154,12 @@ export default class HealthGraphWidget extends BaseWidget {
         };
     }
 
-    async getWidgetConfig() {
-        return this._normalizeConfig(await super.getWidgetConfig());
+    async getWidgetConfig(options = null) {
+        return this._normalizeConfig(await super.getWidgetConfig(options));
     }
 
     async onWidgetOptionsChanged() {
-        if (this.graph) {
-            await this._updateGraph(true);
-        }
+        this.resetZoomOnUpdate = true;
     }
 
     onWidgetClose() {
@@ -221,7 +219,6 @@ export default class HealthGraphWidget extends BaseWidget {
             config.stacked,
             resetZoom
         );
-        this.lastUpdate = Date.now();
     }
 
     _updateTitle(config) {
