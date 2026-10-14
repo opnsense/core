@@ -2380,6 +2380,9 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         mwexecf('/sbin/ifconfig %s %spromisc', [$realhwif, empty($wancfg['promisc']) ? '-' : '']);
     }
 
+    /* restrict ARP resolution to statically configured entries */
+    mwexecf('/sbin/ifconfig %s %sstaticarp', [$realhwif, empty($wancfg['staticarp']) ? '-' : '']);
+
     /* apply interface hardware settings (TSO, LRO, ..) */
     _interfaces_hardware($realhwif, $ifconfig_details);
 

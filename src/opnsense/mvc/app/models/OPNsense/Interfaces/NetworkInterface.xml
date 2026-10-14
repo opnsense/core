@@ -39,6 +39,7 @@
             <blockbogons type="BooleanField"/>
             <spoofmac type="MacAddressField"/>
             <promisc type="BooleanField"/>
+            <staticarp type="BooleanField"/>
             <media type=".\MediaTypesField">
                 <BlankDesc>Default (no preference, typically autoselect)</BlankDesc>
             </media>

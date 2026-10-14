@@ -80,6 +80,18 @@
         </grid_view>
     </field>
     <field>
+        <id>interface.staticarp</id>
+        <label>Static ARP</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Restrict ARP resolution to statically configured entries on this interface. When enabled, the interface will not send ARP requests for destinations without a static ARP entry. When unsure, leave this disabled, as you could lock yourself out.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>interface.spoofmac</id>
         <label>MAC address (spoof)</label>
         <advanced>true</advanced>
