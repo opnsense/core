@@ -346,15 +346,7 @@ if (!empty($config['hasync'])) {
     if ($restart_services) {
         $client->query('opnsense.configd_reload_all_templates', []);
         if ($client->query('opnsense.list_services', [])) {
-            $restarted_services = [];
             foreach ($client->getResponse() as $service) {
-                if (!empty($service['restart_once'])) {
-                    // XXX: Kea exposes multiple service IDs backed by a single rc.d service.
-                    if (isset($restarted_services[$service['name']])) {
-                        continue;
-                    }
-                    $restarted_services[$service['name']] = true;
-                }
                 $client->query('opnsense.restart_service', [
                     'service' => $service['name'],
                     'id' => $service['id'] ?? '',
