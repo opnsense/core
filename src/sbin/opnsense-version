@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2018-2025 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2018-2026 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -34,8 +34,17 @@ DO_CHECK=
 DO_ORIGIN=
 DO_OSRELEASE=
 DO_RAW=
+DO_VERBOSE=
 
-while getopts AaCceHilNnOoR:stVvwx OPT; do
+ensure_root()
+{
+	if [ "$(id -u)" != "0" ]; then
+		echo "Must be root to use '${1}'."
+		exit 1
+	fi
+}
+
+while getopts AaCcDeHilNnOoR:stVvwx OPT; do
 	case ${OPT} in
 	A)
 		OUTPUT="${OUTPUT} \${product_arch}"
@@ -48,6 +57,9 @@ while getopts AaCceHilNnOoR:stVvwx OPT; do
 		;;
 	c)
 		DO_CHECK="-c"
+		;;
+	D)
+		DO_VERBOSE="-${OPT}"
 		;;
 	e)
 		OUTPUT="${OUTPUT} \${product_email}"
@@ -71,18 +83,12 @@ while getopts AaCceHilNnOoR:stVvwx OPT; do
 		DO_ORIGIN="-O"
 		;;
 	o)
-		if [ "$(id -u)" != "0" ]; then
-			echo "Must be root to use '-o'."
-			exit 1
-		fi
-		DO_OSRELEASE="-o"
+		ensure_root -${OPT}
+		DO_OSRELEASE="-${OPT}"
 		;;
 	R)
-		if [ "$(id -u)" != "0" ]; then
-			echo "Must be root to use '-R'."
-			exit 1
-		fi
-		DO_RAW="-R ${OPTARG}"
+		ensure_root -${OPT}
+		DO_RAW="-${OPT} ${OPTARG}"
 		;;
 	s)
 		OUTPUT="${OUTPUT} \${product_size}"
@@ -110,6 +116,10 @@ while getopts AaCceHilNnOoR:stVvwx OPT; do
 done
 
 shift $((OPTIND - 1))
+
+if [ -n "${DO_VERBOSE}" ]; then
+	set -x
+fi
 
 if [ -n "${1}" ]; then
 	TARGET=${1}
@@ -141,9 +151,10 @@ if [ -n "${DO_ORIGIN}" ]; then
 	exit 0
 elif [ -n "${DO_OSRELEASE}" ]; then
 	/etc/rc.d/os-release onestart > /dev/null
+	# self-invoke is quicker than trying to implement this below
 	cat >> /var/run/os-release << EOF
-VARIANT="$(/usr/local/sbin/opnsense-version)"
-VARIANT_ID="$(/usr/local/sbin/opnsense-version -n)"
+VARIANT="$(${0})"
+VARIANT_ID="$(${0} -n)"
 EOF
 	exit 0
 fi
