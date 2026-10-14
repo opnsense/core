@@ -20,7 +20,7 @@
                 </OptionValues>
             </mode>
             <descr type="DescriptionField"/>
-            <cloneif type="TextField"/>
+            <cloneif type="StrictTextField"/>
             <use_common type="BooleanField"/>
             <standard type="OptionField">
                 <Required>Y</Required>
@@ -182,8 +182,12 @@
                     <MinimumValue>1</MinimumValue>
                     <MaximumValue>9999</MaximumValue>
                 </wpa_gmk_rekey>
-                <identity type="TextField"/>
-                <passphrase type="TextField"/>
+                <identity type="TextField">
+                    <AllowNewlines>N</AllowNewlines>
+                </identity>
+                <passphrase type="TextField">
+                    <AllowNewlines>N</AllowNewlines>
+                </passphrase>
                 <wpa_strict_rekey type="BooleanField"/>
                 <ieee8021x type="BooleanField"/>
             </wpa>
@@ -194,12 +198,16 @@
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>65535</MaximumValue>
             </auth_server_port>
-            <auth_server_shared_secret type="TextField"/>
+            <auth_server_shared_secret type="TextField">
+                <AllowNewlines>N</AllowNewlines>
+            </auth_server_shared_secret>
             <auth_server_port2 type="IntegerField">
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>65535</MaximumValue>
             </auth_server_port2>
-            <auth_server_shared_secret2 type="TextField"/>
+            <auth_server_shared_secret2 type="TextField">
+                <AllowNewlines>N</AllowNewlines>
+            </auth_server_shared_secret2>
             <apbridge type="BooleanField"/>
             <rsn_preauth type="BooleanField"/>
         </clone>
