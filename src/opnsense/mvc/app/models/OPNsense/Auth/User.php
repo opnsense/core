@@ -141,6 +141,15 @@ class User extends BaseModel
                 continue;
             }
             $key = $node->__reference;
+            if ($node->scope->getInitialValue() !== '' && $node->scope->isFieldChanged()) {
+                /**
+                 *  This is more of a convenience feature, an admin is able to configure any type of access anyway,
+                 *  but we should warn for unexpected input in these case.
+                 **/
+                $messages->appendMessage(
+                    new Message(gettext('Scope can not be changed.'), $key . '.scope')
+                );
+            }
             if ($node->scope->isEqual('system') && $node->name->isFieldChanged()) {
                 $messages->appendMessage(
                     new Message(gettext('The name of a system user can not be changed.'), $key . '.name')
