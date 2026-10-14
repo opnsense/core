@@ -86,6 +86,7 @@ class FilterController extends FilterBaseController
         $categories = $this->request->get('category');
         $show_all = !empty($this->request->get('show_all'));
         $search_phrase = trim((string)$this->request->getPost('searchPhrase', null, ''));
+        $decorate_search = $show_all && $search_phrase !== '';
         if (!$this->request->has('interface')) {
             // ALL rules
             $interfaces = null;
@@ -136,7 +137,7 @@ class FilterController extends FilterBaseController
             $categories,
             $interfaces,
             $rule_stats,
-            $search_phrase,
+            $decorate_search,
             $decorate_funct_rs
         ) {
             /* Filter criteria */
@@ -194,8 +195,8 @@ class FilterController extends FilterBaseController
                 $record = array_merge($record, $rule_stats[$record['uuid']]);
             }
 
-            /* Preserve searches over presentation metadata while avoiding the work for empty searches. */
-            if ($search_phrase !== '') {
+            /* Inspect mode also searches presentation metadata. */
+            if ($decorate_search) {
                 $decorate_funct_rs($record, $r_categories);
             }
 
@@ -231,7 +232,7 @@ class FilterController extends FilterBaseController
             SORT_NATURAL | SORT_FLAG_CASE,
             $search_clauses
         );
-        if ($search_phrase === '') {
+        if (!$decorate_search) {
             foreach ($result['rows'] as &$record) {
                 $decorate_funct_rs($record);
             }
