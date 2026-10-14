@@ -346,7 +346,16 @@ if (!empty($config['hasync'])) {
     if ($restart_services) {
         $client->query('opnsense.configd_reload_all_templates', []);
         if ($client->query('opnsense.list_services', [])) {
+            $restart_actions = [];
             foreach ($client->getResponse() as $service) {
+                $configd_actions = $service['configd']['restart'] ?? [];
+                if (!empty($configd_actions)) {
+                    // multiple service IDs may be backed by the same configd action (e.g. KEA)
+                    if (in_array($configd_actions, $restart_actions, true)) {
+                        continue;
+                    }
+                    $restart_actions[] = $configd_actions;
+                }
                 $client->query('opnsense.restart_service', [
                     'service' => $service['name'],
                     'id' => $service['id'] ?? '',
