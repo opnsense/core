@@ -37,6 +37,7 @@
             this.baseUrl = baseUrl;
         }
         async load () {}
+        async loadDefaults() {}
         async save() {}
         async restoreDefaults() {}
     }
@@ -891,8 +892,33 @@
         }
 
         async restoreDefaults() {
-            await this.repository.restoreDefaults();
-            global.location.reload();
+            const dashboard = await this.repository.loadDefaults();
+            const previousSuppressDirty = this.suppressDirty;
+            let restored = false;
+
+            this.suppressDirty = true;
+            try {
+                if (this.resizeFrame !== null) {
+                    global.cancelAnimationFrame(this.resizeFrame);
+                    this.resizeFrame = null;
+                }
+                this.pendingResizeIds.clear();
+
+                await Promise.all([...this.instances.values()].map(instance => instance.destroy()));
+                this.instances.clear();
+                this.grid.removeAll();
+
+                this.options = dashboard.options;
+                this.layouts = dashboard.layouts;
+                await this._initializeInstances(dashboard.widgets);
+                this.setEditMode(true);
+                restored = true;
+            } finally {
+                this.suppressDirty = previousSuppressDirty;
+                if (restored) {
+                    this._markDirty();
+                }
+            }
         }
 
         async destroy() {
@@ -1226,13 +1252,11 @@
                 buttons: [{
                     label: this.translations.ok,
                     hotkey: 13,
-                    action: async dialog => {
-                        try {
-                            await this.restoreDefaults();
-                        } catch (error) {
+                    action: dialog => {
+                        dialog.close();
+                        this.restoreDefaults().catch(error => {
                             console.error('Failed to restore default widgets', error);
-                            dialog.close();
-                        }
+                        });
                     }
                 }, {
                     label: this.translations.cancel,

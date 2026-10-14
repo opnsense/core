@@ -169,6 +169,11 @@ class DashboardController extends ApiControllerBase
         return $result;
     }
 
+    public function getDefaultsAction()
+    {
+        return ['dashboard' => $this->getDefaultDashboard()];
+    }
+
     public function saveWidgetsAction()
     {
         $result = ['result' => 'failed'];

@@ -63,6 +63,15 @@ $( document ).ready(function() {
             return this._normalize(response);
         }
 
+        async loadDefaults() {
+            const response = await $.ajax(`${this.baseUrl}/get_defaults`, {
+                type: 'GET',
+                dataType: 'json'
+            });
+
+            return this._normalize(response);
+        }
+
         async save({options = {}, widgets = [], layouts = {}} = {}) {
             const response = await $.ajax(`${this.baseUrl}/save_widgets`, {
                 type: 'POST',
