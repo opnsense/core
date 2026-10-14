@@ -247,7 +247,6 @@ export default class ThermalSensors extends BaseWidget {
         });
         this.chart.canvas.parentNode.style.height = `${30 + (this.chart.data.datasets[0].data.length * 30)}px`;
         this.chart.update();
-
     }
 
     _parseSensors(data) {
