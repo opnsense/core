@@ -5,8 +5,10 @@
     <description>System Tunables</description>
     <items>
         <item type=".\TunableField">
-            <tunable type="TextField"/>
-            <value type="TextField"/>
+            <tunable type="StrictTextField"/>
+            <value type="TextField">
+                <AllowNewlines>N</AllowNewlines>
+            </value>
             <descr type="TextField"/>
             <default_value type="TextField" volatile="true"/>
             <type type="TextField" volatile="true"/>
