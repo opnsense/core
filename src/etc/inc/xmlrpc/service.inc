@@ -68,7 +68,7 @@ function list_services_xmlrpc()
                 continue;
             }
 
-            $service['description'] = $service['broker'];
+            $service['description'] = $service['broker']['name'] ?? 'unknown broker';
         }
 
         $services[] = $service;

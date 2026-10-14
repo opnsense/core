@@ -30,13 +30,13 @@ function kea_services()
 {
     $services = [];
     $template = [
+        'broker' => ['name' => gettext('Kea DHCP')],
         'configd' => [
             'restart' => ['kea restart'],
             'start' => ['kea start'],
             'stop' => ['kea stop'],
         ],
         'name' => 'kea-dhcp',
-        'broker' => gettext('Kea DHCP'),
     ];
 
     if (!(new \OPNsense\Kea\KeaDhcpv4())->general->enabled->isEmpty()) {
