@@ -984,14 +984,8 @@ class FirmwareController extends ApiMutableModelControllerBase
 
         $values = $this->request->getPost(static::$internalModelName);
 
-        foreach ($values as $key => &$value) {
-            if ($key == 'plugins') {
-                /* discards plugins on purpose for the time being */
-                unset($values[$key]);
-            } else {
-                $value = filter_var($value, FILTER_SANITIZE_URL);
-            }
-        }
+        /* plugins field cannot be modified from the GUI */
+        unset($values['plugins']);
 
         $mdl = $this->getModel();
         $mdl->setNodes($values);
