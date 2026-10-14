@@ -898,6 +898,8 @@
 
             this.suppressDirty = true;
             try {
+                await this._loadTypes(dashboard.modules);
+
                 if (this.resizeFrame !== null) {
                     global.cancelAnimationFrame(this.resizeFrame);
                     this.resizeFrame = null;
@@ -943,7 +945,23 @@
         }
 
         async _loadTypes(modules) {
+            const availableTypeIds = new Set(modules.map(metadata => metadata.id));
+            for (const typeId of this.types.keys()) {
+                if (!availableTypeIds.has(typeId)) {
+                    this.types.delete(typeId);
+                }
+            }
+
             await Promise.all(modules.map(async metadata => {
+                const existingType = this.types.get(metadata.id);
+                if (existingType) {
+                    this.types.set(metadata.id, {
+                        ...metadata,
+                        WidgetClass: existingType.WidgetClass
+                    });
+                    return;
+                }
+
                 try {
                     const module = await import(`/ui/js/widgets/${metadata.module}?t=${Date.now()}`);
                     this.types.set(metadata.id, {
@@ -954,10 +972,6 @@
                     console.error(`Could not import widget module: ${metadata.module}`, error);
                 }
             }));
-
-            if (this.types.size === 0) {
-                throw new Error('No widget types loaded');
-            }
         }
 
         async _initializeInstances(configurations) {
