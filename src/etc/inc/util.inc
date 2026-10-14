@@ -145,7 +145,13 @@ function service_status($service)
     }
 
     if (isset($service['pidfile'])) {
-        return isvalidpid($service['pidfile']);
+        // All PID files must belong to running processes for an aggregate service.
+        foreach ((array)$service['pidfile'] as $pidfile) {
+            if (!isvalidpid($pidfile)) {
+                return false;
+            }
+        }
+        return !empty($service['pidfile']);
     }
 
     return is_process_running($service['name']);
@@ -167,10 +173,14 @@ function service_message($service)
         /* do not expose pid / may not exist */
         $status = true;
     } elseif (isset($service['pidfile'])) {
-        $status = isvalidpid($service['pidfile']);
+        $status = service_status($service);
         if ($status) {
             /* could be wrong pid but best effort only */
-            $pid = ' as pid ' . trim(@file_get_contents($service['pidfile']) ?? '');
+            $pids = [];
+            foreach ((array)$service['pidfile'] as $pidfile) {
+                $pids[] = trim(@file_get_contents($pidfile) ?? '');
+            }
+            $pid = ' as pid ' . implode(' ', $pids);
         }
     } else {
         $status = is_process_running($service['name']);
@@ -257,7 +267,9 @@ function service_control_stop($name, $extras)
             mwexecf($cmd);
         }
     } elseif (isset($service['pidfile'])) {
-        killbypid($service['pidfile']);
+        foreach ((array)$service['pidfile'] as $pidfile) {
+            killbypid($pidfile);
+        }
     } else {
         /* last resort, but not very elegant */
         killbyname($service['name']);

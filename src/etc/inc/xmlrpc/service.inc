@@ -52,7 +52,6 @@ function xmlrpc_publishable_service()
 function list_services_xmlrpc()
 {
     $services = [];
-    $kea_index = null;
 
     foreach (plugins_services() as $service) {
         if (!empty($service['noshow'])) {
@@ -60,19 +59,6 @@ function list_services_xmlrpc()
         }
 
         $service['status'] = service_status($service);
-        // XXX: Kea exposes multiple daemon statuses but has a single rc.d control action.
-        if ($service['name'] === 'kea-dhcp') {
-            if ($kea_index === null) {
-                $kea_index = count($services);
-                $services[] = [
-                    'name' => 'kea-dhcp',
-                    'description' => gettext('Kea services'),
-                    'status' => true,
-                ];
-            }
-            $services[$kea_index]['status'] = $services[$kea_index]['status'] && $service['status'];
-            continue;
-        }
         $services[] = $service;
     }
 
