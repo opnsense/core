@@ -96,10 +96,20 @@ class HasyncStatusController extends ApiControllerBase
             if (!empty($services['response'])) {
                 $backend->configdRun('system ha exec exec_sync');
                 $backend->configdRun('system ha exec reload_templates');
+                $restarted_services = [];
+                $restart_count = 0;
                 foreach ($services['response'] as $service) {
+                    if (!empty($service['restart_once'])) {
+                        // XXX: Kea exposes multiple service IDs backed by a single rc.d service.
+                        if (isset($restarted_services[$service['name']])) {
+                            continue;
+                        }
+                        $restarted_services[$service['name']] = true;
+                    }
                     $backend->configdpRun('system ha exec', ['restart', $service['name'], $service['id'] ?? '']);
+                    $restart_count++;
                 }
-                return ["status" => "ok", "count" =>  count($services['response'])];
+                return ["status" => "ok", "count" => $restart_count];
             }
 
             return $this->remoteServiceAction('restart', $service, $service_id);

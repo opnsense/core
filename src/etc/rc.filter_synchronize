@@ -346,13 +346,14 @@ if (!empty($config['hasync'])) {
     if ($restart_services) {
         $client->query('opnsense.configd_reload_all_templates', []);
         if ($client->query('opnsense.list_services', [])) {
-            $kea_restarted = false;
+            $restarted_services = [];
             foreach ($client->getResponse() as $service) {
-                if ($service['name'] === 'kea-dhcp') {
-                    if ($kea_restarted) {
+                if (!empty($service['restart_once'])) {
+                    // XXX: Kea exposes multiple service IDs backed by a single rc.d service.
+                    if (isset($restarted_services[$service['name']])) {
                         continue;
                     }
-                    $kea_restarted = true;
+                    $restarted_services[$service['name']] = true;
                 }
                 $client->query('opnsense.restart_service', [
                     'service' => $service['name'],

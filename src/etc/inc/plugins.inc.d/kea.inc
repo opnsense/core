@@ -36,6 +36,7 @@ function kea_services()
             'stop' => ['kea stop'],
         ],
         'name' => 'kea-dhcp',
+        'restart_once' => true,
     ];
 
     if (!(new \OPNsense\Kea\KeaDhcpv4())->general->enabled->isEmpty()) {
