@@ -528,7 +528,7 @@ class Store
     {
         preg_match_all(
             '/-----BEGIN ([A-Z0-9][A-Z0-9 .-]*)-----.*?-----END \1-----|(?:(?!-----BEGIN ).)+/s',
-            trim($pem),
+            trim($certs),
             $matches
         );
 
