@@ -3,14 +3,14 @@
     <version>1.0.1</version>
     <description>Firmware settings</description>
     <items>
-        <mirror type="TextField">
-            <ValidationMessage>The mirror URL cannot contain literal double quotes or pipe characters.</ValidationMessage>
+        <mirror type="StrictTextField">
+            <ValidationMessage>The mirror URL contains invalid or unencoded characters.</ValidationMessage>
             <Mask>/[^|"]+/</Mask>
         </mirror>
-        <flavour type="TextField"/>
-        <plugins type="TextField"/>
-        <type type="TextField"/>
-        <subscription type="TextField"/>
+        <flavour type="StrictTextField"/>
+        <plugins type="StrictTextField"/>
+        <type type="StrictTextField"/>
+        <subscription type="StrictTextField"/>
         <reboot type="BooleanField"/>
         <aux type="BooleanField"/>
     </items>
