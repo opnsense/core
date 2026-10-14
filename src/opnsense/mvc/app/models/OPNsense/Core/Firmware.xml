@@ -3,7 +3,10 @@
     <version>1.0.1</version>
     <description>Firmware settings</description>
     <items>
-        <mirror type="TextField"/>
+        <mirror type="TextField">
+            <ValidationMessage>The mirror URL cannot contain literal double quotes or pipe characters.</ValidationMessage>
+            <Mask>/[^|"]+/</Mask>
+        </mirror>
         <flavour type="TextField"/>
         <plugins type="TextField"/>
         <type type="TextField"/>
