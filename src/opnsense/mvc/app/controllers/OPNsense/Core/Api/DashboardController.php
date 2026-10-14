@@ -130,7 +130,7 @@ class DashboardController extends ApiControllerBase
                 $widgetId = (string)$widgetId;
                 $fname = (string)$metadataAttributes->filename;
                 $link = (string)$metadataAttributes->link;
-                $multiple = filter_var((string)$metadataAttributes->multiple, FILTER_VALIDATE_BOOLEAN);
+                $multiple = isset($metadataAttributes->multiple);
                 $endpoints = (array)($metadataAttributes->endpoints->endpoint ?? []);
                 $translations = (array)($metadataAttributes->translations ?? []);
 
