@@ -116,7 +116,7 @@ export default class Gateways extends BaseTableWidget {
                 &nbsp;
                 ${defaultgw ? `(${this.translations.active})` : ''}
                 <br/>
-                <div style="margin-top: 5px; margin-bottom: 5px; font-size: 15px;">${address}</div>
+                ${address === undefined ? '' : `<div style="margin-top: 5px; margin-bottom: 5px; font-size: 15px;">${address}</div>`}
             </div>`;
 
             let stats = `<div>
