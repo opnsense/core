@@ -36,13 +36,13 @@ require_once("interfaces.inc");
  */
 function xmlrpc_publishable_service()
 {
-    return array(
+    return [
         'list_services_xmlrpc',
         'stop_service_xmlrpc',
         'start_service_xmlrpc',
         'restart_service_xmlrpc',
         'configd_reload_all_templates_xmlrpc',
-    );
+    ];
 }
 
 /**
@@ -64,10 +64,12 @@ function list_services_xmlrpc()
         if (!empty($service['broker'])) {
             $broker = array_search($service['name'], array_column($services, 'name'), true);
             if ($broker !== false) {
+                /* discard this service but logically tie the status to the existing one */
                 $service[$broker]['status'] = $service[$broker]['status'] && $service['status'];
                 continue;
             }
 
+            /* overwrite the description since the broker takes over all control */
             $service['description'] = $service['broker']['name'] ?? 'unknown broker';
         }
 
@@ -84,7 +86,8 @@ function list_services_xmlrpc()
  */
 function stop_service_xmlrpc($params)
 {
-    $filter = array();
+    $filter = [];
+
     $name = $params["service"];
     if (!empty($params["id"])) {
         $filter['id'] = $params["id"];
@@ -100,7 +103,8 @@ function stop_service_xmlrpc($params)
  */
 function start_service_xmlrpc($params)
 {
-    $filter = array();
+    $filter = [];
+
     $name = $params["service"];
     if (!empty($params["id"])) {
         $filter['id'] = $params["id"];
@@ -116,7 +120,8 @@ function start_service_xmlrpc($params)
  */
 function restart_service_xmlrpc($params)
 {
-    $filter = array();
+    $filter = [];
+
     $name = $params["service"];
     if (!empty($params["id"])) {
         $filter['id'] = $params["id"];
@@ -131,5 +136,6 @@ function restart_service_xmlrpc($params)
 function configd_reload_all_templates_xmlrpc($params)
 {
     configd_run('template reload *');
-    return array("status" => "done");
+
+    return ['status' => 'done'];
 }
