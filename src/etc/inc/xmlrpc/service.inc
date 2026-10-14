@@ -58,16 +58,19 @@ function list_services_xmlrpc()
             continue;
         }
 
+        $service['status'] = service_status($service);
+
         /* deduplicate services with multiple PID files but single service control */
         if (!empty($service['broker'])) {
-            if (in_array($service['name'], array_column($services, 'name'), true)) {
+            $broker = array_search($service['name'], array_column($services, 'name'), true);
+            if ($broker !== false) {
+                $service[$broker]['status'] = $service[$broker]['status'] && $service['status'];
                 continue;
             }
 
             $service['description'] = $service['broker'];
         }
 
-        $service['status'] = service_status($service);
         $services[] = $service;
     }
 
