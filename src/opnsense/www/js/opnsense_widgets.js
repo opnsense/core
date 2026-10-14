@@ -476,7 +476,7 @@
                 this.view.onClone(() => onClone(this.id));
             }
 
-            this.view.setEditMode(editMode);
+            this.setEditMode(editMode);
         }
 
         async start() {
@@ -494,6 +494,12 @@
                 await this.widget.onMarkupRendered();
                 if (this.destroyed) {
                     return;
+                }
+
+                const observedElement = this.view.root[0].parentElement;
+                const bounds = observedElement.getBoundingClientRect();
+                if (this.widget.onWidgetResize(this.view.root[0], bounds.width, bounds.height)) {
+                    this.requestResize();
                 }
 
                 this.view.hideLoading();
