@@ -199,6 +199,12 @@ class CPBackgroundProcess(object):
                             drop_session_reason = "accounting limit reached for session %s" % db_client['sessionId']
                             delete_reason = "Session-Timeout"
 
+                    if db_client['acc_idle_timeout'] is not None \
+                            and type(db_client['acc_idle_timeout']) in (int, float) \
+                            and time.time() - float(db_client['last_accessed']) > db_client['acc_idle_timeout']:
+                            drop_session_reason = "accounting idle limit reached for session %s" % db_client['sessionId']
+                            delete_reason = "Idle-Timeout"
+
                 if drop_session_reason is not None:
                     # remove session
                     syslog.syslog(syslog.LOG_NOTICE, drop_session_reason)
