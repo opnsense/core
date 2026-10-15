@@ -2383,7 +2383,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     /* apply optional interface flags */
     $interface_flags = array_filter(explode(',', $wancfg['ifflags'] ?? ''));
     /* XXX: ISC DHCP also exposes staticarp; either setting should enable the interface flag. */
-    if (isset(config_read_array('dhcpd', $interface, false)['staticarp'])) {
+    if (file_exists('/usr/local/www/services_dhcp.php') && isset(config_read_array('dhcpd', $interface, false)['staticarp'])) {
         $interface_flags[] = 'staticarp';
     }
     /* Config only contains selected flags, keep an explicit list to safely remove deselected flags. */
