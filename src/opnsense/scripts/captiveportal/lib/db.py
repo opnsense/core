@@ -104,6 +104,12 @@ class DB(object):
             cur.execute("ALTER TABLE session_restrictions ADD COLUMN accounting_interval INT DEFAULT 600")
             self._connection.commit()
 
+        # migration: add "idle_timeout" column to session_restrictions
+        cur.execute("PRAGMA table_info(session_restrictions)")
+        if not any([row[1] == 'idle_timeout' for row in cur.fetchall()]):
+            cur.execute("ALTER TABLE session_restrictions ADD COLUMN idle_timeout INT")
+            self._connection.commit()
+
         # migration: add "last_update_time" column to accounting_state
         cur.execute("PRAGMA table_info(accounting_state)")
         if not any([row[1] == 'last_update_time' for row in cur.fetchall()]):
@@ -347,6 +353,7 @@ class DB(object):
                                         else si.last_accessed
                                 end last_accessed
                         ,       sr.session_timeout acc_session_timeout
+                        ,       sr.idle_timeout acc_idle_timeout
                         from    cp_clients cc
                         left join session_info si on si.zoneid = cc.zoneid and si.sessionid = cc.sessionid
                         left join session_restrictions sr on sr.zoneid = cc.zoneid and sr.sessionid = cc.sessionid
@@ -638,11 +645,12 @@ class DB(object):
 
         self._connection.commit()
 
-    def update_session_restrictions(self, zoneid, sessionid, session_timeout, accounting_interval):
+    def update_session_restrictions(self, zoneid, sessionid, session_timeout, idle_timeout, accounting_interval):
         """ upsert session restrictions
         :param zoneid: zone id
         :param sessionid: session id
         :param session_timeout: timeout in seconds
+        :param idle_timeout: idle timeout in seconds
         :param accounting_interval: Acct-Interim-Interval dictated by RADIUS backend
         :return: string "add"/"update" to signal the performed action to the client
         """
@@ -654,12 +662,14 @@ class DB(object):
             "zoneid": zoneid,
             "sessionid": sessionid,
             "session_timeout": session_timeout,
+            "idle_timeout": idle_timeout,
             **({"accounting_interval": accounting_interval} if has_accounting_interval else {}),
         }
 
         sql_update = f"""
             UPDATE session_restrictions
-            SET session_timeout = :session_timeout
+            SET session_timeout = :session_timeout,
+                idle_timeout = :idle_timeout
                 {", accounting_interval = :accounting_interval" if has_accounting_interval else ""}
             WHERE zoneid = :zoneid AND sessionid = :sessionid
         """
@@ -671,13 +681,15 @@ class DB(object):
                 INSERT INTO session_restrictions (
                     zoneid,
                     sessionid,
-                    session_timeout
+                    session_timeout,
+                    idle_timeout
                     {", accounting_interval" if has_accounting_interval else ""}
                 )
                 VALUES (
                     :zoneid,
                     :sessionid,
-                    :session_timeout
+                    :session_timeout,
+                    :idle_timeout
                     {", :accounting_interval" if has_accounting_interval else ""}
                 )
             """

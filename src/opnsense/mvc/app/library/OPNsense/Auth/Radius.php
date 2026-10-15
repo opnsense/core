@@ -614,6 +614,9 @@ class Radius extends Base implements IAuthConnector
                                 case RADIUS_SESSION_TIMEOUT:
                                     $this->lastAuthProperties['session_timeout'] = radius_cvt_int($resa['data']);
                                     break;
+                                case RADIUS_IDLE_TIMEOUT:
+                                    $this->lastAuthProperties['idle_timeout'] = radius_cvt_int($resa['data']);
+                                    break;
                                 case 85: // Acct-Interim-Interval
                                     $interval = radius_cvt_int($resa['data']);
                                     if (empty($interval) || $interval < 60) { // RFC 2869, section 5.16
