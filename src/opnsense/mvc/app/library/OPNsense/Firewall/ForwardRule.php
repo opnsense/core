@@ -123,9 +123,14 @@ class ForwardRule extends Rule
                   && in_array($tmp['protocol'], array('tcp/udp', 'udp', 'tcp'))
             ) {
                 if (Util::isPortAlias($tmp['local-port'])) {
-                    /* isPortAlias() returns only valid aliases with content set */
-                    $tmp_port = Util::getPortAlias($tmp['local-port']);
-                    $tmp['localport'] = $tmp_port[0];
+                    if ("$" . $tmp['local-port'] == $tmp['to_port']) {
+                        /* When both destination and translate port are the same alias, we can simply pass the traffic */
+                        $tmp['localport'] = '';
+                    } else {
+                        /* isPortAlias() returns only valid aliases with content set */
+                        $tmp_port = Util::getPortAlias($tmp['local-port']);
+                        $tmp['localport'] = $tmp_port[0];
+                    }
                 } elseif (Util::isPort($tmp['local-port'])) {
                     $tmp['localport'] = $tmp['local-port'];
                     if (
