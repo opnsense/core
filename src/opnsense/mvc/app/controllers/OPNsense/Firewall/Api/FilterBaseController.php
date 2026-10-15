@@ -428,25 +428,28 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
     /**
      * Toggle the "log" flag of a rule.
      *
-     * @param string $uuid             UUID of the rule to update.
+     * @param string $uuids            UUID(s) of the rules to update, comma-separated for batching.
      * @param string $log              New log value ("0" or "1").
      * @param string $node_reference   Node reference prefix, e.g. "onetoone.rule".
      * @return array                   ["status" => "ok"] on success, throws UserException otherwise.
      */
-    protected function toggleRuleLogBase($uuid, $log, $node_reference)
+    protected function toggleRuleLogBase($uuids, $log, $node_reference)
     {
         if (!$this->request->isPost()) {
             return ['status' => 'error', 'message' => gettext('Invalid request method')];
         }
 
+        Config::getInstance()->lock();
         $mdl = $this->getModel();
-        $node = $mdl->getNodeByReference($node_reference . '.' . $uuid);
+        foreach (explode(',', $uuids) as $uuid) {
+            $node = $mdl->getNodeByReference($node_reference . '.' . $uuid);
 
-        if ($node === null) {
-            throw new UserException(gettext('Rule not found'));
+            if ($node === null) {
+                throw new UserException(gettext('Rule not found'));
+            }
+
+            $node->log = $log;
         }
-
-        $node->log = $log;
         $this->save();
 
         return ['status' => 'ok'];
