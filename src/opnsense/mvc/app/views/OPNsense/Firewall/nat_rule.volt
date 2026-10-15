@@ -444,6 +444,30 @@
                     },
                     sequence: 500
                 },
+                enable_log_selected: {
+                    footer: true,
+                    primary: true,
+                    classname: 'fa fa-fw fa-bell',
+                    title: "{{ lang._('Enable logging for selected') }}",
+                    method: function(event) {
+                        grid.bootgrid('command_toggle_selected', true, event, {
+                            toggle: `/api/firewall/${entrypoint}/toggle_rule_log/`
+                        });
+                    },
+                    sequence: 340
+                },
+                disable_log_selected: {
+                    footer: true,
+                    primary: true,
+                    classname: 'fa fa-fw fa-bell-slash',
+                    title: "{{ lang._('Disable logging for selected') }}",
+                    method: function(event) {
+                        grid.bootgrid('command_toggle_selected', false, event, {
+                            toggle: `/api/firewall/${entrypoint}/toggle_rule_log/`
+                        });
+                    },
+                    sequence: 350
+                },
                 lookup_ref: {
                     filter: (cell) => commandFilter(cell, "lookup_ref"),
                     classname: "fa fa-fw fa-link",
