@@ -80,12 +80,12 @@
         </grid_view>
     </field>
     <field>
-        <id>interface.ifflags</id>
+        <id>interface.flags</id>
         <label>Interface flags</label>
         <type>select_multiple</type>
         <style>selectpicker</style>
         <advanced>true</advanced>
-        <help>Select optional interface flags. Enabling Static ARP without properly configured static ARP entries can immediately lock you out of the system.</help>
+        <help>Select optional interface flags. This setting is ignored entirely while the ISC DHCP plugin is installed.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>

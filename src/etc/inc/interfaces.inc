@@ -2380,21 +2380,21 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         mwexecf('/sbin/ifconfig %s %spromisc', [$realhwif, empty($wancfg['promisc']) ? '-' : '']);
     }
 
-    /* apply optional interface flags */
-    $interface_flags = array_filter(explode(',', $wancfg['ifflags'] ?? ''));
-    /* XXX: ISC DHCP also exposes staticarp; either setting should enable the interface flag. */
-    if (file_exists('/usr/local/www/services_dhcp.php') && isset(config_read_array('dhcpd', $interface, false)['staticarp'])) {
-        $interface_flags[] = 'staticarp';
-    }
-    /* Config only contains selected flags, keep an explicit list to safely remove deselected flags. */
-    $managed_flags = [
-        'staticarp',
-        'debug',
-    ];
-    foreach ($managed_flags as $flag) {
-        $selected = in_array($flag, $interface_flags);
-        if (in_array($flag, $ifconfig_details[$realhwif]['flags'] ?? []) !== $selected) {
-            mwexecf('/sbin/ifconfig %s %s%s', [$realhwif, $selected ? '' : '-', $flag]);
+    $current_flags = $ifconfig_details[$wancfg['if']]['flags'] ?? [];
+    /* XXX: ISC DHCP manages interface flags itself, ignore this setting while it is installed. */
+    if (!file_exists('/usr/local/www/services_dhcp.php') && !empty($current_flags)) {
+        /* apply optional interface flags */
+        $interface_flags = array_filter(explode(',', $wancfg['flags'] ?? ''));
+        /* Config only contains selected flags, keep an explicit list to safely remove deselected flags. */
+        $managed_flags = [
+            'staticarp',
+            'debug',
+        ];
+        foreach ($managed_flags as $flag) {
+            $selected = in_array($flag, $interface_flags);
+            if (in_array($flag, $current_flags) !== $selected) {
+                mwexecf('/sbin/ifconfig %s %s%s', [$wancfg['if'], $selected ? '' : '-', $flag]);
+            }
         }
     }
 
