@@ -66,7 +66,6 @@ class CertController extends ApiMutableModelControllerBase
                 throw new UserException($error, "Certificate error");
             }
             $node->prv = base64_encode((string)$node->prv_payload);
-
         }
         if (!$node->crt_payload->isEmpty()) {
             /** certificate manually offered, early validation */
