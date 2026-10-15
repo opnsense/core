@@ -122,30 +122,23 @@ class ForwardRule extends Rule
                 !empty($tmp['local-port']) && !empty($tmp['protocol'])
                   && in_array($tmp['protocol'], array('tcp/udp', 'udp', 'tcp'))
             ) {
-                if (Util::isAlias($tmp['local-port'])) {
-                    // We will keep this for backwards compatibility, although the alias use is very confusing.
-                    // Because the target can only be one address or range, we will just use the first one found
-                    // in the alias.... confusing.
-                    if ("$" . $tmp['local-port'] == $tmp['to_port']) {
-                        // destination port alias matches target port, we should skip the target and let pf handle it
-                        $tmp['localport']  = "";
-                    } else {
-                        // pick the first port (backwards compatibility)
-                        $tmp_port = Util::getPortAlias($tmp['local-port']);
-                        if (!empty($tmp_port)) {
-                            $tmp['localport'] = $tmp_port[0];
-                        }
-                    }
+                if (Util::isPortAlias($tmp['local-port'])) {
+                    /* isPortAlias() returns only valid aliases with content set */
+                    $tmp_port = Util::getPortAlias($tmp['local-port']);
+                    $tmp['localport'] = $tmp_port[0];
                 } elseif (Util::isPort($tmp['local-port'])) {
                     $tmp['localport'] = $tmp['local-port'];
-                    if (!empty($tmp['to_port']) && strpos($tmp['to_port'], ':') !== false) {
+                    if (
+                        !empty($tmp['to_port']) && strpos($tmp['to_port'], ':') !== false &&
+                        ctype_digit($tmp['local-port'])
+                    ) {
                         $to_ports = explode(':', $tmp['to_port']);
                         $tmp['localport'] .= ':' . min($tmp['local-port'] + $to_ports[1] - $to_ports[0], 65535);
                     }
                 } else {
                     $known = PortField::getWellKnown($tmp['local-port']);
                     if (!empty($known)) {
-                        $tmp['local-port'] = array_shift($known);
+                        $tmp['localport'] = array_shift($known);
                     } else {
                         $tmp['disabled'] = true;
                         $this->log("Unable to map port {$tmp['local-port']}, config error?");
@@ -167,6 +160,7 @@ class ForwardRule extends Rule
                     }
                 }
             }
+
             foreach ($interflist as $interf) {
                 $rule = $tmp;
                 // automatically generate nat rule when enablenatreflectionhelper is set
