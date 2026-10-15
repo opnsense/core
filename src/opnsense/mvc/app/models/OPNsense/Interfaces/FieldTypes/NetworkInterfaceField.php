@@ -126,7 +126,6 @@ class NetworkInterfaceContainerField extends ContainerField
                 'hw_settings_overwrite',
                 'lock',
                 'promisc',
-                'staticarp',
             ];
             foreach ($legacybools as $legacybool) {
                 if (empty($result[$legacybool])) {

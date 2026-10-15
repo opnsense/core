@@ -312,12 +312,6 @@ class NetworkInterface extends BaseModel
             }
 
             if (!$if->if->isConfigurable()) {
-                if (!$if->staticarp->isEmpty()) {
-                    $messages->appendMessage(new Message(
-                        gettext('Static ARP is only available for Ethernet interfaces.'),
-                        $key . ".staticarp"
-                    ));
-                }
                 if (!$if->type4->isEmpty()) {
                     $messages->appendMessage(new Message(
                         gettext('Cannot assign an IP configuration type to a tunnel interface.'),

@@ -2380,8 +2380,23 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         mwexecf('/sbin/ifconfig %s %spromisc', [$realhwif, empty($wancfg['promisc']) ? '-' : '']);
     }
 
-    /* restrict ARP resolution to statically configured entries */
-    mwexecf('/sbin/ifconfig %s %sstaticarp', [$realhwif, empty($wancfg['staticarp']) ? '-' : '']);
+    /* apply optional interface flags */
+    $interface_flags = array_filter(explode(',', $wancfg['ifflags'] ?? ''));
+    /* XXX: ISC DHCP also exposes staticarp; either setting should enable the interface flag. */
+    if (isset(config_read_array('dhcpd', $interface, false)['staticarp'])) {
+        $interface_flags[] = 'staticarp';
+    }
+    /* Config only contains selected flags, keep an explicit list to safely remove deselected flags. */
+    $managed_flags = [
+        'staticarp',
+        'debug',
+    ];
+    foreach ($managed_flags as $flag) {
+        $selected = in_array($flag, $interface_flags);
+        if (in_array($flag, $ifconfig_details[$realhwif]['flags'] ?? []) !== $selected) {
+            mwexecf('/sbin/ifconfig %s %s%s', [$realhwif, $selected ? '' : '-', $flag]);
+        }
+    }
 
     /* apply interface hardware settings (TSO, LRO, ..) */
     _interfaces_hardware($realhwif, $ifconfig_details);
