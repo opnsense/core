@@ -169,7 +169,9 @@ class CPBackgroundProcess(object):
                         # hardtimeout should be set and we should have collected some session data from the client
                         if int(cpzone_info['hardtimeout']) > 0 and float(db_client['startTime']) > 0:
                             if (time.time() - float(db_client['startTime'])) / 60 > int(cpzone_info['hardtimeout']):
-                                drop_session_reason = "session %s hit local hardtimeout" % db_client['sessionId']
+                                drop_session_reason = "session %s hit local hardtimeout (%d seconds)" % (
+                                    db_client['sessionId'], int(cpzone_info['hardtimeout']) * 60
+                                )
                                 delete_reason = "Session-Timeout"
 
                     # check if idletimeout is set and overrun for this session
@@ -177,7 +179,9 @@ class CPBackgroundProcess(object):
                         # idletimeout should be set and we should have collected some session data from the client
                         if int(cpzone_info['idletimeout']) > 0 and float(db_client['last_accessed']) > 0:
                             if (time.time() - float(db_client['last_accessed'])) / 60 > int(cpzone_info['idletimeout']):
-                                drop_session_reason = "session %s hit local idletimeout" % db_client['sessionId']
+                                drop_session_reason = "session %s hit local idletimeout (%d seconds)" % (
+                                    db_client['sessionId'], int(cpzone_info['idletimeout']) * 60
+                                )
                                 delete_reason = "Idle-Timeout"
 
                     # cleanup concurrent users
@@ -196,13 +200,17 @@ class CPBackgroundProcess(object):
                     if db_client['acc_session_timeout'] is not None \
                             and type(db_client['acc_session_timeout']) in (int, float) \
                             and time.time() - float(db_client['startTime']) > db_client['acc_session_timeout']:
-                            drop_session_reason = "session %s hit RADIUS Session-Timeout" % db_client['sessionId']
+                            drop_session_reason = "session %s hit RADIUS Session-Timeout (%d seconds)" % (
+                                db_client['sessionId'], db_client['acc_session_timeout']
+                            )
                             delete_reason = "Session-Timeout"
 
                     if db_client['acc_idle_timeout'] is not None \
                             and type(db_client['acc_idle_timeout']) in (int, float) \
                             and time.time() - float(db_client['last_accessed']) > db_client['acc_idle_timeout']:
-                            drop_session_reason = "session %s hit RADIUS Idle-Timeout" % db_client['sessionId']
+                            drop_session_reason = "session %s hit RADIUS Idle-Timeout (%d seconds)" % (
+                                db_client['sessionId'], db_client['acc_idle_timeout']
+                            )
                             delete_reason = "Idle-Timeout"
 
                 if drop_session_reason is not None:
