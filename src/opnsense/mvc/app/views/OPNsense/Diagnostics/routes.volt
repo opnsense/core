@@ -40,14 +40,28 @@
                     method: function() {
                         let route=$(this).data("row-id").split(',');
                         stdDialogConfirm('{{ lang._('Remove static route') }}' + ' ('+$(this).data("row-id")+')',
-                                        '{{ lang._('Are you sure you want to remove this route? Caution, this could potentially lead to loss of connectivity') }}',
+                                        '{{ lang._('Are you sure you want to remove this route? Proceeding may lead to loss of connectivity.') }}',
                                         '{{ lang._('Yes') }}',
                                         '{{ lang._('No') }}',
                                         function() {
                             let req = {'family': route[0], 'destination': route[1], 'gateway': route[2]};
                             ajaxCall('/api/diagnostics/interface/del_route/', req, function (data, status) {
-                                // reload grid after delete
-                                $("#update").click();
+                                if (data?.message == "found") {
+                                    // reload grid after delete
+                                    $("#update").click();
+                                } else {
+                                    BootstrapDialog.show({
+                                    type: BootstrapDialog.TYPE_DANGER,
+                                    title: "{{ lang._('Route removal failed') }}",
+                                    message: "{{ lang._('The route was either not found or the kernel refused to delete it.') }}",
+                                    buttons: [{
+                                        label: "{{ lang._('Close') }}",
+                                        action: function (dialogRef) {
+                                            dialogRef.close();
+                                        }
+                                        }]
+                                    });
+                                }
                             });
                         });
                     },
