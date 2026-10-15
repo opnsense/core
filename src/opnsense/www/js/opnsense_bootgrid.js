@@ -2399,17 +2399,18 @@ class UIBootgrid {
         });
     }
 
-    command_toggle_selected(enable, event) {
+    command_toggle_selected(enable, event, override = null) {
         event.stopPropagation();
         const rows = this.table.getSelectedData();
         if (!rows.length) return;
 
         const key = this.options.datakey, on = enable ? "1" : "0";
+        const endpoint = override?.toggle ?? this.crud.toggle;
         const ids = rows.map(r => r[key]);
         const size = this.options.batchToggle ? this.options.batchToggleSize : 1;
         const batches = Array.from({ length: Math.ceil(ids.length / size) }, (_, i) => ids.slice(i * size, (i + 1) * size));
 
-        $.when.apply(null, batches.map(b => ajaxCall(`${this.crud.toggle}${b.join(",")}/${on}`, {}, null)))
+        $.when.apply(null, batches.map(b => ajaxCall(`${endpoint}${b.join(",")}/${on}`, {}, null)))
             .done(() => (this._reload(true), this.showSaveAlert()));
     }
 
