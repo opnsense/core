@@ -876,13 +876,31 @@ abstract class BaseField
     }
 
     /**
-     * set Default field value ( for usage in model xml )
+     * set default field value
      * @param string $value default value
      */
     public function setDefault($value)
     {
         $this->internalValue = $value;
         $this->internalDefaultValue = $value;
+    }
+
+    /**
+     * get default field value
+     * @param string $value default value
+     */
+    public function getDefault(): string
+    {
+        return $this->internalDefaultValue;
+    }
+
+    /**
+     * default value matches field value
+     * @param string $value default value
+     */
+    public function isDefault(): bool
+    {
+        return $this->internalDefaultValue == $this->internalValue;
     }
 
     /**
