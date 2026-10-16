@@ -1362,6 +1362,7 @@
 /usr/local/opnsense/scripts/monit/carp_status.php
 /usr/local/opnsense/scripts/monit/gateway_alert.php
 /usr/local/opnsense/scripts/monit/setup.sh
+/usr/local/opnsense/scripts/monit/status.php
 /usr/local/opnsense/scripts/netflow/dump_log.py
 /usr/local/opnsense/scripts/netflow/export_details.py
 /usr/local/opnsense/scripts/netflow/flowctl_stats.py
