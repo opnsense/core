@@ -141,11 +141,8 @@ class User extends BaseModel
                 continue;
             }
             $key = $node->__reference;
-            if ($node->scope->getInitialValue() !== '' && $node->scope->isFieldChanged()) {
-                /**
-                 *  This is more of a convenience feature, an admin is able to configure any type of access anyway,
-                 *  but we should warn for unexpected input in these case.
-                 **/
+            if ($node->scope->isFieldChanged() && !$node->scope->isDefault()) {
+                /* the scope of a user can not be changed away from the default */
                 $messages->appendMessage(
                     new Message(gettext('Scope can not be changed.'), $key . '.scope')
                 );
@@ -158,7 +155,6 @@ class User extends BaseModel
             if ($node->password->isEmpty() && $node->scrambled_password->isEmpty()) {
                 $messages->appendMessage(new Message(gettext("A password is required"), $key . ".password"));
             }
-            /* XXX: validate reserved users? (/etc/passwd)*/
         }
         return $messages;
     }
