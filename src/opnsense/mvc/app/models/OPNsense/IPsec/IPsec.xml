@@ -72,6 +72,7 @@
             <reqid_base type="IntegerField"/>
             <retry_initiate_interval type="IntegerField">
                 <Default>30</Default>
+                <Required>Y</Required>
                 <MinimumValue>0</MinimumValue>
             </retry_initiate_interval>
             <syslog>
