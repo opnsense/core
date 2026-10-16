@@ -36,6 +36,7 @@ class HealthGraph {
         this.currentSystem = null;
         this.currentDetailLevel = 0;
         this.currentStacked = false;
+        this.currentLogarithmic = null;
         this.dynamicScaleIds = [];
     }
 
@@ -60,10 +61,13 @@ class HealthGraph {
         return this.rrdList;
     }
 
-    async update(system = null, detailLevel = null, stacked = null) {
+    async update(system = null, detailLevel = null, stacked = null, logarithmic = null) {
         if (system === null) {
             system = this.currentSystem;
         } else {
+            if (system !== this.currentSystem) {
+                this.currentLogarithmic = null;
+            }
             this.currentSystem = system;
         }
         if (detailLevel === null) {
@@ -76,18 +80,26 @@ class HealthGraph {
         } else {
             this.currentStacked = stacked;
         }
-
         const data = await this._fetchData();
-        const formatted = this._formatData(data.set, data);
+        if (logarithmic === null) {
+            if (this.currentLogarithmic === null) {
+                this.currentLogarithmic = Object.values(data['axis_types'] || {}).includes('logarithmic');
+            }
+            logarithmic = this.currentLogarithmic;
+        } else {
+            this.currentLogarithmic = logarithmic;
+        }
+        const formatted = this._formatData(data.set, data, logarithmic);
 
         const stepSize = data.set.step_size;
 
         this.chart.data.datasets = formatted;
-        this._configureScales(data, stacked);
+        this._configureScales(data, stacked, logarithmic);
         this.chart.options.plugins.title.text = data['title'];
         this.chart.options.plugins.zoom.limits.x.minRange = this._getMinRange(stepSize * 1000);
         this.chart.update();
         this.chart.resetZoom();
+        return logarithmic;
     }
 
     resetZoom() {
@@ -128,7 +140,7 @@ class HealthGraph {
         }
     }
 
-    _formatData(data, metadata) {
+    _formatData(data, metadata, logarithmic = true) {
         let datasets = [];
         const fieldAxes = metadata['field_axes'] || {};
         const fieldScales = metadata['field_scales'] || {};
@@ -155,7 +167,7 @@ class HealthGraph {
             for (const [x, y] of item.values) {
                 // timestack formatter expects array of x,y objects
                 let displayValue = y === null ? null : y * displayScale;
-                const axisType = axisTypes[dataset.yAxisID || 'y'];
+                const axisType = this._getAxisType(axisTypes, dataset.yAxisID || 'y', logarithmic);
                 if (axisType === 'logarithmic' && displayValue !== null && displayValue <= 0) {
                     displayValue = null;
                 }
@@ -166,7 +178,7 @@ class HealthGraph {
         return datasets;
     }
 
-    _configureScales(metadata, stacked) {
+    _configureScales(metadata, stacked, logarithmic = true) {
         for (const scaleId of this.dynamicScaleIds) {
             delete this.chart.options.scales[scaleId];
         }
@@ -178,7 +190,7 @@ class HealthGraph {
         const axisTypes = metadata['axis_types'] || {};
         const axisIds = [...new Set(Object.values(fieldAxes))];
         const primaryScale = this.chart.options.scales.y;
-        const primaryType = axisTypes.y || 'linear';
+        const primaryType = this._getAxisType(axisTypes, 'y', logarithmic);
         primaryScale.type = primaryType;
         primaryScale.display = axisIds.length === 0 || axisIds.includes('y');
         primaryScale.position = 'left';
@@ -192,7 +204,7 @@ class HealthGraph {
             if (axisId === 'y') {
                 continue;
             }
-            const axisType = axisTypes[axisId] || 'linear';
+            const axisType = this._getAxisType(axisTypes, axisId, logarithmic);
             this.chart.options.scales[axisId] = {
                 ...this._defaultYAxisOptions(axisType, axisFormats[axisId]),
                 position: 'right',
@@ -208,6 +220,14 @@ class HealthGraph {
             };
             this.dynamicScaleIds.push(axisId);
         }
+    }
+
+    _getAxisType(axisTypes, axisId, logarithmic) {
+        const axisType = axisTypes[axisId];
+        if (!logarithmic) {
+            return 'linear';
+        }
+        return axisType === 'linear' ? 'linear' : 'logarithmic';
     }
 
     _formatTick(value) {
