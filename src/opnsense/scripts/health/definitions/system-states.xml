@@ -8,8 +8,8 @@
         <y1>metric</y1>
     </axis_formats>
     <axis_labels>
-        <y>State changes/second (logarithmic scale)</y>
-        <y1>Count (logarithmic scale)</y1>
+        <y>State changes/second</y>
+        <y1>Count</y1>
     </axis_labels>
     <axis_types>
         <y>logarithmic</y>

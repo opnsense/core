@@ -4,7 +4,7 @@
     <title>System Information - Quality </title>
     <y-axis_label>seconds/%</y-axis_label>
     <axis_labels>
-        <y>Milliseconds (logarithmic scale)</y>
+        <y>Milliseconds</y>
         <y1>Percentage</y1>
     </axis_labels>
     <axis_types>
