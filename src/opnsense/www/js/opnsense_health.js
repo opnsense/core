@@ -213,7 +213,10 @@ class HealthGraph {
         primaryScale.display = axisIds.length === 0 || axisIds.includes('y');
         primaryScale.position = 'left';
         primaryScale.stacked = primaryType === 'linear' && stacked;
-        primaryScale.title.text = axisLabels.y || metadata['y-axis_label'];
+        primaryScale.title.text = this._getAxisLabel(
+            axisLabels.y || metadata['y-axis_label'],
+            primaryType
+        );
         primaryScale.ticks = {
             callback: this._getTickFormatter(primaryType, axisFormats.y)
         };
@@ -233,7 +236,7 @@ class HealthGraph {
                 title: {
                     display: true,
                     padding: 8,
-                    text: axisLabels[axisId] || axisId
+                    text: this._getAxisLabel(axisLabels[axisId] || axisId, axisType)
                 }
             };
             this.dynamicScaleIds.push(axisId);
@@ -246,6 +249,10 @@ class HealthGraph {
             return 'linear';
         }
         return axisType === 'linear' ? 'linear' : 'logarithmic';
+    }
+
+    _getAxisLabel(label, axisType) {
+        return axisType === 'logarithmic' ? `${label} (logarithmic scale)` : label;
     }
 
     _formatTick(value) {

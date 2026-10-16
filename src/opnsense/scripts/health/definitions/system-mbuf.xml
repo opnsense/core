@@ -7,7 +7,7 @@
         <y>metric</y>
     </axis_formats>
     <axis_labels>
-        <y>Mbuf clusters (logarithmic scale)</y>
+        <y>Mbuf clusters</y>
     </axis_labels>
     <axis_types>
         <y>logarithmic</y>
