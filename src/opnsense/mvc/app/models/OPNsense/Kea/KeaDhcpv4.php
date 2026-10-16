@@ -94,6 +94,19 @@ class KeaDhcpv4 extends BaseModel
                 $messages->appendMessage(new Message(gettext("Either a client ID or a MAC address should be specified."), $key . ".hw_address"));
             }
         }
+        // validate changed subnets
+        $this_interfaces = $this->general->interfaces->getValues();
+        foreach ($this->subnets->subnet4->iterateItems() as $subnet) {
+            if (!$validateFullModel && !$subnet->isFieldChanged()) {
+                continue;
+            }
+            $key = $subnet->__reference;
+            if (!$subnet->interface->isEmpty() && !in_array($subnet->interface->getValue(), $this_interfaces)) {
+                $messages->appendMessage(
+                    new Message(gettext('Interface is not selected in the general settings.'), $key . ".interface")
+                );
+            }
+        }
 
         return $messages;
     }
@@ -192,6 +205,15 @@ class KeaDhcpv4 extends BaseModel
                 'pools' => [],
                 'reservations' => []
             ];
+            /* admission classes must be evaluated before subnet selection (shared networks) */
+            if (!$subnet->match_code->isEmpty()) {
+                $class_name = sprintf('%s', $subnet_uuid);
+                $client_classes[$class_name] = [
+                    'name' => $class_name,
+                    'test' => sprintf('option[%d].hex == 0x%s', $subnet->match_code->asInt(), $subnet->match_data->encodeValue()),
+                ];
+                $record['client-classes'] = [$class_name];
+            }
             /* add valid-lifetime at this level if given */
             if ($subnet->valid_lifetime->isSet()) {
                 $record['valid-lifetime'] = $subnet->valid_lifetime->asInt();
@@ -350,6 +372,34 @@ class KeaDhcpv4 extends BaseModel
         $ddns_enabled = !$ddns->general->enabled->isEmpty();
         $flex_options = [];
         $client_classes = $this->getConfigClientClasses();
+        $subnets = $this->getConfigSubnets($ddns_enabled, $flex_options, $client_classes);
+        // the default (no interface set)
+        $single_subnets = [];
+        // for shared networks (interface set)
+        $shared_subnets = [];
+        foreach ($subnets as $record) {
+            $uuid = $record['user-context']['opnsense']['uuid'];
+            $subnet = $this->getNodeByReference("subnets.subnet4.$uuid");
+            if ($subnet->interface->isEmpty()) {
+                $single_subnets[] = $record;
+            } else {
+                $shared_subnets[$subnet->interface->getValue()][] = $record;
+            }
+        }
+        $shared_networks = [];
+        foreach ($shared_subnets as $interface => $records) {
+            $device = Util::getRealInterface($interface, 'inet');
+            if (empty($device)) {
+                // fallback, turn shared subnets into single subnets
+                $single_subnets = array_merge($single_subnets, $records);
+                continue;
+            }
+            $shared_networks[] = [
+                'name' => sprintf('interface_%s', $device),
+                'interface' => $device,
+                'subnet4' => $records,
+            ];
+        }
         $cnf = [
             'Dhcp4' => [
                 'valid-lifetime' => $this->general->valid_lifetime->asInt(),
@@ -383,7 +433,7 @@ class KeaDhcpv4 extends BaseModel
                         'severity' => 'INFO',
                     ]
                 ],
-                'subnet4' => $this->getConfigSubnets($ddns_enabled, $flex_options, $client_classes),
+                'subnet4' => $single_subnets,
                 'hooks-libraries' => [
                     /*
                      * Hook loading order can be important in some cases:
@@ -400,6 +450,11 @@ class KeaDhcpv4 extends BaseModel
                 ],
             ]
         ];
+        // shared networks means the client must pass a client class dhcp option check to be "let in"
+        // instead of being decided by the interface IP
+        if (!empty($shared_networks)) {
+            $cnf['Dhcp4']['shared-networks'] = $shared_networks;
+        }
         if (!empty($flex_options)) {
             $cnf['Dhcp4']['hooks-libraries'][] = [
                 'library' => '/usr/local/lib/kea/hooks/libdhcp_flex_option.so',
