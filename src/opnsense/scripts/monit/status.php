@@ -49,8 +49,8 @@ curl_setopt($curl, CURLOPT_UNIX_SOCKET_PATH, '/var/run/monit.sock');
 curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
 
 $model = new Monit(false);
-$username = (string)$model->general->httpdUsername;
-$password = (string)$model->general->httpdPassword;
+$username = $model->general->httpdUsername->getValue();
+$password = $model->general->httpdPassword->getValue();
 if (trim($username) !== '' && trim($password) !== '') {
     curl_setopt($curl, CURLOPT_USERPWD, $username . ':' . $password);
 }
