@@ -151,8 +151,8 @@ class HealthGraph {
         const fieldAxes = metadata['field_axes'] || {};
         const fieldScales = metadata['field_scales'] || {};
         const fieldUnits = metadata['field_units'] || {};
-        const axisFormats = metadata['axis_formats'] || {};
         const axisTypes = metadata['axis_types'] || {};
+        const tooltipFormats = metadata['tooltip_formats'] || {};
         for (const item of data.data) {
             const dataset = {
                 ...this.datasetOptions,
@@ -167,8 +167,8 @@ class HealthGraph {
                 dataset.unit = fieldUnits[item.key];
             }
             const axisId = dataset.yAxisID || 'y';
-            if (axisFormats[axisId]) {
-                dataset.valueFormat = axisFormats[axisId];
+            if (tooltipFormats[axisId]) {
+                dataset.valueFormat = tooltipFormats[axisId];
             }
             for (const [x, y] of item.values) {
                 // timestack formatter expects array of x,y objects
@@ -191,6 +191,7 @@ class HealthGraph {
         this.dynamicScaleIds = [];
 
         const fieldAxes = metadata['field_axes'] || {};
+        const axisFormats = metadata['axis_formats'] || {};
         const axisLabels = metadata['axis_labels'] || {};
         const axisTypes = metadata['axis_types'] || {};
         const axisIds = [...new Set(Object.values(fieldAxes))];
@@ -202,7 +203,7 @@ class HealthGraph {
         primaryScale.stacked = primaryType === 'linear' && stacked;
         primaryScale.title.text = axisLabels.y || metadata['y-axis_label'];
         primaryScale.ticks = {
-            callback: primaryType === 'logarithmic' ? this._formatLogarithmicTick : this._formatTick
+            callback: this._getTickFormatter(primaryType, axisFormats.y)
         };
 
         for (const axisId of axisIds) {
@@ -211,7 +212,7 @@ class HealthGraph {
             }
             const axisType = axisTypes[axisId] || 'linear';
             this.chart.options.scales[axisId] = {
-                ...this._defaultYAxisOptions(axisType),
+                ...this._defaultYAxisOptions(axisType, axisFormats[axisId]),
                 position: 'right',
                 stacked: axisType === 'linear' && stacked,
                 grid: {
@@ -231,6 +232,7 @@ class HealthGraph {
         return Math.abs(value) >= 1000 ? HealthGraph._formatMetricValue(value) : value;
     }
 
+    // Static so Chart.js callbacks can format values without relying on their own `this` context.
     static _formatMetricValue(value) {
         const kb = 1000;
         const ndx = value === 0 ? 0 : Math.floor(Math.log(Math.abs(value)) / Math.log(kb));
@@ -249,7 +251,19 @@ class HealthGraph {
         return label !== '' && value >= 1 ? Math.round(value).toString() : label;
     }
 
-    _defaultYAxisOptions(type = 'linear') {
+    _formatLogarithmicMetricTick(value, index, ticks) {
+        const label = Chart.Ticks.formatters.logarithmic.call(this, value, index, ticks);
+        return label === '' ? label : HealthGraph._formatMetricValue(value);
+    }
+
+    _getTickFormatter(type, format) {
+        if (type === 'logarithmic') {
+            return format === 'metric' ? this._formatLogarithmicMetricTick : this._formatLogarithmicTick;
+        }
+        return this._formatTick;
+    }
+
+    _defaultYAxisOptions(type = 'linear', format = null) {
         const result = {
             type: type,
             position: 'left',
@@ -259,7 +273,7 @@ class HealthGraph {
             }
         };
         result.ticks = {
-            callback: type === 'logarithmic' ? this._formatLogarithmicTick : this._formatTick
+            callback: this._getTickFormatter(type, format)
         };
         return result;
     }

@@ -115,7 +115,7 @@ class SystemhealthController extends ApiMutableModelControllerBase
         $result["data"] = [
             "title" => "", "y-axis_label" => "", "axis_formats" => [], "axis_labels" => [],
             "axis_types" => [], "field_axes" => [], "field_scales" => [], "field_units" => [],
-            "itemName" => "", "filename" => ""
+            "tooltip_formats" => [], "itemName" => "", "filename" => ""
         ];
         return $result;
     }
@@ -196,7 +196,8 @@ class SystemhealthController extends ApiMutableModelControllerBase
             }
             $response['y-axis_label'] = $rrd_details["y-axis_label"];
             $metadataFields = [
-                'axis_formats', 'axis_labels', 'axis_types', 'field_axes', 'field_scales', 'field_units'
+                'axis_formats', 'axis_labels', 'axis_types', 'field_axes', 'field_scales', 'field_units',
+                'tooltip_formats'
             ];
             foreach ($metadataFields as $field) {
                 $response[$field] = $rrd_details[$field] ?? [];
@@ -206,7 +207,7 @@ class SystemhealthController extends ApiMutableModelControllerBase
             return [
                 "set" => [], "title" => "error", "y-axis_label" => "", "axis_formats" => [],
                 "axis_labels" => [], "axis_types" => [], "field_axes" => [], "field_scales" => [],
-                "field_units" => []
+                "field_units" => [], "tooltip_formats" => []
             ];
         }
     }
