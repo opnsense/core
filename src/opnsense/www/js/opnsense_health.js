@@ -243,11 +243,8 @@ class HealthGraph {
 
     // Static so Chart.js callbacks can format values without relying on their own `this` context.
     static _formatMetricValue(value) {
-        const kb = 1000;
-        const ndx = value === 0 ? 0 : Math.floor(Math.log(Math.abs(value)) / Math.log(kb));
-        const magnitudeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
-        if (Math.abs(value) >= 1000 && magnitudeTypes[ndx]) {
-            return (value / Math.pow(kb, ndx)).toFixed(0) + ' ' + magnitudeTypes[ndx];
+        if (Math.abs(value) >= 1000) {
+            return byteFormat(value, 0, true).trim();
         }
         if (Math.abs(value) >= 1) {
             return Math.round(value).toString();
