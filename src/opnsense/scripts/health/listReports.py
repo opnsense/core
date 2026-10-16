@@ -56,7 +56,8 @@ for filename in glob.glob('%s/*.rrd' % rrd_reports_dir):
     result[rrdFilename] = {
         'title': '', 'y-axis_label': '', 'axis_formats': {}, 'axis_labels': {},
         'axis_types': {}, 'field_axes': {}, 'field_scales': {}, 'field_units': {},
-        'topic': topic, 'itemName': itemName, 'filename': os.path.basename(filename)
+        'tooltip_formats': {}, 'topic': topic, 'itemName': itemName,
+        'filename': os.path.basename(filename)
     }
 
 # scan all definition files

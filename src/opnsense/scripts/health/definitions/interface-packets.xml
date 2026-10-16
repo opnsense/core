@@ -6,4 +6,7 @@
     <axis_formats>
         <y>metric</y>
     </axis_formats>
+    <tooltip_formats>
+        <y>metric</y>
+    </tooltip_formats>
 </systemhealth>
