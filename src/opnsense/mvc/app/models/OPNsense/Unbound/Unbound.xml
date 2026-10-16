@@ -12,6 +12,26 @@
                 <Default>53</Default>
                 <Required>Y</Required>
             </port>
+            <enable_doh type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </enable_doh>
+            <port_doh type="PortField">
+                <default>443</default>
+                <Required>Y</Required>
+            </port_doh>
+            <enable_dot type="BooleanField">
+                <default>0</default>
+                <Required>Y</Required>
+            </enable_dot>
+            <port_dot type="PortField">
+                <default>853</default>
+                <Required>Y</Required>
+            </port_dot>
+            <dohdot_cert type="CertificateField">
+                <Required>N</Required>
+                <ValidationMessage>Please select a valid certificate from the list</ValidationMessage>
+            </dohdot_cert>
             <stats type="BooleanField"/>
             <active_interface type=".\UnboundInterfaceField">
                 <Multiple>Y</Multiple>
