@@ -103,6 +103,362 @@ function radvd_configure_dhcp($verbose = false, $family = null, $ignorelist = []
     }
 }
 
+function radvd_stale_prefixes_state_file()
+{
+    return '/var/db/opnsense/radvd_stale_prefixes.json';
+}
+
+function radvd_dynamic_preferred_lifetime()
+{
+    /* RFC 9096 section 3.4: ND_PREFERRED_LIMIT. */
+    return 2700;
+}
+
+function radvd_dynamic_router_lifetime()
+{
+    /* RFC 9096 section 3.4: Router Lifetime matches ND_PREFERRED_LIMIT. */
+    return 2700;
+}
+
+function radvd_dynamic_valid_lifetime()
+{
+    /* RFC 9096 section 3.4: ND_VALID_LIMIT. */
+    return 5400;
+}
+
+function radvd_lifetime_limit($value, $limit)
+{
+    if (is_numeric($value) && (int)$value >= 0) {
+        return min((int)$value, $limit);
+    }
+
+    return null;
+}
+
+function radvd_prefix_lifetimes($device, $prefix, $ifconfig_details, $fallback = false, $parent_prefixes = [])
+{
+    $preferred_lifetime = null;
+    $valid_lifetime = null;
+    $uses_parent_prefix = false;
+
+    if (!empty($prefix) && !empty($ifconfig_details[$device]['ipv6'])) {
+        foreach ($ifconfig_details[$device]['ipv6'] as $addr) {
+            if (empty($addr['ipaddr']) || empty($addr['subnetbits'])) {
+                continue;
+            }
+
+            $addr_prefix = gen_subnetv6($addr['ipaddr'], $addr['subnetbits']) . "/{$addr['subnetbits']}";
+            if ($addr_prefix != $prefix) {
+                continue;
+            }
+
+            $preferred_lifetime = radvd_lifetime_limit($addr['pltime'] ?? null, radvd_dynamic_preferred_lifetime());
+            $valid_lifetime = radvd_lifetime_limit($addr['vltime'] ?? null, radvd_dynamic_valid_lifetime());
+            break;
+        }
+    }
+
+    foreach ($parent_prefixes as $parent_prefix) {
+        if (radvd_prefix_contains_prefix($parent_prefix, $prefix)) {
+            $uses_parent_prefix = true;
+            break;
+        }
+    }
+
+    /*
+     * RFC 9096 section 3.4: use kernel lifetimes when available, otherwise
+     * use bounded dynamic lifetimes for stale state and tied options.
+     */
+    if (($fallback || $uses_parent_prefix) && $valid_lifetime === null) {
+        $valid_lifetime = radvd_dynamic_valid_lifetime();
+    }
+    if (($fallback || $valid_lifetime !== null) && $preferred_lifetime === null) {
+        $preferred_lifetime = min(radvd_dynamic_preferred_lifetime(), $valid_lifetime);
+    }
+    if ($preferred_lifetime !== null && $valid_lifetime !== null && $preferred_lifetime > $valid_lifetime) {
+        $preferred_lifetime = $valid_lifetime;
+    }
+
+    return [$preferred_lifetime, $valid_lifetime];
+}
+
+function radvd_prefix_contains_prefix($parent_prefix, $prefix)
+{
+    if (!is_subnetv6($parent_prefix) || !is_subnetv6($prefix)) {
+        return false;
+    }
+
+    list (, $parent_bits) = explode('/', $parent_prefix);
+    list ($address, $bits) = explode('/', $prefix);
+
+    return (int)$parent_bits <= (int)$bits && ip_in_subnet($address, $parent_prefix);
+}
+
+function radvd_related_prefixes($prefix, $parent_prefixes)
+{
+    $result = [];
+
+    if (is_subnetv6($prefix)) {
+        $result[$prefix] = true;
+    }
+
+    foreach ($parent_prefixes as $parent_prefix) {
+        if (radvd_prefix_contains_prefix($parent_prefix, $prefix)) {
+            $result[$parent_prefix] = true;
+        }
+    }
+
+    return array_keys($result);
+}
+
+function radvd_uses_dhcpv6_pd($trackif)
+{
+    global $config;
+
+    return ($config['interfaces'][$trackif]['ipaddrv6'] ?? null) == 'dhcp6';
+}
+
+function radvd_delegated_prefixes($trackif, $child_prefixes = [])
+{
+    global $config;
+
+    $result = [];
+    $trackcfg = $config['interfaces'][$trackif] ?? [];
+    if (($trackcfg['ipaddrv6'] ?? null) != 'dhcp6') {
+        return [];
+    }
+
+    $device = $trackcfg['if'] ?? null;
+    $filename = !empty($device) ? "/tmp/" . basename($device) . "_prefixv6" : null;
+    /* dhcp6c stores delegated prefixes in /tmp/<interface>_prefixv6. */
+    if (!empty($filename) && is_readable($filename)) {
+        foreach (file($filename, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $prefix) {
+            if (is_subnetv6($prefix)) {
+                $result[$prefix] = true;
+            }
+        }
+    }
+
+    if (!is_array($child_prefixes)) {
+        $child_prefixes = [$child_prefixes];
+    }
+
+    $sla_len = $trackcfg['dhcp6-ia-pd-len'] ?? null;
+    if (is_numeric($sla_len)) {
+        foreach ($child_prefixes as $child_prefix) {
+            if (!is_subnetv6($child_prefix)) {
+                continue;
+            }
+
+            list ($address, $bits) = explode('/', $child_prefix);
+            $parent_bits = (int)$bits - (int)$sla_len;
+            if ($parent_bits >= 0 && $parent_bits <= (int)$bits) {
+                $result[gen_subnetv6($address, $parent_bits) . "/{$parent_bits}"] = true;
+            }
+        }
+    }
+
+    return array_keys($result);
+}
+
+function radvd_address_uses_prefix($address, $prefix)
+{
+    $address = strtok($address ?? '', '%');
+
+    /*
+     * RFC 9096 section 3.4: only shorten DNS option lifetimes when the
+     * advertised resolver is actually tied to the delegated GUA prefix.
+     */
+    if (!is_ipaddrv6($address) || is_linklocal($address) || is_uniquelocal($address)) {
+        return false;
+    }
+
+    return ip_in_subnet($address, $prefix);
+}
+
+function radvd_any_address_uses_prefix($addresses, $prefix)
+{
+    foreach ($addresses as $address) {
+        if (radvd_address_uses_prefix($address, $prefix)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function radvd_any_address_uses_prefixes($addresses, $prefixes)
+{
+    foreach ($prefixes as $prefix) {
+        if (radvd_any_address_uses_prefix($addresses, $prefix)) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+function radvd_lifetime_for_addresses($addresses, $prefix_lifetimes)
+{
+    $lifetime = null;
+
+    /*
+     * RFC 9096 section 3.4: if an option depends on multiple delegated
+     * prefixes, its lifetime must not outlive the shortest matching prefix.
+     */
+    foreach ($addresses as $address) {
+        foreach ($prefix_lifetimes as $prefix => $lifetimes) {
+            if (!radvd_address_uses_prefix($address, $prefix) || !isset($lifetimes['valid'])) {
+                continue;
+            }
+
+            if ($lifetime === null || $lifetimes['valid'] < $lifetime) {
+                $lifetime = $lifetimes['valid'];
+            }
+        }
+    }
+
+    return $lifetime;
+}
+
+function radvd_lifetime_for_prefixes($prefixes, $prefix_lifetimes)
+{
+    $addresses = [];
+
+    foreach ($prefixes as $prefix) {
+        $addresses[] = explode('/', $prefix)[0];
+    }
+
+    return radvd_lifetime_for_addresses($addresses, $prefix_lifetimes);
+}
+
+function radvd_stale_prefixes_load()
+{
+    $filename = radvd_stale_prefixes_state_file();
+    $dirname = dirname($filename);
+
+    if (!is_dir($dirname)) {
+        @mkdir($dirname, 0755, true);
+    }
+
+    $fobj = new \OPNsense\Core\FileObject($filename, 'a+', 0600, LOCK_EX);
+    $state = $fobj->seek(0)->readJson() ?? [];
+
+    return [$fobj, is_array($state) ? $state : []];
+}
+
+function radvd_stale_prefixes_ensure_loaded(&$fobj, &$state)
+{
+    if ($fobj == null) {
+        list ($fobj, $state) = radvd_stale_prefixes_load();
+    }
+}
+
+function radvd_stale_prefixes_save($fobj, $state)
+{
+    $fobj->seek(0)->truncate(0)->writeJson($state);
+}
+
+function radvd_stale_prefixes_prune(&$state, $now, $seen_interfaces)
+{
+    foreach ($state as $if => $prefixes) {
+        /* Static or no-longer-stale-capable interfaces must not retain cache state. */
+        if (!isset($seen_interfaces[$if]) || !is_array($prefixes)) {
+            unset($state[$if]);
+            continue;
+        }
+
+        foreach ($prefixes as $prefix => $prefix_data) {
+            if (isset($prefix_data['stale_until']) && $prefix_data['stale_until'] <= $now) {
+                unset($state[$if][$prefix]);
+            }
+        }
+
+        if (empty($state[$if])) {
+            unset($state[$if]);
+        }
+    }
+}
+
+function radvd_stale_prefixes_update(&$state, $if, $device, $trackif, $live_prefixes, $now, $advertised_prefixes = [])
+{
+    $stale_prefixes = [];
+
+    if (!isset($state[$if]) || !is_array($state[$if])) {
+        $state[$if] = [];
+    }
+
+    foreach ($live_prefixes as $prefix => $prefix_data) {
+        $state[$if][$prefix] = array_merge(
+            $prefix_data,
+            [
+                'first_seen' => $state[$if][$prefix]['first_seen'] ?? $now,
+                'last_seen' => $now,
+            ]
+        );
+    }
+
+    foreach ($state[$if] as $prefix => &$prefix_data) {
+        /* A currently advertised dynamic prefix is fresh again. */
+        if (isset($live_prefixes[$prefix])) {
+            unset($prefix_data['stale_since'], $prefix_data['stale_until']);
+            continue;
+        }
+
+        /* Do not duplicate a prefix currently advertised through a static/VIP stanza. */
+        if (isset($advertised_prefixes[$prefix])) {
+            unset($state[$if][$prefix]);
+            continue;
+        }
+
+        if (!isset($prefix_data['stale_until'])) {
+            /*
+             * RFC 9096 section 3.5: keep stale PIO state long enough to
+             * advertise zero lifetimes for the previously advertised lifetime.
+             */
+            $prefix_data['interface'] = $if;
+            $prefix_data['device'] = $device;
+            $prefix_data['track_interface'] = $trackif;
+            $prefix_data['stale_since'] = $now;
+            $prefix_data['stale_until'] = $now + ($prefix_data['valid_lifetime'] ?? radvd_dynamic_valid_lifetime());
+        }
+
+        if ($prefix_data['stale_until'] <= $now) {
+            unset($state[$if][$prefix]);
+        } else {
+            $stale_prefixes[$prefix] = $prefix_data;
+        }
+    }
+    unset($prefix_data);
+
+    if (empty($state[$if])) {
+        unset($state[$if]);
+    }
+
+    return $stale_prefixes;
+}
+
+function radvd_stale_prefixes_render($stale_prefixes)
+{
+    $radvdconf = '';
+
+    foreach ($stale_prefixes as $prefix => $prefix_data) {
+        /*
+         * RFC 9096 section 3.5: stale PIOs keep their original A/L flags
+         * and advertise zero lifetimes so hosts deprecate the old addresses.
+         */
+        $radvdconf .= "    prefix {$prefix} {\n";
+        $radvdconf .= "        DeprecatePrefix on;\n";
+        $radvdconf .= '        AdvOnLink ' . (!empty($prefix_data['onlink']) ? 'on' : 'off') . ";\n";
+        $radvdconf .= '        AdvAutonomous ' . (!empty($prefix_data['autonomous']) ? 'on' : 'off') . ";\n";
+        $radvdconf .= "        AdvPreferredLifetime 0;\n";
+        $radvdconf .= "        AdvValidLifetime 0;\n";
+        $radvdconf .= "    };\n";
+    }
+
+    return $radvdconf;
+}
+
 function radvd_configure_do($verbose = false, $ignorelist = [])
 {
     global $config;
@@ -116,6 +472,7 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         killbypid($radvd_pid_file);
         @unlink($radvd_conf_file);
         @unlink($radvd_pid_file);
+        @unlink(radvd_stale_prefixes_state_file());
         return;
     }
 
@@ -124,6 +481,10 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
     $ifconfig_details = legacy_interfaces_details();
     $radvdconf = "# Automatically generated, do not edit\n";
     $active = false;
+    $stale_prefixes_fobj = null;
+    $stale_prefixes_state = [];
+    $stale_prefixes_seen_interfaces = [];
+    $now = time();
 
     /* process all links which need the router advertise daemon */
     $manuallist = [];
@@ -172,8 +533,13 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         $device = get_real_interface($dhcpv6if, 'inet6');
         $mtu = legacy_interface_stats($device)['mtu'];
 
-        if (isset($config['interfaces'][$dhcpv6if]['track6-interface'])) {
-            $realtrackif = get_real_interface($config['interfaces'][$dhcpv6if]['track6-interface'], 'inet6');
+        $trackif = ($config['interfaces'][$dhcpv6if]['ipaddrv6'] ?? null) == 'track6' ?
+            ($config['interfaces'][$dhcpv6if]['track6-interface'] ?? null) : null;
+        $uses_dhcpv6_pd = !empty($trackif) && radvd_uses_dhcpv6_pd($trackif);
+        $parent_prefixes = $uses_dhcpv6_pd ? radvd_delegated_prefixes($trackif, $networkv6) : [];
+
+        if (!empty($trackif)) {
+            $realtrackif = get_real_interface($trackif, 'inet6');
 
             $trackmtu = legacy_interface_stats($realtrackif)['mtu'];
             if (!empty($trackmtu) && !empty($mtu)) {
@@ -198,6 +564,9 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         $radvdconf .= "    MaxRtrAdvInterval {$entry->MaxRtrAdvInterval->getValue()};\n";
         if ($entry->AdvDefaultLifetime->isSet()) {
             $radvdconf .= "    AdvDefaultLifetime {$entry->AdvDefaultLifetime->getValue()};\n";
+        } elseif ($uses_dhcpv6_pd) {
+            /* RFC 9096 section 3.4: keep stale-only RAs from using radvd defaults. */
+            $radvdconf .= "    AdvDefaultLifetime " . radvd_dynamic_router_lifetime() . ";\n";
         }
         $radvdconf .= sprintf("    AdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 0);
         $radvdconf .= "    AdvCurHopLimit {$entry->AdvCurHopLimit->getValue()};\n";
@@ -256,13 +625,37 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
 
         /* VIPs may duplicate readings from system */
         $stanzas = array_unique($stanzas);
+        $stanza_lifetimes = [];
+        $live_prefixes = [];
+        $advertised_prefixes = [];
 
         foreach ($stanzas as $stanza) {
+            $preferred_lifetime = null;
+            $valid_lifetime = null;
+            $adv_onlink = false;
+            $adv_autonomous = false;
+
             if ($stanza === 'base6') {
                 $radvdconf .= "    prefix ::/64 {\n";
                 $baseif = get_real_interface($entry->Base6Interface->getValue(), 'inet6');
                 $radvdconf .= "        Base6Interface {$baseif};\n";
             } else {
+                $advertised_prefixes[$stanza] = true;
+                list ($preferred_lifetime, $valid_lifetime) = radvd_prefix_lifetimes(
+                    $device,
+                    $stanza,
+                    $ifconfig_details,
+                    false,
+                    $parent_prefixes
+                );
+                if ($valid_lifetime !== null) {
+                    foreach (radvd_related_prefixes($stanza, $parent_prefixes) as $lifetime_prefix) {
+                        $stanza_lifetimes[$lifetime_prefix] = [
+                            'preferred' => $preferred_lifetime,
+                            'valid' => $valid_lifetime,
+                        ];
+                    }
+                }
                 $radvdconf .= "    prefix {$stanza} {\n";
             }
             $radvdconf .= "        DeprecatePrefix " . (!$entry->DeprecatePrefix->isEmpty() ? $entry->DeprecatePrefix->getValue() : ($carp_mode ? 'off' : 'on')) . ";\n";
@@ -272,10 +665,13 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
                 case 'unmanaged':
                     $radvdconf .= "        AdvOnLink on;\n";
                     $radvdconf .= "        AdvAutonomous on;\n";
+                    $adv_onlink = true;
+                    $adv_autonomous = true;
                     break;
                 case 'managed':
                     $radvdconf .= "        AdvOnLink on;\n";
                     $radvdconf .= "        AdvAutonomous off;\n";
+                    $adv_onlink = true;
                     break;
                 case 'router':
                     $radvdconf .= "        AdvOnLink off;\n";
@@ -291,6 +687,37 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
                 $radvdconf .= "        AdvPreferredLifetime {$entry->AdvPreferredLifetime->getValue()};\n";
             }
             $radvdconf .= "    };\n";
+
+            if ($stanza === $networkv6 && $valid_lifetime !== null) {
+                $live_prefixes[$stanza] = [
+                    'prefix' => $stanza,
+                    'interface' => $dhcpv6if,
+                    'device' => $device,
+                    'track_interface' => $trackif,
+                    'onlink' => $adv_onlink,
+                    'autonomous' => $adv_autonomous,
+                    'preferred_lifetime' => !$entry->AdvPreferredLifetime->isEmpty() ?
+                        (int)$entry->AdvPreferredLifetime->getValue() : $preferred_lifetime,
+                    'valid_lifetime' => !$entry->AdvValidLifetime->isEmpty() ?
+                        (int)$entry->AdvValidLifetime->getValue() : $valid_lifetime,
+                ];
+            }
+        }
+
+        if ((string)$entry->deprecateStalePrefixes->getValue() === '1' && $uses_dhcpv6_pd) {
+            /* Manual track6 entries opt out explicitly; the model default opts in. */
+            radvd_stale_prefixes_ensure_loaded($stale_prefixes_fobj, $stale_prefixes_state);
+            $stale_prefixes_seen_interfaces[$dhcpv6if] = true;
+            $stale_prefixes = radvd_stale_prefixes_update(
+                $stale_prefixes_state,
+                $dhcpv6if,
+                $device,
+                $trackif,
+                $live_prefixes,
+                $now,
+                $advertised_prefixes
+            );
+            $radvdconf .= radvd_stale_prefixes_render($stale_prefixes);
         }
 
         if (!$entry->routes->isEmpty()) {
@@ -299,6 +726,8 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
                 $radvdconf .= "        RemoveRoute " . (!$entry->RemoveRoute->isEmpty() ? $entry->RemoveRoute->getValue() : ($carp_mode ? 'off' : 'on')) . ";\n";
                 if (!$entry->AdvRouteLifetime->isEmpty()) {
                     $radvdconf .= "        AdvRouteLifetime {$entry->AdvRouteLifetime->getValue()};\n";
+                } elseif (($route_lifetime = radvd_lifetime_for_prefixes([$raroute], $stanza_lifetimes)) !== null) {
+                    $radvdconf .= "        AdvRouteLifetime {$route_lifetime};\n";
                 }
                 $radvdconf .= "    };\n";
             }
@@ -347,10 +776,14 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
             }
         }
 
+        $rdnss_lifetime = null;
+
         if (count($rdnss)) {
             $radvdconf .= "    RDNSS " . implode(" ", $rdnss) . " {\n";
             if (!$entry->AdvRDNSSLifetime->isEmpty()) {
                 $radvdconf .= "        AdvRDNSSLifetime {$entry->AdvRDNSSLifetime->getValue()};\n";
+            } elseif (($rdnss_lifetime = radvd_lifetime_for_addresses($rdnss, $stanza_lifetimes)) !== null) {
+                $radvdconf .= "        AdvRDNSSLifetime {$rdnss_lifetime};\n";
             }
             $radvdconf .= "    };\n";
         }
@@ -359,6 +792,8 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
             $radvdconf .= "    DNSSL " . implode(" ", $dnssl) . " {\n";
             if (!$entry->AdvDNSSLLifetime->isEmpty()) {
                 $radvdconf .= "        AdvDNSSLLifetime {$entry->AdvDNSSLLifetime->getValue()};\n";
+            } elseif ($rdnss_lifetime !== null) {
+                $radvdconf .= "        AdvDNSSLLifetime {$rdnss_lifetime};\n";
             }
             $radvdconf .= "    };\n";
         }
@@ -410,6 +845,16 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         $dnslist = [];
 
         list ($ifcfgipv6, $networkv6) = interfaces_primary_address6($if, $ifconfig_details);
+        $uses_dhcpv6_pd = radvd_uses_dhcpv6_pd($trackif);
+        $parent_prefixes = $uses_dhcpv6_pd ? radvd_delegated_prefixes($trackif, $networkv6) : [];
+        $related_prefixes = $uses_dhcpv6_pd ? radvd_related_prefixes($networkv6, $parent_prefixes) : [];
+        list ($prefix_preferred_lifetime, $prefix_valid_lifetime) = $uses_dhcpv6_pd ? radvd_prefix_lifetimes(
+            $device,
+            $networkv6,
+            $ifconfig_details,
+            true,
+            $parent_prefixes
+        ) : [null, null];
 
         if (!empty(service_by_filter(['dns_ports' => '53']))) {
             if (is_ipaddrv6($ifcfgipv6)) {
@@ -433,11 +878,30 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         $radvdconf .= "# Generated RADVD config for {$autotype} assignment from {$trackif} on {$if}\n";
         $radvdconf .= "interface {$device} {\n";
         $radvdconf .= "    AdvSendAdvert on;\n";
+        if ($uses_dhcpv6_pd) {
+            /* RFC 9096 section 3.4: DHCPv6-PD track6 is dynamic. */
+            $radvdconf .= "    AdvDefaultLifetime " . radvd_dynamic_router_lifetime() . ";\n";
+        }
         $radvdconf .= sprintf("    AdvLinkMTU %s;\n", !empty($mtu) ? $mtu : 0);
         $radvdconf .= "    AdvManagedFlag on;\n";
         $radvdconf .= "    AdvOtherConfigFlag on;\n";
 
+        $live_prefixes = [];
+        $advertised_prefixes = [];
         if (!empty($networkv6)) {
+            $advertised_prefixes[$networkv6] = true;
+            if ($uses_dhcpv6_pd) {
+                $live_prefixes[$networkv6] = [
+                    'prefix' => $networkv6,
+                    'interface' => $if,
+                    'device' => $device,
+                    'track_interface' => $trackif,
+                    'onlink' => true,
+                    'autonomous' => true,
+                    'preferred_lifetime' => $prefix_preferred_lifetime,
+                    'valid_lifetime' => $prefix_valid_lifetime,
+                ];
+            }
             $radvdconf .= "    prefix {$networkv6} {\n";
             $radvdconf .= "        DeprecatePrefix on;\n";
             $radvdconf .= "        AdvOnLink on;\n";
@@ -445,6 +909,7 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
             $radvdconf .= "    };\n";
         }
 
+        $vip_radvdconf = '';
         foreach (config_read_array('virtualip', 'vip', false) as $vip) {
             if ($vip['interface'] != $if || !is_ipaddrv6($vip['subnet']) || $vip['subnet_bits'] == '128') {
                 continue;
@@ -462,22 +927,58 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
                 continue;
             }
 
-            $radvdconf .= "    prefix {$vipnetv6} {\n";
-            $radvdconf .= "        DeprecatePrefix on;\n";
-            $radvdconf .= "        AdvOnLink on;\n";
-            $radvdconf .= "        AdvAutonomous on;\n";
+            $advertised_prefixes[$vipnetv6] = true;
+            $vip_radvdconf .= "    prefix {$vipnetv6} {\n";
+            $vip_radvdconf .= "        DeprecatePrefix on;\n";
+            $vip_radvdconf .= "        AdvOnLink on;\n";
+            $vip_radvdconf .= "        AdvAutonomous on;\n";
+            $vip_radvdconf .= "    };\n";
+        }
+
+        if ($uses_dhcpv6_pd) {
+            /* Automatic DHCPv6-PD track6 always participates in stale-prefix deprecation. */
+            radvd_stale_prefixes_ensure_loaded($stale_prefixes_fobj, $stale_prefixes_state);
+            $stale_prefixes_seen_interfaces[$if] = true;
+            $stale_prefixes = radvd_stale_prefixes_update(
+                $stale_prefixes_state,
+                $if,
+                $device,
+                $trackif,
+                $live_prefixes,
+                $now,
+                $advertised_prefixes
+            );
+            $radvdconf .= radvd_stale_prefixes_render($stale_prefixes);
+        }
+        $radvdconf .= $vip_radvdconf;
+
+        if (count($dnslist) > 0) {
+            $radvdconf .= "    RDNSS " . implode(" ", $dnslist) . " {\n";
+            if (radvd_any_address_uses_prefixes($dnslist, $related_prefixes)) {
+                /* RFC 9096 section 3.4: DNS tied to PD must share its lifetime. */
+                $radvdconf .= "        AdvRDNSSLifetime {$prefix_valid_lifetime};\n";
+            }
             $radvdconf .= "    };\n";
         }
 
-        if (count($dnslist) > 0) {
-            $radvdconf .= "    RDNSS " . implode(" ", $dnslist) . " { };\n";
-        }
-
         if (!empty($config['system']['domain'])) {
-            $radvdconf .= "    DNSSL {$config['system']['domain']} { };\n";
+            $radvdconf .= "    DNSSL {$config['system']['domain']} {\n";
+            if (radvd_any_address_uses_prefixes($dnslist, $related_prefixes)) {
+                /* RFC 9096 section 3.4: DNSSL follows tied RDNSS lifetime. */
+                $radvdconf .= "        AdvDNSSLLifetime {$prefix_valid_lifetime};\n";
+            }
+            $radvdconf .= "    };\n";
         }
 
         $radvdconf .= "};\n";
+    }
+
+    if ($stale_prefixes_fobj != null) {
+        radvd_stale_prefixes_prune($stale_prefixes_state, $now, $stale_prefixes_seen_interfaces);
+        radvd_stale_prefixes_save($stale_prefixes_fobj, $stale_prefixes_state);
+        unset($stale_prefixes_fobj);
+    } elseif (file_exists(radvd_stale_prefixes_state_file())) {
+        @unlink(radvd_stale_prefixes_state_file());
     }
 
     file_safe($radvd_conf_file, $radvdconf);
