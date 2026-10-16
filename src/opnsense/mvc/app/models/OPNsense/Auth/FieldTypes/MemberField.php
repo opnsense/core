@@ -42,7 +42,11 @@ class MemberField extends BaseListField
             self::$uid_list = [];
 
             foreach ((new User())->user->iterateItems() as $node) {
-                self::$uid_list[(string)$node->uid] = (string)$node->name;
+                if (!isset(self::$uid_list[(string)$node->uid])) {
+                    self::$uid_list[(string)$node->uid] = (string)$node->name;
+                } else {
+                    self::$uid_list[(string)$node->uid] .= ', ' . (string)$node->name;
+                }
             }
         }
         $this->internalOptionList = self::$uid_list;
