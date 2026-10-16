@@ -105,7 +105,10 @@ class ACL
                 if ($key == 'user') {
                     $username = (string)$node->name;
                     $uid = (string)$node->uid;
-                    $userUidMap[$uid] = $username;
+                    if (!isset($userUidMap[$uid])) {
+                        $userUidMap[$uid] = [];
+                    }
+                    $userUidMap[$uid][] = $username;
                     $this->userDatabase[$username] = [];
                     $this->userDatabase[$username]['uid'] = $uid;
                     $this->userDatabase[$username]['groups'] = [];
@@ -140,10 +143,11 @@ class ACL
                         if (!isset($userUidMap[$member])) {
                             continue;
                         }
-                        $username = $userUidMap[$member];
-                        if ($this->userDatabase[$username]["uid"] == $member) {
-                            $this->userDatabase[$username]["groups"][] = $groupkey;
-                            $this->userDatabase[$username]["gids"][] = (string)$groupNode->gid;
+                        foreach ($userUidMap[$member] as $username) {
+                            if ($this->userDatabase[$username]["uid"] == $member) {
+                                $this->userDatabase[$username]["groups"][] = $groupkey;
+                                $this->userDatabase[$username]["gids"][] = (string)$groupNode->gid;
+                            }
                         }
                     }
                 } elseif ($itemKey == "priv") {
