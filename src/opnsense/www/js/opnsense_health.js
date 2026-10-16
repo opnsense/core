@@ -151,6 +151,7 @@ class HealthGraph {
         const fieldAxes = metadata['field_axes'] || {};
         const fieldScales = metadata['field_scales'] || {};
         const fieldUnits = metadata['field_units'] || {};
+        const axisFormats = metadata['axis_formats'] || {};
         const axisTypes = metadata['axis_types'] || {};
         for (const item of data.data) {
             const dataset = {
@@ -164,6 +165,10 @@ class HealthGraph {
             }
             if (fieldUnits[item.key]) {
                 dataset.unit = fieldUnits[item.key];
+            }
+            const axisId = dataset.yAxisID || 'y';
+            if (axisFormats[axisId]) {
+                dataset.valueFormat = axisFormats[axisId];
             }
             for (const [x, y] of item.values) {
                 // timestack formatter expects array of x,y objects
@@ -223,13 +228,20 @@ class HealthGraph {
     }
 
     _formatTick(value) {
+        return Math.abs(value) >= 1000 ? HealthGraph._formatMetricValue(value) : value;
+    }
+
+    static _formatMetricValue(value) {
         const kb = 1000;
         const ndx = value === 0 ? 0 : Math.floor(Math.log(Math.abs(value)) / Math.log(kb));
         const magnitudeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
-        if (Math.abs(value) > 1000 && magnitudeTypes[ndx]) {
+        if (Math.abs(value) >= 1000 && magnitudeTypes[ndx]) {
             return (value / Math.pow(kb, ndx)).toFixed(0) + ' ' + magnitudeTypes[ndx];
         }
-        return value;
+        if (Math.abs(value) >= 1) {
+            return Math.round(value).toString();
+        }
+        return Number(value.toFixed(3)).toString();
     }
 
     _formatLogarithmicTick(value, index, ticks) {
@@ -331,7 +343,8 @@ class HealthGraph {
                                 if (label) {
                                     label += ': ';
                                 }
-                                label += context.formattedValue;
+                                label += context.dataset.valueFormat === 'metric' ?
+                                    HealthGraph._formatMetricValue(context.raw.y) : context.formattedValue;
                                 if (context.dataset.unit) {
                                     label += context.dataset.unit === '%' ? '%' : ` ${context.dataset.unit}`;
                                 }

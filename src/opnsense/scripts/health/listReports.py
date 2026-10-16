@@ -54,9 +54,9 @@ for filename in glob.glob('%s/*.rrd' % rrd_reports_dir):
         topic = rrdFilename.split('-')[-1]
         itemName = '-'.join(rrdFilename.split('-')[:-1])
     result[rrdFilename] = {
-        'title': '', 'y-axis_label': '', 'axis_labels': {}, 'axis_types': {},
-        'field_axes': {}, 'field_scales': {}, 'field_units': {}, 'topic': topic,
-        'itemName': itemName, 'filename': os.path.basename(filename)
+        'title': '', 'y-axis_label': '', 'axis_formats': {}, 'axis_labels': {},
+        'axis_types': {}, 'field_axes': {}, 'field_scales': {}, 'field_units': {},
+        'topic': topic, 'itemName': itemName, 'filename': os.path.basename(filename)
     }
 
 # scan all definition files
