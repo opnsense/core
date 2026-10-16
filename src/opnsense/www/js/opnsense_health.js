@@ -36,6 +36,7 @@ class HealthGraph {
         this.currentSystem = null;
         this.currentDetailLevel = 0;
         this.currentStacked = false;
+        this.dynamicScaleIds = [];
     }
 
     async initialize() {
@@ -77,13 +78,12 @@ class HealthGraph {
         }
 
         const data = await this._fetchData();
-        const formatted = this._formatData(data.set);
+        const formatted = this._formatData(data.set, data);
 
         const stepSize = data.set.step_size;
 
         this.chart.data.datasets = formatted;
-        this.chart.options.scales.y.title.text = data['y-axis_label'];
-        this.chart.options.scales.y.stacked = stacked;
+        this._configureScales(data, stacked);
         this.chart.options.plugins.title.text = data['title'];
         this.chart.options.plugins.zoom.limits.x.minRange = this._getMinRange(stepSize * 1000);
         this.chart.update();
@@ -128,21 +128,110 @@ class HealthGraph {
         }
     }
 
-    _formatData(data) {
+    _formatData(data, metadata) {
         let datasets = [];
+        const fieldAxes = metadata['field_axes'] || {};
+        const fieldScales = metadata['field_scales'] || {};
+        const fieldUnits = metadata['field_units'] || {};
+        const axisTypes = metadata['axis_types'] || {};
         for (const item of data.data) {
             const dataset = {
                 ...this.datasetOptions,
                 label: item.key,
                 data: []
             };
+            const displayScale = Number(fieldScales[item.key] || 1);
+            if (fieldAxes[item.key]) {
+                dataset.yAxisID = fieldAxes[item.key];
+            }
+            if (fieldUnits[item.key]) {
+                dataset.unit = fieldUnits[item.key];
+            }
             for (const [x, y] of item.values) {
                 // timestack formatter expects array of x,y objects
-                dataset.data.push({ x: x, y: y });
+                let displayValue = y === null ? null : y * displayScale;
+                const axisType = axisTypes[dataset.yAxisID || 'y'];
+                if (axisType === 'logarithmic' && displayValue !== null && displayValue <= 0) {
+                    displayValue = null;
+                }
+                dataset.data.push({ x: x, y: displayValue });
             }
             datasets.push(dataset);
         }
         return datasets;
+    }
+
+    _configureScales(metadata, stacked) {
+        for (const scaleId of this.dynamicScaleIds) {
+            delete this.chart.options.scales[scaleId];
+        }
+        this.dynamicScaleIds = [];
+
+        const fieldAxes = metadata['field_axes'] || {};
+        const axisLabels = metadata['axis_labels'] || {};
+        const axisTypes = metadata['axis_types'] || {};
+        const axisIds = [...new Set(Object.values(fieldAxes))];
+        const primaryScale = this.chart.options.scales.y;
+        const primaryType = axisTypes.y || 'linear';
+        primaryScale.type = primaryType;
+        primaryScale.display = axisIds.length === 0 || axisIds.includes('y');
+        primaryScale.position = 'left';
+        primaryScale.stacked = primaryType === 'linear' && stacked;
+        primaryScale.title.text = axisLabels.y || metadata['y-axis_label'];
+        primaryScale.ticks = {
+            callback: primaryType === 'logarithmic' ? this._formatLogarithmicTick : this._formatTick
+        };
+
+        for (const axisId of axisIds) {
+            if (axisId === 'y') {
+                continue;
+            }
+            const axisType = axisTypes[axisId] || 'linear';
+            this.chart.options.scales[axisId] = {
+                ...this._defaultYAxisOptions(axisType),
+                position: 'right',
+                stacked: axisType === 'linear' && stacked,
+                grid: {
+                    drawOnChartArea: false
+                },
+                title: {
+                    display: true,
+                    padding: 8,
+                    text: axisLabels[axisId] || axisId
+                }
+            };
+            this.dynamicScaleIds.push(axisId);
+        }
+    }
+
+    _formatTick(value) {
+        const kb = 1000;
+        const ndx = value === 0 ? 0 : Math.floor(Math.log(Math.abs(value)) / Math.log(kb));
+        const magnitudeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
+        if (Math.abs(value) > 1000 && magnitudeTypes[ndx]) {
+            return (value / Math.pow(kb, ndx)).toFixed(0) + ' ' + magnitudeTypes[ndx];
+        }
+        return value;
+    }
+
+    _formatLogarithmicTick(value, index, ticks) {
+        const label = Chart.Ticks.formatters.logarithmic.call(this, value, index, ticks);
+        return label !== '' && value >= 1 ? Math.round(value).toString() : label;
+    }
+
+    _defaultYAxisOptions(type = 'linear') {
+        const result = {
+            type: type,
+            position: 'left',
+            title: {
+                display: true,
+                padding: 8
+            }
+        };
+        result.ticks = {
+            callback: type === 'logarithmic' ? this._formatLogarithmicTick : this._formatTick
+        };
+        return result;
     }
 
     _defaultChartOptions() {
@@ -186,26 +275,7 @@ class HealthGraph {
                     x: {
                         type: 'timestack'
                     },
-                    y: {
-                        type: 'linear',
-                        position: 'left',
-                        title: {
-                            display: true,
-                            padding: 8
-                        },
-                        ticks: {
-                            callback: function(value, index, ticks) {
-                                const kb = 1000;
-                                const ndx = value === 0 ? 0 : Math.floor(Math.log(Math.abs(value)) / Math.log(kb));
-                                const fileSizeTypes = ["", "K", "M", "G", "T", "P", "E", "Z", "Y"];
-                                if (Math.abs(value) > 1000 && fileSizeTypes[ndx]) {
-                                    return (value / Math.pow(kb, ndx)).toFixed(0) + ' ' + fileSizeTypes[ndx];
-                                } else {
-                                    return value;
-                                }
-                            }
-                        }
-                    },
+                    y: this._defaultYAxisOptions(),
                 },
                 plugins: {
                     zoom: {
@@ -237,6 +307,19 @@ class HealthGraph {
                     },
                     tooltip: {
                         caretPadding: 15,
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                label += context.formattedValue;
+                                if (context.dataset.unit) {
+                                    label += context.dataset.unit === '%' ? '%' : ` ${context.dataset.unit}`;
+                                }
+                                return label;
+                            }
+                        }
                     },
                 },
                 transitions: {
