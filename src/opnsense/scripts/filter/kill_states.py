@@ -26,9 +26,14 @@
     POSSIBILITY OF SUCH DAMAGE.
 """
 import argparse
-import ujson
+import re
 import subprocess
+import ujson
 from lib.states import query_states
+
+
+def is_state_id(value):
+    return re.fullmatch(r'[0-9a-fA-F]+/[0-9a-fA-F]+', value) is not None
 
 
 if __name__ == '__main__':
@@ -40,13 +45,12 @@ if __name__ == '__main__':
     inputargs = parser.parse_args()
 
     # collect all unique state id's
-    commands = dict()
+    state_ids = set()
     for record in query_states(rule_label=inputargs.label, filter_str=inputargs.filter):
-        commands[record['id']] = "/sbin/pfctl -k id -k %s" % record['id']
+        if is_state_id(record['id']):
+            state_ids.add(record['id'])
 
-    # drop list of states in chunks
-    chunk_size = 500
-    commands  = list(commands.values())
-    for chunk in [commands[i:i + chunk_size] for i in range(0, len(commands), chunk_size)]:
-        sp = subprocess.run([";\n".join(chunk)], capture_output=True, text=True, shell=True)
-    print(ujson.dumps({'dropped_states': len(commands)}))
+    # drop matching states
+    for state_id in state_ids:
+        subprocess.run(['/sbin/pfctl', '-k', 'id', '-k', state_id], capture_output=True, text=True)
+    print(ujson.dumps({'dropped_states': len(state_ids)}))

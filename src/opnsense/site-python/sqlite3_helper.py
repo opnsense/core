@@ -29,6 +29,7 @@
 import datetime
 import glob
 import sqlite3
+import subprocess
 import syslog
 import os
 
@@ -68,7 +69,13 @@ def check_and_repair(filename_mask, force_repair=False):
                         if os.path.exists(tmp_filename):
                             os.remove(tmp_filename)
                     # export the usable parts from the file to an sql file
-                    os.system('echo ".dump" | /usr/local/bin/sqlite3 %s > %s ' % (filename, filename_sql))
+                    with open(filename_sql, 'w') as f_out:
+                        subprocess.run(
+                            ['/usr/local/bin/sqlite3', filename],
+                            input='.dump\n',
+                            stdout=f_out,
+                            text=True
+                        )
                     # remove transaction and error blocks
                     with open(filename_sql, 'r') as f_in:
                         with open(filename_sql_clean, 'w') as f_out:
@@ -76,7 +83,12 @@ def check_and_repair(filename_mask, force_repair=False):
                                 if line.strip().split(';')[0] not in ('BEGIN TRANSACTION', 'ROLLBACK'):
                                     f_out.write(line)
                     # create a new sqlite3 database
-                    os.system('/usr/local/bin/sqlite3 %s < %s ' % (filename_tmp, filename_sql_clean))
+                    with open(filename_sql_clean, 'r') as f_in:
+                        subprocess.run(
+                            ['/usr/local/bin/sqlite3', filename_tmp],
+                            stdin=f_in,
+                            text=True
+                        )
                     # cleanup / move new database into place
                     if os.path.exists(filename_tmp):
                         for tmp_filename in [filename, filename_sql, filename_sql_clean]:
