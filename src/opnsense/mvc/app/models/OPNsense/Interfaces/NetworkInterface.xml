@@ -165,6 +165,7 @@
                     <pcp16 value="16">48</pcp16>
                     <none>None</none>
                 </OptionValues>
+                <Required>Y</Required>
             </dhcp6-ia-pd-len>
             <dhcp6prefixonly type="BooleanField"/>
             <dhcp6_request_dns type="BooleanField"/>
