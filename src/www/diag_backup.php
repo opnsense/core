@@ -640,7 +640,7 @@ $( document ).ready(function() {
 <?php elseif ($field['type'] == 'file'): ?>
                         <input name="<?=$fieldId;?>" type="file">
 <?php elseif ($field['type'] == 'password'):?>
-                        <input name="<?=$fieldId;?>" type="password" autocomplete="new-password" value="<?=$pconfig[$fieldId];?>" />
+                        <input name="<?=$fieldId;?>" type="password" autocomplete="new-password" value="<?=$pconfig[$fieldId];?>" placeholder="<?= html_safe($field['placeholder'] ?? '') ?>" />
 <?php elseif ($field['type'] == 'textarea'): ?>
                         <textarea name="<?=$fieldId;?>" rows="10"><?=$pconfig[$fieldId];?></textarea>
 <?php elseif ($field['type'] == 'passwordarea'): ?>
