@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2026 Greelan
  * Copyright (C) 2019 Deciso B.V.
  * All rights reserved.
  *
@@ -37,13 +38,12 @@ function opendns_configure()
 
 function opendns_configure_do($verbose = false)
 {
-    global $config;
+    $mdl = new \OPNsense\OpenDNS\OpenDNS();
 
-    if (!empty($config['opendns']['enable'])) {
+    if (!$mdl->enable->isEmpty()) {
         service_log('Configure OpenDNS...', $verbose);
 
-        $result = opendns_register($config['opendns']);
-        log_msg("opendns response: $result");
+        opendns_register();
 
         service_log("done.\n", $verbose);
     }
@@ -58,13 +58,42 @@ function opendns_xmlrpc_sync()
     ]];
 }
 
-function opendns_register($pconfig)
+/**
+ * update the IP address of the OpenDNS.com network
+ * @return string|null error message, null on success
+ */
+function opendns_register()
 {
+    $mdl = new \OPNsense\OpenDNS\OpenDNS();
+    $error = null;
+
     $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, sprintf('https://updates.opendns.com/nic/update?hostname=%s', $pconfig['host']));
-    curl_setopt($ch, CURLOPT_USERPWD, sprintf('%s:%s', $pconfig['username'], $pconfig['password']));
+    curl_setopt($ch, CURLOPT_URL, sprintf(
+        'https://updates.opendns.com/nic/update?hostname=%s',
+        rawurlencode((string)$mdl->host)
+    ));
+    curl_setopt($ch, CURLOPT_USERPWD, sprintf('%s:%s', (string)$mdl->username, $mdl->password->getValue()));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 60);
     $output = curl_exec($ch);
 
-    return $output;
+    if ($output === false) {
+        $error = curl_error($ch);
+    } else {
+        $lines = preg_split('/\s*\n\s*/', trim($output), -1, PREG_SPLIT_NO_EMPTY);
+        $failed = preg_grep('/^(good|nochg)/', $lines, PREG_GREP_INVERT);
+        if (!empty($failed)) {
+            $error = implode(', ', $failed);
+        } elseif (empty($lines)) {
+            $error = sprintf('empty response, HTTP status %d', curl_getinfo($ch, CURLINFO_RESPONSE_CODE));
+        }
+    }
+
+    if ($error !== null) {
+        log_msg("opendns registration failed: {$error}", LOG_ERR);
+    } else {
+        log_msg('opendns response: ' . implode(', ', $lines));
+    }
+
+    return $error;
 }
