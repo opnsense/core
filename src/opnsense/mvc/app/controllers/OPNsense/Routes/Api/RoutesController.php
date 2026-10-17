@@ -32,8 +32,7 @@ namespace OPNsense\Routes\Api;
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
-use OPNsense\Core\FileObject;
-use OPNsense\Routes\Route;
+use OPNsense\System\StaticRoute;
 
 /**
  * @package OPNsense\Routes
@@ -42,18 +41,6 @@ class RoutesController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'route';
     protected static $internalModelClass = '\OPNsense\Routes\Route';
-    var $todo_file = '/tmp/.static_routes.todo';
-
-    /**
-     * @param array $payload data to store
-     */
-    private function store_todo($payload)
-    {
-        $fobj = new FileObject($this->todo_file, 'a+', 0600, LOCK_EX);
-        $data = $fobj->readJson() ?? [];
-        $data[] = $payload;
-        $fobj->truncate(0)->writeJson($data);
-    }
 
     /**
      * search routes
@@ -81,11 +68,11 @@ class RoutesController extends ApiMutableModelControllerBase
         $node = $this->getModel()->getNodeByReference('route.' . $uuid);
         $to_store = null;
         if ($node !== null) {
-            $to_store = ['network' => (string)$node->network, 'gateway' => (string)$node->gateway];
+            $to_store = (string)$node->network;
         }
         $result =  $this->setBase("route", "route", $uuid);
         if ($result['result'] == 'saved' && !empty($to_store)) {
-            $this->store_todo($to_store);
+            StaticRoute::claim($to_store);
         }
         return $result;
     }
@@ -130,8 +117,7 @@ class RoutesController extends ApiMutableModelControllerBase
         $node = $this->getModel()->getNodeByReference('route.' . $uuid);
         $response = $this->delBase("route", $uuid);
         if (!empty($response['result']) && $response['result'] == 'deleted') {
-            // we don't know for sure if this route was already removed, flush to disk to remove on apply
-            $this->store_todo(['network' => (string)$node->network, 'gateway' => (string)$node->gateway]);
+            StaticRoute::claim((string)$node->network);
         }
         return $response;
     }
