@@ -85,6 +85,10 @@ class CertificateContainerField extends ContainerField
         if (!empty($tmp)) {
             $extns['subjectAltName'] = implode(",", $tmp);
         }
+        if (!$this->ocsp_uri->isEmpty()) {
+            $extns['authorityInfoAccess'] = "OCSP;URI:{$this->ocsp_uri}";
+        }
+
         return $extns;
     }
 }
