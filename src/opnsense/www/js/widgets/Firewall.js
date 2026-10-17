@@ -30,6 +30,7 @@ export default class Firewall extends BaseTableWidget {
         this.ifMap = {};
         this.counters = {};
         this.chart = null;
+        this.displayMode = null;
         this.rotation = 5;
         this.configurable = true;
         this.colorScheme = 'contrast';
@@ -93,7 +94,7 @@ export default class Firewall extends BaseTableWidget {
 
     getMarkup() {
         let $container = $('<div></div>');
-        let $tableContainer = $(`<div id="fw-table-container"><b>${this.translations.livelog}</b></div>`);
+        let $tableContainer = $(`<div class="fw-table-container" style="display: none"><b>${this.translations.livelog}</b></div>`);
         let $top_table = this.createTable('fw-top-table', {
             headerPosition: 'top',
             rotation: this.rotation,
@@ -125,7 +126,7 @@ export default class Firewall extends BaseTableWidget {
         $container.append($tableContainer);
 
         $container.append($(`
-            <div class="fw-chart-container">
+            <div class="fw-chart-container" style="display: none">
                 <div class="canvas-container">
                     <canvas id="fw-chart" style="display: inline-block"></canvas>
                 </div>
@@ -351,12 +352,21 @@ export default class Firewall extends BaseTableWidget {
     }
 
     onWidgetResize(elem, width, height) {
-        if (width < 700) {
-            $('#fw-chart').show();
-            $('#fw-table-container').hide();
-        } else {
-            $('#fw-chart').hide();
-            $('#fw-table-container').show();
+        const displayMode = width < 700 ? 'chart' : 'tables';
+        if (displayMode === this.displayMode) {
+            return false;
         }
+
+        this.displayMode = displayMode;
+        const $widget = $(elem);
+        const showChart = displayMode === 'chart';
+        $widget.find('.fw-chart-container').toggle(showChart);
+        $widget.find('.fw-table-container').toggle(!showChart);
+
+        if (showChart && this.chart !== null) {
+            this.chart.resize();
+        }
+
+        return true;
     }
 }

@@ -56,11 +56,6 @@ export default class Gateways extends BaseTableWidget {
         return data.rows;
     }
 
-    async onWidgetOptionsChanged(options) {
-        // Intentionally not awaited to avoid blocking dialog close
-        this._updateGateways();
-    }
-
     async getWidgetOptions() {
         const gateways = this.cachedGateways.length > 0 ? this.cachedGateways : await this._fetchGateways();
 
@@ -121,7 +116,7 @@ export default class Gateways extends BaseTableWidget {
                 &nbsp;
                 ${defaultgw ? `(${this.translations.active})` : ''}
                 <br/>
-                <div style="margin-top: 5px; margin-bottom: 5px; font-size: 15px;">${address}</div>
+                ${address === undefined ? '' : `<div style="margin-top: 5px; margin-bottom: 5px; font-size: 15px;">${address}</div>`}
             </div>`;
 
             let stats = `<div>

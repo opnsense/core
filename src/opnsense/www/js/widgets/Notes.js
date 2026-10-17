@@ -61,7 +61,6 @@ export default class Notes extends BaseWidget {
 
     async onWidgetOptionsChanged(options) {
         $(`#notes-text-${this.id}`).text(options.note || '');
-        this.config.callbacks.updateGrid();
     }
 
     async onMarkupRendered() {

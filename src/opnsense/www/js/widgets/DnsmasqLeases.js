@@ -169,7 +169,6 @@ export default class DnsmasqLeases extends BaseTableWidget {
 
     async onWidgetOptionsChanged() {
         this.configChanged = true;
-        await this.onWidgetTick();
     }
 
 }

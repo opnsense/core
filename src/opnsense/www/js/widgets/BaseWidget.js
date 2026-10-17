@@ -55,12 +55,12 @@ class BaseWidget {
         this.config['widget'] = config;
     }
 
-    async getWidgetConfig() {
+    async getWidgetConfig(options = null) {
         let widget_config = {};
         if (this.config !== undefined && 'widget' in this.config) {
             widget_config = this.config['widget'];
         }
-        const options = await this.getWidgetOptions();
+        options ??= await this.getWidgetOptions();
         return Object.entries(options).reduce((acc, [key, value]) => {
             if (key in widget_config &&
                 widget_config[key] !== null &&
@@ -138,6 +138,10 @@ class BaseWidget {
                 this.closeEventSource();
             }
         }
+    }
+
+    onEditModeChanged(enabled) {
+        return null;
     }
 
     async getWidgetOptions() {
