@@ -283,7 +283,7 @@ class BaseWidget {
     }
 
     sanitizeSelector(selector) {
-        return String(selector).replace(/[:/.=+]/gi, '__');
+        return String(selector).replace(/[:/.=+()]/gi, '__');
     }
 
     startCommandTransition(id, $target) {
