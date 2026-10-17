@@ -61,14 +61,6 @@ foreach (($fobj->readJson() ?? []) as $record) {
 $fobj->truncate(0);
 unset($fobj); /* unlock */
 
-/* drop deleted routes */
-foreach (glob("/tmp/delete_route_*.todo") as $filename) {
-    $network = trim(file_get_contents($filename));
-    $inet = is_subnetv6($network) ? 'inet6' : 'inet';
-    mwexecfm('/sbin/route delete -%s %s', [$inet, $network]);
-    unlink($filename);
-}
-
 /* routing is not allowed to restart monitors when extended hook is requested */
 system_routing_configure(true, null, !$monitor_hook);
 
