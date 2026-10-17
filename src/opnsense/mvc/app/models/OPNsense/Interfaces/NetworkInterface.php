@@ -251,7 +251,7 @@ class NetworkInterface extends BaseModel
                 ));
             }
 
-            if ($if->type6->isEqual('dhcp6')) {
+            if ($if->type6->isEqual('dhcp6') && $if->{'dhcp6-ia-pd-len'}->isNumeric()) {
                 $pdlen = $if->{'dhcp6-ia-pd-len'}->getValue();
                 $ipv6_num_prefix_ids = $pdlen < 0 ? 0 : pow(2, $pdlen);
                 $dhcp6_prefix_id = intval($if->{'dhcp6-prefix-id'}->getValue(), 16);
