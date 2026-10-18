@@ -40,7 +40,7 @@ class ContainerField extends BaseField
     public function isFieldChanged()
     {
         foreach (parent::iterateItems() as $child) {
-            if ($child->isFieldChanged()) {
+            if ($child->isFieldChanged() && !$child->getInternalIsVolatile()) {
                 return true;
             }
         }
