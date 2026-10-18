@@ -54,7 +54,7 @@ set eventqueue basedir {{ OPNsense.monit.general.eventqueuePath }} {{ slots }}
 {%    set password = '' %}
 {%    if helpers.exists('OPNsense.monit.general.username') and helpers.exists('OPNsense.monit.general.password') %}
 {%      set username = "username " ~ OPNsense.monit.general.username %}
-{%      set password = "password " ~ '"' ~ OPNsense.monit.general.password ~ '"' %}
+{%      set password = "password " ~ '"' ~ OPNsense.monit.general.password|replace('"', '\\x22') ~ '"' %}
 {%    endif %}
 {%    if OPNsense.monit.general.ssl|default('0') == '1' %}
 {%      set ssl = 'using ssl' %}
