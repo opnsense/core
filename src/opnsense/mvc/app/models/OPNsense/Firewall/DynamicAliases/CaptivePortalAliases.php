@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2025 Deciso B.V.
+ * Copyright (C) 2025-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -33,24 +33,20 @@ class CaptivePortalAliases
     public function collect()
     {
         $result = [];
-        $cp = new \OPNsense\CaptivePortal\CaptivePortal();
-        if ($cp->isEnabled()) {
-            foreach ($cp->zones->zone->iterateItems() as $zone) {
-                if (empty((string)$zone->enabled)) {
-                    continue;
-                }
-
-                $zoneid = (string)$zone->zoneid;
-                $result["__captiveportal_zone_{$zoneid}"] = [
-                    "enabled" => "1",
-                    "name" => "__captiveportal_zone_{$zoneid}",
-                    "type" => "external",
-                    "description" => sprintf("%s %s", (string)$zone->descr, gettext("captiveportal")),
-                    "content" => "",
-                ];
+        $node = \OPNsense\CaptivePortal\CaptivePortal::getConfigNode();
+        foreach ($node?->zones?->children() ?? [] as $zone) {
+            if (empty((string)$zone->enabled)) {
+                continue;
             }
+            $zoneid = (string)$zone->zoneid;
+            $result["__captiveportal_zone_{$zoneid}"] = [
+                "enabled" => "1",
+                "name" => "__captiveportal_zone_{$zoneid}",
+                "type" => "external",
+                "description" => sprintf("%s %s", (string)$zone->descr, gettext("captiveportal")),
+                "content" => "",
+            ];
         }
-
         return $result;
     }
 }
