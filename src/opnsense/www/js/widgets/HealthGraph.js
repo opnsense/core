@@ -150,6 +150,11 @@ export default class HealthGraphWidget extends BaseWidget {
                 title: this.translations.stacked,
                 type: 'checkbox',
                 default: false
+            },
+            logarithmic: {
+                title: this.translations.logarithmic,
+                type: 'checkbox',
+                default: null
             }
         };
     }
@@ -193,12 +198,12 @@ export default class HealthGraphWidget extends BaseWidget {
         const granularity = ['0', '1', '2', '3'].includes(`${config.granularity}`)
             ? `${config.granularity}`
             : '0';
-
         return {
             category,
             subject,
             granularity,
-            stacked: config.stacked === true || config.stacked === 'true' || config.stacked === '1'
+            stacked: config.stacked === true || config.stacked === 'true' || config.stacked === '1',
+            logarithmic: config.logarithmic ?? null
         };
     }
 
@@ -213,11 +218,12 @@ export default class HealthGraphWidget extends BaseWidget {
         }
         this.setWidgetConfig(config);
         this._updateTitle(config);
-        await graph.update(
+        const log = await graph.update(
             `${config.subject}-${config.category}`,
             Number(config.granularity),
             config.stacked,
-            resetZoom
+            resetZoom,
+            config.logarithmic
         );
     }
 
