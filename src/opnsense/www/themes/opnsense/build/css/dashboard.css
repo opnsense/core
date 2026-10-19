@@ -84,7 +84,8 @@
 
 .link-handle,
 .close-handle,
-.edit-handle {
+.edit-handle,
+.clone-handle {
   margin-left: 0.5em;
   vertical-align: middle;
   text-align: right;
@@ -93,7 +94,8 @@
 
 .link-handle > a,
 .close-handle > i,
-.edit-handle > i {
+.edit-handle > i,
+.clone-handle > i {
   font-size: 0.8em;
 }
 

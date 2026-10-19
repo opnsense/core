@@ -30,6 +30,36 @@ namespace OPNsense\Core;
 
 class DashboardController extends \OPNsense\Base\IndexController
 {
+    protected function templateJSIncludes()
+    {
+        $result = parent::templateJSIncludes();
+        $result[] = '/ui/js/gridstack-all.min.js';
+        $result[] = '/ui/js/opnsense_widgets.js';
+        $result[] = '/ui/js/moment-with-locales.min.js';
+        $result[] = '/ui/js/chart.umd.min.js';
+        $result[] = '/ui/js/chartjs-plugin-colorschemes.min.js';
+        $result[] = '/ui/js/chartjs-adapter-moment.min.js';
+        $result[] = '/ui/js/chartjs-plugin-zoom.min.js';
+        $result[] = '/ui/js/luxon.min.js';
+        $result[] = '/ui/js/chartjs-scale-timestack.min.js';
+        $result[] = '/ui/js/chartjs-plugin-streaming.js';
+        $result[] = '/ui/js/smoothie.js';
+        $result[] = '/ui/js/opnsense_health.js';
+        $result[] = '/ui/js/widgets/BaseWidget.js';
+        $result[] = '/ui/js/widgets/BaseTableWidget.js';
+        $result[] = '/ui/js/widgets/BaseGaugeWidget.js';
+        return $result;
+    }
+
+    protected function templateCSSIncludes()
+    {
+        $result = parent::templateCSSIncludes();
+        $result[] = '/ui/css/gridstack.min.css';
+        $result[] = '/ui/css/gridstack-extra.min.css';
+        $result[] = '/css/dashboard.css';
+        return $result;
+    }
+
     public function indexAction()
     {
         $this->view->pick('OPNsense/Core/dashboard');

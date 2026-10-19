@@ -57,6 +57,16 @@ class DashboardController extends ApiControllerBase
         return true;
     }
 
+    private function getWidgetTypeId($widget)
+    {
+        if (!is_array($widget)) {
+            return null;
+        }
+
+        // Legacy dashboard entries use id for both the module and instance.
+        return $widget['type'] ?? $widget['id'] ?? null;
+    }
+
     private function getMetadata()
     {
         $combinedXml = new \DOMDocument('1.0');
@@ -100,26 +110,15 @@ class DashboardController extends ApiControllerBase
         ];
     }
 
-    public function getDashboardAction()
+    private function getAvailableModules()
     {
-        $result = [];
-        $dashboard = null;
-
-        if (($node = $this->usermdl->getUserByName($this->getUserName())) !== null) {
-            $dashboard = $node->dashboard->deserialize();
-        }
-
-        if (empty($dashboard)) {
-            $dashboard = $this->getDefaultDashboard();
-        }
-
-        $result['modules'] = [];
-        $metadata = $this->getMetadata();
-        foreach ($metadata as $md) {
-            foreach ($md as $widgetId => $metadataAttributes) {
+        $modules = [];
+        foreach ($this->getMetadata() as $metadata) {
+            foreach ($metadata as $widgetId => $metadataAttributes) {
                 $widgetId = (string)$widgetId;
                 $fname = (string)$metadataAttributes->filename;
                 $link = (string)$metadataAttributes->link;
+                $multiple = isset($metadataAttributes->multiple);
                 $endpoints = (array)($metadataAttributes->endpoints->endpoint ?? []);
                 $translations = (array)($metadataAttributes->translations ?? []);
 
@@ -137,24 +136,58 @@ class DashboardController extends ApiControllerBase
                     $translations[$key] = gettext($value);
                 }
 
-                $result['modules'][] = [
+                $modules[] = [
                     'id' => $widgetId,
                     'module' => $fname,
                     'link' => $link,
+                    'multiple' => $multiple,
                     'translations' => $translations
                 ];
             }
         }
 
-        // filter widgets according to metadata
-        $moduleIds = array_column($result['modules'], 'id');
-        $filteredWidgets = array_filter($dashboard['widgets'], function ($widget) use ($moduleIds) {
-            return in_array($widget['id'], $moduleIds);
-        });
-        $dashboard['widgets'] = array_values($filteredWidgets);
-        $result['dashboard'] = $dashboard;
+        return $modules;
+    }
+
+    private function filterDashboardWidgets($dashboard, $modules)
+    {
+        $moduleIds = array_column($modules, 'id');
+        $dashboard['widgets'] = array_values(array_filter(
+            $dashboard['widgets'],
+            function ($widget) use ($moduleIds) {
+                return in_array($this->getWidgetTypeId($widget), $moduleIds, true);
+            }
+        ));
+
+        return $dashboard;
+    }
+
+    public function getDashboardAction()
+    {
+        $result = [];
+        $dashboard = null;
+
+        if (($node = $this->usermdl->getUserByName($this->getUserName())) !== null) {
+            $dashboard = $node->dashboard->deserialize();
+        }
+
+        if (empty($dashboard)) {
+            $dashboard = $this->getDefaultDashboard();
+        }
+
+        $result['modules'] = $this->getAvailableModules();
+        $result['dashboard'] = $this->filterDashboardWidgets($dashboard, $result['modules']);
 
         return $result;
+    }
+
+    public function getDefaultsAction()
+    {
+        $modules = $this->getAvailableModules();
+        return [
+            'modules' => $modules,
+            'dashboard' => $this->filterDashboardWidgets($this->getDefaultDashboard(), $modules)
+        ];
     }
 
     public function saveWidgetsAction()

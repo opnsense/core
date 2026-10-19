@@ -188,11 +188,6 @@ export default class ThermalSensors extends BaseWidget {
         $('.thermalsensors-info-icon').tooltip({container: 'body'});
     }
 
-    async onWidgetOptionsChanged(options) {
-        // Intentionally not awaited to avoid blocking dialog close
-        this._updateSensors();
-    }
-
     async getWidgetOptions() {
         const data = this.cachedSensors.length > 0 ? this.cachedSensors : await this._fetchSensors();
 
@@ -252,10 +247,6 @@ export default class ThermalSensors extends BaseWidget {
         });
         this.chart.canvas.parentNode.style.height = `${30 + (this.chart.data.datasets[0].data.length * 30)}px`;
         this.chart.update();
-
-        // Since we are modifying the chart height based on the data length,
-        // make sure we force the manager to recalculate the widget size.
-        this.config.callbacks.updateGrid();
     }
 
     _parseSensors(data) {
