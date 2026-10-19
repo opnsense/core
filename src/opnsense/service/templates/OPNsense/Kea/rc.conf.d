@@ -4,7 +4,7 @@
     not helpers.empty('OPNsense.Kea.dhcp6.general.interfaces') and not helpers.empty('OPNsense.Kea.dhcp6.general.enabled')
 ) %}
 kea_enable="YES"
-kea_setup="/usr/local/sbin/pluginctl -c kea_sync"
+kea_setup="/usr/local/opnsense/scripts/kea/setup.sh"
 {% else %}
 kea_enable="NO"
 {% endif %}
