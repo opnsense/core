@@ -28,13 +28,15 @@
 
 namespace OPNsense\Firewall\DynamicAliases;
 
+use OPNsense\Core\Config;
+
 class CaptivePortalAliases
 {
     public function collect()
     {
         $result = [];
-        $node = \OPNsense\CaptivePortal\CaptivePortal::getConfigNode();
-        foreach ($node?->zones?->children() ?? [] as $zone) {
+        $cfg = Config::getInstance()->object();
+        foreach ($cfg?->OPNsense?->captiveportal?->zones?->children() ?? [] as $zone) {
             if (empty((string)$zone->enabled)) {
                 continue;
             }
