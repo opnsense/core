@@ -24,29 +24,6 @@
  # POSSIBILITY OF SUCH DAMAGE.
  #}
 
-{% set theme_name = ui_theme|default('opnsense') %}
-<!-- required for gridstack calculations -->
-<link href="{{ cache_safe('/ui/css/gridstack.min.css') }}" rel="stylesheet">
-<!-- required for any amount of columns < 12 -->
-<link href="{{ cache_safe('/ui/css/gridstack-extra.min.css') }}" rel="stylesheet">
-<!-- gridstack core -->
-<script src="{{ cache_safe('/ui/js/gridstack-all.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/opnsense_widgets.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/moment-with-locales.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/chart.umd.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/chartjs-plugin-colorschemes.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/chartjs-adapter-moment.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/chartjs-plugin-zoom.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/luxon.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/chartjs-scale-timestack.min.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/chartjs-plugin-streaming.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/smoothie.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/opnsense_health.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/widgets/BaseWidget.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/widgets/BaseTableWidget.js') }}"></script>
-<script src="{{ cache_safe('/ui/js/widgets/BaseGaugeWidget.js') }}"></script>
-<link rel="stylesheet" type="text/css" href="{{ cache_safe(theme_file_or_default('/css/dashboard.css', theme_name)) }}" rel="stylesheet" />
-
 <script>
 $( document ).ready(function() {
     class MainDashboardRepository extends Widgets.BaseRepository {
