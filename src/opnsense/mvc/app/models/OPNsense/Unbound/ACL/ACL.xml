@@ -30,6 +30,8 @@
             <pattern>api/unbound/settings/add_host_override/*</pattern>
             <pattern>api/unbound/settings/del_host_override/*</pattern>
             <pattern>api/unbound/settings/toggle_host_override/*</pattern>
+            <pattern>api/unbound/settings/download_host_overrides/*</pattern>
+            <pattern>api/unbound/settings/upload_host_overrides/*</pattern>
             <pattern>api/unbound/settings/search_host_alias/*</pattern>
             <pattern>api/unbound/settings/get_host_alias/*</pattern>
             <pattern>api/unbound/settings/set_host_alias/*</pattern>
