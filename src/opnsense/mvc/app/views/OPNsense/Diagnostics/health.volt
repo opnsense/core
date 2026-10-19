@@ -199,7 +199,7 @@
 
                 $("#logarithmic-select").change(async function() {
                     $('#spinner').show();
-                    await healthGraph.update(null, null, null, $(this).is(':checked'));
+                    await healthGraph.update(null, null, null, true, $(this).is(':checked'));
                     $('#spinner').hide();
                 });
 
