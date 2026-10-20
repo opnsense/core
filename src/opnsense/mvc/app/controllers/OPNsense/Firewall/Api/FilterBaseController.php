@@ -456,6 +456,18 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
     }
 
     /**
+     * Increment the sequence when cloning a rule
+     */
+    protected function setCopySequence(array $result): array
+    {
+        if ($this->request->get('fetchmode') === 'copy' && !empty($result['rule'])) {
+            $result['rule']['sequence'] = (int)$result['rule']['sequence'] + 1;
+        }
+
+        return $result;
+    }
+
+    /**
      * Export a rule collection as CSV.
      *
      * @param string $node_reference: Model node reference to export, e.g. "rules.rule"

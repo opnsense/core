@@ -254,7 +254,7 @@ class FilterController extends FilterBaseController
 
     public function getRuleAction($uuid = null)
     {
-        return $this->getBase('rule', 'rules.rule', $uuid);
+        return $this->setCopySequence($this->getBase('rule', 'rules.rule', $uuid));
     }
 
     public function delRuleAction($uuid)
