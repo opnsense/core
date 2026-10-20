@@ -25,28 +25,10 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-require_once('script/load_phalcon.php');
-require_once('util.inc');
-require_once('config.inc');
-require_once('interfaces.inc');
-require_once('filter.inc');
 
 
-$fw = filter_core_get_initialized_plugin_system();
-filter_core_bootstrap($fw);
-/* fetch all firewall plugins, except pf_firewall as this registers our mvc rules */
-foreach (plugins_scan() as $name => $path) {
-    try {
-        include_once $path;
-    } catch (\Error $e) {
-        error_log($e);
-    }
-    $func = sprintf('%s_firewall', $name);
-    if ($func != 'pf_firewall' && function_exists($func)) {
-        $func($fw);
-    }
-}
-filter_core_rules_user($fw);
+$filename = '/tmp/rules_internal.json';
+$fwrules = file_exists($filename) ? json_decode(file_get_contents($filename), true) ?? [] : [];
 
 $mapping = [
     'type' => 'action',
@@ -62,8 +44,7 @@ $mapping = [
 
 $rules = [];
 $sequence = 1;
-foreach ($fw->iterateFilterRules() as $prio => $item) {
-    $rule = $item->getRawRule();
+foreach ($fwrules as $rule) {
     if (empty($rule['disabled'])) {
         $rule['enabled'] = '1';
         foreach ($mapping as $src => $dst) {
@@ -116,7 +97,7 @@ foreach ($fw->iterateFilterRules() as $prio => $item) {
          * Evaluation order consists of a priority group and a sequence within the set,
          * prefixed with 1 as these are located after mvc rules.
          **/
-        $rule['sort_order'] = sprintf("%06d.1%06d", $prio, $sequence++);
+        $rule['sort_order'] = sprintf("%06d.1%06d", $rule['prio'], $sequence++);
         $rule['legacy'] = true;
         $rule['is_automatic'] = empty($rule['updated']); /* plugin generated rules have no timestamp */
         $rules[] = $rule;

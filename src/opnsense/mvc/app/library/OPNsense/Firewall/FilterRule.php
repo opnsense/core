@@ -34,6 +34,7 @@ namespace OPNsense\Firewall;
  */
 class FilterRule extends Rule
 {
+    private $origin = null;
     private $gatewayMapping = [];
     /* dummynet [shaper] targets */
     private static $dntargets = null;
@@ -354,11 +355,21 @@ class FilterRule extends Rule
      * @param array $interfaceMapping internal interface mapping
      * @param array $gatewayMapping internal gateway mapping
      * @param array $conf rule configuration
+     * @param string $origin tag where this rule was registered so we can query them back
      */
-    public function __construct(&$interfaceMapping, &$gatewayMapping, $conf)
+    public function __construct(&$interfaceMapping, &$gatewayMapping, $conf, $origin = 'default')
     {
         parent::__construct($interfaceMapping, $conf);
         $this->gatewayMapping = $gatewayMapping;
+        $this->origin = $origin;
+    }
+
+    /**
+     * return origin of the rule
+     */
+    public function getOrigin()
+    {
+        return $this->origin ;
     }
 
     /**
