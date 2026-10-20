@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2015-2026 Deciso B.V.
+ * Copyright (C) 2015-2025 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -358,7 +358,11 @@ abstract class BaseModel
         return $model_xml;
     }
 
-    public static function getConfigNode()
+    /**
+     * use model xml to find persisted_at for this model in the active configuration
+     * @return float last persisted at timestamp, -1 when uncacheable (isLegacyMapper)
+     */
+    public static function persistedAt()
     {
         $class_info = new ReflectionClass(get_called_class());
         $model_filename = substr($class_info->getFileName(), 0, strlen($class_info->getFileName()) - 3) . "xml";
@@ -374,21 +378,9 @@ abstract class BaseModel
 
             $tmp_config_data = Config::getInstance()->xpath($src_mountpoint);
             if ($tmp_config_data !== false && $tmp_config_data->length > 0) {
-                return simplexml_import_dom($tmp_config_data->item(0));
+                $config_array = simplexml_import_dom($tmp_config_data->item(0));
+                return floatval((string)$config_array->attributes()['persisted_at']);
             }
-        }
-        return false;
-    }
-
-    /**
-     * use model xml to find persisted_at for this model in the active configuration
-     * @return float last persisted at timestamp, -1 when uncacheable (isLegacyMapper)
-     */
-    public static function persistedAt()
-    {
-        $config_array = self::getConfigNode();
-        if ($config_array !== false) {
-            return floatval((string)$config_array->attributes()['persisted_at']);
         }
         return 0.0;
     }
