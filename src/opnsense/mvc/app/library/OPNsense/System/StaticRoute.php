@@ -81,4 +81,53 @@ class StaticRoute
         $fobj->truncate(0);
         unset($fobj); /* unlock */
     }
+
+    /**
+     * normalize network
+     * @param $network ipv4/ipv6 network or address
+     * @return string|bool
+     */
+    static private function normalize($network)
+    {
+        $tmp = explode('/', $network);
+        $addr = inet_pton(explode('%', $tmp[0])[0]);
+        if ($addr !== false) {
+            if (count($tmp) == 2) {
+                return inet_ntop($addr) . '/'. $tmp[1];
+            } else {
+                return inet_ntop($addr);
+            }
+        }
+        return false;
+    }
+
+    /**
+     * @param ?string $proto inet/inet6 or empty for all
+     * @return array installed routes
+     */
+    static public function installedRoutes($proto=null)
+    {
+        $result = [];
+        foreach (Shell::shell_safe('netstat -nrW', [], true) as $line) {
+            $parts = preg_split('/\s+/', trim($line));
+            if (count($parts) < 4) {
+                continue;
+            } elseif ($proto === 'inet' && strpos($parts[1], ':') !== false) {
+                continue;
+            } elseif ($proto === 'inet6' && strpos($parts[1], ':') === false) {
+                continue;
+            } elseif (strpos($parts[1], 'link#') === 0 && strpos($parts[2], 'B') === false) {
+                continue; /* ignore link routes, except blackholed [NullX] */
+            }
+            /* if we would tag our routes with RTF_PROTO2, we could filter them here (Flags include 2) */
+
+            if (($net = self::normalize($parts[0])) !== false) {
+                if (!isset($result[$net])) {
+                    $result[$net] = [];
+                }
+                $result[$net][] = self::normalize($parts[1]);
+            }
+        }
+        return $result;
+    }
 }
