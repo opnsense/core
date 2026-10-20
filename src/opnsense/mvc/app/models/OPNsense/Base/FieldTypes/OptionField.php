@@ -34,6 +34,8 @@ namespace OPNsense\Base\FieldTypes;
  */
 class OptionField extends BaseListField
 {
+    private static $optionCache = [];
+
     /**
      * setter for option values
      * @param $data
@@ -41,20 +43,25 @@ class OptionField extends BaseListField
     public function setOptionValues($data)
     {
         if (is_array($data)) {
-            $this->internalOptionList = [];
-            // copy options to internal structure, make sure we don't copy in array structures
-            foreach ($data as $key => $value) {
-                if (!is_array($value)) {
-                    $this->internalOptionList[$key] = strlen($value) ? gettext($value) : $key;
-                } else {
-                    foreach ($value as $subkey => $subval) {
-                        $this->internalOptionList[$subkey] = [
-                            'value' => strlen($subval) ? gettext($subval) : $subkey,
-                            'optgroup' => gettext($key),
-                        ];
+            /* index option lists per unique type */
+            $data_id = serialize($data);
+            if (!isset(self::$optionCache[$data_id])) {
+                self::$optionCache[$data_id] = [];
+                // copy options to internal structure, make sure we don't copy in array structures
+                foreach ($data as $key => $value) {
+                    if (!is_array($value)) {
+                        self::$optionCache[$data_id][$key] = strlen($value) ? gettext($value) : $key;
+                    } else {
+                        foreach ($value as $subkey => $subval) {
+                            self::$optionCache[$data_id][$subkey] = [
+                                'value' => strlen($subval) ? gettext($subval) : $subkey,
+                                'optgroup' => gettext($key),
+                            ];
+                        }
                     }
                 }
             }
+            $this->internalOptionList = self::$optionCache[$data_id];
         }
     }
 }
