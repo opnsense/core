@@ -104,7 +104,7 @@ class ModelRelationField extends BaseListField
         // combinations over the running application.
         if (!isset(self::$internalCacheOptionList[$this->internalCacheKey]) || $force) {
             self::$internalCacheOptionList[$this->internalCacheKey] = [];
-            foreach ($this->mdlStructure as $modelData) {
+            foreach ($this->mdlStructure ?? [] as $modelData) {
                 // only handle valid model sources
                 if (!isset($modelData['source']) || !isset($modelData['items']) || !isset($modelData['display'])) {
                     continue;
