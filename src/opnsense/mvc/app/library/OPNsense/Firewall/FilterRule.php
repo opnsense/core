@@ -369,7 +369,7 @@ class FilterRule extends Rule
      */
     public function getOrigin()
     {
-        return $this->origin ;
+        return $this->origin;
     }
 
     /**

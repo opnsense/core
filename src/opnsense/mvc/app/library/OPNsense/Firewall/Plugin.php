@@ -271,7 +271,7 @@ class Plugin
             $conf['label'] = $rule_hash;
         }
         $conf['#priority'] = $prio;
-        $rule = new FilterRule($this->interfaceMapping, $this->gatewayMapping, $conf);
+        $rule = new FilterRule($this->interfaceMapping, $this->gatewayMapping, $conf, $origin);
         if (empty($this->filterRules[$prio])) {
             $this->filterRules[$prio] = [];
         }
@@ -403,7 +403,7 @@ class Plugin
     public function getFilterRules($origins = [])
     {
         $result = [];
-        foreach ($this->iterateFilterRules() as $prio => $item) {
+        foreach ($this->iterateFilterRules($origins) as $prio => $item) {
             $rule = $item->getRawRule();
             $rule['prio'] = $prio;
             $result[] = $rule;
