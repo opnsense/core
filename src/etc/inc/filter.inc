@@ -394,13 +394,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     @copy('/tmp/ifconfig.debug', '/tmp/ifconfig.debug.old');
 
     mwexecf('ifconfig > %s', '/tmp/ifconfig.debug');
-    /* flush non mvc ruleset to disk for the frontend to use */
-    \OPNsense\Core\File::file_put_contents(
-        '/tmp/rules_internal.json',
-        json_encode($fw->getFilterRules(['default'])),
-        0640,
-        0
-    );
     $fobj->truncate(0)->write($rules);
     @file_put_contents('/tmp/rules.limits', $limitrules);
 
@@ -445,6 +438,13 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         return;
     }
 
+    /* flush non mvc ruleset to disk for the frontend to use */
+    \OPNsense\Core\File::file_put_contents(
+        '/tmp/rules_internal.json',
+        json_encode($fw->getFilterRules(['default'])),
+        0640,
+        0
+    );
     unlink('/tmp/rules.debug.error');
 
     service_log('.', $verbose);
