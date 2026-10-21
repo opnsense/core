@@ -5,7 +5,16 @@
     <page-diagnostics-backup-restore>
         <name>System: Configuration: Backups</name>
         <patterns>
-            <pattern>diag_backup.php*</pattern>
+            <pattern>ui/core/backup</pattern>
+            <pattern>api/core/backup/downloadConfig*</pattern>
+            <pattern>api/core/backup/download_config*</pattern>
+            <pattern>api/core/backup/getSettings*</pattern>
+            <pattern>api/core/backup/get_settings*</pattern>
+            <pattern>api/core/backup/setSettings*</pattern>
+            <pattern>api/core/backup/set_settings*</pattern>
+            <pattern>api/core/backup/restore*</pattern>
+            <pattern>api/core/backup/setupProvider/*</pattern>
+            <pattern>api/core/backup/setup_provider/*</pattern>
         </patterns>
     </page-diagnostics-backup-restore>
     <page-system-login-logout>
@@ -54,7 +63,12 @@
         <name>Diagnostics: Configuration History</name>
         <patterns>
             <pattern>ui/core/backup/history*</pattern>
-            <pattern>api/core/backup/*</pattern>
+            <pattern>api/core/backup/backups/*</pattern>
+            <pattern>api/core/backup/diff/*</pattern>
+            <pattern>api/core/backup/download/*</pattern>
+            <pattern>api/core/backup/providers*</pattern>
+            <pattern>api/core/backup/revert*</pattern>
+            <pattern>api/core/backup/delete*</pattern>
         </patterns>
     </page-diagnostics-configurationhistory>
     <page-diagnostics-factorydefaults>
