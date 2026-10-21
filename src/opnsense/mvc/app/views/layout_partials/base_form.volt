@@ -30,6 +30,7 @@
  # fields          :   list of field type objects, see form_input_tr tag for details
  # id              :   form id, used as unique id for this form.
  # apply_btn_id    :   id to use for apply button (leave empty to ignore)
+ # apply_btn_title :   label to use for apply button (defaults to 'Apply')
  # data_title      :   data-title to set on form
  #}
 
@@ -101,7 +102,7 @@
             {% if loop.last and apply_btn_id|default('') != '' %}
                     <tr>
                         <td colspan="3">
-                            <button class="btn btn-primary" id="{{apply_btn_id}}" type="button"><b>{{ lang._('Apply') }}</b> <i id="{{base_form_id}}_progress" class=""></i></button>
+                            <button class="btn btn-primary" id="{{apply_btn_id}}" type="button"><b>{{ apply_btn_title|default(lang._('Apply')) }}</b> <i id="{{base_form_id}}_progress" class=""></i></button>
                         </td>
                     </tr>
             {% endif %}
