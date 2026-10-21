@@ -1,0 +1,18 @@
+<form>
+    <field>
+        <id>apikey.username</id>
+        <label>Username</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>apikey.key</id>
+        <label>Api key</label>
+        <type>info</type>
+    </field>
+    <field>
+        <id>apikey.descr</id>
+        <label>Description</label>
+        <type>text</type>
+        <help>Optional description to identify this API key</help>
+    </field>
+</form>
