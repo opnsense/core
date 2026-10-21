@@ -77,7 +77,9 @@ class M1_0_13 extends BaseModelMigration
         }
 
         /* move safesearch boolean to general */
-        $model->general->safesearch = $old_dnsbl->safesearch;
+        if (isset($model->general->safesearch)) {
+            $model->general->safesearch = $old_dnsbl->safesearch;
+        }
 
         /* skip default blocklist if no properties set (except for enabled) */
         $add_default = false;
