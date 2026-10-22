@@ -27,6 +27,16 @@
 # Source this file from a service's rc.conf.d file and call
 # supervisor_enable.  The service must run in the foreground.
 
+# A hard crash may leave the service-owned PID file behind and prevent the
+# service from starting again.  daemon(8) invokes this mode on every restart
+# so the stale PID file is removed immediately before executing the service.
+if [ "${1:-}" = "exec" ]; then
+    native_pidfile=$2
+    shift 2
+    [ -z "${native_pidfile}" ] || rm -f "${native_pidfile}"
+    exec "$@"
+fi
+
 supervisor_get_pidfile()
 {
     echo "/var/run/${name}.supervisor.pid"
@@ -77,6 +87,7 @@ supervisor_start()
     fi
 
     /usr/sbin/daemon -f -r -p "${daemon_child_pidfile}" -P "${supervisor_pidfile}" \
+        /usr/local/opnsense/scripts/service/supervisor.subr.sh exec "${pidfile}" \
         ${command} ${rc_flags} ${command_args}
 }
 
