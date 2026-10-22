@@ -32,7 +32,9 @@
 import os
 import glob
 import os.path
+import shutil
 import lib.rulecache
+from lib import metadata
 from lib import rule_source_directory
 
 if __name__ == '__main__':
@@ -85,8 +87,9 @@ if __name__ == '__main__':
             output_data.append(rule)
 
         # write data to file
-        all_installed_files.append(filename.split('/')[-1])
-        open('%s/%s' % (rule_target_dir, filename.split('/')[-1]), 'w').write('\n'.join(output_data))
+        installed_filename = filename.split('/')[-1]
+        all_installed_files.append(installed_filename)
+        open('%s/%s' % (rule_target_dir, installed_filename), 'w').write('\n'.join(output_data))
 
     # flush all written rule filenames into yaml file
     with open(rule_yaml_list, 'w') as f_out:
@@ -96,9 +99,28 @@ if __name__ == '__main__':
         for installed_file in all_installed_files:
             f_out.write(' - %s\n' % installed_file)
 
+    # install downloaded datasets next to the rule files that load them
+    _, rule_properties = metadata.load_rule_config()
+    for rule in metadata.Metadata().list_rules(rule_properties):
+        if rule['type'] != 'dataset' or rule['deprecated']:
+            continue
+        installed_filename = rule['filename']
+        filename = os.path.join(rule_source_directory, installed_filename)
+        if os.path.isfile(filename) and not os.path.islink(filename):
+            all_installed_files.append(installed_filename)
+            with open(filename, 'rb') as f_in:
+                marker = b'#@opnsense_download_hash:'
+                first_line = f_in.readline(len(marker) + 33)
+                with open(os.path.join(rule_target_dir, installed_filename), 'wb') as f_out:
+                    if not (first_line.startswith(marker) and first_line.endswith(b'\n') and
+                            len(first_line) == len(marker) + 33):
+                        f_out.write(first_line)
+                    shutil.copyfileobj(f_in, f_out)
+
     # cleanup unused files in rule_target_dir, since it's only meant for staging.
-    for filename in glob.glob("%s/*.rules" % rule_target_dir):
-        if os.path.basename(filename) not in  all_installed_files:
+    for filename in glob.glob("%s/*" % rule_target_dir):
+        if os.path.basename(filename) not in all_installed_files and \
+                (os.path.isfile(filename) or os.path.islink(filename)):
             os.remove(filename)
 
     # import local changes

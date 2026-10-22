@@ -69,7 +69,7 @@ class Downloader(object):
                 tf = tarfile.open(fileobj=src)
                 for tf_file in tf.getmembers():
                     # extract partial or all (*.rules) from archive
-                    if filename is not None and tf_file.name == filename:
+                    if filename is not None and tf_file.name == filename and tf_file.isfile():
                         rule_content.append(tf.extractfile(tf_file).read())
                     elif filename is None and tf_file.isfile() and tf_file.name.lower().endswith('.rules'):
                         rule_content.append(tf.extractfile(tf_file).read())
@@ -79,7 +79,7 @@ class Downloader(object):
             elif unpack_type == 'zip':
                 with zipfile.ZipFile(src, mode='r', compression=zipfile.ZIP_DEFLATED) as zf:
                     for item in zf.infolist():
-                        if filename is not None and item.filename == filename:
+                        if filename is not None and item.filename == filename and not item.is_dir():
                             rule_content.append(zf.open(item).read())
                         elif filename is None and item.file_size > 0 and item.filename.lower().endswith('.rules'):
                             rule_content.append(zf.open(item).read())
@@ -169,7 +169,7 @@ class Downloader(object):
         target_filename = '%s/%s' % (self._target_dir, filename)
         if os.path.isfile(target_filename):
             with open(target_filename, 'r') as f_in:
-                line = f_in.readline()
+                line = f_in.readline(len("#@opnsense_download_hash:") + 33)
                 if line.find("#@opnsense_download_hash:") == 0:
                     return line.split(':')[1].strip()
         return None
