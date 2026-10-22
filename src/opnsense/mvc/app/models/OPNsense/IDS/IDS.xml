@@ -134,6 +134,10 @@
                 <Default>0</Default>
                 <Required>Y</Required>
             </enabled>
+            <supervisor type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </supervisor>
             <mode type="OptionField">
                 <Required>Y</Required>
                 <Default>pcap</Default>

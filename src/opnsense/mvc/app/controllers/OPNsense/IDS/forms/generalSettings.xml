@@ -10,6 +10,12 @@
         <help>Enable intrusion detection system.</help>
     </field>
     <field>
+        <id>ids.general.supervisor</id>
+        <label>Restart after failure</label>
+        <type>checkbox</type>
+        <help>Supervise Suricata with daemon(8) and restart it when it exits unexpectedly. Attention: this can create additional pressure on a resource constrained system. Suricata must be restarted completely for changes to this option to take effect.</help>
+    </field>
+    <field>
         <id>ids.general.mode</id>
         <label>Capture mode</label>
         <type>dropdown</type>
