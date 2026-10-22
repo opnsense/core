@@ -110,6 +110,8 @@ if __name__ == '__main__':
             all_installed_files.append(installed_filename)
             with open(filename, 'rb') as f_in:
                 marker = b'#@opnsense_download_hash:'
+                # read to determine if marker is present, we cap the amount read
+                # since json-format datasets may contain large single-line json objects
                 first_line = f_in.readline(len(marker) + 33)
                 with open(os.path.join(rule_target_dir, installed_filename), 'wb') as f_out:
                     if not (first_line.startswith(marker) and first_line.endswith(b'\n') and
