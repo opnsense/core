@@ -5,7 +5,8 @@ suricata_enable="YES"
 . /usr/local/opnsense/scripts/service/supervisor.subr.sh
 supervisor_reload_signal="USR2"
 supervisor_enable
-suricata_flags=""
+# Keep this non-empty to prevent the rc script from restoring its -D default.
+suricata_flags=" "
 {% else %}
 suricata_flags="-D"
 {% endif %}
