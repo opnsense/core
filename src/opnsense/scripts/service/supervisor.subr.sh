@@ -93,6 +93,7 @@ supervisor_stop()
     echo "Stopping ${name} supervisor."
     kill -TERM "${supervisor_pid}" || return 1
     wait_for_pids "${supervisor_pid}"
+    [ -z "${pidfile}" ] || rm -f "${pidfile}"
 }
 
 supervisor_reload()
