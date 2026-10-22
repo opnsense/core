@@ -30,8 +30,22 @@
             $('.selectpicker').selectpicker('refresh');
         });
 
-        $('#btn_service_save').click(function () {
-            saveFormToEndpoint('/api/core/service/set', 'frm_service');
+        $('#btn_service_save').attr({
+            'data-label': "{{ lang._('Save') }}",
+            'data-endpoint': '/api/core/service/apply',
+            'data-error-title': "{{ lang._('Error saving settings.') }}"
+        }).SimpleActionButton({
+            onPreAction: function () {
+                const dfObj = new $.Deferred();
+                saveFormToEndpoint(
+                    '/api/core/service/set',
+                    'frm_service',
+                    function () { dfObj.resolve(); },
+                    true,
+                    function () { dfObj.reject(); }
+                );
+                return dfObj.promise();
+            }
         });
     });
 </script>

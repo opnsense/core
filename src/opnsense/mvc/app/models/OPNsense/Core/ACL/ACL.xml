@@ -448,6 +448,7 @@
         <name>System: Settings: Service</name>
         <patterns>
             <pattern>ui/core/service/settings</pattern>
+            <pattern>api/core/service/apply</pattern>
             <pattern>api/core/service/get</pattern>
             <pattern>api/core/service/set</pattern>
         </patterns>

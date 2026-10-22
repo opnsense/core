@@ -41,6 +41,15 @@ class ServiceController extends ApiMutableModelControllerBase
     protected static $internalModelClass = 'OPNsense\Core\Service';
 
     /**
+     * Complete the settings save action without reconfiguring services.
+     * @return array
+     */
+    public function applyAction()
+    {
+        return ['status' => $this->request->isPost() ? 'ok' : 'failed'];
+    }
+
+    /**
      * Search service entries
      * @return array
      */
