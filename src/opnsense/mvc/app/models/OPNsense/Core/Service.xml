@@ -1,0 +1,13 @@
+<model>
+    <mount>//OPNsense/Service</mount>
+    <version>1.0.0</version>
+    <description>Service settings</description>
+    <items>
+        <supervisor type="OptionField">
+            <Multiple>Y</Multiple>
+            <OptionValues>
+                <suricata>Suricata</suricata>
+            </OptionValues>
+        </supervisor>
+    </items>
+</model>

@@ -1,7 +1,7 @@
 {% if not helpers.empty('OPNsense.IDS.general.enabled') %}
 suricata_setup="/usr/local/opnsense/scripts/suricata/setup.sh"
 suricata_enable="YES"
-{% if not helpers.empty('OPNsense.IDS.general.supervisor') %}
+{% if 'suricata' in (OPNsense.Service.supervisor|default('')).split(',') %}
 . /usr/local/opnsense/scripts/service/supervisor.subr.sh
 supervisor_reload_signal="USR2"
 supervisor_enable

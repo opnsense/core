@@ -61,6 +61,7 @@
                 <Edit url="/system_general.php*" visibility="hidden"/>
             </General>
             <Miscellaneous url="/system_advanced_misc.php"/>
+            <Service url="/ui/core/service/settings"/>
             <Tunables url="/ui/core/tunables"/>
         </Settings>
         <Snapshots cssClass="fa fa-hdd-o fa-fw" url="/ui/core/snapshots"/>

@@ -41,4 +41,10 @@ class ServiceController extends \OPNsense\Base\IndexController
     {
         $this->view->pick('OPNsense/Core/service');
     }
+
+    public function settingsAction()
+    {
+        $this->view->serviceForm = $this->getForm('service');
+        $this->view->pick('OPNsense/Core/service_settings');
+    }
 }

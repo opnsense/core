@@ -223,6 +223,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/SnapshotsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/TunablesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/hasyncSettings.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/service.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/snapshot.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/tunable.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Core/forms/wizard_deployment_type.xml
@@ -714,6 +715,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/MHA1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/MHA1_0_1.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Migrations/TUN1_0_2.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Service.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/Service.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Tunables.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Tunables.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/repositories/opnsense.xml
@@ -998,6 +1001,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/not_found.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/reboot.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/service.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Core/service_settings.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/snapshot.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Core/tunables.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Cron/index.volt

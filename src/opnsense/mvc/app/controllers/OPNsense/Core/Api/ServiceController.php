@@ -28,15 +28,18 @@
 
 namespace OPNsense\Core\Api;
 
-use OPNsense\Base\ApiControllerBase;
+use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Backend;
 
 /**
- * Class SessionsController
- * @package OPNsense\IPsec\Api
+ * Class ServiceController
+ * @package OPNsense\Core\Api
  */
-class ServiceController extends ApiControllerBase
+class ServiceController extends ApiMutableModelControllerBase
 {
+    protected static $internalModelName = 'service';
+    protected static $internalModelClass = 'OPNsense\Core\Service';
+
     /**
      * Search service entries
      * @return array
