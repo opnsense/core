@@ -2461,7 +2461,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         system_routing_configure($verbose, $interface);
         plugins_configure('ipsec', $verbose, [$interface]);
         plugins_configure('dhcp', $verbose);
-        plugins_configure('dns', $verbose);
+        plugins_configure('dns', $verbose, [$interface]);
         plugins_configure('updateip', $verbose, [[$interface]]);
     }
 
