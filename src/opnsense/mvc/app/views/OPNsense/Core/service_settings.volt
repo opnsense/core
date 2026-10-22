@@ -25,8 +25,6 @@
  #}
 
 <script>
-    'use strict';
-
     $(document).ready(function () {
         mapDataToFormUI({'frm_service': '/api/core/service/get'}).done(function () {
             $('.selectpicker').selectpicker('refresh');
