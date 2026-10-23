@@ -445,7 +445,7 @@
         </patterns>
     </page-system-advanced-sysctl>
     <page-system-settings-service>
-        <name>System: Settings: Service</name>
+        <name>System: Settings: Services</name>
         <patterns>
             <pattern>ui/core/service/settings</pattern>
             <pattern>api/core/service/apply</pattern>
