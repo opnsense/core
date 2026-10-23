@@ -5,7 +5,7 @@
     </field>
     <field>
         <id>service.supervisor</id>
-        <label>Supervise services</label>
+        <label>Supervised services</label>
         <type>select_multiple</type>
         <help>Select services to supervise with daemon(8) and restart after an unexpected exit. Attention: this can create additional pressure on a resource constrained system. Selected services must be restarted completely for changes to this option to take effect.</help>
     </field>
