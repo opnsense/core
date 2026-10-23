@@ -358,7 +358,10 @@
         <name>Status: Services</name>
         <patterns>
             <pattern>ui/core/service</pattern>
-            <pattern>api/core/service/*</pattern>
+            <pattern>api/core/service/search</pattern>
+            <pattern>api/core/service/start/*</pattern>
+            <pattern>api/core/service/restart/*</pattern>
+            <pattern>api/core/service/stop/*</pattern>
         </patterns>
     </page-status-services>
     <page-status-systemlogs-portalauth>
@@ -441,6 +444,15 @@
             <pattern>api/core/tunables/*</pattern>
         </patterns>
     </page-system-advanced-sysctl>
+    <page-system-settings-service>
+        <name>System: Settings: Services</name>
+        <patterns>
+            <pattern>ui/core/service/settings</pattern>
+            <pattern>api/core/service/apply</pattern>
+            <pattern>api/core/service/get</pattern>
+            <pattern>api/core/service/set</pattern>
+        </patterns>
+    </page-system-settings-service>
     <page-system-authservers>
         <name>System: Authentication Servers</name>
         <patterns>
