@@ -66,6 +66,8 @@ supervisor_start()
     local rc_arg="${rc_arg}"
     local rc_flags="${rc_flags}"
     local rc_pid="${rc_pid}"
+    local restart_count="${supervisor_restart_count:-5}"
+    local restart_delay="${supervisor_restart_delay:-10}"
     local _cmd="${_cmd}"
     local _postcmd="${_postcmd}"
     local _precmd="${_precmd}"
@@ -86,7 +88,8 @@ supervisor_start()
         return 1
     fi
 
-    /usr/sbin/daemon -f -r -p "${daemon_child_pidfile}" -P "${supervisor_pidfile}" \
+    /usr/sbin/daemon -f -R "${restart_delay}" -C "${restart_count}" \
+        -p "${daemon_child_pidfile}" -P "${supervisor_pidfile}" \
         /usr/local/opnsense/scripts/service/supervisor.subr.sh exec "${pidfile}" \
         ${command} ${rc_flags} ${command_args}
 }
