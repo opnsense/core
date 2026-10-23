@@ -151,6 +151,8 @@
 /usr/local/etc/ssl/opnsense.cnf
 /usr/local/etc/strongswan.opnsense.d/README
 /usr/local/etc/sudoers.d/opnsense
+/usr/local/etc/supervisor.d/README
+/usr/local/etc/supervisor.d/suricata.conf
 /usr/local/etc/suricata/conf.d/README
 /usr/local/etc/unbound.opnsense.d/README
 /usr/local/libexec/opnsense-auth
@@ -701,6 +703,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL/ACL.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Core/FieldTypes/SupervisorField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/FieldTypes/TunableField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Firmware.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/Firmware.xml

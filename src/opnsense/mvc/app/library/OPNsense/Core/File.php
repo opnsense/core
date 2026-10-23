@@ -31,6 +31,29 @@ namespace OPNsense\Core;
 class File
 {
     /**
+     * Return regular files from a directory, optionally filtered by extension.
+     * @param string $directory directory to scan
+     * @param string|null $extension file extension without leading dot
+     * @return array
+     */
+    public static function getFiles(string $directory, ?string $extension = null): array
+    {
+        $result = [];
+        if (!is_dir($directory)) {
+            return $result;
+        }
+
+        foreach (new \FilesystemIterator($directory, \FilesystemIterator::SKIP_DOTS) as $file) {
+            if ($file->isFile() && ($extension === null || $file->getExtension() === $extension)) {
+                $result[] = $file->getPathname();
+            }
+        }
+        sort($result);
+
+        return $result;
+    }
+
+    /**
      * file_put_contents wrapper which sets permissions before writing data.
      * @param string $filename Path to the file where to write the data.
      * @param mixed $data The data to write.
