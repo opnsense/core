@@ -99,7 +99,7 @@ for WIDGET in ${WIDGETS}; do
 		exit 1
 	fi
 
-	for ENDPOINT in ${REGISTERED}; do
+	for ENDPOINT in ${ENDPOINTS}; do
 		# do a full match here
 		PATTERN=${ENDPOINT#/}
 		if ! grep -Fq "<pattern>${PATTERN}</pattern>" ${ACLS}; then
