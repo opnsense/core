@@ -54,7 +54,7 @@ class StaticRoute
      *
      * @param string $network network we claim ownership
      */
-    static public function claim($network)
+    public static function claim($network)
     {
         $fobj = new FileObject(self::$todo_file, 'a+', 0600, LOCK_EX, 'wwwonly:wheel');
         $data = $fobj->readJson() ?? [];
@@ -68,7 +68,7 @@ class StaticRoute
     /**
      * Backwards compatible cleanup of "claimed" networks
      */
-    static public function cleanup()
+    public static function cleanup()
     {
         $fobj = new FileObject(self::$todo_file, 'a+', 0600, LOCK_EX, 'wwwonly:wheel');
         foreach (($fobj->readJson() ?? []) as $record) {
@@ -87,13 +87,13 @@ class StaticRoute
      * @param $network ipv4/ipv6 network or address
      * @return string|bool
      */
-    static private function normalize($network)
+    private static function normalize($network)
     {
         $tmp = explode('/', $network);
         $addr = inet_pton(explode('%', $tmp[0])[0]);
         if ($addr !== false) {
             if (count($tmp) == 2) {
-                return inet_ntop($addr) . '/'. $tmp[1];
+                return inet_ntop($addr) . '/' . $tmp[1];
             } else {
                 return inet_ntop($addr);
             }
@@ -105,7 +105,7 @@ class StaticRoute
      * @param ?string $proto inet/inet6 or empty for all
      * @return array installed routes
      */
-    static public function installedRoutes($proto=null)
+    public static function installedRoutes($proto = null)
     {
         $result = [];
         foreach (Shell::shell_safe('netstat -nrW', [], true) as $line) {
