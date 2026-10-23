@@ -1279,7 +1279,10 @@
 /usr/local/opnsense/scripts/health/definitions/interface-traffic.xml
 /usr/local/opnsense/scripts/health/definitions/interface-vpnusers.xml
 /usr/local/opnsense/scripts/health/definitions/system-cputemp.xml
+/usr/local/opnsense/scripts/health/definitions/system-mbuf.xml
+/usr/local/opnsense/scripts/health/definitions/system-memory.xml
 /usr/local/opnsense/scripts/health/definitions/system-processor.xml
+/usr/local/opnsense/scripts/health/definitions/system-states.xml
 /usr/local/opnsense/scripts/health/fetchData.py
 /usr/local/opnsense/scripts/health/flush_rrd.py
 /usr/local/opnsense/scripts/health/library/OPNsense/RRD/Factory.php
