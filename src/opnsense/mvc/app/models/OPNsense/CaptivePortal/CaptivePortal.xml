@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/captiveportal</mount>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <description>Captive portal application model</description>
     <items>
         <zones>
@@ -65,6 +65,16 @@
                     <Mask>/^([0-9a-zA-Z.,_\-]){0,1024}$/u</Mask>
                     <ValidationMessage>Please enter a valid servername, ip address or leave this option blank.</ValidationMessage>
                 </servername>
+                <corsPolicy type="OptionField">
+                    <Required>Y</Required>
+                    <Default>any</Default>
+                    <OptionValues>
+                        <same_origin>Same origin only</same_origin>
+                        <listed>Specific origins</listed>
+                        <any>Any origin</any>
+                    </OptionValues>
+                </corsPolicy>
+                <corsOrigins type=".\OriginField"/>
                 <allowedAddresses type="NetworkField">
                     <AsList>Y</AsList>
                     <WildcardEnabled>N</WildcardEnabled>

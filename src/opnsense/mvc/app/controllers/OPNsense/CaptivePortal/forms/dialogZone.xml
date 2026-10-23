@@ -124,6 +124,28 @@
         </grid_view>
     </field>
     <field>
+        <id>zone.corsPolicy</id>
+        <label>Cross-origin access</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help><![CDATA[Control which browser origins may read responses from the Captive Portal Access API. Same-origin access and clients that do not send an Origin header are unaffected.]]></help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>zone.corsOrigins</id>
+        <label>Allowed origins</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <advanced>true</advanced>
+        <help><![CDATA[Origins allowed when Cross-origin access is set to Specific origins. Specify only the scheme, hostname and optional port, for example https://login.example.com.]]></help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>zone.allowedAddresses</id>
         <label>Allowed addresses</label>
         <type>select_multiple</type>

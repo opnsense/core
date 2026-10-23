@@ -32,6 +32,7 @@ use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Auth\AuthenticationFactory;
 use OPNsense\CaptivePortal\CaptivePortal;
+use OPNsense\CaptivePortal\FieldTypes\OriginField;
 
 /**
  * Class AccessController
@@ -221,8 +222,23 @@ class AccessController extends ApiControllerBase
     public function beforeExecuteRoute($dispatcher)
     {
         // disable standard authentication in CaptivePortal Access API calls.
-        // set CORS headers
-        $this->response->setHeader("Access-Control-Allow-Origin", "*");
+        // Grant cross-origin browser access according to the policy of the zone proxying this request.
+        $origin = OriginField::normalizeOrigin($this->request->getHeader('Origin'));
+        $zone = (new CaptivePortal())->getByZoneID($this->request->getHeader('zoneid'));
+        if ($zone != null && (string)$zone->corsPolicy === 'listed') {
+            $this->response->setHeader('Vary', 'Origin');
+            if ($origin !== null) {
+                $allowedOrigins = array_map(
+                    [OriginField::class, 'normalizeOrigin'],
+                    $zone->corsOrigins->getValues()
+                );
+                if (in_array($origin, $allowedOrigins, true)) {
+                    $this->response->setHeader('Access-Control-Allow-Origin', $origin);
+                }
+            }
+        } elseif ($zone != null && (string)$zone->corsPolicy === 'any') {
+            $this->response->setHeader('Access-Control-Allow-Origin', '*');
+        }
         $this->response->setHeader("Access-Control-Allow-Methods", "OPTIONS, GET, POST");
     }
 
