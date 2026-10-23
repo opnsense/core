@@ -152,6 +152,7 @@
 /usr/local/etc/strongswan.opnsense.d/README
 /usr/local/etc/sudoers.d/opnsense
 /usr/local/etc/supervisor.d/README
+/usr/local/etc/supervisor.d/dnsmasq.conf
 /usr/local/etc/supervisor.d/suricata.conf
 /usr/local/etc/suricata/conf.d/README
 /usr/local/etc/unbound.opnsense.d/README
