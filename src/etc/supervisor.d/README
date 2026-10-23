@@ -1,5 +1,2 @@
 Services supporting daemon supervision can register themselves with a .conf file in this directory.
-The filename without the .conf extension must match the service name. For example, suricata.conf contains:
-
-[service]
-description=Intrusion Detection
+The filename without the .conf extension must match the service name.
