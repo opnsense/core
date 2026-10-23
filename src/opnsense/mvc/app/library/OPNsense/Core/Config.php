@@ -358,7 +358,7 @@ class Config extends Singleton
      * @param ?string $filename reload from
      * @return this
      */
-    public function forceReload($filename=null)
+    public function forceReload($filename = null)
     {
         if ($this->config_file_handle !== null) {
             fclose($this->config_file_handle);
