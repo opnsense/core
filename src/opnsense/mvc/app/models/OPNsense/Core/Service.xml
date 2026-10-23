@@ -9,7 +9,7 @@
         <restart_count type="IntegerField">
             <Required>Y</Required>
             <Default>5</Default>
-            <MinimumValue>0</MinimumValue>
+            <MinimumValue>1</MinimumValue>
             <MaximumValue>128</MaximumValue>
         </restart_count>
         <restart_delay type="IntegerField">

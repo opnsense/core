@@ -7,19 +7,19 @@
         <id>service.supervisor</id>
         <label>Supervise services</label>
         <type>select_multiple</type>
-        <help>Select services to supervise with daemon(8) and restart after an unexpected exit. Attention: this can create additional pressure on a resource constrained system. Services must be restarted completely for changes to this option to take effect.</help>
+        <help>Select services to supervise with daemon(8) and restart after an unexpected exit. Attention: this can create additional pressure on a resource constrained system. Selected services must be restarted completely for changes to this option to take effect.</help>
     </field>
     <field>
         <id>service.restart_count</id>
         <label>Restart retries</label>
         <type>text</type>
-        <help>Maximum number of times daemon(8) restarts a terminated service before giving up permanently. Set to 0 to disable restarts; the maximum is 128. Services must be restarted completely for changes to this option to take effect.</help>
+        <help>Maximum number of times daemon(8) restarts a terminated service before giving up permanently. Selected services must be restarted completely for changes to this option to take effect.</help>
     </field>
     <field>
         <id>service.restart_delay</id>
         <label>Restart delay</label>
         <type>text</type>
-        <help>Seconds to wait between restart attempts. The allowed range is 1 to 31536000 seconds. Services must be restarted completely for changes to this option to take effect.</help>
+        <help>Seconds to wait between restart attempts. Selected services must be restarted completely for changes to this option to take effect.</help>
     </field>
     <field>
         <id>service.actions</id>
