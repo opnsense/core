@@ -43,6 +43,7 @@ for WIDGET in ${WIDGETS}; do
 	fi
 
 	REGISTERED=
+	REGISTERED_DIRECT=
 
 	for METAFILE in ${METADATA}; do
 		if ! grep -q "<filename>${FILENAME}</filename>" ${METAFILE}; then
@@ -54,8 +55,8 @@ for WIDGET in ${WIDGETS}; do
 		fi
 
 		if [ "$(xmllint ${METAFILE} --xpath 'count(//*[filename="'"${FILENAME}"'"]/endpoints/endpoint)')" != "0" ]; then
-			REGISTERED=$(xmllint ${METAFILE} --xpath '//*[filename="'"${FILENAME}"'"]/endpoints/endpoint' | \
-			    sed -e 's:^[^>]*>::' -e 's:<[^<]*$::' | sort)
+			REGISTERED=$(xmllint ${METAFILE} --xpath '//*[filename="'"${FILENAME}"'"]/endpoints/endpoint/text()' | sort)
+			REGISTERED_DIRECT=$(xmllint ${METAFILE} --xpath '//*[filename="'"${FILENAME}"'"]/endpoints/endpoint[not(@indirect="true")]/text()' 2> /dev/null | sort)
 			break
 		fi
 	done
@@ -64,7 +65,7 @@ for WIDGET in ${WIDGETS}; do
 	    grep -o 'super\.openEventSource([^,)]*' ${WIDGET} | cut -c 23-) | \
 	    tr -d "'" | tr -d '`' | sed 's:\$.*:*:' | sort -u)
 
-	if [ -z "${ENDPOINTS}" ]; then
+	if [ -z "${ENDPOINTS}" ] && [ -n "${REGISTERED_DIRECT}" ]; then
 		echo "No endpoints found for ${WIDGET}"
 		exit 1
 	fi
@@ -74,17 +75,17 @@ for WIDGET in ${WIDGETS}; do
 		exit 1
 	fi
 
-	if [ "${REGISTERED}" != "${ENDPOINTS}" ]; then
+	if [ "${REGISTERED_DIRECT}" != "${ENDPOINTS}" ]; then
 		echo "Registered widget endpoints do not match:"
 		echo "<<<<<<< ${WIDGET}"
 		echo "${ENDPOINTS}"
 		echo ========
-		echo "${REGISTERED}"
+		echo "${REGISTERED_DIRECT}"
 		echo ">>>>>>> ${METAFILE}"
 		exit 1
 	fi
 
-	for ENDPOINT in ${ENDPOINTS}; do
+	for ENDPOINT in ${REGISTERED}; do
 		# do a full match here
 		PATTERN=${ENDPOINT#/}
 		if ! grep -Fq "<pattern>${PATTERN}</pattern>" ${ACLS}; then
