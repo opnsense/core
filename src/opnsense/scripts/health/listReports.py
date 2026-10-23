@@ -55,7 +55,7 @@ for filename in glob.glob('%s/*.rrd' % rrd_reports_dir):
         itemName = '-'.join(rrdFilename.split('-')[:-1])
     result[rrdFilename] = {
         'title': '', 'y-axis_label': '', 'axis_formats': {}, 'axis_labels': {},
-        'axis_types': {}, 'field_axes': {}, 'field_scales': {}, 'field_units': {},
+        'field_axes': {}, 'field_scales': {}, 'field_units': {},
         'tooltip_formats': {}, 'topic': topic, 'itemName': itemName,
         'filename': os.path.basename(filename)
     }

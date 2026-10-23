@@ -7,10 +7,6 @@
         <y>CPU utilization (%)</y>
         <y1>Processes/threads</y1>
     </axis_labels>
-    <axis_types>
-        <y>linear</y>
-        <y1>linear</y1>
-    </axis_types>
     <field_axes>
         <user>y</user>
         <nice>y</nice>

@@ -45,7 +45,7 @@ class HealthGraph {
         this.currentSystem = null;
         this.currentDetailLevel = 0;
         this.currentStacked = false;
-        this.currentLogarithmic = null;
+        this.currentLogarithmic = false;
         this.dynamicScaleIds = [];
     }
 
@@ -62,6 +62,7 @@ class HealthGraph {
         const firstKey = Object.keys(this.rrdList.data)[0];
         const firstValue = this.rrdList.data[firstKey]?.[0] || "";
         this.currentSystem = `${firstValue}-${firstKey}`;
+        this.currentLogarithmic = false;
 
         this.chart = new Chart(this.ctx, this.chartConfig);
     }
@@ -73,10 +74,8 @@ class HealthGraph {
     async update(system = null, detailLevel = null, stacked = null, resetZoom = true, logarithmic = null) {
         if (system === null) {
             system = this.currentSystem;
-        } else {
-            if (system !== this.currentSystem) {
-                this.currentLogarithmic = null;
-            }
+        } else if (system !== this.currentSystem) {
+            this.currentLogarithmic = false;
             this.currentSystem = system;
         }
         if (detailLevel === null) {
@@ -91,9 +90,6 @@ class HealthGraph {
         }
         const data = await this._fetchData();
         if (logarithmic === null) {
-            if (this.currentLogarithmic === null) {
-                this.currentLogarithmic = Object.values(data['axis_types'] || {}).includes('logarithmic');
-            }
             logarithmic = this.currentLogarithmic;
         } else {
             this.currentLogarithmic = logarithmic;
@@ -158,13 +154,13 @@ class HealthGraph {
         }
     }
 
-    _formatData(data, metadata, logarithmic = true) {
+    _formatData(data, metadata, logarithmic = false) {
         let datasets = [];
         const fieldAxes = metadata['field_axes'] || {};
         const fieldScales = metadata['field_scales'] || {};
         const fieldUnits = metadata['field_units'] || {};
-        const axisTypes = metadata['axis_types'] || {};
         const tooltipFormats = metadata['tooltip_formats'] || {};
+        const axisType = logarithmic ? 'logarithmic' : 'linear';
         for (const item of data.data) {
             const dataset = {
                 ...this.datasetOptions,
@@ -185,7 +181,6 @@ class HealthGraph {
             for (const [x, y] of item.values) {
                 // timestack formatter expects array of x,y objects
                 let displayValue = y === null ? null : y * displayScale;
-                const axisType = this._getAxisType(axisTypes, dataset.yAxisID || 'y', logarithmic);
                 if (axisType === 'logarithmic' && displayValue !== null && displayValue <= 0) {
                     displayValue = null;
                 }
@@ -196,7 +191,7 @@ class HealthGraph {
         return datasets;
     }
 
-    _configureScales(metadata, stacked, logarithmic = true) {
+    _configureScales(metadata, stacked, logarithmic = false) {
         for (const scaleId of this.dynamicScaleIds) {
             delete this.chart.options.scales[scaleId];
         }
@@ -205,10 +200,9 @@ class HealthGraph {
         const fieldAxes = metadata['field_axes'] || {};
         const axisFormats = metadata['axis_formats'] || {};
         const axisLabels = metadata['axis_labels'] || {};
-        const axisTypes = metadata['axis_types'] || {};
         const axisIds = [...new Set(Object.values(fieldAxes))];
         const primaryScale = this.chart.options.scales.y;
-        const primaryType = this._getAxisType(axisTypes, 'y', logarithmic);
+        const primaryType = logarithmic ? 'logarithmic' : 'linear';
         primaryScale.type = primaryType;
         primaryScale.display = axisIds.length === 0 || axisIds.includes('y');
         primaryScale.position = 'left';
@@ -225,30 +219,21 @@ class HealthGraph {
             if (axisId === 'y') {
                 continue;
             }
-            const axisType = this._getAxisType(axisTypes, axisId, logarithmic);
             this.chart.options.scales[axisId] = {
-                ...this._defaultYAxisOptions(axisType, axisFormats[axisId]),
+                ...this._defaultYAxisOptions(primaryType, axisFormats[axisId]),
                 position: 'right',
-                stacked: axisType === 'linear' && stacked,
+                stacked: primaryType === 'linear' && stacked,
                 grid: {
                     drawOnChartArea: false
                 },
                 title: {
                     display: true,
                     padding: 8,
-                    text: this._getAxisLabel(axisLabels[axisId] || axisId, axisType)
+                    text: this._getAxisLabel(axisLabels[axisId] || axisId, primaryType)
                 }
             };
             this.dynamicScaleIds.push(axisId);
         }
-    }
-
-    _getAxisType(axisTypes, axisId, logarithmic) {
-        const axisType = axisTypes[axisId];
-        if (!logarithmic) {
-            return 'linear';
-        }
-        return axisType === 'linear' ? 'linear' : 'logarithmic';
     }
 
     _getAxisLabel(label, axisType) {
@@ -263,11 +248,11 @@ class HealthGraph {
     static _formatMetricValue(value) {
         if (Math.abs(value) >= 1000) {
             return byteFormat(value, 0, true).trim();
-        }
-        if (Math.abs(value) >= 1) {
+        } else if (Math.abs(value) >= 1) {
             return Math.round(value).toString();
+        } else {
+            return Number(value.toFixed(3)).toString();
         }
-        return Number(value.toFixed(3)).toString();
     }
 
     _formatLogarithmicTick(value, index, ticks) {

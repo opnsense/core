@@ -9,7 +9,4 @@
     <axis_labels>
         <y>Mbuf clusters</y>
     </axis_labels>
-    <axis_types>
-        <y>logarithmic</y>
-    </axis_types>
 </systemhealth>

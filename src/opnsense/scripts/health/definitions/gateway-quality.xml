@@ -7,10 +7,6 @@
         <y>Milliseconds</y>
         <y1>Percentage</y1>
     </axis_labels>
-    <axis_types>
-        <y>logarithmic</y>
-        <y1>linear</y1>
-    </axis_types>
     <field_axes>
         <delay>y</delay>
         <stddev>y</stddev>
