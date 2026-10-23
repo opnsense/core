@@ -97,6 +97,7 @@
             <subject>Subject</subject>
             <granularity>Granularity</granularity>
             <stacked>Stacked</stacked>
+            <logarithmic>Logarithmic</logarithmic>
             <minute>1 minute (Default)</minute>
             <minutes5>5 minutes</minutes5>
             <hour>1 hour</hour>
