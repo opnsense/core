@@ -113,11 +113,14 @@ if __name__ == '__main__':
     hostwatch = Hostwatch()
     for record in yield_lease_records():
         # IA_PD: guaranteed via "type = IA_PD"
-        prefix = "%(address)s/%(prefix_len)d" %  record
-        if (prefix not in prefixes or prefixes[prefix].get('hwaddr') != record.get('hwaddr')) \
-                and record.get('state', 0) == 0:
-            prefixes[prefix] = record
-            ll_addr = None
+        prefix = "%(address)s/%(prefix_len)d" % record
+        ll_addr = None
+
+        # https://kea.readthedocs.io/en/latest/arm/hooks.html#the-lease4-get-by-lease6-get-by-commands
+        # state names (default (or assigned) (0), declined (1), expired-reclaimed (2), released (3), and registered (4))
+        if record.get('state', 0) == 0:
+            if prefix in prefixes and prefixes[prefix].get('hwaddr') == record.get('hwaddr'):
+                continue  # route already installed
             if record.get('interface'):
                 ll_addr = hostwatch.get(record.get('interface'), record.get('hwaddr'))
             if not ll_addr:
@@ -126,14 +129,18 @@ if __name__ == '__main__':
                     "failed to resolve next hop for hwaddr %s on interface %s, skipping route for prefix %s" %
                     (record.get('hwaddr'), record.get('interface'), prefix)
                 )
-                continue
-            # lazy drop
-            subprocess.run(['/sbin/route', 'delete', '-inet6', prefix], capture_output=True)
-            # https://kea.readthedocs.io/en/latest/arm/hooks.html#the-lease4-get-by-lease6-get-by-commands
-            # state names (default (or assigned) (0), declined (1), expired-reclaimed (2), released (3), and registered (4))
-            if record.get('state', 0) == 0:
-                # only add when still valid
-                if subprocess.run(['/sbin/route', 'add', '-inet6', prefix, ll_addr], capture_output=True).returncode:
-                    syslog.syslog(syslog.LOG_ERR, "failed adding route %s -> %s" % (prefix, ll_addr))
-                else:
-                    syslog.syslog(syslog.LOG_NOTICE, "add route %s -> %s" % (prefix, ll_addr))
+                continue  # retry lookup next poll
+        elif prefix not in prefixes:
+            continue  # no route to remove
+
+        # remove inactive or replace active
+        subprocess.run(['/sbin/route', 'delete', '-inet6', prefix], capture_output=True)
+        prefixes.pop(prefix, None)
+
+        # only add when still valid
+        if ll_addr:
+            if subprocess.run(['/sbin/route', 'add', '-inet6', prefix, ll_addr], capture_output=True).returncode:
+                syslog.syslog(syslog.LOG_ERR, "failed adding route %s -> %s" % (prefix, ll_addr))
+            else:
+                prefixes[prefix] = record
+                syslog.syslog(syslog.LOG_NOTICE, "add route %s -> %s" % (prefix, ll_addr))
