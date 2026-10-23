@@ -86,9 +86,10 @@
         <link>/ui/diagnostics/systemhealth</link>
         <multiple/>
         <endpoints>
-            <endpoint indirect="true">/api/diagnostics/systemhealth/export_as_csv/*</endpoint>
+            <include>../opnsense_health.js</include>
+            <endpoint>/api/diagnostics/systemhealth/export_as_csv/*</endpoint>
             <endpoint>/api/diagnostics/systemhealth/get_rrd_list</endpoint>
-            <endpoint indirect="true">/api/diagnostics/systemhealth/get_system_health/*</endpoint>
+            <endpoint>/api/diagnostics/systemhealth/get_system_health/*</endpoint>
         </endpoints>
         <translations>
             <title>Health Graph</title>

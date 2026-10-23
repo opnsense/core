@@ -43,7 +43,7 @@ for WIDGET in ${WIDGETS}; do
 	fi
 
 	REGISTERED=
-	REGISTERED_DIRECT=
+	INCLUDES=
 
 	for METAFILE in ${METADATA}; do
 		if ! grep -q "<filename>${FILENAME}</filename>" ${METAFILE}; then
@@ -56,16 +56,30 @@ for WIDGET in ${WIDGETS}; do
 
 		if [ "$(xmllint ${METAFILE} --xpath 'count(//*[filename="'"${FILENAME}"'"]/endpoints/endpoint)')" != "0" ]; then
 			REGISTERED=$(xmllint ${METAFILE} --xpath '//*[filename="'"${FILENAME}"'"]/endpoints/endpoint/text()' | sort)
-			REGISTERED_DIRECT=$(xmllint ${METAFILE} --xpath '//*[filename="'"${FILENAME}"'"]/endpoints/endpoint[not(@indirect="true")]/text()' 2> /dev/null | sort)
+			INCLUDES=$(xmllint ${METAFILE} --xpath '//*[filename="'"${FILENAME}"'"]/endpoints/include/text()' 2> /dev/null)
 			break
 		fi
 	done
 
-	ENDPOINTS=$( (grep -o 'this\.ajaxCall([^,)]*' ${WIDGET} | cut -c 15-; \
-	    grep -o 'super\.openEventSource([^,)]*' ${WIDGET} | cut -c 23-) | \
-	    tr -d "'" | tr -d '`' | sed 's:\$.*:*:' | sort -u)
+	SOURCES=${WIDGET}
+	for INCLUDE in ${INCLUDES}; do
+		SOURCE=$(dirname ${WIDGET})/${INCLUDE}
+		if [ ! -f "${SOURCE}" ]; then
+			echo "Included widget source not found for ${WIDGET}:"
+			echo ${INCLUDE}
+			exit 1
+		fi
+		SOURCES="${SOURCES} ${SOURCE}"
+	done
 
-	if [ -z "${ENDPOINTS}" ] && [ -n "${REGISTERED_DIRECT}" ]; then
+	ENDPOINTS=$(for SOURCE in ${SOURCES}; do
+		grep -o 'this\.ajaxCall([^,)]*' ${SOURCE} | cut -c 15-
+		grep -o 'super\.openEventSource([^,)]*' ${SOURCE} | cut -c 23-
+		grep -o 'fetch([^,)]*' ${SOURCE} | cut -c 7-
+		grep -o 'window\.open([^,)]*' ${SOURCE} | cut -c 13-
+	done | tr -d "'" | tr -d '"' | tr -d '`' | sed 's:\$.*:*:' | grep '^/api/' | sort -u)
+
+	if [ -z "${ENDPOINTS}" ]; then
 		echo "No endpoints found for ${WIDGET}"
 		exit 1
 	fi
@@ -75,12 +89,12 @@ for WIDGET in ${WIDGETS}; do
 		exit 1
 	fi
 
-	if [ "${REGISTERED_DIRECT}" != "${ENDPOINTS}" ]; then
+	if [ "${REGISTERED}" != "${ENDPOINTS}" ]; then
 		echo "Registered widget endpoints do not match:"
 		echo "<<<<<<< ${WIDGET}"
 		echo "${ENDPOINTS}"
 		echo ========
-		echo "${REGISTERED_DIRECT}"
+		echo "${REGISTERED}"
 		echo ">>>>>>> ${METAFILE}"
 		exit 1
 	fi
