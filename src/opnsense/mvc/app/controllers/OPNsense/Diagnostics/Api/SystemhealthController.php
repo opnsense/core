@@ -112,7 +112,11 @@ class SystemhealthController extends ApiMutableModelControllerBase
 
         // always return a valid (empty) data set
         $result["result"] = "not found";
-        $result["data"] = ["title" => "","y-axis_label" => "","field_units" => [], "itemName" => "", "filename" => ""];
+        $result["data"] = [
+            "title" => "", "y-axis_label" => "", "axis_formats" => [], "axis_labels" => [],
+            "field_axes" => [], "field_scales" => [], "field_units" => [],
+            "tooltip_formats" => [], "itemName" => "", "filename" => ""
+        ];
         return $result;
     }
 
@@ -190,10 +194,20 @@ class SystemhealthController extends ApiMutableModelControllerBase
             } else {
                 $response['title'] = ucfirst($rrd_details['itemName']);
             }
-            $response['y-axis_label'] = $rrd_details["y-axis_label"];
+            $metadataFields = [
+                'axis_formats', 'axis_labels', 'field_axes', 'field_scales', 'field_units',
+                'tooltip_formats', 'y-axis_label'
+            ];
+            foreach ($metadataFields as $field) {
+                $response[$field] = $rrd_details[$field] ?? [];
+            }
             return $response;
         } else {
-            return ["set" => [], "title" => "error", "y-axis_label" => ""];
+            return [
+                "set" => [], "title" => "error", "y-axis_label" => "", "axis_formats" => [],
+                "axis_labels" => [], "field_axes" => [], "field_scales" => [],
+                "field_units" => [], "tooltip_formats" => []
+            ];
         }
     }
 

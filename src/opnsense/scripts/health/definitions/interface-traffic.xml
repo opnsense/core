@@ -3,4 +3,10 @@
     <file-match>.*-traffic$</file-match>
     <title>System Information - Traffic </title>
     <y-axis_label>Bytes/Second</y-axis_label>
+    <axis_formats>
+        <y>metric</y>
+    </axis_formats>
+    <tooltip_formats>
+        <y>metric</y>
+    </tooltip_formats>
 </systemhealth>

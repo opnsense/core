@@ -3,4 +3,22 @@
     <file-match>.*-quality$</file-match>
     <title>System Information - Quality </title>
     <y-axis_label>seconds/%</y-axis_label>
+    <axis_labels>
+        <y>Milliseconds</y>
+        <y1>Percentage</y1>
+    </axis_labels>
+    <field_axes>
+        <delay>y</delay>
+        <stddev>y</stddev>
+        <loss>y1</loss>
+    </field_axes>
+    <field_scales>
+        <delay>1000</delay>
+        <stddev>1000</stddev>
+    </field_scales>
+    <field_units>
+        <delay>ms</delay>
+        <stddev>ms</stddev>
+        <loss>%</loss>
+    </field_units>
 </systemhealth>
