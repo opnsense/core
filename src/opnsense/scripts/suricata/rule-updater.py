@@ -34,7 +34,6 @@ import os
 import sys
 import syslog
 import fcntl
-from configparser import ConfigParser
 from lib import metadata
 from lib import downloader
 from lib import rule_source_directory
@@ -49,39 +48,27 @@ except IOError:
 
 if __name__ == '__main__':
     # load list of configured rules from generated config
-    enabled_rulefiles = dict()
-    rule_properties = dict()
-    metadata_sources = dict()
-    updater_conf = '/usr/local/etc/suricata/rule-updater.config'
-    if os.path.exists(updater_conf):
-        cnf = ConfigParser()
-        cnf.read(updater_conf)
-        for section in cnf.sections():
-            if section == '__properties__':
-                # special section, rule properties (extend url's etc.)
-                for item in cnf.items(section):
-                    rule_properties[item[0]] = item[1]
-            elif cnf.has_option(section, 'enabled') and cnf.getint(section, 'enabled') == 1:
-                enabled_rulefiles[section.strip()] = {}
+    enabled_rulefiles, rule_properties = metadata.load_rule_config()
 
     # download / remove rules
     md = metadata.Metadata()
     dl = downloader.Downloader(target_dir=rule_source_directory)
-    for rule in md.list_rules(rule_properties):
-        if rule['metadata_source'] not in metadata_sources:
-            metadata_sources[rule['metadata_source']] = 0
+    available_rules = list(md.list_rules(rule_properties))
+    selected_sources = {
+        rule['metadata_source'] for rule in available_rules
+        if not rule['required'] and not rule['deprecated'] and rule['filename'] in enabled_rulefiles
+    }
+    for rule in available_rules:
         if 'url' in rule['source']:
-            full_path = ('%s/%s' % (rule_source_directory, rule['filename'])).replace('//', '/')
             if dl.is_supported(url=rule['source']['url']):
                 if rule['required']:
-                    # Required files are always sorted last in list_rules(), add required when there's at least one
-                    # file selected from the metadata package or not on disk yet.
-                    if metadata_sources[rule['metadata_source']] > 0 or not os.path.isfile(full_path):
-                        enabled_rulefiles[rule['filename']] = {}
+                    # Required files are package-wide companions and follow the selection state of the ruleset.
+                    if rule['metadata_source'] in selected_sources:
+                        enabled_rulefiles.add(rule['filename'])
                 if rule['filename'] not in enabled_rulefiles or rule['deprecated']:
-                    if not rule['required']:
-                        if os.path.isfile(full_path):
-                            os.remove(full_path)
+                    full_path = os.path.join(rule_source_directory, rule['filename'])
+                    if os.path.isfile(full_path):
+                        os.remove(full_path)
                 else:
                     if ('username' in rule['source'] and 'password' in rule['source']):
                         auth = (rule['source']['username'], rule['source']['password'])
@@ -90,18 +77,15 @@ if __name__ == '__main__':
                     # when metadata supports versioning, check if either version or settings changed before download
                     remote_hash = dl.fetch_version_hash(check_url=rule['version_url'],
                                                         auth=auth, headers=rule['http_headers'])
-                    local_hash = dl.installed_file_hash(rule['filename'])
-                    if remote_hash is None or remote_hash != local_hash:
+                    if remote_hash is None or remote_hash != dl.installed_file_hash(rule['filename']):
                         dl.download(url=rule['url'], url_filename=rule['url_filename'],
                                     filename=rule['filename'], auth=auth,
                                     headers=rule['http_headers'], version=remote_hash)
-                        # count number of downloaded files/rules from this metadata package
-                        metadata_sources[rule['metadata_source']] += 1
                     else:
                         syslog.syslog(syslog.LOG_NOTICE, 'download skipped %s, same version' % rule['filename'])
 
     # cleanup: match all installed rulesets against the configured ones and remove uninstalled rules
-    md_filenames = [x['filename'] for x in md.list_rules(rule_properties)]
+    md_filenames = [x['filename'] for x in available_rules]
     for filename in enabled_rulefiles:
         full_path = ('%s/%s' % (rule_source_directory, filename)).replace('//', '/')
         if filename not in md_filenames and os.path.isfile(full_path):
