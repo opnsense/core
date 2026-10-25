@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
     if (!empty($pconfig['syncookies'])) {
         if (!in_array($pconfig['syncookies'], ['always', 'adaptive'])) {
-            $input_errors[] = sprintf(gettext("Unknown syncookie type %s.", $pconfig['syncookies']));
+            $input_errors[] = sprintf(gettext("Unknown syncookie type %s."), $pconfig['syncookies']);
         }
         if ($pconfig['syncookies'] == 'adaptive' && (empty($pconfig['syncookies_adaptstart']) || empty($pconfig['syncookies_adaptend']))) {
             $input_errors[] = gettext("Syncookie Adaptive values must be set together.");
@@ -121,7 +121,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     if (!empty($pconfig['pfdebug'])) {
         if (!in_array($pconfig['pfdebug'], ['none', 'urgent', 'misc', 'loud'])) {
-            $input_errors[] = sprintf(gettext("Unknown debug type %s.", $pconfig['pfdebug']));
+            $input_errors[] = sprintf(gettext("Unknown debug type %s."), $pconfig['pfdebug']);
         }
     }
     if (count($input_errors) == 0) {
