@@ -74,6 +74,7 @@
         <id>hasync.password</id>
         <label>Remote System Password</label>
         <type>password</type>
+        <clear>hasync.password_clear</clear>
         <help>Enter the web GUI password of the system entered above for synchronizing your configuration.</help>
     </field>
     <field>

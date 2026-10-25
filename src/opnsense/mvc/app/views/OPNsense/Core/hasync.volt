@@ -26,17 +26,24 @@
 
 <script>
     $( document ).ready(function() {
-        let data_get_map = {'frm_generalsettings':"/api/core/hasync/get"};
-        mapDataToFormUI(data_get_map).done(function(){
-            formatTokenizersUI();
-            $('.selectpicker').selectpicker('refresh');
-        });
+        function loadSettings() {
+            let data_get_map = {'frm_generalsettings':"/api/core/hasync/get"};
+            mapDataToFormUI(data_get_map).done(function(){
+                formatTokenizersUI();
+                $('.selectpicker').selectpicker('refresh');
+            });
+        }
+        loadSettings();
 
         $("#reconfigureAct").SimpleActionButton({
             onPreAction: function() {
                 const dfObj = new $.Deferred();
                 saveFormToEndpoint("/api/core/hasync/set", 'frm_generalsettings', function () { dfObj.resolve(); }, true, function () { dfObj.reject(); });
                 return dfObj;
+            },
+            onAction: function(data, status) {
+                // show what was saved, e.g. a cleared password
+                loadSettings();
             }
         });
     });

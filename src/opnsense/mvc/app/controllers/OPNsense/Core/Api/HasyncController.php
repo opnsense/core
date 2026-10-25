@@ -40,6 +40,16 @@ class HasyncController extends ApiMutableModelControllerBase
     protected static $internalModelName = 'hasync';
     protected static $internalModelClass = 'OPNsense\Core\Hasync';
 
+    protected function setActionHook()
+    {
+        $mdl = $this->getModel();
+        $new_password = $mdl->password->isFieldChanged() && $mdl->password->isSet();
+        if ($mdl->password_clear->isEqual('1') && !$new_password) {
+            /* setValue() keeps a saved password when given an empty one */
+            $mdl->password->applyDefault();
+        }
+    }
+
     public function reconfigureAction()
     {
         $result = ["status" => "failed"];

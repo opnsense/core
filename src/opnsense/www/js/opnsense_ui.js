@@ -416,6 +416,42 @@ function addMultiSelectClearUI() {
     });
 }
 
+/**
+ * mark a saved write-only value for clearing on save, or keep it
+ * @param input password input with a clear field
+ * @param clear clear on save
+ */
+function setPasswordClear(input, clear) {
+    const flag = $('[id="' + input.data('clear') + '"]');
+    const link = $('[id="clear-saved_' + input.attr('id') + '"]');
+    if (clear) {
+        input.data('saved-placeholder', input.attr('placeholder'));
+        input.val('');
+        restorePlaceholder(input);
+    } else if (flag.val() === '1') {
+        input.attr('placeholder', input.data('saved-placeholder'));
+    }
+    flag.val(clear ? '1' : '0');
+    link.find('small').text(clear ? link.data('cancel-text') : link.data('clear-text'));
+}
+
+/**
+ * clear a saved write-only value on click event (password fields with a clear field),
+ * typing a new value cancels it. setFormData() tells which values are saved.
+ */
+function addPasswordClearUI() {
+    $('[id^="clear-saved_"]').click(function (e) {
+        e.preventDefault();
+        const input = $('input[id="' + $(this).attr('id').replace(/^clear-saved_/, '') + '"]');
+        setPasswordClear(input, $('[id="' + input.data('clear') + '"]').val() !== '1');
+    });
+    $('input[data-clear]').on('input', function () {
+        if ($(this).val() !== '' && $('[id="' + $(this).data('clear') + '"]').val() === '1') {
+            setPasswordClear($(this), false);
+        }
+    });
+}
+
 
 /**
  * setup form help buttons

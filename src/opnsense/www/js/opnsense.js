@@ -263,6 +263,7 @@ function setFormData(parent,data) {
                         } else {
                             restorePlaceholder(targetNode);
                         }
+                        resetPasswordClear(targetNode, node['%' + keypart] !== undefined);
                     }
                     targetNode.change();
                 }
@@ -280,6 +281,20 @@ function restorePlaceholder(inputs) {
         if ($(this).data('form-placeholder') !== undefined) {
             $(this).attr('placeholder', $(this).data('form-placeholder'));
         }
+    });
+}
+
+/**
+ * keep a saved write-only value and offer to clear it, see addPasswordClearUI()
+ * @param inputs input elements, only password inputs with a clear field are used
+ * @param saved a value is saved
+ */
+function resetPasswordClear(inputs, saved) {
+    inputs.filter('[data-clear]').each(function () {
+        const link = $('[id="clear-saved_' + $(this).attr('id') + '"]');
+        $('[id="' + $(this).data('clear') + '"]').val('0');
+        link.find('small').text(link.data('clear-text'));
+        link.toggle(saved);
     });
 }
 

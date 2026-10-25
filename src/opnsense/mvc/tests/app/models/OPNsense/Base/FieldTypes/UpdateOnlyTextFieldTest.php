@@ -77,4 +77,16 @@ class UpdateOnlyTextFieldTest extends Field_Framework_TestCase
         $this->assertEquals('********', $field->getDescription());
         $this->assertEquals(['password' => '', '%password' => '********'], $container->getNodes());
     }
+
+    /**
+     * applyDefault() removes a saved value
+     */
+    public function testApplyDefaultClears()
+    {
+        $field = new UpdateOnlyTextField();
+        $field->setValue('secret');
+        $field->applyDefault();
+        $this->assertEquals('', $field->getValue());
+        $this->assertTrue($field->isFieldChanged());
+    }
 }

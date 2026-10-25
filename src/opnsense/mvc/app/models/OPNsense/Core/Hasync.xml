@@ -40,9 +40,8 @@
             <Required>Y</Required>
         </verifypeer>
         <username type="TextField"/>
-        <password type="TextField">
-            <!-- XXX -->
-        </password>
+        <password type="UpdateOnlyTextField"/>
+        <password_clear type="BooleanField" volatile="true"/>
         <syncitems type="JsonKeyValueStoreField">
             <Multiple>Y</Multiple>
             <ConfigdPopulateAct>system ha options</ConfigdPopulateAct>
