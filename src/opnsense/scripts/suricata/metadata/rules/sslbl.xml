@@ -6,21 +6,20 @@
               description="SSL Fingerprint Blacklist"
               documentation_url="https://sslbl.abuse.ch/blacklist/"
         >abuse.ch.sslblacklist.rules</file>
-        <file url="https://sslbl.abuse.ch/blacklist/sslipblacklist.rules"
-              description="SSL IP Blacklist"
-              documentation_url="https://sslbl.abuse.ch/blacklist/"
-        >abuse.ch.sslipblacklist.rules</file>
         <file url="https://feodotracker.abuse.ch/downloads/feodotracker.rules"
               description="Feodo Tracker"
               documentation_url="https://feodotracker.abuse.ch/blocklist/"
         >abuse.ch.feodotracker.rules</file>
-        <file url="https://urlhaus.abuse.ch/downloads/suricata-ids/"
+        <file url="https://urlhaus-api.abuse.ch/v2/files/exports/%%abuse_ch.token%%/urlhaus_ids.rules"
               description="URLhaus"
               documentation_url="https://urlhaus.abuse.ch/"
         >abuse.ch.urlhaus.rules</file>
-        <file url="https://threatfox.abuse.ch/downloads/threatfox_suricata.rules"
+        <file url="https://threatfox-api.abuse.ch/v2/files/exports/%%abuse_ch.token%%/threatfox_suricata.rules"
               description="ThreatFox"
               documentation_url="https://threatfox.abuse.ch/"
         >abuse.ch.threatfox.rules</file>
     </files>
+    <properties>
+	   <property name="abuse_ch.token" default=""/>
+    </properties>
 </ruleset>
