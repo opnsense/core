@@ -142,8 +142,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         foreach (config_read_array('cert', false) as $cert) {
             if ($cert['refid'] == $pconfig['ssl-certref']) {
                 if (cert_get_purpose($cert['crt'])['server'] == 'No') {
-                    $input_errors[] = gettext(
-                        sprintf('Certificate %s is not intended for server use.', $cert['descr'])
+                    $input_errors[] = sprintf(
+                        gettext('Certificate %s is not intended for server use.'),
+                        $cert['descr']
                     );
                     break;
                 }
