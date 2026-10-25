@@ -335,4 +335,4 @@
     </div>
 </div>
 
-{{ partial("layout_partials/base_dialog",['fields':formDialogEditCert,'id':formGridCert['edit_dialog_id'],'label':lang._('Edit Certificate')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditCert,'id':formGridCert['edit_dialog_id'],'label':lang._('Edit Certificate'),'label_add':lang._('Add Certificate'),'label_copy':lang._('Clone Certificate')])}}
