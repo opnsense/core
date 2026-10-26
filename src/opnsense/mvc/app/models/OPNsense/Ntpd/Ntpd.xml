@@ -1,0 +1,245 @@
+<model>
+    <mount>//OPNsense/Ntpd</mount>
+    <version>1.0.0</version>
+    <description>NTP daemon configuration</description>
+    <items>
+        <clientmode type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </clientmode>
+        <interface type="InterfaceField">
+            <Multiple>Y</Multiple>
+            <AllowDynamic>Y</AllowDynamic>
+            <filters>
+                <virtual>/^(?!1).*$/</virtual>
+            </filters>
+        </interface>
+        <orphan type="IntegerField">
+            <Default>12</Default>
+            <Required>Y</Required>
+            <MinimumValue>1</MinimumValue>
+            <MaximumValue>15</MaximumValue>
+            <ValidationMessage>Orphan mode must be a value between 1 and 15.</ValidationMessage>
+        </orphan>
+        <maxclock type="IntegerField">
+            <Default>10</Default>
+            <Required>Y</Required>
+            <MinimumValue>2</MinimumValue>
+            <MaximumValue>99</MaximumValue>
+            <ValidationMessage>Maxclock must be a value between 2 and 99.</ValidationMessage>
+        </maxclock>
+        <statsgraph type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </statsgraph>
+        <logpeer type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </logpeer>
+        <logsys type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </logsys>
+        <clockstats type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </clockstats>
+        <loopstats type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </loopstats>
+        <peerstats type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </peerstats>
+        <kod type="BooleanField">
+            <Default>1</Default>
+            <Required>Y</Required>
+        </kod>
+        <limited type="BooleanField">
+            <Default>1</Default>
+            <Required>Y</Required>
+        </limited>
+        <nomodify type="BooleanField">
+            <Default>1</Default>
+            <Required>Y</Required>
+        </nomodify>
+        <noquery type="BooleanField">
+            <Default>1</Default>
+            <Required>Y</Required>
+        </noquery>
+        <noserve type="BooleanField">
+            <Default>0</Default>
+            <Required>Y</Required>
+        </noserve>
+        <nopeer type="BooleanField">
+            <Default>1</Default>
+            <Required>Y</Required>
+        </nopeer>
+        <notrap type="BooleanField">
+            <Default>1</Default>
+            <Required>Y</Required>
+        </notrap>
+        <leapsec type="TextField">
+            <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\x7f]*$/u</Mask>
+            <ValidationMessage>The leap second file must be plain text.</ValidationMessage>
+        </leapsec>
+        <timeservers>
+            <server type="ArrayField">
+                <hostname type="HostnameField">
+                    <IpAllowed>Y</IpAllowed>
+                    <Required>Y</Required>
+                </hostname>
+                <prefer type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </prefer>
+                <pool type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </pool>
+                <iburst type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </iburst>
+                <enabled type="BooleanField">
+                    <Default>1</Default>
+                    <Required>Y</Required>
+                </enabled>
+            </server>
+        </timeservers>
+        <gps>
+            <port type=".\SerialPortField"/>
+            <type type="OptionField">
+                <Default>generic</Default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <generic>Generic</generic>
+                    <default value="default">Default</default>
+                    <garmin>Garmin</garmin>
+                    <mediatek>MediaTek</mediatek>
+                    <sirf>SiRF</sirf>
+                    <ublox>U-Blox</ublox>
+                    <suregps>SureGPS</suregps>
+                    <custom>Custom</custom>
+                </OptionValues>
+            </type>
+            <speed type="OptionField">
+                <Default>0</Default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <b4800 value="0">4800</b4800>
+                    <b9600 value="16">9600</b9600>
+                    <b19200 value="32">19200</b19200>
+                    <b38400 value="48">38400</b38400>
+                    <b57600 value="64">57600</b57600>
+                    <b115200 value="80">115200</b115200>
+                </OptionValues>
+            </speed>
+            <nmea type="OptionField">
+                <Multiple>Y</Multiple>
+                <OptionValues>
+                    <rmc value="1">RMC</rmc>
+                    <gga value="2">GGA</gga>
+                    <gll value="4">GLL</gll>
+                    <zda value="8">ZDA or ZDG</zda>
+                </OptionValues>
+            </nmea>
+            <fudge1 type="StrictTextField">
+                <Mask>/^[-+]?([0-9]+(\.[0-9]*)?|\.[0-9]+)$/</Mask>
+                <ValidationMessage>Fudge time 1 must be a decimal number.</ValidationMessage>
+            </fudge1>
+            <fudge2 type="StrictTextField">
+                <Mask>/^[-+]?([0-9]+(\.[0-9]*)?|\.[0-9]+)$/</Mask>
+                <ValidationMessage>Fudge time 2 must be a decimal number.</ValidationMessage>
+            </fudge2>
+            <stratum type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>15</MaximumValue>
+                <ValidationMessage>Clock stratum must be a value between 0 and 15.</ValidationMessage>
+            </stratum>
+            <prefer type="BooleanField">
+                <Default>1</Default>
+                <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <type>SingleSelectConstraint</type>
+                        <addFields>
+                            <field>noselect</field>
+                        </addFields>
+                        <ValidationMessage>This option and "Do not use this clock" cannot be enabled at the same time.</ValidationMessage>
+                    </check001>
+                </Constraints>
+            </prefer>
+            <noselect type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+                <Constraints>
+                    <check001>
+                        <type>SingleSelectConstraint</type>
+                        <addFields>
+                            <field>prefer</field>
+                        </addFields>
+                        <ValidationMessage>This option and "Prefer this clock" cannot be enabled at the same time.</ValidationMessage>
+                    </check001>
+                </Constraints>
+            </noselect>
+            <flag1 type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </flag1>
+            <flag2 type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </flag2>
+            <flag3 type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </flag3>
+            <flag4 type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </flag4>
+            <subsec type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </subsec>
+            <refid type="StrictTextField">
+                <Mask>/^[A-Za-z0-9]{1,4}$/</Mask>
+                <ValidationMessage>Clock ID must be 1 to 4 alphanumeric characters.</ValidationMessage>
+            </refid>
+            <initcmd type="TextField">
+                <Mask>/^[^\x00-\x08\x0b\x0c\x0e-\x1f\x7f]*$/u</Mask>
+                <ValidationMessage>Initialization commands must be plain text.</ValidationMessage>
+            </initcmd>
+        </gps>
+        <pps>
+            <port type=".\SerialPortField"/>
+            <fudge1 type="StrictTextField">
+                <Mask>/^[-+]?([0-9]+(\.[0-9]*)?|\.[0-9]+)$/</Mask>
+                <ValidationMessage>Fudge time must be a decimal number.</ValidationMessage>
+            </fudge1>
+            <stratum type="IntegerField">
+                <MinimumValue>0</MinimumValue>
+                <MaximumValue>15</MaximumValue>
+                <ValidationMessage>Clock stratum must be a value between 0 and 15.</ValidationMessage>
+            </stratum>
+            <flag2 type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </flag2>
+            <flag3 type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </flag3>
+            <flag4 type="BooleanField">
+                <Default>0</Default>
+                <Required>Y</Required>
+            </flag4>
+            <refid type="StrictTextField">
+                <Mask>/^[A-Za-z0-9]{1,4}$/</Mask>
+                <ValidationMessage>Clock ID must be 1 to 4 alphanumeric characters.</ValidationMessage>
+            </refid>
+        </pps>
+    </items>
+</model>

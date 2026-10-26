@@ -1,0 +1,50 @@
+<form>
+    <field>
+        <id>server.enabled</id>
+        <label>Enabled</label>
+        <type>checkbox</type>
+        <help>Disable to keep this server in the list for monitoring without using it for time.</help>
+        <grid_view>
+            <width>6em</width>
+            <type>boolean</type>
+            <formatter>rowtoggle</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>server.hostname</id>
+        <label>Host</label>
+        <type>text</type>
+        <help>Hostname or IP address of the time server.</help>
+        <grid_view/>
+    </field>
+    <field>
+        <id>server.prefer</id>
+        <label>Prefer</label>
+        <type>checkbox</type>
+        <help>Indicates that NTP should favor the use of this server more than all others.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>server.pool</id>
+        <label>Pool</label>
+        <type>checkbox</type>
+        <help>Marks this entry as a pool hostname, allowing NTP to resolve and use multiple servers from it.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>server.iburst</id>
+        <label>Iburst</label>
+        <type>checkbox</type>
+        <help>Enables faster clock synchronization on startup at the expense of the peer.</help>
+        <grid_view>
+            <type>boolean</type>
+            <formatter>boolean</formatter>
+        </grid_view>
+    </field>
+</form>

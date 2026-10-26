@@ -1,0 +1,57 @@
+<form>
+    <field>
+        <type>header</type>
+        <label>Main Configuration</label>
+    </field>
+    <field>
+        <id>ntpd.pps.port</id>
+        <label>Serial port</label>
+        <type>dropdown</type>
+        <help>All serial ports are listed - be sure to pick the port with the PPS source attached.</help>
+    </field>
+    <field>
+        <id>ntpd.pps.fudge1</id>
+        <label>Fudge time</label>
+        <type>text</type>
+        <help>Fudge time is used to specify the PPS signal offset (in seconds) from the actual second such as the transmission delay between the transmitter and the receiver (default: 0.0).</help>
+    </field>
+    <field>
+        <id>ntpd.pps.stratum</id>
+        <label>Stratum</label>
+        <type>text</type>
+        <help><![CDATA[(0-15)<br/>This may be used to change the PPS Clock stratum (default: 0). This may be useful if, for some reason, you want ntpd to prefer a different clock and just monitor this source.]]></help>
+    </field>
+    <field>
+        <id>ntpd.pps.refid</id>
+        <label>Clock ID</label>
+        <type>text</type>
+        <hint>PPS</hint>
+        <help><![CDATA[(1 to 4 characters)<br/>This may be used to change the PPS Clock ID (default: PPS).]]></help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Flags</label>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ntpd.pps.flag2</id>
+        <label>Enable falling edge PPS signal processing</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Default: rising edge.</help>
+    </field>
+    <field>
+        <id>ntpd.pps.flag3</id>
+        <label>Enable kernel PPS clock discipline</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Default: disabled.</help>
+    </field>
+    <field>
+        <id>ntpd.pps.flag4</id>
+        <label>Record timestamp once per second</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Useful for constructing Allan deviation plots (default: disabled).</help>
+    </field>
+</form>

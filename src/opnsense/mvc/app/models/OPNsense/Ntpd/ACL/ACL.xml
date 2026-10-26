@@ -2,28 +2,20 @@
     <page-services-ntpd>
         <name>Services: NTP</name>
         <patterns>
-            <pattern>services_ntpd.php*</pattern>
+            <pattern>ui/ntpd/settings/*</pattern>
+            <pattern>api/ntpd/settings/*</pattern>
+            <pattern>api/ntpd/service/*</pattern>
         </patterns>
     </page-services-ntpd>
-    <page-services-ntp-gps>
-        <name>Services: NTP GPS</name>
-        <patterns>
-            <pattern>services_ntpd_gps.php*</pattern>
-        </patterns>
-    </page-services-ntp-gps>
     <page-status-ntp>
         <name>Status: NTP</name>
         <patterns>
             <pattern>ui/ntpd/status/*</pattern>
-            <pattern>api/ntpd/service/status</pattern>
+            <pattern>api/ntpd/service/meta</pattern>
+            <pattern>api/ntpd/service/gps</pattern>
+            <pattern>api/ntpd/service/searchPeers</pattern>
         </patterns>
     </page-status-ntp>
-    <page-services-ntp-pps>
-        <name>Services: NTP PPS</name>
-        <patterns>
-            <pattern>services_ntpd_pps.php*</pattern>
-        </patterns>
-    </page-services-ntp-pps>
     <page-status-systemlogs-ntpd>
         <name>Status: System logs: NTP</name>
         <patterns>

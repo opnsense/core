@@ -1,0 +1,150 @@
+<form>
+    <field>
+        <type>header</type>
+        <label>Main Configuration</label>
+    </field>
+    <field>
+        <id>ntpd.clientmode</id>
+        <label>Client mode</label>
+        <type>checkbox</type>
+        <help>Quit the NTP daemon immediately after time synchronization. The daemon will be restarted daily to update synchronization.</help>
+    </field>
+    <field>
+        <id>ntpd.interface</id>
+        <label>Interfaces</label>
+        <type>select_multiple</type>
+        <style>selectpicker</style>
+        <hint>All (recommended)</hint>
+        <advanced>true</advanced>
+        <help>Interfaces to listen on and send outgoing queries from.</help>
+    </field>
+    <field>
+        <id>ntpd.orphan</id>
+        <label>Orphan mode</label>
+        <type>text</type>
+        <help><![CDATA[(1-15)<br/>Orphan mode allows the system clock to be used when no other clocks are available. The number here specifies the stratum reported during orphan mode and should normally be set to a number high enough to ensure that any other servers available to clients are preferred over this server.]]></help>
+    </field>
+    <field>
+        <id>ntpd.maxclock</id>
+        <label>Maxclock</label>
+        <type>text</type>
+        <help><![CDATA[(2-99)<br/>Specify the maximum number of servers retained by the server discovery schemes. The default is 10, which should typically be changed. This should be an odd number (to most effectively outvote falsetickers), typically two or three more than minclock plus the number of pool entries. The pool entries must be added as maxclock, but not minclock, which also counts the pool entries themselves. For example, tos maxclock 11 with four pool lines would keep 7 associations.]]></help>
+    </field>
+    <field>
+        <id>ntpd.statsgraph</id>
+        <label>NTP graphs</label>
+        <type>checkbox</type>
+        <help>Enable RRD graphs of NTP statistics.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Syslog Logging</label>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ntpd.logpeer</id>
+        <label>Log peer messages</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help><![CDATA[Enable logging of peer messages to the <a href="/ui/diagnostics/log/core/ntpd">Log File</a>.]]></help>
+    </field>
+    <field>
+        <id>ntpd.logsys</id>
+        <label>Log system messages</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help><![CDATA[Enable logging of system messages to the <a href="/ui/diagnostics/log/core/ntpd">Log File</a>.]]></help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Statistics Logging</label>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ntpd.clockstats</id>
+        <label>Clock statistics</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Enable logging of reference clock statistics to daily files in /var/log/ntp.</help>
+    </field>
+    <field>
+        <id>ntpd.loopstats</id>
+        <label>Loop statistics</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Enable logging of clock discipline statistics to daily files in /var/log/ntp.</help>
+    </field>
+    <field>
+        <id>ntpd.peerstats</id>
+        <label>Peer statistics</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Enable logging of NTP peer statistics to daily files in /var/log/ntp.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>NTP Access Restrictions</label>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ntpd.kod</id>
+        <label>Kiss-o'-death</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Send a Kiss-o'-death packet when a client exceeds the rate limits.</help>
+    </field>
+    <field>
+        <id>ntpd.limited</id>
+        <label>Rate limiting</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Deny service to clients that send requests faster than the rate limits allow.</help>
+    </field>
+    <field>
+        <id>ntpd.nomodify</id>
+        <label>No modify</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Deny state modifications (i.e. run time configuration) by ntpq and ntpdc.</help>
+    </field>
+    <field>
+        <id>ntpd.noquery</id>
+        <label>No query</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Disable ntpq and ntpdc queries.</help>
+    </field>
+    <field>
+        <id>ntpd.noserve</id>
+        <label>No serve</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Disable all except ntpq and ntpdc queries.</help>
+    </field>
+    <field>
+        <id>ntpd.nopeer</id>
+        <label>No peer</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Deny packets that attempt a peer association.</help>
+    </field>
+    <field>
+        <id>ntpd.notrap</id>
+        <label>No trap</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Deny mode 6 control message trap service.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Additional Configuration Options</label>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ntpd.leapsec</id>
+        <label>Leap second configuration</label>
+        <type>textbox</type>
+        <advanced>true</advanced>
+        <help><![CDATA[A leap second configuration allows NTP to advertise an upcoming leap second addition or subtraction. Normally this is only useful if this server is a stratum 1 time server.<br/>Add the leap second configuration content here, or use the file chooser below to load a leap second configuration file.]]></help>
+    </field>
+</form>

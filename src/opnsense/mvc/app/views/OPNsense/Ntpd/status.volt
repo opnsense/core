@@ -38,7 +38,7 @@
             }
 
             const table = $('#ntpd-table').UIBootgrid({
-                search: '/api/ntpd/service/status',
+                search: '/api/ntpd/service/searchPeers',
                 options: {
                     static: true,
                     navigation: 0,

@@ -1,0 +1,124 @@
+<form>
+    <field>
+        <type>header</type>
+        <label>Main Configuration</label>
+    </field>
+    <field>
+        <id>ntpd.gps.type</id>
+        <label>GPS type</label>
+        <type>dropdown</type>
+        <help><![CDATA[This option allows you to select a predefined configuration.<br/><strong>Note:</strong> Select Generic if your GPS is not listed.<br/><strong>Note:</strong> The predefined configurations assume your GPS has already been set to NMEA mode.]]></help>
+    </field>
+    <field>
+        <id>ntpd.gps.port</id>
+        <label>Serial port</label>
+        <type>dropdown</type>
+        <help>All serial ports are listed - be sure to pick the port with the GPS attached.</help>
+    </field>
+    <field>
+        <id>ntpd.gps.speed</id>
+        <label>Baud rate</label>
+        <type>dropdown</type>
+        <help><![CDATA[Serial port baud rate.<br/>Note: A higher baud rate is generally only helpful if the GPS is sending too many sentences. It is recommended to configure the GPS to send only one sentence at a baud rate of 4800 or 9600.]]></help>
+    </field>
+    <field>
+        <id>ntpd.gps.nmea</id>
+        <label>NMEA sentences</label>
+        <type>select_multiple</type>
+        <style>selectpicker</style>
+        <hint>All</hint>
+        <help><![CDATA[By default NTP will listen for all supported NMEA sentences. Select one or more specific sentences to restrict which ones NTP will use.]]></help>
+    </field>
+    <field>
+        <id>ntpd.gps.fudge1</id>
+        <label>Fudge time 1</label>
+        <type>text</type>
+        <help>Fudge time 1 is used to specify the GPS PPS signal offset in seconds (default: 0.0).</help>
+    </field>
+    <field>
+        <id>ntpd.gps.fudge2</id>
+        <label>Fudge time 2</label>
+        <type>text</type>
+        <help>Fudge time 2 is used to specify the serial end of line time offset in seconds (default: 0.0).</help>
+    </field>
+    <field>
+        <id>ntpd.gps.stratum</id>
+        <label>Stratum</label>
+        <type>text</type>
+        <help><![CDATA[(0-15)<br/>This may be used to change the GPS Clock stratum (default: 0). This may be useful if, for some reason, you want ntpd to prefer a different clock.]]></help>
+    </field>
+    <field>
+        <id>ntpd.gps.refid</id>
+        <label>Clock ID</label>
+        <type>text</type>
+        <hint>GPS</hint>
+        <advanced>true</advanced>
+        <help><![CDATA[(1 to 4 characters)<br/>This may be used to change the GPS Clock ID (default: GPS).]]></help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Flags</label>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ntpd.gps.prefer</id>
+        <label>Prefer this clock</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>NTP should prefer this clock (default: enabled).</help>
+    </field>
+    <field>
+        <id>ntpd.gps.noselect</id>
+        <label>Do not use this clock</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>NTP should not use this clock. It will be displayed for reference only (default: disabled).</help>
+    </field>
+    <field>
+        <id>ntpd.gps.flag1</id>
+        <label>Enable PPS signal processing</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Default: disabled. The GPS type presets enable it.</help>
+    </field>
+    <field>
+        <id>ntpd.gps.flag2</id>
+        <label>Enable falling edge PPS signal processing</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Default: rising edge.</help>
+    </field>
+    <field>
+        <id>ntpd.gps.flag3</id>
+        <label>Enable kernel PPS clock discipline</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Default: disabled. The GPS type presets enable it.</help>
+    </field>
+    <field>
+        <id>ntpd.gps.flag4</id>
+        <label>Obscure location in timestamp</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Default: unobscured.</help>
+    </field>
+    <field>
+        <id>ntpd.gps.subsec</id>
+        <label>Log sub-second fraction of received timestamp</label>
+        <type>checkbox</type>
+        <advanced>true</advanced>
+        <help>Default: not logged.</help>
+    </field>
+    <field>
+        <type>header</type>
+        <label>GPS Initialization</label>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>ntpd.gps.initcmd</id>
+        <label>GPS initialization commands</label>
+        <type>textbox</type>
+        <advanced>true</advanced>
+        <help>Commands entered here will be sent to the GPS during initialization. Please read and understand your GPS documentation before making any changes here.</help>
+    </field>
+</form>
