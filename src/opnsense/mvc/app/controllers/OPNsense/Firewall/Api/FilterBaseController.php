@@ -286,7 +286,6 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
 
         $result['aliases']['items'] += $aliases;
 
-
         /*
          * XXX Eventually it might make more sense to instantate the
          * actual protocol fields of the rules in order to get the full
