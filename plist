@@ -1407,6 +1407,7 @@
 /usr/local/opnsense/scripts/routes/gateway_watcher.php
 /usr/local/opnsense/scripts/routes/gateways.php
 /usr/local/opnsense/scripts/routes/show_routes.py
+/usr/local/opnsense/scripts/service/supervisor.subr.sh
 /usr/local/opnsense/scripts/shaper/dummynet_stats.py
 /usr/local/opnsense/scripts/shaper/flush_all.sh
 /usr/local/opnsense/scripts/shaper/lib/__init__.py
