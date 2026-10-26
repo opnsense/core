@@ -65,7 +65,7 @@ function validate_track6_idassoc6(&$pconfig, $if)
                     continue;
                 }
                 $assoc_pd_link = !empty($trackcfg['track6_assoc_pd']) ? $trackcfg['track6_assoc_pd'] : $default_id;
-                if ($assoc_pd_ref != $assoc_pd_ref) {
+                if ($assoc_pd_ref != $assoc_pd_link) {
                     continue;
                 }
                 /* the end of non-overlapping intervals needs to specify 0 ... n-1 */
