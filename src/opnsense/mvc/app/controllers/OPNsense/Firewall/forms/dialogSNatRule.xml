@@ -135,7 +135,6 @@
         <type>text</type>
         <style>port_selector</style>
         <help>Source port number or well known name (imap, imaps, http, https, ...), for ranges use a dash</help>
-        <advanced>true</advanced>
         <grid_view>
             <label>Port</label>
             <sequence>60</sequence>
@@ -145,8 +144,7 @@
     </field>
     <field>
         <type>header</type>
-        <label>Destination (advanced)</label>
-        <collapse>true</collapse>
+        <label>Destination</label>
     </field>
     <field>
         <id>rule.destination_not</id>
