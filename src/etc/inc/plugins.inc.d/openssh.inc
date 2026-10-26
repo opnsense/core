@@ -137,13 +137,16 @@ function openssh_configure_do($verbose = false, $interface_map = null)
         'mldsa44-ed25519' => 'ssh_host_mldsa44_ed25519_key',
     ];
 
-    /* Remove experimental ML-DSA host keys */
+    /**
+     * Remove experimental ML-DSA host keys
+     * XXX this workaround can be removed in 27.1
+     */
     $mldsa44_file = "/conf/sshd/{$keys['mldsa44-ed25519']}";
-    $mldsa44_pubkey = @file_get_contents("{$mldsa44_file}.pub");
-    if (strpos($mldsa44_pubkey ?: '', 'ssh-mldsa44-ed25519@openssh.com ') === 0 &&
-        in_array('ssh-mldsa44-ed25519', shell_safe('/usr/local/bin/ssh -Q key', [], true), true)
+    $mldsa44_pubfile = "{$mldsa44_file}.pub";
+    if (file_exists($mldsa44_pubfile) &&
+        strpos(file_get_contents($mldsa44_pubfile), 'ssh-mldsa44-ed25519@openssh.com ') === 0
     ) {
-        @unlink("{$mldsa44_file}.pub");
+        @unlink($mldsa44_pubfile);
         @unlink($mldsa44_file);
     }
 
