@@ -151,7 +151,7 @@ class StaticRoute
      * @param ?string $family inet/inet6 or empty for all
      * @return array configured static routes, indexed by normalized network
      */
-    public function staticRoutes($family=null)
+    public function staticRoutes($family = null)
     {
         $result = [];
         /* start with default gateways as static routes, which need to know the monitor status */
@@ -168,7 +168,7 @@ class StaticRoute
             }
             $net = $ipproto === 'inet' ? '0.0.0.0/0' : '::/0';
             $gateway = $this->getGateways()->getDefaultGW($down_gateways, $ipproto);
-            if (!Util::isIpAddress($gateway['gateway']??'')) {
+            if (!Util::isIpAddress($gateway['gateway'] ?? '')) {
                 continue; /* ignore invalid */
             } elseif (Util::isLinkLocal($gateway['gateway'])) {
                 $result[$net] = [$gateway['gateway'] . '%' . $gateway['if']];
@@ -209,7 +209,7 @@ class StaticRoute
     /**
      * @return array list of monitors
      */
-    static public function getMonitorProcesses()
+    public static function getMonitorProcesses()
     {
         $result = [];
         foreach (glob('/var/run/dpinger_*.pid') ?? [] as $pidfile) {
@@ -299,9 +299,7 @@ class StaticRoute
 
             /* rewrite report using gathered information */
             $status[$gwname] = $report;
-
         }
         return $status;
     }
-
 }
