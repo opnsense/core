@@ -23,5 +23,3 @@
 	   <property name="abuse_ch.token" default=""/>
     </properties>
 </ruleset>
-
-
