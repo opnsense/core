@@ -86,7 +86,6 @@ class FilterController extends FilterBaseController
         $categories = $this->request->get('category');
         $show_all = !empty($this->request->get('show_all'));
         $search_phrase = trim((string)$this->request->getPost('searchPhrase', null, ''));
-        $decorate_search = $show_all && $search_phrase !== '';
         if (!$this->request->has('interface')) {
             // ALL rules
             $interfaces = null;
@@ -136,9 +135,7 @@ class FilterController extends FilterBaseController
         $filter_funct_rs = function (&$record) use (
             $categories,
             $interfaces,
-            $rule_stats,
-            $decorate_search,
-            $decorate_funct_rs
+            $rule_stats
         ) {
             /* Filter criteria */
             $r_categories = !empty($record['categories']) ? array_map('trim', explode(',', $record['categories'])) : [];
@@ -195,11 +192,6 @@ class FilterController extends FilterBaseController
                 $record = array_merge($record, $rule_stats[$record['uuid']]);
             }
 
-            /* Inspect mode also searches presentation metadata. */
-            if ($decorate_search) {
-                $decorate_funct_rs($record, $r_categories);
-            }
-
             return true;
         };
 
@@ -232,11 +224,9 @@ class FilterController extends FilterBaseController
             SORT_NATURAL | SORT_FLAG_CASE,
             $search_clauses
         );
-        if (!$decorate_search) {
-            foreach ($result['rows'] as &$record) {
-                $decorate_funct_rs($record);
-            }
-            unset($record);
+        /* frontend expects "meta_" fields, which should only be relevant for rendering purposes */
+        foreach ($result['rows'] as &$record) {
+            $decorate_funct_rs($record);
         }
 
         return $result;
