@@ -147,7 +147,7 @@
             <input type="password" autocomplete="new-password" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}" {% if clear|default('') %}data-clear="{{ clear }}"{% endif %}>
             {% if clear|default('') %}
                 <input type="hidden" id="{{ clear }}">
-                <div><a href="#" class="text-danger" id="clear-saved_{{ id }}" style="display: none;" data-clear-text="{{ lang._('Clear Saved') }}" data-cancel-text="{{ lang._('Cancel Clear') }}"><i class="fa fa-times-circle"></i> <small>{{ lang._('Clear Saved') }}</small></a></div>
+                <div><a href="#" class="text-danger" id="clear-saved_{{ id }}" style="display: none;" data-clear-text="{{ lang._('Clear Saved Value') }}" data-cancel-text="{{ lang._('Keep Saved Value') }}"><i class="fa fa-times-circle"></i> <small>{{ lang._('Clear Saved Value') }}</small></a></div>
             {% endif %}
         {% elseif type == "textbox" %}
             <textarea class="{{style|default('')}}" rows="{{height|default("5")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}" {% if type_formatter is defined %}type_formatter="{{type_formatter}}"{% endif %} ></textarea>
