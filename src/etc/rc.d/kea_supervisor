@@ -33,7 +33,7 @@
 
 name=kea_supervisor
 rcvar=kea_supervisor_enable
-supervisor_profiles="dhcp4 dhcp6 dhcp_ddns ctrl_agent"
+supervisor_profiles="dhcp4 dhcp6 dhcp_ddns ctrl_agent prefix_watcher"
 supervisor_profile_configure=kea_supervisor_configure
 supervisor_profile_enabled=kea_supervisor_enabled
 supervisor_profiles_fallback=/usr/local/etc/rc.d/kea
@@ -46,6 +46,16 @@ load_rc_config kea
 kea_supervisor_configure()
 {
     local config_name
+
+    if [ "$1" = prefix_watcher ]; then
+        name=kea_prefix_watcher
+        command=/usr/local/opnsense/scripts/kea/kea_prefix_watcher.py
+        command_interpreter=/usr/local/bin/python3
+        pidfile=/var/run/kea_prefix_watcher.pid
+        command_args=
+        required_files=${command}
+        return
+    fi
 
     eval "command=\${${1}_srv}"
     eval "config=\${kea_${1}_config_file}"
@@ -62,6 +72,11 @@ kea_supervisor_configure()
 kea_supervisor_enabled()
 {
     local enabled
+
+    if [ "$1" = prefix_watcher ]; then
+        [ "${dhcp6}" = yes ]
+        return
+    fi
 
     eval "enabled=\${$1}"
     [ "${enabled}" = yes ]
