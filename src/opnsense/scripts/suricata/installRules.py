@@ -119,7 +119,8 @@ if __name__ == '__main__':
                     shutil.copyfileobj(f_in, f_out)
 
     # cleanup unused files in rule_target_dir, since it's only meant for staging.
-    for filename in glob.glob("%s/*" % rule_target_dir):
+    for filename in [filename for extension in ('.rules', '.csv', '.json', '.jsonl', '.list', '.lst', '.ndjson', '.txt')
+                     for filename in glob.glob("%s/*%s" % (rule_target_dir, extension))]:
         if os.path.basename(filename) not in all_installed_files and \
                 (os.path.isfile(filename) or os.path.islink(filename)):
             os.remove(filename)
