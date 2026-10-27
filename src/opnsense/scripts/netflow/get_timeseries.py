@@ -37,12 +37,19 @@ import argparse
 from lib import load_config
 import lib.aggregates
 
+def positive_int(x):
+    n = int(x)
+    if n <= 0:
+        raise argparse.ArgumentTypeError("must be greater than 0")
+    return n
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--provider', default='FlowInterfaceTotals')
-    parser.add_argument('--resolution', type=int, required=True)
-    parser.add_argument('--start_time', type=int, required=True)
-    parser.add_argument('--end_time', type=int, required=True)
+    parser.add_argument('--resolution', type=positive_int, required=True)
+    parser.add_argument('--start_time', type=positive_int, required=True)
+    parser.add_argument('--end_time', type=positive_int, required=True)
     parser.add_argument('--key_fields', required=True)
     parser.add_argument('--sample', default='')
     cmd_args = parser.parse_args()
