@@ -61,13 +61,16 @@ if __name__ == '__main__':
     for rule in available_rules:
         if 'url' in rule['source']:
             if dl.is_supported(url=rule['source']['url']):
+                full_path = os.path.join(rule_source_directory, rule['filename'])
+                # XXX: keep legacy required companion files until plugins declare type="dataset". Remove in 27.1
+                legacy_dataset = metadata.is_legacy_dataset(rule)
                 if rule['required']:
-                    # Required files are package-wide companions and follow the selection state of the ruleset.
-                    if rule['metadata_source'] in selected_sources:
+                    # Required files follow package selection; missing legacy companions are restored as before.
+                    if rule['metadata_source'] in selected_sources or \
+                            (legacy_dataset and not os.path.isfile(full_path)):
                         enabled_rulefiles.add(rule['filename'])
                 if rule['filename'] not in enabled_rulefiles or rule['deprecated']:
-                    full_path = os.path.join(rule_source_directory, rule['filename'])
-                    if os.path.isfile(full_path):
+                    if os.path.isfile(full_path) and (not legacy_dataset or rule['deprecated']):
                         os.remove(full_path)
                 else:
                     if ('username' in rule['source'] and 'password' in rule['source']):

@@ -51,6 +51,12 @@ def load_rule_config(config_filename='/usr/local/etc/suricata/rule-updater.confi
     return enabled_rulefiles, rule_properties
 
 
+def is_legacy_dataset(rule):
+    # XXX: compatibility for required companion files without type="dataset". Remove in 27.1
+    return rule['type'] == 'rule' and rule['required'] and \
+        not rule['filename'].lower().endswith('.rules')
+
+
 class Metadata(object):
     def __init__(self):
         self._rules_dir = '%s/../metadata/rules/' % (os.path.dirname(os.path.abspath(__file__)))

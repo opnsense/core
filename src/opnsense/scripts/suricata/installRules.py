@@ -102,7 +102,9 @@ if __name__ == '__main__':
     # install downloaded datasets next to the rule files that load them
     _, rule_properties = metadata.load_rule_config()
     for rule in metadata.Metadata().list_rules(rule_properties):
-        if rule['type'] != 'dataset' or rule['deprecated']:
+        # XXX: stage legacy required companion files until plugins declare type="dataset".
+        # is_legacy_dataset() check can be removed in 27.1
+        if (rule['type'] != 'dataset' and not metadata.is_legacy_dataset(rule)) or rule['deprecated']:
             continue
         installed_filename = rule['filename']
         filename = os.path.join(rule_source_directory, installed_filename)
