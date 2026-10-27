@@ -1,0 +1,77 @@
+#!/bin/sh
+
+# Copyright (C) 2026 Deciso B.V.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright
+#    notice, this list of conditions and the following disclaimer in the
+#    documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+# INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+# AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+# AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+# OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+
+# PROVIDE: kea_supervisor
+# REQUIRE: kea
+# KEYWORD: shutdown
+
+. /etc/rc.subr
+. /usr/local/opnsense/scripts/service/supervisor.subr.sh
+
+name=kea_supervisor
+rcvar=kea_supervisor_enable
+supervisor_profiles="dhcp4 dhcp6 dhcp_ddns ctrl_agent"
+supervisor_profile_configure=kea_supervisor_configure
+supervisor_profile_enabled=kea_supervisor_enabled
+supervisor_profiles_fallback=/usr/local/etc/rc.d/kea
+
+load_rc_config kea
+. /usr/local/etc/kea/keactrl.conf
+
+: ${kea_supervisor_enable:=NO}
+
+kea_supervisor_configure()
+{
+    local config_name
+
+    eval "command=\${${1}_srv}"
+    eval "config=\${kea_${1}_config_file}"
+    [ -n "${command}" ] && [ -n "${config}" ] || return 1
+
+    name="kea_${1}"
+    config_name=${config##*/}
+    config_name=${config_name%.*}
+    pidfile="/var/run/kea/${config_name}.${command##*/}.pid"
+    command_args="-c ${config}"
+    required_files=${config}
+}
+
+kea_supervisor_enabled()
+{
+    local enabled
+
+    eval "enabled=\${$1}"
+    [ "${enabled}" = yes ]
+}
+
+kea_supervisor_precmd()
+{
+    /usr/local/opnsense/scripts/kea/setup.sh
+}
+
+start_precmd=kea_supervisor_precmd
+supervisor_profiles_enable
+run_rc_command "$1"

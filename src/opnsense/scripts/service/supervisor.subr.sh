@@ -152,3 +152,77 @@ supervisor_enable()
         *) extra_commands="${extra_commands} reload" ;;
     esac
 }
+
+# A service may use multiple supervised processes.  The caller supplies a
+# whitespace-separated profile list and a callback which configures name,
+# command, command_args and pidfile for a profile.  An optional callback
+# determines which profiles are enabled.  Each profile is dispatched in a
+# subshell so its rc.d state cannot leak into the aggregate service.
+supervisor_profile_run()
+(
+    local profile=$1
+    local action=$2
+
+    ${supervisor_profile_configure} "${profile}" || return 1
+    start_precmd=
+    supervisor_enable
+    run_rc_command "${action}"
+)
+
+supervisor_profile_is_running()
+(
+    ${supervisor_profile_configure} "$1" || return 1
+    [ -n "$(supervisor_get_pid)" ]
+)
+
+# An aggregate service may retain its native rc.d script for cleanup, reload
+# and status.  It must recognize processes started through the supervisor by
+# using their native PID files.
+supervisor_profiles_dispatch()
+{
+    local profile
+    local result
+
+    if [ -z "${supervisor_profiles_fallback}" ]; then
+        echo "A fallback rc.d script is required for supervised profiles." >&2
+        return 1
+    fi
+
+    case "${rc_arg}" in
+        start)
+            for profile in ${supervisor_profiles}; do
+                if [ -n "${supervisor_profile_enabled}" ]; then
+                    ${supervisor_profile_enabled} "${profile}" || continue
+                fi
+                supervisor_profile_run "${profile}" onestart || return 1
+            done
+            ;;
+        stop)
+            result=0
+            # Check all profiles so a configuration change cannot orphan a
+            # supervisor, then stop anything owned by the native rc.d script.
+            for profile in ${supervisor_profiles}; do
+                if supervisor_profile_is_running "${profile}"; then
+                    supervisor_profile_run "${profile}" onestop || result=1
+                fi
+            done
+            "${supervisor_profiles_fallback}" onestop || result=1
+            return ${result}
+            ;;
+        reload|status)
+            "${supervisor_profiles_fallback}" "${rc_arg}"
+            ;;
+    esac
+}
+
+supervisor_profiles_enable()
+{
+    start_cmd=supervisor_profiles_dispatch
+    stop_cmd=supervisor_profiles_dispatch
+    reload_cmd=supervisor_profiles_dispatch
+    status_cmd=supervisor_profiles_dispatch
+    case " ${extra_commands} " in
+        *" reload "*) ;;
+        *) extra_commands="${extra_commands} reload" ;;
+    esac
+}
