@@ -169,7 +169,7 @@ class Downloader(object):
         target_filename = '%s/%s' % (self._target_dir, filename)
         if os.path.isfile(target_filename):
             with open(target_filename, 'r') as f_in:
-                line = f_in.readline(len("#@opnsense_download_hash:") + 33)
+                line = f_in.readline(1024)
                 if line.find("#@opnsense_download_hash:") == 0:
                     return line.split(':')[1].strip()
         return None

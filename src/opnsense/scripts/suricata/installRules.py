@@ -112,10 +112,9 @@ if __name__ == '__main__':
                 marker = b'#@opnsense_download_hash:'
                 # read to determine if marker is present, we cap the amount read
                 # since json-format datasets may contain large single-line json objects
-                first_line = f_in.readline(len(marker) + 33)
+                first_line = f_in.readline(1024)
                 with open(os.path.join(rule_target_dir, installed_filename), 'wb') as f_out:
-                    if not (first_line.startswith(marker) and first_line.endswith(b'\n') and
-                            len(first_line) == len(marker) + 33):
+                    if not (first_line.startswith(marker) and first_line.endswith(b'\n')):
                         f_out.write(first_line)
                     shutil.copyfileobj(f_in, f_out)
 
