@@ -227,14 +227,10 @@ class AccessController extends ApiControllerBase
         $zone = (new CaptivePortal())->getByZoneID($this->request->getHeader('zoneid'));
         if ($zone != null && (string)$zone->corsPolicy === 'listed') {
             $this->response->setHeader('Vary', 'Origin');
-            if ($origin !== null) {
-                $allowedOrigins = array_map(
-                    [OriginField::class, 'normalizeOrigin'],
-                    $zone->corsOrigins->getValues()
-                );
-                if (in_array($origin, $allowedOrigins, true)) {
-                    $this->response->setHeader('Access-Control-Allow-Origin', $origin);
-                }
+            // Omitting Access-Control-Allow-Origin denies cross-origin browser access. Requests without a
+            // valid Origin header are still processed normally for same-origin and non-browser clients.
+            if ($origin !== null && in_array($origin, $zone->corsOrigins->getValues(), true)) {
+                $this->response->setHeader('Access-Control-Allow-Origin', $origin);
             }
         } elseif ($zone != null && (string)$zone->corsPolicy === 'any') {
             $this->response->setHeader('Access-Control-Allow-Origin', '*');

@@ -86,4 +86,11 @@ class OriginFieldTest extends Field_Framework_TestCase
         );
         $this->assertNull(OriginField::normalizeOrigin('null'));
     }
+
+    public function testStoresNormalizedOrigins()
+    {
+        $field = new OriginField();
+        $field->setValue('HTTPS://LOGIN.EXAMPLE.COM:443,http://LOCALHOST:80');
+        $this->assertSame('https://login.example.com,http://localhost', $field->getValue());
+    }
 }

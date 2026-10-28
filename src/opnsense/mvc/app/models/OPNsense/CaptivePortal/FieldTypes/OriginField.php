@@ -37,15 +37,29 @@ use OPNsense\Base\Validators\CallbackValidator;
 class OriginField extends CSVListField
 {
     /**
+     * Store valid origins in their canonical representation.
+     *
+     * Invalid values are preserved so validation can report them to the user.
+     */
+    public function setValue($value)
+    {
+        $origins = [];
+        foreach ($this->iterateInput((string)$value) as $origin) {
+            $origins[] = self::normalizeOrigin($origin) ?? $origin;
+        }
+        parent::setValue(implode($this->internalFieldSeparator, $origins));
+    }
+
+    /**
      * Return the canonical representation of an HTTP origin, or null when invalid.
      */
     public static function normalizeOrigin(string $origin): ?string
     {
-        try {
-            $parts = parse_url($origin);
-        } catch (\ValueError $e) {
+        if (filter_var($origin, FILTER_VALIDATE_URL) === false) {
             return null;
         }
+
+        $parts = parse_url($origin);
         if (
             $parts === false ||
             empty($parts['scheme']) ||
@@ -61,21 +75,6 @@ class OriginField extends CSVListField
         }
 
         $host = strtolower($parts['host']);
-        if (str_starts_with($host, '[') || str_ends_with($host, ']')) {
-            if (
-                !str_starts_with($host, '[') ||
-                !str_ends_with($host, ']') ||
-                filter_var(substr($host, 1, -1), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false
-            ) {
-                return null;
-            }
-        } elseif (
-            filter_var($host, FILTER_VALIDATE_IP) === false &&
-            filter_var($host, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) === false
-        ) {
-            return null;
-        }
-
         $port = $parts['port'] ?? null;
         if ($port !== null && ($port < 1 || $port > 65535)) {
             return null;
