@@ -10,7 +10,7 @@
               description="Feodo Tracker"
               documentation_url="https://feodotracker.abuse.ch/blocklist/"
         >abuse.ch.feodotracker.rules</file>
-        <file url="https://urlhaus-api.abuse.ch/v2/files/exports/%%abuse_ch.token%%/urlhaus_ids.rules"
+        <file url="https://urlhaus-api.abuse.ch/v2/files/exports/%%abuse_ch.token%%/urlhaus_ids_suricata.rules"
               description="URLhaus"
               documentation_url="https://urlhaus.abuse.ch/"
         >abuse.ch.urlhaus.rules</file>
