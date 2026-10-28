@@ -1,7 +1,7 @@
 #!/usr/local/bin/php
 <?php
 /*
- * Copyright (C) 2025 Deciso B.V.
+ * Copyright (C) 2025-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -28,7 +28,22 @@
 
 
 $filename = '/tmp/rules_internal.json';
-$fwrules = file_exists($filename) ? json_decode(file_get_contents($filename), true) ?? [] : [];
+$internal_rules = file_exists($filename) ? json_decode(file_get_contents($filename), true) ?? [] : [];
+$rule_type = $argv[1] ?? '';
+
+switch ($rule_type) {
+    case 'source_nat':
+    case 'destination_nat':
+        // Does not need normalization
+        echo json_encode($internal_rules[$rule_type] ?? [], JSON_PRETTY_PRINT);
+        exit;
+    case 'filter':
+        // Also contains legacy filter rules which must be normalized
+        $fwrules = $internal_rules['filter'] ?? [];
+        break;
+    default:
+        exit(1);
+}
 
 $mapping = [
     'type' => 'action',
