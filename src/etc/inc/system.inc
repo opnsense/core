@@ -666,12 +666,15 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
 
     service_log(sprintf('Setting up routes%s...', empty($interface_map) ? '' : ' for ' . join(', ', $interface_map)), $verbose);
 
-    $ifdetails = legacy_interfaces_details();
-    $gateways = new \OPNsense\Routing\Gateways();
-    $routes = json_decode(configd_run('interface routes list -n json'), true) ?? [];
-    $down_gateways = [];
+    $sroutes = new OPNsense\System\StaticRoute();
 
-    foreach ($gateways->gatewaysIndexedByName() as $gateway) {
+    $ifdetails = legacy_interfaces_details();
+    $routes = json_decode(configd_run('interface routes list -n json'), true) ?? [];
+
+    /**
+     * XXX: system_interface_route() should likely be moved to StaticRoute() class, but needs further investigation
+     */
+    foreach ($sroutes->getGateways()->gatewaysIndexedByName() as $gateway) {
         /* check if we need to add a required interface route to the gateway (IPv4 only) */
         if ($gateway['ipprotocol'] !== 'inet' || ($family !== null && $family !== 'inet')) {
             continue;
@@ -687,113 +690,8 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
         system_interface_route($gateway, $routes);
     }
 
-    if (isset($config['system']['gw_switch_default']) && $monitor !== 'ignore') {
-        foreach (return_gateways_status() as $gwname => $gwstatus) {
-            /* for clarity: this also matches 'force_down' */
-            if (strpos($gwstatus['status'], 'down') !== false) {
-                $down_gateways[] = $gwname;
-            }
-        }
-    }
-
-    if (count($down_gateways)) {
-        log_msg(sprintf('ROUTING: ignoring down gateways: %s', implode(', ', $down_gateways)), LOG_DEBUG);
-    }
-
-    foreach (['inet' => 'ipv4', 'inet6' => 'ipv6'] as $ipproto => $type) {
-        if ($family !== null && $family !== $ipproto) {
-            continue;
-        }
-
-        $gateway = $gateways->getDefaultGW($down_gateways, $ipproto);
-        if (empty($gateway['gateway'])) {
-            continue;
-        }
-
-        if (isset($config['system']['gw_switch_default']) || empty($interface_map) || in_array($gateway['interface'], $interface_map)) {
-            if (empty($ifdetails[$gateway['if']][$type][0])) {
-                log_msg("ROUTING: refusing to set {$ipproto} gateway on addressless {$gateway['interface']}({$gateway['if']})", LOG_ERR);
-                continue;
-            }
-
-            log_msg("ROUTING: configuring {$ipproto} default gateway on {$gateway['interface']}", LOG_INFO);
-
-            system_default_route($gateway, $routes);
-        }
-    }
-
-    $static_routes = get_staticroutes(false);
-    if (count($static_routes)) {
-        $gateways_arr = $gateways->gatewaysIndexedByName(false, true);
-        foreach ($static_routes as $rtent) {
-            if (empty($gateways_arr[$rtent['gateway']])) {
-                log_msg(sprintf('ROUTING: gateway IP could not be found for %s', $rtent['network']), LOG_WARNING);
-                continue;
-            }
-            $gateway = $gateways_arr[$rtent['gateway']];
-            if (!empty($interface_map) && !in_array($gateway['interface'], $interface_map)) {
-                continue;
-            }
-
-            if (is_subnetv4($rtent['network'])) {
-                $ipproto = 'inet';
-            } elseif (is_subnetv6($rtent['network'])) {
-                $ipproto = 'inet6';
-            } else {
-                log_msg(sprintf('ROUTING: cannot add static route to "%s"', $rtent['network']), LOG_ERR);
-                continue;
-            }
-
-            if ($family !== null && $family !== $ipproto) {
-                continue;
-            }
-
-            $cmd = [exec_safe('-%s', $ipproto)];
-
-            switch ($rtent['gateway']) {
-                case 'Null4':
-                case 'Null6':
-                    $cmd[] = '-blackhole';
-                    break;
-                default:
-                    break;
-            }
-
-            $cmd[] = exec_safe('%s', $rtent['network']);
-
-            /* XXX: get_staticroutes logic works if field is named enabled or disabled. this may be changed to enabled only later. */
-            if (!empty($rtent['disabled'])) {
-                mwexecfm('/sbin/route delete ' . implode(' ', $cmd));
-                continue;
-            }
-
-            $gatewayip = $gateway['gateway'] ?? '';
-            $interfacegw = $gateway['if'];
-
-            if (is_ipaddr($gatewayip)) {
-                mwexecfm('/sbin/route delete ' . implode(' ', $cmd));
-
-                if ($ipproto == 'inet' && is_ipaddrv6($gatewayip)) {
-                    $cmd[] = '-inet6'; /* RFC 5549: gateway protocol differs */
-                }
-
-                if (!empty($gateway['fargw']) && $gateway['ipprotocol'] != 'inet6') {
-                    mwexecfm('/sbin/route delete -%s %s -interface %s ', [$ipproto, $gatewayip, $interfacegw]);
-                    mwexecfm('/sbin/route add -%s %s -interface %s', [$ipproto, $gatewayip, $interfacegw]);
-                } elseif (is_linklocal($gatewayip) && strpos($gatewayip, '%') === false) {
-                    $gatewayip .= "%%{$interfacegw}"; /* XXX workaround for vsprintf() */
-                }
-
-                $cmd[] = exec_safe('%s', $gatewayip);
-            } elseif (!empty($interfacegw)) {
-                $cmd[] = exec_safe('-interface %s', $interfacegw);
-
-                mwexecfm('/sbin/route delete ' . implode(' ', $cmd));
-            }
-
-            mwexecfm('/sbin/route add ' . implode(' ', $cmd));
-        }
-    }
+    /* apply OPNsense managed static routes */
+    $sroutes->syncRoutes($family, $interface_map);
 
     service_log("done.\n", $verbose);
 
@@ -802,7 +700,7 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
         $gwnames = !empty($interface_map) ? [] : null;
 
         if (!empty($interface_map)) {
-            foreach ($gateways->gatewaysIndexedByName() as $name => $gateway) {
+            foreach ($sroutes->getGateways()->gatewaysIndexedByName() as $name => $gateway) {
                 if ($family !== null && $family !== $gateway['ipprotocol']) {
                     continue;
                 }
