@@ -134,10 +134,7 @@ class SourceNatController extends FilterBaseController
             $allrules = array_merge($allrules, $this->getAutomaticOutboundNatRules());
         }
 
-        $filter_funct = function (&$record) use ($category) {
-            /* categories are indexed by name in the record, but offered as uuid in the selector */
-            $catids = !empty($record['categories']) ? explode(',', $record['categories']) : [];
-
+        $decorate_funct = function (&$record) {
             /* offer list of colors to be used by the frontend */
             $record['category_colors'] = $this->getCategoryColors(
                 !empty($record['categories']) ? explode(',', $record['categories']) : []
@@ -148,17 +145,28 @@ class SourceNatController extends FilterBaseController
                     $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
                 }
             }
+        };
+
+        $filter_funct = function (&$record) use ($category) {
+            /* categories are indexed by name in the record, but offered as uuid in the selector */
+            $catids = !empty($record['categories']) ? explode(',', $record['categories']) : [];
             // Always show the automatic rules, even when a category is selected
             return !empty($record['is_automatic']) || empty($category) || array_intersect($catids, $category);
         };
 
-        return $this->searchRecordsetBase(
+        $result = $this->searchRecordsetBase(
             $allrules,
             null,
             "sort_order",
             $filter_funct,
             SORT_NATURAL | SORT_FLAG_CASE
         );
+        /* frontend expects "meta_" fields, which should only be relevant for rendering purposes */
+        foreach ($result['rows'] as &$record) {
+            $decorate_funct($record);
+        }
+
+        return $result;
     }
 
     public function setRuleAction($uuid)
