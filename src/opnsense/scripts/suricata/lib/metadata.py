@@ -32,6 +32,23 @@ import os
 import syslog
 import glob
 import xml.etree.ElementTree
+from configparser import ConfigParser
+
+
+def load_rule_config(config_filename='/usr/local/etc/suricata/rule-updater.config'):
+    """Load enabled files and metadata substitutions from the generated updater configuration."""
+    enabled_rulefiles = set()
+    rule_properties = {}
+    if os.path.exists(config_filename):
+        cnf = ConfigParser()
+        cnf.read(config_filename)
+        for section in cnf.sections():
+            if section == '__properties__':
+                for item in cnf.items(section):
+                    rule_properties[item[0]] = item[1]
+            elif cnf.has_option(section, 'enabled') and cnf.getint(section, 'enabled') == 1:
+                enabled_rulefiles.add(section.strip())
+    return enabled_rulefiles, rule_properties
 
 
 class Metadata(object):
@@ -104,7 +121,11 @@ class Metadata(object):
                         }
                         metadata_record['documentation_url'] = documentation_url
                         metadata_record['source'] = src_location.attrib
-                        metadata_record['filename'] = rule_filename.text.strip()
+                        metadata_record['type'] = rule_filename.attrib.get('type', 'rule').lower().strip()
+                        metadata_record['filename'] = (rule_filename.text or '').strip()
+                        if metadata_record['filename'] in ('', '.', '..') or \
+                                os.path.basename(metadata_record['filename']) != metadata_record['filename']:
+                            continue
                         metadata_record['http_headers'] = http_headers
                         # for an archive, define file to extract
                         metadata_record['url_filename'] = None
@@ -135,8 +156,8 @@ class Metadata(object):
                             metadata_record['deprecated'] = True
 
                         if metadata_record['filename'] not in target_filenames:
-                            if 'required' in rule_filename.attrib \
-                                    and rule_filename.attrib['required'].lower().strip() == 'true':
+                            if metadata_record['type'] == 'dataset' or ('required' in rule_filename.attrib \
+                                    and rule_filename.attrib['required'].lower().strip() == 'true'):
                                 # collect required rules/files, flush when this metadata package is parsed
                                 metadata_record['required'] = True
                                 required_files.append(metadata_record)
