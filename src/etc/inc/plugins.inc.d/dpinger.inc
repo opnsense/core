@@ -135,7 +135,7 @@ function dpinger_configure_do($verbose = false, $gwname_map = null)
 
     service_log(sprintf('Setting up gateway monitor%s...', empty($gwname_map) ? '' : ' for ' . join(', ', $gwname_map)), $verbose);
 
-    foreach (dpinger_processes() as $running_gwname => $proc) {
+    foreach (OPNsense\System\StaticRoute::getMonitorProcesses() as $running_gwname => $proc) {
         if (!empty($gwname_map) && !in_array($running_gwname, $gwname_map)) {
             continue;
         }
@@ -310,76 +310,8 @@ function dpinger_run()
 
 function dpinger_status()
 {
-    $procs = dpinger_processes();
-    $status = [];
 
-    foreach (dpinger_instances(true) as $gwitem) {
-        /* we seem to be concerned about disabled monitors just because of force_down */
-        $gwstatus = !empty($gwitem['monitor_disable']) ? 'none' : 'down';
-        $gwname = $gwitem['name'];
-
-        $status[$gwname] = $report = [
-            'status' => !empty($gwitem['force_down']) ? 'force_down' : $gwstatus,
-            /* grab the runtime monitor from the instance if available */
-            'monitor' => !empty($gwitem['monitor']) ? $gwitem['monitor'] : '~',
-            'gateway' => $gwitem['gateway'] ?? '',
-            'monitor_killstates' => $gwitem['monitor_killstates'] ?? '0',
-            'monitor_killstates_priority' => $gwitem['monitor_killstates_priority'] ?? '0',
-            'priority' => $gwitem['priority'] ?? '255',
-            'ipprotocol' => $gwitem['ipprotocol'],
-            'name' => $gwname,
-            'stddev' => '~',
-            'delay' => '~',
-            'loss' => '~',
-        ];
-
-        if (!isset($procs[$gwitem['name']])) {
-            continue;
-        }
-
-        $fp = @stream_socket_client("unix://{$procs[$gwname]['socket']}", $errno, $errstr, 1);
-        if (!$fp) {
-            continue;
-        }
-
-        $dinfo = '';
-        while (!feof($fp)) {
-            $dinfo .= fgets($fp, 1024);
-        }
-
-        fclose($fp);
-
-        list(, $latency_avg, $latency_stddev, $loss) = explode(' ', preg_replace('/\n/', '', $dinfo));
-        if ($latency_avg == '0' && $latency_stddev == '0' && $loss == '0') {
-            continue;
-        }
-
-        $latency_stddev = round($latency_stddev / 1000, 1);
-        $latency_avg = round($latency_avg / 1000, 1);
-
-        if (isset($gwitem['current_losshigh']) && $report['status'] != 'force_down') {
-            if ($latency_avg > $gwitem['current_latencyhigh'] || $loss > $gwitem['current_losshigh']) {
-                $report['status'] = 'down';
-            } elseif ($latency_avg > $gwitem['current_latencylow'] && $loss > $gwitem['current_losslow']) {
-                $report['status'] = 'delay+loss';
-            } elseif ($latency_avg > $gwitem['current_latencylow']) {
-                $report['status'] = 'delay';
-            } elseif ($loss > $gwitem['current_losslow']) {
-                $report['status'] = 'loss';
-            } else {
-                $report['status'] = 'none';
-            }
-        }
-
-        $report['delay'] = sprintf('%0.1f ms', empty($latency_avg) ? 0.0 : round($latency_avg, 1));
-        $report['stddev'] = sprintf('%0.1f ms', empty($latency_stddev) ? 0.0 : round($latency_stddev, 1));
-        $report['loss'] = sprintf('%0.1f %%', empty($loss) ? 0.0 : round($loss, 1));
-
-        /* rewrite report using gathered information */
-        $status[$gwname] = $report;
-    }
-
-    return $status;
+    return (new OPNsense\System\StaticRoute)->getMonitorStatus();
 }
 
 function dpinger_watcher()
@@ -398,26 +330,4 @@ function dpinger_watcher()
     }
 
     return [];
-}
-
-function dpinger_processes()
-{
-    $result = [];
-
-    $pidfiles = glob('/var/run/dpinger_*.pid');
-    if ($pidfiles === false) {
-        return $result;
-    }
-
-    foreach ($pidfiles as $pidfile) {
-        if (preg_match('/^dpinger_(.+)\.pid$/', basename($pidfile), $matches)) {
-            $socket_file = preg_replace('/\.pid$/', '.sock', $pidfile);
-            $result[$matches[1]] = [
-                'socket' => $socket_file,
-                'pidfile' => $pidfile,
-            ];
-        }
-    }
-
-    return $result;
 }

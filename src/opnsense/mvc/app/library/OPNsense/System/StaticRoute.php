@@ -93,7 +93,7 @@ class StaticRoute
     /**
      * @return OPNsense\Routing\Gateways
      */
-    private function getGateways()
+    public function getGateways()
     {
         if ($this->gateways === null) {
             $this->gateways = new Gateways();
@@ -455,9 +455,11 @@ class StaticRoute
                 } elseif (!empty($route['fargw'])) {
                     $syslog->info(sprintf("add %s route %s via %s (fargw)", $ipproto, $net, $route['interface']));
                     Shell::run_safe('/sbin/route add -%s %s -interface %s',[$ipproto, $net, $route['interface']]);
-                } else {
+                } elseif (!empty($route['gatewayip'])) {
                     $syslog->info(sprintf("add %s route %s via %s", $ipproto, $net, $route['gatewayip']));
                     Shell::run_safe('/sbin/route add -%s %s %s',[$ipproto, $net, $route['gatewayip']]);
+                } else {
+                    $syslog->warning(sprintf("gateway IP could not be found for %s", $net));
                 }
             }
         }
