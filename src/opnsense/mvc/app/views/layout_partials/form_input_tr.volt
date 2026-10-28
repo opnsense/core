@@ -51,7 +51,7 @@
  # style       :   css class to add
  # width       :   width in pixels if applicable
  # allownew    :   allow new items (for list) if applicable
- # clear       :   id of a volatile flag field, the controller clears the saved write-only value when set (password type)
+ # allowclear  :   offer to clear a saved write-only value, needs AllowClear on the model field
  # readonly    :   if true, input fields will be readonly
  # type_formatter : when set add type_formatter="" attribute which is used in getFormData() to pipe data before returning
  # parent      :   ID reference for the parent form
@@ -144,11 +144,7 @@
                 <a href="#" class="text-danger" id="to-select_{{ id }}" ><i class="fa fa-th-list"></i> <small>{{ lang._('Back') }}</small> </a>
             </div>
         {% elseif type == "password" %}
-            <input type="password" autocomplete="new-password" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}" {% if clear|default('') %}data-clear="{{ clear }}"{% endif %}>
-            {% if clear|default('') %}
-                <input type="hidden" id="{{ clear }}">
-                <div><a href="#" class="text-danger" id="clear-saved_{{ id }}" style="display: none;" data-clear-text="{{ lang._('Clear Saved Value') }}" data-cancel-text="{{ lang._('Keep Saved Value') }}"><i class="fa fa-times-circle"></i> <small>{{ lang._('Clear Saved Value') }}</small></a></div>
-            {% endif %}
+            <input type="password" autocomplete="new-password" class="form-control {{style|default('')}}" size="{{size|default("50")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}">
         {% elseif type == "textbox" %}
             <textarea class="{{style|default('')}}" rows="{{height|default("5")}}" id="{{ id }}" {{ readonly|default(false) ? 'readonly="readonly"' : '' }} aria-label="{{label|safe}}" {% if type_formatter is defined %}type_formatter="{{type_formatter}}"{% endif %} ></textarea>
         {% elseif type in ["info", "info_link"] %}
@@ -167,6 +163,9 @@
                 </label>
                 <input type="text" class="form-control {{style|default('')}}" readonly="" for="{{ id }}" id="{{ id }}__name">
             </div>
+        {% endif %}
+        {% if allowclear|default(false) %}
+            <div><a href="#" class="text-danger" id="clear-saved_{{ id }}" style="display: none;" data-clear-text="{{ lang._('Clear Saved Value') }}" data-cancel-text="{{ lang._('Keep Saved Value') }}"><i class="fa fa-times-circle"></i> <small>{{ lang._('Clear Saved Value') }}</small></a></div>
         {% endif %}
         {% if help|default(false) %}
             <div class="hidden" data-for="help_for_{{ id }}">

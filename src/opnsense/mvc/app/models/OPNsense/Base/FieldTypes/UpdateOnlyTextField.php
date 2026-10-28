@@ -35,6 +35,11 @@ namespace OPNsense\Base\FieldTypes;
 class UpdateOnlyTextField extends TextField
 {
     /**
+     * @var bool a false value empties the field
+     */
+    protected $internalAllowClear = false;
+
+    /**
      * Always return blank
      * @return string
      */
@@ -53,12 +58,22 @@ class UpdateOnlyTextField extends TextField
     }
 
     /**
-     * update field (if not empty)
-     * @param string $value
+     * @param string $value Y/N
+     */
+    public function setAllowClear($value): void
+    {
+        $this->internalAllowClear = strtoupper(trim($value)) === 'Y';
+    }
+
+    /**
+     * update field (if not empty), empty it on false when AllowClear is set
+     * @param string|bool $value
      */
     public function setValue($value)
     {
-        if ($value != "") {
+        if ($value === false && $this->internalAllowClear) {
+            parent::setValue("");
+        } elseif ($value != "") {
             parent::setValue($value);
         }
     }

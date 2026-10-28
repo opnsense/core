@@ -79,14 +79,21 @@ class UpdateOnlyTextFieldTest extends Field_Framework_TestCase
     }
 
     /**
-     * applyDefault() removes a saved value
+     * false keeps a saved value, unless AllowClear is set, a required field then fails validation
      */
-    public function testApplyDefaultClears()
+    public function testFalseClearsOnlyWithAllowClear()
     {
         $field = new UpdateOnlyTextField();
         $field->setValue('secret');
-        $field->applyDefault();
+        $field->setValue(false);
+        $this->assertEquals('secret', $field->getValue());
+        $field->setAllowClear('Y');
+        $field->setValue('');
+        $this->assertEquals('secret', $field->getValue());
+        $field->setValue(false);
         $this->assertEquals('', $field->getValue());
         $this->assertTrue($field->isFieldChanged());
+        $field->setRequired('Y');
+        $this->assertNotEmpty($this->validate($field));
     }
 }

@@ -119,7 +119,7 @@
                 initFormAdvancedUI();
                 initFormSearchUI();
                 addMultiSelectClearUI();
-                addPasswordClearUI();
+                addSavedValueClearUI();
                 initGlobalOpenShortcuts();
 
                 updateSystemStatus();
