@@ -74,7 +74,7 @@ class StaticRoute
     {
         $tmp = Shell::shell_safe('/sbin/ifconfig %s 2>/dev/null', [$ifname], true);
         foreach ($tmp as $line) {
-            if (strpos($line, "\t".$ipproto." ") !== false) {
+            if (strpos($line, "\t" . $ipproto . " ") !== false) {
                 return true;
             }
         }
@@ -380,7 +380,7 @@ class StaticRoute
      * @param ?string $family [inet|inet6] selective sync when requested
      * @param ?array list of interfaces to consider
      */
-    public function syncRoutes($family=null, $interface_map = null)
+    public function syncRoutes($family = null, $interface_map = null)
     {
         $syslog = new Syslog('routing', null, LOG_LOCAL2);
         $planned = $this->staticRoutes($family);
@@ -428,11 +428,11 @@ class StaticRoute
                         /* destination found, but not requested */
                         $syslog->info(sprintf("delete unconfigured route %s via %s", $net, $iroute));
                         if (strpos($iroute, ':') !== false) {
-                            Shell::run_safe('/sbin/route delete -inet6 %s %s',[$net, $iroute]);
+                            Shell::run_safe('/sbin/route delete -inet6 %s %s', [$net, $iroute]);
                         } elseif (strpos($iroute, '.') !== false) {
-                            Shell::run_safe('/sbin/route delete -inet %s %s',[$net, $iroute]);
+                            Shell::run_safe('/sbin/route delete -inet %s %s', [$net, $iroute]);
                         } else {
-                            Shell::run_safe('/sbin/route delete %s -interface %s',[$net, $iroute]);
+                            Shell::run_safe('/sbin/route delete %s -interface %s', [$net, $iroute]);
                         }
                     }
                 }
@@ -451,13 +451,13 @@ class StaticRoute
                 $ipproto = strpos($route['gatewayip'], ':') !== false ? 'inet6' : 'inet';
                 if (in_array($route['gwname'] ?? '', ['Null4', 'Null6'])) {
                     $syslog->info(sprintf("blackhole %s route %s", $ipproto, $net));
-                    Shell::run_safe('/sbin/route add -%s %s -blackhole',[$ipproto, $net]); /* blackhole */
+                    Shell::run_safe('/sbin/route add -%s %s -blackhole', [$ipproto, $net]); /* blackhole */
                 } elseif (!empty($route['fargw'])) {
                     $syslog->info(sprintf("add %s route %s via %s (fargw)", $ipproto, $net, $route['interface']));
-                    Shell::run_safe('/sbin/route add -%s %s -interface %s',[$ipproto, $net, $route['interface']]);
+                    Shell::run_safe('/sbin/route add -%s %s -interface %s', [$ipproto, $net, $route['interface']]);
                 } elseif (!empty($route['gatewayip'])) {
                     $syslog->info(sprintf("add %s route %s via %s", $ipproto, $net, $route['gatewayip']));
-                    Shell::run_safe('/sbin/route add -%s %s %s',[$ipproto, $net, $route['gatewayip']]);
+                    Shell::run_safe('/sbin/route add -%s %s %s', [$ipproto, $net, $route['gatewayip']]);
                 } else {
                     $syslog->warning(sprintf("gateway IP could not be found for %s", $net));
                 }

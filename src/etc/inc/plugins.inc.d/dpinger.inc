@@ -310,8 +310,7 @@ function dpinger_run()
 
 function dpinger_status()
 {
-
-    return (new OPNsense\System\StaticRoute)->getMonitorStatus();
+    return (new OPNsense\System\StaticRoute())->getMonitorStatus();
 }
 
 function dpinger_watcher()
