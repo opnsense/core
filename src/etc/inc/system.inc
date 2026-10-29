@@ -669,7 +669,7 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
     $sroutes = new OPNsense\System\StaticRoute();
 
     $ifdetails = legacy_interfaces_details();
-    $routes = json_decode(configd_run('interface routes list -n json'), true) ?? [];
+    $routes = json_decode(configd_run('interface routes list -n'), true) ?? [];
 
     /**
      * XXX: system_interface_route() should likely be moved to StaticRoute() class, but needs further investigation
