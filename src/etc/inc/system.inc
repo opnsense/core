@@ -937,6 +937,8 @@ function system_sysctl_configure($verbose = false)
     }
     set_sysctl($todo);
 
+    configd_run('!system sysctl gather');
+
     service_log("done.\n", $verbose);
 }
 
