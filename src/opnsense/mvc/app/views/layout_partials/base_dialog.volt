@@ -31,6 +31,8 @@
  # id              :   form id, used as unique id for this modal form. inner form to place data is called frm_[id]
  #                     save button is identified by btn_[id]_save
  # label           :   dialog label
+ # label_add       :   (optional) dialog label when opened to add an item, label is used when not set
+ # label_copy      :   (optional) dialog label when opened to clone an item, label is used when not set
  #}
 
 {% set base_dialog_id=id %}
@@ -46,7 +48,10 @@
                     <input type="search" class="form-control" placeholder="{{ lang._('Search form') }}"
                            aria-label="{{ lang._('Search form') }}">
                 </div>
-                <h4 class="modal-title" id="{{base_dialog_id}}Label">{{label}}</h4>
+                <h4 class="modal-title" id="{{base_dialog_id}}Label"
+                    {% if label_add is defined or label_copy is defined %} data-label-edit="{{label}}"{% endif %}
+                    {% if label_add is defined %} data-label-add="{{label_add}}"{% endif %}
+                    {% if label_copy is defined %} data-label-copy="{{label_copy}}"{% endif %}>{{label}}</h4>
             </div>
             <div class="modal-body">
                 <form id="frm_{{base_dialog_id}}">

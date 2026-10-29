@@ -762,7 +762,8 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="{{ lang._('Close') }}"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="formDialogAliasLabel">{{lang._('Edit Alias')}}</h4>
+                <h4 class="modal-title" id="formDialogAliasLabel" data-label-edit="{{lang._('Edit Alias')}}"
+                    data-label-add="{{lang._('Add Alias')}}" data-label-copy="{{lang._('Clone Alias')}}">{{lang._('Edit Alias')}}</h4>
             </div>
             <div class="modal-body">
                 <form id="frm_DialogAlias">

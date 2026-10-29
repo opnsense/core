@@ -2202,12 +2202,25 @@ class UIBootgrid {
     }
 
     /**
+    * set the dialog title for add, edit or copy when the dialog offers one (data-label-[action]),
+    * dialogs without these attributes keep their static title
+    */
+    init_dialog_title(editDlg, action) {
+        let title = $('#' + editDlg).find('.modal-title').first();
+        let label = title.attr('data-label-' + action) ?? title.attr('data-label-edit');
+        if (label !== undefined) {
+            title.text(label);
+        }
+    }
+
+    /**
     * add event
     */
     command_add(event, cell = null, override = null) {
         event.stopPropagation();
         let editDlg = override?.dialog ?? this.$compatElement.attr('data-editDialog');
         if (editDlg !== undefined) {
+            this.init_dialog_title(editDlg, 'add');
             let saveDlg = this.init_save_btn(editDlg);
             const getEndpoint = override?.get ?? this.crud.get;
             const addEndpoint = override?.add ?? this.crud.add;
@@ -2266,6 +2279,7 @@ class UIBootgrid {
         if (editDlg !== undefined) {
             if (uuid === null)
                 uuid = $(event.currentTarget).data('row-id') ?? '';
+            this.init_dialog_title(editDlg, 'edit');
             let saveDlg = this.init_save_btn(editDlg);
             const getEndpoint = override?.get ?? this.crud.get;
             const setEndpoint = override?.set ?? this.crud.set;
@@ -2340,6 +2354,7 @@ class UIBootgrid {
         const editDlg = override?.dialog ?? this.$compatElement.attr('data-editDialog');
         if (editDlg !== undefined) {
             uuid = uuid ?? $(event.currentTarget).data('row-id');
+            this.init_dialog_title(editDlg, 'copy');
             const urlMap = {};
             const getEndpoint = override?.get ?? this.crud.get;
             const addEndpoint = override?.add ?? this.crud.add;
