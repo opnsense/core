@@ -45,11 +45,10 @@ class SnapshotsController extends ApiControllerBase
     {
         /* input validation, only update known $uuid */
         if ($this->findByUuid($uuid)) {
-            $app = (new AppConfig());
-            $target_dir = $app->application->configDir . "/snapshots";
+            $target_dir = (new AppConfig())->application->configDir . "/snapshots";
             @mkdir($target_dir, 0750);
             $payload = json_encode(['note' => substr($note, 0, $maxsize)]);
-            File::file_put_contents($target_dir . '/' . $uuid . '.json', $payload, 0640, 0, $app->globals->owner);
+            File::file_put_contents($target_dir . '/' . $uuid . '.json', $payload, 0640, 0, 'wwwonly:wheel');
         }
     }
 
