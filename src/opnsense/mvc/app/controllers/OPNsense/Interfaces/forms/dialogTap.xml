@@ -1,0 +1,23 @@
+<form>
+    <field>
+        <id>tap.deviceId</id>
+        <label>Device ID</label>
+        <type>info</type>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>tap.deviceName</id>
+        <label>Device Name</label>
+        <type>ignore</type>
+        <grid_view>
+            <type>info</type>
+        </grid_view>
+    </field>
+    <field>
+        <id>tap.description</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+</form>
