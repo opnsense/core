@@ -276,8 +276,8 @@
             </depends>
             <polltime type="StrictTextField">
                 <AllowSpaces>Y</AllowSpaces>
-                <Mask>/^([0-9a-zA-Z\*\-\, ]){1,255}$/u</Mask>
-                <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as asterisk, hyphen, comma and space.</ValidationMessage>
+                <Mask>/^([0-9a-zA-Z\*\-\,\/ ]){1,255}$/u</Mask>
+                <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as asterisk, hyphen, comma, slash and space.</ValidationMessage>
             </polltime>
         </service>
         <test type="ArrayField">
