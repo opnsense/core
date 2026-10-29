@@ -80,6 +80,16 @@
     </grid_view>
   </field>
   <field>
+    <id>destination.suppress</id>
+    <label>Suppress duplicate messages</label>
+    <type>checkbox</type>
+    <help>Suppress consecutive identical messages for 30 seconds and send a summary with the number of repetitions.</help>
+    <grid_view>
+      <visible>false</visible>
+      <formatter>boolean</formatter>
+    </grid_view>
+  </field>
+  <field>
     <id>destination.description</id>
     <label>Description</label>
     <type>text</type>
