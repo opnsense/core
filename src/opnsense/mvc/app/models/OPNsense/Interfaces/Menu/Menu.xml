@@ -10,6 +10,7 @@
             <PPP VisibleName="Point-to-Point" url="/interfaces_ppps.php">
                 <Edit url="/interfaces_ppps_edit.php*" visibility="hidden"/>
             </PPP>
+            <TAP url="/ui/interfaces/tap"/>
             <VLAN url="/ui/interfaces/vlan"/>
             <VXLAN url="/ui/interfaces/vxlan"/>
         </Devices>
