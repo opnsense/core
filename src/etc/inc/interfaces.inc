@@ -2380,6 +2380,24 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         mwexecf('/sbin/ifconfig %s %spromisc', [$realhwif, empty($wancfg['promisc']) ? '-' : '']);
     }
 
+    $current_flags = $ifconfig_details[$wancfg['if']]['flags'] ?? [];
+    /* XXX: ISC DHCP manages interface flags itself, ignore this setting while it is installed. */
+    if (!file_exists('/usr/local/www/services_dhcp.php') && !empty($current_flags)) {
+        /* apply optional interface flags */
+        $interface_flags = array_filter(explode(',', $wancfg['flags'] ?? ''));
+        /* Config only contains selected flags, keep an explicit list to safely remove deselected flags. */
+        $managed_flags = [
+            'staticarp',
+            'debug',
+        ];
+        foreach ($managed_flags as $flag) {
+            $selected = in_array($flag, $interface_flags);
+            if (in_array($flag, $current_flags) !== $selected) {
+                mwexecf('/sbin/ifconfig %s %s%s', [$wancfg['if'], $selected ? '' : '-', $flag]);
+            }
+        }
+    }
+
     /* apply interface hardware settings (TSO, LRO, ..) */
     _interfaces_hardware($realhwif, $ifconfig_details);
 
