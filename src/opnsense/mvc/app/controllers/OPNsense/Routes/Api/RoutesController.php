@@ -53,6 +53,19 @@ class RoutesController extends ApiMutableModelControllerBase
     }
 
     /**
+     * @return array status [on, off, failed]
+     */
+    public function ecmpEnabledAction()
+    {
+        $bckresult = json_decode(((new Backend())->configdRun('system sysctl values net.route.multipath')), true);
+        if (is_array($bckresult) && !empty($bckresult['net.route.multipath'])) {
+            return ['status' => $bckresult['net.route.multipath'] == 1 ? 'on' : 'off'];
+        } else {
+            return ['status' => 'failed'];
+        }
+    }
+
+    /**
      * Update route with given properties
      * @param string $uuid internal id
      * @return array save result + validation output
