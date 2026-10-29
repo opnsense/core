@@ -39,5 +39,4 @@ class Tap extends BaseModel
             $tap->deviceName = sprintf("tap0%s", $tap->deviceId);
         }
     }
-
 }
