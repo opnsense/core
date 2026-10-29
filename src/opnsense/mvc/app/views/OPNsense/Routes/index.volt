@@ -52,7 +52,7 @@
                         if (count === 1) {
                             group.getElement().classList.add("single-row-group");
                         }
-                        result = value + " <span style='margin-left:10px;'>(" + count + ")</span> ";
+                        result = value + " <span class=\"badge chip\">" + count + "</span> ";
                         if (!ecmp_enabled) {
                             result += ' <i class="fa fa-exclamation-triangle text-danger"></i> {{ lang._('ECMP routing disabled') }}';
                         }
