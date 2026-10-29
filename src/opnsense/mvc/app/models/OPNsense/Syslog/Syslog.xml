@@ -95,6 +95,10 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </rfc5424>
+                <suppress type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </suppress>
                 <description type="DescriptionField"/>
             </destination>
         </destinations>
