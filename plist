@@ -92,6 +92,7 @@
 /usr/local/etc/rc.d/captiveportal
 /usr/local/etc/rc.d/configd
 /usr/local/etc/rc.d/flowd_aggregate
+/usr/local/etc/rc.d/kea_supervisor
 /usr/local/etc/rc.d/netflow
 /usr/local/etc/rc.filter_configure
 /usr/local/etc/rc.filter_synchronize
@@ -1414,6 +1415,7 @@
 /usr/local/opnsense/scripts/routes/gateway_watcher.php
 /usr/local/opnsense/scripts/routes/gateways.php
 /usr/local/opnsense/scripts/routes/show_routes.py
+/usr/local/opnsense/scripts/service/supervisor.subr.sh
 /usr/local/opnsense/scripts/shaper/dummynet_stats.py
 /usr/local/opnsense/scripts/shaper/flush_all.sh
 /usr/local/opnsense/scripts/shaper/lib/__init__.py
@@ -1619,6 +1621,8 @@
 /usr/local/opnsense/service/templates/OPNsense/Netflow/flowd_aggregate.rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Netflow/netflow.conf
 /usr/local/opnsense/service/templates/OPNsense/Netflow/rc.conf.d
+/usr/local/opnsense/service/templates/OPNsense/Radvd/+TARGETS
+/usr/local/opnsense/service/templates/OPNsense/Radvd/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Shaper/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/Shaper/dnctl.conf
 /usr/local/opnsense/service/templates/OPNsense/Shaper/rc.conf.d
@@ -1665,6 +1669,7 @@
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/domainoverrides.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/dot.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/private_domains.conf
+/usr/local/opnsense/service/templates/OPNsense/Unbound/core/rc.conf.d
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/safesearch.conf
 /usr/local/opnsense/service/templates/OPNsense/Unbound/core/unbound_dhcpd.conf
 /usr/local/opnsense/service/templates/OPNsense/WebGui/+TARGETS

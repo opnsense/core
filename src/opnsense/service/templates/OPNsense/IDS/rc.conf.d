@@ -1,7 +1,11 @@
 {% if not helpers.empty('OPNsense.IDS.general.enabled') %}
 suricata_setup="/usr/local/opnsense/scripts/suricata/setup.sh"
 suricata_enable="YES"
-suricata_flags="-D"
+. /usr/local/opnsense/scripts/service/supervisor.subr.sh
+supervisor_reload_signal="USR2"
+supervisor_enable
+# Keep this non-empty to prevent the rc script from restoring its -D default.
+suricata_flags=" "
 {% if not helpers.empty('OPNsense.IDS.general.verbosity') %}
 suricata_flags="${suricata_flags} -{{OPNsense.IDS.general.verbosity}}"
 {% endif %}

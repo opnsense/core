@@ -163,6 +163,8 @@ function unbound_service_stop()
 
     killbypid('/var/run/unbound_logger.pid');
     killbypid('/var/run/unbound_dhcpd.pid');
+    mwexecf('/usr/local/etc/rc.d/unbound onestop');
+    /* Fallback for upgrades without a rendered rc.conf.d file. */
     killbypid('/var/run/unbound.pid');
 }
 

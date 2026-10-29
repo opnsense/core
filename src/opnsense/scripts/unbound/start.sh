@@ -60,7 +60,7 @@ done
 
 chown -R unbound:unbound /var/unbound
 
-/usr/local/sbin/unbound -c /var/unbound/unbound.conf
+/usr/local/etc/rc.d/unbound onestart
 /usr/local/opnsense/scripts/unbound/cache.sh load
 
 if [ -n "${DOMAIN}" ]; then
