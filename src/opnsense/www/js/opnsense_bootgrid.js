@@ -2350,6 +2350,8 @@ class UIBootgrid {
                 $('.selectpicker').selectpicker('refresh');
                 // clear validation errors (if any)
                 clearFormValidation('frm_' + editDlg);
+                // nothing is saved for the copy yet, e.g. no write-only value
+                restorePlaceholder($('#frm_' + editDlg).find('input, textarea'));
 
                 if ($('#' + editDlg).hasClass('modal')) {
                     // show dialog
