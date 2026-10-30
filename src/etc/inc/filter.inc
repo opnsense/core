@@ -457,6 +457,13 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         return;
     }
 
+    /* flush non mvc ruleset to disk for the frontend to use */
+    \OPNsense\Core\File::file_put_contents(
+        '/tmp/rules_internal.json',
+        json_encode($fw->getFilterRules(['default'])),
+        0640,
+        0
+    );
     unlink('/tmp/rules.debug.error');
 
     service_log('.', $verbose);

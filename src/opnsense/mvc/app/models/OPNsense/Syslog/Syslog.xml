@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/Syslog</mount>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
     <description>System logging settings</description>
     <items>
         <general>
@@ -95,6 +95,10 @@
                     <Default>0</Default>
                     <Required>Y</Required>
                 </rfc5424>
+                <suppress type="BooleanField">
+                    <Default>0</Default>
+                    <Required>Y</Required>
+                </suppress>
                 <description type="DescriptionField"/>
             </destination>
         </destinations>

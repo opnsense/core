@@ -894,12 +894,12 @@ $.fn.SimpleActionButton = function (params) {
                     }
 
                     if (!requestSucceeded) {
-                          BootstrapDialog.show({
-                              type: BootstrapDialog.TYPE_WARNING,
-                              title: this_button.data('error-title'),
-                              message: data['status_msg'] ? data['status_msg'] : data['status'],
-                              draggable: true
-                          });
+                        BootstrapDialog.show({
+                            type: BootstrapDialog.TYPE_WARNING,
+                            title: this_button.data('error-title'),
+                            message: data['status_msg'] ? data['status_msg'] : data['status'],
+                            draggable: true
+                        });
                         setIcon(icon, 'fa fa-check fa-spinner fa-pulse');
                     } else {
                         setIcon(icon, 'fa fa-spinner fa-pulse', 'fa fa-check');

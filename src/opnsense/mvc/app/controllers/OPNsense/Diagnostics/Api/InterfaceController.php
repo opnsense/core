@@ -161,19 +161,23 @@ class InterfaceController extends ApiControllerBase
     {
         $backend = new Backend();
         if (empty($this->request->get('resolve'))) {
-            $response = $backend->configdRun('interface routes list -n json');
+            $response = $backend->configdRun('interface routes list -n');
         } else {
-            $response = $backend->configdRun('interface routes list json');
+            $response = $backend->configdRun('interface routes list');
         }
 
         $routingtable = json_decode($response, true);
         if (is_array($routingtable)) {
             $intfmap = $this->getInterfaceNames();
             foreach ($routingtable as &$routingentry) {
-                if (array_key_exists($routingentry['netif'], $intfmap)) {
-                    $routingentry['intf_description'] = $intfmap[$routingentry['netif']];
+                if (!empty($routingentry['_children'])) {
+                    foreach ($routingentry['_children'] as &$child) {
+                        $child['ecmp'] = true;
+                        $child['intf_description'] = $intfmap[$child['netif']] ?? '';
+                        $child['id'] = implode(',', [$child['proto'], $child['destination'], $child['gateway']]);
+                    }
                 } else {
-                    $routingentry['intf_description'] = "";
+                    $routingentry['intf_description'] = $intfmap[$routingentry['netif']] ?? '';
                 }
 
                 /* stitch together a sensible unique datakey for identification */
@@ -181,6 +185,15 @@ class InterfaceController extends ApiControllerBase
             }
         }
         return $routingtable;
+    }
+
+    /**
+     * search wrapper around getRoutesAction
+     * @return array
+     */
+    public function searchRoutesAction()
+    {
+        return $this->searchRecordsetBase($this->getRoutesAction());
     }
 
     /**

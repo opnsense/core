@@ -448,7 +448,10 @@ class Gateways extends BaseModel
                         // gateway should only contain a valid address, make sure its empty
                         unset($thisconf['gateway']);
                         $thisconf['gateway_interface'] = true;
+                        $thisconf['ipprotocol'] = '';
                         $this->cached_gateways[$gwkey] = $thisconf;
+                        /* dynamic gateway without address family, exit before iterating next ipproto */
+                        break;
                     } elseif (
                         $ipproto == 'inet6'
                             && in_array($ifcfg['ipaddrv6'] ?? 'none', ['6rd', '6to4', 'dhcp6', 'slaac'])

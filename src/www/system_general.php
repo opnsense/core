@@ -484,7 +484,7 @@ $( document ).ready(function() {
                 </table>
                 <div class="hidden" data-for="help_for_dnsservers">
                   <?=gettext("Enter IP addresses to be used by the system for DNS resolution. " .
-                  "These are also used for the DHCP service, DNS services and for PPTP VPN clients."); ?>
+                  "These are also used for the DHCP service, DNS services and possibly VPN clients."); ?>
                   <br />
                   <br />
                   <?=gettext("In addition, optionally select the gateway for each DNS server. " .

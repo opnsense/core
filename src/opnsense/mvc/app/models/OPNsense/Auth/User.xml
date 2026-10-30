@@ -19,6 +19,7 @@
                 <Required>Y</Required>
             </disabled>
             <scope type="TextField">
+                <!-- do not change the default: -->
                 <Default>user</Default>
                 <Required>Y</Required>
             </scope>

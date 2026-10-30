@@ -45,7 +45,7 @@ class Vip extends BaseModel
                 if ($ifname != $interface) {
                     continue;
                 }
-                /* select device names enforcing "l2tp" as well */
+                /* select device names without additional interface number */
                 $type = preg_replace('/(?<=..)[0-9].*$/', '', $ifnode->if);
                 break;
             }
@@ -60,7 +60,7 @@ class Vip extends BaseModel
     {
         $messages = parent::performValidation($validateFullModel);
 
-        $virtual_types = ['lo', 'ipsec', 'l2tp', 'ppp', 'pppoe', 'pptp'];
+        $virtual_types = ['lo', 'ipsec', 'ppp', 'pppoe'];
         $unique_addrs = [];
         $carp_vhids = [];
         $vips = [];

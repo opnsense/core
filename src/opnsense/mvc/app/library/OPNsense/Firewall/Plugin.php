@@ -260,7 +260,7 @@ class Plugin
      * @param array $conf configuration
      * @param array $defaults merge these defaults when provided
      */
-    public function registerFilterRule($prio, $conf, $defaults = null)
+    public function registerFilterRule($prio, $conf, $defaults = null, $origin = 'default')
     {
         if (!empty($this->systemDefaults['filter'])) {
             $conf = array_merge($this->systemDefaults['filter'], $conf);
@@ -274,7 +274,7 @@ class Plugin
             $conf['label'] = $rule_hash;
         }
         $conf['#priority'] = $prio;
-        $rule = new FilterRule($this->interfaceMapping, $this->gatewayMapping, $conf);
+        $rule = new FilterRule($this->interfaceMapping, $this->gatewayMapping, $conf, $origin);
         if (empty($this->filterRules[$prio])) {
             $this->filterRules[$prio] = [];
         }
@@ -384,16 +384,34 @@ class Plugin
 
     /**
      * iterate through registered rules
+     * @param array $origins list of origins to collect
      * @return Iterator
      */
-    public function iterateFilterRules()
+    public function iterateFilterRules($origins = [])
     {
         ksort($this->filterRules);  /* sort rules by priority */
         foreach ($this->filterRules as $prio => $ruleset) {
             foreach ($ruleset as $rule) {
-                 yield $prio => $rule;
+                if (empty($origins) || in_array($rule->getOrigin(), $origins)) {
+                    yield $prio => $rule;
+                }
             }
         }
+    }
+
+    /**
+     * @param array $origins list of origins to collect
+     * @return array
+     */
+    public function getFilterRules($origins = [])
+    {
+        $result = [];
+        foreach ($this->iterateFilterRules($origins) as $prio => $item) {
+            $rule = $item->getRawRule();
+            $rule['prio'] = $prio;
+            $result[] = $rule;
+        }
+        return $result;
     }
 
     /**

@@ -12,8 +12,23 @@ if (!empty($random_delay)) {
 }
 
 $backupFact = new BackupFactory();
+$errors = [];
 foreach ($backupFact->listProviders() as $classname => $provider) {
     if ($provider['handle']->isEnabled()) {
-        $provider['handle']->backup();
+        try {
+            $provider['handle']->backup();
+        } catch (Exception $e) {
+            $filesInBackup = array();
+            $errors[] = $e->getMessage();
+        }
     }
+}
+
+if (!empty($errors)) {
+    echo "The following errors where encountered during backup:\n";
+    echo "-----------------------------------------------------\n";
+    foreach ($errors as $error) {
+        echo $error . "\n";
+    }
+    exit(1);
 }

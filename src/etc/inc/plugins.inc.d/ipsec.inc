@@ -79,9 +79,9 @@ function ipsec_p1_ealgos()
 function ipsec_p1_authentication_methods()
 {
     return array(
-        'hybrid_rsa_server' => array( 'name' => 'Hybrid RSA + Xauth', 'mobile' => true ),
-        'xauth_rsa_server' => array( 'name' => 'Mutual RSA + Xauth', 'mobile' => true ),
-        'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth', 'mobile' => true ),
+        'hybrid_rsa_server' => array( 'name' => 'Hybrid RSA + Xauth (deprecated)', 'mobile' => true ),
+        'xauth_rsa_server' => array( 'name' => 'Mutual RSA + Xauth (deprecated)', 'mobile' => true ),
+        'xauth_psk_server' => array( 'name' => 'Mutual PSK + Xauth (deprecated)', 'mobile' => true ),
         'eap-tls' => array( 'name' => 'EAP-TLS', 'mobile' => true),
         'psk_eap-tls' => array( 'name' => 'RSA (local) + EAP-TLS (remote)', 'mobile' => true),
         'eap-mschapv2' => array( 'name' => 'EAP-MSCHAPV2', 'mobile' => true),
@@ -153,7 +153,7 @@ function ipsec_services()
     if (!empty($config['ipsec']['enable']) || (new \OPNsense\IPsec\Swanctl())->isEnabled()) {
         $pconfig = [];
         $pconfig['name'] = 'strongswan';
-        $pconfig['description'] = gettext('IPsec VPN');
+        $pconfig['description'] = gettext('IPsec');
         $pconfig['pidfile'] = '/var/run/charon.pid';
         $pconfig['configd'] = array(
           'restart' => array('ipsec restart'),
@@ -164,6 +164,17 @@ function ipsec_services()
     }
 
     return $services;
+}
+
+function ipsec_cron()
+{
+    $jobs = [];
+
+    if (ipsec_legacy()) {
+        $jobs[]['autocron'] = ['/usr/local/sbin/ping_hosts.sh', '*/4'];
+    }
+
+    return $jobs;
 }
 
 function ipsec_interfaces()
@@ -222,6 +233,7 @@ function ipsec_devices()
 
     $devices[] = [
         'function' => 'ipsec_configure_device',
+        'typedescr' => gettext('IPsec'),
         'configurable' => false,
         'pattern' => '^ipsec',
         'volatile' => true,
@@ -1128,12 +1140,12 @@ function ipsec_configure_do($verbose = false, $interface_map = null)
 
     $ipsec_mdl = new \OPNsense\IPsec\IPsec();
 
-    /* configure VTI if needed */
     ipsec_configure_vti();
-    /* setup "ping" cron job*/
-    ipsec_setup_pinghosts();
 
-    //  Prefer older IPsec SAs (advanced setting)
+    if (ipsec_legacy()) {
+        ipsec_setup_pinghosts();
+    }
+
     if (!empty((string)$ipsec_mdl->general->preferred_oldsa)) {
         set_single_sysctl('net.key.preferred_oldsa', '-30');
     } else {
@@ -1156,7 +1168,7 @@ function ipsec_configure_do($verbose = false, $interface_map = null)
     }
     mwexecf('/sbin/ifconfig enc0 up');
 
-    service_log('Configuring IPsec VPN...', $verbose);
+    service_log('Configuring IPsec...', $verbose);
 
     /* cleanup legacy ipsec.conf bits but then recreate structure to mute charon complaints */
     mwexecf('rm -rf /usr/local/etc/ipsec.d');

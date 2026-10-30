@@ -40,6 +40,7 @@
 /usr/local/etc/inc/plugins.inc.d/pf.inc
 /usr/local/etc/inc/plugins.inc.d/radvd.inc
 /usr/local/etc/inc/plugins.inc.d/suricata.inc
+/usr/local/etc/inc/plugins.inc.d/tap.inc
 /usr/local/etc/inc/plugins.inc.d/unbound.inc
 /usr/local/etc/inc/plugins.inc.d/vxlan.inc
 /usr/local/etc/inc/plugins.inc.d/webgui.inc
@@ -131,6 +132,7 @@
 /usr/local/etc/rc.syshook.d/early/10-configd
 /usr/local/etc/rc.syshook.d/early/15-templates
 /usr/local/etc/rc.syshook.d/early/90-carp
+/usr/local/etc/rc.syshook.d/early/99-selftest
 /usr/local/etc/rc.syshook.d/import/20-importer
 /usr/local/etc/rc.syshook.d/monitor/20-recover
 /usr/local/etc/rc.syshook.d/start/10-newwanip
@@ -380,6 +382,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/NeighborSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/OverviewController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/TapSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VipSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VlanSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VxlanSettingsController.php
@@ -393,6 +396,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/NeighborController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/OverviewController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/TapController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VipController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VlanController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VxlanController.php
@@ -405,6 +409,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogLoopback.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogNeighbor.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogSettings.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogTap.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVip.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVxlan.xml
@@ -590,6 +595,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/PlainOpenVPN.php
 /usr/local/opnsense/mvc/app/library/OPNsense/OpenVPN/ViscosityVisz.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/AbstractStatus.php
+/usr/local/opnsense/mvc/app/library/OPNsense/System/StaticRoute.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/CaptivePortalStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/ConfigdProxyOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/CrashReporterStatus.php
@@ -598,6 +604,7 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/FirewallStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/HostDiscoveryStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/IDSOverrideStatus.php
+/usr/local/opnsense/mvc/app/library/OPNsense/System/Status/IPsecIkev1Status.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/IPsecOverrideStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/LiveMediaStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/Status/MonitOverrideStatus.php
@@ -882,6 +889,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/NetworkInterface.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Settings.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Settings.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Tap.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Tap.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vip.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vip.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vlan.php
@@ -1060,6 +1069,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/neighbor.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/overview.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/settings.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Interface/tap.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vip.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vxlan.volt
@@ -1285,7 +1295,10 @@
 /usr/local/opnsense/scripts/health/definitions/interface-traffic.xml
 /usr/local/opnsense/scripts/health/definitions/interface-vpnusers.xml
 /usr/local/opnsense/scripts/health/definitions/system-cputemp.xml
+/usr/local/opnsense/scripts/health/definitions/system-mbuf.xml
+/usr/local/opnsense/scripts/health/definitions/system-memory.xml
 /usr/local/opnsense/scripts/health/definitions/system-processor.xml
+/usr/local/opnsense/scripts/health/definitions/system-states.xml
 /usr/local/opnsense/scripts/health/fetchData.py
 /usr/local/opnsense/scripts/health/flush_rrd.py
 /usr/local/opnsense/scripts/health/library/OPNsense/RRD/Factory.php
@@ -1313,6 +1326,7 @@
 /usr/local/opnsense/scripts/health/library/OPNsense/RRD/Types/Wireless.php
 /usr/local/opnsense/scripts/health/listReports.py
 /usr/local/opnsense/scripts/health/updaterrd.php
+/usr/local/opnsense/scripts/interfaces/apply_legacy_if_changes.php
 /usr/local/opnsense/scripts/interfaces/apply_pending_if_changes.php
 /usr/local/opnsense/scripts/interfaces/capture.py
 /usr/local/opnsense/scripts/interfaces/carp_global_status.php
@@ -1338,12 +1352,12 @@
 /usr/local/opnsense/scripts/interfaces/ppp-linkdown.sh
 /usr/local/opnsense/scripts/interfaces/ppp-linkup.sh
 /usr/local/opnsense/scripts/interfaces/ppp-rename.sh
-/usr/local/opnsense/scripts/interfaces/ppp-uptime.sh
 /usr/local/opnsense/scripts/interfaces/reconfigure_bridges.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_gifs.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_gres.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_laggs.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_neighbors.php
+/usr/local/opnsense/scripts/interfaces/reconfigure_ppp.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vips.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_vlans.php
 /usr/local/opnsense/scripts/interfaces/reconfigure_wlan.php
@@ -1372,9 +1386,11 @@
 /usr/local/opnsense/scripts/kea/kea_prefix_watcher.py
 /usr/local/opnsense/scripts/kea/lib/__init__.py
 /usr/local/opnsense/scripts/kea/lib/kea_ctrl.py
+/usr/local/opnsense/scripts/kea/setup.sh
 /usr/local/opnsense/scripts/monit/carp_status.php
 /usr/local/opnsense/scripts/monit/gateway_alert.php
 /usr/local/opnsense/scripts/monit/setup.sh
+/usr/local/opnsense/scripts/monit/status.php
 /usr/local/opnsense/scripts/netflow/dump_log.py
 /usr/local/opnsense/scripts/netflow/export_details.py
 /usr/local/opnsense/scripts/netflow/flowctl_stats.py
@@ -2284,7 +2300,7 @@
 /usr/local/opnsense/www/js/opnsense_status.js
 /usr/local/opnsense/www/js/opnsense_theme.js
 /usr/local/opnsense/www/js/opnsense_ui.js
-/usr/local/opnsense/www/js/opnsense_widget_manager.js
+/usr/local/opnsense/www/js/opnsense_widgets.js
 /usr/local/opnsense/www/js/polyfills.js
 /usr/local/opnsense/www/js/qrcode.js
 /usr/local/opnsense/www/js/qrcode_UTF8.js
@@ -2306,6 +2322,7 @@
 /usr/local/opnsense/www/js/widgets/Firewall.js
 /usr/local/opnsense/www/js/widgets/FirewallStates.js
 /usr/local/opnsense/www/js/widgets/Gateways.js
+/usr/local/opnsense/www/js/widgets/HealthGraph.js
 /usr/local/opnsense/www/js/widgets/InterfaceStatistics.js
 /usr/local/opnsense/www/js/widgets/Interfaces.js
 /usr/local/opnsense/www/js/widgets/IpsecLeases.js
@@ -2581,7 +2598,6 @@
 /usr/local/sbin/opnsense-log
 /usr/local/sbin/opnsense-shell
 /usr/local/sbin/opnsense-version
-/usr/local/sbin/ping_hosts.sh
 /usr/local/sbin/pluginctl
 /usr/local/share/man/man8/configctl.8.gz
 /usr/local/share/man/man8/ifctl.8.gz

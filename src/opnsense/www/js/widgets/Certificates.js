@@ -31,6 +31,7 @@ export default class Certificates extends BaseTableWidget {
         this.tickTimeout = 180;
         this.configurable = true;
         this.configChanged = false;
+        this.cachedCertificates = null;
     }
 
     getGridOptions() {
@@ -52,6 +53,7 @@ export default class Certificates extends BaseTableWidget {
     async onWidgetTick() {
         const cas = (await this.ajaxCall('/api/trust/ca/search')).rows || [];
         const certs = (await this.ajaxCall('/api/trust/cert/search')).rows || [];
+        this.cachedCertificates = {cas, certs};
 
         if (cas.length === 0 && certs.length === 0) {
             this.displayError(`${this.translations.noitems}`);
@@ -164,24 +166,27 @@ export default class Certificates extends BaseTableWidget {
     }
 
     async getWidgetOptions() {
-        const [caResponse, certResponse] = await Promise.all([
-            this.ajaxCall('/api/trust/ca/search'),
-            this.ajaxCall('/api/trust/cert/search')
-        ]);
+        let certificates = this.cachedCertificates;
+        if (certificates === null) {
+            const [caResponse, certResponse] = await Promise.all([
+                this.ajaxCall('/api/trust/ca/search'),
+                this.ajaxCall('/api/trust/cert/search')
+            ]);
+            certificates = {
+                cas: caResponse.rows || [],
+                certs: certResponse.rows || []
+            };
+            this.cachedCertificates = certificates;
+        }
 
         const hiddenItemOptions = [];
 
-        if (caResponse.rows) {
-            caResponse.rows.forEach(ca => {
-                hiddenItemOptions.push({ value: ca.uuid, label: ca.descr });
-            });
-        }
-
-        if (certResponse.rows) {
-            certResponse.rows.forEach(cert => {
-                hiddenItemOptions.push({ value: cert.uuid, label: cert.commonname || cert.descr });
-            });
-        }
+        certificates.cas.forEach(ca => {
+            hiddenItemOptions.push({ value: ca.uuid, label: ca.descr });
+        });
+        certificates.certs.forEach(cert => {
+            hiddenItemOptions.push({ value: cert.uuid, label: cert.commonname || cert.descr });
+        });
 
         return {
             hiddenItems: {
@@ -196,6 +201,5 @@ export default class Certificates extends BaseTableWidget {
 
     async onWidgetOptionsChanged() {
         this.configChanged = true;
-        await this.onWidgetTick();
     }
 }

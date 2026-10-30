@@ -191,7 +191,6 @@
                     <Multiple>Y</Multiple>
                     <OptionValues>
                         <opt1 value="General Blocklists">
-                            <atf>Abuse.ch - ThreatFox IOC</atf>
                             <ag>AdGuard List</ag>
                             <el>EasyList</el>
                             <ep>EasyPrivacy</ep>

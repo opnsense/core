@@ -27,7 +27,6 @@
  */
 namespace OPNsense\Firewall\Api;
 
-use OPNsense\Base\UserWarningException;
 use OPNsense\Core\Config;
 use OPNsense\Core\Backend;
 use OPNsense\Firewall\Category;
@@ -86,6 +85,7 @@ class FilterController extends FilterBaseController
     {
         $categories = $this->request->get('category');
         $show_all = !empty($this->request->get('show_all'));
+        $search_phrase = trim((string)$this->request->getPost('searchPhrase', null, ''));
         if (!$this->request->has('interface')) {
             // ALL rules
             $interfaces = null;
@@ -115,7 +115,28 @@ class FilterController extends FilterBaseController
             $rule_stats = [];
         }
 
-        $filter_funct_rs = function (&$record) use ($categories, $interfaces, $rule_stats) {
+        $decorate_funct_rs = function (&$record, $r_categories = null) {
+            if ($r_categories === null) {
+                $r_categories = !empty($record['categories']) ?
+                    array_map('trim', explode(',', $record['categories'])) : [];
+            }
+
+            /* frontend can format categories with colors */
+            $record['category_colors'] = $this->getCategoryColors($r_categories);
+
+            /* frontend can format aliases with an alias icon */
+            foreach (['source_net','source_port','destination_net','destination_port'] as $field) {
+                if (!empty($record[$field])) {
+                    $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
+                }
+            }
+        };
+
+        $filter_funct_rs = function (&$record) use (
+            $categories,
+            $interfaces,
+            $rule_stats
+        ) {
             /* Filter criteria */
             $r_categories = !empty($record['categories']) ? array_map('trim', explode(',', $record['categories'])) : [];
             $is_cat = empty($categories) || array_intersect($r_categories, $categories);
@@ -171,16 +192,6 @@ class FilterController extends FilterBaseController
                 $record = array_merge($record, $rule_stats[$record['uuid']]);
             }
 
-            /* frontend can format categories with colors */
-            $record['category_colors'] = $this->getCategoryColors($r_categories);
-
-            /* frontend can format aliases with an alias icon */
-            foreach (['source_net','source_port','destination_net','destination_port'] as $field) {
-                if (!empty($record[$field])) {
-                    $record["alias_meta_{$field}"] = $this->getNetworks($record[$field]);
-                }
-            }
-
             return true;
         };
 
@@ -192,7 +203,7 @@ class FilterController extends FilterBaseController
 
         $search_clauses = [];
         $backend = new Backend();
-        foreach (preg_split('/\s+/', (string)$this->request->getPost('searchPhrase', null, '')) as $token) {
+        foreach (preg_split('/\s+/', $search_phrase, -1, PREG_SPLIT_NO_EMPTY) as $token) {
             // XXX: ideally this should get its own parameter and not reuse show_all
             if ($show_all && Util::isIpAddress($token)) {
                 $tmp = json_decode($backend->configdpRun('filter find_table_references', [$token]), true) ?? [];
@@ -213,6 +224,10 @@ class FilterController extends FilterBaseController
             SORT_NATURAL | SORT_FLAG_CASE,
             $search_clauses
         );
+        /* frontend expects "meta_" fields, which should only be relevant for rendering purposes */
+        foreach ($result['rows'] as &$record) {
+            $decorate_funct_rs($record);
+        }
 
         return $result;
     }
@@ -229,10 +244,7 @@ class FilterController extends FilterBaseController
 
     public function getRuleAction($uuid = null)
     {
-        return $this->setCopySequence(
-            $this->getBase('rule', 'rules.rule', $uuid),
-            $this->getModel()->rules->rule
-        );
+        return $this->setCopySequence($this->getBase('rule', 'rules.rule', $uuid));
     }
 
     public function delRuleAction($uuid)
@@ -250,96 +262,9 @@ class FilterController extends FilterBaseController
         return $this->toggleRuleLogBase($uuid, $log, 'rules.rule');
     }
 
-    /**
-     * iterate rules for a prio_group, yield this record and the next in line (if any)
-     */
-    protected function ittrRules($prio_group)
+    public function moveRuleBeforeAction($selected_uuids, $target_uuid)
     {
-        $prev_record = null;
-        foreach ($this->getModel()->rules->rule->sortedBy(['prio_group', 'sequence']) as $record) {
-            if ($record->prio_group->isEqual($prio_group)) {
-                yield ['this' => $record, 'prev' => $prev_record];
-                $prev_record = $record;
-            } elseif ($prev_record !== null) {
-                /* last of selected group */
-                break;
-            }
-        }
-    }
-
-    /**
-     * Moves the selected rule so that it appears immediately before the target rule.
-     *
-     * Uses integer gap numbering to update the sequence for only the moved rule.
-     * Rules will be renumbered within the selected range to prevent movements causing overlaps,
-     * but try to keep the changes as minimal as possible.
-     *
-     * Floating, Group, and Interface rules cannot be moved before another.
-     *
-     * @param string $selected_uuid The UUID of the rule to be moved.
-     * @param string $target_uuid   The UUID of the target rule (the rule before which the selected rule is to be placed).
-     * @return array Returns ["status" => "ok"] on success, throws a userexception otherwise.
-     */
-    public function moveRuleBeforeAction($selected_uuid, $target_uuid)
-    {
-        if (!$this->request->isPost()) {
-            return ["status" => "error", "message" => gettext("Invalid request method")];
-        }
-        /* validate */
-        $target_node = $this->getModel()->getNodeByReference('rules.rule.' . $target_uuid);
-        $selected_node = $this->getModel()->getNodeByReference('rules.rule.' . $selected_uuid);
-        if ($target_node === null || $selected_node === null) {
-            throw new UserWarningException(
-                gettext("Either source or destination is not a rule managed with this component"),
-                gettext("Filter")
-            );
-        } elseif (!$selected_node->prio_group->isEqual($target_node->prio_group)) {
-            /* types don't match */
-            $typeNames = [
-                '2' => gettext("Floating"),
-                '3' => gettext("Group"),
-                '4' => gettext("Interface")
-            ];
-            $selectedType = $typeNames[substr($selected_node->prio_group, 0, 1)] ?? gettext("Unknown");
-            $targetType   = $typeNames[substr($target_node->prio_group, 0, 1)] ?? gettext("Unknown");
-            throw new UserWarningException(
-                sprintf(
-                    gettext("Cannot move '%s Rule' before '%s Rule'."),
-                    $selectedType,
-                    $targetType
-                ),
-                gettext("Filter")
-            );
-        } elseif ($selected_uuid === $target_uuid) {
-            throw new UserWarningException(gettext("Cannot move to the same spot."), gettext("Filter"));
-        }
-        /* move the rule and optionally reorganize*/
-        $step_size = 50;
-        $new_key = null;
-        foreach ($this->ittrRules($target_node->prio_group) as $item) {
-            $uuid = $item['this']->getAttribute('uuid');
-            if ($target_uuid === $uuid) {
-                $prev_sequence = (($item['prev']?->sequence->asFloat()) ?? 1);
-                $distance = $item['this']->sequence->asFloat() - $prev_sequence;
-                if ($distance > 2) {
-                    $new_key = intdiv($distance, 2) + $prev_sequence;
-                    break;
-                } else {
-                    $new_key = $item['prev'] === null ? 1 : ($prev_sequence + $step_size);
-                    $item['this']->sequence = (string)($new_key + $step_size);
-                }
-            } elseif ($new_key !== null) {
-                if ($item['this']->sequence->asFloat() < $item['prev']?->sequence->asFloat()) {
-                    $item['this']->sequence = (string)($item['prev']?->sequence->asFloat() + $step_size);
-                }
-            }
-        }
-        if ($new_key !== null) {
-            $selected_node->sequence = (string)$new_key;
-            $this->save();
-        }
-
-        return ["status" => "ok"];
+        return $this->moveRuleBeforeBase($selected_uuids, $target_uuid, 'rules.rule', 'sequence', 'prio_group');
     }
 
     /**

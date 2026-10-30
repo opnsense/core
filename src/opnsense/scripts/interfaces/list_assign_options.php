@@ -31,10 +31,7 @@ require_once("interfaces.inc");
 require_once("config.inc");
 require_once("util.inc");
 
-
-/**
- * XXX: needs to be refactored at some point, but for now keep it 100% compatible with legacy code.
- */
+/* XXX needs to be refactored at some point, but for now keep it 100% compatible with legacy code */
 
 function list_devices()
 {
@@ -47,7 +44,7 @@ function list_devices()
     foreach (get_interface_list() as $key => $item) {
         $interfaces[$key] = [
             'value' => $key . ' (' . $item['mac'] . ')',
-            'optgroup' => 'hardware'
+            'optgroup' => gettext('Hardware'),
         ];
         if (!empty($ifdetails[$key]) && ($ifdetails[$key]['status'] ?? '') != 'active') {
             $interfaces[$key]['data'] = ['icon' => 'fa fa-plug text-danger'];
@@ -63,7 +60,9 @@ function list_devices()
                 if (!empty($values)) {
                     $interfaces[$key] = [
                         'value' => $values['descr'] ,
-                        'optgroup' => $device['type'],
+                        'optgroup' => $device['typedescr'] ?? $device['type'],
+                        'configurable' => $device['configurable'],
+                        'spoofmac' => $device['spoofmac'],
                         'data' => [
                             'icon' => 'fa fa-plug text-success'
                         ]

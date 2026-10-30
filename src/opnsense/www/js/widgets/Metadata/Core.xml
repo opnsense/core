@@ -81,6 +81,31 @@
             <interfaces>Interfaces</interfaces>
         </translations>
     </traffic>
+    <healthgraph>
+        <filename>HealthGraph.js</filename>
+        <link>/ui/diagnostics/systemhealth</link>
+        <multiple/>
+        <endpoints>
+            <include>../opnsense_health.js</include>
+            <endpoint>/api/diagnostics/systemhealth/export_as_csv/*</endpoint>
+            <endpoint>/api/diagnostics/systemhealth/get_rrd_list</endpoint>
+            <endpoint>/api/diagnostics/systemhealth/get_system_health/*</endpoint>
+        </endpoints>
+        <translations>
+            <title>Health Graph</title>
+            <category>Category</category>
+            <subject>Subject</subject>
+            <granularity>Granularity</granularity>
+            <stacked>Stacked</stacked>
+            <logarithmic>Logarithmic</logarithmic>
+            <minute>1 minute (Default)</minute>
+            <minutes5>5 minutes</minutes5>
+            <hour>1 hour</hour>
+            <hours24>24 hours</hours24>
+            <resetzoom>Reset zoom</resetzoom>
+            <export>Export current selection as CSV</export>
+        </translations>
+    </healthgraph>
     <memory>
         <filename>Memory.js</filename>
         <endpoints>

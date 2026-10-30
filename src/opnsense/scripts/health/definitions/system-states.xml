@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<systemhealth>
+    <file-match>system-states$</file-match>
+    <title>System Information - States </title>
+    <y-axis_label>States</y-axis_label>
+    <axis_formats>
+        <y>metric</y>
+        <y1>metric</y1>
+    </axis_formats>
+    <axis_labels>
+        <y>State changes/second</y>
+        <y1>Count</y1>
+    </axis_labels>
+    <field_axes>
+        <pfrate>y</pfrate>
+        <pfstates>y1</pfstates>
+        <pfnat>y1</pfnat>
+        <srcip>y1</srcip>
+        <dstip>y1</dstip>
+    </field_axes>
+    <field_units>
+        <pfrate>states/s</pfrate>
+        <pfstates>states</pfstates>
+        <pfnat>NAT states</pfnat>
+        <srcip>source addresses</srcip>
+        <dstip>destination addresses</dstip>
+    </field_units>
+</systemhealth>

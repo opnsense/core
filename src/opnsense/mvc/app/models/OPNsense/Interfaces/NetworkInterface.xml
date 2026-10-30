@@ -6,6 +6,12 @@
         <interface type=".\NetworkInterfaceField">
             <descr type=".\IfDescField">
                 <Mask>/^[a-z_0-9]{0,255}$/i</Mask>
+                <Constraints>
+                    <check001>
+                        <ValidationMessage>Device descriptions must be unique.</ValidationMessage>
+                        <type>UniqueConstraint</type>
+                    </check001>
+                </Constraints>
             </descr>
             <identifier type="TextField"/>
             <pending_action type="TextField"/>
@@ -61,24 +67,15 @@
                 <ValidationMessage>The MSS must be greater than 576 bytes.</ValidationMessage>
             </mss>
             <type4 type="OptionField">
-                <Required>Y</Required>
-                <Default>none</Default>
                 <OptionValues>
-                    <none>None</none>
                     <staticv4>Static IPv4</staticv4>
                     <dhcp>DHCP</dhcp>
-                    <!-- Require PPP type-->
-                    <ppp>PPP</ppp>
                     <pppoe>PPPoE</pppoe>
-                    <pptp>PPTP</pptp>
-                    <l2tp>L2TP</l2tp>
+                    <ppp>PPP</ppp>
                 </OptionValues>
             </type4>
             <type6 type="OptionField">
-                <Required>Y</Required>
-                <Default>none</Default>
                 <OptionValues>
-                    <none>None</none>
                     <staticv6>Static IPv6</staticv6>
                     <dhcp6>DHCPv6</dhcp6>
                     <linklocal>Link-local</linklocal>
@@ -87,7 +84,6 @@
                     <_6to4 value="6to4">6to4 Tunnel</_6to4>
                     <idassoc6>Identity association</idassoc6>
                     <track6>Track Interface (legacy)</track6>
-                    <!-- Require PPP type-->
                     <pppoev6>PPPoEv6</pppoev6>
                 </OptionValues>
             </type6>
@@ -149,6 +145,8 @@
                 </OptionValues>
             </dhcp6vlanprio>
             <dhcp6-ia-pd-len type="OptionField">
+                <Required>Y</Required>
+                <Default>0</Default>
                 <OptionValues>
                     <pcp0 value="0">64</pcp0>
                     <pcp1 value="1">63</pcp1>

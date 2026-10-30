@@ -1020,7 +1020,7 @@
                     <th data-column-id="rcode" data-width="7em" data-type="string">{{ lang._('Return Code') }}</th>
                     <th data-column-id="resolve_time_ms" data-width="8em" data-type="string" data-formatter="resolveformatter">{{ lang._('Resolve time') }}</th>
                     <th data-column-id="ttl" data-width="4em" data-type="string">{{ lang._('TTL') }}</th>
-                    <th data-column-id="dnssec_status" data-width="9em" data-type="string" data-visible="false">{{ lang._('DNSsec Status') }}</th>
+                    <th data-column-id="dnssec_status" data-width="9em" data-type="string" data-visible="false">{{ lang._('DNSSEC Status') }}</th>
                     <th data-column-id="blocklist" data-type="string" data-formatter="blocklist">{{ lang._('Blocklist') }}</th>
                     <th data-column-id="policy" data-type="string">{{ lang._('Policy') }}</th>
                     <th data-column-id="" data-width="100" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>

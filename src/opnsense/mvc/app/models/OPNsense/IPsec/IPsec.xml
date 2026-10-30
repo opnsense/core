@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/IPsec</mount>
-    <version>1.0.5</version>
+    <version>1.0.6</version>
     <description>IPsec settings</description>
     <items>
         <general>
@@ -70,6 +70,11 @@
             <retransmit_jitter type="IntegerField"/>
             <retransmit_limit type="IntegerField"/>
             <reqid_base type="IntegerField"/>
+            <retry_initiate_interval type="IntegerField">
+                <Default>30</Default>
+                <Required>Y</Required>
+                <MinimumValue>0</MinimumValue>
+            </retry_initiate_interval>
             <syslog>
                 <daemon>
                     <ike_name type="BooleanField">

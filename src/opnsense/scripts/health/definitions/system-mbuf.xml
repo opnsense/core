@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<systemhealth>
+    <file-match>system-mbuf$</file-match>
+    <title>System Information - Mbuf </title>
+    <y-axis_label>Mbuf clusters</y-axis_label>
+    <axis_formats>
+        <y>metric</y>
+    </axis_formats>
+    <axis_labels>
+        <y>Mbuf clusters</y>
+    </axis_labels>
+</systemhealth>

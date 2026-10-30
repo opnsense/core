@@ -509,7 +509,7 @@ class Radius extends Base implements IAuthConnector
      * @param string $password user password
      * @return bool authentication status
      */
-    public function authenticate($username, $password)
+    protected function _authenticate($username, $password)
     {
         $this->lastAuthProperties = [];// reset auth properties
         $radius = radius_auth_open();
@@ -613,6 +613,9 @@ class Radius extends Base implements IAuthConnector
                             switch ($resa['attr']) {
                                 case RADIUS_SESSION_TIMEOUT:
                                     $this->lastAuthProperties['session_timeout'] = radius_cvt_int($resa['data']);
+                                    break;
+                                case RADIUS_IDLE_TIMEOUT:
+                                    $this->lastAuthProperties['idle_timeout'] = radius_cvt_int($resa['data']);
                                     break;
                                 case 85: // Acct-Interim-Interval
                                     $interval = radius_cvt_int($resa['data']);

@@ -80,7 +80,7 @@ class ConnectionsController extends ApiMutableModelControllerBase
     {
         return $this->searchBase(
             'Connections.Connection',
-            ['description', 'enabled', 'local_addrs', 'remote_addrs', 'local_ts', 'remote_ts']
+            ['description', 'enabled', 'local_addrs', 'remote_addrs', 'local_ts', 'remote_ts', 'version']
         );
     }
 

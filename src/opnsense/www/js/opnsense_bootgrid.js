@@ -130,6 +130,7 @@ class UIBootgrid {
         this.scrollPos = 0;
         this.isScrolling = false;
         this.scrollEndTimer = null;
+        this.cellCommandHandler = this._onCellCommand.bind(this);
         this.addButton = false;
         this.deleteSelectedButton = false;
 
@@ -169,6 +170,7 @@ class UIBootgrid {
             virtualDOM: false,
             selection: true,
             multiSelect: true,
+            selectionOrder: false,
             batchToggle: true,
             batchToggleSize: 40,
             batchDelete: true,
@@ -276,6 +278,7 @@ class UIBootgrid {
         this.options.batchToggleSize = bootGridOptions?.batchToggleSize ?? 40;
         this.options.batchDelete = bootGridOptions?.batchDelete ?? true;
         this.options.batchDeleteSize = bootGridOptions?.batchDeleteSize ?? 40;
+        this.options.selectionOrder = bootGridOptions?.selectionOrder ?? false;
 
         if (bootGridOptions?.stickySelect ?? false) {
             this.options.stickySelect = true;
@@ -715,6 +718,48 @@ class UIBootgrid {
     }
 
     _registerEvents() {
+        const bootgrid = this;
+        this.$element.tooltip({
+            selector: '.tabulator-cell .bootgrid-tooltip',
+            container: 'body',
+            trigger: 'hover',
+            title: function () {
+                const command = this.className.match(/command-([^\s]+)/)?.[1];
+                const cmdobj = bootgrid._getCommands()[command] ?? null;
+                const cell = $(this).closest('.tabulator-cell').data('bootgrid-cell');
+
+                if (!command) {
+                    return '';
+                }
+
+                if (!cmdobj?.title) {
+                    console.error(`No tooltip match for command ${command}`);
+                    return '';
+                }
+
+                if (typeof cmdobj.title === 'function') {
+                    return cell ? cmdobj.title(cell) : '';
+                }
+                return cmdobj.title;
+            }
+        });
+
+        if (this.options.selectionOrder) {
+            this.table.on('rowSelectionChanged', (data, rows, selected, deselected) => {
+                deselected.forEach((row) => {
+                    $(row.getElement()).find('.bootgrid-selection-order').remove();
+                });
+                rows.forEach((row, index) => {
+                    const $header = $(row.getElement()).find('.tabulator-row-header');
+                    let $order = $header.find('.bootgrid-selection-order');
+                    if ($order.length === 0) {
+                        $order = $('<span>', {class: 'bootgrid-selection-order'}).prependTo($header);
+                    }
+                    $order.text(index + 1);
+                });
+            });
+        }
+
         this.table.on('dataLoading', () => {
             this._getPlaceholder().html('');
             if (!this.navigationRendered) {
@@ -1015,27 +1060,17 @@ class UIBootgrid {
             $(cell.getElement()).addClass(this.options.statusMapping[cell.getData()['status']]);
         }
 
-        const $cell = $(cell.getElement())
-        $cell.find('.bootgrid-tooltip').each((i, el) => {
-            const $el = $(el);
-
-            const existingTitle = $el.attr('title');
-            const command = el.className.match(/command-([^\s]+)/)?.[1];
-
-            if (command && !existingTitle) {
-                const cmdobj = this._getCommands()[command] ?? null;
-                if (!cmdobj || !cmdobj?.title) {
-                    console.error(`No tooltip match for command ${command}`);
-                } else {
-                    $el.attr('title', typeof cmdobj.title === "function" ? cmdobj.title(cell) : cmdobj.title);
-                }
-            }
-            // XXX consider a dedicated invisible overlay for bootgrid tooltips
-            $el.tooltip({container: 'body', trigger: 'hover'});
-        });
+        const $cell = $(cell.getElement());
+        $cell.data('bootgrid-cell', cell);
 
         let actions = $cell.find('[class*="command-"]');
+        $cell.off('click.bootgridCommands');
         if (actions.length > 0) {
+            $cell.on(
+                'click.bootgridCommands',
+                '[class*="command-"]',
+                this.cellCommandHandler
+            );
             actions.each((i, el) => {
                 let command = el.className.match(/command-([^\s]+)/)?.[1];
                 if (command) {
@@ -1045,27 +1080,31 @@ class UIBootgrid {
         }
     }
 
+    _onCellCommand(event) {
+        const command = event.currentTarget.className.match(/command-([^\s]+)/)?.[1];
+        const cmdobj = this._getCommands()[command] ?? null;
+        if (!cmdobj?.method) {
+            return;
+        }
+
+        for (const requirement of cmdobj.requires ?? []) {
+            if (!(requirement in this.crud)) {
+                return;
+            }
+        }
+
+        const cell = $(event.delegateTarget).data('bootgrid-cell');
+        if (cell) {
+            event.stopPropagation();
+            cmdobj.method.call(event.currentTarget, event, cell);
+        }
+    }
+
     _linkCellCommand($selector, command, cell) {
         const commands = this._getCommands();
         if (command in commands) {
             if (!commands[command]?.method && !commands[command]?.onRendered) {
                 return;
-            }
-
-            let has_option = true;
-            for (let i = 0; i < commands[command]['requires'].length; i++) {
-                if (!(commands[command]['requires'][i] in this.crud)) {
-                    has_option = false;
-                }
-            }
-
-            if (has_option) {
-                // make sure to stop the event from bubbling up
-                // to the parent so no handlers on parent containers are executed
-                $selector.unbind('click').on("click", function (event) {
-                    event.stopPropagation();
-                    commands[command].method?.bind(this)(event, cell);
-                });
             }
 
             commands[command].onRendered?.bind($selector)(cell);
@@ -1377,7 +1416,7 @@ class UIBootgrid {
             let item = $(`
                 <li>
                     <label class="dropdown-item">
-                        <input class="dropdown-item-checkbox" id="${this.id}-columnselect-input" name="${definition.field}" type="checkbox" value="1" ${column.isVisible() ? 'checked="checked"' : ''}/>
+                        <input class="dropdown-item-checkbox ${this.id}-columnselect-input" name="${definition.field}" type="checkbox" value="1" ${column.isVisible() ? 'checked="checked"' : ''}/>
                         ${definition.title || definition.field || "&nbsp;"}
                     </label>
                 </li>
@@ -1915,8 +1954,7 @@ class UIBootgrid {
                     }
 
                     if (has_option) {
-                        const title = typeof command?.title === "function"
-                            ? command?.title(cell) : command?.title;
+                        const title = typeof command?.title === "function" ? "" : command?.title;
 
                         const classname = typeof command.classname === "function"
                             ? command.classname(cell) : command.classname;
@@ -2380,17 +2418,18 @@ class UIBootgrid {
         });
     }
 
-    command_toggle_selected(enable, event) {
+    command_toggle_selected(enable, event, override = null) {
         event.stopPropagation();
         const rows = this.table.getSelectedData();
         if (!rows.length) return;
 
         const key = this.options.datakey, on = enable ? "1" : "0";
+        const endpoint = override?.toggle ?? this.crud.toggle;
         const ids = rows.map(r => r[key]);
         const size = this.options.batchToggle ? this.options.batchToggleSize : 1;
         const batches = Array.from({ length: Math.ceil(ids.length / size) }, (_, i) => ids.slice(i * size, (i + 1) * size));
 
-        $.when.apply(null, batches.map(b => ajaxCall(`${this.crud.toggle}${b.join(",")}/${on}`, {}, null)))
+        $.when.apply(null, batches.map(b => ajaxCall(`${endpoint}${b.join(",")}/${on}`, {}, null)))
             .done(() => (this._reload(true), this.showSaveAlert()));
     }
 
@@ -2452,6 +2491,7 @@ class UIBootgrid {
                 redraw = true;
                 col._silentToggle = true;
                 col.show();
+                $(`input.${this.id}-columnselect-input[name="${def.field}"]`).prop('checked', true);
                 delete col._silentToggle;
             }
         });
@@ -2469,6 +2509,7 @@ class UIBootgrid {
                 redraw = true;
                 col._silentToggle = true;
                 col.hide();
+                $(`input.${this.id}-columnselect-input[name="${def.field}"]`).prop('checked', false);
                 delete col._silentToggle;
             }
         });

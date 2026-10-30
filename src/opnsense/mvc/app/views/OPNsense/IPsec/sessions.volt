@@ -28,9 +28,52 @@
     'use strict';
 
     $( document ).ready(function() {
+        let phase1Selection;
+
+        function reloadPhase1() {
+            phase1Selection = $('#grid-phase1').bootgrid('getSelectedRows')[0];
+            $('#grid-phase1').bootgrid('reload');
+        }
+
         let grid_phase1 = $("#grid-phase1").UIBootgrid({
             datakey: 'name',
             search:'/api/ipsec/sessions/search_phase1',
+            commands: {
+                connect: {
+                    filter: (cell) => !cell.getData().connected,
+                    classname: 'fa fa-play fa-fw',
+                    title: "{{ lang._('Connect') }}",
+                    sequence: 100,
+                    method: function(event, cell) {
+                        ajaxCall("/api/ipsec/sessions/connect/" + cell.getData().name, {}, function(){
+                            reloadPhase1();
+                        });
+                    }
+                },
+                disconnect: {
+                    filter: (cell) => cell.getData().connected,
+                    classname: 'fa fa-remove fa-fw',
+                    title: "{{ lang._('Disconnect') }}",
+                    sequence: 100,
+                    method: function(event, cell) {
+                        ajaxCall("/api/ipsec/sessions/disconnect/" + cell.getData().name, {}, function(){
+                            reloadPhase1();
+                        });
+                    }
+                },
+                "search-logs": {
+                    classname: 'fa fa-search fa-fw',
+                    title: "{{ lang._('Search Logs') }}",
+                    sequence: 200,
+                    method: function(event, cell) {
+                        window.open(
+                            '/ui/diagnostics/log/core/ipsec#search=' + encodeURIComponent(cell.getData().name),
+                            '_blank',
+                            'noopener,noreferrer'
+                        );
+                    }
+                }
+            },
             options:{
                 initialSearchPhrase: getUrlHash('search'),
                 multiSelect: false,
@@ -38,53 +81,38 @@
                 selection: true,
                 stickySelect: true,
                 formatters:{
-                    commands: function (column, row) {
-                        let connect = "{{ lang._('Connect') }}";
-                        let disconnect = "{{ lang._('Disconnect') }}";
-                        return $(`
-                        <div>
-                            <button type="button" class="btn btn-xs btn-default command-${row['connected'] ? 'disconnect' : 'connect'}"
-                                data-toggle="tooltip"
-                                title="${row['connected'] ? disconnect: connect}"
-                                data-row-id=${row.name}>
-                                <span class="fa ${row['connected'] ? 'fa-remove' : 'fa-play'} fa-fw"></span>
-                            </button>
-
-                            <a href="/ui/diagnostics/log/core/ipsec#search=${encodeURIComponent(row.name)}"
-                                class="btn btn-xs btn-default" data-toggle="tooltip"
-                                title="{{ lang._('Search Logs') }}" target="_blank" rel="noopener noreferrer" style="margin-left: 2px;">
-                                <span class="fa fa-search fa-fw"></span>
-                            </a>
-                        </div>
-                        `).prop('outerHTML');
-                    },
                     status: function (column, row) {
                         if (row['connected']) {
                             return '<span class="fa fa-play fa-fw text-success" data-toggle="tooltip" title="{{ lang._('Connected') }}"></span>';
                         } else {
                             return '<span class="fa fa-remove fa-fw text-danger" data-toggle="tooltip" title="{{ lang._('Disconnected') }}"></span>';
                         }
+                    },
+                    version: function (column, row) {
+                        const version = String(row.version ?? '');
+                        const escapedVersion = $('<div>').text(version).html();
+
+                        if (version === '1' || version.toLowerCase().includes('ikev1')) {
+                            const deprecated = $('<div>')
+                                .text("{{ lang._('deprecated') }}")
+                                .html();
+
+                            return '<span class="text-warning">' +
+                                escapedVersion + ' (' + deprecated + ')</span>';
+                        }
+
+                        return escapedVersion;
                     }
                 }
             }
         });
         grid_phase1.on('loaded.rs.jquery.bootgrid', function() {
-            let ids = $("#grid-phase1").bootgrid("getCurrentRows");
-            if (ids.length > 0) {
-                $("#grid-phase1").bootgrid('select', [ids[0].name]);
+            let rows = $("#grid-phase1").bootgrid("getCurrentRows");
+            let selectedRow = rows.find(row => row.name === phase1Selection) ?? rows[0];
+            phase1Selection = undefined;
+            if (rows.length > 0) {
+                $("#grid-phase1").bootgrid('select', [selectedRow.name]);
             }
-            $('.command-disconnect').click(function(e){
-                e.stopPropagation();
-                ajaxCall("/api/ipsec/sessions/disconnect/" + $(this).data('row-id'), {}, function(){
-                    $('#grid-phase1').bootgrid('reload');
-                });
-            });
-            $('.command-connect').click(function(e){
-                e.stopPropagation();
-                ajaxCall("/api/ipsec/sessions/connect/" + $(this).data('row-id'), {}, function(){
-                    $('#grid-phase1').bootgrid('reload');
-                });
-            });
         });
         grid_phase1.on("selected.rs.jquery.bootgrid", function(e, rows) {
             if (rows.length > 0 && rows[0].connected) {
@@ -138,7 +166,7 @@
               <th data-column-id="name" data-type="string" data-sortable="false" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
               <th data-column-id="connected" data-width="6em" data-type="string" data-width="3em"  data-formatter="status">{{ lang._('Status') }}</th>
               <th data-column-id="phase1desc" data-type="string">{{ lang._('Connection') }}</th>
-              <th data-column-id="version" data-width="6em"  data-type="string">{{ lang._('Version') }}</th>
+              <th data-column-id="version" data-width="8em" data-type="string" data-formatter="version">{{ lang._('Version') }}</th>
               <th data-column-id="local-id" data-type="string">{{ lang._('Local ID') }}</th>
               <th data-column-id="local-addrs" data-type="string">{{ lang._('Local IP') }}</th>
               <th data-column-id="remote-id" data-type="string">{{ lang._('Remote ID') }}</th>

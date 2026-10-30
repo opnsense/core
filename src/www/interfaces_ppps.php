@@ -139,7 +139,7 @@ legacy_html_escape_form_data($a_ppps);
                     }?>
                       <?=htmlspecialchars(implode(",", $portlist));?>
                     </td>
-                    <td><?=$ppp['descr'];?></td>
+                    <td><?= html_safe($ppp['descr'] ?? '') ?></td>
                     <td class="text-nowrap">
                       <a href="interfaces_ppps_edit.php?id=<?=$i;?>" class="btn btn-xs btn-default" data-toggle="tooltip" title="<?= html_safe(gettext('Edit')) ?>">
                         <i class="fa fa-pencil fa-fw"></i>

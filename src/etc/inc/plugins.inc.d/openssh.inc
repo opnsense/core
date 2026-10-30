@@ -137,6 +137,20 @@ function openssh_configure_do($verbose = false, $interface_map = null)
         'mldsa44-ed25519' => 'ssh_host_mldsa44_ed25519_key',
     ];
 
+    /**
+     * Remove experimental ML-DSA host keys
+     * XXX this workaround can be removed in 27.1
+     */
+    $mldsa44_file = "/conf/sshd/{$keys['mldsa44-ed25519']}";
+    $mldsa44_pubfile = "{$mldsa44_file}.pub";
+    if (
+        file_exists($mldsa44_pubfile) &&
+        strpos(file_get_contents($mldsa44_pubfile), 'ssh-mldsa44-ed25519@openssh.com') === 0
+    ) {
+        @unlink($mldsa44_pubfile);
+        @unlink($mldsa44_file);
+    }
+
     /* Check for all needed key files. Regenerate missing ones. */
     foreach ($keys as $type => $name) {
         $file = "/conf/sshd/{$name}";
@@ -161,7 +175,6 @@ function openssh_configure_do($verbose = false, $interface_map = null)
     $sshconf .= "PubkeyAuthentication yes\n";
     $sshconf .= "Subsystem sftp internal-sftp\n";
     $sshconf .= "AllowGroups wheel\n";
-    $sshconf .= "PubkeyAcceptedAlgorithms +ssh-mldsa44-ed25519@openssh.com\n";
 
     $sshconf .= sprintf("PermitRootLogin %s\n", isset($sshcfg['permitrootlogin']) ? 'yes' : 'no');
     $sshconf .= sprintf("ChallengeResponseAuthentication %s\n", isset($sshcfg['passwordauth']) ? 'yes' : 'no');

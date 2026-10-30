@@ -76,7 +76,9 @@ class NetworkInterfaceContainerField extends ContainerField
             }
             $result[$key] = $node->getValue();
         }
+
         $result['dhcp6_norequest_dns'] = $this->dhcp6_request_dns->isEmpty() ? '1' : '0';
+
         foreach (['dhcp6-prefix-id', 'dhcp6_ifid', 'track6-prefix-id', 'track6_ifid'] as $fld) {
             if ($this->$fld->isSet()) {
                 $result[$fld] = intval($this->$fld->getValue(), 16);
@@ -88,7 +90,16 @@ class NetworkInterfaceContainerField extends ContainerField
             $result['mediaopt'] = $parts[1] ?? '';
         }
 
+        /* XXX eventually get rid of $sanitize which means fixing backend code */
         if ($sanitize) {
+            if (!$this->type6->isEqual('dhcp6')) {
+                unset($result['dhcp6_norequest_dns']);
+            }
+
+            if (!in_array($this->type6->getValue(), ['idassoc6', 'track6'])) {
+                unset($result['track6-interface']);
+            }
+
             foreach ($result as $key => $value) {
                 if ($value === '' && !in_array($key, ['descr', 'spoofmac'])) {
                     unset($result[$key]);

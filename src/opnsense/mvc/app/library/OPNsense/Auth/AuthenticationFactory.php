@@ -187,6 +187,7 @@ class AuthenticationFactory
     public function authenticate($service_name, $username, $password)
     {
         openlog("audit", LOG_ODELAY, LOG_AUTH);
+        $remote_address = isset($_SERVER) && !empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '-';
         $service = $this->getService($service_name);
         if ($service !== null) {
             $service->setUserName($username);
@@ -197,43 +198,48 @@ class AuthenticationFactory
                     if ($authenticator->authenticate($service->getUserName(), $password)) {
                         if ($service->checkConstraints()) {
                             syslog(LOG_NOTICE, sprintf(
-                                "user %s authenticated successfully for %s [using %s + %s]",
+                                "user %s authenticated successfully for %s [using %s + %s] at %s",
                                 $username,
                                 $service_name,
                                 get_class($service),
-                                get_class($authenticator)
+                                get_class($authenticator),
+                                $remote_address
                             ));
                             return true;
                         } else {
                             // since checkConstraints() is defined on the service, who doesn't know about the
                             // authentication method. We can safely assume we cannot authenticate.
                             syslog(LOG_WARNING, sprintf(
-                                "user %s could not authenticate for %s, failed constraints on %s authenticated via %s",
+                                "user %s could not authenticate for %s," .
+                                " failed constraints on %s authenticated via %s at %s",
                                 $username,
                                 $service_name,
                                 get_class($service),
-                                get_class($authenticator)
+                                get_class($authenticator),
+                                $remote_address
                             ));
                             return false;
                         }
                     } else {
                         syslog(LOG_DEBUG, sprintf(
-                            "user %s failed authentication for %s on %s via %s",
+                            "user %s failed authentication for %s on %s via %s at %s",
                             $username,
                             $service_name,
                             get_class($service),
-                            get_class($authenticator)
+                            get_class($authenticator),
+                            $remote_address
                         ));
                     }
                 }
             }
         }
         syslog(LOG_WARNING, sprintf(
-            "user %s could not authenticate for %s. [using %s + %s]",
+            "user %s could not authenticate for %s. [using %s + %s] at %s",
             $username,
             $service_name,
             !empty($service) ? get_class($service) : '-',
-            !empty($authenticator) ? get_class($authenticator) : '-'
+            !empty($authenticator) ? get_class($authenticator) : '-',
+            $remote_address
         ));
         return false;
     }

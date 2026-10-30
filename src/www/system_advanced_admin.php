@@ -142,8 +142,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         foreach (config_read_array('cert', false) as $cert) {
             if ($cert['refid'] == $pconfig['ssl-certref']) {
                 if (cert_get_purpose($cert['crt'])['server'] == 'No') {
-                    $input_errors[] = gettext(
-                        sprintf('Certificate %s is not intended for server use.', $cert['descr'])
+                    $input_errors[] = sprintf(
+                        gettext('Certificate %s is not intended for server use.'),
+                        $cert['descr']
                     );
                     break;
                 }
@@ -1099,7 +1100,7 @@ $(document).ready(function() {
                 <td>
                   <input name="noroot" type="checkbox" value="yes" <?= empty($pconfig['noroot']) ? '' : 'checked="checked"' ?> />
                   <div class="hidden" data-for="help_for_noroot">
-                    <?=gettext("Make security stricter by running the web GUI as a non-root user. Not all components may be compatible with this feature.") ?>
+                    <?=gettext("Make security stricter by running the web GUI as a non-root user. Requires a reboot to fully enforce file permissions.") ?>
                   </div>
                 </td>
               </tr>

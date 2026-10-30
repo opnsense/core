@@ -1,4 +1,7 @@
 #!/bin/sh
 
+# refresh /etc/os-release
+opnsense-version -o
+
 echo -n "Generating configuration: "
 /usr/local/opnsense/service/template_ctl.py \*

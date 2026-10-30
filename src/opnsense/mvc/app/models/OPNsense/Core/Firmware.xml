@@ -3,11 +3,14 @@
     <version>1.0.1</version>
     <description>Firmware settings</description>
     <items>
-        <mirror type="TextField"/>
-        <flavour type="TextField"/>
-        <plugins type="TextField"/>
-        <type type="TextField"/>
-        <subscription type="TextField"/>
+        <mirror type="StrictTextField">
+            <ValidationMessage>The mirror URL contains invalid or unencoded characters.</ValidationMessage>
+            <Mask>/[^|"']+/</Mask>
+        </mirror>
+        <flavour type="StrictTextField"/>
+        <plugins type="StrictTextField"/>
+        <type type="StrictTextField"/>
+        <subscription type="StrictTextField"/>
         <reboot type="BooleanField"/>
         <aux type="BooleanField"/>
     </items>

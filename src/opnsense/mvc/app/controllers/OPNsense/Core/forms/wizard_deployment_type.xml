@@ -31,4 +31,10 @@
               not throughput performance gains for single flows.
         </help>
     </field>
+    <field>
+        <id>wizard.deployment_type.multipath</id>
+        <label>Enable ECMP routing</label>
+        <type>checkbox</type>
+        <help>Enable Equal-Cost Multipath (ECMP) routing to distribute traffic to the same destination across multiple best paths with equal routing priority.</help>
+    </field>
 </form>

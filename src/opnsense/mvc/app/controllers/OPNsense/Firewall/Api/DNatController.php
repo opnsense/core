@@ -191,10 +191,7 @@ class DNatController extends FilterBaseController
 
     public function getRuleAction($uuid = null)
     {
-        return $this->setCopySequence(
-            $this->getBase("rule", "rule", $uuid),
-            $this->getModel()->rule
-        );
+        return $this->setCopySequence($this->getBase("rule", "rule", $uuid));
     }
 
     public function delRuleAction($uuid)
@@ -224,9 +221,9 @@ class DNatController extends FilterBaseController
         return $result;
     }
 
-    public function moveRuleBeforeAction($selected_uuid, $target_uuid)
+    public function moveRuleBeforeAction($selected_uuids, $target_uuid)
     {
-        return $this->moveRuleBeforeBase($selected_uuid, $target_uuid, 'rule', 'sequence');
+        return $this->moveRuleBeforeBase($selected_uuids, $target_uuid, 'rule', 'sequence');
     }
 
     public function toggleRuleLogAction($uuid, $log)

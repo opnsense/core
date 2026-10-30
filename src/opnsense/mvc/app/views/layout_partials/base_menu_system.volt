@@ -13,7 +13,8 @@
                                     {% if subMenuItem.Url == '' %}
                                     {# next level items, submenu is a container #}
                                         <a href="#{{ topMenuItem.Id }}_{{ subMenuItem.Id }}" class="{{ subMenuItem.LinkClass }}"
-                                            data-toggle="collapse" data-parent="#{{ topMenuItem.Id }}">
+                                            data-toggle="collapse" data-parent="#{{ topMenuItem.Id }}"
+                                            aria-expanded="{% if subMenuItem.Selected %}true{% else %}false{% endif %}">
                                             <div style="display: table;width: 100%;">
                                                 <div style="display: table-row">
                                                     <div style="display: table-cell">{{ subMenuItem.VisibleName }}</div>

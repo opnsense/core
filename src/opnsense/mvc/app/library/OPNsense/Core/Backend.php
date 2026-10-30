@@ -72,10 +72,8 @@ class Backend
     public function configdStream($event, $detach = false, $connect_timeout = 10, $poll_timeout = 2)
     {
         // wait until socket exist for a maximum of $connect_timeout
-        $simulate_mode = false;
         if (!file_exists($this->configdSocket) && (!empty((string)(new AppConfig())->globals->simulate_mode))) {
-            $timeout_wait = -1;
-            $simulate_mode = true;
+            return null;
         } else {
             $timeout_wait = $connect_timeout;
         }
@@ -87,10 +85,10 @@ class Backend
             sleep(1);
             $timeout_wait -= 1;
             if ($timeout_wait <= 0) {
-                if (file_exists($this->configdSocket) && !$simulate_mode) {
+                if (file_exists($this->configdSocket)) {
                     $this->getLogger()->error("Failed to connect to configd socket: $errorMessage while executing " . $event);
                     return null;
-                } elseif (!$simulate_mode) {
+                } else {
                     $this->getLogger()->error("failed waiting for configd (doesn't seem to be running)");
                 }
                 return null;

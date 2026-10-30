@@ -151,6 +151,7 @@ function core_devices()
 
     $devices[] = [
         'function' => 'interfaces_bridge_configure',
+        'typedescr' => gettext('Bridge'),
         'names' => $bridge_names,
         'pattern' => '^bridge',
         'volatile' => true,
@@ -169,6 +170,7 @@ function core_devices()
 
     $devices[] = [
         'function' => 'interfaces_gif_configure',
+        'typedescr' => gettext('GIF'),
         'configurable' => false,
         'names' => $gif_names,
         'pattern' => '^gif',
@@ -188,6 +190,7 @@ function core_devices()
 
     $devices[] = [
         'function' => 'interfaces_gre_configure',
+        'typedescr' => gettext('GRE'),
         'configurable' => false,
         'names' => $gre_names,
         'pattern' => '^gre',
@@ -207,6 +210,7 @@ function core_devices()
     }
 
     $devices[] = [
+        'typedescr' => gettext('LAGG'),
         'names' => $lagg_names,
         'pattern' => '^lagg',
         'volatile' => true,
@@ -225,7 +229,8 @@ function core_devices()
     }
 
     $devices[] = [
-        'pattern' => '^l2tp|^ppp|^pptp', /* includes ^pppoe */
+        'pattern' => '^ppp', /* includes ^pppoe */
+        'typedescr' => gettext('Point-to-point'),
         'names' => $ppp_names,
         'volatile' => true,
         'type' => 'ppp',
@@ -244,6 +249,7 @@ function core_devices()
     $devices[] = [
         'function' => 'interfaces_vlan_configure',
         'pattern' => '_vlan|^vlan|^qinq',
+        'typedescr' => gettext('VLAN'),
         'names' => $vlan_names,
         'volatile' => true,
         'reload' => false,
@@ -274,6 +280,7 @@ function core_devices()
 
     $devices[] = [
         'function' => 'interfaces_wlan_clone',
+        'typedescr' => gettext('Wireless'),
         'names' => $wlan_names,
         'pattern' => '_wlan',
         'volatile' => true,
@@ -291,7 +298,6 @@ function core_cron()
     $jobs = [];
 
     $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d syslog archive', '1'];
-    $jobs[]['autocron'] = ['/usr/local/sbin/ping_hosts.sh', '*/4'];
     $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d firmware changelog cron', '0', '22'];
 
     foreach ((new \OPNsense\Firewall\Alias(true))->aliases->alias->iterateItems() as $alias) {

@@ -45,7 +45,7 @@ class NetworkInterface extends BaseModel
      */
     private function store_if_todo($id, $payload)
     {
-        $fobj = new FileObject($this->todo_file, 'a+e', 0600, LOCK_EX);
+        $fobj = new FileObject($this->todo_file, 'a+', 0600, LOCK_EX);
         $data = $fobj->readJson() ?? [];
         $data[$id] = array_merge($data[$id] ?? [], $payload);
         $fobj->truncate(0)->writeJson($data);
@@ -233,30 +233,25 @@ class NetworkInterface extends BaseModel
                     ));
                 }
             }
-            if (!empty($if->pppType()) && !in_array($if->type4->getValue(), ['none', $if->pppType()])) {
+            if (!empty($if->pppType()) && !in_array($if->type4->getValue(), ['', $if->pppType()])) {
                 $messages->appendMessage(new Message(
-                    sprintf(gettext('This device only supports "%s" as type'), $if->pppType()),
+                    sprintf(gettext('This device only supports "%s" as its type.'), $if->pppType()),
                     $key . ".type4"
                 ));
-            } elseif (empty($if->pppType()) && in_array($if->type4->getValue(), ['ppp', 'pppoe', 'pptp', 'l2tp'])) {
+            } elseif (empty($if->pppType()) && in_array($if->type4->getValue(), ['ppp', 'pppoe'])) {
                 $messages->appendMessage(new Message(
-                    gettext('PPP types belong to their respective devices'),
+                    gettext('A point-to-point type only works with a matching device.'),
                     $key . ".type4"
                 ));
             }
-            if (!empty($if->pppType()) && !in_array($if->type6->getValue(), ['none', 'pppoev6'])) {
+            if ($if->pppType() != 'pppoe' && $if->type6->isEqual('pppoev6')) {
                 $messages->appendMessage(new Message(
-                    sprintf(gettext('This device only supports "%s" as type'), 'pppoev6'),
-                    $key . ".type6"
-                ));
-            } elseif (empty($if->pppType()) && in_array($if->type6->getValue(), ['pppoev6'])) {
-                $messages->appendMessage(new Message(
-                    gettext('PPP types belong to their respective devices'),
+                    gettext('PPPoEv6 only works with a PPPoE device.'),
                     $key . ".type6"
                 ));
             }
 
-            if ($if->type6->isEqual('dhcp6')) {
+            if ($if->type6->isEqual('dhcp6') && $if->{'dhcp6-ia-pd-len'}->isNumeric()) {
                 $pdlen = $if->{'dhcp6-ia-pd-len'}->getValue();
                 $ipv6_num_prefix_ids = $pdlen < 0 ? 0 : pow(2, $pdlen);
                 $dhcp6_prefix_id = intval($if->{'dhcp6-prefix-id'}->getValue(), 16);
@@ -307,6 +302,28 @@ class NetworkInterface extends BaseModel
                     ),
                     $key . ".media"
                 ));
+            }
+
+            if (!$if->spoofmac->isEmpty() && !$if->if->canSpoofmac()) {
+                $messages->appendMessage(new Message(
+                    gettext('Cannot assign a MAC address to this type of interface.'),
+                    $key . ".spoofmac"
+                ));
+            }
+
+            if (!$if->if->isConfigurable()) {
+                if (!$if->type4->isEmpty()) {
+                    $messages->appendMessage(new Message(
+                        gettext('Cannot assign an IP configuration type to a tunnel interface.'),
+                        $key . ".type4"
+                    ));
+                }
+                if (!$if->type6->isEmpty()) {
+                    $messages->appendMessage(new Message(
+                        gettext('Cannot assign an IP configuration type to a tunnel interface.'),
+                        $key . ".type6"
+                    ));
+                }
             }
         }
 

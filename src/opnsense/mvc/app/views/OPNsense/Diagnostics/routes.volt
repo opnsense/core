@@ -1,5 +1,5 @@
 {#
- # Copyright (c) 2014-2016 Deciso B.V.
+ # Copyright (c) 2014-2026 Deciso B.V.
  # All rights reserved.
  #
  # Redistribution and use in source and binary forms, with or without modification,
@@ -28,26 +28,46 @@
     $( document ).ready(function() {
         let grid = $("#grid-routes").UIBootgrid({
             datakey: 'id',
+            search:'/api/diagnostics/interface/search_routes/',
             options: {
-                ajax: false,
                 selection: false,
                 multiSelect: false,
                 virtualDOM: true,
+                requestHandler: function(request) {
+                    if ($("#resolve").prop("checked")) {
+                        request['resolve'] = 'yes';
+                    }
+                    return request;
+                }
             },
             commands: {
                 delete: {
                     title: "{{ lang._('Delete') }}",
+                    filter: (cell) => cell.getData()['gateway'],
                     method: function() {
                         let route=$(this).data("row-id").split(',');
                         stdDialogConfirm('{{ lang._('Remove static route') }}' + ' ('+$(this).data("row-id")+')',
-                                        '{{ lang._('Are you sure you want to remove this route? Caution, this could potentially lead to loss of connectivity') }}',
+                                        '{{ lang._('Are you sure you want to remove this route? Proceeding may lead to loss of connectivity.') }}',
                                         '{{ lang._('Yes') }}',
                                         '{{ lang._('No') }}',
                                         function() {
                             let req = {'family': route[0], 'destination': route[1], 'gateway': route[2]};
                             ajaxCall('/api/diagnostics/interface/del_route/', req, function (data, status) {
-                                // reload grid after delete
-                                $("#update").click();
+                                if (data?.message == "found") {
+                                    $("#grid-routes").bootgrid('reload');
+                                } else {
+                                    BootstrapDialog.show({
+                                    type: BootstrapDialog.TYPE_DANGER,
+                                    title: "{{ lang._('Route removal failed') }}",
+                                    message: "{{ lang._('The route was either not found or the kernel refused to delete it.') }}",
+                                    buttons: [{
+                                        label: "{{ lang._('Close') }}",
+                                        action: function (dialogRef) {
+                                            dialogRef.close();
+                                        }
+                                        }]
+                                    });
+                                }
                             });
                         });
                     },
@@ -55,27 +75,37 @@
                     sequence: 1,
                     requires: []
                 }
+            },
+            tabulatorOptions: {
+                dataTree: true,
+                dataTreeElementColumn:"tree",
+                dataTreeCollapseElement:"<i class='fa-regular fa-square-minus'></i>",
+                dataTreeExpandElement:"<i class='fa-regular fa-square-plus'></i>",
+                rowFormatter: function(row) {
+                    const data = row.getData();
+                    const $element = $(row.getElement());
+
+                    if (data.ecmp) {
+                        $element.addClass('ecmp-row');
+                    }
+                }
+
             }
         });
         // update routes
-        $("#update").click(function() {
-            $('#processing-dialog').modal('show');
-            let resolve = '';
-            if ($("#resolve").prop("checked")) {
-                resolve = "yes";
-            }
-            ajaxGet("/api/diagnostics/interface/get_routes/", {resolve:resolve}, function (data, status) {
-                if (status == "success") {
-                    $("#grid-routes").bootgrid('replace', data);
-                }
-                $('#processing-dialog').modal('hide');
-            });
+        $("#resolve").change(function() {
+            $("#grid-routes").bootgrid('reload');
         });
-
-        // initial load
-        $("#update").click();
     });
 </script>
+
+<style>
+    .ecmp-row .tabulator-cell {
+        font-style: italic;
+    }
+</style>
+
+
 
 <div class="content-box">
     <div>
@@ -86,9 +116,11 @@
                         <thead>
                         <tr>
                             <th data-column-id="id" data-type="string" data-visible="false">{{ lang._('ID') }}</th>
+                            <th data-column-id="tree" data-type="string" ></th>
                             <th data-column-id="proto" data-type="string" >{{ lang._('Proto') }}</th>
                             <th data-column-id="destination" data-type="string">{{ lang._('Destination') }}</th>
                             <th data-column-id="gateway" data-type="string">{{ lang._('Gateway') }}</th>
+                            <th data-column-id="weight" data-type="numeric">{{ lang._('Weight') }}</th>
                             <th data-column-id="flags" data-type="string" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Flags') }}</th>
                             <th data-column-id="use" data-type="numeric" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('Use') }}</th>
                             <th data-column-id="mtu" data-type="numeric" data-css-class="hidden-xs hidden-sm" data-header-css-class="hidden-xs hidden-sm">{{ lang._('MTU') }}</th>
@@ -118,14 +150,6 @@
                                     </small>
                                 </p>
                             </td>
-                            <td>
-                                <div class="pull-right">
-                                    <button id="update" type="button" class="btn btn-default">
-                                        <span class="fa fa-refresh fa-fw"></span>
-                                        <span>{{ lang._('Refresh') }}</span>
-                                    </button>
-                                </div>
-                            </td>
                         </tr>
                     </table>
                 </div>
@@ -133,5 +157,3 @@
         </div>
     </div>
 </div>
-
-{{ partial("layout_partials/base_dialog_processing") }}

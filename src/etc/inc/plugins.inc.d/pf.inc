@@ -170,7 +170,7 @@ function pf_firewall($fw)
     foreach ($mdlFilter->rules->rule->sortedBy(['sequence']) as $key => $rule) {
         $content = $rule->serialize();
         $content['#ref'] = 'ui/firewall/filter#' . (string)$rule->getAttributes()['uuid'];
-        $fw->registerFilterRule($rule->getPriority(), $content);
+        $fw->registerFilterRule($rule->getPriority(), $content, null, 'mvc');
     }
 
     if (

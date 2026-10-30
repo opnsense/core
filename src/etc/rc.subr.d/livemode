@@ -52,7 +52,7 @@ function sync_installer_user()
         $installer->setNodes($root->getNodeContent());
         $installer->descr = 'System Installer';
         $installer->name = 'installer';
-        $installer->uid = '0'; /* needs a reset */
+        $installer->uid->updateValue('0'); /* needs a reset */
 
         if ($usermdl->serializeToConfig(false, true)) {
             Config::getInstance()->save();

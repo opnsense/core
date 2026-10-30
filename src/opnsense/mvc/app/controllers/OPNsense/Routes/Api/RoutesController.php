@@ -31,7 +31,8 @@ namespace OPNsense\Routes\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Core\Backend;
-use OPNsense\Routes\Route;
+use OPNsense\Core\Config;
+use OPNsense\System\StaticRoute;
 
 /**
  * @package OPNsense\Routes
@@ -52,6 +53,19 @@ class RoutesController extends ApiMutableModelControllerBase
     }
 
     /**
+     * @return array status [on, off, failed]
+     */
+    public function ecmpEnabledAction()
+    {
+        $bckresult = json_decode(((new Backend())->configdRun('system sysctl values net.route.multipath')), true);
+        if (is_array($bckresult) && !empty($bckresult['net.route.multipath'])) {
+            return ['status' => $bckresult['net.route.multipath'] == 1 ? 'on' : 'off'];
+        } else {
+            return ['status' => 'failed'];
+        }
+    }
+
+    /**
      * Update route with given properties
      * @param string $uuid internal id
      * @return array save result + validation output
@@ -60,15 +74,20 @@ class RoutesController extends ApiMutableModelControllerBase
      */
     public function setrouteAction($uuid)
     {
-        $node = $this->getBase("route", "route", $uuid);
-        // delete previous route when changed (one shot, apply should only delete the last known situation)
-        if (
-            !empty($node['route']['network']) && $_POST['route']['network'] != $node['route']['network']
-            && !file_exists("/tmp/delete_route_{$uuid}.todo")
-        ) {
-            file_put_contents("/tmp/delete_route_{$uuid}.todo", $node['route']['network']);
+        if (!$this->request->isPost()) {
+            return ['status' => 'failed'];
         }
-        return $this->setBase("route", "route", $uuid);
+        Config::getInstance()->lock();
+        $node = $this->getModel()->getNodeByReference('route.' . $uuid);
+        $to_store = null;
+        if ($node !== null) {
+            $to_store = (string)$node->network;
+        }
+        $result =  $this->setBase("route", "route", $uuid);
+        if ($result['result'] == 'saved' && !empty($to_store)) {
+            StaticRoute::claim($to_store);
+        }
+        return $result;
     }
 
     /**
@@ -104,11 +123,14 @@ class RoutesController extends ApiMutableModelControllerBase
      */
     public function delrouteAction($uuid)
     {
-        $node = (new Route())->getNodeByReference('route.' . $uuid);
+        if (!$this->request->isPost()) {
+            return ['status' => 'failed'];
+        }
+        Config::getInstance()->lock();
+        $node = $this->getModel()->getNodeByReference('route.' . $uuid);
         $response = $this->delBase("route", $uuid);
         if (!empty($response['result']) && $response['result'] == 'deleted') {
-            // we don't know for sure if this route was already removed, flush to disk to remove on apply
-            file_put_contents("/tmp/delete_route_{$uuid}.todo", (string)$node->network);
+            StaticRoute::claim((string)$node->network);
         }
         return $response;
     }

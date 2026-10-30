@@ -109,6 +109,9 @@
                                 $("#"+$(this).attr('href').substring(1,999)).collapse('hide');
                             }
                         });
+                    } else if (this.pathname == window.location.pathname && this.hash != '' && $('.navbar-toggle').is(':visible')) {
+                        // another tab of this page only changes the fragment, so no page load closes the menu
+                        $('#navigation').collapse('hide');
                     }
                 });
 

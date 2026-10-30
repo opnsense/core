@@ -29,7 +29,7 @@
 namespace OPNsense\Monit\Api;
 
 use OPNsense\Base\ApiControllerBase;
-use OPNsense\Monit\Monit;
+use OPNsense\Core\Backend;
 
 /**
  * Class StatusController
@@ -44,59 +44,36 @@ class StatusController extends ApiControllerBase
      */
     public function getAction($format = 'xml')
     {
-        $result = array("result" => "failed");
-
-        $socketPath = "/var/run/monit.sock";
+        $result = ["result" => "failed"];
 
         // map the requested html format from the status page to the Monit text format
         $format = $format == 'html' ? 'text' : $format;
 
-        // check monit httpd socket defined in monitrc by 'set httpd ...'
-        if (file_exists($socketPath) && filetype($socketPath) == "socket") {
-            // set curl options
-            $ch = curl_init("http://127.0.0.1/_status?format=" . $format);
-            curl_setopt($ch, CURLOPT_UNIX_SOCKET_PATH, $socketPath);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        if (!in_array($format, ['xml', 'text'], true)) {
+            $result['status'] = gettext('Unsupported Monit status format.');
+            return $result;
+        }
 
-            // get credentials if configured
-            $mdlMonit = new Monit(false);
-            if (
-                (string)$mdlMonit->general->httpdUsername != null && trim((string)$mdlMonit->general->httpdUsername) !== "" &&
-                (string)$mdlMonit->general->httpdPassword != null && trim((string)$mdlMonit->general->httpdPassword) !== ""
-            ) {
-                    curl_setopt($ch, CURLOPT_USERPWD, ((string)$mdlMonit->general->httpdUsername) . ":" . ((string)$mdlMonit->general->httpdPassword));
-            }
-
-            // send request
-            if (!$response = curl_exec($ch)) {
-                $result['status'] = curl_error($ch);
-                return $result;
-            }
-
-            $HTTPCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-            if ($HTTPCode != 200) {
-                $result['status'] = 'Monit returns with code ' . $HTTPCode;
-            } else {
-                $result['result'] = "ok";
-
-                // format the response
-                if ($format == 'xml') {
-                    $result['status'] = simplexml_load_string($response, 'SimpleXMLElement', LIBXML_NOCDATA);
-                } elseif ($format === 'text') {
-                    $result['status'] = '<div class="alert"><pre>' . $this->bashColorToCSS(strip_tags($response)) . '</pre></div>';
-                }
-            }
+        $response = json_decode((new Backend())->configdpRun('monit fetch', [$format]), true);
+        if (!is_array($response)) {
+            $result['status'] = gettext('Failed to fetch Monit status.');
+        } elseif (!empty($response['error'])) {
+            $result['status'] = $response['error'];
+        } elseif (($response['http_code'] ?? 0) != 200) {
+            $result['status'] = 'Monit returns with code ' . ($response['http_code'] ?? 0);
         } else {
-            $msg = "
-Either the file " . $socketPath . " does not exists or it is not a unix socket.
-Please check if the Monit service is running.
+            $result['result'] = "ok";
 
-If you have started Monit recently, wait for StartDelay seconds and refresh this page.";
             if ($format == 'xml') {
-                $result['status'] = $msg;
+                $result['status'] = simplexml_load_string(
+                    $response['response'],
+                    'SimpleXMLElement',
+                    LIBXML_NOCDATA
+                );
             } elseif ($format === 'text') {
-                $result['status'] = '<div class="alert"><pre>' . $msg . '</pre></div>';
+                $result['status'] = '<div class="alert"><pre>' .
+                    $this->bashColorToCSS(strip_tags($response['response'])) .
+                    '</pre></div>';
             }
         }
         return $result;

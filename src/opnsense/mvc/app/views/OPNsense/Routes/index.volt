@@ -1,5 +1,6 @@
 {#
  #
+ # Copyright (c) 2017-2026 Deciso B.V.
  # Copyright (c) 2017 Fabian Franz
  # All rights reserved.
  #
@@ -28,21 +29,68 @@
 <script>
 
     $( document ).ready(function() {
+        ajaxGet('/api/routes/routes/ecmp_enabled', {}, function(data){
+            /* query if ECMP is enabled so we can inform the user */
+            let ecmp_enabled = data && data.status === 'on';
 
-        $("#{{formGridRoute['table_id']}}").UIBootgrid(
-          { 'search':'/api/routes/routes/searchroute/',
-            'get':'/api/routes/routes/getroute/',
-            'set':'/api/routes/routes/setroute/',
-            'add':'/api/routes/routes/addroute/',
-            'del':'/api/routes/routes/delroute/',
-            'toggle':'/api/routes/routes/toggleroute/',
-            'options':{selection:true, multiSelect:true, batchDelete:false}
-          }
-        );
+            let $grid = $("#{{formGridRoute['table_id']}}").UIBootgrid({
+                'search':'/api/routes/routes/searchroute/',
+                'get':'/api/routes/routes/getroute/',
+                'set':'/api/routes/routes/setroute/',
+                'add':'/api/routes/routes/addroute/',
+                'del':'/api/routes/routes/delroute/',
+                'toggle':'/api/routes/routes/toggleroute/',
+                'options':{
+                    selection:true,
+                    multiSelect:true,
+                    batchDelete:false
+                },
+                tabulatorOptions: {
+                    groupBy: 'network',
+                    groupStartOpen: true,
+                    groupHeader: (value, count, data, group) => {
+                        if (count === 1) {
+                            group.getElement().classList.add("single-row-group");
+                        }
+                        result = value + " <span class=\"badge chip\">" + count + "</span> ";
+                        if (!ecmp_enabled) {
+                            result += ' <i class="fa fa-exclamation-triangle text-danger"></i> {{ lang._('ECMP routing disabled') }}';
+                        }
+                        return result;
+                    }
+                }
+            });
+
+            const table = $grid.bootgrid("getTable");
+            table.on('renderComplete', () => {
+                let idx = 0;
+                table.getRows("visible").forEach(function (row, index) {
+                    const el = row.getElement();
+                    el.classList.remove("tabulator-row-odd", "tabulator-row-even");
+                    if (!el.classList.contains('single-row-group')) {
+                        if (idx % 2 === 0) {
+                            el.classList.add("tabulator-row-odd");
+                        } else {
+                            el.classList.add("tabulator-row-even");
+                        }
+                        idx++;
+                    }
+                });
+            });
+
+
+        });
+
         $("#reconfigureAct").SimpleActionButton();
     });
 
 </script>
+
+<style>
+    .tabulator-group.single-row-group {
+        display: none;
+    }
+</style>
 
 <div class="content-box">
     {{ partial('layout_partials/base_bootgrid_table', formGridRoute)}}

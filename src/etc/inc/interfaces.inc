@@ -814,9 +814,10 @@ function interface_vip_bring_down($vip)
 
 function interface_reset($interface, $ifacecfg = false, $suspend = false)
 {
-    global $config;
+    $ifcfg = config_read_array('interfaces', $interface, false);
+    $ppps = config_read_array('ppps', 'ppp', false);
 
-    if (!isset($config['interfaces'][$interface]) || ($ifacecfg !== false && !is_array($ifacecfg))) {
+    if (empty($ifcfg) || ($ifacecfg !== false && !is_array($ifacecfg))) {
         return;
     }
 
@@ -827,15 +828,13 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
      * split between a suspend and reset mode in order to accommodate the need.
      */
     if ($ifacecfg === false) {
-        $ifcfg = $config['interfaces'][$interface];
-        $ppps = isset($config['ppps']['ppp']) ? $config['ppps']['ppp'] : [];
         $device = $ifcfg['if'];
         $realifv6 = get_real_interface($interface, 'inet6');
     } else {
+        $device = reset($ifacecfg['devices']);
+        $realifv6 = end($ifacecfg['devices']);
         $ifcfg = $ifacecfg['ifcfg'];
         $ppps = $ifacecfg['ppps'];
-        $device = reset($ifcfg['devices']);
-        $realifv6 = end($ifcfg['devices']);
     }
 
     if (!$suspend) {
@@ -924,10 +923,8 @@ function interface_suspend($interface)
 
 function interface_ppps_bound($interface, $family = null)
 {
-    global $config;
-
-    $ifcfg = $config['interfaces'][$interface] ?? null;
-    $ppps = $config['ppps']['ppp'] ?? null;
+    $ifcfg = config_read_array('interfaces', $interface, false);
+    $ppps = config_read_array('ppps', 'ppp', false);
     $bound = false;
 
     if (!interface_ppps_capable($ifcfg, $ppps)) {
@@ -940,8 +937,6 @@ function interface_ppps_bound($interface, $family = null)
     switch ($ifcfg['ipaddr'] ?? 'none') {
         case 'ppp':
         case 'pppoe':
-        case 'pptp':
-        case 'l2tp':
             $ipv4_mode = true;
             break;
         default:
@@ -993,7 +988,7 @@ function interface_ppps_hardware($device)
     $devices = [];
 
     /* avoid returning a /dev parent by excluding 'ppp' prefix */
-    if (str_starts_with($device, 'pppoe') || str_starts_with($device, 'pptp') || str_starts_with($device, 'l2tp')) {
+    if (str_starts_with($device, 'pppoe')) {
         foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
             if ($device == $ppp['if']) {
                 foreach (explode(',', $ppp['ports']) as $port) {
@@ -1026,19 +1021,38 @@ function interface_ppps_reset($interface, $suspend, $ifcfg, $ppps)
     }
 }
 
+function interfaces_device_wait($device, $message = null, $timeout = 20, $flag = 'up')
+{
+    $delay = 250; /* ms */
+
+    $max = $timeout * (1000 / $delay);
+    $i = 0;
+
+    while ($i < $max) {
+        usleep($delay * 1000);
+        if (does_interface_exist($device, $flag)) {
+            break;
+        }
+        $i++;
+    }
+
+    if ($i >= $max && $message !== null) {
+        log_msg($message, LOG_WARNING);
+    }
+}
+
 function interface_ppps_configure($interface)
 {
-    global $config;
-
-    $ifcfg = $config['interfaces'][$interface] ?? null;
-    $ppps = $config['ppps']['ppp'] ?? null;
+    $ifcfg = config_read_array('interfaces', $interface, false);
+    $ppps = config_read_array('ppps', 'ppp', false);
 
     if (!interface_ppps_capable($ifcfg, $ppps)) {
-        return;
+        return true;
     }
 
     if (!isset($ifcfg['enable'])) {
-        return;
+        log_msg("PPP {$ifcfg['if']} is not enabled but attempted start.", LOG_ERR);
+        return false;
     }
 
     $ipv4_mode = $ipv6_mode = 'disable';
@@ -1046,8 +1060,6 @@ function interface_ppps_configure($interface)
     switch ($ifcfg['ipaddr'] ?? 'none') {
         case 'ppp':
         case 'pppoe':
-        case 'pptp':
-        case 'l2tp':
             $ipv4_mode = 'enable';
             break;
         default:
@@ -1065,7 +1077,8 @@ function interface_ppps_configure($interface)
     }
 
     if ($ipv4_mode != 'enable' && $ipv6_mode != 'enable') {
-        return;
+        log_msg("PPP {$ifcfg['if']} found no supported IP configuration mode.", LOG_ERR);
+        return false;
     }
 
     $ppp = null;
@@ -1084,49 +1097,21 @@ function interface_ppps_configure($interface)
         foreach ($ports as $pid => $port) {
             $ports[$pid] = get_real_interface($port);
             if (empty($ports[$pid])) {
-                return;
+                log_msg("PPP {$ifcfg['if']} port {$ports[$pid]} resolves to empty device.", LOG_ERR);
+                return false;
             }
         }
     }
 
-    $localips = isset($ppp['localip']) ? explode(',', $ppp['localip']) : [];
-    $gateways = isset($ppp['gateway']) ? explode(',', $ppp['gateway']) : [];
-    $subnets = isset($ppp['subnet']) ? explode(',', $ppp['subnet']) : [];
-    $mtus = !empty($ppp['mtu']) ? explode(',', $ppp['mtu']) : [];
-
-    /*
-     * We bring up the parent interface first because if DHCP is configured on the parent we need
-     * to obtain an address first so we can write it in the mpd .conf file for PPTP and L2TP configs
-     */
     foreach ($ports as $pid => $port) {
         switch ($ppp['type']) {
             case 'pppoe':
                 legacy_interface_flags($port, 'up');
                 break;
-            case 'pptp':
-            case 'l2tp':
-                /* configure interface */
-                if (is_ipaddr($localips[$pid])) {
-                    // Manually configure interface IP/subnet
-                    legacy_interface_setaddress($port, "{$localips[$pid]}/{$subnets[$pid]}");
-                    legacy_interface_flags($port, 'up');
-                } elseif (empty($localips[$pid])) {
-                    $localips[$pid] = get_interface_ip($port); // try to get the interface IP from the port
-                }
-
-                if (!is_ipaddr($localips[$pid])) {
-                    log_msg("Could not get a Local IP address for PPTP/L2TP link on {$port}. Using 0.0.0.0!", LOG_WARNING);
-                    $localips[$pid] = '0.0.0.0';
-                }
-                if (!is_ipaddr($gateways[$pid])) {
-                    log_msg("Could not get a Remote IP address for PPTP/L2TP link on {$port}.", LOG_WARNING);
-                    return;
-                }
-                break;
             case 'ppp':
                 if (!file_exists($port)) {
                     log_msg("Device {$port} does not exist. PPP link cannot start without the modem device.", LOG_ERR);
-                    return;
+                    return false;
                 }
                 break;
             default:
@@ -1135,7 +1120,12 @@ function interface_ppps_configure($interface)
         }
     }
 
-    // Construct the mpd.conf file
+    if (product::getInstance()->booting()) {
+        log_msg("PPP start deferred during boot on '{$ifcfg['if']}'");
+        file_put_contents('/tmp/pppconfigure_' . $interface, $interface);
+        return false;
+    }
+
     $mpdconf = <<<EOD
 startup:
   # configure the console
@@ -1205,7 +1195,8 @@ EOD;
             $mpdconf .= "  set ipcp no vjcomp\n";
         }
 
-        if (!empty($config['system']['dnsallowoverride'])) {
+        $systemcfg = config_read_array('system', false);
+        if (!empty($systemcfg['dnsallowoverride'])) {
             $mpdconf .= "  set ipcp enable req-pri-dns\n";
             $mpdconf .= "  set ipcp enable req-sec-dns\n";
         }
@@ -1239,11 +1230,13 @@ EOD;
         $mpdconf_arr[] = "set link disable chap pap";
         $mpdconf_arr[] = "set link accept chap pap eap";
         $mpdconf_arr[] = "set link disable incoming";
+
+        /* XXX bandwidth, mtu, mru and mrru are per port */
         $bandwidths = !empty($ppp['bandwidth']) ? explode(',', $ppp['bandwidth']) : null;
         if (!empty($bandwidths[$pid])) {
             $mpdconf_arr[] = "set link bandwidth {$bandwidths[$pid]}";
         }
-
+        $mtus = !empty($ppp['mtu']) ? explode(',', $ppp['mtu']) : null;
         if (empty($mtus[$pid])) {
             /* subtract default header when deriving from interface config (as shown there) */
             $mtus[$pid] = !empty($ifcfg['mtu']) ? intval($ifcfg['mtu']) - 8 : 1492;
@@ -1312,9 +1305,6 @@ EOD;
             }
             $mpdconf_arr[] = "set pppoe service \"{$hostuniq}{$provider}\"";
             $mpdconf_arr[] = "set pppoe iface {$port}";
-        } elseif ($ppp['type'] == "pptp" || $ppp['type'] == "l2tp") {
-            $mpdconf_arr[] = "set {$ppp['type']} self {$localips[$pid]}";
-            $mpdconf_arr[] = "set {$ppp['type']} peer {$gateways[$pid]}";
         }
 
         foreach ($mpdconf_arr as $mpdconf_opt) {
@@ -1333,13 +1323,6 @@ EOD;
     /* write the configuration */
     @file_put_contents("/var/etc/mpd_{$interface}.conf", $mpdconf);
 
-    /* create the uptime log if requested */
-    if (isset($ppp['uptime'])) {
-        @touch("/conf/{$ifcfg['if']}.log");
-    } else {
-        @unlink("/conf/{$ifcfg['if']}.log");
-    }
-
     /* clean up old lock files */
     foreach ($ports as $port) {
         @unlink('/var/spool/lock/LCK..' . basename($port));
@@ -1347,6 +1330,11 @@ EOD;
 
     /* precaution for post-start 'up' check */
     legacy_interface_flags($ifcfg['if'], 'down', false);
+
+    /* wait for functional parent (only the first port's first parent or the port itself) */
+    $parents = interface_parent_devices($ports[0]);
+    $parents[] = $ports[0];
+    interfaces_device_wait($parents[0], "interface_ppps_configure() waiting threshold exceeded - device {$parents[0]} is still not up");
 
     /* fire up mpd */
     mwexecf(
@@ -1357,20 +1345,8 @@ EOD;
     /* appease netgraph by setting the correct node name */
     mwexecfb('/usr/local/opnsense/scripts/interfaces/ppp-rename.sh %s %s %s', [$interface, $ifcfg['if'], $ppp['type']]);
 
-    /* wait for functional device */
-    $max = 20;
-    $i = 0;
-    while ($i < $max) {
-        sleep(1);
-        if (does_interface_exist($ifcfg['if'], 'up')) {
-            break;
-        }
-        $i++;
-    }
-
-    if ($i >= $max) {
-        log_msg("interface_ppps_configure() waiting threshold exceeded - device {$ifcfg['if']} is still not up", LOG_WARNING);
-    }
+    /* wait for functional PPP device */
+    interfaces_device_wait($ifcfg['if'], "interface_ppps_configure() waiting threshold exceeded - device {$ifcfg['if']} is still not up");
 
     switch ($ppp['type']) {
         case 'pppoe':
@@ -1382,6 +1358,8 @@ EOD;
             legacy_interface_mtu($ifcfg['if'], $mtus[0]);
             break;
     }
+
+    return true;
 }
 
 function interfaces_pfsync_configure()
@@ -2410,7 +2388,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /* XXX start additional daemons on this interface now: needs a plugin facility */
-    interface_ppps_configure($interface);
+    if (!interface_ppps_configure($interface)) {
+        /* return early since PPP is not going to come up either way */
+        return $loaded;
+    }
     interfaces_wlan_configure($device, $linkup);
 
     switch ($wancfg['ipaddr'] ?? 'none') {
@@ -3464,12 +3445,6 @@ function convert_friendly_interface_to_friendly_descr($interface)
     $ifdesc = $interface;
 
     switch ($interface) {
-        case 'l2tp':
-            $ifdesc = 'L2TP';
-            break;
-        case 'pptp':
-            $ifdesc = 'PPTP';
-            break;
         case 'pppoe':
             $ifdesc = 'PPPoE';
             break;

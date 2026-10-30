@@ -243,6 +243,32 @@ class SettingsController extends ApiMutableModelControllerBase
         return $this->toggleBase('hosts.host', $uuid, $enabled);
     }
 
+    public function downloadHostOverridesAction()
+    {
+        if ($this->request->isGet()) {
+            $this->exportCsv($this->getModel()->hosts->host->asRecordSet(
+                false,
+                [],
+                function ($node, $record) {
+                    return array_merge(['@uuid' => $node->getAttribute('uuid')], $record);
+                }
+            ));
+        }
+    }
+
+    public function uploadHostOverridesAction()
+    {
+        if ($this->request->isPost() && $this->request->hasPost('payload')) {
+            return $this->importCsv(
+                'hosts.host',
+                $this->request->getPost('payload'),
+                ['@uuid']
+            );
+        }
+
+        return ['status' => 'failed'];
+    }
+
     /* Aliases for hosts */
 
     public function searchHostAliasAction()

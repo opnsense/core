@@ -243,6 +243,7 @@
                 virtualDOM: true,
                 responsive: true,
                 sorting: false,
+                selectionOrder: true,
                 rowCount: [500,20,50,100,200,1000,2000,-1],
                 initialSearchPhrase: getUrlHash('search'),
                 requestHandler: function(request){
@@ -443,6 +444,30 @@
                     },
                     sequence: 500
                 },
+                enable_log_selected: {
+                    footer: true,
+                    primary: true,
+                    classname: 'fa fa-fw fa-bell',
+                    title: "{{ lang._('Enable logging for selected') }}",
+                    method: function(event) {
+                        grid.bootgrid('command_toggle_selected', true, event, {
+                            toggle: `/api/firewall/${entrypoint}/toggle_rule_log/`
+                        });
+                    },
+                    sequence: 340
+                },
+                disable_log_selected: {
+                    footer: true,
+                    primary: true,
+                    classname: 'fa fa-fw fa-bell-slash',
+                    title: "{{ lang._('Disable logging for selected') }}",
+                    method: function(event) {
+                        grid.bootgrid('command_toggle_selected', false, event, {
+                            toggle: `/api/firewall/${entrypoint}/toggle_rule_log/`
+                        });
+                    },
+                    sequence: 350
+                },
                 lookup_ref: {
                     filter: (cell) => commandFilter(cell, "lookup_ref"),
                     classname: "fa fa-fw fa-link",
@@ -458,49 +483,37 @@
                 move_before: {
                     filter: (cell) => commandFilter(cell),
                     method: function(event) {
-                        const selected = $("#{{ formGridRule['table_id'] }}").bootgrid("getSelectedRows");
-                        if (selected.length !== 1) {
+                        const selectedUuids = $("#{{ formGridRule['table_id'] }}").bootgrid("getSelectedRows");
+                        if (selectedUuids.length === 0) {
                             showDialogAlert(
                                 BootstrapDialog.TYPE_WARNING,
                                 "{{ lang._('Selection Error') }}",
-                                "{{ lang._('Please select exactly one rule to move.') }}"
+                                "{{ lang._('Please select at least one rule to move.') }}"
                             );
                             return;
                         }
 
-                        const selectedUuid = selected[0];
                         const targetUuid = $(this).data("row-id");
 
-                        if (selectedUuid === targetUuid) {
-                            showDialogAlert(
-                                BootstrapDialog.TYPE_WARNING,
-                                "{{ lang._('Move Error') }}",
-                                "{{ lang._('Cannot move a rule before itself.') }}"
-                            );
-                            return;
-                        }
-
                         ajaxCall(
-                            "/api/firewall/" + entrypoint + "/move_rule_before/" + selectedUuid + "/" + targetUuid,
+                            "/api/firewall/" + entrypoint + "/move_rule_before/" + selectedUuids.join(',') + "/" + targetUuid,
                             {},
-                            function(data, status) {
+                            function(data) {
                                 if (data.status === "ok") {
                                     $("#{{ formGridRule['table_id'] }}").bootgrid("reload");
                                     $(document).trigger("settings-changed");
                                 }
-                            },
-                            function(xhr, textStatus, errorThrown) {
-                                showDialogAlert(
-                                    BootstrapDialog.TYPE_DANGER,
-                                    "{{ lang._('Request Failed') }}",
-                                    errorThrown
-                                );
-                            },
-                            'POST'
+                            }
                         );
                     },
                     classname: 'fa fa-fw fa-arrow-left',
-                    title: "{{ lang._('Move selected rule before this rule') }}",
+                    title: () => {
+                        const count = $("#{{ formGridRule['table_id'] }}").bootgrid("getSelectedRows").length;
+                        if (count === 0) {
+                            return "{{ lang._('Select rules to move before this rule') }}";
+                        }
+                        return "{{ lang._('Move %s rule(s) before this rule in selection order') }}".replace('%s', count);
+                    },
                     sequence: 10
                 },
                 toggle_log: {

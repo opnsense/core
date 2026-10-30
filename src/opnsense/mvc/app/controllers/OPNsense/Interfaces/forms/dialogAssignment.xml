@@ -8,7 +8,7 @@
         <label>Status</label>
         <type>ignore</type>
         <grid_view>
-            <width>5em</width>
+            <width>60</width>
             <formatter>statusformatter</formatter>
         </grid_view>
     </field>
@@ -17,6 +17,9 @@
         <label>Identifier</label>
         <type>info</type>
         <help>Technical identifier of the interface, used by hasync for example.</help>
+        <grid_view>
+            <width>75</width>
+        </grid_view>
     </field>
     <field>
         <id>interface.enable</id>
@@ -51,7 +54,7 @@
         <label>Type</label>
         <type>ignore</type>
         <grid_view>
-            <width>5em</width>
+            <width>105</width>
         </grid_view>
     </field>
     <field>
@@ -68,6 +71,7 @@
         <id>interface.promisc</id>
         <label>Promiscuous mode</label>
         <type>checkbox</type>
+        <advanced>true</advanced>
         <help>Put interface into permanently promiscuous mode. Only to be used for specific usecases requiring the interface to receive all packets being received. When unsure, leave this disabled.</help>
         <grid_view>
             <type>boolean</type>

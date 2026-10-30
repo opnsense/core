@@ -99,7 +99,7 @@ class ApiControllerBase extends ControllerRoot
         if (!is_array($search_clauses)) {
             /* default behavior, extract clauses to search from post */
             $searchPhrase = (string)$this->request->getPost('searchPhrase', null, '');
-            $search_clauses = preg_split('/\s+/', $searchPhrase);
+            $search_clauses = preg_split('/\s+/', trim($searchPhrase), -1, PREG_SPLIT_NO_EMPTY);
         }
 
         $sortOrder = SORT_ASC;
@@ -153,6 +153,7 @@ class ApiControllerBase extends ControllerRoot
                         foreach ((array)$clauses as $clause) {
                             if (stripos((string)$itemval, $clause) !== false) {
                                 $matches = true;
+                                break 2;
                             }
                         }
                     }

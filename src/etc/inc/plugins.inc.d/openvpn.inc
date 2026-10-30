@@ -143,6 +143,7 @@ function openvpn_devices()
 
     return [[
         'function' => 'openvpn_prepare', /* XXX not the same as real configuration */
+        'typedescr' => gettext('OpenVPN'),
         'configurable' => false,
         'pattern' => '^ovpn',
         'type' => 'openvpn',

@@ -65,7 +65,7 @@ function validate_track6_idassoc6(&$pconfig, $if)
                     continue;
                 }
                 $assoc_pd_link = !empty($trackcfg['track6_assoc_pd']) ? $trackcfg['track6_assoc_pd'] : $default_id;
-                if ($assoc_pd_ref != $assoc_pd_ref) {
+                if ($assoc_pd_ref != $assoc_pd_link) {
                     continue;
                 }
                 /* the end of non-overlapping intervals needs to specify 0 ... n-1 */
@@ -323,19 +323,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if (!is_subsystem_dirty('interfaces')) {
             $intput_errors[] = gettext("You have already applied your settings!");
         } else {
-            if (file_exists('/var/lib/php/tmp/.interfaces.apply')) {
-                $toapplylist = unserialize(file_get_contents('/var/lib/php/tmp/.interfaces.apply'), ['allowed_classes' => false]);
-                foreach ($toapplylist as $ifapply => $ifcfgo) {
-                    interface_reset($ifapply, $ifcfgo, isset($ifcfgo['enable']));
-                    interface_configure(false, $ifapply, true);
-                }
-
-                configd_run('filter reload');
-                configd_run('webgui restart 3', true);
-            }
-
-            clear_subsystem_dirty('interfaces');
-            @unlink('/var/lib/php/tmp/.interfaces.apply');
+            configd_run('interface legacy apply');
         }
         if (!empty($ifgroup)) {
             header(url_safe('Location: /interfaces.php?if=%s&group=%s', array($if, $ifgroup)));
@@ -363,8 +351,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
             if (empty($toapplylist[$if])) {
                 // only flush if the running config is not in our list yet
+                $toapplylist[$if]['devices'] = get_real_interface($if, 'both');
                 $toapplylist[$if]['ifcfg'] = $a_interfaces[$if];
-                $toapplylist[$if]['ifcfg']['devices'] = get_real_interface($if, 'both');
                 $toapplylist[$if]['ppps'] = $a_ppps;
                 file_safe('/var/lib/php/tmp/.interfaces.apply', serialize($toapplylist));
             }
@@ -695,10 +683,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $new_config['dhcpvlanprio'] = $pconfig['dhcpvlanprio'];
                     }
                     break;
-                case 'l2tp':
                 case 'ppp':
                 case 'pppoe':
-                case 'pptp':
                     $new_config['ipaddr'] = $pconfig['type'];
                     break;
             }
@@ -830,6 +816,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
                 if (empty($toapplylist[$if])) {
                     // only flush if the running config is not in our list yet
+                    $toapplylist[$if]['devices'] = $old_config['devices'];
+                    unset($old_config['devices']);
                     $toapplylist[$if]['ifcfg'] = $old_config;
                     $toapplylist[$if]['ppps'] = $a_ppps;
                     file_safe('/var/lib/php/tmp/.interfaces.apply', serialize($toapplylist));
@@ -878,12 +866,6 @@ if (!interface_ppps_capable($a_interfaces[$if], $a_ppps)) {
             $types4['pppoe'] = gettext('PPPoE');
             $types6['pppoev6'] = gettext('PPPoEv6');
             break;
-        case 'pptp':
-            $types4['pptp'] = gettext('PPTP');
-            break;
-        case 'l2tp':
-            $types4['l2tp'] = gettext('L2TP');
-            break;
         default:
             break;
     }
@@ -914,14 +896,13 @@ include("head.inc");
 
       $("#type").change(function () {
           $('#staticv4, #dhcp, #ppp').hide();
-          if ($(this).val() == 'l2tp' || $(this).val() == 'pptp' || $(this).val() == 'pppoe') {
+          if ($(this).val() == 'pppoe') {
               $("#ppp").show();
           } else {
               $("#" +$(this).val()).show();
           }
           switch ($(this).val()) {
             case "pppoe":
-            case "pptp":
               $("#mtu_calc").show();
               break;
             default:
