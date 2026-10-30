@@ -1259,6 +1259,7 @@
 /usr/local/opnsense/scripts/firmware/health.sh
 /usr/local/opnsense/scripts/firmware/hostnames.sh
 /usr/local/opnsense/scripts/firmware/install.sh
+/usr/local/opnsense/scripts/firmware/kernel_cleanup.py
 /usr/local/opnsense/scripts/firmware/latest.php
 /usr/local/opnsense/scripts/firmware/launcher.sh
 /usr/local/opnsense/scripts/firmware/license.sh

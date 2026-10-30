@@ -691,6 +691,8 @@
                     $("#firmware_flavour").find('option').remove();
                     $("#firmware_reboot").prop('checked', fwconf['reboot'] == '1');
                     $("#firmware_aux").prop('checked', fwconf['aux'] == '1');
+                    $("#firmware_kernel_cleanup").prop('checked', fwconf['kernel_cleanup'] == '1');
+                    $("#firmware_kernel_cleanup_delay").val(fwconf['kernel_cleanup_delay'] || '24');
 
                     $.each(fwopts.mirrors, function(key, value) {
                         var selected = false;
@@ -738,7 +740,7 @@
 
                     $("#firmware_flavour").selectpicker('refresh');
                     $("#firmware_flavour").change();
-                    if (fwconf['flavour'] !== '' || fwconf['reboot'] === '1' || fwconf['aux'] === '1') {
+                    if (fwconf['flavour'] !== '' || fwconf['reboot'] === '1' || fwconf['aux'] === '1' || fwconf['kernel_cleanup'] === '1') {
                         $("i.fa-toggle-off#show_advanced_firmware").click();
                     }
 
@@ -759,6 +761,37 @@
             });
         }
         fillOptions();
+        function kernelStatus() {
+            ajaxGet('/api/core/firmware/kernelstatus', {}, function(data) {
+                $("#kernel_cleanup_status").text(data.reason || '');
+                $("#kernel_cleanup_inventory").text((data.kernels || []).map(function(kernel) {
+                    return kernel.path;
+                }).join(', '));
+                $("#kernel_cleanup_now").prop('disabled', !data.ready);
+            });
+        }
+        kernelStatus();
+        $("#kernel_cleanup_refresh").click(kernelStatus);
+        $("#kernel_cleanup_now").click(function() {
+            ajaxGet('/api/core/firmware/kernelstatus', {}, function(data) {
+                if (!data.ready) {
+                    kernelStatus();
+                    return;
+                }
+                var message = "{{ lang._('Remove the managed previous kernel and its debug files? This removes the previous-kernel boot option. Additional kernels and ZFS snapshots are preserved. Snapshot references may prevent disk space from being released immediately.') }}";
+                message += ' (' + (data.bytes / 1048576).toFixed(1) + ' MiB)';
+                bootbox.confirm(message, function(confirmed) {
+                    if (confirmed) {
+                        ajaxCall('/api/core/firmware/kernelcleanup', {generation: data.generation}, function(result) {
+                            kernelStatus();
+                            if (result.status !== 'ok') {
+                                $("#kernel_cleanup_status").text(result.reason || result.status);
+                            }
+                        });
+                    }
+                });
+            });
+        });
         $("#reset_mirror").click(fillOptions);
 
         $("#firmware_mirror").change(function(){
@@ -786,6 +819,8 @@
             confopt.type = $("#firmware_type").val();
             confopt.reboot = $("#firmware_reboot").is(":checked") ? '1' : '0';
             confopt.aux = $("#firmware_aux").is(":checked") ? '1' : '0';
+            confopt.kernel_cleanup = $("#firmware_kernel_cleanup").is(":checked") ? '1' : '0';
+            confopt.kernel_cleanup_delay = $("#firmware_kernel_cleanup_delay").val();
             confopt.subscription = $("#firmware_subscription").val();
             ajaxCall('/api/core/firmware/set', { 'firmware': confopt }, function (data, status) {
                 $("#settingstab_progress").removeClass("fa fa-spinner fa-pulse");
@@ -1066,6 +1101,29 @@
                                     <td>
                                         <input type="checkbox" id="firmware_aux">
                                         {{ lang._('Activate the auxiliary packages repository') }}
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr data-advanced="true">
+                                    <td><i class="fa fa-info-circle text-muted"></i> {{ lang._('Previous kernel') }}</td>
+                                    <td>
+                                        <label><input type="checkbox" id="firmware_kernel_cleanup">
+                                            {{ lang._('Automatically remove the previous kernel after booting an updated system') }}
+                                        </label>
+                                        <p>{{ lang._('This removes the previous-kernel boot option. Additional kernels and ZFS snapshots are preserved.') }}</p>
+                                        <label for="firmware_kernel_cleanup_delay">{{ lang._('Continuous uptime after startup (hours)') }}</label>
+                                        <input type="number" id="firmware_kernel_cleanup_delay" min="1" max="720" value="24">
+                                        <p>{{ lang._('Startup completion and elapsed time do not verify the health of every configured service.') }}</p>
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td>{{ lang._('Kernel backup') }}</td>
+                                    <td>
+                                        <p id="kernel_cleanup_status"></p>
+                                        <p id="kernel_cleanup_inventory"></p>
+                                        <button class="btn btn-default" id="kernel_cleanup_refresh" type="button">{{ lang._('Refresh') }}</button>
+                                        <button class="btn btn-default" id="kernel_cleanup_now" type="button" disabled>{{ lang._('Remove previous kernel') }}</button>
                                     </td>
                                     <td></td>
                                 </tr>

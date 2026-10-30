@@ -299,6 +299,7 @@ function core_cron()
 
     $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d syslog archive', '1'];
     $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d firmware changelog cron', '0', '22'];
+    $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d firmware kernel-auto-cleanup', '17'];
 
     foreach ((new \OPNsense\Firewall\Alias(true))->aliases->alias->iterateItems() as $alias) {
         if ($alias->type->isEqual('external') && !$alias->expire->isEmpty()) {

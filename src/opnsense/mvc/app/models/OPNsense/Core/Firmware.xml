@@ -13,5 +13,12 @@
         <subscription type="StrictTextField"/>
         <reboot type="BooleanField"/>
         <aux type="BooleanField"/>
+        <kernel_cleanup type="BooleanField"/>
+        <kernel_cleanup_delay type="IntegerField">
+            <Default>24</Default>
+            <MinimumValue>1</MinimumValue>
+            <MaximumValue>720</MaximumValue>
+            <Required>Y</Required>
+        </kernel_cleanup_delay>
     </items>
 </model>

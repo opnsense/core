@@ -240,7 +240,8 @@ echo -n "Launching the init system..."
 /usr/local/bin/flock -n -o ${BOOTLOCK} /usr/local/etc/rc.bootup || exit 1
 
 # Execute the normal syshook / plugin commands
-/usr/local/etc/rc.syshook start
+STARTUP_COMPLETE=1
+/usr/local/etc/rc.syshook start || STARTUP_COMPLETE=
 
 echo -n "Root file system: "
 mount | awk '$3 == "/" { print $1 }'
@@ -248,5 +249,10 @@ date
 
 /usr/local/sbin/opnsense-shell banner
 /usr/local/etc/rc.subr.d/livemode
+
+# Confirm completion of normal startup, after all start hooks have returned.
+if [ -n "${STARTUP_COMPLETE}" ]; then
+	/usr/local/opnsense/scripts/firmware/kernel_cleanup.py boot > /dev/null
+fi
 
 exit 0

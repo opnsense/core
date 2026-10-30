@@ -526,6 +526,39 @@ class FirmwareController extends ApiMutableModelControllerBase
     }
 
     /**
+     * Inspect kernels and the updater-owned backup.
+     * @return array
+     */
+    public function kernelstatusAction()
+    {
+        return json_decode(trim((new Backend())->configdRun('firmware kernel-status')), true) ?? [
+            'ready' => false,
+            'reason' => gettext('Kernel backup status is unavailable.')
+        ];
+    }
+
+    /**
+     * Remove the backup generation explicitly confirmed by the administrator.
+     * @return array
+     */
+    public function kernelcleanupAction()
+    {
+        if (!$this->request->isPost()) {
+            return ['status' => 'failure'];
+        }
+        $generation = $this->request->getPost('generation', 'string', '');
+        if (!is_string($generation) || !preg_match('/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/D', $generation)) {
+            return ['status' => 'failure'];
+        }
+        $this->getLogger('audit')->notice(
+            sprintf('[Firmware] User %s requested kernel backup cleanup', $this->getUserName())
+        );
+        return json_decode(trim((new Backend())->configdpRun('firmware kernel-cleanup', [$generation])), true) ?? [
+            'status' => 'failure'
+        ];
+    }
+
+    /**
      * run a connection check
      * @return array status
      * @throws \Exception
