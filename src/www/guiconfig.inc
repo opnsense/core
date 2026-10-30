@@ -224,8 +224,8 @@ function print_info_box($msg)
 
 function print_firewall_banner()
 {
-    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', false);
-    if (!empty($settings['filter']['disable_filter'])) {
+    $settings_filter = filter_get_settings('filter');
+    if (!empty($settings_filter['disable_filter'])) {
         print_alert_box(sprintf(
             gettext(
                 'The firewall has globally been disabled and configured rules are ' .

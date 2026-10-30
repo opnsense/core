@@ -28,7 +28,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once('filter_settings.inc');
 function system_powerd_configure($verbose = false)
 {
     global $config;
@@ -66,8 +65,6 @@ function system_powerd_configure($verbose = false)
 
 function system_sysctl_defaults()
 {
-    global $config;
-
     $settings_filter = filter_get_settings('filter');
 
     /* notes:

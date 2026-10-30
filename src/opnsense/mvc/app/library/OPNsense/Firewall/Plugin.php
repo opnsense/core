@@ -28,8 +28,6 @@
 
 namespace OPNsense\Firewall;
 
-require_once('filter_settings.inc');
-
 /**
  * Class Plugin
  * @package OPNsense\Firewall

@@ -27,7 +27,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once('filter_settings.inc');
 function pf_services()
 {
     $services = [];

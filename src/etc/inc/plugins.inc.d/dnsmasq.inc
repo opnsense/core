@@ -30,7 +30,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once('filter_settings.inc');
 function dnsmasq_enabled()
 {
     global $config;

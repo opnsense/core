@@ -31,7 +31,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once('filter_settings.inc');
 require_once('filter.lib.inc');
 
 function is_bogonsv6_used()
@@ -588,8 +587,6 @@ function filter_generate_aliases()
 
 function filter_rules_legacy(&$FilterIflist)
 {
-    global $config;
-
     $settings_logging = filter_get_settings('logging');
     $log = !empty($settings_logging['default_block']) ? 'log' : '';
     $bridge_interfaces = [];

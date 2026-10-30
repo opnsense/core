@@ -31,7 +31,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once('filter_settings.inc');
 const IPSEC_LOG_SUBSYSTEMS = [
     'asn' => 'Low-level encoding/decoding (ASN.1, X.509 etc.)',
     'cfg' => 'Configuration management and plugins',

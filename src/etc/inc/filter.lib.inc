@@ -26,7 +26,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-require_once('filter_settings.inc');
 function filter_core_bootstrap($fw)
 {
     $settings_logging = filter_get_settings('logging');
