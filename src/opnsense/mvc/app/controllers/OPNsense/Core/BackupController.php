@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2026 Konstantinos Spartalis <cspartalis@potatonetworks.com>
  * Copyright (C) 2023 Deciso B.V.
  * All rights reserved.
  *
@@ -34,6 +35,40 @@ namespace OPNsense\Core;
  */
 class BackupController extends \OPNsense\Base\IndexController
 {
+    public function indexAction()
+    {
+        $backupFactory = new \OPNsense\Backup\BackupFactory();
+        $this->view->providers = $backupFactory->listProviders();
+
+        $this->view->backupLocalForm = $this->getForm("backup_local");
+        $this->view->backupRemoteForm = $this->getForm("backup_remote");
+
+        $this->view->backupSize = \OPNsense\Core\Config::getInstance()->getBackupSize();
+
+        $areas = [
+            'bridges' => gettext('Bridge Devices'),
+            'gifs' => gettext('GIF Devices'),
+            'interfaces' => gettext('Interfaces'),
+            'laggs' => gettext('LAGG Devices'),
+            'ppps' => gettext('Point-to-Point Devices'),
+            'rrddata' => gettext('RRD Data'),
+            'vlans' => gettext('VLAN Devices'),
+            'wireless' => gettext('Wireless Devices'),
+        ];
+        $xmlrpc_options = @json_decode((new \OPNsense\Core\Backend())->configdRun('system xmlrpc options'), true);
+        if (is_array($xmlrpc_options)) {
+            foreach ($xmlrpc_options as $area) {
+                if (!empty($area['section'])) {
+                    $areas[$area['section']] = $area['description'];
+                }
+            }
+        }
+        natcasesort($areas);
+        $this->view->areas = $areas;
+
+        $this->view->pick('OPNsense/Core/backup');
+    }
+
     public function historyAction($selected_host = null)
     {
         $this->view->selected_host = $selected_host;
