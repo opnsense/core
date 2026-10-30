@@ -119,8 +119,11 @@ class DiagnosticsController extends ApiControllerBase
             $src = $this->request->getPost('src', null, '127.0.0.1');
 
             $domains = array_values(array_filter(
-                explode(',', preg_replace('/\s+/', '',  $this->request->getPost('domain'))),
-                fn($d) => $d !== ''
+                array_map(
+                    fn($domain) => preg_replace('/\s+/', '', $domain),
+                    $this->request->getPost('domain')
+                ),
+                fn($domain) => $domain !== ''
             ));
 
             $backend = new Backend();
@@ -146,7 +149,6 @@ class DiagnosticsController extends ApiControllerBase
                             $result[$key]['policy'] = $policies[$value['uuid']]['description'] ?? '';
                         }
                     }
-                    // Key by domain so results from different domains don't overwrite each other
                     $response[$domain] = $result;
                 }
             }

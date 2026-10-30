@@ -48,17 +48,49 @@
 
         $("#reconfigureAct").SimpleActionButton();
 
+        $("#testAct").SimpleActionButton({
+            onAction: function(data) {
+                const domains = $("#blocklisttester\\.domains").val() || [];
+
+                $("#testAct_spinner").show();
+                ajaxCall('/api/unbound/diagnostics/test_blocklist', {
+                    'domain': domains,
+                    'src': $("#tester_src").val(),
+                }, function(data, status) {
+                    var $result = $("#blocklist_tester_result").empty();
+                    $result.append($("<strong>")).text("{{lang._('Result:')}}");
+                    $result.append($("<br>"))
+
+                    if (status === "error") {
+                        $result.append($("<pre style='white-space: pre-wrap; word-break: keep-all;'/>").text(JSON.stringify(data, null, 2)));
+                    } else {
+                        var domains = Object.keys(data);
+                        for (var i = 0; i < domains.length; i++) {
+                            var domain = domains[i];
+                            $result.append($("<span/>").text(domain));
+                            $result.append($("<pre style='white-space: pre-wrap; word-break: keep-all;'/>")
+                                .text(JSON.stringify(data[domain], null, 2)));
+                        }
+                    
+                    }
+                    $("testAct_spinner").hide();
+                });
+            }
+        });
+
         $("#tester_exec").click(function() {
+            const domains = $("#unbound\\.blocklist\\.domain_tester").val() || [];
+
             $("#tester_exec_spinner").show();
             ajaxCall('/api/unbound/diagnostics/test_blocklist', {
-                'domain': $("#tester_domain").val(),
+                'domain': domains,
                 'src': $("#tester_src").val(),
             }, function(data, status) {
                 var $result = $("#blocklist_tester_result").empty();
-                $result.append($("<strong/>")).text("{{lang._('Result:')}}");
+                $result.append($("<strong>")).text("{{lang._('Result:')}}");
                 $result.append($("<br>"))
 
-                if (data.status === "error") {
+                if (status === "error") {
                     $result.append($("<pre style='white-space: pre-wrap; word-break: keep-all;'/>").text(JSON.stringify(data, null, 2)));
                 } else {
                     var domains = Object.keys(data);
@@ -74,30 +106,15 @@
             });
         });
 
-        // $("#tester_exec").click(function() {
-        //     $("#tester_exec_spinner").show();
-        //     ajaxCall('/api/unbound/diagnostics/test_blocklist', {
-        //         'domain': $("#tester_domain").val(),
-        //         'src': $("#tester_src").val(),
-        //     }, function(data, status) {
-        //         $("#blocklist_tester_result").empty();
-        //         $("#blocklist_tester_result").append($("<span/>")).text("{{lang._('Result')}}");
-        //         if (data.status !== undefined || data.action !== undefined) {
-        //             $("#blocklist_tester_result").append($("<pre  style='white-space: pre-wrap; word-break: keep-all;'/>").text(JSON.stringify(data, null, 2)));
-        //         } else {
-        //             $("#blocklist_tester_result").append($("<span/>").text("-"));
-        //         }
-        //         $("#tester_exec_spinner").hide();
-        //     });
-        // });
-
         updateServiceControlUI('unbound');
+        // formatTokenizersUI();
    });
 </script>
 
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li><a data-toggle="tab" href="#blocklists" id="blocklists_tab">{{ lang._('Blocklists') }}</a></li>
     <li><a data-toggle="tab" href="#blocklist_tester" id="blocklist_tester_tab">{{ lang._('Tester') }}</a></li>
+    <li><a data-toggle="tab" href="#blocklist_tester_old" id="blocklist_tester_tab">{{ lang._('Tester_old') }}</a></li>
 </ul>
 
 <div class="tab-content content-box">
@@ -106,6 +123,11 @@
     </div>
 
     <div id="blocklist_tester" class="tab-pane fade in">
+        {{ partial('layout_partials/base_form', ['fields':formDnsblTester,'id':'frm_BlocklistTester']) }}
+        <button class="btn btn-primary" id="testAct"  data-label="{{ lang._('Test') }}"></button>
+    </div>
+
+    <div id="blocklist_tester_old" class="tab-pane fade in">
         <table class="table table-condensed table-striped">
             <thead>
                 <tr>
@@ -115,8 +137,33 @@
             </thead>
             <tbody>
                 <tr>
-                    <td>{{ lang._('Domain') }}</td>
-                    <td><input type="text" id='tester_domain' style="field-sizing: content; width: auto; min-width: 348px; max-width: 75vw;"></td>
+                    <div>
+                        <td>{{ lang._('Domain') }}</td>
+                        <td>
+                            <div id="select_unbound.blocklist.domain_tester" style>
+                                <select name="domains[]" multiple="multiple" 
+                                        id="unbound.blocklist.domain_tester"
+                                        class="tokenize" 
+                                        data-container="body" 
+                                        data-hint="Nothing selected" 
+                                        data-none-selected-text="{{ lang._('Nothing selected') }}" 
+                                        data-width="346px" 
+                                        data-allownew="true" 
+                                        data-sortable="false" 
+                                        style="display: none;">
+                                </select>
+                                <div>
+                                    <a href="#" class="text-danger" id="clear-options_unbound.blocklist.domain_tester"><i class="fa fa-times-circle"></i> <small>Clear All</small></a>
+                                    &nbsp;&nbsp;
+                                    <a href="#" class="text-danger" id="copy-options_unbound.blocklist.domain_tester"><i class="fa fa-copy"></i> <small>Copy</small></a>
+                                    &nbsp;&nbsp;
+                                    <a href="#" class="text-danger" id="paste-options_unbound.blocklist.domain_tester" style=""><i class="fa fa-paste"></i> <small>Paste</small></a>
+                                    &nbsp;&nbsp;
+                                    <a href="#" class="text-danger" id="to-text_unbound.blocklist.domain_tester"><i class="fa fa-file-text-o"></i> <small>Text</small> </a>
+                                </div>
+                            </div>
+                        </td>
+                    </div>
                 </tr>
                 <tr>
                     <td>{{ lang._('Source') }}</td>
