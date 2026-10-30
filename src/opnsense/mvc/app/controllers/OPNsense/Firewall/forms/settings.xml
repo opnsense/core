@@ -24,6 +24,278 @@
             <style>scrub_option</style>
             <help>Replace predictable IPv4 identification values with random values.</help>
         </field>
+        <field>
+            <type>header</type>
+            <label>Gateway Monitoring</label>
+        </field>
+        <field>
+            <id>filter.settings.filter.skip_rules_gw_down</id>
+            <label>Skip rules when gateway is down</label>
+            <type>checkbox</type>
+            <help>By default, when a rule has a specific gateway set and this gateway is down, the rule is created and traffic is sent to the default gateway. This option overrides that behavior and the rule is not created when the gateway is down.</help>
+        </field>
+        <field>
+            <type>header</type>
+            <label>Multi-WAN</label>
+        </field>
+        <field>
+            <id>filter.settings.filter.lb_use_sticky</id>
+            <label>Sticky connections</label>
+            <type>checkbox</type>
+            <help>Successive connections are redirected in round-robin fashion while connections from the same source are sent to the same gateway for as long as matching states exist.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.source_tracking_timeout</id>
+            <label>Source tracking timeout</label>
+            <type>text</type>
+            <help>Set the source tracking timeout for sticky connections in seconds. The default of zero removes source tracking as soon as the state expires.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.pf_share_forward</id>
+            <label>Shared forwarding</label>
+            <type>checkbox</type>
+            <help>Share forwarding decisions between the packet filter, traffic shaper, and captive portal to support policy routing in complex setups.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.pf_disable_force_gw</id>
+            <label>Disable force gateway</label>
+            <type>checkbox</type>
+            <help>Disable automatic rules which force local services to use the assigned interface gateway. The system routing table is used instead.</help>
+        </field>
+        <field>
+            <type>header</type>
+            <label>Schedules</label>
+        </field>
+        <field>
+            <id>filter.settings.filter.schedule_states</id>
+            <label>Schedule States</label>
+            <type>checkbox</type>
+            <help>Keep states for existing connections when a schedule expires. By default, matching states are cleared.</help>
+        </field>
+        <field>
+            <type>header</type>
+            <label>Automatic rules</label>
+        </field>
+        <field>
+            <id>filter.settings.filter.disable_reply_to</id>
+            <label>Disable reply-to</label>
+            <type>checkbox</type>
+            <help>Disable reply-to on WAN rules. This is required for bridged setups where the WAN gateway differs from the gateway used by hosts behind the bridge.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.no_antilockout</id>
+            <label>Disable anti-lockout</label>
+            <type>checkbox</type>
+            <help>Disable the automatic administration anti-lockout rule. Ensure user-defined rules allow access to the web interface or SSH first.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.no_ipv6_rfc4890_req</id>
+            <label>Disable RFC4890 requirement rules</label>
+            <type>checkbox</type>
+            <help>Do not create automatic IPv6 RFC4890 requirement rules.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.no_port0_block</id>
+            <label>Disable port 0 block</label>
+            <type>checkbox</type>
+            <help>Do not create the automatic rule blocking port 0.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.no_sshlockout</id>
+            <label>Disable sshlockout</label>
+            <type>checkbox</type>
+            <help>Do not create automatic rules blocking failed login attempts. Custom rules can still use the sshlockout table.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.no_virusprot</id>
+            <label>Disable rate limit rule</label>
+            <type>checkbox</type>
+            <help>Do not create the automatic rule blocking rate-limited sessions. Custom rules can still use the virusprot table.</help>
+        </field>
+        <field>
+            <type>header</type>
+            <label>Stateful Firewall</label>
+        </field>
+        <field>
+            <id>filter.settings.filter.disable_filter</id>
+            <label>Disable firewall</label>
+            <type>checkbox</type>
+            <help>Disable all packet filtering and NAT.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.optimization</id>
+            <label>Optimization</label>
+            <type>dropdown</type>
+            <help>Select the state table optimization to use.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.state_policy</id>
+            <label>Bind states to interface</label>
+            <type>checkbox</type>
+            <help>Bind states to the interface where they were created instead of allowing them to float.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.adaptive_start</id>
+            <label>Adaptive start</label>
+            <type>text</type>
+            <help>Start scaling state timeouts when this number of states is exceeded. Leave empty for the default.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.adaptive_end</id>
+            <label>Adaptive end</label>
+            <type>text</type>
+            <help>Expire all state timeouts when this number of states is reached. Leave empty for the default.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.maximum_states</id>
+            <label>Maximum states</label>
+            <type>text</type>
+            <help>Maximum number of connections to hold in the firewall state table. Leave empty for the default.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.maximum_table_entries</id>
+            <label>Maximum table entries</label>
+            <type>text</type>
+            <help>Maximum number of entries in firewall tables. Leave empty for the default.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.bypass_static_routes</id>
+            <label>Static route filtering</label>
+            <type>checkbox</type>
+            <help>Bypass firewall rules for traffic between statically routed subnets on the same interface.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.keep_counters</id>
+            <label>Keep counters</label>
+            <type>checkbox</type>
+            <help>Preserve rule counters across ruleset updates.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.maximum_fragments</id>
+            <label>Maximum fragments</label>
+            <type>text</type>
+            <help>Maximum number of entries in the fragment reassembly memory pool. Leave empty for the default.</help>
+        </field>
+        <field>
+            <type>header</type>
+            <label>Syncookies</label>
+        </field>
+        <field>
+            <id>filter.settings.filter.syncookies</id>
+            <label>Mode</label>
+            <type>dropdown</type>
+            <help>Enable syncookies for all state-tracked TCP connections or adaptively based on state table usage.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.syncookies_adaptive_start</id>
+            <label>Adaptive start</label>
+            <type>text</type>
+            <style>syncookies_adaptive</style>
+            <help>State table usage percentage at which syncookies are enabled in adaptive mode.</help>
+        </field>
+        <field>
+            <id>filter.settings.filter.syncookies_adaptive_end</id>
+            <label>Adaptive end</label>
+            <type>text</type>
+            <style>syncookies_adaptive</style>
+            <help>State table usage percentage at which syncookies are always used in adaptive mode.</help>
+        </field>
+    </tab>
+    <tab id="settings-nat" description="NAT">
+        <field>
+            <type>header</type>
+            <label>NAT reflection</label>
+        </field>
+        <field>
+            <id>filter.settings.nat.reflection_dnat</id>
+            <label>Reflection for destination NAT</label>
+            <type>checkbox</type>
+            <help>When enabled, this automatically creates additional NAT redirect rules for access to port forwards on your external IP addresses from within your internal networks. Individual rules may override this system setting.</help>
+        </field>
+        <field>
+            <id>filter.settings.nat.reflection_binat</id>
+            <label>Reflection for 1:1</label>
+            <type>checkbox</type>
+            <help>Enables the automatic creation of additional NAT redirect rules for access to 1:1 mappings of your external IP addresses from within your internal networks. Individual rules may override this system setting.</help>
+        </field>
+        <field>
+            <id>filter.settings.nat.reflection_snat</id>
+            <label>Automatic source NAT for Reflection</label>
+            <type>checkbox</type>
+            <help>Automatically create source NAT rules which assist destination NAT rules that direct traffic back out to the same subnet it originated from.</help>
+        </field>
+        <field>
+            <type>header</type>
+            <label>Source NAT</label>
+        </field>
+        <field>
+            <id>filter.settings.nat.snat_mode</id>
+            <label>Mode</label>
+            <type>dropdown</type>
+            <help>Choose how source NAT rules are handled. Automatic mode generates rules for you, hybrid mode combines manual and automatic rules, manual mode only uses configured rules, and disabled mode turns source NAT off.</help>
+        </field>
+    </tab>
+    <tab id="settings-logging" description="Logging">
+        <field>
+            <type>header</type>
+            <label>Logging</label>
+        </field>
+        <field>
+            <id>filter.settings.logging.default_block</id>
+            <label>Default block</label>
+            <type>checkbox</type>
+            <help>Log packets matched by the implicit default block rule. Per-rule logging options are still respected.</help>
+        </field>
+        <field>
+            <id>filter.settings.logging.default_pass</id>
+            <label>Default pass</label>
+            <type>checkbox</type>
+            <help>Log packets matched by implicit default pass rules. Per-rule logging options are still respected.</help>
+        </field>
+        <field>
+            <id>filter.settings.logging.source_nat</id>
+            <label>Source NAT</label>
+            <type>checkbox</type>
+            <help>Log packets matched by automatic source NAT rules.</help>
+        </field>
+        <field>
+            <id>filter.settings.logging.bogons</id>
+            <label>Bogon networks</label>
+            <type>checkbox</type>
+            <help>Log packets blocked by Block Bogon Networks rules.</help>
+        </field>
+        <field>
+            <id>filter.settings.logging.private_networks</id>
+            <label>Private networks</label>
+            <type>checkbox</type>
+            <help>Log packets blocked by Block Private Networks rules.</help>
+        </field>
+        <field>
+            <id>filter.settings.logging.debug</id>
+            <label>Debug</label>
+            <type>dropdown</type>
+            <help>Set the packet filter debug verbosity.</help>
+        </field>
+    </tab>
+    <tab id="settings-alias" description="Aliases">
+        <field>
+            <id>filter.settings.alias.bogons_interval</id>
+            <label>Bogon Update Frequency</label>
+            <type>dropdown</type>
+            <help>The frequency of updating the lists of IP addresses that are reserved (but not RFC 1918) or not yet assigned by IANA.</help>
+        </field>
+        <field>
+            <id>filter.settings.alias.aliases_resolve_interval</id>
+            <label>Alias resolve interval</label>
+            <type>text</type>
+            <help>Interval in seconds used to resolve hostnames configured in aliases.</help>
+        </field>
+        <field>
+            <id>filter.settings.alias.check_aliases_url_cert</id>
+            <label>Alias check URL certificates</label>
+            <type>checkbox</type>
+            <help>Verify HTTPS certificates when downloading alias URLs.</help>
+        </field>
     </tab>
     <activetab>settings-filter</activetab>
 </form>

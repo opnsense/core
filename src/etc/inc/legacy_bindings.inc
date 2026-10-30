@@ -65,6 +65,17 @@ function configdp_run($cmd, $params = array(), $detach = false)
  *
  ************************************************************************************************/
 
+/* Compatibility helper for legacy callers while settings move to the model. */
+function filter_get_settings($section)
+{
+    static $settings = null;
+
+    if ($settings === null) {
+        $settings = (new OPNsense\Firewall\Filter(true))->settings->getNodeContent();
+    }
+    return $settings[$section] ?? [];
+}
+
 /**
  * simple function to perform htmlspecialchars recursively on all attributes
  * @param $settings array type form data

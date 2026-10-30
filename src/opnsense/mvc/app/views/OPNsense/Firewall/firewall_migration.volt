@@ -171,7 +171,7 @@
             </div>
             <div>
                 <i class="fa fa-fw fa-check"></i>
-                <a target="_new" href="/system_advanced_firewall.php">{{ lang._('Do not disable anti-lockout in advanced settings') }}</a>
+                <a target="_new" href="/ui/firewall/settings#settings-filter">{{ lang._('Do not disable anti-lockout in firewall settings') }}</a>
             </div>
             <div>
                 <i class="fa fa-fw fa-file-csv"></i>
