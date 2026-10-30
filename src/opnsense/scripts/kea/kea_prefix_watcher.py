@@ -107,40 +107,43 @@ class Hostwatch:
 
 
 if __name__ == '__main__':
-    prefixes = {}
+    routes = {}  # only successfully added routes
     syslog.openlog('kea-dhcp6', facility=syslog.LOG_LOCAL4)
     syslog.syslog(syslog.LOG_NOTICE, "startup kea prefix watcher")
     hostwatch = Hostwatch()
     for record in yield_lease_records():
         # IA_PD: guaranteed via "type = IA_PD"
-        prefix = "%(address)s/%(prefix_len)d" % record
-        ll_addr = None
+        prefix = f"{record['address']}/{record['prefix_len']}"
 
         # https://kea.readthedocs.io/en/latest/arm/hooks.html#the-lease4-get-by-lease6-get-by-commands
         # state names (default (or assigned) (0), declined (1), expired-reclaimed (2), released (3), and registered (4))
-        if record.get('state', 0) == 0:
-            if prefix in prefixes and prefixes[prefix].get('hwaddr') == record.get('hwaddr'):
-                continue  # route already installed
-            if record.get('interface'):
-                ll_addr = hostwatch.get(record.get('interface'), record.get('hwaddr'))
-            if not ll_addr:
-                syslog.syslog(
-                    syslog.LOG_WARNING,
-                    "failed to resolve next hop for hwaddr %s on interface %s, skipping route for prefix %s" %
-                    (record.get('hwaddr'), record.get('interface'), prefix)
-                )
-                continue  # retry lookup next poll
-        elif prefix not in prefixes:
-            continue  # no route to remove
+        # inactive, remove route
+        if record.get('state', 0) != 0:
+            if prefix in routes:
+                subprocess.run(['/sbin/route', 'delete', '-inet6', prefix], capture_output=True)
+                del routes[prefix]
+                syslog.syslog(syslog.LOG_NOTICE, "remove inactive route %s" % prefix)
+            continue
 
-        # remove inactive or replace active
+        # already installed, skip
+        if prefix in routes and routes[prefix].get('hwaddr') == record.get('hwaddr'):
+            continue
+
+        # no next hop, retry next time, walrus := :)
+        if not record.get('interface') or not (ll_addr := hostwatch.get(record['interface'], record.get('hwaddr'))):
+            syslog.syslog(
+                syslog.LOG_WARNING,
+                "failed to resolve next hop for hwaddr %s on interface %s, skipping route for prefix %s" %
+                (record.get('hwaddr'), record.get('interface'), prefix)
+            )
+            continue
+
+        # all good, replace route and update dict
         subprocess.run(['/sbin/route', 'delete', '-inet6', prefix], capture_output=True)
-        prefixes.pop(prefix, None)
-
-        # only add when still valid
-        if ll_addr:
-            if subprocess.run(['/sbin/route', 'add', '-inet6', prefix, ll_addr], capture_output=True).returncode:
-                syslog.syslog(syslog.LOG_ERR, "failed adding route %s -> %s" % (prefix, ll_addr))
-            else:
-                prefixes[prefix] = record
-                syslog.syslog(syslog.LOG_NOTICE, "add route %s -> %s" % (prefix, ll_addr))
+        if subprocess.run(['/sbin/route', 'add', '-inet6', prefix, ll_addr], capture_output=True).returncode:
+            if prefix in routes:
+                del routes[prefix]
+            syslog.syslog(syslog.LOG_ERR, "failed adding route %s -> %s" % (prefix, ll_addr))
+        else:
+            routes[prefix] = record
+            syslog.syslog(syslog.LOG_NOTICE, "add route %s -> %s" % (prefix, ll_addr))
