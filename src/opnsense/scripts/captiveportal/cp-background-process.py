@@ -40,8 +40,9 @@ sys.path.insert(0, "/usr/local/opnsense/site-python")
 from lib import Config
 from lib.db import DB
 from lib.arp import ARP
-from lib.pf import PF
-from lib.ipfw import IPFW
+from lib.pf import PF, PFError
+from lib.ipfw import IPFW, IPFWError
+from lib.session import client_mac_changed
 from lib.daemonize import Daemonize
 from sqlite3_helper import check_and_repair
 
@@ -67,13 +68,28 @@ class CPBackgroundProcess(object):
 
     def _add_client(self, zoneid, ips):
         # Add a single client, one or more ips
+        authorized_ips = set()
         for ip in ips:
-            PF.add_to_table(zoneid, ip)
-        IPFW.add_accounting(zoneid, ips)
+            try:
+                PF.add_to_table(zoneid, ip)
+                authorized_ips.add(ip)
+            except PFError as error:
+                syslog.syslog(syslog.LOG_ERR, "unable to add captive portal client to PF: %s" % error)
+        if authorized_ips:
+            try:
+                IPFW.add_accounting(zoneid, authorized_ips)
+            except IPFWError as error:
+                syslog.syslog(syslog.LOG_ERR, "unable to add captive portal accounting: %s" % error)
 
     def _remove_client(self, zoneid, ip):
-        PF.remove_from_table(zoneid, ip)
-        IPFW.del_accounting(zoneid, ip)
+        try:
+            PF.remove_from_table(zoneid, ip)
+        except PFError as error:
+            syslog.syslog(syslog.LOG_ERR, "unable to remove captive portal client from PF: %s" % error)
+        try:
+            IPFW.del_accounting(zoneid, ip)
+        except IPFWError as error:
+            syslog.syslog(syslog.LOG_ERR, "unable to remove captive portal accounting: %s" % error)
 
     def _filter_addresses(self, addresses, roaming):
         if not addresses:
@@ -145,7 +161,10 @@ class CPBackgroundProcess(object):
             # fetch data for this zone
             cpzone_info = self._conf_zone_info[zoneid]
             registered_addresses_pf = set(PF.list_table(zoneid))
-            registered_addresses_ipfw = set(registered_addr_accounting.keys())
+            registered_addresses_ipfw = {
+                address for address, details in registered_addr_accounting.items()
+                if details.get('_complete', True)
+            }
             expected_clients = self.db.list_clients(zoneid)
             concurrent_users = self.db.find_concurrent_user_sessions(zoneid)
             allow_roaming = bool(int(cpzone_info['roaming']))
@@ -191,8 +210,7 @@ class CPBackgroundProcess(object):
                             delete_reason = "User-Request"
 
                     # if mac address changes, drop session. it's not the same client. Use the "primary IP" to determine this
-                    current_arp = self.arp.get_by_ipaddress(db_client['ipAddress'])
-                    if current_arp is not None and current_arp['mac'] != db_client['macAddress']:
+                    if client_mac_changed(self.db, self.arp, zoneid, db_client):
                         drop_session_reason = "mac address changed for session %s" % db_client['sessionId']
                         delete_reason = "Admin-Reset"
 
@@ -324,7 +342,11 @@ def main():
         except:
             syslog.syslog(syslog.LOG_ERR, traceback.format_exc())
             print(traceback.format_exc())
-            break
+            try:
+                bgprocess.db.close()
+            except Exception:
+                pass
+            time.sleep(5)
 
 # startup
 if len(sys.argv) > 1 and sys.argv[1].strip().lower() == 'run':
