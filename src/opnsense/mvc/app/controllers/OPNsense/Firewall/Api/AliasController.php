@@ -72,7 +72,23 @@ class AliasController extends ApiMutableModelControllerBase
             $types[$key] = (string)$alias->type;
         }
         $group_mapping = null;
+        $stockDescriptions = [
+            'bogons' => ['bogon networks (internal)', gettext('bogon networks (internal)')],
+            'bogonsv6' => ['bogon networks IPv6 (internal)', gettext('bogon networks IPv6 (internal)')],
+            'sshlockout' => ['abuse lockout table (internal)', gettext('abuse lockout table (internal)')],
+            'virusprot' => [
+                'overload table for rate limiting (internal)',
+                gettext('overload table for rate limiting (internal)')
+            ]
+        ];
         foreach ($result['rows'] as &$record) {
+            // Static aliases use their names as identifiers; user aliases use UUIDs.
+            if (
+                $record['uuid'] === $record['name'] && isset($stockDescriptions[$record['name']]) &&
+                $record['description'] === $stockDescriptions[$record['name']][0]
+            ) {
+                $record['description'] = $stockDescriptions[$record['name']][1];
+            }
             $record['categories_uuid'] = $categories[$record['uuid']];
             if ($types[$record['uuid']] == 'authgroup') {
                 if ($group_mapping === null) {

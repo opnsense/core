@@ -96,7 +96,7 @@ class ConfigdActionsField extends BaseListField
                 if (!isset($value['description']) || $value['description'] == '') {
                     $data[$key] = $key;
                 } else {
-                    $data[$key] = $value['description'];
+                    $data[$key] = gettext($value['description']);
                 }
             }
         }

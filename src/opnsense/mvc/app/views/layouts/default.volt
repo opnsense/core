@@ -356,11 +356,25 @@
             searchColumns: "{{ lang._('Search columns') }}",
             expand: "{{ lang._('Click to expand/collapse cell') }}",
             maximizeGrid: "{{ lang._('Maximize grid') }}",
-            minimizeGrid: "{{ lang._('Minimize grid') }}"
+            minimizeGrid: "{{ lang._('Minimize grid') }}",
+            firstPage: {{ lang._('First Page') | json_encode() }},
+            prevPage: {{ lang._('Prev Page') | json_encode() }},
+            nextPage: {{ lang._('Next Page') | json_encode() }},
+            lastPage: {{ lang._('Last Page') | json_encode() }},
+            showPage: {{ lang._('Show Page') | json_encode() }},
+            selectRow: {{ lang._('Select Row') | json_encode() }}
         });
 
         $.fn.selectpicker.defaults = $.fn.selectpicker.defaults || {};
-        $.extend($.fn.selectpicker.defaults, {noneSelectedText: '{{ lang._('Nothing selected') }}'});
+        $.extend($.fn.selectpicker.defaults, {
+            noneSelectedText: {{ lang._('Nothing selected') | json_encode() }},
+            noneResultsText: {{ lang._('No results matched {0}') | json_encode() }},
+            countSelectedText: {{ lang._('{0} items selected') | json_encode() }},
+            selectAllText: {{ lang._('Select All') | json_encode() }},
+            deselectAllText: {{ lang._('Deselect All') | json_encode() }},
+            doneButtonText: {{ lang._('Close') | json_encode() }},
+            maxOptionsText: [{{ lang._('Limit reached ({n} items max)') | json_encode() }}, {{ lang._('Group limit reached ({n} items max)') | json_encode() }}]
+        });
     </script>
 
   </body>
