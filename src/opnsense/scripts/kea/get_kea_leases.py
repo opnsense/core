@@ -67,6 +67,12 @@ def get_reservation_keys(record, proto):
 
     return keys
 
+def get_config_subnets(config, dhcp_key, config_key):
+    settings = config.get('arguments', {}).get(dhcp_key, {})
+    yield from settings.get(config_key, [])
+    for network in settings.get('shared-networks', []):
+        yield from network.get(config_key, [])
+
 def build_reserved_matches(config, leases, proto, dhcp_key, config_key):
     """
     Kea does not expose whether a lease came from a reservation, so we infer it
@@ -82,7 +88,7 @@ def build_reserved_matches(config, leases, proto, dhcp_key, config_key):
         wanted.update(get_reservation_keys(lease, proto))
 
     if wanted:
-        for subnet in config.get('arguments', {}).get(dhcp_key, {}).get(config_key, []):
+        for subnet in get_config_subnets(config, dhcp_key, config_key):
             subnet_id = subnet.get('id')
             if subnet_id is None:
                 continue
@@ -118,7 +124,7 @@ if __name__ == '__main__':
 
     subnets = [
         subnet['id']
-        for subnet in config.get('arguments', {}).get(dhcp_key, {}).get(config_key, [])
+        for subnet in get_config_subnets(config, dhcp_key, config_key)
         if 'id' in subnet
     ]
 
