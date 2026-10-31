@@ -388,6 +388,7 @@ class Gateways extends BaseModel
                     // only consider active interfaces
                     continue;
                 }
+                $inet_name = null;
                 foreach (["inet", "inet6"] as $ipproto) {
                     // filename suffix and interface type as defined in the interface
                     $descr = !empty($ifcfg['descr']) ? $ifcfg['descr'] : $ifname;
@@ -430,6 +431,17 @@ class Gateways extends BaseModel
                             }
                         }
                     }
+                    if ($ipproto == 'inet') {
+                        $inet_name = $thisconf['name'];
+                    } elseif (!empty($thisconf['virtual']) && $thisconf['name'] == $inet_name) {
+                        /*
+                         * Untyped interfaces (e.g. WireGuard with dynamic gateway policy) generate the same name
+                         * for both families, which hides IPv6 as gateways are indexed by name. Names are used as
+                         * identifiers in the configuration, so keep the IPv4 one and name IPv6 like OpenVPN clients.
+                         */
+                        $thisconf['name'] = strtoupper("{$descr}_VPNv6");
+                        $thisconf['descr'] = "Interface {$thisconf['name']} Gateway";
+                    }
                     if (!empty($thisconf['virtual']) && in_array($thisconf['name'], $reservednames)) {
                         /* if name is already taken, don't try to add a new (virtual) entry */
                     } elseif (($router = Autoconf::getRouter($device, $ipproto)) != null) {
@@ -448,10 +460,7 @@ class Gateways extends BaseModel
                         // gateway should only contain a valid address, make sure its empty
                         unset($thisconf['gateway']);
                         $thisconf['gateway_interface'] = true;
-                        $thisconf['ipprotocol'] = '';
                         $this->cached_gateways[$gwkey] = $thisconf;
-                        /* dynamic gateway without address family, exit before iterating next ipproto */
-                        break;
                     } elseif (
                         $ipproto == 'inet6'
                             && in_array($ifcfg['ipaddrv6'] ?? 'none', ['6rd', '6to4', 'dhcp6', 'slaac'])
