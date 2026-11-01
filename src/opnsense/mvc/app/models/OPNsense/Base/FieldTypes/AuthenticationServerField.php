@@ -79,8 +79,7 @@ class AuthenticationServerField extends BaseListField
                 }
             }
             if ($isMatched) {
-                $data[$key] = $key === 'Local Database' && $value['type'] === 'local'
-                    ? gettext('Local Database') : $value['name'];
+                $data[$key] = $value['name'];
             }
         }
         natcasesort($data);

@@ -82,16 +82,7 @@ $product = product::getInstance();
     <script>
       $.fn.selectpicker.defaults = $.fn.selectpicker.defaults || {};
       $.extend($.fn.selectpicker.defaults, {
-        noneSelectedText: <?= json_encode(gettext('Nothing selected'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
-        noneResultsText: <?= json_encode(gettext('No results matched {0}'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
-        countSelectedText: <?= json_encode(gettext('{0} items selected'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
-        selectAllText: <?= json_encode(gettext('Select All'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
-        deselectAllText: <?= json_encode(gettext('Deselect All'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
-        doneButtonText: <?= json_encode(gettext('Close'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
-        maxOptionsText: [
-          <?= json_encode(gettext('Limit reached ({n} items max)'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>,
-          <?= json_encode(gettext('Group limit reached ({n} items max)'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>
-        ]
+        noneSelectedText: <?= json_encode(gettext('Nothing selected'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>
       });
     </script>
     <!-- bootstrap dialog -->
