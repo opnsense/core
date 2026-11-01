@@ -82,6 +82,7 @@ $product = product::getInstance();
     <script>
       $.fn.selectpicker.defaults = $.fn.selectpicker.defaults || {};
       $.extend($.fn.selectpicker.defaults, {
+        // gettext() is unescaped here; encode quotes, newlines and script delimiters.
         noneSelectedText: <?= json_encode(gettext('Nothing selected'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>
       });
     </script>
