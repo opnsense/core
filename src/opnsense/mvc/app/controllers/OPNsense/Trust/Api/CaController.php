@@ -121,7 +121,7 @@ class CaController extends ApiMutableModelControllerBase
                         $error = gettext('Invalid private key provided');
                     } else {
                         $matches = CertStore::splitCerts((string)$node->prv_payload);
-                        if (count($matches) != 1) {
+                        if (count($matches) > 1) {
                             $error = sprintf(
                                 gettext('Only a single private key is allowed (found %d sections)'),
                                 count($matches)
