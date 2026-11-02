@@ -261,8 +261,12 @@ class StaticRoute
                 if (!isset($result[$net])) {
                     $result[$net] = [];
                 }
+                $gatewayip = $gateway['gateway'] ?? '';
+                if (Util::isLinkLocal($gateway['gateway'])) {
+                    $gatewayip .= '%' . $gateway['if'];
+                }
                 $result[$net][] = [
-                    'gatewayip' => $gateway['gateway'] ?? '',
+                    'gatewayip' => gatewayip,
                     'interface' => $gateway['if'],
                     'fargw' => !empty($gateway['fargw']),
                     'gwipprotocol' => $gateway['ipprotocol'],
