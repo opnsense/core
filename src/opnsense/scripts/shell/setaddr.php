@@ -616,7 +616,7 @@ filter_configure_sync(true);
 
 if ($restart_dhcpd) {
     plugins_configure('dhcp', true);
-    plugins_configure('dns', true); /* dnsmasq dhcp */
+    plugins_configure('dns', true, [$interface]); /* dnsmasq dhcp */
 }
 
 if ($restart_webgui) {

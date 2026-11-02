@@ -74,9 +74,9 @@ if (is_array($config['interfaces'])) {
     if (!empty($to_configure)) {
         system_routing_configure(true, $to_configure);
 
-        plugins_configure('ipsec', true, $to_configure);
+        plugins_configure('ipsec', true, [$to_configure]);
         plugins_configure('dhcp', true);
-        plugins_configure('dns', true);
+        plugins_configure('dns', true, [$to_configure]);
         plugins_configure('updateip', true, [$to_configure]);
 
         interfaces_pfsync_configure();
