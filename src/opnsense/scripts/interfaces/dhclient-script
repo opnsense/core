@@ -205,7 +205,6 @@ BOUND|RENEW|REBIND|REBOOT)
 	if [ -n "$old_ip_address" ]; then
 		if [ -n "$alias_ip_address" -a "$old_ip_address" != "$alias_ip_address" ]; then
 			delete_old_alias
-			changes="yes"
 		fi
 		if [ "$old_ip_address" != "$new_ip_address" ]; then
 			delete_old_address
@@ -223,7 +222,6 @@ BOUND|RENEW|REBIND|REBOOT)
 	fi
 	if [ -n "$alias_ip_address" -a "$new_ip_address" != "$alias_ip_address" ]; then
 		add_new_alias
-		changes="yes"
 	fi
 	add_new_resolv_conf
 	if [ "$changes" = "yes" ] ; then
