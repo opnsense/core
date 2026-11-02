@@ -252,7 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig[$fieldname] = isset($a_interfaces[$if][$fieldname]) ? $a_interfaces[$if][$fieldname] : null;
     }
     $pconfig['enable'] = isset($a_interfaces[$if]['enable']);
-    $pconfig['lock'] = isset($a_interfaces[$if]['lock']);
+    $pconfig['lock'] = !empty($a_interfaces[$if]['lock']);
     $pconfig['blockpriv'] = !empty($a_interfaces[$if]['blockpriv']);
     $pconfig['blockbogons'] = !empty($a_interfaces[$if]['blockbogons']);
     $pconfig['gateway_interface'] = isset($a_interfaces[$if]['gateway_interface']);
