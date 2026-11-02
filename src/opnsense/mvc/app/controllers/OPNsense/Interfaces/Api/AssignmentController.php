@@ -148,9 +148,13 @@ class AssignmentController extends ApiMutableModelControllerBase
              **/
             if (trim($backend->configdRun("interface apply")) == 'OK') {
                 Config::getInstance()->lock();
+                $renew = [];
                 foreach ($this->getModel()->get_if_todo() as $key => $props) {
                     if (!isset(Config::getInstance()->object()->interfaces->$key)) {
                         continue;
+                    }
+                    if ($props['pending_action'] != 'delete') {
+                        $renew[] = $key;
                     }
                     if ($props['pending_action'] == 'delete') {
                         $this->cleanRules($key); /* remove associated rules */
@@ -184,6 +188,24 @@ class AssignmentController extends ApiMutableModelControllerBase
                 }
                 Config::getInstance()->save();
                 $this->getModel()->flush_todo();
+                /*
+                 * The apply above starts DHCP and the like on the new device before
+                 * the config is saved, and an address that arrives meanwhile is
+                 * dropped as belonging to no interface, leaving no default route.
+                 * Handle it again now the config names the device.
+                 */
+                foreach ($renew as $key) {
+                    $ifcfg = Config::getInstance()->object()->interfaces->$key;
+                    if (empty((string)$ifcfg->enable) || empty((string)$ifcfg->if)) {
+                        continue;
+                    }
+                    if (in_array((string)$ifcfg->ipaddr, ['dhcp', 'pppoe', 'pptp', 'l2tp'])) {
+                        $backend->configdpRun('interface newip', [(string)$ifcfg->if], true);
+                    }
+                    if (in_array((string)$ifcfg->ipaddrv6, ['dhcp6', 'slaac'])) {
+                        $backend->configdpRun('interface newipv6', [(string)$ifcfg->if], true);
+                    }
+                }
                 /* exec filter reload after doing accounting */
                 $backend->configdRun('filter reload skip_alias', true);
                 return ["status" => "ok"];
