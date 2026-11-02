@@ -78,20 +78,12 @@ function radvd_services()
         $pconfig['description'] = gettext('Radvd');
         $pconfig['php']['restart'] = ['radvd_configure_do'];
         $pconfig['php']['start'] = ['radvd_configure_do'];
-        $pconfig['php']['stop'] = ['radvd_service_stop'];
-        $pconfig['pidfile'] = '/var/run/radvd.pid';
+        /* Stopping the child directly would cause daemon(8) to restart it. */
+        $pconfig['pidfile'] = '/var/run/radvd.supervisor.pid';
         $services[] = $pconfig;
     }
 
     return $services;
-}
-
-function radvd_service_stop()
-{
-    /* Also clean up a supervisor left by a previous service configuration. */
-    mwexecfm('/usr/local/etc/rc.d/radvd onestop');
-    killbypid('/var/run/radvd.supervisor.pid');
-    killbypid('/var/run/radvd.pid');
 }
 
 function radvd_xmlrpc_sync()
@@ -124,7 +116,7 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
 
     /* XXX avoids rendering radvd.conf in edge cases meaning no debug output either */
     if (!radvd_enabled($mdl)) {
-        radvd_service_stop();
+        mwexecfm('/usr/local/etc/rc.d/radvd onestop');
         @unlink($radvd_conf_file);
         @unlink($radvd_pid_file);
         return;
@@ -498,6 +490,7 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         $this_version = shell_safe('/bin/cat %s | sha256', $radvd_conf_file);
         $supervisor_running = isvalidpid('/var/run/radvd.supervisor.pid');
 
+        /* Only reload in place when the running process is owned by the supervisor. */
         if (
             isvalidpid($radvd_pid_file) &&
             $last_version == $this_version &&
@@ -505,13 +498,13 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         ) {
             killbypid($radvd_pid_file, 'HUP');
         } else {
-            radvd_service_stop();
+            mwexecfm('/usr/local/etc/rc.d/radvd onestop');
             file_safe("{$radvd_conf_file}.last", $this_version);
             mwexecf('/usr/local/etc/rc.d/radvd onestart');
         }
     } else {
         /* stop on invalid configuration for legacy condition above */
-        radvd_service_stop();
+        mwexecfm('/usr/local/etc/rc.d/radvd onestop');
         @unlink("{$radvd_conf_file}.last");
     }
 

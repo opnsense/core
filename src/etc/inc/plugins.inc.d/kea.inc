@@ -173,9 +173,6 @@ function kea_configure_do($verbose = false)
     $keaDhcpv6 = new \OPNsense\Kea\KeaDhcpv6();
     $keaDdns = new \OPNsense\Kea\KeaDdns();
 
-    /* Clean up a prefix watcher started without the supervisor before upgrade. */
-    killbypid('/var/run/kea_prefix_watcher.pid');
-
     if ($keaDhcpv4->isEnabled() || $keaDhcpv6->isEnabled()) {
         service_log('Sync KEA DHCP config...', $verbose);
         if ($keaDhcpv4->isEnabled() && $keaDhcpv4->general->manual_config->isEmpty()) {
