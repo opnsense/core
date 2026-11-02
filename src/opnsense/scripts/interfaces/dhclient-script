@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Copyright (c) 2021-2023 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2021-2026 Franco Fichtner <franco@opnsense.org>
 # Copyright (c) 2003 Kenneth R Westerback <krw@openbsd.org>
 #
 # Permission to use, copy, modify, and distribute this software for any
@@ -201,32 +201,39 @@ BOUND|RENEW|REBIND|REBOOT)
 		$LOGGER "New Hostname ($interface): $new_host_name"
 	fi
 
-	changes="no"
+	config_changed=
+	lease_setup=
+	if [ "$reason" = BOUND -o "$reason" = REBOOT ]; then
+		lease_setup=yes
+	fi
 	if [ -n "$old_ip_address" ]; then
-		if [ -n "$alias_ip_address" -a "$old_ip_address" != "$alias_ip_address" ]; then
+		if [ -n "$lease_setup" -a \
+		    -n "$alias_ip_address" -a \
+		    "$old_ip_address" != "$alias_ip_address" ]; then
 			delete_old_alias
-			changes="yes"
+			config_changed="yes"
 		fi
 		if [ "$old_ip_address" != "$new_ip_address" ]; then
 			delete_old_address
 			delete_old_routes
-			changes="yes"
+			config_changed="yes"
 		fi
 	fi
-	if [ "$reason" = BOUND ] || \
-	   [ "$reason" = REBOOT ] || \
-	   [ -z "$old_ip_address" ] || \
-	   [ "$old_ip_address" != "$new_ip_address" ]; then
+	if [ -n "$lease_setup" -o \
+	    -z "$old_ip_address" -o \
+	    "$old_ip_address" != "$new_ip_address" ]; then
 		add_new_address
 		add_new_routes
-		changes="yes"
+		config_changed="yes"
 	fi
-	if [ -n "$alias_ip_address" -a "$new_ip_address" != "$alias_ip_address" ]; then
+	if [ -n "$lease_setup" -a \
+	    -n "$alias_ip_address" -a \
+	    "$new_ip_address" != "$alias_ip_address" ]; then
 		add_new_alias
-		changes="yes"
+		config_changed="yes"
 	fi
 	add_new_resolv_conf
-	if [ "$changes" = "yes" ] ; then
+	if [ -n "$config_changed" ] ; then
 		/usr/local/sbin/configctl -d interface newip $interface force
 	fi
 	;;
