@@ -256,14 +256,17 @@ class DashboardController extends ApiControllerBase
         $result = ['result' => 'failed'];
         $config = Config::getInstance()->object();
         if (!empty($config->system->picture) && !empty($config->system->picture_filename)) {
-            $ext = pathinfo((string)$config->system->picture_filename, PATHINFO_EXTENSION);
-            if (empty($ext)) {
+            $picture = (string)$config->system->picture;
+            $data = base64_decode($picture, true);
+            $pictureInfo = $data !== false ? @getimagesizefromstring($data) : false;
+            $allowedPictureTypes = [IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG];
+            if ($pictureInfo === false || !in_array($pictureInfo[2], $allowedPictureTypes, true)) {
                 return $result;
             }
             return [
                 'result' => 'ok',
-                'mime' => 'image/' . $ext,
-                'picture' => (string)$config->system->picture,
+                'mime' => image_type_to_mime_type($pictureInfo[2]),
+                'picture' => $picture,
             ];
         }
 
