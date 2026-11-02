@@ -47,11 +47,12 @@ def arg_parse_is_json_file(filename):
 if __name__ == '__main__':
     """ Command line blocklist test mode
     """
+
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--src',
-         help='client source address. Default 127.0.0.1',
-         default='127.0.0.1'
+        help='client source address. Default 127.0.0.1',
+        default='127.0.0.1'
     )
     parser.add_argument('--domain', help='domain name to query', required=True)
     parser.add_argument(
@@ -68,27 +69,36 @@ if __name__ == '__main__':
     )
 
     inputargs = parser.parse_args()
+    domains = [
+        domain
+        for domain in "".join(inputargs.domain.split()).split(",")
+        if domain != ""
+    ]
 
-    # create an empty global context
-    ctx = ModuleContext(None)
+    results = {}
+    for domain in domains:
 
-    dnsbl = DNSBL(ctx, dnsbl_path=inputargs.dnsbl_path, size_file='/dev/null')
-    ctx.set_config(dnsbl.get_config())
-    match = dnsbl.policy_match(
-        Query(
-            client=inputargs.src,
-            family='ip6' if inputargs.src.count(':') else 'ip4',
-            type=inputargs.type,
-            domain=inputargs.domain
+        # create an empty global context
+        ctx = ModuleContext(None)
+
+        dnsbl = DNSBL(ctx, dnsbl_path=inputargs.dnsbl_path, size_file='/dev/null')
+        ctx.set_config(dnsbl.get_config())
+        match = dnsbl.policy_match(
+            Query(
+                client=inputargs.src,
+                family='ip6' if inputargs.src.count(':') else 'ip4',
+                type=inputargs.type,
+                domain=domain
+            )
         )
-    )
-    if match:
-        src_nets = match.get('source_nets', [])
-        for i in range(len(src_nets)):
-            src_nets[i] = str(src_nets[i])
-        match['source_nets'] = src_nets
-        del match['pass_regex']
-        msg = {'status': 'OK','action': 'Block','policy': match}
-        print(json.dumps(msg))
-    else:
-        print(json.dumps({'status': 'OK','action': 'Pass'}))
+        if match:
+            src_nets = match.get('source_nets', [])
+            for i in range(len(src_nets)):
+                src_nets[i] = str(src_nets[i])
+            match['source_nets'] = src_nets
+            del match['pass_regex']
+            results[domain] = {'status': 'OK','action': 'Block','policy': match}
+        else:
+            results[domain] = {'status': 'OK','action': 'Pass'}
+
+    print(json.dumps(results))

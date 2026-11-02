@@ -117,76 +117,30 @@ class DiagnosticsController extends ApiControllerBase
     {
         if ($this->request->isPost() && $this->request->hasPost('domain')) {
             $src = $this->request->getPost('src', null, '127.0.0.1');
-
-            $domains = array_values(array_filter(
-                array_map(
-                    fn($domain) => preg_replace('/\s+/', '', $domain),
-                    $this->request->getPost('domain')
-                ),
-                fn($domain) => $domain !== ''
-            ));
-
             $backend = new Backend();
+            $result = json_decode($backend->configdpRun('unbound domain test', [
+                $this->request->getPost('domain'), $src
+            ]), true);
+
             $mdl = new \OPNsense\Unbound\Unbound();
             $policies = $mdl->dnsbl->blocklist->getNodeContent();
             $types = $mdl->dnsbl->blocklist->getTemplateNode()->type->getNodeData();
 
-            $response = [];
-            foreach ($domains as $domain) {
-                $result = json_decode($backend->configdpRun('unbound domain test', [
-                    $domain, $src
-                ]), true);
-
-                if (!empty($result)) {
-                    foreach ($result as $key => $value) {
-                        if (isset($value['bl'])) {
-                            if (isset($types[$value['bl']]['optgroup'])) {
-                                $result[$key]['category'] = $types[$value['bl']]['optgroup'];
-                            }
-                            $result[$key]['bl'] = $types[$value['bl']]['value'] ?? $value['bl'];
-                        }
-                        if (isset($value['uuid'])) {
-                            $result[$key]['policy'] = $policies[$value['uuid']]['description'] ?? '';
-                        }
-                    }
-                    $response[$domain] = $result;
+            foreach ($result as $domain => $response) {
+                if (!is_array($response)) {
+                    continue;
                 }
-            }
 
-            if (!empty($response)) {
-                return $response;
+                if (isset($response['policy']['bl'])) {
+                    if (isset($types[$response['policy']['bl']]['optgroup'])) {
+                        $result[$domain]['policy']['category'] = $types[$response['policy']['bl']]['optgroup'];
+                    }
+                    $result[$domain]['policy']['bl'] = $types[$response['policy']['bl']]['value'] ?? $response['policy']['bl'];
+                }
+                // Zet in de PR hier een comment
             }
+            return $result;
         }
         return ["status" => "error"];
     }
-
-    // public function testBlocklistAction()
-    // {
-    //     if ($this->request->isPost() && $this->request->hasPost('domain')) {
-    //         $src = $this->request->getPost('src', null, '127.0.0.1');
-    //         $backend = new Backend();
-    //         $response = json_decode($backend->configdpRun('unbound domain test', [
-    //             $this->request->getPost('domain'), $src
-    //         ]), true);
-
-    //         if (!empty($response)) {
-    //             $mdl = new \OPNsense\Unbound\Unbound();
-    //             $policies = $mdl->dnsbl->blocklist->getNodeContent();
-    //             $types = $mdl->dnsbl->blocklist->getTemplateNode()->type->getNodeData();
-    //             foreach ($response as $key => $value) {
-    //                 if (isset($value['bl'])) {
-    //                     if (isset($types[$value['bl']]['optgroup'])) {
-    //                         $response[$key]['category'] = $types[$value['bl']]['optgroup'];
-    //                     }
-    //                     $response[$key]['bl'] = $types[$value['bl']]['value'] ?? $value['bl'];
-    //                 }
-    //                 if (isset($value['uuid'])) {
-    //                     $response[$key]['policy'] = $policies[$value['uuid']]['description'] ?? '';
-    //                 }
-    //             }
-    //             return $response;
-    //         }
-    //     }
-    //     return ["status" => "error"];
-    // }
 }
