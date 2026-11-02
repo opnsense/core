@@ -46,7 +46,7 @@
                     <input type="search" class="form-control" placeholder="{{ lang._('Search form') }}"
                            aria-label="{{ lang._('Search form') }}">
                 </div>
-                <i class="model-header-icon fa fa-pencil"></i> &nbsp;
+                <i class="model-header-icon fa fa-pencil"></i> &nbsp; <!-- icon set via command_* action -->
                 <h4 style="display: inline;" class="modal-title" id="{{base_dialog_id}}Label">{{label}}</h4>
             </div>
             <div class="modal-body">
