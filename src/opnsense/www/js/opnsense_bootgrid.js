@@ -2211,6 +2211,7 @@ class UIBootgrid {
             let saveDlg = this.init_save_btn(editDlg);
             const getEndpoint = override?.get ?? this.crud.get;
             const addEndpoint = override?.add ?? this.crud.add;
+            $("#" + editDlg + " i.model-header-icon").attr('class', 'model-header-icon fa fa-plus');
             this.show_edit_dialog(event, getEndpoint, editDlg).then(() => {
                 $('#' + editDlg).trigger('opnsense_bootgrid_mapped', ['add']);
                 saveDlg.click(() => {
@@ -2264,6 +2265,7 @@ class UIBootgrid {
             event.stopPropagation();
         let editDlg = override?.dialog ?? this.$compatElement.attr('data-editDialog');
         if (editDlg !== undefined) {
+            $("#" + editDlg + " i.model-header-icon").attr('class', 'model-header-icon fa fa-pencil');
             if (uuid === null)
                 uuid = $(event.currentTarget).data('row-id') ?? '';
             let saveDlg = this.init_save_btn(editDlg);
@@ -2339,6 +2341,7 @@ class UIBootgrid {
         event.stopPropagation();
         const editDlg = override?.dialog ?? this.$compatElement.attr('data-editDialog');
         if (editDlg !== undefined) {
+            $("#" + editDlg + " i.model-header-icon").attr('class', 'model-header-icon fa fa-clone');
             uuid = uuid ?? $(event.currentTarget).data('row-id');
             const urlMap = {};
             const getEndpoint = override?.get ?? this.crud.get;
