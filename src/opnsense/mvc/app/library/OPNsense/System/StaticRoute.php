@@ -266,7 +266,7 @@ class StaticRoute
                     $gatewayip .= '%' . $gateway['if'];
                 }
                 $result[$net][] = [
-                    'gatewayip' => gatewayip,
+                    'gatewayip' => $gatewayip,
                     'interface' => $gateway['if'],
                     'fargw' => !empty($gateway['fargw']),
                     'gwipprotocol' => $gateway['ipprotocol'],
