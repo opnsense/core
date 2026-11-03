@@ -30,6 +30,7 @@ namespace OPNsense\Core\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\ACL;
+use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Auth\User;
 use OPNsense\Base\UserException;
@@ -229,10 +230,7 @@ class DashboardController extends ApiControllerBase
     public function productInfoFeedAction()
     {
         $result = ['items' => []];
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://forum.opnsense.org/index.php?board=11.0&action=.xml;limit=5;type=rss2');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $output = curl_exec($ch);
+        $output = (new Backend())->configdRun('dashboard product_feed');
         $payload = @simplexml_load_string($output);
         if (empty($payload)) {
             return $result;
