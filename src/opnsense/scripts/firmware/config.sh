@@ -48,6 +48,7 @@ details
 health
 install
 lock
+product_feed
 query
 reboot
 reinstall
