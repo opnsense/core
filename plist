@@ -1521,7 +1521,6 @@
 /usr/local/opnsense/service/conf/actions.d/actions_captiveportal.conf
 /usr/local/opnsense/service/conf/actions.d/actions_configd.conf
 /usr/local/opnsense/service/conf/actions.d/actions_cron.conf
-/usr/local/opnsense/service/conf/actions.d/actions_dashboard.conf
 /usr/local/opnsense/service/conf/actions.d/actions_dhcrelay.conf
 /usr/local/opnsense/service/conf/actions.d/actions_dns.conf
 /usr/local/opnsense/service/conf/actions.d/actions_dnsmasq.conf
