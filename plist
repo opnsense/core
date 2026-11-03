@@ -699,6 +699,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/CaptivePortal.php
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/CaptivePortal.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/FieldTypes/OriginField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL.php
@@ -1164,6 +1165,7 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/UpdateOnlyTextFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest/config.xml
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/CaptivePortal/FieldTypes/OriginFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Dnsmasq/FieldTypes/HostnameFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Kea/FieldTypes/KeaOptionDataFieldTest.php
 /usr/local/opnsense/mvc/tests/phpunit.xml
