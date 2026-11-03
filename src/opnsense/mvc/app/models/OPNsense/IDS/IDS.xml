@@ -173,7 +173,7 @@
                 <Multiple>Y</Multiple>
                 <filters>
                     <enable>/^(?!0).*$/</enable>
-                    <ipaddrv6>/^idassoc6$/</ipaddrv6>
+                    <ipaddrv6>/^dhcp6$/</ipaddrv6>
                 </filters>
             </homenet_interfaces>
             <defaultPacketSize type="IntegerField">

@@ -61,10 +61,19 @@ function suricata_newwanip($verbose, $interfaces, $family)
 {
     global $config;
 
-    /* the interfaces passed are the ones that changed, the selected ones are not necessarily among them */
-    if ($family === 'inet6' && !empty($config['OPNsense']['IDS']['general']['homenet_interfaces'])) {
-        mwexecfb('/usr/local/opnsense/scripts/suricata/dynamic_homenet.php %s', ['reload']);
+    $general = $config['OPNsense']['IDS']['general'] ?? [];
+
+    /* the prefix of the selected interfaces is rendered into the home networks by the template */
+    if (
+        $family !== 'inet6' || empty($general['enabled']) || empty($general['homenet_interfaces']) ||
+        !plugins_argument_map($interfaces) ||
+        !count(array_intersect($interfaces, explode(',', $general['homenet_interfaces'])))
+    ) {
+        return;
     }
+
+    configd_run('template reload OPNsense/IDS');
+    configd_run('ids reload', true);
 }
 
 function suricata_syslog()
