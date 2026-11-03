@@ -52,9 +52,7 @@ class MFP1_1_1 extends BaseModelMigration
         if ($model instanceof Filter) {
             $config = Config::getInstance()->object();
             $legacy_system = $config->system;
-            unset(
-                $legacy_system->bogons->interval,
-            );
+            unset($legacy_system->bogons);
         }
     }
 }
