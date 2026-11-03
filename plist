@@ -1242,6 +1242,7 @@
 /usr/local/opnsense/scripts/firmware/config.sh
 /usr/local/opnsense/scripts/firmware/connection.sh
 /usr/local/opnsense/scripts/firmware/details.sh
+/usr/local/opnsense/scripts/firmware/feed.sh
 /usr/local/opnsense/scripts/firmware/health.sh
 /usr/local/opnsense/scripts/firmware/hostnames.sh
 /usr/local/opnsense/scripts/firmware/install.sh
