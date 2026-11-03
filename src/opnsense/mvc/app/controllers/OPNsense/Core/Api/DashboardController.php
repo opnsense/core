@@ -230,7 +230,7 @@ class DashboardController extends ApiControllerBase
     public function productInfoFeedAction()
     {
         $result = ['items' => []];
-        $output = (new Backend())->configdRun('dashboard product_feed');
+        $output = (new Backend())->configdRun('firmware product_feed');
         $payload = @simplexml_load_string($output);
         if (empty($payload)) {
             return $result;
