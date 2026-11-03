@@ -305,6 +305,7 @@ class StaticRoute
      */
     public function getMonitorStatus()
     {
+        $procs = static::getMonitorProcesses();
         foreach ($this->getGateways()->gatewaysIndexedByName() as $name => $gwitem) {
             foreach (['monitor', 'gateway'] as $key) {
                 /* add link-local scope where missing */
