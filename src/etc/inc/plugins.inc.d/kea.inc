@@ -226,7 +226,7 @@ function kea_syslog()
 
 function kea_firewall($fw)
 {
-    $settings_logging = filter_get_settings('logging');
+    $settings_logging = legacy_filter_settings('logging');
     $keav4 = new \OPNsense\Kea\KeaDhcpv4();
     $keav6 = new \OPNsense\Kea\KeaDhcpv6();
 

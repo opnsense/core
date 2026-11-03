@@ -98,7 +98,7 @@ function dnsmasq_xmlrpc_sync()
  */
 function dnsmasq_firewall(\OPNsense\Firewall\Plugin $fw)
 {
-    $settings_logging = filter_get_settings('logging');
+    $settings_logging = legacy_filter_settings('logging');
     $mdl = new \OPNsense\Dnsmasq\Dnsmasq();
     if (!$mdl->enable->isEmpty() && !$mdl->dhcp->default_fw_rules->isEmpty()) {
         $dhcp_ifs = $mdl->getDhcpInterfaces();

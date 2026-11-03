@@ -110,7 +110,7 @@ function pf_firewall($fw)
 {
     global $config;
 
-    $settings_logging = filter_get_settings('logging');
+    $settings_logging = legacy_filter_settings('logging');
 
     $defaults = [];
     $defaults['pass'] = ['type' => 'pass', 'log' => !empty($settings_logging['default_pass'])];

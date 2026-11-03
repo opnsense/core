@@ -64,7 +64,7 @@ function captiveportal_auto_rules()
         return $rules;
     }
 
-    $settings_logging = filter_get_settings('logging');
+    $settings_logging = legacy_filter_settings('logging');
 
     foreach ($cp->zones->zone->iterateItems() as $zone) {
         if ($zone->enabled->isEmpty()) {
