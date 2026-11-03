@@ -50,6 +50,23 @@ function suricata_services()
     return $services;
 }
 
+function suricata_configure()
+{
+    return [
+        'newwanip' => ['suricata_newwanip:3'],
+    ];
+}
+
+function suricata_newwanip($verbose, $interfaces, $family)
+{
+    global $config;
+
+    /* the interfaces passed are the ones that changed, the selected ones are not necessarily among them */
+    if ($family === 'inet6' && !empty($config['OPNsense']['IDS']['general']['homenet_interfaces'])) {
+        mwexecfb('/usr/local/opnsense/scripts/suricata/dynamic_homenet.php %s', ['reload']);
+    }
+}
+
 function suricata_syslog()
 {
     $logfacilities = array();

@@ -169,6 +169,13 @@
                 <Default>192.168.0.0/16,10.0.0.0/8,172.16.0.0/12</Default>
                 <AsList>Y</AsList>
             </homenet>
+            <homenet_interfaces type="InterfaceField">
+                <Multiple>Y</Multiple>
+                <filters>
+                    <enable>/^(?!0).*$/</enable>
+                    <ipaddrv6>/^idassoc6$/</ipaddrv6>
+                </filters>
+            </homenet_interfaces>
             <defaultPacketSize type="IntegerField">
                 <MinimumValue>82</MinimumValue>
                 <MaximumValue>65535</MaximumValue>

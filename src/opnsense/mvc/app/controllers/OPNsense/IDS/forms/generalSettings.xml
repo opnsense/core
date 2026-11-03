@@ -79,6 +79,14 @@
         <advanced>true</advanced>
     </field>
     <field>
+        <id>ids.general.homenet_interfaces</id>
+        <label>Dynamic IPv6 interfaces</label>
+        <type>select_multiple</type>
+        <style>selectpicker</style>
+        <advanced>true</advanced>
+        <help>Add the current IPv6 prefix of the selected interfaces to the home networks and keep it up to date when the delegated prefix changes. Only interfaces using identity association are listed.</help>
+    </field>
+    <field>
         <id>ids.general.defaultPacketSize</id>
         <label>Default packet size</label>
         <type>text</type>

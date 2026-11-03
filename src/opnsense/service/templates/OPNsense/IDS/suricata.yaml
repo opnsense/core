@@ -3,7 +3,12 @@
 
 vars:
   address-groups:
+{% if helpers.empty('OPNsense.IDS.general.homenet_interfaces') %}
     HOME_NET: "[{{OPNsense.IDS.general.homenet}}]"
+{% else %}
+    HOME_NET: "[{{OPNsense.IDS.general.homenet}},$DYNAMIC_HOME_NET]"
+    include: /usr/local/etc/suricata/dynamic_homenet.yaml
+{% endif %}
     EXTERNAL_NET: "!$HOME_NET"
     HTTP_SERVERS: "$HOME_NET"
     SMTP_SERVERS: "$HOME_NET"
