@@ -238,12 +238,6 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $fw->registerDestinationNatRule(600, $node);
     }
 
-    /* collect automatic NAT rules for the frontend after a successful apply */
-    $automatic_nat_rules = [
-        'source_nat' => plugins_run('rules_source_nat'),
-        'destination_nat' => plugins_run('rules_destination_nat'),
-    ];
-
     /**
      * XXX: Apply schedules on all installed rules so we can use both legacy and MVC ones.
      * Eventually this needs to be replaced, but as this requires legacy code, we cannot do that easily now
@@ -451,8 +445,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         '/tmp/rules_internal.json',
         json_encode([
             'filter' => $fw->getFilterRules(['default']),
-            'source_nat' => $automatic_nat_rules['source_nat'],
-            'destination_nat' => $automatic_nat_rules['destination_nat'],
+            'source_nat' => plugins_run('rules_source_nat'),
+            'destination_nat' => plugins_run('rules_destination_nat'),
         ]),
         0640,
         0
