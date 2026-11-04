@@ -155,7 +155,7 @@ class Helpers(object):
     def getPrefix(device):
         """ delegated IPv6 prefix collected by ifctl, same lookup as Autoconf::get()
         :param device: device name (e.g. em0)
-        :return: prefix(es) as found, whitespace separated, empty string when there is none
+        :return: prefix as found, empty string when there is none
         """
         if not device or '/' in device:
             return ''
