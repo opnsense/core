@@ -246,7 +246,7 @@ class ACL
      */
     private function isAddressAllowed($group, $remote_addr)
     {
-        $nets = $this->allGroupPrivs[$group]['source_networks'];
+        $nets = isset($this->allGroupPrivs[$group]) ? $this->allGroupPrivs[$group]['source_networks'] : [];
         if (empty($nets)) {
             return true;
         }
@@ -354,6 +354,7 @@ class ACL
      */
     public function hasPrivilege($username, $reqpriv)
     {
+        $remote_addr = !empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
         $uid = null;
         $privs = [];
         $groups = [];
@@ -378,7 +379,7 @@ class ACL
                             $group_privs = array_merge($group_privs, array_filter(explode(',', $node)));
                         }
                     }
-                    if ($userInGrp) {
+                    if ($userInGrp && $this->isAddressAllowed((string)$groupNode->name, $remote_addr)) {
                         $privs = array_merge($privs, $group_privs);
                     }
                 }
