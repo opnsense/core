@@ -439,7 +439,11 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     /* flush non mvc ruleset to disk for the frontend to use */
     \OPNsense\Core\File::file_put_contents(
         '/tmp/rules_internal.json',
-        json_encode($fw->getFilterRules(['default'])),
+        json_encode([
+            'filter' => $fw->getFilterRules(['default']),
+            'source_nat' => plugins_run('rules_source_nat'),
+            'destination_nat' => plugins_run('rules_destination_nat'),
+        ]),
         0640,
         0
     );
