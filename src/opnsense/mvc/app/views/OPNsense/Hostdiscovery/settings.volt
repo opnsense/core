@@ -26,6 +26,58 @@
 
 <script>
     $( document ).ready(function() {
+        const hostnames = new Map();
+
+        function renderHostnames(grid) {
+            grid.getTable().getRows().forEach(function(row) {
+                const address = row.getData().ip_address;
+                if (hostnames.has(address)) {
+                    // setValue() reruns the formatter; null represents a lookup in progress.
+                    row.getCell('hostname').setValue(hostnames.get(address));
+                }
+            });
+        }
+
+        function resolveHostnames(grid) {
+            const addresses = [];
+            grid.getTable().getRows().forEach(function(row) {
+                const address = row.getData().ip_address;
+                if (address) {
+                    if (!hostnames.has(address)) {
+                        hostnames.set(address, null);
+                        addresses.push(address);
+                        // null explicitly renders the in-progress spinner.
+                        row.getCell('hostname').setValue(null);
+                    } else {
+                        row.getCell('hostname').setValue(hostnames.get(address));
+                    }
+                }
+            });
+
+            for (let i = 0; i < addresses.length; i += 50) {
+                const batch = addresses.slice(i, i + 50);
+                $.ajax({
+                    type: 'GET',
+                    url: '/api/diagnostics/dns/reverse_lookup',
+                    dataType: 'json',
+                    data: {address: batch},
+                    success: function(data) {
+                        batch.forEach(function(address) {
+                            const hostname = data && data[address];
+                            hostnames.set(address, hostname && hostname !== address ? hostname : '');
+                        });
+                        renderHostnames(grid);
+                    },
+                    error: function() {
+                        batch.forEach(function(address) {
+                            hostnames.set(address, '');
+                        });
+                        renderHostnames(grid);
+                    }
+                });
+            }
+        }
+
         let data_get_map = {'frm_settings':"/api/hostdiscovery/settings/get"};
         mapDataToFormUI(data_get_map).done(function(){
             formatTokenizersUI();
@@ -47,7 +99,7 @@
             switch (e.target.hash) {
                 case '#hosts':
                     if (!$("#grid-hosts").hasClass('tabulator')) {
-                        $("#grid-hosts").UIBootgrid({
+                        const grid = $("#grid-hosts").UIBootgrid({
                         search:'/api/hostdiscovery/service/search',
                         options: {
                             requestHandler: function (params) {
@@ -57,7 +109,18 @@
                                 }
                                 return params;
                             },
+                            formatters: {
+                                hostname: function(column, row) {
+                                    if (row.hostname === null) {
+                                        return '<span class="fa fa-spinner fa-pulse"></span>';
+                                    }
+                                    return $('<span>').text(row.hostname || '')[0];
+                                }
+                            }
                         }
+                        });
+                        grid.on('loaded.rs.jquery.bootgrid', function() {
+                            resolveHostnames(grid.data('UIBootgrid'));
                         });
                     } else {
                         $("#grid-hosts").bootgrid('reload');
@@ -93,6 +156,7 @@
                 <tr>
                     <th data-column-id="interface_name" data-type="string">{{ lang._('Interface') }}</th>
                     <th data-column-id="ip_address">{{ lang._('IP Address') }}</th>
+                    <th data-column-id="hostname" data-type="string" data-formatter="hostname" data-sortable="false">{{ lang._('Hostname') }}</th>
                     <th data-column-id="ether_address" data-type="string">{{ lang._('MAC Address') }}</th>
                     <th data-column-id="organization_name" data-type="string">{{ lang._('Organization') }}</th>
                     <th data-column-id="first_seen" data-visible="false" data-type="string">{{ lang._('First Seen') }}</th>
