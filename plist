@@ -1264,6 +1264,7 @@
 /usr/local/opnsense/scripts/firmware/config.sh
 /usr/local/opnsense/scripts/firmware/connection.sh
 /usr/local/opnsense/scripts/firmware/details.sh
+/usr/local/opnsense/scripts/firmware/feed.sh
 /usr/local/opnsense/scripts/firmware/health.sh
 /usr/local/opnsense/scripts/firmware/hostnames.sh
 /usr/local/opnsense/scripts/firmware/install.sh
@@ -1273,7 +1274,6 @@
 /usr/local/opnsense/scripts/firmware/lock.sh
 /usr/local/opnsense/scripts/firmware/plugin.sh
 /usr/local/opnsense/scripts/firmware/product.php
-/usr/local/opnsense/scripts/firmware/product_feed.sh
 /usr/local/opnsense/scripts/firmware/query.sh
 /usr/local/opnsense/scripts/firmware/read.sh
 /usr/local/opnsense/scripts/firmware/reboot.sh
