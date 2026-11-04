@@ -1,0 +1,10 @@
+<model>
+    <mount>:memory:</mount>
+    <version>1.0.0</version>
+    <description>User API keys</description>
+    <items>
+        <username type="TextField"/>
+        <key type="TextField"/>
+        <descr type="DescriptionField"/>
+    </items>
+</model>
