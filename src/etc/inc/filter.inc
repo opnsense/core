@@ -184,6 +184,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     /* initialize fw plugin object */
     $fw = filter_core_get_initialized_plugin_system();
+    $settings_filter = legacy_filter_settings('filter');
+    $settings_logging = legacy_filter_settings('logging');
     filter_core_bootstrap($fw);
     $cnfint = iterator_to_array($fw->getInterfaceMapping());
     plugins_firewall($fw);
@@ -214,7 +216,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
                 'dstport' => $dstport,
                 'interface' => $interface,
                 'ipprotocol' => 'inet',
-                'log' => !empty($config['syslog']['logoutboundnat']),
+                'log' => !empty($settings_logging['source_nat']),
                 'staticnatport' => !empty($dstport),
             ];
 
@@ -257,7 +259,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
             foreach ($config['schedules']['schedule'] as $sched) {
                 if ($sched['name'] == $rrule['sched']) {
                     if (!filter_get_time_based_rule_status($sched)) {
-                        if (!isset($config['system']['schedule_states'])) {
+                        if (empty($settings_filter['schedule_states'])) {
                             $sched_kill_states[] = $rrule['label'];
                         }
                         /* disable rule, suffix label to mark end of schedule */
@@ -348,8 +350,8 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set limit frags {$config['system']['maximumfrags']}\n";
     }
 
-    if (isset($config['system']['lb_use_sticky']) && is_numeric($config['system']['srctrack'] ?? null) && ($config['system']['srctrack'] > 0)) {
-        $limitrules .= "set timeout src.track {$config['system']['srctrack']}\n";
+    if (!empty($settings_filter['lb_use_sticky']) && !empty($settings_filter['source_tracking_timeout'])) {
+        $limitrules .= "set timeout src.track " . $settings_filter['source_tracking_timeout'] . "\n";
     }
 
     if (!empty($config['system']['syncookies'])) {
@@ -579,9 +581,8 @@ function filter_generate_aliases()
 
 function filter_rules_legacy(&$FilterIflist)
 {
-    global $config;
-
-    $log = !isset($config['syslog']['nologdefaultblock']) ? 'log' : '';
+    $settings_logging = legacy_filter_settings('logging');
+    $log = !empty($settings_logging['default_block']) ? 'log' : '';
     $bridge_interfaces = [];
     $ipfrules = '';
 

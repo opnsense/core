@@ -65,7 +65,7 @@ function validate_track6_idassoc6(&$pconfig, $if)
                     continue;
                 }
                 $assoc_pd_link = !empty($trackcfg['track6_assoc_pd']) ? $trackcfg['track6_assoc_pd'] : $default_id;
-                if ($assoc_pd_ref != $assoc_pd_ref) {
+                if ($assoc_pd_ref != $assoc_pd_link) {
                     continue;
                 }
                 /* the end of non-overlapping intervals needs to specify 0 ... n-1 */
@@ -252,7 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $pconfig[$fieldname] = isset($a_interfaces[$if][$fieldname]) ? $a_interfaces[$if][$fieldname] : null;
     }
     $pconfig['enable'] = isset($a_interfaces[$if]['enable']);
-    $pconfig['lock'] = isset($a_interfaces[$if]['lock']);
+    $pconfig['lock'] = !empty($a_interfaces[$if]['lock']);
     $pconfig['blockpriv'] = !empty($a_interfaces[$if]['blockpriv']);
     $pconfig['blockbogons'] = !empty($a_interfaces[$if]['blockbogons']);
     $pconfig['gateway_interface'] = isset($a_interfaces[$if]['gateway_interface']);

@@ -33,15 +33,11 @@ require_once 'system.inc';
 require_once 'interfaces.inc';
 require_once 'filter.inc';
 
-use OPNsense\System\StaticRoute;
-
 exit_on_bootup();
 
 /* when called with an argument we are in gateway switch mode */
 $monitor_hook = !empty($argv[1]);
 $monitor_gws = $argv[2] ?? '';
-
-StaticRoute::cleanup();
 
 /* routing is not allowed to restart monitors when extended hook is requested */
 system_routing_configure(true, null, !$monitor_hook);

@@ -48,6 +48,11 @@ class SnapshotsController extends ApiControllerBase
             $app = (new AppConfig());
             $target_dir = $app->application->configDir . "/snapshots";
             @mkdir($target_dir, 0750);
+            $parts = explode(':', $app->globals->owner);
+            @chown($target_dir, $parts[0]);
+            if (!empty($parts[1])) {
+                @chgrp($target_dir, $parts[1]);
+            }
             $payload = json_encode(['note' => substr($note, 0, $maxsize)]);
             File::file_put_contents($target_dir . '/' . $uuid . '.json', $payload, 0640, 0, $app->globals->owner);
         }

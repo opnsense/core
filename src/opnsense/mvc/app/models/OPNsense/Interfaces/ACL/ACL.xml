@@ -36,6 +36,13 @@
             <pattern>api/interfaces/vxlan_settings/*</pattern>
         </patterns>
     </page-interfaces-vxlan>
+    <page-interfaces-tap>
+        <name>Interfaces: TAP</name>
+        <patterns>
+            <pattern>ui/interfaces/tap</pattern>
+            <pattern>api/interfaces/tap_settings/*</pattern>
+        </patterns>
+    </page-interfaces-tap>
     <page-interfaces-loopback>
         <name>Interfaces: Loopback</name>
         <patterns>

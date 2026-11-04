@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2021-2022 Franco Fichtner <franco@opnsense.org>
+    Copyright (c) 2021-2026 Franco Fichtner <franco@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -43,10 +43,10 @@ if __name__ == '__main__':
     parser.add_argument('--values', help='comma-separated list of sysctl values to fetch')
     inputargs = parser.parse_args()
 
-    _cache_filename = "/tmp/sysctl_map.cache"
+    output = "Nothing to do."
+    result = {}
 
     if inputargs.values:
-        result = {}
         params = inputargs.values.split(',')
         sp = subprocess.run(['/sbin/sysctl', '-i'] + params, capture_output=True, text=True)
         for line in sp.stdout.split("\n"):
@@ -56,12 +56,6 @@ if __name__ == '__main__':
                 result[parts[0]] = parts[1].strip()
         output = ujson.dumps(result)
     elif inputargs.gather:
-        if os.path.exists(_cache_filename):
-            f = open(_cache_filename, "r")
-            print(f.read())
-            sys.exit(0)
-
-        result = {}
         sp = subprocess.run(['/sbin/sysctl', '-a'], capture_output=True, text=True)
         for line in sp.stdout.split("\n"):
             parts = line.strip().split(": ", 1)
@@ -88,11 +82,6 @@ if __name__ == '__main__':
             part = line.strip()
             if part in result:
                 result[part].update({'type': 'w'})
-
         output = ujson.dumps(result)
-
-        f = open(_cache_filename, "w")
-        f.write(output)
-        f.close()
 
     print (output)

@@ -38,12 +38,14 @@ $a_zoneinfo = get_zoneinfo();
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (!empty($_GET['getpic'])) {
-        $pic_type = explode(".", $config['system']['picture_filename'])[1];
-        if ($config['system']['picture']) {
-            $data = base64_decode($config['system']['picture']);
+        $data = !empty($config['system']['picture']) ? base64_decode($config['system']['picture'], true) : false;
+        $picture_info = $data !== false ? @getimagesizefromstring($data) : false;
+        $allowed_picture_types = [IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG];
+        if ($picture_info === false || !in_array($picture_info[2], $allowed_picture_types, true)) {
+            exit;
         }
         header("Content-Disposition: inline; filename=\"{$config['system']['picture_filename']}\"");
-        header("Content-Type: image/{$pic_type}");
+        header("Content-Type: " . image_type_to_mime_type($picture_info[2]));
         header("Content-Length: " . strlen($data));
         echo $data;
         exit;
@@ -90,17 +92,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         if ($_FILES['pictfile']['size'] > (10 * 1024 * 1024)) {
             $input_errors[] = gettext("The image file is too large. Please upload something smaller than 10MB.");
         } else {
-            $fd_pic = fopen($_FILES['pictfile']['tmp_name'], "rb");
-            $data = '';
-            while (($buf=fread($fd_pic, 8192)) != '') {
-                $data .= $buf;
-            }
-            fclose($fd_pic);
-            if (!$data) {
-                $input_errors[] = gettext("Could not read uploaded file.");
+            $picture_info = @getimagesize($_FILES['pictfile']['tmp_name']);
+            $allowed_picture_types = [IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG];
+            if ($picture_info === false || !in_array($picture_info[2], $allowed_picture_types, true)) {
+                $input_errors[] = gettext("Only GIF, JPEG, and PNG images are supported.");
             } else {
-                $pconfig['picture'] = base64_encode($data);
-                $pconfig['picture_filename'] = basename($_FILES['pictfile']['name']);
+                $fd_pic = fopen($_FILES['pictfile']['tmp_name'], "rb");
+                $data = '';
+                while (($buf=fread($fd_pic, 8192)) != '') {
+                    $data .= $buf;
+                }
+                fclose($fd_pic);
+                if (!$data) {
+                    $input_errors[] = gettext("Could not read uploaded file.");
+                } else {
+                    $pconfig['picture'] = base64_encode($data);
+                    $pconfig['picture_filename'] = basename($_FILES['pictfile']['name']);
+                }
             }
         }
     }

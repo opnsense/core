@@ -51,20 +51,24 @@ class Plugin
      */
     public function __construct()
     {
-        $this->systemDefaults = array("filter" => [], "forward" => [], "nat" => []);
+        $this->systemDefaults = ['filter' => [], 'forward' => [], 'nat' => []];
+
+        /* XXX attach to class */
+        $settings = (new Filter(true))->settings->getNodeContent();
+
         if (!empty(Config::getInstance()->object()->system->disablereplyto)) {
             $this->systemDefaults['filter']['disablereplyto'] = true;
         }
-        if (!empty(Config::getInstance()->object()->system->skip_rules_gw_down)) {
+        if (!empty($settings['filter']['skip_rules_gw_down'])) {
             $this->systemDefaults['filter']['skip_rules_gw_down'] = true;
         }
-        if (empty(Config::getInstance()->object()->system->disablenatreflection)) {
-            $this->systemDefaults['forward']['natreflection'] = "enable";
+        if (!empty($settings['nat']['reflection_dnat'])) {
+            $this->systemDefaults['forward']['natreflection'] = 'enable';
         }
-        if (!empty(Config::getInstance()->object()->system->enablebinatreflection)) {
-            $this->systemDefaults['nat']['natreflection'] = "enable";
+        if (!empty($settings['nat']['reflection_binat'])) {
+            $this->systemDefaults['nat']['natreflection'] = 'enable';
         }
-        if (!empty(Config::getInstance()->object()->system->enablenatreflectionhelper)) {
+        if (!empty($settings['nat']['reflection_snat'])) {
             $this->systemDefaults['forward']['enablenatreflectionhelper'] = true;
             $this->systemDefaults['nat']['enablenatreflectionhelper'] = true;
         }
@@ -133,6 +137,9 @@ class Plugin
     public function setGatewayGroups($groups)
     {
         if (is_array($groups)) {
+            /* XXX attach to class */
+            $settings = (new Filter(true))->settings->getNodeContent();
+
             foreach ($groups as $key => $gwgr) {
                 $routeto = [];
                 $proto = null;
@@ -161,7 +168,7 @@ class Plugin
                         $routetologic .= " {$gwgr[0]['poolopts']} ";
                     } elseif (count($routeto) > 1) {
                         $routetologic .= " round-robin ";
-                        if (!empty(Config::getInstance()->object()->system->lb_use_sticky)) {
+                        if (!empty($settings['filter']['lb_use_sticky'])) {
                             $routetologic .= " sticky-address ";
                         }
                     }

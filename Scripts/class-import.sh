@@ -35,6 +35,7 @@ for FILE in $(find src -name "*.php"); do
 	for IMPORT in $(grep -iE 'use [a-z0-9_\\]+\\[^;\\]+;' ${FILE} | awk '{ print ($3 == "as" ? $4 : $2) }' | tr -d ';'); do
 		CLASS=${IMPORT##*\\}
 		if [ "$(grep -c -e "instanceof ${CLASS}" \
+		    -e "implements ${CLASS}" \
 		    -e "new ${CLASS}" \
 		    -e "(${CLASS}" \
 		    -e "${CLASS}::" \

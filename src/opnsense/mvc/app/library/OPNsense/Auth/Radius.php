@@ -509,7 +509,7 @@ class Radius extends Base implements IAuthConnector
      * @param string $password user password
      * @return bool authentication status
      */
-    public function authenticate($username, $password)
+    protected function _authenticate($username, $password)
     {
         $this->lastAuthProperties = [];// reset auth properties
         $radius = radius_auth_open();

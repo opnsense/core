@@ -30,6 +30,7 @@ namespace OPNsense\Core\Api;
 
 use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\ACL;
+use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Auth\User;
 use OPNsense\Base\UserException;
@@ -229,10 +230,7 @@ class DashboardController extends ApiControllerBase
     public function productInfoFeedAction()
     {
         $result = ['items' => []];
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://forum.opnsense.org/index.php?board=11.0&action=.xml;limit=5;type=rss2');
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        $output = curl_exec($ch);
+        $output = (new Backend())->configdRun('firmware feed');
         $payload = @simplexml_load_string($output);
         if (empty($payload)) {
             return $result;
@@ -256,14 +254,17 @@ class DashboardController extends ApiControllerBase
         $result = ['result' => 'failed'];
         $config = Config::getInstance()->object();
         if (!empty($config->system->picture) && !empty($config->system->picture_filename)) {
-            $ext = pathinfo((string)$config->system->picture_filename, PATHINFO_EXTENSION);
-            if (empty($ext)) {
+            $picture = (string)$config->system->picture;
+            $data = base64_decode($picture, true);
+            $pictureInfo = $data !== false ? @getimagesizefromstring($data) : false;
+            $allowedPictureTypes = [IMAGETYPE_GIF, IMAGETYPE_JPEG, IMAGETYPE_PNG];
+            if ($pictureInfo === false || !in_array($pictureInfo[2], $allowedPictureTypes, true)) {
                 return $result;
             }
             return [
                 'result' => 'ok',
-                'mime' => 'image/' . $ext,
-                'picture' => (string)$config->system->picture,
+                'mime' => image_type_to_mime_type($pictureInfo[2]),
+                'picture' => $picture,
             ];
         }
 

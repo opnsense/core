@@ -240,6 +240,7 @@
                             let status = row.status;
                             if (!row.enabled) {
                                 status += ' (disabled)';
+                                connected = '';
                             }
 
                             return '<i class="fa fa-plug ' + connected + '" title="' + status + '" data-toggle="tooltip"></i>';

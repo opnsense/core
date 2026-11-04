@@ -143,7 +143,8 @@ function openssh_configure_do($verbose = false, $interface_map = null)
      */
     $mldsa44_file = "/conf/sshd/{$keys['mldsa44-ed25519']}";
     $mldsa44_pubfile = "{$mldsa44_file}.pub";
-    if (file_exists($mldsa44_pubfile) &&
+    if (
+        file_exists($mldsa44_pubfile) &&
         strpos(file_get_contents($mldsa44_pubfile), 'ssh-mldsa44-ed25519@openssh.com') === 0
     ) {
         @unlink($mldsa44_pubfile);

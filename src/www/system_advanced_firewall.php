@@ -47,16 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['checkaliasesurlcert'] = isset($config['system']['checkaliasesurlcert']);
     $pconfig['maximumtableentries'] = !empty($config['system']['maximumtableentries']) ? $config['system']['maximumtableentries'] : null ;
     $pconfig['disablereplyto'] = isset($config['system']['disablereplyto']);
-    $pconfig['bogonsinterval'] = !empty($config['system']['bogons']['interval']) ? $config['system']['bogons']['interval'] : null;
-    $pconfig['schedule_states'] = isset($config['system']['schedule_states']);
-    $pconfig['skip_rules_gw_down'] = isset($config['system']['skip_rules_gw_down']);
-    $pconfig['lb_use_sticky'] = isset($config['system']['lb_use_sticky']);
-    $pconfig['pf_share_forward'] = isset($config['system']['pf_share_forward']);
-    $pconfig['pf_disable_force_gw'] = isset($config['system']['pf_disable_force_gw']);
-    $pconfig['srctrack'] = !empty($config['system']['srctrack']) ? $config['system']['srctrack'] : null;
-    $pconfig['natreflection'] = empty($config['system']['disablenatreflection']);
-    $pconfig['enablebinatreflection'] = !empty($config['system']['enablebinatreflection']);
-    $pconfig['enablenatreflectionhelper'] = isset($config['system']['enablenatreflectionhelper']) ? $config['system']['enablenatreflectionhelper'] : null;
     $pconfig['bypassstaticroutes'] = isset($config['filter']['bypassstaticroutes']);
     $pconfig['syncookies'] = isset($config['system']['syncookies']) ? $config['system']['syncookies'] : null;
     $pconfig['syncookies_adaptstart'] = isset($config['system']['syncookies_adaptstart']) ? $config['system']['syncookies_adaptstart'] : null;
@@ -67,14 +57,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig['no_port0_block'] = isset($config['system']['no_port0_block']);
     $pconfig['no_sshlockout'] = isset($config['system']['no_sshlockout']);
     $pconfig['no_virusprot'] = isset($config['system']['no_virusprot']);
-
-
-    /* XXX wrong storage location */
-    $pconfig['logdefaultblock'] = empty($config['syslog']['nologdefaultblock']);
-    $pconfig['logdefaultpass'] = empty($config['syslog']['nologdefaultpass']);
-    $pconfig['logoutboundnat'] = !empty($config['syslog']['logoutboundnat']);
-    $pconfig['logbogons'] = empty($config['syslog']['nologbogons']);
-    $pconfig['logprivatenets'] = empty($config['syslog']['nologprivatenets']);
 } elseif ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pconfig = $_POST;
     $input_errors = array();
@@ -125,24 +107,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
     }
     if (count($input_errors) == 0) {
-        if (!empty($pconfig['pf_share_forward'])) {
-            $config['system']['pf_share_forward'] = true;
-        } elseif (isset($config['system']['pf_share_forward'])) {
-            unset($config['system']['pf_share_forward']);
-        }
-
-        if (!empty($pconfig['pf_disable_force_gw'])) {
-            $config['system']['pf_disable_force_gw'] = true;
-        } elseif (isset($config['system']['pf_disable_force_gw'])) {
-            unset($config['system']['pf_disable_force_gw']);
-        }
-
-        if (!empty($pconfig['lb_use_sticky'])) {
-            $config['system']['lb_use_sticky'] = true;
-        } elseif (isset($config['system']['lb_use_sticky'])) {
-            unset($config['system']['lb_use_sticky']);
-        }
-
         if (!empty($pconfig['noantilockout'])) {
             $config['system']['webgui']['noantilockout'] = true;
         } elseif (isset($config['system']['webgui']['noantilockout'])) {
@@ -173,12 +137,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['no_virusprot']);
         }
 
-        if (!empty($pconfig['srctrack'])) {
-            $config['system']['srctrack'] = $pconfig['srctrack'];
-        } elseif (isset($config['system']['srctrack'])) {
-            unset($config['system']['srctrack']);
-        }
-
         if (!empty($pconfig['disablefilter'])) {
             $config['system']['disablefilter'] = "enabled";
         } elseif (isset($config['system']['disablefilter'])) {
@@ -202,29 +160,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['system']['checkaliasesurlcert']);
         }
 
-        /* setting is inverted on the page */
-        if (empty($pconfig['natreflection'])) {
-            $config['system']['disablenatreflection'] = 'yes';
-        } elseif (isset($config['system']['disablenatreflection'])) {
-            unset($config['system']['disablenatreflection']);
-        }
-
-        if (!empty($pconfig['enablebinatreflection'])) {
-            $config['system']['enablebinatreflection'] = "yes";
-        } elseif (isset($config['system']['enablebinatreflection'])) {
-            unset($config['system']['enablebinatreflection']);
-        }
-
         if (!empty($pconfig['disablereplyto'])) {
             $config['system']['disablereplyto'] = $pconfig['disablereplyto'];
         } elseif (isset($config['system']['disablereplyto'])) {
             unset($config['system']['disablereplyto']);
-        }
-
-        if (!empty($pconfig['enablenatreflectionhelper'])) {
-            $config['system']['enablenatreflectionhelper'] = "yes";
-        } elseif (isset($config['system']['enablenatreflectionhelper']))  {
-            unset($config['system']['enablenatreflectionhelper']);
         }
 
         if (!empty($pconfig['state-policy'])) {
@@ -246,22 +185,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             unset($config['filter']['bypassstaticroutes']);
         }
 
-        if ($pconfig['bogonsinterval'] != $config['system']['bogons']['interval']) {
-            $config['system']['bogons']['interval'] = $pconfig['bogonsinterval'];
-        }
-
-        if (!empty($pconfig['schedule_states'])) {
-            $config['system']['schedule_states'] = true;
-        } elseif (isset($config['system']['schedule_states'])) {
-            unset($config['system']['schedule_states']);
-        }
-
-        if (!empty($pconfig['skip_rules_gw_down'])) {
-            $config['system']['skip_rules_gw_down'] = true;
-        } elseif (isset($config['system']['skip_rules_gw_down'])) {
-            unset($config['system']['skip_rules_gw_down']);
-        }
-
         if (!empty($pconfig['syncookies'])) {
             $config['system']['syncookies'] = $pconfig['syncookies'];
             $config['system']['syncookies_adaptstart'] = $pconfig['syncookies_adaptstart'];
@@ -274,16 +197,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
         $config['system']['keepcounters'] = !empty($pconfig['keepcounters']);
         $config['system']['pfdebug'] = !empty($pconfig['pfdebug']) ? $pconfig['pfdebug'] : '';
-
-        if (empty($config['syslog'])) {
-            $config['syslog'] = [];
-        }
-
-        $config['syslog']['nologdefaultblock'] = empty($pconfig['logdefaultblock']);
-        $config['syslog']['nologdefaultpass'] = empty($pconfig['logdefaultpass']);
-        $config['syslog']['nologbogons'] = empty($pconfig['logbogons']);
-        $config['syslog']['nologprivatenets'] = empty($pconfig['logprivatenets']);
-        $config['syslog']['logoutboundnat'] = !empty($pconfig['logoutboundnat']);
 
         if (write_config()) {
             configd_run('cron restart');
@@ -329,217 +242,6 @@ include("head.inc");
 ?>
       <section class="col-xs-12">
         <form method="post" name="iform" id="iform">
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
-                <td style="width:22%"><strong><?= gettext('Network Address Translation') ?></strong></td>
-                <td style="width:78%"></td>
-              </tr>
-              <tr>
-                <td><a id="help_for_natreflection" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection for destination NAT");?></td>
-                <td>
-                  <input name="natreflection" type="checkbox" id="natreflection" value="yes" <?= !empty($pconfig['natreflection']) ? 'checked="checked"' : '' ?>/>
-                  <div class="hidden" data-for="help_for_natreflection">
-                    <?=gettext("When enabled, this automatically creates additional NAT redirect rules for access to port forwards on your external IP addresses from within your internal networks.");?>
-                    <?=gettext("Individual rules may be configured to override this system setting on a per-rule basis.");?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_enablebinatreflection" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Reflection for 1:1");?></td>
-                <td>
-                  <input name="enablebinatreflection" type="checkbox" id="enablebinatreflection" value="yes" <?=!empty($pconfig['enablebinatreflection']) ? "checked=\"checked\"" : "";?>/>
-                  <div class="hidden" data-for="help_for_enablebinatreflection">
-                    <?=gettext("Enables the automatic creation of additional NAT redirect rules for access to 1:1 mappings of your external IP addresses from within your internal networks.");?>
-                    <?=gettext("Individual rules may be configured to override this system setting on a per-rule basis.");?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_enablenatreflectionhelper" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Automatic outbound NAT for Reflection");?></td>
-                <td>
-                  <input name="enablenatreflectionhelper" type="checkbox" id="enablenatreflectionhelper" value="yes" <?=!empty($pconfig['enablenatreflectionhelper']) ? "checked=\"checked\"" : "";?> />
-                  <div class="hidden" data-for="help_for_enablenatreflectionhelper">
-                    <?=gettext("Automatically create outbound NAT rules which assist inbound NAT rules that direct traffic back out to the same subnet it originated from.");?>
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </div>
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
-                <td style="width:22%"><strong><?= gettext('Bogon Networks') ?></strong></td>
-                <td style="width:78%"></td>
-              </tr>
-              <tr>
-                <td><a id="help_for_bogonsinterval" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Update Frequency");?></td>
-                <td>
-                  <select name="bogonsinterval" class="selectpicker" data-style="btn-default">
-                  <option value="monthly" <?=empty($pconfig['bogonsinterval']) || $pconfig['bogonsinterval'] == 'monthly' ? "selected=\"selected\"" : "";?>>
-                    <?=gettext("Monthly"); ?>
-                  </option>
-                  <option value="weekly" <?=$pconfig['bogonsinterval'] == 'weekly' ? "selected=\"selected\"" :"";?>>
-                    <?=gettext("Weekly"); ?>
-                  </option>
-                  <option value="daily" <?=$pconfig['bogonsinterval'] == 'daily' ? "selected=\"selected\"" : "";?>>
-                    <?=gettext("Daily"); ?>
-                  </option>
-                  </select>
-                  <div class="hidden" data-for="help_for_bogonsinterval">
-                    <?=gettext("The frequency of updating the lists of IP addresses that are reserved (but not RFC 1918) or not yet assigned by IANA.");?>
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </div>
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
-                <td style="width:22%"><strong><?= gettext('Gateway Monitoring') ?></strong></td>
-                <td style="width:78%"></td>
-              </tr>
-              <tr>
-                <td><a id="help_for_skip_rules_gw_down" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Skip rules");?> </td>
-                <td>
-                  <input name="skip_rules_gw_down" type="checkbox" id="skip_rules_gw_down" value="yes" <?=!empty($pconfig['skip_rules_gw_down']) ? "checked=\"checked\"" : "";?> />
-                  <?=gettext("Skip rules when gateway is down"); ?>
-                  <div class="hidden" data-for="help_for_skip_rules_gw_down">
-                    <?=gettext("By default, when a rule has a specific gateway set, and this gateway is down, ".
-                                        "rule is created and traffic is sent to default gateway. This option overrides that behavior ".
-                                        "and the rule is not created when gateway is down"); ?>
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </div>
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
-                <td style="width:22%"><strong><?= gettext('Multi-WAN') ?></strong></td>
-                <td style="width:78%"></td>
-              </tr>
-              <tr>
-                <td><a id="help_for_lb_use_sticky" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Sticky connections");?> </td>
-                <td>
-                  <input name="lb_use_sticky" type="checkbox" id="lb_use_sticky" value="yes" <?= !empty($pconfig['lb_use_sticky']) ? 'checked="checked"' : '';?>/>
-                  <?=gettext("Use sticky connections"); ?>
-                  <div class="hidden" data-for="help_for_lb_use_sticky">
-                    <?=gettext("Successive connections will be redirected to the servers " .
-                                        "in a round-robin manner with connections from the same " .
-                                        "source being sent to the same gateway. This 'sticky " .
-                                        "connection' will exist as long as there are states that " .
-                                        "refer to this connection. Once the states expire, so will " .
-                                        "the sticky connection. Further connections from that host " .
-                                        "will be redirected to the next gateway in the round-robin."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td></td>
-                <td>
-                  <input placeholder="<?=gettext("Source tracking timeout");?>" title="<?=gettext("Source tracking timeout");?>" name="srctrack" id="srctrack" type="text" value="<?= !empty($pconfig['srctrack']) ? $pconfig['srctrack'] : "";?>"/>
-                  <div class="hidden" data-for="help_for_lb_use_sticky">
-                    <?=gettext("Set the source tracking timeout for sticky connections in seconds. " .
-                                        "By default this is 0, so source tracking is removed as soon as the state expires. " .
-                                        "Setting this timeout higher will cause the source/destination relationship to persist for longer periods of time."); ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_pf_share_forward" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Shared forwarding');?> </td>
-                <td>
-                  <input name="pf_share_forward" type="checkbox" id="pf_share_forward" value="yes" <?= !empty($pconfig['pf_share_forward']) ? 'checked="checked"' : '' ?>/>
-                  <?=gettext('Use shared forwarding between packet filter, traffic shaper and captive portal'); ?>
-                  <div class="hidden" data-for="help_for_pf_share_forward">
-                    <?= gettext('Using policy routing in the packet filter rules causes packets to skip ' .
-                                'processing for the traffic shaper and captive portal tasks. ' .
-                                'Using this option enables the sharing of such forwarding decisions ' .
-                                'between all components to accommodate complex setups.') ?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_pf_disable_force_gw" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Disable force gateway');?> </td>
-                <td>
-                  <input name="pf_disable_force_gw" type="checkbox" id="pf_disable_force_gw" value="yes" <?= !empty($pconfig['pf_disable_force_gw']) ? 'checked="checked"' : '' ?>/>
-                  <?=gettext('Disable automatic rules which force local services to use the assigned interface gateway.'); ?>
-                  <div class="hidden" data-for="help_pf_disable_force_gw">
-                    <?= gettext('Outgoing packets from this firewall on an interface which has a gateway ' .
-                                'will normally use the specified gateway for that interface. ' .
-                                'When this option is set the route will be selected by the system routing table instead.') ?>
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </div>
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
-                <td style="width:22%"><strong><?= gettext('Schedules') ?></strong></td>
-                <td style="width:78%"></td>
-              </tr>
-              <tr>
-                <td><a id="help_for_schedule_states" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext("Schedule States"); ?></td>
-                <td>
-                  <input name="schedule_states" type="checkbox" value="yes" <?=!empty($pconfig['schedule_states']) ? "checked=\"checked\"" :"";?> />
-                  <div class="hidden" data-for="help_for_schedule_states">
-                    <?=gettext("By default schedules clear the states of existing connections when the expiration time has come. ".
-                                        "This option overrides that behavior by not clearing states for existing connections."); ?>
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </div>
-          <div class="content-box tab-content table-responsive __mb">
-            <table class="table table-striped opnsense_standard_table_form">
-              <tr>
-                <td style="width:22%"><strong><?= gettext('Logging') ?></strong></td>
-                <td style="width:78%"></td>
-              </tr>
-              <tr>
-                <td><a id="help_for_logdefaultblock" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Default block') ?></td>
-                <td>
-                  <input name="logdefaultblock" type="checkbox" value="yes" <?=!empty($pconfig['logdefaultblock']) ? "checked=\"checked\"" : ""; ?> />
-                  <?=gettext("Log packets matched from the default block rules");?>
-                  <div class="hidden" data-for="help_for_logdefaultblock">
-                    <?=gettext("Packets that are blocked by the implicit default block rule will not be logged if you uncheck this option. Per-rule logging options are still respected.");?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><a id="help_for_logdefaultpass" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> <?=gettext('Default pass') ?></td>
-                <td>
-                  <input name="logdefaultpass" type="checkbox" id="logdefaultpass" value="yes" <?=!empty($pconfig['logdefaultpass']) ? "checked=\"checked\"" :""; ?> />
-                  <?=gettext("Log packets matched from the default pass rules");?>
-                  <div class="hidden" data-for="help_for_logdefaultpass">
-                    <?=gettext("Packets that are allowed by the implicit default pass rule will be logged if you check this option. Per-rule logging options are still respected.");?>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Outbound NAT') ?></td>
-                <td>
-                  <input name="logoutboundnat" type="checkbox" id="logoutboundnat" value="yes" <?= !empty($pconfig['logoutboundnat']) ? 'checked="checked"' : '' ?> />
-                  <?= gettext('Log packets matched by automatic outbound NAT rules') ?>
-                </td>
-              </tr>
-              <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Bogon networks') ?></td>
-                <td>
-                  <input name="logbogons" type="checkbox" id="logbogons" value="yes" <?=!empty($pconfig['logbogons']) ? "checked=\"checked\"" : ""; ?> />
-                  <?=gettext("Log packets blocked by 'Block Bogon Networks' rules");?>
-                </td>
-              </tr>
-              <tr>
-                <td><i class="fa fa-info-circle text-muted"></i> <?=gettext('Private networks') ?></td>
-                <td>
-                  <input name="logprivatenets" type="checkbox" id="logprivatenets" value="yes" <?= !empty($pconfig['logprivatenets']) ? 'checked="checked"' : '' ?> />
-                  <?=gettext("Log packets blocked by 'Block Private Networks' rules");?>
-                </td>
-              </tr>
-            </table>
-          </div>
           <div class="content-box tab-content table-responsive __mb">
             <table class="table table-striped opnsense_standard_table_form">
               <tr>

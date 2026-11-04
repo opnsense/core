@@ -39,6 +39,7 @@
 /usr/local/etc/inc/plugins.inc.d/pf.inc
 /usr/local/etc/inc/plugins.inc.d/radvd.inc
 /usr/local/etc/inc/plugins.inc.d/suricata.inc
+/usr/local/etc/inc/plugins.inc.d/tap.inc
 /usr/local/etc/inc/plugins.inc.d/unbound.inc
 /usr/local/etc/inc/plugins.inc.d/vxlan.inc
 /usr/local/etc/inc/plugins.inc.d/webgui.inc
@@ -380,6 +381,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/NeighborSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/OverviewController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/TapSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VipSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VlanSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VxlanSettingsController.php
@@ -393,6 +395,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/NeighborController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/OverviewController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/TapController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VipController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VlanController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VxlanController.php
@@ -405,6 +408,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogLoopback.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogNeighbor.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogSettings.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogTap.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVip.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVxlan.xml
@@ -695,6 +699,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/CaptivePortal.php
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/CaptivePortal.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/FieldTypes/OriginField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL.php
@@ -801,6 +806,12 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_4.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_8.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_9.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_1.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_2.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_3.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_4.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_5.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/static_aliases/core.json
 /usr/local/opnsense/mvc/app/models/OPNsense/Hostdiscovery/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Hostdiscovery/Hostwatch.php
@@ -876,6 +887,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/NetworkInterface.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Settings.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Settings.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Tap.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Tap.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vip.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vip.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vlan.php
@@ -1054,6 +1067,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/neighbor.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/overview.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/settings.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Interface/tap.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vip.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vxlan.volt
@@ -1157,6 +1171,7 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/UpdateOnlyTextFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest/config.xml
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/CaptivePortal/FieldTypes/OriginFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Dnsmasq/FieldTypes/HostnameFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Kea/FieldTypes/KeaOptionDataFieldTest.php
 /usr/local/opnsense/mvc/tests/phpunit.xml
@@ -1249,6 +1264,7 @@
 /usr/local/opnsense/scripts/firmware/config.sh
 /usr/local/opnsense/scripts/firmware/connection.sh
 /usr/local/opnsense/scripts/firmware/details.sh
+/usr/local/opnsense/scripts/firmware/feed.sh
 /usr/local/opnsense/scripts/firmware/health.sh
 /usr/local/opnsense/scripts/firmware/hostnames.sh
 /usr/local/opnsense/scripts/firmware/install.sh

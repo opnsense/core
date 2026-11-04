@@ -28,24 +28,24 @@
 
 function filter_core_bootstrap($fw)
 {
-    global $config;
+    $settings_logging = legacy_filter_settings('logging');
+
     // set defaults
     $filter_rule_defaults = [];
     $filter_rule_defaults['pass'] = [
       "type" => "pass",
-      "log" => !isset($config['syslog']['nologdefaultpass']),
+      "log" => !empty($settings_logging['default_pass']),
       "disablereplyto" => 1 // don't generate "reply-to" tags on internal rules by default
     ];
     $filter_rule_defaults['block'] = [
       "type" => "block",
-      "log" => !isset($config['syslog']['nologdefaultblock']),
+      "log" => !empty($settings_logging['default_block']),
       "disablereplyto" => 1 // don't generate "reply-to" tags on internal rules by default
     ];
 
     // setup system filter rules
     filter_core_rules_system($fw, $filter_rule_defaults);
 }
-
 
 /**
  * Initialize firewall plugin system with interfaces and gateways
@@ -201,6 +201,8 @@ function filter_core_rules_system($fw, $defaults)
 {
     global $config;
 
+    $settings_filter = legacy_filter_settings('filter');
+    $settings_logging = legacy_filter_settings('logging');
     $ipv6_disabled = !is_ipv6_allowed();
 
     $dhcrelay6_interfaces = plugins_run('dhcrelay_interfaces', ['inet6']);
@@ -325,8 +327,8 @@ function filter_core_rules_system($fw, $defaults)
     }
 
     // block bogons and private nets
-    $bogontmpl = ['type' => 'block', 'log' => !isset($config['syslog']['nologbogons']), 'disablereplyto' => 1];
-    $privtmpl = ['type' => 'block', 'log' => !isset($config['syslog']['nologprivatenets']), 'disablereplyto' => 1];
+    $bogontmpl = ['type' => 'block', 'log' => !empty($settings_logging['bogons']), 'disablereplyto' => 1];
+    $privtmpl = ['type' => 'block', 'log' => !empty($settings_logging['private_networks']), 'disablereplyto' => 1];
     foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
         // only render disabled rules for actual interfaces that can have a bogon option set
         if (!empty($intfinfo['virtual'])) {
@@ -582,7 +584,7 @@ function filter_core_rules_system($fw, $defaults)
     // [out from this Firewall, using the selected gateway].
     // Our default setting has been to force traffic leaving a specific interface to use the associated gateway.
     // This behaviour can be disabled, so settings can be customized using manual firewall rules.
-    if (empty($config['system']['pf_disable_force_gw'])) {
+    if (empty($settings_filter['pf_disable_force_gw'])) {
         foreach ($fw->getInterfaceMapping() as $ifdescr => $ifcfg) {
             if (!isset($ifcfg['internal_dynamic']) && $ifcfg['if'] != 'lo0') {
                 $protos_found = [];
@@ -606,7 +608,7 @@ function filter_core_rules_system($fw, $defaults)
                                     'statetype' => 'keep',
                                     'allowopts' => true,
                                     'quick' => false,
-                                    '#ref' => 'system_advanced_firewall.php#pf_disable_force_gw',
+                                    '#ref' => 'ui/firewall/settings#settings-filter',
                                     'descr' => "let out anything from firewall host itself (force gw)"],
                                     $defaults['pass']
                                 );
