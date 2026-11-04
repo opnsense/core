@@ -2,7 +2,7 @@
     <mount>//OPNsense/Firewall/Filter</mount>
     <version>1.1.7</version>
     <migration_prefix>MFP</migration_prefix>
-    <description>Firewall rules (new)</description>
+    <description>Firewall configuration</description>
     <items>
         <settings>
             <filter>
