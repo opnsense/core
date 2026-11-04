@@ -1677,7 +1677,6 @@
 /usr/local/opnsense/service/tests/config/config.xml
 /usr/local/opnsense/service/tests/core.py
 /usr/local/opnsense/service/tests/template.py
-/usr/local/opnsense/service/tests/template_helpers.py
 /usr/local/opnsense/site-python/__init__.py
 /usr/local/opnsense/site-python/daemonize.LICENSE
 /usr/local/opnsense/site-python/daemonize.py
