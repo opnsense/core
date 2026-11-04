@@ -29,12 +29,10 @@
 namespace OPNsense\Auth\FieldTypes;
 
 use OPNsense\Base\FieldTypes\BaseField;
-use OPNsense\Base\Validators\CallbackValidator;
 
 class ApiKeyField extends BaseField
 {
     protected $internalIsContainer = false;
-    private $pendingDescr = null;
 
     /**
      * Always return blank
@@ -45,26 +43,44 @@ class ApiKeyField extends BaseField
         return "";
     }
 
-    private function isValidDescr(string $descr): bool
+    /**
+     * unpack api keys from internal string storage
+     * @return array
+     */
+    private function deserialize(): array
     {
-        return preg_match('/\A[^|\p{Cc}\x{FFFE}\x{FFFF}]{0,255}\z/u', $descr) === 1;
+        $result = [];
+        foreach (array_filter(explode("\n", (string)$this->internalValue)) as $line) {
+            $parts = explode("|", $line, 4);
+            if (count($parts) >= 2) {
+                $result[$parts[0]] = [
+                    'key' => $parts[0],
+                    'secret' => $parts[1],
+                    'created' => $parts[2] ?? '',
+                    'descr' => $parts[3] ?? ''
+                ];
+            }
+        }
+        return $result;
     }
 
     /**
-     * {@inheritdoc}
+     * pack api keys into internal string storage
+     * @param array $data
      */
-    public function getValidators()
+    private function serialize(array $data): void
     {
-        $validators = [];
-        if ($this->pendingDescr !== null) {
-            $validators[] = new CallbackValidator(['callback' => function () {
-                if (!$this->isValidDescr($this->pendingDescr)) {
-                    return [gettext('Description can be up to 255 characters and cannot contain "|" or control characters such as line breaks.')];
-                }
-                return [];
-            }]);
+        $lines = [];
+        foreach ($data as $key => $item) {
+            $lines[] = sprintf(
+                "%s|%s|%s|%s",
+                $key,
+                $item['secret'] ?? '',
+                $item['created'] ?? '',
+                $item['descr'] ?? ''
+            );
         }
-        return $validators;
+        $this->internalValue = implode("\n", $lines);
     }
 
     /**
@@ -88,22 +104,11 @@ class ApiKeyField extends BaseField
     /**
      * get api key + secret
      * @param string $key
-     * @return array with key and crypted secret
+     * @return array|null with key and crypted secret
      */
     public function get(string $key)
     {
-        foreach (array_filter(explode("\n", $this->internalValue)) as $line) {
-            $parts = explode("|", $line, 4);
-            if (count($parts) >= 2 && $parts[0] == $key) {
-                return [
-                    "key" => $parts[0],
-                    "secret" => $parts[1],
-                    "created" => $parts[2] ?? '',
-                    "descr" => $parts[3] ?? ''
-                ];
-            }
-        }
-        return null;
+        return $this->deserialize()[$key] ?? null;
     }
 
     /**
@@ -112,16 +117,13 @@ class ApiKeyField extends BaseField
     public function all()
     {
         $result = [];
-        foreach (array_filter(explode("\n", $this->internalValue)) as $line) {
-            $parts = explode("|", $line, 4);
-            if (count($parts) >= 2) {
-                $result[] = [
-                    'key' => $parts[0],
-                    'id' => base64_encode($parts[0]),
-                    'created' => $parts[2] ?? '',
-                    'descr' => $parts[3] ?? ''
-                ];
-            }
+        foreach ($this->deserialize() as $key => $item) {
+            $result[] = [
+                'key' => $key,
+                'id' => base64_encode($key),
+                'created' => $item['created'],
+                'descr' => $item['descr']
+            ];
         }
         return $result;
     }
@@ -133,74 +135,47 @@ class ApiKeyField extends BaseField
      */
     public function del(string $key)
     {
-        $found = false;
-        $tmp = '';
-        $searchkey = sprintf("%s|", $key);
-        foreach (array_filter(explode("\n", $this->internalValue)) as $line) {
-            if (strpos($line, $searchkey) === 0) {
-                $found = true;
-            } else {
-                $tmp .= sprintf("%s\n", $line);
-            }
+        $data = $this->deserialize();
+        if (isset($data[$key])) {
+            unset($data[$key]);
+            $this->serialize($data);
+            return true;
         }
-        $this->internalValue = $tmp;
-        return $found;
+        return false;
     }
 
     /**
-     * update api key description
+     * update api key properties
      * @param string $key
-     * @param string $descr
+     * @param array $item
      * @return bool key found and updated
      */
-    public function setDescr(string $key, string $descr = '')
+    public function set(string $key, array $item)
     {
-        $this->pendingDescr = $descr;
-        $this->setChanged();
-        if (!$this->isValidDescr($descr)) {
-            return false;
+        $data = $this->deserialize();
+        if (isset($data[$key])) {
+            $data[$key]['descr'] = (string)($item['descr'] ?? $data[$key]['descr']);
+            $this->serialize($data);
+            return true;
         }
-        $found = false;
-        $lines = [];
-        foreach (array_filter(explode("\n", $this->internalValue)) as $line) {
-            $parts = explode("|", $line, 4);
-            if (count($parts) >= 2 && $parts[0] === $key) {
-                $found = true;
-                $lines[] = sprintf("%s|%s|%s|%s", $parts[0], $parts[1], $parts[2] ?? '', $descr);
-            } else {
-                $lines[] = $line;
-            }
-        }
-        if ($found) {
-            $this->internalValue = implode("\n", $lines);
-        }
-        return $found;
+        return false;
     }
 
     /**
      * generate a new key and return it
-     * @param string $descr optional description
-     * @return array|null generated key+secret
+     * @return array generated key+secret
      */
-    public function add(string $descr = '')
+    public function add()
     {
-        $this->pendingDescr = $descr;
-        $this->setChanged();
-        if (!$this->isValidDescr($descr)) {
-            return null;
-        }
+        $data = $this->deserialize();
         $result = [
             'key' => base64_encode(random_bytes(60)),
             'secret' => base64_encode(random_bytes(60)),
             'created' => (string)time(),
-            'descr' => $descr
+            'descr' => ''
         ];
-        $new_items = array_merge(
-            array_filter(explode("\n", $this->internalValue)),
-            [sprintf("%s|%s|%s|%s", $result['key'], crypt($result['secret'], '$6$'), $result['created'], $result['descr'])]
-        );
-
-        $this->internalValue = implode("\n", $new_items);
+        $data[$result['key']] = array_merge($result, ['secret' => crypt($result['secret'], '$6$')]);
+        $this->serialize($data);
         return $result;
     }
 }

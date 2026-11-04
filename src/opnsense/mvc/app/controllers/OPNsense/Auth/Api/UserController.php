@@ -31,6 +31,7 @@ namespace OPNsense\Auth\Api;
 require_once 'base32/Base32.php';
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
+use OPNsense\Auth\ApiKey;
 use OPNsense\Auth\Group;
 use OPNsense\Core\ACL;
 use OPNsense\Core\Backend;
@@ -270,47 +271,35 @@ class UserController extends ApiMutableModelControllerBase
 
     public function getApiKeyAction($id = null)
     {
+        $mdl = new ApiKey();
         $key = $id !== null ? base64_decode($id, true) : false;
-        if ($key !== false) {
+        if (!empty($key)) {
             $user = $this->getModel()->getUserByApiKey($key);
             if ($user !== null) {
-                $item = $user->apikeys->get($key);
-                if (!empty($item)) {
-                    return [
-                        'apikey' => [
-                            'username' => (string)$user->name,
-                            'key' => $item['key'],
-                            'descr' => $item['descr']
-                        ]
-                    ];
-                }
+                $mdl->setNodes(array_merge($user->apikeys->get($key), ['username' => (string)$user->name]));
             }
         }
-        return [
-            'apikey' => [
-                'username' => '',
-                'key' => '',
-                'descr' => ''
-            ]
-        ];
+        return ['apikey' => $mdl->getNodes()];
     }
 
-    public function setApiKeyAction($id)
+    public function setApiKeyAction($id = null)
     {
         /* id is a base64 encoded string, we need to encode 'key' to prevent mangling data in the request */
-        $key = base64_decode($id, true);
-        if ($key !== false && $this->request->isPost()) {
+        $key = $id !== null ? base64_decode($id, true) : false;
+        if (!empty($key) && $this->request->isPost() && is_array($this->request->getPost('apikey'))) {
             Config::getInstance()->lock();
             $user = $this->getModel()->getUserByApiKey($key);
-            $descr = (string)($this->request->getPost('apikey')['descr'] ?? $this->request->getPost('descr', null, ''));
             if ($user !== null) {
-                $user->apikeys->setDescr($key, $descr);
-                $result = $this->validate($user->apikeys, 'apikey.descr');
-                if (empty($result['validations'])) {
-                    return $this->save(false, true);
+                $mdl = new ApiKey();
+                $mdl->setNodes($user->apikeys->get($key));
+                $mdl->setNodes($this->request->getPost('apikey'));
+                $validations = $mdl->validate(null, 'apikey.');
+                if (!empty($validations)) {
+                    Config::getInstance()->unlock();
+                    return ['result' => 'failed', 'validations' => $validations];
                 }
-                Config::getInstance()->unlock();
-                return $result;
+                $user->apikeys->set($key, $mdl->getNodes());
+                return $this->save(false, true);
             }
             Config::getInstance()->unlock();
             return ['result' => 'not found'];
@@ -342,13 +331,7 @@ class UserController extends ApiMutableModelControllerBase
             Config::getInstance()->lock();
             $user = $this->getModel()->getUserByName($username);
             if ($user != null) {
-                $descr = (string)($this->request->getPost('apikey')['descr'] ?? $this->request->getPost('descr', null, ''));
-                $tmp = $user->apikeys->add($descr);
-                $result = $this->validate($user->apikeys, 'apikey.descr');
-                if (!empty($result['validations'])) {
-                    Config::getInstance()->unlock();
-                    return $result;
-                }
+                $tmp = $user->apikeys->add();
                 if (!empty($tmp)) {
                     $this->save(false, true);
                     return array_merge(['result' => 'ok', 'hostname' => $this->getHostname()], $tmp);

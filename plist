@@ -617,6 +617,8 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/System/SystemStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/SystemStatusCode.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Trust/Store.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Auth/ApiKey.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Auth/ApiKey.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/ApiKeyField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/ExpiresField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/GidField.php
