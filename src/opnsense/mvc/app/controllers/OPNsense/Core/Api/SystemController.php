@@ -180,6 +180,7 @@ class SystemController extends ApiControllerBase
     public function dismissStatusAction()
     {
         if ($this->request->isPost() && $this->request->hasPost("subject")) {
+            $this->throwReadOnly();
             $acl = new ACL();
             $backend = new Backend();
             $subsystem = $this->request->getPost("subject");
@@ -187,10 +188,7 @@ class SystemController extends ApiControllerBase
             if (array_key_exists($subsystem, $system)) {
                 if (!empty($system[$subsystem]['location'])) {
                     $aclCheck = $system[$subsystem]['location'];
-                    if (
-                        $acl->isPageAccessible($this->getUserName(), $aclCheck) ||
-                        !$acl->hasPrivilege($this->getUserName(), 'user-config-readonly')
-                    ) {
+                    if ($acl->isPageAccessible($this->getUserName(), $aclCheck)) {
                         $status = trim($backend->configdRun(sprintf('system dismiss status %s', $subsystem)));
                         if ($status == "OK") {
                             return [
