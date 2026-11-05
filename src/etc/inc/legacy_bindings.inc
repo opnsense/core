@@ -66,11 +66,11 @@ function configdp_run($cmd, $params = array(), $detach = false)
  ************************************************************************************************/
 
 /**
- * compatibility helper for legacy callers since filter settings moved to the model
+ * helper for legacy callers since firewall settings moved to the model, which also provides failsafe defaults
  * @param $section the requested settings section
  * @return array the section of settings if found
  */
-function legacy_filter_settings($section)
+function legacy_firewall_settings($section)
 {
     static $settings = null;
 
