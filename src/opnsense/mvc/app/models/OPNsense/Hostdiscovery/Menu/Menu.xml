@@ -1,8 +1,9 @@
 <menu>
     <Interfaces>
-        <Neighbors>
-            <Hostdiscovery VisibleName="Automatic Discovery" cssClass="fa fa-network-wired fa-fw"  url="/ui/hostdiscovery/settings"/>
-            <LogFile order="100" VisibleName="Discovery log" url="/ui/diagnostics/log/core/hostwatch"/>
-        </Neighbors>
+        <Hostwatch order="220" cssClass="fa fa-binoculars fa-fw">
+            <Settings order="10" url="/ui/hostdiscovery/settings#settings"/>
+            <Hosts order="20" url="/ui/hostdiscovery/settings#hosts"/>
+            <LogFile order="30" VisibleName="Log File" url="/ui/diagnostics/log/core/hostwatch"/>
+        </Hostwatch>
     </Interfaces>
 </menu>
