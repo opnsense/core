@@ -109,18 +109,17 @@ function pf_firewall($fw)
 {
     global $config;
 
-    $settings_filter = legacy_filter_settings('filter');
-    $settings_logging = legacy_filter_settings('logging');
+    $settings = $fw->getSettings();
 
     $defaults = [];
-    $defaults['pass'] = ['type' => 'pass', 'log' => !empty($settings_logging['default_pass'])];
+    $defaults['pass'] = ['type' => 'pass', 'log' => !empty($settings['logging']['default_pass'])];
 
     /*
      *  pass traffic between statically routed subnets and the subnet on the
      *  interface in question to avoid problems with complicated routing
      *  topologies
      */
-    if (!empty($settings_filter['bypass_static_routes']) && count(config_read_array('staticroutes', 'route', false))) {
+    if (!empty($settings['filter']['bypass_static_routes']) && count(config_read_array('staticroutes', 'route', false))) {
         $ifdetails = $fw->getIfconfigDetails();
         $GatewaysList = $fw->getGateways()->gatewaysIndexedByName(false, true);
 

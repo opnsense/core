@@ -93,25 +93,22 @@ function dnsmasq_xmlrpc_sync()
     return $result;
 }
 
-/**
- *  Register automatic firewall rules
- */
 function dnsmasq_firewall(\OPNsense\Firewall\Plugin $fw)
 {
-    $settings_logging = legacy_filter_settings('logging');
     $mdl = new \OPNsense\Dnsmasq\Dnsmasq();
     if (!$mdl->enable->isEmpty() && !$mdl->dhcp->default_fw_rules->isEmpty()) {
         $dhcp_ifs = $mdl->getDhcpInterfaces();
         if (empty($dhcp_ifs)) {
             return;
         }
+        $settings = $fw->getSettings();
         foreach ($fw->getInterfaceMapping() as $intf => $intfinfo) {
             if (in_array($intf, $dhcp_ifs)) {
-                /* ipv4 */
+                /* IPv4 */
                 $baserule = [
                     'interface' => $intf,
                     'protocol' => 'udp',
-                    'log' => !empty($settings_logging['default_pass']),
+                    'log' => !empty($settings['logging']['default_pass']),
                     '#ref' => "ui/dnsmasq/settings#general",
                     'descr' => 'allow access to DHCP server',
                 ];
@@ -130,7 +127,7 @@ function dnsmasq_firewall(\OPNsense\Firewall\Plugin $fw)
                     ['direction' => 'out', 'from_port' => 67, 'from' => '(self)', 'to_port' => 68],
                     $baserule
                 );
-                /* ipv6 */
+                /* IPv6 */
                 $baserule['ipprotocol'] = 'inet6';
                 $fw->registerFilterRule(
                     1,
