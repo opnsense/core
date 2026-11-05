@@ -1206,15 +1206,11 @@ function system_login_configure($verbose = false)
 function reset_factory_defaults($sync = true)
 {
     mwexecf('/bin/rm -fr /conf/* /var/log/* /root/.history');
-    mwexecf('/usr/local/sbin/opnsense-beep stop');
 
     /* as we go through a special case directly shut down */
-    $shutdown_cmd = '/sbin/shutdown -op now';
+    $shutdown_cmd = '/usr/local/etc/rc.halt';
     if ($sync) {
         mwexecf($shutdown_cmd);
-        while (true) {
-            sleep(1);
-        }
     } else {
         mwexecfb($shutdown_cmd);
     }
