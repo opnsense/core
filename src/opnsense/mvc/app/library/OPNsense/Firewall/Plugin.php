@@ -34,15 +34,17 @@ namespace OPNsense\Firewall;
  */
 class Plugin
 {
-    private $gateways = null;
     private $anchors = [];
     private $filterRules = [];
-    private $natRules = [];
-    private $interfaceMapping = [];
     private $gatewayMapping = [];
+    private $gateways = null;
+    private $ifconfigDetails = [];
+    private $interfaceMapping = [];
+    private $model = null;
+    private $natRules = [];
+    private $settings = [];
     private $systemDefaults = [];
     private $tables = [];
-    private $ifconfigDetails = [];
 
     /**
      * init firewall plugin component
@@ -51,22 +53,22 @@ class Plugin
     {
         $this->systemDefaults = ['filter' => [], 'forward' => [], 'nat' => []];
 
-        /* XXX attach to class */
-        $settings = (new Filter(true))->settings->getNodeContent();
+        $this->model = new Filter(); /* XXX keeping the model would help when settings are being modified */
+        $this->settings = $this->model->settings->getNodeContent();
 
-        if (!empty($settings['filter']['disable_reply_to'])) {
+        if (!empty($this->settings['filter']['disable_reply_to'])) {
             $this->systemDefaults['filter']['disablereplyto'] = true;
         }
-        if (!empty($settings['filter']['skip_rules_gw_down'])) {
+        if (!empty($this->settings['filter']['skip_rules_gw_down'])) {
             $this->systemDefaults['filter']['skip_rules_gw_down'] = true;
         }
-        if (!empty($settings['nat']['reflection_dnat'])) {
+        if (!empty($this->settings['nat']['reflection_dnat'])) {
             $this->systemDefaults['forward']['natreflection'] = 'enable';
         }
-        if (!empty($settings['nat']['reflection_binat'])) {
+        if (!empty($this->settings['nat']['reflection_binat'])) {
             $this->systemDefaults['nat']['natreflection'] = 'enable';
         }
-        if (!empty($settings['nat']['reflection_snat'])) {
+        if (!empty($this->settings['nat']['reflection_snat'])) {
             $this->systemDefaults['forward']['enablenatreflectionhelper'] = true;
             $this->systemDefaults['nat']['enablenatreflectionhelper'] = true;
         }
@@ -121,6 +123,14 @@ class Plugin
     }
 
     /**
+     * @return firewall settings content from \OPNsense\Firewall\Filter
+     */
+    public function getSettings(): array
+    {
+        return $this->settings;
+    }
+
+    /**
      * @return \OPNsense\Routing\Gateways gateway object
      */
     public function getGateways(): ?\OPNsense\Routing\Gateways
@@ -134,44 +144,43 @@ class Plugin
      */
     public function setGatewayGroups($groups)
     {
-        if (is_array($groups)) {
-            /* XXX attach to class */
-            $settings = (new Filter(true))->settings->getNodeContent();
+        if (!is_array($groups)) {
+            return;
+        }
 
-            foreach ($groups as $key => $gwgr) {
-                $routeto = [];
-                $proto = null;
-                /* All route-to tags must match, either {(if1 ip1), (if2 ip2)} or {if1 if2} */
-                $mode = null;
-                foreach ($gwgr as $gw) {
-                    if ($proto !== null && $proto != $gw['ipprotocol']) {
-                        /* protocols must match */
-                        continue;
-                    }
-                    $proto = $gw['ipprotocol'];
-                    $gwweight = empty($gw['weight']) ? 1 : $gw['weight'];
-                    if ((Util::isIpAddress($gw['gwip']) && !empty($gw['int'])) && ($mode === null || $mode === 'gw')) {
-                        $routeto[] = rtrim(str_repeat(" ( {$gw['int']} {$gw['gwip']} ) ,", $gwweight), ',');
-                        $mode = 'gw'; /* gateway [ip] mode */
-                    } elseif ($mode === null || $mode === 'if') {
-                        $routeto[] = rtrim(str_repeat(" {$gw['int']} ,", $gwweight), ',');
-                        $mode = 'if'; /* interface [ip] mode */
+        foreach ($groups as $key => $gwgr) {
+            $routeto = [];
+            $proto = null;
+            /* All route-to tags must match, either {(if1 ip1), (if2 ip2)} or {if1 if2} */
+            $mode = null;
+            foreach ($gwgr as $gw) {
+                if ($proto !== null && $proto != $gw['ipprotocol']) {
+                    /* protocols must match */
+                    continue;
+                }
+                $proto = $gw['ipprotocol'];
+                $gwweight = empty($gw['weight']) ? 1 : $gw['weight'];
+                if ((Util::isIpAddress($gw['gwip']) && !empty($gw['int'])) && ($mode === null || $mode === 'gw')) {
+                    $routeto[] = rtrim(str_repeat(" ( {$gw['int']} {$gw['gwip']} ) ,", $gwweight), ',');
+                    $mode = 'gw'; /* gateway [ip] mode */
+                } elseif ($mode === null || $mode === 'if') {
+                    $routeto[] = rtrim(str_repeat(" {$gw['int']} ,", $gwweight), ',');
+                    $mode = 'if'; /* interface [ip] mode */
+                }
+            }
+            if (count($routeto) > 0) {
+                $routetologic = "route-to {" . implode(' , ', $routeto) . "}";
+                if (!empty($gwgr[0]['poolopts'])) {
+                    // Since Gateways->getGroups() returns detail items, we have no other choice than
+                    // to copy top level attributes into the details if they matter (poolopts)
+                    $routetologic .= " {$gwgr[0]['poolopts']} ";
+                } elseif (count($routeto) > 1) {
+                    $routetologic .= " round-robin ";
+                    if (!empty($this->settings['filter']['lb_use_sticky'])) {
+                        $routetologic .= " sticky-address ";
                     }
                 }
-                if (count($routeto) > 0) {
-                    $routetologic = "route-to {" . implode(' , ', $routeto) . "}";
-                    if (!empty($gwgr[0]['poolopts'])) {
-                        // Since Gateways->getGroups() returns detail items, we have no other choice than
-                        // to copy top level attributes into the details if they matter (poolopts)
-                        $routetologic .= " {$gwgr[0]['poolopts']} ";
-                    } elseif (count($routeto) > 1) {
-                        $routetologic .= " round-robin ";
-                        if (!empty($settings['filter']['lb_use_sticky'])) {
-                            $routetologic .= " sticky-address ";
-                        }
-                    }
-                    $this->gatewayMapping[$key] = ["logic" => $routetologic, "proto" => $proto, "type" => "group"];
-                }
+                $this->gatewayMapping[$key] = ["logic" => $routetologic, "proto" => $proto, "type" => "group"];
             }
         }
     }
