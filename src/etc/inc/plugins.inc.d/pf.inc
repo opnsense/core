@@ -58,7 +58,7 @@ function pf_cron()
     $settings_alias = legacy_firewall_settings('alias');
     $jobs = [];
 
-    if ((new OPNsense\Firewall\Filter(true))->hasSchedule()) {
+    if (legacy_firewall_model()->hasSchedule()) {
         $jobs[]['autocron'] = ['/usr/bin/logger "reload filter for configured schedules" ; /usr/local/etc/rc.filter_configure', '1,16,31,46'];
     }
 
@@ -164,7 +164,7 @@ function pf_firewall($fw)
         }
     }
 
-    $mdlFilter = new OPNsense\Firewall\Filter();
+    $mdlFilter = $fw->getModel();
 
     foreach ($mdlFilter->rules->rule->sortedBy(['sequence']) as $key => $rule) {
         $content = $rule->serialize();

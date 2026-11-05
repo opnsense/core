@@ -556,7 +556,7 @@ if ($config['system']['webgui']['protocol'] == 'https') {
 }
 
 if (console_prompt_for_yn('Restore web GUI access defaults?', 'n')) {
-    $filter = new OPNsense\Firewall\Filter();
+    $filter = legacy_firewall_model();
     if (!$filter->settings->filter->disable_anti_lockout->isEmpty()) {
         $filter->settings->filter->disable_anti_lockout = '0';
         $filter->serializeToConfig(false, true);

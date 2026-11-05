@@ -53,7 +53,8 @@ class Plugin
     {
         $this->systemDefaults = ['filter' => [], 'forward' => [], 'nat' => []];
 
-        $this->model = new Filter(); /* XXX keeping the model would help when settings are being modified */
+        $this->model = new Filter();
+        /* cache the settings alongside the model to avoid some extra overhead */
         $this->settings = $this->model->settings->getNodeContent();
 
         if (!empty($this->settings['filter']['disable_reply_to'])) {
@@ -120,6 +121,14 @@ class Plugin
                 }
             }
         }
+    }
+
+    /**
+     * @return firewall settings content from \OPNsense\Firewall\Filter
+     */
+    public function getModel(): ?\OPNsense\Firewall\Filter
+    {
+        return $this->model;
     }
 
     /**
