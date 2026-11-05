@@ -569,6 +569,7 @@
     </page-openvpn-instances>
     <page-xmlrpclibrary>
         <name>XMLRPC Library</name>
+        <authority>limited</authority>
         <patterns>
             <pattern>xmlrpc.php*</pattern>
         </patterns>

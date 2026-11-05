@@ -64,6 +64,14 @@
         </grid_view>
     </field>
     <field>
+        <id>user.authority_fmt</id>
+        <label>Authority</label>
+        <type>ignore</type>
+        <grid_view>
+            <formatter>authority</formatter>
+        </grid_view>
+    </field>
+    <field>
         <id>user.email</id>
         <label>E-mail</label>
         <type>text</type>
