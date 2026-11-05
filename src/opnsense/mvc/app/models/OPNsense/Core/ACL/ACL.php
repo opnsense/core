@@ -1,7 +1,7 @@
 <?php
 
 /**
- *    Copyright (C) 2017 Deciso B.V.
+ *    Copyright (C) 2017-2026 Deciso B.V.
  *
  *    All rights reserved.
  *
@@ -37,9 +37,14 @@ namespace OPNsense\Core\ACL;
 class ACL
 {
     /**
-     * @param $xmlNode
+     * @param ?SimpleXMLElement $xmlNode
      */
     private $aclXML = null;
+
+    /**
+     * @param array $authority_opts authority valid choices, defaults to administrative when not offered
+     */
+    private static $authority_opts = ['limited', 'administrative', 'unrestricted'];
 
     /**
      * Construct new ACL for an application
@@ -76,18 +81,23 @@ class ACL
      */
     public function get()
     {
-        $result = array();
+        $result = [];
         if ($this->aclXML) {
             foreach ($this->aclXML as $aclID => $ACLnode) {
                 // an acl should minimal have a name, without one skip processing.
                 if (isset($ACLnode->name)) {
-                    $aclPayload = array();
+                    $aclPayload = [
+                        'authority' => 'administrative'
+                    ];
                     $aclPayload['name'] = (string)$ACLnode->name;
                     if (isset($ACLnode->patterns->pattern)) {
-                        $aclPayload['match'] = array();
+                        $aclPayload['match'] = [];
                         foreach ($ACLnode->patterns->pattern as $pattern) {
                             $aclPayload['match'][] = (string)$pattern;
                         }
+                    }
+                    if (isset($ACLnode->authority) && in_array((string)$ACLnode->authority, self::$authority_opts)) {
+                        $aclPayload['authority'] = (string)$ACLnode->authority;
                     }
                     $result[$aclID] = $aclPayload;
                 }

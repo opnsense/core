@@ -114,11 +114,23 @@ class UserController extends ApiMutableModelControllerBase
     {
         $result = $this->searchBase('user');
         if (!empty($result['rows'])) {
-            /* XXX: this is a bit of a gimmick, for performance reasons we might decide to drop this at some point  */
+            $user_authorities = (new ACL())->getUserAuthorities();
+            /* required for translations */
+            $auth_transl = [
+                'limited' => gettext('limited'),
+                'administrative' => gettext('administrative'),
+                'unrestricted' => gettext('unrestricted')
+            ];
             foreach ($result['rows'] as &$row) {
                 $row['is_admin'] = in_array('page-all', $this->getModel()->getUserPrivs($row['name'])) ? '1' : '0';
                 /* shells usually start with a /, prevent default text and translations triggering the warning */
                 $row['shell_warning'] = strpos($row['shell'], '/') === 0 && empty($row['is_admin']) ? '1' : '0';
+                /* authorities could differ per source network */
+                $tmp = [];
+                foreach ($user_authorities[$row['name']] ?? [] as $net => $auth) {
+                    $tmp[] = sprintf('[%s] %s', $net, $auth_transl[$auth] ?? $auth);
+                }
+                $row['authority_fmt'] = implode(',', $tmp);
             }
         }
         return $result;

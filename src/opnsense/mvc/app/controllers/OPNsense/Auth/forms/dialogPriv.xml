@@ -13,6 +13,11 @@
         </grid_view>
     </field>
     <field>
+        <id>priv.authority</id>
+        <label>Authority</label>
+        <type>ignore</type>
+    </field>
+    <field>
         <id>priv.match</id>
         <label>Match</label>
         <type>ignore</type>

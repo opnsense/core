@@ -4,6 +4,7 @@
     </user-config-readonly>
     <page-diagnostics-backup-restore>
         <name>System: Configuration: Backups</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>diag_backup.php*</pattern>
         </patterns>
@@ -27,6 +28,7 @@
     </page-system-login-logout>
     <page-all>
         <name>All pages</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>*</pattern>
         </patterns>
@@ -329,6 +331,7 @@
     </page-interfaces-wireless-edit>
     <page-wizard-system>
         <name>System: Configuration: Wizard</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>ui/core/initial_setup</pattern>
             <pattern>api/core/initial_setup/*</pattern>
@@ -529,6 +532,7 @@
     </page-system-hasync>
     <page-system-license>
         <name>Lobby: License</name>
+        <authority>limited</authority>
         <patterns>
             <pattern>ui/core/license</pattern>
         </patterns>
@@ -542,6 +546,7 @@
     </page-system-staticroutes>
     <page-system-usermanager>
         <name>System: Access: Management</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>ui/auth/user</pattern>
             <pattern>api/auth/user/*</pattern>
@@ -553,6 +558,7 @@
     </page-system-usermanager>
     <page-system-usermanager-passwordmg>
         <name>Lobby: Password</name>
+        <authority>limited</authority>
         <patterns>
             <pattern>ui/user_portal</pattern>
             <pattern>api/user_portal/user/*</pattern>
@@ -582,6 +588,7 @@
     </page-openvpn-instances>
     <page-xmlrpclibrary>
         <name>XMLRPC Library</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>xmlrpc.php*</pattern>
         </patterns>
