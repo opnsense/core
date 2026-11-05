@@ -36,6 +36,7 @@ use OPNsense\Dnsmasq\Dnsmasq;
 use OPNsense\Firewall\Filter;
 use OPNsense\Firewall\Util;
 use OPNsense\Routing\Gateways;
+use OPNsense\Unbound\Unbound;
 
 /**
  * wrapper model class to update various configuration parts in a controlled way for the setup wizard
@@ -134,12 +135,14 @@ class InitialSetup extends BaseModel
             $this->interfaces->lan->configure_dhcp = '0';
             $this->interfaces->lan->disable = '1';
         }
-        $settings = (new Filter())->settings;
-        if (!$settings->filter->pf_disable_force_gw->isEmpty() || !$settings->filter->disable_reply_to->isEmpty()) {
+
+        $mdl = new Filter();
+        if (!$mdl->settings->filter->pf_disable_force_gw->isEmpty() || !$mdl->settings->filter->disable_reply_to->isEmpty()) {
             $this->deployment_type->multiwan = '0';
         } else {
             $this->deployment_type->multiwan = '1';
         }
+
         foreach ((new Tunables())->item->iterateItems() as $node) {
             if ($node->tunable == 'net.isr.maxthreads' && $node->value->isEqual('-1')) {
                 $this->deployment_type->maxthreads = '1';
@@ -426,21 +429,21 @@ class InitialSetup extends BaseModel
     private function flush_deployment_type()
     {
         $target = Config::getInstance()->object();
-        $model = new Filter();
+        $mdl = new Filter();
 
         if ($this->deployment_type->multiwan->isEmpty()) {
-            $model->settings->filter->pf_disable_force_gw = '1';
-            $model->settings->filter->disable_reply_to = '1';
+            $mdl->settings->filter->pf_disable_force_gw = '1';
+            $mdl->settings->filter->disable_reply_to = '1';
         } else {
-            $model->settings->filter->pf_disable_force_gw = '0';
-            $model->settings->filter->disable_reply_to = '0';
+            $mdl->settings->filter->pf_disable_force_gw = '0';
+            $mdl->settings->filter->disable_reply_to = '0';
         }
-        $model->serializeToConfig(false, true);
+        $mdl->serializeToConfig(false, true);
 
         if (!$this->deployment_type->dhcp_dns_registration->isEmpty()) {
             /* only configure when set (do not touch otherwise) */
             $target->dnsmasq->port = '53053';
-            $mdl = new \OPNsense\Unbound\Unbound();
+            $mdl = new Unbound();
             foreach ($mdl->dots->dot->iterateItems() as $uuid => $dot) {
                 if ($dot->server->isEqual('127.0.0.1')) {
                     /* likely existing local domain forward, remove */
