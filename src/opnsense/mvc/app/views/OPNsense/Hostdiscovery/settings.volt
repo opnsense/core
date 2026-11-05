@@ -28,12 +28,12 @@
     $( document ).ready(function() {
         const hostnames = new Map();
 
-        function updateHostnames(grid) {
+        function renderHostnames(grid) {
             grid.getTable().getRows().forEach(function(row) {
                 const address = row.getData().ip_address;
-                const hostname = hostnames.get(address);
-                if (hostnames.has(address) && row.getData().hostname !== hostname) {
-                    row.getCell('hostname').setValue(hostname);
+                if (hostnames.has(address)) {
+                    // setValue() reruns the formatter; null represents a lookup in progress.
+                    row.getCell('hostname').setValue(hostnames.get(address));
                 }
             });
         }
@@ -42,12 +42,17 @@
             const addresses = [];
             grid.getTable().getRows().forEach(function(row) {
                 const address = row.getData().ip_address;
-                if (address && !hostnames.has(address)) {
-                    hostnames.set(address, null);
-                    addresses.push(address);
+                if (address) {
+                    if (!hostnames.has(address)) {
+                        hostnames.set(address, null);
+                        addresses.push(address);
+                        // null explicitly renders the in-progress spinner.
+                        row.getCell('hostname').setValue(null);
+                    } else {
+                        row.getCell('hostname').setValue(hostnames.get(address));
+                    }
                 }
             });
-            updateHostnames(grid);
 
             for (let i = 0; i < addresses.length; i += 50) {
                 const batch = addresses.slice(i, i + 50);
@@ -61,13 +66,13 @@
                             const hostname = data && data[address];
                             hostnames.set(address, hostname && hostname !== address ? hostname : '');
                         });
-                        updateHostnames(grid);
+                        renderHostnames(grid);
                     },
                     error: function() {
                         batch.forEach(function(address) {
                             hostnames.set(address, '');
                         });
-                        updateHostnames(grid);
+                        renderHostnames(grid);
                     }
                 });
             }
