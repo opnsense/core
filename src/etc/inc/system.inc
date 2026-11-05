@@ -65,7 +65,7 @@ function system_powerd_configure($verbose = false)
 
 function system_sysctl_defaults()
 {
-    $settings_filter = legacy_filter_settings('filter');
+    $settings_filter = legacy_firewall_settings('filter');
 
     /* notes:
      *  - always set 'default' so the backend can use it and the user can see it

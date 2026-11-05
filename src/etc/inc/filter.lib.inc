@@ -91,7 +91,7 @@ function filter_core_get_antilockout()
 {
     global $config;
 
-    $settings_filter = legacy_filter_settings('filter');
+    $settings_filter = legacy_firewall_settings('filter');
     if (!empty($settings_filter['no_antilockout'])) {
         return [];
     }

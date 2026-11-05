@@ -29,7 +29,7 @@
 
 function pf_services()
 {
-    $settings_filter = legacy_filter_settings('filter');
+    $settings_filter = legacy_firewall_settings('filter');
     $services = [];
 
     if (empty($settings_filter['disabled'])) {
@@ -55,13 +55,14 @@ function pf_configure()
 
 function pf_cron()
 {
+    $settings_alias = legacy_firewall_settings('alias');
     $jobs = [];
 
     if ((new OPNsense\Firewall\Filter(true))->hasSchedule()) {
         $jobs[]['autocron'] = ['/usr/bin/logger "reload filter for configured schedules" ; /usr/local/etc/rc.filter_configure', '1,16,31,46'];
     }
 
-    switch (legacy_filter_settings('alias')['bogons_interval']) {
+    switch ($settings_alias['bogons_interval']) {
         case 'daily':
             $jobs[]['autocron'] = ['/usr/local/sbin/configctl -d filter schedule bogons', '1', '3', '*', '*', '*'];
             break;

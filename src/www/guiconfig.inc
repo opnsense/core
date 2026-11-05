@@ -224,7 +224,7 @@ function print_info_box($msg)
 
 function print_firewall_banner()
 {
-    $settings_filter = legacy_filter_settings('filter');
+    $settings_filter = legacy_firewall_settings('filter');
 
     if (!empty($settings_filter['disabled'])) {
         print_alert_box(sprintf(
