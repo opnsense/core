@@ -262,7 +262,7 @@ class StaticRoute
                     $result[$net] = [];
                 }
                 $gatewayip = $gateway['gateway'] ?? '';
-                if (Util::isLinkLocal($gateway['gateway'])) {
+                if (Util::isLinkLocal($gatewayip)) {
                     $gatewayip .= '%' . $gateway['if'];
                 }
                 $result[$net][] = [
