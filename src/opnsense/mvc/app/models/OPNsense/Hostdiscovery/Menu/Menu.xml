@@ -2,7 +2,7 @@
     <Interfaces>
         <Neighbors>
             <Settings order="10" url="/ui/hostdiscovery/settings#settings"/>
-            <DiscoveredHosts VisibleName="Discovered Hosts" order="20" url="/ui/hostdiscovery/settings#hosts"/>
+            <Hosts VisibleName="Discovered Hosts" order="20" url="/ui/hostdiscovery/settings#hosts"/>
             <LogFile order="100" VisibleName="Discovery log" url="/ui/diagnostics/log/core/hostwatch"/>
         </Neighbors>
     </Interfaces>
