@@ -1,7 +1,6 @@
 #!/bin/sh
 
-/usr/local/etc/rc.syshook stop
-
-/sbin/shutdown -or now
+echo "Performing system reboot"
+/sbin/shutdown -r now
 
 while :; do sleep 1; done

@@ -1,8 +1,6 @@
 #!/bin/sh
 
-# shutdown syshook / plugin scripts
-/usr/local/etc/rc.syshook stop
-
-/sbin/shutdown -op now
+echo "Performing system poweroff"
+/sbin/shutdown -p now
 
 while :; do sleep 1; done

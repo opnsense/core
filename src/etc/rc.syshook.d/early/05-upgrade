@@ -5,6 +5,6 @@
 for STAGE in K B P; do
 	if opnsense-update -${STAGE}; then
 		echo "Rebooting now."
-		reboot
+		/usr/local/etc/rc.reboot
 	fi
 done
