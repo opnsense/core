@@ -130,11 +130,11 @@
         });
 
         let grid_apikey = $("#grid-apikey").UIBootgrid({
-            search:'/api/auth/user/search_api_key/',
-            get:'/api/auth/user/get_api_key/',
-            set:'/api/auth/user/set_api_key/',
-            del:'/api/auth/user/del_api_key/',
-            datakey: 'id',
+            search:'/api/auth/user_api_key/search/',
+            get:'/api/auth/user_api_key/get/',
+            set:'/api/auth/user_api_key/set/',
+            del:'/api/auth/user_api_key/del/',
+            datakey: 'uuid',
             commands: {
                 copy: {
                     classname: undefined

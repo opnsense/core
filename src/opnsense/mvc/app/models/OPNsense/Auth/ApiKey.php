@@ -28,6 +28,7 @@
 
 namespace OPNsense\Auth;
 
+use OPNsense\Auth\User;
 use OPNsense\Base\BaseModel;
 
 /**
@@ -36,4 +37,45 @@ use OPNsense\Base\BaseModel;
  */
 class ApiKey extends BaseModel
 {
+    /**
+     * Merge configuration data in "in memory" model on construction
+     */
+    public function __construct($lazyload = false)
+    {
+        parent::__construct($lazyload);
+        foreach ((new User())->user->iterateItems() as $user) {
+            foreach ($user->apikeys->all() as $item) {
+                $node = $this->apikey->add($item['id']);
+                $node->username = $user->name->getValue();
+                $node->key = $item['key'];
+                $node->created = $item['created'];
+                $node->descr = $item['descr'];
+                $node->descr->markUnchanged();
+            }
+        }
+    }
+
+    public function serializeToConfig($validateFullModel = false, $disable_validation = false)
+    {
+        $usermdl = new User();
+        $allids = [];
+        foreach ($this->apikey->iterateItems() as $uuid => $apikey) {
+            $allids[] = $uuid;
+            if ($apikey->descr->isFieldChanged()) {
+                $key = base64_decode($uuid); /* id = base64 decoded key */
+                $usermdl->getUserByApiKey($key)?->apikeys?->setDescription($key, $apikey->descr->getValue());
+            }
+        }
+
+        foreach ($usermdl->user->iterateItems() as $user) {
+            foreach ($user->apikeys->all() as $item) {
+                if (!in_array($item['id'], $allids)) {
+                    $user->apikeys->del($item['key']);
+                }
+            }
+        }
+
+        /* actions are reflected into User model */
+        return $usermdl->serializeToConfig(false, true);
+    }
 }

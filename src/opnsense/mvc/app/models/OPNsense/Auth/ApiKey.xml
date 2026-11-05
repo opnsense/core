@@ -3,8 +3,11 @@
     <version>1.0.0</version>
     <description>User API keys</description>
     <items>
-        <username type="TextField"/>
-        <key type="TextField"/>
-        <descr type="DescriptionField"/>
+        <apikey type="ArrayField">
+            <username type="TextField"/>
+            <key type="TextField"/>
+            <created type="TextField"/>
+            <descr type="DescriptionField"/>
+        </apikey>
     </items>
 </model>

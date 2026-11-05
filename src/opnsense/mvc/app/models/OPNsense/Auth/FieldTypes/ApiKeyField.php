@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2024 Deciso B.V.
+ * Copyright (C) 2024-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -145,16 +145,16 @@ class ApiKeyField extends BaseField
     }
 
     /**
-     * update api key properties
+     * update api key description
      * @param string $key
-     * @param array $item
+     * @param string $value
      * @return bool key found and updated
      */
-    public function set(string $key, array $item)
+    public function setDescription(string $key, string $value)
     {
         $data = $this->deserialize();
         if (isset($data[$key])) {
-            $data[$key]['descr'] = (string)($item['descr'] ?? $data[$key]['descr']);
+            $data[$key]['descr'] = $value;
             $this->serialize($data);
             return true;
         }

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2024 Deciso B.V.
+ * Copyright (C) 2024-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -31,7 +31,6 @@ namespace OPNsense\Auth\Api;
 require_once 'base32/Base32.php';
 use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
-use OPNsense\Auth\ApiKey;
 use OPNsense\Auth\Group;
 use OPNsense\Core\ACL;
 use OPNsense\Core\Backend;
@@ -264,49 +263,17 @@ class UserController extends ApiMutableModelControllerBase
         return $result;
     }
 
+    /**
+     * XXX: remove for 27.01 (moved to model)
+     */
     public function searchApiKeyAction()
     {
         return $this->searchRecordsetBase($this->getModel()->getApiKeys());
     }
 
-    public function getApiKeyAction($id = null)
-    {
-        $mdl = new ApiKey();
-        $key = $id !== null ? base64_decode($id, true) : false;
-        if (!empty($key)) {
-            $user = $this->getModel()->getUserByApiKey($key);
-            if ($user !== null) {
-                $mdl->setNodes(array_merge($user->apikeys->get($key), ['username' => (string)$user->name]));
-            }
-        }
-        return ['apikey' => $mdl->getNodes()];
-    }
-
-    public function setApiKeyAction($id = null)
-    {
-        /* id is a base64 encoded string, we need to encode 'key' to prevent mangling data in the request */
-        $key = $id !== null ? base64_decode($id, true) : false;
-        if (!empty($key) && $this->request->isPost() && is_array($this->request->getPost('apikey'))) {
-            Config::getInstance()->lock();
-            $user = $this->getModel()->getUserByApiKey($key);
-            if ($user !== null) {
-                $mdl = new ApiKey();
-                $mdl->setNodes($user->apikeys->get($key));
-                $mdl->setNodes($this->request->getPost('apikey'));
-                $validations = $mdl->validate(null, 'apikey.');
-                if (!empty($validations)) {
-                    Config::getInstance()->unlock();
-                    return ['result' => 'failed', 'validations' => $validations];
-                }
-                $user->apikeys->set($key, $mdl->getNodes());
-                return $this->save(false, true);
-            }
-            Config::getInstance()->unlock();
-            return ['result' => 'not found'];
-        }
-        return ["result" => "failed"];
-    }
-
+    /**
+     * XXX: remove for 27.01 (moved to model)
+     */
     public function delApiKeyAction($id)
     {
         /* id is a base64 encoded string, we need to encode 'key' to prevent mangling data in the request */
