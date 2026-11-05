@@ -116,15 +116,13 @@ class DiagnosticsController extends ApiControllerBase
     public function testBlocklistAction()
     {
         if ($this->request->isPost() && $this->request->hasPost('domain')) {
-            $src = $this->request->getPost('src') ?: '127.0.0.1';
+            $src = $this->request->getPost('src');
             $backend = new Backend();
             $result = json_decode($backend->configdpRun('unbound domain test', [
                 $this->request->getPost('domain'), $src
             ]), true);
 
             $mdl = new \OPNsense\Unbound\Unbound();
-            // $policies = $mdl->dnsbl->blocklist->getNodeContent(); 
-            // *** Remove this because it was only used for the removed legacy feature ***
             $types = $mdl->dnsbl->blocklist->getTemplateNode()->type->getNodeData();
 
             $domains = [];
@@ -140,7 +138,6 @@ class DiagnosticsController extends ApiControllerBase
                     }
                     $response['policy']['bl'] = $types[$response['policy']['bl']]['value'] ?? $response['policy']['bl'];
                 }
-                // *** Removed old legacy parity measure that was for an older version of the database that used uuid ***
                 if (isset($response['policy']) && is_array($response['policy'])) {
                     $response = array_merge($response, $response['policy']);
                     unset($response['policy']);
