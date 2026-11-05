@@ -65,7 +65,6 @@
                 'domain': domains.join(","),
                 'src': $("#blocklisttester\\.source").val(),
             }, function(data, status) {
-                
                 if (status == "success" &&  data.length > 0) {
                     $("#grid-domains").bootgrid('replace', data);
                 }
