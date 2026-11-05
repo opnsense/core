@@ -614,50 +614,8 @@ function system_interface_route($gw, $routes)
     mwexecf('/sbin/route add -%s %s -interface %s', [$family, $gateway, $device]);
 }
 
-function system_default_route($gw, $routes)
-{
-    $interface = $gw['interface'];
-    $gateway = $gw['gateway'];
-    $device = $gw['if'];
-
-    if (is_ipaddrv4($gateway)) {
-        $family = 'inet';
-    } elseif (is_ipaddrv6($gateway)) {
-        $family = 'inet6';
-    } else {
-        log_msg("ROUTING: not a valid default gateway address: '{$gateway}'", LOG_ERR);
-        return;
-    }
-
-    if (is_linklocal($gateway)) {
-        /* XXX always inet6 but why not do this elsewhere */
-        $gateway .= "%{$device}";
-    }
-
-    foreach ($routes as $route) {
-        /* find out if the default route matches what we want to set */
-        if ($route['proto'] != ($family == 'inet6' ? 'ipv6' : 'ipv4')) {
-            continue;
-        } elseif ($route['destination'] != 'default') {
-            continue;
-        } elseif ($route['gateway'] != $gateway) {
-            continue;
-        }
-
-        log_msg("ROUTING: keeping {$family} default route to {$gateway}");
-        return;
-    }
-
-    log_msg("ROUTING: setting {$family} default route to {$gateway}");
-
-    mwexecfm('/sbin/route delete -%s default', [$family]);
-    mwexecf('/sbin/route add -%s default %s', [$family, $gateway]);
-}
-
 function system_routing_configure($verbose = false, $interface_map = null, $monitor = true, $family = null)
 {
-    global $config;
-
     if (!plugins_argument_map($interface_map)) {
         return;
     }
