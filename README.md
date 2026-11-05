@@ -33,8 +33,10 @@ Contribute
 ==========
 
 You can contribute to the project in many ways, e.g. testing
-functionality, sending in bug reports or creating pull requests
-directly via GitHub.  Any help is always very welcome!
+functionality, optimize translation, creating plugins, sending in
+bug reports or creating pull requests directly via GitHub.
+
+Any help is always very welcome!
 
 You can learn more about contributing on [CONTRIBUTING.md](./CONTRIBUTING.md).
 
