@@ -896,7 +896,7 @@
                     .text(`
                         {{ lang._('No %s rules have been defined. ') | format('${ifLabel}') }}
                         {{ lang._('All incoming connections on this interface will be blocked until you add a pass rule. ') }}
-                        {{ lang._('Exceptions for automatically generated or floating rules may apply.') }}
+                        {{ lang._('Exceptions for automatically generated, group or floating rules may apply.') }}
                     `));
             }
         });
