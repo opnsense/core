@@ -47,12 +47,11 @@ def arg_parse_is_json_file(filename):
 if __name__ == '__main__':
     """ Command line blocklist test mode
     """
-
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '--src',
-        help='client source address. Default 127.0.0.1',
-        default='127.0.0.1'
+         help='client source address. Default 127.0.0.1',
+         default='127.0.0.1'
     )
     parser.add_argument('--domain', help='domain name to query', required=True)
     parser.add_argument(
