@@ -413,7 +413,7 @@ class ACL
         }
         foreach ($result as &$network) {
             foreach ($network as &$item) {
-                foreach (['limited', 'administrative', 'unrestricted'] as $auth) {
+                foreach (['unrestricted', 'administrative', 'limited'] as $auth) {
                     if (in_array($auth, $item)) {
                         $item = $auth;
                         break;
