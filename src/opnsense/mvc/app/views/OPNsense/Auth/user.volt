@@ -110,6 +110,9 @@
                             );
                         }
                         return container.html();
+                    },
+                    authority: function (column, row) {
+                        return row[column.id].split(',').join('<br/>');
                     }
                 }
             }
