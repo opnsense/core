@@ -203,6 +203,7 @@ class UIBootgrid {
             clone: 'Clone',
             all: 'All',
             search: 'Search',
+            clearSearch: 'Clear search',
             removeWarning: 'Remove selected item(s)?',
             noresultsfound: 'No results found!',
             refresh: 'Refresh',
@@ -1169,6 +1170,10 @@ class UIBootgrid {
         }
     }
 
+    _updateSearchClear() {
+        $(`#${this.id}-search-clear`).toggle($(`#${this.id}-search-field`).val() !== "");
+    }
+
     _showMaximized() {
         if (this.$maximizeModal) {
             this.$maximizeModal.modal('hide');
@@ -1252,6 +1257,12 @@ class UIBootgrid {
         // search functionality
         $(`#${this.id}-search-field`).val(this.searchPhrase).on("keyup", (e) => {
             this._search($(`#${this.id}-search-field`).val(), e);
+        }).on("input", () => this._updateSearchClear());
+        this._updateSearchClear();
+
+        $(`#${this.id}-search-clear`).on("click", () => {
+            $(`#${this.id}-search-field`).val("").trigger("keyup").focus();
+            this._updateSearchClear();
         });
 
         // Refresh
@@ -1450,6 +1461,7 @@ class UIBootgrid {
                             <div class="input-group">
                                 <span class="icon fa-solid input-group-addon fa-magnifying-glass"></span>
                                 <input id="${this.id}-search-field" type="text" class="search-field form-control" placeholder="${this._translate('search')}">
+                                <span id="${this.id}-search-clear" class="search-clear fa-solid fa-xmark" title="${this._translate('clearSearch')}"></span>
                             </div>
                         </div>
                         <div id="${this.id}-actions-group" class="actions btn-group">
@@ -1764,6 +1776,7 @@ class UIBootgrid {
 
         this.searchPhrase = "";
         $(`#${this.id}-search-field`).val("");
+        this._updateSearchClear();
         this.table.setPage(page).then(() => {
             this.table.scrollToRow(id).then(() => {
                 const $el = $(this.table.getRow(id).getElement());

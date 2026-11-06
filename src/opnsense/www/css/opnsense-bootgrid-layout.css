@@ -123,3 +123,21 @@
     overscroll-behavior: contain;
     box-sizing: border-box;
 }
+
+.bootgrid-header .actionBar .search .search-field {
+    padding-right: 28px;
+}
+
+.bootgrid-header .actionBar .search .search-clear {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    z-index: 3;
+    cursor: pointer;
+    opacity: 0.6;
+}
+
+.bootgrid-header .actionBar .search .search-clear:hover {
+    opacity: 1;
+}
