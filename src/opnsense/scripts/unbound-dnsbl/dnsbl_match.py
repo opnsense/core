@@ -26,6 +26,7 @@
 """
 import argparse
 import json
+import copy
 
 from lib import Query, ModuleContext
 from lib.dnsbl import DNSBL
@@ -69,21 +70,22 @@ if __name__ == '__main__':
 
     inputargs = parser.parse_args()
     if inputargs.src == "":
-            inputargs.src = parser.get_default("src")
+        inputargs.src = parser.get_default("src")
+    if inputargs.type == "":
+        inputargs.type = parser.get_default("type")
     domains = [
         domain
         for domain in "".join(inputargs.domain.split()).split(",")
         if domain != ""
     ]
 
+    ctx = ModuleContext(None)
+    dnsbl = DNSBL(ctx, dnsbl_path=inputargs.dnsbl_path, size_file='/dev/null')
+    ctx.set_config(dnsbl.get_config())
+
     results = {}
     for domain in domains:
 
-        # create an empty global context
-        ctx = ModuleContext(None)
-
-        dnsbl = DNSBL(ctx, dnsbl_path=inputargs.dnsbl_path, size_file='/dev/null')
-        ctx.set_config(dnsbl.get_config())
         match = dnsbl.policy_match(
             Query(
                 client=inputargs.src,
@@ -93,12 +95,13 @@ if __name__ == '__main__':
             )
         )
         if match:
-            src_nets = match.get('source_nets', [])
+            result = copy.copy(match)
+            src_nets = result.get('source_nets', [])
             for i in range(len(src_nets)):
                 src_nets[i] = str(src_nets[i])
-            match['source_nets'] = src_nets
-            del match['pass_regex']
-            results[domain] = {'status': 'OK','action': 'Block','policy': match}
+            result['source_nets'] = src_nets
+            del result['pass_regex']
+            results[domain] = {'status': 'OK','action': 'Block','policy': result}
         else:
             results[domain] = {'status': 'OK','action': 'Pass'}
 
