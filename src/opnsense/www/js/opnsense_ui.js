@@ -69,6 +69,9 @@ function saveFormToEndpoint(url, formid, callback_ok, disable_dialog, callback_f
         if ( status === "success" ) {
             // update field validation
             handleFormValidation(formid, data['validations']);
+            if (data['validations'] === undefined) {
+                reloadSavedValueClear(formid);
+            }
 
             // if there are validation issues, update our screen and show a dialog.
             if (data['validations'] !== undefined) {
@@ -146,6 +149,8 @@ function mapDataToFormUI(data_get_map, server_params) {
                         // related form found, load data
                         setFormData($(this).attr('id'), data);
                         collected_data[$(this).attr('id')] = data;
+                        // kept for reloadSavedValueClear()
+                        $(this).data('get-request', [data_url, server_params]);
                     }
                 });
             }
@@ -414,6 +419,44 @@ function addMultiSelectClearUI() {
             $('div[id="textarea_' + id + '"]').hide();
         });
     });
+}
+
+/**
+ * clear a saved write-only value on save or keep it (fields with allowclear), see setSavedValueClear()
+ */
+function addSavedValueClearUI() {
+    $('[id^="clear-saved_"]').click(function (e) {
+        e.preventDefault();
+        const input = $('[id="' + $(this).attr('id').replace(/^clear-saved_/, '') + '"]');
+        const clear = input.data('clear-saved') !== true;
+        // swap the saved value's placeholder for the form's own while marked for clearing
+        if (clear) {
+            input.val('');
+            input.data('saved-placeholder', input.attr('placeholder'));
+            input.attr('placeholder', input.data('form-placeholder') ?? null);
+        } else {
+            input.attr('placeholder', input.data('saved-placeholder'));
+        }
+        setSavedValueClear(input, true, clear);
+    });
+}
+
+/**
+ * reload write-only values with allowclear after a save, only their rows so the rest of the form stays as is
+ * @param formid form id, loaded by mapDataToFormUI()
+ */
+function reloadSavedValueClear(formid) {
+    const links = $('#' + formid).find('[id^="clear-saved_"]');
+    const request = $('#' + formid).data('get-request');
+    if (links.length && request !== undefined) {
+        ajaxGet(request[0], request[1], function (data, status) {
+            if (status === 'success') {
+                links.each(function () {
+                    setFormData($.escapeSelector($(this).attr('id').replace(/^clear-saved_/, 'row_')), data);
+                });
+            }
+        });
+    }
 }
 
 

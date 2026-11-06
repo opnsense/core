@@ -40,8 +40,8 @@
             <Required>Y</Required>
         </verifypeer>
         <username type="TextField"/>
-        <password type="TextField">
-            <!-- XXX -->
+        <password type="UpdateOnlyTextField">
+            <AllowClear>Y</AllowClear>
         </password>
         <syncitems type="JsonKeyValueStoreField">
             <Multiple>Y</Multiple>
