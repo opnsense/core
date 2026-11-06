@@ -28,6 +28,7 @@
     </page-system-login-logout>
     <page-all>
         <name>All pages</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>*</pattern>
         </patterns>
