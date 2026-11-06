@@ -44,6 +44,15 @@ class UpdateOnlyTextField extends TextField
     }
 
     /**
+     * fixed stars when a value is saved, so forms can show one is set
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->internalValue != "" ? "********" : "";
+    }
+
+    /**
      * update field (if not empty)
      * @param string $value
      */

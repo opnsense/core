@@ -256,13 +256,30 @@ function setFormData(parent,data) {
                         // regular input type
                         targetNode.val(htmlDecode(node[keypart]));
                         if (node['%' + keypart] !== undefined) {
+                            if (targetNode.data('form-placeholder') === undefined) {
+                                targetNode.data('form-placeholder', targetNode.attr('placeholder') ?? null);
+                            }
                             targetNode.attr('placeholder', htmlDecode(node['%' + keypart]));
+                        } else {
+                            restorePlaceholder(targetNode);
                         }
                     }
                     targetNode.change();
                 }
             }
         });
+    });
+}
+
+/**
+ * put back the placeholder an input had before setFormData() set one from the data
+ * @param inputs input elements
+ */
+function restorePlaceholder(inputs) {
+    inputs.each(function () {
+        if ($(this).data('form-placeholder') !== undefined) {
+            $(this).attr('placeholder', $(this).data('form-placeholder'));
+        }
     });
 }
 

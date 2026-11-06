@@ -39,6 +39,7 @@ interface IBackupProvider
     /**
      * get required (user interface) fields for backup connector, ideally these should be stored in a model
      * but for backwards compatibility reasons we delegate the decision what to use to the backup class.
+     * A password field may add a placeholder, e.g. UpdateOnlyTextField::getDescription() of a write-only field.
      * @return array configuration fields, types and description
      */
     public function getConfigurationFields();

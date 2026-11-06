@@ -32,6 +32,7 @@ namespace tests\OPNsense\Base\FieldTypes;
 require_once 'Field_Framework_TestCase.php';
 // @CodingStandardsIgnoreEnd
 
+use OPNsense\Base\FieldTypes\ContainerField;
 use OPNsense\Base\FieldTypes\UpdateOnlyTextField;
 
 class UpdateOnlyTextFieldTest extends Field_Framework_TestCase
@@ -60,5 +61,20 @@ class UpdateOnlyTextFieldTest extends Field_Framework_TestCase
         $this->assertEmpty($this->validate($field));
         $field->setValue('nottheregex');
         $this->assertContains('Regex', $this->validate($field));
+    }
+
+    /**
+     * a saved value is never returned by get, only announced as stars
+     */
+    public function testDescriptionShowsStarsOnlyWhenSet()
+    {
+        $container = new ContainerField();
+        $field = new UpdateOnlyTextField();
+        $container->addChildNode('password', $field);
+        $this->assertEquals('', $field->getDescription());
+        $this->assertEquals(['password' => ''], $container->getNodes());
+        $field->setValue('secret');
+        $this->assertEquals('********', $field->getDescription());
+        $this->assertEquals(['password' => '', '%password' => '********'], $container->getNodes());
     }
 }
