@@ -195,6 +195,13 @@ class SystemController extends ApiControllerBase
         return json_decode((new Backend())->configdRun('system diag disk'), true) ?? [];
     }
 
+    public function zfsStatusAction()
+    {
+        $result = json_decode((new Backend())->configdRun('zfs status'), true);
+
+        return is_array($result) ? $result : [];
+    }
+
     public function systemMbufAction()
     {
         return json_decode((new Backend())->configdRun('system show mbuf'), true);
