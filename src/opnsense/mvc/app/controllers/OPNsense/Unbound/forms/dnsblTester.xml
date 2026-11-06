@@ -1,6 +1,6 @@
 <form>
     <field>
-        <id>blocklisttester.domains</id>
+        <id>dnsbltester.settings.domains</id>
         <label>Domain(s)</label>
         <type>select_multiple</type>
         <style>tokenize</style>
@@ -11,7 +11,7 @@
         </grid_view>
     </field>
     <field>
-        <id>blocklisttester.source</id>
+        <id>dnsbltester.settings.source</id>
         <label>Source</label>
         <type>text</type>
         <help>
@@ -20,5 +20,13 @@
         <grid_view>
             <visible>false</visible>
         </grid_view>
+    </field>
+    <field>
+        <id>dnsbltester.settings.domaintype</id>
+        <label>Type</label>
+        <type>dropdown</type>
+        <help>
+            Select the type of the domain(s) you are testing (default: A).
+        </help>
     </field>
 </form>

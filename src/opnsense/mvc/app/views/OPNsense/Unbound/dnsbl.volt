@@ -27,6 +27,12 @@
 
 <script>
    $(document).ready(function() {
+        mapDataToFormUI({
+            'frm_BlocklistTester': '/api/unbound/diagnostics/get_blocklist_tester'
+        }).done(function() {
+            $('.selectpicker').selectpicker('refresh');
+        });
+
         $("#{{formGridDnsbl['table_id']}}").UIBootgrid({
             search:'/api/unbound/settings/searchDnsbl/',
             get:'/api/unbound/settings/getDnsbl/',
@@ -58,12 +64,13 @@
         })
 
         $("#tester_exec").click(function(){
-            const domains = $("#blocklisttester\\.domains").val() || [];
+            const domains = $("#dnsbltester\\.settings\\.domains").val() || [];
 
             $("#tester_exec_spinner").show();
             ajaxCall('/api/unbound/diagnostics/test_blocklist', {
                 'domain': domains.join(","),
-                'src': $("#blocklisttester\\.source").val(),
+                'src': $("#dnsbltester\\.settings\\.source").val(),
+                'type': $("#dnsbltester\\.settings\\.domaintype").val(),
             }, function(data, status) {
                 if (status == "success" &&  data.length > 0) {
                     $("#grid-domains").bootgrid('replace', data);
