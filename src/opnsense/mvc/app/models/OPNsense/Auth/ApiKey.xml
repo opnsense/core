@@ -7,7 +7,10 @@
             <username type="TextField"/>
             <key type="TextField"/>
             <created type="TextField"/>
-            <descr type="DescriptionField"/>
+            <descr type="DescriptionField">
+                <!-- exclude field separator as extra condition -->
+                <Mask>/^[^|]+$/</Mask>
+            </descr>
         </apikey>
     </items>
 </model>

@@ -264,7 +264,7 @@ class UserController extends ApiMutableModelControllerBase
     }
 
     /**
-     * XXX: remove for 27.01 (moved to model)
+     * XXX: remove for 27.01 (moved to separate model and controller)
      */
     public function searchApiKeyAction()
     {
@@ -272,7 +272,7 @@ class UserController extends ApiMutableModelControllerBase
     }
 
     /**
-     * XXX: remove for 27.01 (moved to model)
+     * XXX: remove for 27.01 (moved to separate model and controller)
      */
     public function delApiKeyAction($id)
     {
