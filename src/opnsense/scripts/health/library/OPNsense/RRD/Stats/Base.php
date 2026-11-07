@@ -80,7 +80,7 @@ abstract class Base
                     'openvpn_socket' => $data['sockFilename']
                 ];
             }
-            self::$metadata['ntp_statsgraph'] = empty((string)Config::getInstance()->object()->ntp->statsgraph);
+            self::$metadata['ntp_statsgraph'] = (string)(new \OPNsense\Ntpd\Ntpd(true))->statsgraph == '1';
         }
     }
 

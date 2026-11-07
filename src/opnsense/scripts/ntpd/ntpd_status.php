@@ -31,7 +31,6 @@
 
 require_once('script/load_phalcon.php');
 
-use OPNsense\Core\Config;
 use OPNsense\Core\Shell;
 
 $ntpq_servers = [];
@@ -158,18 +157,29 @@ foreach (Shell::shell_safe('/usr/local/sbin/ntpq -c clockvar 2> /dev/null', [], 
     $result['gps'] = array_replace($result['gps'], $gps);
 }
 
-$cfg = Config::getInstance()->object();
-
-if (!empty($cfg->ntpd->gps->type) && (string)$cfg->ntpd->gps->type == 'SureGPS' && isset($result['gps']['ok'])) {
-    // GSV message is only enabled by init commands in services_ntpd_gps.php for SureGPS board
+if ((string)(new \OPNsense\Ntpd\Ntpd(true))->gps->type == 'suregps' && isset($result['gps']['ok'])) {
+    // GSV message is only enabled by the GPS init commands for SureGPS board
     $gpsport = fopen("/dev/gps0", "r+");
-    while ($gpsport) {
+    /* give up after one GSV period of the preset (every 5th fix) */
+    $deadline = time() + 6;
+    while ($gpsport && time() < $deadline) {
+        $read = [$gpsport];
+        $write = $except = null;
+        if (!stream_select($read, $write, $except, 1)) {
+            continue;
+        }
         $buffer = fgets($gpsport);
+        if ($buffer === false) {
+            break;
+        }
         if (substr($buffer, 0, 6) == '$GPGSV') {
             $gpgsv = explode(',', $buffer);
             $result['gps']['gps_satview'] = $gpgsv[3];
             break;
         }
+    }
+    if ($gpsport) {
+        fclose($gpsport);
     }
 }
 

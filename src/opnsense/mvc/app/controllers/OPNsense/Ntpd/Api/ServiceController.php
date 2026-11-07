@@ -1,6 +1,7 @@
 <?php
 
 /*
+ * Copyright (C) 2026 Greelan
  * Copyright (C) 2025 Deciso B.V.
  * All rights reserved.
  *
@@ -28,11 +29,18 @@
 
 namespace OPNsense\Ntpd\Api;
 
-use OPNsense\Base\ApiControllerBase;
+use OPNsense\Base\ApiMutableServiceControllerBase;
 use OPNsense\Core\Backend;
 
-class ServiceController extends ApiControllerBase
+/**
+ * Class ServiceController
+ * @package OPNsense\Ntpd
+ */
+class ServiceController extends ApiMutableServiceControllerBase
 {
+    protected static $internalServiceClass = '\OPNsense\Ntpd\Ntpd';
+    protected static $internalServiceName = 'ntpd';
+
     private function keyMetadata()
     {
         return [
@@ -82,7 +90,7 @@ class ServiceController extends ApiControllerBase
                     'status' => gettext('Outlier')
                 ],
                 '__pool' => [
-                    'descr' => gettext('A DNS pool as configured in Network Time: General, contains a rotation of NTP servers providing time.'),
+                    'descr' => gettext('A DNS pool as configured in Network Time: Time Servers, contains a rotation of NTP servers providing time.'),
                     'status' => gettext('DNS Pool')
                 ],
                 ' ' => [
@@ -111,12 +119,37 @@ class ServiceController extends ApiControllerBase
 
     public function gpsAction()
     {
-        return json_decode((new Backend())->configdRun('ntpd status'), true);
+        return json_decode((new Backend())->configdRun('ntpd ntpq'), true) ?? [];
     }
 
-    public function statusAction()
+    public function searchPeersAction()
     {
-        $status = json_decode((new Backend())->configdRun('ntpd status'), true);
-        return $this->searchRecordsetBase($status['ntpq_servers']);
+        $status = json_decode((new Backend())->configdRun('ntpd ntpq'), true);
+        return $this->searchRecordsetBase($status['ntpq_servers'] ?? []);
+    }
+
+    public function reconfigureAction()
+    {
+        if (!$this->request->isPost()) {
+            return ['status' => 'failed'];
+        }
+
+        $backend = new Backend();
+        /* also stops ntpd without a time source */
+        $result = trim($backend->configdRun('ntpd configure'));
+        /* client mode adds or removes the daily restart */
+        $backend->configdRun('cron restart', true);
+
+        if ($result !== 'OK') {
+            $msg = sprintf(gettext('Service "%s" failed to %s.'), static::$internalServiceName, 'configure');
+            return ['status' => 'failed', 'status_msg' => $msg];
+        }
+
+        return ['status' => 'ok'];
+    }
+
+    protected function serviceEnabled()
+    {
+        return $this->getModel()->isEnabled();
     }
 }
