@@ -170,10 +170,12 @@
 /usr/local/opnsense/mvc/app/config/loader.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/Api/GroupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/Api/PrivController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/Api/UserApiKeyController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/Api/UserController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/GroupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/PrivController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/UserController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/forms/dialogApiKey.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/forms/dialogGroup.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/forms/dialogPriv.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/forms/dialogUser.xml
@@ -616,6 +618,8 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/System/SystemStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/SystemStatusCode.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Trust/Store.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Auth/ApiKey.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Auth/ApiKey.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/ApiKeyField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/ExpiresField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/GidField.php

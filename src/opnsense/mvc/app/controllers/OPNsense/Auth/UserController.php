@@ -53,6 +53,7 @@ class UserController extends \OPNsense\Base\IndexController
     {
         $this->view->formDialogEditUser = $this->getForm("dialogUser");
         $this->view->formGridUser = $this->getFormGrid("dialogUser");
+        $this->view->formDialogEditApiKey = $this->getForm("dialogApiKey");
         $this->view->pick('OPNsense/Auth/user');
     }
 }
