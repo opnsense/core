@@ -33,7 +33,6 @@ import re
 import glob
 import importlib
 import sys
-import fcntl
 import ujson
 import uuid
 import time
@@ -131,14 +130,6 @@ class BaseBlocklistHandler:
 
 class BlocklistParser:
     def __init__(self):
-        # check for a running download process, this may take a while so it's better to check...
-        try:
-            lck = open('/tmp/unbound-download_blocklists.tmp', 'w+')
-            fcntl.flock(lck, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except IOError:
-            # already running, exit status 99
-            sys.exit(99)
-
         syslog.openlog('unbound', facility=syslog.LOG_LOCAL4)
         self.handlers = list()
         self._register_handlers()

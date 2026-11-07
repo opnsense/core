@@ -27,6 +27,8 @@
 """
 
 import argparse
+import fcntl
+import sys
 from blocklists import BlocklistParser
 
 if __name__ == '__main__':
@@ -48,6 +50,13 @@ if __name__ == '__main__':
     subparsers.add_parser("list", help="List blocklist configuration sorted by priority")
 
     args = parser.parse_args()
+    # check for a running download process, this may take a while so it's better to check...
+    try:
+        lck = open('/tmp/unbound-download_blocklists.tmp', 'w+')
+        fcntl.flock(lck, fcntl.LOCK_EX | fcntl.LOCK_NB)
+    except IOError:
+        # already running, exit status 99
+        sys.exit(99)
 
     parser_obj = BlocklistParser()
 
