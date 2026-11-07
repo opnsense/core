@@ -129,6 +129,16 @@
         </grid_view>
     </field>
     <field>
+        <id>entries.nat64prefixLifetime</id>
+        <label>NAT64 prefix Lifetime</label>
+        <type>text</type>
+        <help>Lifetime in seconds the NAT64 prefix will remain valid before becoming unusable.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>entries.AdvLinkMTU</id>
         <label>Link MTU</label>
         <type>text</type>
