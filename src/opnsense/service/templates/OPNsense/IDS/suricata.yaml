@@ -3,7 +3,16 @@
 
 vars:
   address-groups:
-    HOME_NET: "[{{OPNsense.IDS.general.homenet}}]"
+{% set homenet = [OPNsense.IDS.general.homenet] %}
+{% if not helpers.empty('OPNsense.IDS.general.homenet_interfaces') %}
+{%   for intfName in OPNsense.IDS.general.homenet_interfaces.split(',') %}
+{%     set prefix = helpers.getPrefix(helpers.physical_interface(intfName)) %}
+{%     if prefix %}
+{%       do homenet.append(prefix) %}
+{%     endif %}
+{%   endfor %}
+{% endif %}
+    HOME_NET: "[{{ homenet|select|join(',') }}]"
     EXTERNAL_NET: "!$HOME_NET"
     HTTP_SERVERS: "$HOME_NET"
     SMTP_SERVERS: "$HOME_NET"

@@ -151,6 +151,21 @@ class Helpers(object):
             result.append(self.getNodeByTag('interfaces.'+name+'.if'))
         return list(filter(None, result))
 
+    @staticmethod
+    def getPrefix(device):
+        """ delegated IPv6 prefix collected by ifctl, same lookup as Autoconf::get()
+        :param device: device name (e.g. em0)
+        :return: prefix as found, empty string when there is none
+        """
+        if not device or '/' in device:
+            return ''
+        for suffix in ('', ':slaac'):
+            filename = '/tmp/%s%s_prefixv6' % (device, suffix)
+            if os.path.isfile(filename):
+                with open(filename, 'r') as f_in:
+                    return f_in.read().strip()
+        return ''
+
     def host_for_port(self, host_tag: str):
         return self.host_with_port(
             host_tag=host_tag,
