@@ -108,29 +108,45 @@ class Downloader(object):
                     req_opts['auth'] = auth
                 if headers is not None:
                     req_opts['headers'] = headers
-                try:
-                    req = requests.get(**req_opts)
-                except requests.exceptions.RequestException as e:
-                    syslog.syslog(syslog.LOG_ERR, 'download failed for %s (%s)' % (url, e))
-                    return None
-                if 'content-disposition' not in req.headers \
-                        or req.headers['content-disposition'].find('filename=') == -1:
-                    filename = url.strip().lower().split('?')[0]
-                else:
-                    filename = re.findall('filename=(.+)', req.headers['content-disposition'])[0].strip('"')
+                # a connection can break while streaming the body (e.g. large abuse.ch exports), retry a few
+                # times and give up on this file only, so the remaining rulesets are still processed.
+                max_attempts = 3
+                for attempt in range(1, max_attempts + 1):
+                    try:
+                        req = requests.get(**req_opts)
+                    except requests.exceptions.RequestException as e:
+                        syslog.syslog(syslog.LOG_ERR, 'download failed for %s (%s)' % (url, e))
+                        return None
+                    if 'content-disposition' not in req.headers \
+                            or req.headers['content-disposition'].find('filename=') == -1:
+                        filename = url.strip().lower().split('?')[0]
+                    else:
+                        filename = re.findall('filename=(.+)', req.headers['content-disposition'])[0].strip('"')
 
-                if req.status_code == 200:
-                    req.raw.decode_content = True
-                    src = tempfile.NamedTemporaryFile('wb+', 10240)
-                    while True:
-                        data = req.raw.read(10240)
-                        if not data:
-                            break
-                        else:
-                            src.write(data)
-                    self._download_cache[frm_url] = {'handle': src, 'filename': filename, 'cached': False}
-                else:
-                    syslog.syslog(syslog.LOG_ERR, 'download failed for %s (http_code: %d)' % (url, req.status_code))
+                    if req.status_code == 200:
+                        req.raw.decode_content = True
+                        src = tempfile.NamedTemporaryFile('wb+', 10240)
+                        try:
+                            while True:
+                                data = req.raw.read(10240)
+                                if not data:
+                                    break
+                                else:
+                                    src.write(data)
+                        except Exception as e:
+                            src.close()
+                            req.close()
+                            syslog.syslog(syslog.LOG_ERR, 'download interrupted for %s (attempt %d/%d: %s)' % (
+                                url, attempt, max_attempts, e.__class__.__name__))
+                            if attempt == max_attempts:
+                                syslog.syslog(syslog.LOG_ERR, 'download failed for %s (gave up after %d attempts)' % (
+                                    url, max_attempts))
+                                return None
+                            continue
+                        self._download_cache[frm_url] = {'handle': src, 'filename': filename, 'cached': False}
+                    else:
+                        syslog.syslog(syslog.LOG_ERR, 'download failed for %s (http_code: %d)' % (url, req.status_code))
+                    break
             else:
                 self._download_cache[frm_url]['cached'] = True
         else:
