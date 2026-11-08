@@ -48,6 +48,7 @@
     </page-system-status>
     <page-diagnostics-authentication>
         <name>Diagnostics: Authentication</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>diag_authentication.php*</pattern>
         </patterns>
@@ -305,12 +306,14 @@
     </page-interfaces-groups-edit>
     <page-interfaces-ppps>
         <name>Interfaces: PPPs</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>interfaces_ppps.php*</pattern>
         </patterns>
     </page-interfaces-ppps>
     <page-interfaces-ppps-edit>
         <name>Interfaces: PPPs: Edit</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>interfaces_ppps_edit.php*</pattern>
             <pattern>getserviceproviders.php*</pattern>
@@ -318,6 +321,7 @@
     </page-interfaces-ppps-edit>
     <page-interfaces>
         <name>Interfaces: WAN</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>interfaces.php*</pattern>
         </patterns>
@@ -422,12 +426,14 @@
     </page-status-dnsoverview>
     <page-diagnostics-wirelessstatus>
         <name>Status: Wireless</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>status_wireless.php*</pattern>
         </patterns>
     </page-diagnostics-wirelessstatus>
     <page-system-advanced-admin>
         <name>System: Advanced: Admin Access Page</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>system_advanced_admin.php*</pattern>
         </patterns>
@@ -440,6 +446,7 @@
     </page-system-advanced-firewall>
     <page-system-advanced-misc>
         <name>System: Advanced: Miscellaneous</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>system_advanced_misc.php*</pattern>
         </patterns>
@@ -453,6 +460,7 @@
     </page-system-advanced-sysctl>
     <page-system-authservers>
         <name>System: Authentication Servers</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>system_authservers.php*</pattern>
             <pattern>system_usermanager_settings_ldapacpicker.php*</pattern>
@@ -519,6 +527,7 @@
     </page-system-gatewaygroups>
     <page-system-generalsetup>
         <name>System: General Setup</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>system_general.php*</pattern>
         </patterns>

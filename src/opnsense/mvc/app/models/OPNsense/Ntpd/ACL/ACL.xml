@@ -1,18 +1,21 @@
 <acl>
     <page-services-ntpd>
         <name>Services: NTP</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>services_ntpd.php*</pattern>
         </patterns>
     </page-services-ntpd>
     <page-services-ntp-gps>
         <name>Services: NTP GPS</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>services_ntpd_gps.php*</pattern>
         </patterns>
     </page-services-ntp-gps>
     <page-status-ntp>
         <name>Status: NTP</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>ui/ntpd/status/*</pattern>
             <pattern>api/ntpd/service/status</pattern>
@@ -20,12 +23,14 @@
     </page-status-ntp>
     <page-services-ntp-pps>
         <name>Services: NTP PPS</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>services_ntpd_pps.php*</pattern>
         </patterns>
     </page-services-ntp-pps>
     <page-status-systemlogs-ntpd>
         <name>Status: System logs: NTP</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>ui/diagnostics/log/core/ntpd/*</pattern>
             <pattern>api/diagnostics/log/core/ntpd/*</pattern>
