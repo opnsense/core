@@ -30,6 +30,7 @@ namespace OPNsense\Base;
 
 use OPNsense\Auth\AuthenticationFactory;
 use OPNsense\Core\ACL;
+use OPNsense\Core\AppConfig;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 use OPNsense\Mvc\Security;
@@ -40,6 +41,12 @@ use OPNsense\Mvc\Security;
  */
 class ApiControllerBase extends ControllerRoot
 {
+    /**
+     * @param int $max_configd_streams number of streams that we allow to serve
+     */
+    var $max_configd_streams = 15;
+    var $this_configd_lockfp = null;
+
     /**
      * When the user-config-readonly privilege is set, raise an error
      */
@@ -226,6 +233,25 @@ class ApiControllerBase extends ControllerRoot
         $poll_timeout = 2,
         $safe = false
     ) {
+        /**
+         * Basic functionality to limit the number of open streams as these will hold webserver/php sessions as well.
+         */
+
+        $this->this_configd_lockfp = null;
+        $lockfilepattern = (new AppConfig())->application->tempDir . "/configdStream_slot_%d.LCK";
+        for ($i = 0; $i < $this->max_configd_streams; ++$i) {
+            $this->this_configd_lockfp = fopen(sprintf($lockfilepattern, $i), 'a+e');
+            if (!flock($this->this_configd_lockfp, LOCK_EX | LOCK_NB)) {
+                $this->this_configd_lockfp = null;
+            } else {
+                break;
+            }
+        }
+        if ($this->this_configd_lockfp === null) {
+            /* XXX: can't raise an error here as the frontend expects a stream */
+            return sprintf(gettext("Unable to open stream, max slots (%d) used"), $this->max_configd_streams);
+        }
+
         $response = (new Backend())->configdpStream($action, $params, $poll_timeout);
 
         /* disable nginx reverse proxy buffering so streamed configd output is delivered in real time */
