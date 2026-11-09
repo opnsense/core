@@ -831,10 +831,10 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
         $device = $ifcfg['if'];
         $realifv6 = get_real_interface($interface, 'inet6');
     } else {
+        $device = reset($ifacecfg['devices']);
+        $realifv6 = end($ifacecfg['devices']);
         $ifcfg = $ifacecfg['ifcfg'];
         $ppps = $ifacecfg['ppps'];
-        $device = reset($ifcfg['devices']);
-        $realifv6 = end($ifcfg['devices']);
     }
 
     if (!$suspend) {
