@@ -44,7 +44,7 @@ class ApiControllerBase extends ControllerRoot
     /**
      * @param int $max_configd_streams number of streams that we allow to serve
      */
-    var $max_configd_streams = 5;
+    var $max_configd_streams = 15;
     var $this_configd_lockfp = null;
 
     /**
