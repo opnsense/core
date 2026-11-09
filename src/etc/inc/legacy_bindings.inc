@@ -66,6 +66,37 @@ function configdp_run($cmd, $params = array(), $detach = false)
  ************************************************************************************************/
 
 /**
+ * helper for legacy callers since firewall configuration and functions moved to the model
+ * @return \OPNsense\Firewall\Filter
+ */
+function legacy_firewall_model()
+{
+    static $model = null;
+
+    if ($model === null) {
+        $model = new OPNsense\Firewall\Filter();
+    }
+
+    return $model;
+}
+
+/**
+ * helper for legacy callers since firewall settings moved to the model, which also provides failsafe defaults
+ * @param $section the requested settings section
+ * @return array the section of settings if found
+ */
+function legacy_firewall_settings($section)
+{
+    static $settings = null;
+
+    if ($settings === null) {
+        $settings = legacy_firewall_model()?->settings->getNodeContent();
+    }
+
+    return $settings[$section] ?? [];
+}
+
+/**
  * simple function to perform htmlspecialchars recursively on all attributes
  * @param $settings array type form data
  */

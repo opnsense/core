@@ -60,7 +60,7 @@ function pf_cron()
 
     $jobs = [];
 
-    if ((new OPNsense\Firewall\Filter(true))->hasSchedule()) {
+    if (legacy_firewall_model()->hasSchedule()) {
         $jobs[]['autocron'] = ['/usr/bin/logger "reload filter for configured schedules" ; /usr/local/etc/rc.filter_configure', '1,16,31,46'];
     }
 
