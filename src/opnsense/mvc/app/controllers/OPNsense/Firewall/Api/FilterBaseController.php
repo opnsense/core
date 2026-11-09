@@ -291,13 +291,6 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
          * actual protocol fields of the rules in order to get the full
          * list of options in one go (modifying the model XML to
          * automatically get the correct values).
-         *
-         * This works using e.g.
-         *   (new Filter())->rules->rule->getTemplateNode()->source_port
-         * but loads all rules as a side effect if they exist which we
-         * want to avoid and raises the question how we're going to deal
-         * with every field's own setup as we can't simply derive one
-         * field's accepted values for another.
          */
         $skip_ports = array_map('strtolower', array_values($aliases));
         foreach (PortField::getWellKnown() as $service => $port) {
