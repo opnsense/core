@@ -239,7 +239,7 @@ class ApiControllerBase extends ControllerRoot
 
         $this->this_configd_lockfp = null;
         $lockfilepattern = (new AppConfig())->application->tempDir . "/configdStream_slot_%d.LCK";
-        for ($i=0; $i < $this->max_configd_streams; ++$i) {
+        for ($i = 0; $i < $this->max_configd_streams; ++$i) {
             $this->this_configd_lockfp = fopen(sprintf($lockfilepattern, $i), 'a+e');
             if (!flock($this->this_configd_lockfp, LOCK_EX | LOCK_NB)) {
                 $this->this_configd_lockfp = null;
