@@ -1,6 +1,6 @@
 <menu>
     <Interfaces>
-        <Hostwatch order="210" cssClass="fa fa-binoculars fa-fw">
+        <Hostwatch order="220" cssClass="fa fa-binoculars fa-fw">
             <Settings order="10" url="/ui/hostdiscovery/settings#settings"/>
             <Hosts order="20" url="/ui/hostdiscovery/settings#hosts"/>
             <LogFile order="30" VisibleName="Log File" url="/ui/diagnostics/log/core/hostwatch"/>
