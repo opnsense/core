@@ -46,7 +46,6 @@ function filter_core_bootstrap($fw)
     filter_core_rules_system($fw, $filter_rule_defaults);
 }
 
-
 /**
  * Initialize firewall plugin system with interfaces and gateways
  * @return \OPNsense\Firewall\Plugin
