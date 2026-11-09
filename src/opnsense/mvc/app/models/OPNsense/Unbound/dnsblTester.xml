@@ -1,0 +1,19 @@
+<model>
+    <mount>:memory:</mount>
+    <version>1.0.0</version>
+    <description>DNS blocklist tester</description>
+    <items>
+        <settings>
+            <domaintype type="OptionField">
+                <Default>A</Default>
+                <Required>Y</Required>
+                <OptionValues>
+                    <opt1 value="A">A</opt1>
+                    <opt2 value="AAAA">AAAA</opt2>
+                    <opt3 value="CNAME">CNAME</opt3>
+                    <opt4 value="HTTPS">HTTPS</opt4>
+                </OptionValues>
+            </domaintype>
+        </settings>
+    </items>
+</model>
