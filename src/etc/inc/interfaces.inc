@@ -814,9 +814,10 @@ function interface_vip_bring_down($vip)
 
 function interface_reset($interface, $ifacecfg = false, $suspend = false)
 {
-    global $config;
+    $ifcfg = config_read_array('interfaces', $interface, false);
+    $ppps = config_read_array('ppps', 'ppp', false);
 
-    if (!isset($config['interfaces'][$interface]) || ($ifacecfg !== false && !is_array($ifacecfg))) {
+    if (empty($ifcfg) || ($ifacecfg !== false && !is_array($ifacecfg))) {
         return;
     }
 
@@ -827,8 +828,6 @@ function interface_reset($interface, $ifacecfg = false, $suspend = false)
      * split between a suspend and reset mode in order to accommodate the need.
      */
     if ($ifacecfg === false) {
-        $ifcfg = $config['interfaces'][$interface];
-        $ppps = isset($config['ppps']['ppp']) ? $config['ppps']['ppp'] : [];
         $device = $ifcfg['if'];
         $realifv6 = get_real_interface($interface, 'inet6');
     } else {
@@ -924,10 +923,8 @@ function interface_suspend($interface)
 
 function interface_ppps_bound($interface, $family = null)
 {
-    global $config;
-
-    $ifcfg = $config['interfaces'][$interface] ?? null;
-    $ppps = $config['ppps']['ppp'] ?? null;
+    $ifcfg = config_read_array('interfaces', $interface, false);
+    $ppps = config_read_array('ppps', 'ppp', false);
     $bound = false;
 
     if (!interface_ppps_capable($ifcfg, $ppps)) {
@@ -1028,10 +1025,8 @@ function interface_ppps_reset($interface, $suspend, $ifcfg, $ppps)
 
 function interface_ppps_configure($interface)
 {
-    global $config;
-
-    $ifcfg = $config['interfaces'][$interface] ?? null;
-    $ppps = $config['ppps']['ppp'] ?? null;
+    $ifcfg = config_read_array('interfaces', $interface, false);
+    $ppps = config_read_array('ppps', 'ppp', false);
 
     if (!interface_ppps_capable($ifcfg, $ppps)) {
         return;
@@ -1092,7 +1087,6 @@ function interface_ppps_configure($interface)
     $localips = isset($ppp['localip']) ? explode(',', $ppp['localip']) : [];
     $gateways = isset($ppp['gateway']) ? explode(',', $ppp['gateway']) : [];
     $subnets = isset($ppp['subnet']) ? explode(',', $ppp['subnet']) : [];
-    $mtus = !empty($ppp['mtu']) ? explode(',', $ppp['mtu']) : [];
 
     /*
      * We bring up the parent interface first because if DHCP is configured on the parent we need
@@ -1205,7 +1199,8 @@ EOD;
             $mpdconf .= "  set ipcp no vjcomp\n";
         }
 
-        if (!empty($config['system']['dnsallowoverride'])) {
+        $systemcfg = config_read_array('system', false);
+        if (!empty($systemcfg['dnsallowoverride'])) {
             $mpdconf .= "  set ipcp enable req-pri-dns\n";
             $mpdconf .= "  set ipcp enable req-sec-dns\n";
         }
@@ -1239,11 +1234,13 @@ EOD;
         $mpdconf_arr[] = "set link disable chap pap";
         $mpdconf_arr[] = "set link accept chap pap eap";
         $mpdconf_arr[] = "set link disable incoming";
+
+        /* XXX bandwidth, mtu, mru and mrru are per port */
         $bandwidths = !empty($ppp['bandwidth']) ? explode(',', $ppp['bandwidth']) : null;
         if (!empty($bandwidths[$pid])) {
             $mpdconf_arr[] = "set link bandwidth {$bandwidths[$pid]}";
         }
-
+        $mtus = !empty($ppp['mtu']) ? explode(',', $ppp['mtu']) : null;
         if (empty($mtus[$pid])) {
             /* subtract default header when deriving from interface config (as shown there) */
             $mtus[$pid] = !empty($ifcfg['mtu']) ? intval($ifcfg['mtu']) - 8 : 1492;
