@@ -1260,7 +1260,8 @@ class UIBootgrid {
         }).on("input", () => this._updateSearchClear());
         this._updateSearchClear();
 
-        $(`#${this.id}-search-clear`).on("click", () => {
+        $(`#${this.id}-search-clear`).on("click", (e) => {
+            $(e.currentTarget).tooltip('hide');
             $(`#${this.id}-search-field`).val("").trigger("keyup").focus();
             this._updateSearchClear();
         });
@@ -1461,7 +1462,10 @@ class UIBootgrid {
                             <div class="input-group">
                                 <span class="icon fa-solid input-group-addon fa-magnifying-glass"></span>
                                 <input id="${this.id}-search-field" type="text" class="search-field form-control" placeholder="${this._translate('search')}">
-                                <span id="${this.id}-search-clear" class="search-clear fa-solid fa-xmark" title="${this._translate('clearSearch')}"></span>
+                                <button id="${this.id}-search-clear" class="search-clear" type="button" data-toggle="tooltip"
+                                        title="${this._translate('clearSearch')}" aria-label="${this._translate('clearSearch')}">
+                                    <span class="fa-solid fa-xmark"></span>
+                                </button>
                             </div>
                         </div>
                         <div id="${this.id}-actions-group" class="actions btn-group">
