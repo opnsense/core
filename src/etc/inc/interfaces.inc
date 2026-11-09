@@ -1097,7 +1097,7 @@ function interface_ppps_configure($interface)
         foreach ($ports as $pid => $port) {
             $ports[$pid] = get_real_interface($port);
             if (empty($ports[$pid])) {
-                log_msg("PPP {$ifcfg['if']} port {$ports[$pid]} resolves to empty device.", LOG_ERR);
+                log_msg("PPP {$ifcfg['if']} port {$port} resolves to empty device.", LOG_ERR);
                 return false;
             }
         }
