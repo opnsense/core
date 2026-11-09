@@ -1049,11 +1049,12 @@ function interface_ppps_configure($interface)
     $ppps = config_read_array('ppps', 'ppp', false);
 
     if (!interface_ppps_capable($ifcfg, $ppps)) {
-        return;
+        return true;
     }
 
     if (!isset($ifcfg['enable'])) {
-        return;
+        log_msg("PPP {$ifcfg['if']} is not enabled but attempted start.", LOG_ERR);
+        return false;
     }
 
     $ipv4_mode = $ipv6_mode = 'disable';
@@ -1080,7 +1081,8 @@ function interface_ppps_configure($interface)
     }
 
     if ($ipv4_mode != 'enable' && $ipv6_mode != 'enable') {
-        return;
+        log_msg("PPP {$ifcfg['if']} found no supported IP configuration mode.", LOG_ERR);
+        return false;
     }
 
     $ppp = null;
@@ -1099,7 +1101,8 @@ function interface_ppps_configure($interface)
         foreach ($ports as $pid => $port) {
             $ports[$pid] = get_real_interface($port);
             if (empty($ports[$pid])) {
-                return;
+                log_msg("PPP {$ifcfg['if']} port {$port} resolves to empty device.", LOG_ERR);
+                return false;
             }
         }
     }
@@ -1133,14 +1136,14 @@ function interface_ppps_configure($interface)
                     $localips[$pid] = '0.0.0.0';
                 }
                 if (!is_ipaddr($gateways[$pid])) {
-                    log_msg("Could not get a Remote IP address for PPTP/L2TP link on {$port}.", LOG_WARNING);
-                    return;
+                    log_msg("Could not get a Remote IP address for PPTP/L2TP link on {$port}.", LOG_ERR);
+                    return false;
                 }
                 break;
             case 'ppp':
                 if (!file_exists($port)) {
                     log_msg("Device {$port} does not exist. PPP link cannot start without the modem device.", LOG_ERR);
-                    return;
+                    return false;
                 }
                 break;
             default:
@@ -1387,6 +1390,8 @@ EOD;
             legacy_interface_mtu($ifcfg['if'], $mtus[0]);
             break;
     }
+
+    return true;
 }
 
 function interfaces_pfsync_configure()
