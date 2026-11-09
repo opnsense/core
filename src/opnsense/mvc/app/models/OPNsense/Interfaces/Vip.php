@@ -45,7 +45,7 @@ class Vip extends BaseModel
                 if ($ifname != $interface) {
                     continue;
                 }
-                /* select device names enforcing "l2tp" as well */
+                /* select device names without additional interface number */
                 $type = preg_replace('/(?<=..)[0-9].*$/', '', $ifnode->if);
                 break;
             }
