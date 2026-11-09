@@ -55,6 +55,7 @@ class FilterRule extends Rule
         'os' => 'parsePlain, os {","}',
         'to' => 'parsePlainCurly,to ',
         'to_port' => 'parsePlainCurly, port ',
+        'scrub' => 'parseScrub',
         'received-on' => 'parseReceivedOn',
         'icmp-type' => 'parseReplaceSimple,skip:"skip",icmp-type {,}',
         'icmp6-type' => 'parsePlain,icmp6-type {,}',
@@ -102,6 +103,17 @@ class FilterRule extends Rule
         } else {
             return "";
         }
+    }
+
+    /**
+     * Render FreeBSD 15 style scrub options on a filter rule.
+     *
+     * @param string $value space-separated scrub options
+     * @return string
+     */
+    protected function parseScrub($value)
+    {
+        return empty($value) ? '' : "scrub ( {$value} ) ";
     }
 
     /**
@@ -214,7 +226,7 @@ class FilterRule extends Rule
             }
             if (!empty($rule['type']) && $rule['type'] != 'pass') {
                 if (!empty($rule['gateway']) || !empty($rule['reply'])) {
-                    $this->log("Gateway not allowed for block rules");
+                    $this->log("Gateway not allowed for non-pass rules");
                 }
                 unset($rule['gateway'], $rule['reply']);
             }
