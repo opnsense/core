@@ -15,7 +15,7 @@
         <label>Source</label>
         <type>text</type>
         <help>
-            Enter the client IP address to test source-specific blocklist rules. This may be left empty.
+            Enter the client IP address to test source-specific blocklist rules. If left empty, localhost will be used.
         </help>
         <grid_view>
             <visible>false</visible>
