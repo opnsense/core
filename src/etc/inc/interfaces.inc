@@ -2428,19 +2428,19 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv -no_dad -ifdisabled up', $device);
             break;
         case '6rd':
-            interface_6rd_configure($interface, $wancfg, $reload || $linkup);
             mwexecf('/sbin/ifconfig %s inet6 -no_dad description %s up', [$realifv6, $ifdescr]);
+            interface_6rd_configure($interface, $wancfg, $reload || $linkup);
             break;
         case '6to4':
-            interface_6to4_configure($interface, $wancfg, $reload || $linkup);
             mwexecf('/sbin/ifconfig %s inet6 -no_dad description %s up', [$realifv6, $ifdescr]);
+            interface_6to4_configure($interface, $wancfg, $reload || $linkup);
             break;
         case 'idassoc6':
         case 'track6':
             interface_track6_configure($interface, $wancfg, $reload || $linkup);
             break;
         case 'none':
-            /* no extra changes: "no_dad" and "ifdisabled" is not touched esp. relevant for tunnels */
+            /* no extra changes: "no_dad" and "ifdisabled" are not touched esp. relevant for tunnels */
             break;
         default:
             if (!interface_ppps_bound($interface)) {
@@ -2493,9 +2493,11 @@ function interface_track6_configure($interface, $lancfg, $reload = false)
     switch ($wancfg['ipaddrv6']) {
         case '6to4':
             interface_track6_6to4_configure($interface, $lancfg);
+            waitfordad();
             break;
         case '6rd':
             interface_track6_6rd_configure($interface, $lancfg);
+            waitfordad();
             break;
         case 'dhcp6':
             if ($reload || !isset($lancfg['enable'])) {

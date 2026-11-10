@@ -73,7 +73,7 @@ if (!$fp || !flock($fp, LOCK_EX | LOCK_NB)) {
 }
 
 /* wait for DAD to complete to avoid discarding tentative address */
-waitfordad(2);
+waitfordad();
 
 /* this may be required to cleanse the DNS information no longer available */
 system_resolver_configure();
