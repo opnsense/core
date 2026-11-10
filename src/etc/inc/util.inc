@@ -93,7 +93,7 @@ function waitforpid($pidfile, $timeout = -1)
     return trim(file_get_contents($pidfile));
 }
 
-function waitfordad($grace_period = 1)
+function waitfordad($grace_period = 2)
 {
     $dad_delay = (int)get_single_sysctl('net.inet6.ip6.dad_count');
     if ($dad_delay) {
