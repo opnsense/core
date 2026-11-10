@@ -7,6 +7,7 @@
             <pattern>api/hostdiscovery/settings/*</pattern>
             <pattern>api/hostdiscovery/service/*</pattern>
             <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
+            <pattern>api/diagnostics/firewall/query_pf_top</pattern>
             <pattern>ui/hostdiscovery/settings</pattern>
         </patterns>
     </page-hostdiscovery>

@@ -27,13 +27,13 @@
 <script>
     $( document ).ready(function() {
         const hostnames = new Map();
+        const stateTraffic = new Map();
 
-        function renderHostnames(grid) {
+        function renderCache(grid, cache, column) {
             grid.getTable().getRows().forEach(function(row) {
                 const address = row.getData().ip_address;
-                if (hostnames.has(address)) {
-                    // setValue() reruns the formatter; null represents a lookup in progress.
-                    row.getCell('hostname').setValue(hostnames.get(address));
+                if (cache.has(address)) {
+                    row.getCell(column).setValue(cache.get(address));
                 }
             });
         }
@@ -66,16 +66,64 @@
                             const hostname = data && data[address];
                             hostnames.set(address, hostname && hostname !== address ? hostname : '');
                         });
-                        renderHostnames(grid);
+                        renderCache(grid, hostnames, 'hostname');
                     },
                     error: function() {
                         batch.forEach(function(address) {
                             hostnames.set(address, '');
                         });
-                        renderHostnames(grid);
+                        renderCache(grid, hostnames, 'hostname');
                     }
                 });
             }
+        }
+
+        function fetchStateTraffic(grid) {
+            const addresses = [];
+            grid.getTable().getRows().forEach(function(row) {
+                const address = row.getData().ip_address;
+                if (!address) {
+                    return;
+                }
+                if (!stateTraffic.has(address)) {
+                    stateTraffic.set(address, null);
+                    addresses.push(address);
+                }
+                row.getCell('statistics').setValue(stateTraffic.get(address));
+            });
+
+            if (addresses.length === 0) {
+                return;
+            }
+
+            ajaxCall('/api/diagnostics/firewall/query_pf_top', {
+                current: 1,
+                rowCount: -1,
+                searchPhrase: addresses.join(' ')
+            }, function(data) {
+                const summaries = new Map(
+                    addresses.map(address => [address, {bytes: 0, states: 0}])
+                );
+                (data?.rows || []).forEach(function(record) {
+                    const recordAddresses = new Set([
+                        record.src_addr,
+                        record.dst_addr,
+                        record.gw_addr
+                    ]);
+                    recordAddresses.forEach(function(address) {
+                        if (summaries.has(address)) {
+                            const summary = summaries.get(address);
+                            summary.bytes += Number(record.bytes) || 0;
+                            summary.states++;
+                        }
+                    });
+                });
+
+                addresses.forEach(function(address) {
+                    stateTraffic.set(address, summaries.get(address));
+                });
+                renderCache(grid, stateTraffic, 'statistics');
+            });
         }
 
         let data_get_map = {'frm_settings':"/api/hostdiscovery/settings/get"};
@@ -115,12 +163,57 @@
                                         return '<span class="fa fa-spinner fa-pulse"></span>';
                                     }
                                     return $('<span>').text(row.hostname || '')[0];
+                                },
+                                statistics: function(column, row) {
+                                    const value = row.statistics;
+                                    if (value === null) {
+                                        return '<span class="fa fa-spinner fa-pulse"></span>';
+                                    }
+
+                                    function render(icon, title, value, is_number = false, link = null) {
+                                        if (!value || value === "0") {
+                                            return "";
+                                        }
+
+                                        const numValue = parseInt(value, 10);
+                                        const formatted = byteFormat(numValue, 1, is_number);
+                                        const content = `<i class="fa fa-fw ${icon}"></i> ${formatted}`;
+                                        return `
+                                            <span data-toggle="tooltip" title="${title}: ${numValue.toLocaleString()}">
+                                                ${link
+                                                    ? `<a href="${link}" target="_blank" rel="noopener noreferrer">${content}</a>`
+                                                    : content}
+                                            </span>
+                                        `;
+                                    }
+
+                                    const parts = [
+                                        render(
+                                            "fa-chart-line",
+                                            "{{ lang._('States') }}",
+                                            value?.states,
+                                            true,
+                                            `/ui/diagnostics/firewall/states#search=${encodeURIComponent(row.ip_address)}`
+                                        ),
+                                        render("fa-database", "{{ lang._('Bytes') }}", value?.bytes)
+                                    ].filter(Boolean);
+
+                                    if (parts.length === 0) {
+                                        return "";
+                                    }
+
+                                    return `
+                                        <div class="stats-cell">
+                                            ${parts.join("")}
+                                        </div>
+                                    `;
                                 }
                             }
                         }
                         });
                         grid.on('loaded.rs.jquery.bootgrid', function() {
                             resolveHostnames(grid.data('UIBootgrid'));
+                            fetchStateTraffic(grid.data('UIBootgrid'));
                         });
                     } else {
                         $("#grid-hosts").bootgrid('reload');
@@ -140,6 +233,26 @@
     });
 </script>
 
+<style>
+    .stats-cell {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px 10px;
+        align-items: center;
+        container-type: inline-size;
+    }
+
+    .stats-cell > span {
+        white-space: nowrap;
+    }
+
+    @container (max-width: 160px) {
+        .stats-cell > span {
+            flex: 1 1 50%;
+        }
+    }
+</style>
+
 <ul class="nav nav-tabs" data-tabs="tabs" id="maintabs">
     <li><a data-toggle="tab" href="#settings" id="settings_tab">{{ lang._('Settings') }}</a></li>
     <li><a data-toggle="tab" href="#hosts" id="discovered_tab">{{ lang._('Discovered Hosts') }}</a></li>
@@ -154,13 +267,14 @@
         <table id="grid-hosts" class="table table-condensed table-hover table-striped table-responsive">
             <thead>
                 <tr>
+                    <th data-column-id="first_seen" data-visible="false" data-type="string" data-width="160px">{{ lang._('First Seen') }}</th>
+                    <th data-column-id="last_seen" data-type="string" data-formatter="isodatetime" data-width="160px">{{ lang._('Last Seen') }}</th>
                     <th data-column-id="interface_name" data-type="string">{{ lang._('Interface') }}</th>
-                    <th data-column-id="ip_address">{{ lang._('IP Address') }}</th>
+                    <th data-column-id="ip_address" data-min-width="240px">{{ lang._('IP Address') }}</th>
                     <th data-column-id="hostname" data-type="string" data-formatter="hostname" data-sortable="false">{{ lang._('Hostname') }}</th>
-                    <th data-column-id="ether_address" data-type="string">{{ lang._('MAC Address') }}</th>
+                    <th data-column-id="ether_address" data-type="string" data-min-width="160px">{{ lang._('MAC Address') }}</th>
                     <th data-column-id="organization_name" data-type="string">{{ lang._('Organization') }}</th>
-                    <th data-column-id="first_seen" data-visible="false" data-type="string">{{ lang._('First Seen') }}</th>
-                    <th data-column-id="last_seen" data-type="string" data-formatter="isodatetime">{{ lang._('Last Seen') }}</th>
+                    <th data-column-id="statistics" data-formatter="statistics" data-sortable="false">{{ lang._('Statistics') }}</th>
                 </tr>
             </thead>
             <tbody>
