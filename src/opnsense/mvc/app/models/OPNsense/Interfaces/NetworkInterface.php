@@ -139,10 +139,12 @@ class NetworkInterface extends BaseModel
 
             /* compare config on an unsanitized copy to figure out actual changes */
             foreach ($this->interface->$key->toLegacy(false) as $prop => $value) {
-                if ($prop === 'dhcp6_norequest_dns' && !isset($intf->$prop)) {
-                    $curval = '0'; /* actually stored as dhcp6_request_dns in our model */
-                } elseif ($prop === 'disablevlanhwfilter' && !isset($intf->$prop)) {
-                    $curval = '0'; /* legacy omits writing '0' due to empty() */
+                if (
+                    in_array($prop, ['dhcp6-ia-pd-len', 'dhcp6_norequest_dns', 'disablevlanhwfilter']) &&
+                    !isset($intf->$prop)
+                ) {
+                    /* legacy keys which are omitted when set to '0' */
+                    $curval = '0';
                 } elseif (!isset($intf->$prop)) {
                     $curval = ($this->interface->$key->$prop instanceof BooleanField) ? '0' : '';
                 } else {
