@@ -71,8 +71,6 @@ if __name__ == '__main__':
     inputargs = parser.parse_args()
     if inputargs.src == "":
         inputargs.src = parser.get_default("src")
-    if inputargs.type == "":
-        inputargs.type = parser.get_default("type")
     domains = [
         domain
         for domain in "".join(inputargs.domain.split()).split(",")

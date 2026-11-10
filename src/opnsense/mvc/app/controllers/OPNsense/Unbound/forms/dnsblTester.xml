@@ -21,12 +21,4 @@
             <visible>false</visible>
         </grid_view>
     </field>
-    <field>
-        <id>dnsbltester.settings.domaintype</id>
-        <label>Type</label>
-        <type>dropdown</type>
-        <help>
-            Select the type of the domain(s) you are testing (default: A).
-        </help>
-    </field>
 </form>

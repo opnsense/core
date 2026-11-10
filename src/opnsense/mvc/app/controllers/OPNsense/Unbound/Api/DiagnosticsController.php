@@ -113,26 +113,14 @@ class DiagnosticsController extends ApiControllerBase
         return $ret;
     }
 
-    public function getBlocklistTesterAction()
-    {
-        $model = new \OPNsense\Unbound\dnsblTester();
-        return ['dnsbltester' => $model->getNodes()];
-    }
-
     public function testBlocklistAction()
     {
         if ($this->request->isPost() && $this->request->hasPost('domain')) {
             $src = $this->request->getPost('src');
-            $type = $this->request->getPost('type') ?: 'A';
-            $model = new \OPNsense\Unbound\dnsblTester();
-            $typeOptions = $model->getNodes()['settings']['domaintype'];
-            if (!\is_string($type) || !\array_key_exists($type, $typeOptions)) {
-                return ["status" => "error"];
-            }
 
             $backend = new Backend();
             $result = json_decode($backend->configdpRun('unbound domain test', [
-                $this->request->getPost('domain'), $src, $type
+                $this->request->getPost('domain'), $src
             ]), true);
 
             $mdl = new \OPNsense\Unbound\Unbound();
