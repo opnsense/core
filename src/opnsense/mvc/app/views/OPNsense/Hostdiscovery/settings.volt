@@ -96,31 +96,11 @@
                 return;
             }
 
-            ajaxCall('/api/diagnostics/firewall/query_pf_top', {
-                current: 1,
-                rowCount: -1,
-                searchPhrase: addresses.join(' ')
+            ajaxCall('/api/hostdiscovery/settings/state_statistics', {
+                addresses: addresses.join(',')
             }, function(data) {
-                const summaries = new Map(
-                    addresses.map(address => [address, {bytes: 0, states: 0}])
-                );
-                (data?.rows || []).forEach(function(record) {
-                    const recordAddresses = new Set([
-                        record.src_addr,
-                        record.dst_addr,
-                        record.gw_addr
-                    ]);
-                    recordAddresses.forEach(function(address) {
-                        if (summaries.has(address)) {
-                            const summary = summaries.get(address);
-                            summary.bytes += Number(record.bytes) || 0;
-                            summary.states++;
-                        }
-                    });
-                });
-
                 addresses.forEach(function(address) {
-                    stateTraffic.set(address, summaries.get(address));
+                    stateTraffic.set(address, data?.items?.[address] || {bytes: 0, states: 0});
                 });
                 renderCache(grid, stateTraffic, 'statistics');
             });
@@ -157,6 +137,35 @@
                                 }
                                 return params;
                             },
+                            headerFormatters: {
+                                statistics: function() {
+                                    const element = $(`
+                                        <span>
+                                            {{ lang._('Statistics') }}
+                                            <span class="statistics-cache-flush"
+                                                style="cursor:pointer; margin-left:4px;"
+                                                data-toggle="tooltip"
+                                                title="{{ lang._('Refresh') }}">
+                                                <i class="fa-solid fa-fw fa-rotate-right"></i>
+                                            </span>
+                                        </span>
+                                    `);
+
+                                    element.find('.statistics-cache-flush').on('click', function(event) {
+                                        event.stopPropagation();
+                                        ajaxCall(
+                                            '/api/hostdiscovery/settings/flush_statistics_cache',
+                                            {},
+                                            function() {
+                                                stateTraffic.clear();
+                                                fetchStateTraffic(grid.data('UIBootgrid'));
+                                            }
+                                        );
+                                    });
+
+                                    return element[0];
+                                }
+                            },
                             formatters: {
                                 hostname: function(column, row) {
                                     if (row.hostname === null) {
@@ -165,46 +174,32 @@
                                     return $('<span>').text(row.hostname || '')[0];
                                 },
                                 statistics: function(column, row) {
-                                    const value = row.statistics;
-                                    if (value === null) {
+                                    const statistics = row.statistics;
+                                    if (statistics === null) {
                                         return '<span class="fa fa-spinner fa-pulse"></span>';
                                     }
 
-                                    function render(icon, title, value, is_number = false, link = null) {
-                                        if (!value || value === "0") {
-                                            return "";
-                                        }
-
-                                        const numValue = parseInt(value, 10);
-                                        const formatted = byteFormat(numValue, 1, is_number);
-                                        const content = `<i class="fa fa-fw ${icon}"></i> ${formatted}`;
-                                        return `
-                                            <span data-toggle="tooltip" title="${title}: ${numValue.toLocaleString()}">
-                                                ${link
-                                                    ? `<a href="${link}" target="_blank" rel="noopener noreferrer">${content}</a>`
-                                                    : content}
-                                            </span>
-                                        `;
-                                    }
-
-                                    const parts = [
-                                        render(
-                                            "fa-chart-line",
-                                            "{{ lang._('States') }}",
-                                            value?.states,
-                                            true,
-                                            `/ui/diagnostics/firewall/states#search=${encodeURIComponent(row.ip_address)}`
-                                        ),
-                                        render("fa-database", "{{ lang._('Bytes') }}", value?.bytes)
-                                    ].filter(Boolean);
-
-                                    if (parts.length === 0) {
+                                    if (!statistics?.states) {
                                         return "";
                                     }
 
+                                    const {states, bytes} = statistics;
+                                    const statesUrl = '/ui/diagnostics/firewall/states#search=' +
+                                        encodeURIComponent(row.ip_address);
+                                    const bytesContent = bytes > 0 ? `
+                                        <span data-toggle="tooltip" title="{{ lang._('Bytes') }}: ${bytes.toLocaleString()}">
+                                            <i class="fa fa-fw fa-database"></i> ${byteFormat(bytes, 1)}
+                                        </span>
+                                    ` : '';
+
                                     return `
                                         <div class="stats-cell">
-                                            ${parts.join("")}
+                                            <span data-toggle="tooltip" title="{{ lang._('States') }}: ${states.toLocaleString()}">
+                                                <a href="${statesUrl}" target="_blank" rel="noopener noreferrer">
+                                                    <i class="fa fa-fw fa-chart-line"></i> ${byteFormat(states, 1, true)}
+                                                </a>
+                                            </span>
+                                            ${bytesContent}
                                         </div>
                                     `;
                                 }
