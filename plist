@@ -1160,6 +1160,8 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/CaptivePortal/FieldTypes/OriginFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Dnsmasq/FieldTypes/HostnameFieldTest.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Interfaces/NetworkInterfaceTest.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Interfaces/config/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Kea/FieldTypes/KeaOptionDataFieldTest.php
 /usr/local/opnsense/mvc/tests/phpunit.xml
 /usr/local/opnsense/mvc/tests/setup.php

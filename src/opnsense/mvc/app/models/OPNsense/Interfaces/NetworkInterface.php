@@ -38,14 +38,30 @@ use OPNsense\Routing\Gateways;
 
 class NetworkInterface extends BaseModel
 {
-    var $todo_file = '/tmp/.interfaces.todo';
+    private static $todo_filename = '/tmp/.interfaces.todo';
+
+    /**
+     * @param string $filename change target filename to ease testability
+     */
+    public static function setTodoFilename($filename)
+    {
+        self::$todo_filename = $filename;
+    }
+
+    /**
+     * @return filename used for pending interface changes
+     */
+    public static function getTodoFilename()
+    {
+        return self::$todo_filename;
+    }
 
     /**
      * @param array $payload data to store
      */
     private function store_if_todo($id, $payload)
     {
-        $fobj = new FileObject($this->todo_file, 'a+', 0600, LOCK_EX);
+        $fobj = new FileObject(self::$todo_filename, 'a+', 0600, LOCK_EX);
         $data = $fobj->readJson() ?? [];
         $data[$id] = array_merge($data[$id] ?? [], $payload);
         $fobj->truncate(0)->writeJson($data);
@@ -70,8 +86,8 @@ class NetworkInterface extends BaseModel
      */
     public function get_if_todo()
     {
-        if (is_file($this->todo_file)) {
-            return (new FileObject($this->todo_file, 'r'))->readJson() ?? [];
+        if (is_file(self::$todo_filename)) {
+            return (new FileObject(self::$todo_filename, 'r'))->readJson() ?? [];
         } else {
             return [];
         }
@@ -82,8 +98,8 @@ class NetworkInterface extends BaseModel
      */
     public function flush_todo()
     {
-        if (is_file($this->todo_file)) {
-            unlink($this->todo_file);
+        if (is_file(self::$todo_filename)) {
+            unlink(self::$todo_filename);
         }
     }
 
