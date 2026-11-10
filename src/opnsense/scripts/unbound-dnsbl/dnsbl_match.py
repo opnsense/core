@@ -83,7 +83,7 @@ if __name__ == '__main__':
 
     results = {}
     for domain in domains:
-
+        print(domain)
         match = dnsbl.policy_match(
             Query(
                 client=inputargs.src,
@@ -93,7 +93,7 @@ if __name__ == '__main__':
             )
         )
         if match:
-            result = copy.copy(match)
+            result = copy.deepcopy(match)
             src_nets = result.get('source_nets', [])
             for i in range(len(src_nets)):
                 src_nets[i] = str(src_nets[i])
