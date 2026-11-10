@@ -93,6 +93,7 @@ class NetworkInterfaceContainerField extends ContainerField
         /* XXX eventually get rid of $sanitize which means fixing backend code */
         if ($sanitize) {
             if (!$this->type6->isEqual('dhcp6')) {
+                unset($result['dhcp6-ia-pd-len']);
                 unset($result['dhcp6_norequest_dns']);
             }
 
