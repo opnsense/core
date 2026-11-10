@@ -270,7 +270,7 @@
                     <th data-column-id="first_seen" data-visible="false" data-type="string" data-width="160px">{{ lang._('First Seen') }}</th>
                     <th data-column-id="last_seen" data-type="string" data-formatter="isodatetime" data-width="160px">{{ lang._('Last Seen') }}</th>
                     <th data-column-id="interface_name" data-type="string">{{ lang._('Interface') }}</th>
-                    <th data-column-id="ip_address" data-min-width="240px">{{ lang._('IP Address') }}</th>
+                    <th data-column-id="ip_address" data-min-width="260px">{{ lang._('IP Address') }}</th>
                     <th data-column-id="hostname" data-type="string" data-formatter="hostname" data-sortable="false">{{ lang._('Hostname') }}</th>
                     <th data-column-id="ether_address" data-type="string" data-min-width="160px">{{ lang._('MAC Address') }}</th>
                     <th data-column-id="organization_name" data-type="string">{{ lang._('Organization') }}</th>
