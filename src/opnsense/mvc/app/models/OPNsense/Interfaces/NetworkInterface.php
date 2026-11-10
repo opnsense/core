@@ -38,7 +38,7 @@ use OPNsense\Routing\Gateways;
 
 class NetworkInterface extends BaseModel
 {
-    private static $todo_filename = '/tmp/.interfaces.todo';
+    private static $todo_filename = '/var/lib/php/tmp/interfaces.todo';
 
     /**
      * @param string $filename change target filename to ease testability
