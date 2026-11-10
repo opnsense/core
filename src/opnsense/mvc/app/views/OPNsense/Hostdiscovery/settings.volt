@@ -153,12 +153,17 @@
 
                                     element.find('.statistics-cache-flush').on('click', function(event) {
                                         event.stopPropagation();
+                                        const bootgrid = grid.data('UIBootgrid');
+                                        // Show the loading state while configd refreshes its cache.
+                                        stateTraffic.clear();
+                                        bootgrid.getTable().getRows().forEach(function(row) {
+                                            row.getCell('statistics').setValue(null);
+                                        });
                                         ajaxCall(
                                             '/api/hostdiscovery/settings/flush_statistics_cache',
                                             {},
                                             function() {
-                                                stateTraffic.clear();
-                                                fetchStateTraffic(grid.data('UIBootgrid'));
+                                                fetchStateTraffic(bootgrid);
                                             }
                                         );
                                     });
