@@ -40,6 +40,10 @@ ${_TARGET}_ARG=		${${_TARGET}_ARGS:[0]}
 .endif
 .endfor
 
+# prime the pager search for direct n/N browsing using an appropriate pattern
+GIT_DIFF=	GIT_PAGER="less -p '$$(printf '\013')^---'" ${GIT} diff --stat -p
+GIT_LOG=	GIT_PAGER="less -p '$$(printf '\013')^commit'" ${GIT} log --stat -p
+
 diff_ARGS?=	${.CURDIR}
 mlog_ARGS?=	${.CURDIR}
 slog_ARGS?=	${.CURDIR}
@@ -58,16 +62,16 @@ GIT_PRIVATE=	':!Private/'
 
 diff: ensure-stable
 	@if [ "$$(${GIT} tag -l | grep -cx '${diff_ARGS:[1]}')" = "1" ]; then \
-		${GIT} diff --stat -p ${diff_ARGS:[1]} ${GIT_PRIVATE}; \
+		${GIT_DIFF} ${diff_ARGS:[1]} ${GIT_PRIVATE}; \
 	else \
-		${GIT} diff --stat -p ${CORE_STABLE} ${diff_ARGS} ${GIT_PRIVATE}; \
+		${GIT_DIFF} ${CORE_STABLE} ${diff_ARGS} ${GIT_PRIVATE}; \
 	fi
 
 wiff: ensure-stable
 	@if [ "$$(${GIT} tag -l | grep -cx '${wiff_ARGS:[1]}')" = "1" ]; then \
-		${GIT} diff --stat -p -w ${wiff_ARGS:[1]} ${GIT_PRIVATE}; \
+		${GIT_DIFF} -w ${wiff_ARGS:[1]} ${GIT_PRIVATE}; \
 	else \
-		${GIT} diff --stat -p -w ${CORE_STABLE} ${wiff_ARGS} ${GIT_PRIVATE}; \
+		${GIT_DIFF} -w ${CORE_STABLE} ${wiff_ARGS} ${GIT_PRIVATE}; \
 	fi
 
 tag: ensure-stable
@@ -76,7 +80,7 @@ tag: ensure-stable
 feed: ensure-stable
 	@FEED="${feed_ARGS:[1]}"; \
 	    if [ -z "$${FEED}" ]; then FEED=$$(${GITVERSION} ${CORE_STABLE} | awk '{print $$1}'); fi; \
-	    ${GIT} log --stat -p --reverse ${CORE_STABLE}...$${FEED}~1 ${.CURDIR}
+	    ${GIT_LOG} --reverse ${CORE_STABLE}...$${FEED}~1 ${.CURDIR}
 
 mfc: ensure-stable clean-mfcdir
 .for MFC in ${mfc_ARGS}
@@ -116,10 +120,10 @@ reset:
 	@${GIT} checkout ${CORE_MAIN}
 
 mlog:
-	@${GIT} log --stat -p ${CORE_MAIN} ${mlog_ARGS}
+	@${GIT_LOG} ${CORE_MAIN} ${mlog_ARGS}
 
 slog: ensure-stable
-	@${GIT} log --stat -p ${CORE_STABLE} ${slog_ARGS}
+	@${GIT_LOG} ${CORE_STABLE} ${slog_ARGS}
 
 TO_PULL:=	# blank
 .if "${CORE_STABLE}" == "stable/${CORE_ABI}"
