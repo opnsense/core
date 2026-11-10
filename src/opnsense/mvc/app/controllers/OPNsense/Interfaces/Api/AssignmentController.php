@@ -32,6 +32,9 @@ use OPNsense\Base\ApiMutableModelControllerBase;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Core\FileObject;
+use OPNsense\Interfaces\NetworkInterface;
+
 
 class AssignmentController extends ApiMutableModelControllerBase
 {
@@ -141,6 +144,8 @@ class AssignmentController extends ApiMutableModelControllerBase
     {
         if ($this->request->isPost()) {
             $this->throwReadOnly();
+            /* lock status file while processing */
+            $fobj = new FileObject(NetworkInterface::getTodoFilename(), 'a+', 0660, LOCK_EX, 'wwwonly:wheel');
             $backend = new Backend();
             /***
              * Interface apply and final configuration update are separated steps to avoid

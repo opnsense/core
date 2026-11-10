@@ -59,6 +59,9 @@ if (empty($interface) || !isset($config['interfaces'][$interface]['enable'])) {
     return;
 }
 
+/* merge pending changes when UI is processing */
+config_merge_pending();
+
 /* this may be required to cleanse the DNS information no longer available */
 system_resolver_configure();
 

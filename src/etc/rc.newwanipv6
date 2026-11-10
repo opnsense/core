@@ -59,6 +59,9 @@ if (!isset($config['interfaces'][$interface]['enable'])) {
     return;
 }
 
+/* merge pending changes when UI is processing */
+config_merge_pending();
+
 /* make sure only one script runs at a time beyond this point */
 $fp = fopen('/tmp/newwanipv6_' . $argument, 'a+e');
 if (!$fp || !flock($fp, LOCK_EX | LOCK_NB)) {
