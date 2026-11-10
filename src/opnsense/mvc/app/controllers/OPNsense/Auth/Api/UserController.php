@@ -272,7 +272,7 @@ class UserController extends ApiMutableModelControllerBase
     }
 
     /**
-     * XXX: remove for 27.01 (moved to separate model and controller)
+     * XXX: remove for 27.1 (moved to separate model and controller)
      */
     public function delApiKeyAction($id)
     {
