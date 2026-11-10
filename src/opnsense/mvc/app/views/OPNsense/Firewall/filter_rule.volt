@@ -1035,14 +1035,12 @@
         $("#tree_expand_container").show();
 
         $('#expand_tree_button').on('click', function () {
-            const $table = $('#{{ formGridFilterRule["table_id"] }}');
+            const cells = grid.bootgrid('getTable').getColumn('categories').getCells();
+            const rows = cells.map((cell) => cell.getRow()).filter((row) => row.getTreeChildren().length > 0);
+            const expand = rows.some((row) => !row.isTreeExpanded());
 
-            // If there are any collapsed controls, expand them all, otherwise collapse them all
-            if ($table.find('.custom-tree-control-expand').length) {
-                $table.find('.custom-tree-control-expand').trigger('click');
-            } else {
-                $table.find('.custom-tree-control-collapse').trigger('click');
-            }
+            // if there are any collapsed rows, expand them all, otherwise collapse them all
+            rows.forEach((row) => expand ? row.treeExpand() : row.treeCollapse());
         });
 
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint
