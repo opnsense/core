@@ -69,11 +69,12 @@ class SessionsController extends ApiControllerBase
                 $record = $payload;
                 if (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $conn) == 1) {
                     $record['ikeid'] = $conn;
-                } elseif ($conn === "(unnamed)") {
-                    continue;
-                } else {
+                } elseif (substr($conn, 0, 3) === 'con') {
                     $record['ikeid'] = substr(explode('-', $conn)[0], 3);
+                } else {
+                    $record['ikeid'] = null;
                 }
+
                 $record['phase1desc'] = null;
                 $record['name'] = $conn;
                 if (!empty($phase1s[$record['ikeid']])) {
