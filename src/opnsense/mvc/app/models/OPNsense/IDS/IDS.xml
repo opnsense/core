@@ -208,7 +208,7 @@
                 <OptionValues>
                     <ac>Aho-Corasick</ac>
                     <ac-ks>Aho-Corasick, "Ken Steele" variant</ac-ks>
-                    <hs>Hyperscan</hs>
+                    <hs>Vectorscan</hs>
                 </OptionValues>
                 <ValidationMessage>Please select a valid pattern matcher algorithm.</ValidationMessage>
             </MPMAlgo>
