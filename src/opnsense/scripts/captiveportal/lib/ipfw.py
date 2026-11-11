@@ -27,7 +27,19 @@
 """
 import subprocess
 
+
+class IPFWError(RuntimeError):
+    pass
+
+
 class IPFW(object):
+    @staticmethod
+    def _run(command, ignore_error=False):
+        result = subprocess.run(command, capture_output=True, text=True)
+        if result.returncode != 0 and not ignore_error:
+            raise IPFWError("%s failed: %s" % (command[0], result.stderr.strip()))
+        return result
+
     @staticmethod
     def list_table(table_number):
         """ list ipfw table
@@ -35,7 +47,7 @@ class IPFW(object):
         :return: dict (key value address + rule_number)
         """
         result = dict()
-        sp = subprocess.run(['/sbin/ipfw', 'table', str(table_number), 'list'], capture_output=True, text=True)
+        sp = IPFW._run(['/sbin/ipfw', 'table', str(table_number), 'list'])
         for line in sp.stdout.split('\n'):
             if line.split(' ')[0].strip() != "":
                 parts = line.split()
@@ -60,10 +72,15 @@ class IPFW(object):
         :return: list accounting info per ip address
         """
         result = dict()
-        sp = subprocess.run(['/sbin/ipfw', '-aT', 'list'], capture_output=True, text=True)
+        terminated_rules = set()
+        sp = IPFW._run(['/sbin/ipfw', '-aT', 'list'])
         for line in sp.stdout.split('\n'):
             parts = line.split()
-            if len(parts) > 5 and 30000 <= int(parts[0]) <= 50000 and parts[4] == 'count':
+            if len(parts) > 5 and parts[0].isdigit() \
+                    and 30000 <= int(parts[0]) <= 50000 and parts[4] == 'skipto':
+                terminated_rules.add(int(parts[0]))
+            elif len(parts) > 9 and parts[0].isdigit() \
+                    and 30000 <= int(parts[0]) <= 50000 and parts[4] == 'count':
                 line_pkts = int(parts[1])
                 line_bytes = int(parts[2])
                 last_accessed = int(parts[3])
@@ -75,18 +92,27 @@ class IPFW(object):
                                           'in_pkts': 0,
                                           'in_bytes': 0,
                                           'out_pkts': 0,
-                                          'out_bytes': 0
+                                          'out_bytes': 0,
+                                          '_in_present': False,
+                                          '_out_present': False
                                           }
                 result[ip_address]['last_accessed'] = max(result[ip_address]['last_accessed'],
                                                           last_accessed)
                 if parts[7] != 'any':
                     # count input
+                    result[ip_address]['_in_present'] = True
                     result[ip_address]['in_pkts'] = line_pkts
                     result[ip_address]['in_bytes'] = line_bytes
                 else:
                     # count output
+                    result[ip_address]['_out_present'] = True
                     result[ip_address]['out_pkts'] = line_pkts
                     result[ip_address]['out_bytes'] = line_bytes
+
+        for details in result.values():
+            details['_complete'] = details['_in_present'] \
+                and details['_out_present'] \
+                and details['rule'] in terminated_rules
 
         return result
 
@@ -102,7 +128,10 @@ class IPFW(object):
         acc_info = IPFW.list_accounting_info()
 
         a_present = set(addresses) & acc_info.keys()
-        a_missing = set(addresses) - acc_info.keys()
+        a_missing = {
+            address for address in addresses
+            if address not in acc_info or not acc_info[address].get('_complete', True)
+        }
         present_rules = sorted([(acc_info[address]['rule'], address) for address in a_present])
         first = present_rules[0] if present_rules else None
         rule_number = None
@@ -116,6 +145,7 @@ class IPFW(object):
                 if r_rulenr != rule_number:
                     IPFW.del_accounting(table_number, addr)
                     a_missing.add(addr)
+                    acc_info.pop(addr, None)
         else:
             # find unused rule number
             rule_ids = list()
@@ -132,20 +162,21 @@ class IPFW(object):
 
         if rule_number is not None:
             for address in a_missing:
-                subprocess.run(['/sbin/ipfw', 'add', str(rule_number), 'count', 'ip', 'from', address, 'to', 'any'],
-                            capture_output=True)
-                subprocess.run(['/sbin/ipfw', 'add', str(rule_number), 'count', 'ip', 'from', 'any', 'to', address],
-                            capture_output=True)
+                details = acc_info.get(address, {})
+                if not details.get('_in_present', False):
+                    IPFW._run(['/sbin/ipfw', 'add', str(rule_number), 'count', 'ip', 'from', address, 'to', 'any'])
+                if not details.get('_out_present', False):
+                    IPFW._run(['/sbin/ipfw', 'add', str(rule_number), 'count', 'ip', 'from', 'any', 'to', address])
 
                 if address not in ipfw_tbl:
-                    subprocess.run(['/sbin/ipfw', 'table', str(table_number), 'add', address, str(rule_number)], capture_output=True)
-                elif str(ipfw_tbl[address] != str(rule_number)):
+                    IPFW._run(['/sbin/ipfw', 'table', str(table_number), 'add', address, str(rule_number)])
+                elif str(ipfw_tbl[address]) != str(rule_number):
                     # update table when accounting rule mismatches table entry
-                    subprocess.run(['/sbin/ipfw', 'table', str(table_number), 'del', address], capture_output=True)
-                    subprocess.run(['/sbin/ipfw', 'table', str(table_number), 'add', address, str(rule_number)], capture_output=True)
+                    IPFW._run(['/sbin/ipfw', 'table', str(table_number), 'del', address])
+                    IPFW._run(['/sbin/ipfw', 'table', str(table_number), 'add', address, str(rule_number)])
             if len(a_missing) > 0:
                 # end of accounting block lives at rule number 50000
-                subprocess.run(['/sbin/ipfw', 'add', str(rule_number), 'skipto', '60000', 'ip', 'from', 'any', 'to', 'any'], capture_output=True)
+                IPFW._run(['/sbin/ipfw', 'add', str(rule_number), 'skipto', '60000', 'ip', 'from', 'any', 'to', 'any'])
 
     @staticmethod
     def del_accounting(table_number, address):
@@ -156,7 +187,7 @@ class IPFW(object):
         acc_info = IPFW.list_accounting_info()
 
         if address in acc_info:
-            subprocess.run(['/sbin/ipfw', 'delete', str(acc_info[address]['rule'])], capture_output=True)
+            IPFW._run(['/sbin/ipfw', 'delete', str(acc_info[address]['rule'])])
 
         # no-op if address not in table
-        subprocess.run(['/sbin/ipfw', 'table', str(table_number), 'del', address], capture_output=True)
+        IPFW._run(['/sbin/ipfw', 'table', str(table_number), 'del', address], ignore_error=True)
