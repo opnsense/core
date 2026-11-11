@@ -15,3 +15,15 @@ for IPV6 in $(find /tmp -type f -name "newwanipv6_*"); do
 	echo "Reconfiguring IPv6 on ${INTERFACE}"
 	configctl -dq interface newipv6 ${INTERFACE} force
 done
+
+for PPP in $(find /tmp -type f -name "pppconfigure_*"); do
+	INTERFACE=$(cat "${PPP}")
+	rm "${PPP}"
+
+	# Dailing is not the same as e.g. dhclient already
+	# running in the backgound for the above so do the
+	# main connectivity part synchronously (no -d).
+
+	echo "Dialing PPP on ${INTERFACE}"
+	configctl -q interface ppp configure ${INTERFACE}
+done
