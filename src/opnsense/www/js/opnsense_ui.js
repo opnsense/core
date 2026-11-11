@@ -692,28 +692,24 @@ function initFormSearchUI() {
  */
 function initGlobalOpenShortcuts() {
     $(document).off('keydown.opnsenseGlobalOpenToggles').on('keydown.opnsenseGlobalOpenToggles', function (e) {
-        if (e.ctrlKey || e.altKey || e.metaKey) return;
-        const t = e.target;
-        const tag = (t.tagName || '').toLowerCase();
-        if ($(".bootstrap-select.open .dropdown-menu.open").length) return;
-        if (tag === 'input' || tag === 'textarea' || tag === 'select' || t.isContentEditable) return;
+        if (!e.altKey || e.ctrlKey || e.metaKey) return;
 
         const $context = $('.modal:visible, .ui-dialog:visible, [role="dialog"]:visible').last();
         const searchContext = $context.length > 0 ? $context : $(document);
 
-        if (e.key === 'a' || e.key === 'A') {
+        if (e.code == 'KeyA') {
             searchContext.find('[id*="show_advanced"]').each(function () {
                 $(this).click();
                 e.preventDefault();
             });
-        } else if (e.key === 'f' || e.key === 'F') {
+        } else if (e.code == 'KeyF') {
             /* In case multiple grids are present, use the first matching action bar in the current context */
             const $maximize = searchContext.find('[id$="-actions-group"] button[id$="-maximize"]:visible').first();
             if ($maximize.length) {
                 $maximize.click();
                 e.preventDefault();
             }
-        } else if (e.key === 'h' || e.key === 'H') {
+        } else if (e.code == 'KeyH') {
             searchContext.find('[id*="show_all_help"]').each(function () {
                 $(this).click();
                 e.preventDefault();
