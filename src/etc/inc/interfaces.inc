@@ -1152,7 +1152,12 @@ function interface_ppps_configure($interface)
         }
     }
 
-    // Construct the mpd.conf file
+    if (product::getInstance()->booting()) {
+        log_msg("PPP start deferred during boot on '{$ifcfg['if']}'");
+        file_put_contents('/tmp/pppconfigure_' . $interface, $interface);
+        return false;
+    }
+
     $mpdconf = <<<EOD
 startup:
   # configure the console
@@ -2419,7 +2424,10 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /* XXX start additional daemons on this interface now: needs a plugin facility */
-    interface_ppps_configure($interface);
+    if (!interface_ppps_configure($interface)) {
+        /* return early since PPP is not going to come up either way */
+        return $loaded;
+    }
     interfaces_wlan_configure($device, $linkup);
 
     switch ($wancfg['ipaddr'] ?? 'none') {
