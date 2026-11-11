@@ -26,8 +26,15 @@
 
 <script>
     $( document ).ready(function() {
+        const accessibleColumns = new Set("{{ accessibleColumns }}".split(','));
         const hostnames = new Map();
         const stateTraffic = new Map();
+
+        function updateAccessibleColumns(grid) {
+            ['hostname', 'statistics'].forEach(function(column) {
+                grid.bootgrid(accessibleColumns.has(column) ? 'setColumns' : 'unsetColumns', [column]);
+            });
+        }
 
         function renderCache(grid, cache, column) {
             grid.getTable().getRows().forEach(function(row) {
@@ -39,6 +46,10 @@
         }
 
         function resolveHostnames(grid) {
+            if (!accessibleColumns.has('hostname')) {
+                return;
+            }
+
             const addresses = [];
             grid.getTable().getRows().forEach(function(row) {
                 const address = row.getData().ip_address;
@@ -79,6 +90,10 @@
         }
 
         function fetchStateTraffic(grid) {
+            if (!accessibleColumns.has('statistics')) {
+                return;
+            }
+
             const addresses = [];
             grid.getTable().getRows().forEach(function(row) {
                 const address = row.getData().ip_address;
@@ -96,7 +111,7 @@
                 return;
             }
 
-            ajaxCall('/api/hostdiscovery/settings/state_statistics', {
+            ajaxCall('/api/diagnostics/firewall/query_pf_top_summary', {
                 addresses: addresses.join(',')
             }, function(data) {
                 addresses.forEach(function(address) {
@@ -153,6 +168,9 @@
 
                                     element.find('.statistics-cache-flush').on('click', function(event) {
                                         event.stopPropagation();
+                                        if (!accessibleColumns.has('statistics')) {
+                                            return;
+                                        }
                                         const bootgrid = grid.data('UIBootgrid');
                                         // Show the loading state while configd refreshes its cache.
                                         stateTraffic.clear();
@@ -160,7 +178,7 @@
                                             row.getCell('statistics').setValue(null);
                                         });
                                         ajaxCall(
-                                            '/api/hostdiscovery/settings/flush_statistics_cache',
+                                            '/api/diagnostics/firewall/flush_pf_top_cache',
                                             {},
                                             function() {
                                                 fetchStateTraffic(bootgrid);
@@ -212,8 +230,10 @@
                         }
                         });
                         grid.on('loaded.rs.jquery.bootgrid', function() {
-                            resolveHostnames(grid.data('UIBootgrid'));
-                            fetchStateTraffic(grid.data('UIBootgrid'));
+                            updateAccessibleColumns(grid);
+                            const bootgrid = grid.data('UIBootgrid');
+                            resolveHostnames(bootgrid);
+                            fetchStateTraffic(bootgrid);
                         });
                     } else {
                         $("#grid-hosts").bootgrid('reload');
@@ -271,10 +291,10 @@
                     <th data-column-id="last_seen" data-type="string" data-formatter="isodatetime" data-width="160px">{{ lang._('Last Seen') }}</th>
                     <th data-column-id="interface_name" data-type="string">{{ lang._('Interface') }}</th>
                     <th data-column-id="ip_address" data-min-width="260px">{{ lang._('IP Address') }}</th>
-                    <th data-column-id="hostname" data-type="string" data-formatter="hostname" data-sortable="false">{{ lang._('Hostname') }}</th>
+                    <th data-column-id="hostname" data-visible="false" data-type="string" data-formatter="hostname" data-sortable="false">{{ lang._('Hostname') }}</th>
                     <th data-column-id="ether_address" data-type="string" data-min-width="160px">{{ lang._('MAC Address') }}</th>
                     <th data-column-id="organization_name" data-type="string">{{ lang._('Organization') }}</th>
-                    <th data-column-id="statistics" data-formatter="statistics" data-sortable="false">{{ lang._('Statistics') }}</th>
+                    <th data-column-id="statistics" data-visible="false" data-formatter="statistics" data-sortable="false">{{ lang._('Statistics') }}</th>
                 </tr>
             </thead>
             <tbody>

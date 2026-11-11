@@ -29,58 +29,9 @@
 namespace OPNsense\Hostdiscovery\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
-use OPNsense\Core\Backend;
-use OPNsense\Firewall\Util;
 
 class SettingsController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'hostdiscovery';
     protected static $internalModelClass = '\OPNsense\Hostdiscovery\Hostwatch';
-
-    public function flushStatisticsCacheAction()
-    {
-        if (!$this->request->isPost()) {
-            return ['status' => 'error', 'message' => gettext('Invalid request method')];
-        }
-
-        (new Backend())->configdRun('!filter diag top');
-
-        return ['status' => 'ok'];
-    }
-
-    /**
-     * Aggregate cached firewall state counters for the requested addresses.
-     */
-    public function stateStatisticsAction()
-    {
-        $statistics = [];
-        if (!$this->request->isPost()) {
-            return ['items' => $statistics];
-        }
-
-        foreach (explode(',', (string)$this->request->getPost('addresses', null, '')) as $address) {
-            $address = trim($address);
-            if (Util::isIpAddress($address)) {
-                $statistics[$address] = ['bytes' => 0, 'states' => 0];
-            }
-        }
-
-        if (!empty($statistics)) {
-            $pftop = json_decode((new Backend())->configdpRun('filter diag top'), true) ?? [];
-            foreach ($pftop['details'] ?? [] as $record) {
-                $recordAddresses = array_unique([
-                    $record['src_addr'] ?? null,
-                    $record['dst_addr'] ?? null
-                ]);
-                foreach ($recordAddresses as $address) {
-                    if ($address !== null && isset($statistics[$address])) {
-                        $statistics[$address]['bytes'] += (int)($record['bytes'] ?? 0);
-                        $statistics[$address]['states']++;
-                    }
-                }
-            }
-        }
-
-        return ['items' => $statistics];
-    }
 }
