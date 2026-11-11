@@ -67,19 +67,21 @@ class SessionsController extends ApiControllerBase
         if (!empty($data)) {
             foreach ($data as $conn => $payload) {
                 $record = $payload;
+                $record['connected'] = !empty($record['sas']);
                 if (preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/', $conn) == 1) {
                     $record['ikeid'] = $conn;
                 } elseif (substr($conn, 0, 3) === 'con') {
                     $record['ikeid'] = substr(explode('-', $conn)[0], 3);
                 } else {
                     $record['ikeid'] = null;
+                    $record['connected'] = false;
                 }
                 $record['phase1desc'] = null;
                 $record['name'] = $conn;
                 if (!empty($phase1s[$record['ikeid']])) {
                     $record['phase1desc'] = $phase1s[$record['ikeid']];
                 }
-                $record['connected'] = !empty($record['sas']);
+                
                 /* aggregate child-sas [phase2] information */
                 $agg_fields = [
                     'bytes-in' => 0,
