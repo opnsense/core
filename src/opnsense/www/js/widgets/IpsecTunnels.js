@@ -67,7 +67,6 @@ export default class IpsecTunnels extends BaseTableWidget {
                 return; // No changes detected, do not update the UI
             }
 
-            console.log(response.rows);
             this.processTunnels(response.rows);
         }
     }
@@ -91,7 +90,6 @@ export default class IpsecTunnels extends BaseTableWidget {
     }
 
     processTunnels(newTunnels) {
-        console.log("processing tunnels");
         $('[data-toggle="tooltip"]').tooltip('hide');
         $('.ipsectunnels-status-icon').tooltip('hide');
         
@@ -127,7 +125,6 @@ export default class IpsecTunnels extends BaseTableWidget {
             let installTimeInfo = tunnel.installTime === null
                 ? `<span>${this.translations.nophase2connected}</span>`
                 : `<span>${this.translations.installtime}: ${tunnel.installTime}s</span>`;
-            console.log(tunnel.ikeid);
             let bytesInfo = tunnel.installTime !== null
                 ? `<div style="padding-bottom: 10px;">
                        <i class="fa fa-arrow-down" style="font-size: 13px;"></i>
@@ -173,7 +170,6 @@ export default class IpsecTunnels extends BaseTableWidget {
                     ${bytesInfo}
                 </div>
             `;
-            console.log("updating table");
             super.updateTable('ipsecTunnelTable', [[header, row]], tunnel.ikeid ?? '');
         });
 
