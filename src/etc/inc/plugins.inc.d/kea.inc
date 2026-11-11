@@ -55,14 +55,6 @@ function kea_services()
         $services[] = $service;
     }
 
-    if (!(new \OPNsense\Kea\KeaCtrlAgent())->general->enabled->isEmpty()) {
-        $service = $template;
-        $service['pidfile'] = '/var/run/kea/kea-ctrl-agent.kea-ctrl-agent.pid';
-        $service['description'] = gettext('KEA control agent');
-        $service['id'] = 'ca';
-        $services[] = $service;
-    }
-
     if (!(new \OPNsense\Kea\KeaDdns())->general->enabled->isEmpty()) {
         $service = $template;
         $service['pidfile'] = '/var/run/kea/kea-dhcp-ddns.kea-dhcp-ddns.pid';
@@ -186,7 +178,6 @@ function kea_configure_do($verbose = false)
             /* skip kea-dhcp-ddns.conf when configured manually */
             $keaDdns->generateConfig();
         }
-        (new \OPNsense\Kea\KeaCtrlAgent())->generateConfig();
         if ($keaDhcpv6->isEnabled()) {
             mwexecfb(
                 '/usr/local/opnsense/scripts/kea/kea_prefix_watcher.py',
@@ -219,7 +210,6 @@ function kea_syslog()
     return ['kea' => ['facility' => [
         'kea-dhcp4',
         'kea-dhcp6',
-        'kea-ctrl-agent',
         'kea-dhcp-ddns',
     ]]];
 }
