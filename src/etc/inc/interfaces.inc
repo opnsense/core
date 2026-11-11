@@ -4134,7 +4134,7 @@ function interfaces_merge_pending()
 {
     $filename = '/tmp/.interfaces.todo';
 
-    $fp = fopen($filename, 're');
+    $fp = @fopen($filename, 're');
     if ($fp === false) {
         return;
     }
