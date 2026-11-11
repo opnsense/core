@@ -728,6 +728,7 @@
                 this._initializeGrid();
 
                 await this._initializeInstances(dashboard.widgets);
+                await this._startInstances();
 
                 document.addEventListener('visibilitychange', this.visibilityHandler);
                 this.resizeAll();
@@ -894,7 +895,6 @@
         async restoreDefaults() {
             const dashboard = await this.repository.loadDefaults();
             const previousSuppressDirty = this.suppressDirty;
-            let restored = false;
 
             this.suppressDirty = true;
             try {
@@ -913,13 +913,12 @@
                 this.options = dashboard.options;
                 this.layouts = dashboard.layouts;
                 await this._initializeInstances(dashboard.widgets);
+                this.suppressDirty = previousSuppressDirty;
                 this.setEditMode(true);
-                restored = true;
+                this._markDirty();
+                await this._startInstances();
             } finally {
                 this.suppressDirty = previousSuppressDirty;
-                if (restored) {
-                    this._markDirty();
-                }
             }
         }
 
@@ -996,8 +995,6 @@
             // coordinates independently of widget startup and content sizing.
             this.grid.load(gridItems);
             const elements = new Map(this.grid.getGridItems().map(element => [element.gridstackNode.id, element]));
-            const startTasks = [];
-
             for (const instance of this.instances.values()) {
                 const element = elements.get(instance.id);
                 if (!element) {
@@ -1009,7 +1006,6 @@
 
                 try {
                     this._mountInstance(instance, element);
-                    startTasks.push(instance.start());
                 } catch (error) {
                     console.error(`Could not mount widget instance: ${instance.id}`, error);
                     await instance.destroy();
@@ -1017,8 +1013,10 @@
                     this.grid.removeWidget(element);
                 }
             }
+        }
 
-            await Promise.all(startTasks);
+        async _startInstances() {
+            await Promise.all([...this.instances.values()].map(instance => instance.start()));
         }
 
         _createInstance(typeId, persistedConfig = {}) {
