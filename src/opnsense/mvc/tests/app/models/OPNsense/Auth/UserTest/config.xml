@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<opnsense>
+  <system>
+    <nextuid>2001</nextuid>
+    <group uuid="00000000-0000-4000-8000-000000001999">
+      <gid>1999</gid>
+      <name>admins</name>
+      <member>0,2000</member>
+    </group>
+    <user uuid="00000000-0000-4000-8000-000000000000">
+      <uid>0</uid>
+      <name>root</name>
+      <scope>system</scope>
+      <disabled>0</disabled>
+      <password>*</password>
+      <apikeys>existing-key|existing-secret-hash</apikeys>
+    </user>
+  </system>
+</opnsense>
