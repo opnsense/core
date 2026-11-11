@@ -92,7 +92,7 @@ export default class IpsecTunnels extends BaseTableWidget {
     processTunnels(newTunnels) {
         $('[data-toggle="tooltip"]').tooltip('hide');
         $('.ipsectunnels-status-icon').tooltip('hide');
-        
+    
         let tunnels = newTunnels.map(tunnel => ({
             phase1desc: tunnel.phase1desc || this.translations.notavailable,
             localAddrs: tunnel['local-addrs'] || this.translations.notavailable,
@@ -125,6 +125,7 @@ export default class IpsecTunnels extends BaseTableWidget {
             let installTimeInfo = tunnel.installTime === null
                 ? `<span>${this.translations.nophase2connected}</span>`
                 : `<span>${this.translations.installtime}: ${tunnel.installTime}s</span>`;
+
             let bytesInfo = tunnel.installTime !== null
                 ? `<div style="padding-bottom: 10px;">
                        <i class="fa fa-arrow-down" style="font-size: 13px;"></i>
@@ -170,6 +171,7 @@ export default class IpsecTunnels extends BaseTableWidget {
                     ${bytesInfo}
                 </div>
             `;
+
             super.updateTable('ipsecTunnelTable', [[header, row]], tunnel.ikeid ?? '');
         });
 
