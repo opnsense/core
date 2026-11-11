@@ -4127,13 +4127,11 @@ function interfaces_primary_address6($interface, $ifconfig_details = null)
 }
 
 /*
- * XXX This is specifically for rc.newwanip(v6) to merge configuration
+ * This is specifically for rc.newwanip(v6) to merge configuration
  * items when the controller is locking (processing) our working file.
  */
 function interfaces_merge_pending()
 {
-    global $config;
-
     $filename = '/tmp/.interfaces.todo';
 
     $fp = fopen($filename, 're');
@@ -4141,12 +4139,14 @@ function interfaces_merge_pending()
         return;
     }
 
+    $interfaces = &config_read_array('interfaces');
+
     if (!flock($fp, LOCK_EX | LOCK_NB)) {
-        foreach (json_decode(fread($fp, filesize($filename)), true) ?? [] as $ifname => $if) {
-            if ($if['pending_action'] == 'delete') {
-                unset($config['interfaces'][$ifname]);
+        foreach (json_decode(fread($fp, filesize($filename)), true) ?? [] as $uuid => $work) {
+            if ($work['pending_action'] == 'delete') {
+                unset($interfaces[$uuid]);
             } else {
-                $config['interfaces'][$ifname] = $if['pending'];
+                $interfaces[$uuid] = $work['pending'];
             }
         }
     }
