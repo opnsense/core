@@ -92,7 +92,7 @@ export default class IpsecTunnels extends BaseTableWidget {
     processTunnels(newTunnels) {
         $('[data-toggle="tooltip"]').tooltip('hide');
         $('.ipsectunnels-status-icon').tooltip('hide');
-    
+
         let tunnels = newTunnels.map(tunnel => ({
             phase1desc: tunnel.phase1desc || this.translations.notavailable,
             localAddrs: tunnel['local-addrs'] || this.translations.notavailable,

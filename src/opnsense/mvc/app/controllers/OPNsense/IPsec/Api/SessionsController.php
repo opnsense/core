@@ -74,7 +74,6 @@ class SessionsController extends ApiControllerBase
                 } else {
                     $record['ikeid'] = null;
                 }
-
                 $record['phase1desc'] = null;
                 $record['name'] = $conn;
                 if (!empty($phase1s[$record['ikeid']])) {
