@@ -46,6 +46,9 @@ exit_on_bootup(function ($argument) {
     file_put_contents('/tmp/newwanipv6_' . $argument, $argument);
 }, [$argument]);
 
+/* merge pending changes when UI is processing */
+interfaces_merge_pending();
+
 if (empty($argument)) {
     $interface = 'wan';
     $device = get_real_interface($interface, $family);
@@ -58,9 +61,6 @@ if (!isset($config['interfaces'][$interface]['enable'])) {
     log_msg("Interface '{$interface}' ($device) is disabled or empty, nothing to do.", LOG_WARNING);
     return;
 }
-
-/* merge pending changes when UI is processing */
-config_merge_pending();
 
 /* make sure only one script runs at a time beyond this point */
 $fp = fopen('/tmp/newwanipv6_' . $argument, 'a+e');

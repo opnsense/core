@@ -46,6 +46,9 @@ exit_on_bootup(function ($argument) {
     file_put_contents('/tmp/newwanip_' . $argument, $argument);
 }, [$argument]);
 
+/* merge pending changes when UI is processing */
+interfaces_merge_pending();
+
 if (empty($argument)) {
     $interface = 'wan';
     $device = get_real_interface($interface);
@@ -58,9 +61,6 @@ if (empty($interface) || !isset($config['interfaces'][$interface]['enable'])) {
     log_msg("Interface '{$interface}' ($device) is disabled or empty, nothing to do.", LOG_WARNING);
     return;
 }
-
-/* merge pending changes when UI is processing */
-config_merge_pending();
 
 /* this may be required to cleanse the DNS information no longer available */
 system_resolver_configure();

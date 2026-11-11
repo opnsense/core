@@ -4126,27 +4126,30 @@ function interfaces_primary_address6($interface, $ifconfig_details = null)
     return _interfaces_primary_address6($interface, $ifconfig_details, false, false);
 }
 
-/**
- * XXX: this is specifically for rc.newwanip[v6] to merge configuration items when the controller is locking (processing)
- *      our todo file.
+/*
+ * XXX This is specifically for rc.newwanip(v6) to merge configuration
+ * items when the controller is locking (processing) our working file.
  */
-function config_merge_pending()
+function interfaces_merge_pending()
 {
     global $config;
+
     $filename = '/tmp/.interfaces.todo';
-    $fp = fopen($filename, 'a+e');
-    if ($fp !== false && !flock($fp, LOCK_EX | LOCK_NB)) {
+
+    $fp = fopen($filename, 're');
+    if ($fp === false) {
+        return;
+    }
+
+    if (!flock($fp, LOCK_EX | LOCK_NB)) {
         foreach (json_decode(fread($fp, filesize($filename)), true) ?? [] as $ifname => $if) {
-            if ($if['pending_action'] === 'delete' && isset($config['interfaces'][$ifname])) {
+            if ($if['pending_action'] == 'delete') {
                 unset($config['interfaces'][$ifname]);
-            } elseif ($if['pending_action'] !== 'delete') {
-                config_read_array('interfaces', $ifname, true); /* ensure the key exists */
-                unset($if['pending_action']);
+            } else {
                 $config['interfaces'][$ifname] = $if['pending'];
             }
         }
     }
-    if ($fp !== false) {
-        fclose($fp);
-    }
+
+    fclose($fp);
 }

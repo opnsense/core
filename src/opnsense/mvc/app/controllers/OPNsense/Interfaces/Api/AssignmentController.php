@@ -35,7 +35,6 @@ use OPNsense\Core\Config;
 use OPNsense\Core\FileObject;
 use OPNsense\Interfaces\NetworkInterface;
 
-
 class AssignmentController extends ApiMutableModelControllerBase
 {
     protected static $internalModelName = 'interface';
