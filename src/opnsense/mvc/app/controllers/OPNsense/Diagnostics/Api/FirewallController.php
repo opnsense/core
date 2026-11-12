@@ -279,7 +279,7 @@ class FirewallController extends ApiControllerBase
     public function flushPfTopCacheAction()
     {
         if (!$this->request->isPost()) {
-            return ['status' => 'error', 'message' => gettext('Invalid request method')];
+            return ['status' => 'error'];
         }
 
         (new Backend())->configdRun('!filter diag top');
@@ -292,13 +292,12 @@ class FirewallController extends ApiControllerBase
      */
     public function queryPfTopSummaryAction()
     {
-        $statistics = [];
         if (!$this->request->isPost()) {
-            return ['items' => $statistics];
+            return ['status' => 'error'];
         }
 
+        $statistics = [];
         foreach (explode(',', (string)$this->request->getPost('addresses', null, '')) as $address) {
-            $address = trim($address);
             if (Util::isIpAddress($address)) {
                 $statistics[$address] = ['bytes' => 0, 'states' => 0];
             }
