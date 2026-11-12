@@ -6,7 +6,6 @@
             <pattern>ui/hostdiscovery/settings</pattern>
             <pattern>api/hostdiscovery/settings/*</pattern>
             <pattern>api/hostdiscovery/service/*</pattern>
-            <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
             <pattern>ui/hostdiscovery/settings</pattern>
         </patterns>
     </page-hostdiscovery>

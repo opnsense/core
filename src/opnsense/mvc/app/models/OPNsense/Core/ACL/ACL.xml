@@ -155,6 +155,8 @@
             <pattern>api/diagnostics/firewall/kill_states*</pattern>
             <pattern>api/diagnostics/firewall/flush_sources*</pattern>
             <pattern>api/diagnostics/firewall/flush_states*</pattern>
+            <pattern>api/diagnostics/firewall/query_pf_top_summary</pattern>
+            <pattern>api/diagnostics/firewall/flush_pf_top_cache</pattern>
         </patterns>
     </page-diagnostics-showstates>
     <page-diagnostics-testport>
@@ -169,6 +171,7 @@
         <patterns>
             <pattern>ui/diagnostics/dns_diagnostics</pattern>
             <pattern>api/diagnostics/dns_diagnostics/*</pattern>
+            <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
         </patterns>
     </page-diagnostics-dns_diagnostics>
     <page-diagnostics-traceroute>
