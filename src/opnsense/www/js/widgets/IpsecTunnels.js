@@ -122,12 +122,12 @@ export default class IpsecTunnels extends BaseTableWidget {
 
         // Generate HTML for each tunnel
         tunnels.forEach(tunnel => {
-            let installTimeInfo = `<span>${this.translations.defunct}</span>`;
-            if (tunnel.ikeid != null && tunnel.installTime === null) {
-                installTimeInfo = `<span>${this.translations.nophase2connected}</span>`;
-            } else if (tunnel.ikeid != null) {
-                installTimeInfo = `<span>${this.translations.installtime}: ${tunnel.installTime}s</span>`;
-            }
+            let installTimeInfo =
+                tunnel.ikeid == null
+                    ? `<span>${this.translations.defunct}</span>`
+                    : tunnel.installTime == null
+                        ? `<span>${this.translations.nophase2connected}</span>`
+                        : `<span>${this.translations.installtime}: ${tunnel.installTime}s</span>`;
 
             let bytesInfo = tunnel.installTime !== null
                 ? `<div style="padding-bottom: 10px;">
@@ -139,16 +139,16 @@ export default class IpsecTunnels extends BaseTableWidget {
                    </div>`
                 : '';
 
-            let connectDisconnectButton = '';
-            if (tunnel.ikeid != null) {
-                connectDisconnectButton = tunnel.connected
-                    ? `<span class="ipsec-disconnect" data-ikeid="${tunnel.ikeid}" style="cursor: pointer; float: right; margin-left: auto; margin-right: 10px;" data-toggle="tooltip" title="${this.translations.disconnect}">
+            let connectDisconnectButton =
+                tunnel.ikeid == null
+                    ? ''
+                    : tunnel.connected == true
+                        ? `<span class="ipsec-disconnect" data-ikeid="${tunnel.ikeid}" style="cursor: pointer; float: right; margin-left: auto; margin-right: 10px;" data-toggle="tooltip" title="${this.translations.disconnect}">
                             <i class="fa fa-times" style="font-size: 13px;"></i>
-                    </span>`
-                    : `<span class="ipsec-connect" data-ikeid="${tunnel.ikeid}" style="cursor: pointer; float: right; margin-left: auto; margin-right: 10px;" data-toggle="tooltip" title="${this.translations.connect}">
+                        </span>`
+                        : `<span class="ipsec-connect" data-ikeid="${tunnel.ikeid}" style="cursor: pointer; float: right; margin-left: auto; margin-right: 10px;" data-toggle="tooltip" title="${this.translations.connect}">
                             <i class="fa fa-play" style="font-size: 13px;"></i>
-                    </span>`;
-            }
+                        </span>`;
 
             let header = `
                 <div style="display: flex; justify-content: space-between; align-items: center;">
