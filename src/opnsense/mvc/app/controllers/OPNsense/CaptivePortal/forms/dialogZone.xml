@@ -14,6 +14,7 @@
         <label>Zone number</label>
         <type>text</type>
         <help>Internal number used for this zone</help>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>zone.interfaces</id>
