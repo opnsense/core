@@ -40,12 +40,6 @@ class DhcpController extends \OPNsense\Base\IndexController
         ]);
     }
 
-    public function ctrlAgentAction()
-    {
-        $this->view->pick('OPNsense/Kea/ctrl_agent');
-        $this->view->formGeneralSettings = $this->getForm("agentSettings");
-    }
-
     public function ddnsAction()
     {
         $this->view->pick('OPNsense/Kea/ddns');

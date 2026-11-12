@@ -415,7 +415,6 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVxlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogWireless.xml
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/CtrlAgentController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/DdnsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Dhcpv4Controller.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Dhcpv6Controller.php
@@ -424,7 +423,6 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/DhcpController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/agentSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/ddnsSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogOption4.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogOption6.xml
@@ -908,8 +906,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaOptionDataField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaPoolsField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaStaticRoutesField.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaCtrlAgent.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaCtrlAgent.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDdns.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDdns.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDhcpv4.php
@@ -1078,7 +1074,6 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vxlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/wireless.volt
-/usr/local/opnsense/mvc/app/views/OPNsense/Kea/ctrl_agent.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/ddns.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/dhcpv4.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/dhcpv6.volt
@@ -1622,7 +1617,6 @@
 /usr/local/opnsense/service/templates/OPNsense/IPsec/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/IPsec/reqid_events.conf
 /usr/local/opnsense/service/templates/OPNsense/Kea/+TARGETS
-/usr/local/opnsense/service/templates/OPNsense/Kea/kea-ctrl-agent.conf
 /usr/local/opnsense/service/templates/OPNsense/Kea/kea-dhcp4.conf
 /usr/local/opnsense/service/templates/OPNsense/Kea/keactrl.conf
 /usr/local/opnsense/service/templates/OPNsense/Kea/rc.conf.d

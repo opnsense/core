@@ -21,15 +21,6 @@
             <pattern>api/kea/service/*</pattern>
         </patterns>
     </page-dhcp-kea-v6>
-    <page-dhcp-kea-ctrl-agent>
-        <name>Services: DHCP: Kea Ctrl Agent</name>
-        <description>Allow access to the KEA Ctrl Agent</description>
-        <patterns>
-            <pattern>ui/kea/dhcp/ctrl_agent</pattern>
-            <pattern>api/kea/ctrl_agent/*</pattern>
-            <pattern>api/kea/service/*</pattern>
-        </patterns>
-    </page-dhcp-kea-ctrl-agent>
     <page-dhcp-kea-ddns>
         <name>Services: DHCP: Kea DDNS Agent</name>
         <description>Allow access to the KEA DDNS Agent</description>

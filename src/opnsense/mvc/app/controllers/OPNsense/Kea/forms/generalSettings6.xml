@@ -127,7 +127,7 @@
         <id>dhcpv6.ha.enabled</id>
         <label>Enabled</label>
         <type>checkbox</type>
-        <help>Enable High availability hook, requires the Control Agent to be enabled as well.</help>
+        <help>Enable the high availability hook for direct communication between DHCP peers.</help>
     </field>
     <field>
         <id>dhcpv6.ha.this_server_name</id>
