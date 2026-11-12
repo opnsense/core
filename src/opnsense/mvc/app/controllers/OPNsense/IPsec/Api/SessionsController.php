@@ -81,7 +81,6 @@ class SessionsController extends ApiControllerBase
                 if (!empty($phase1s[$record['ikeid']])) {
                     $record['phase1desc'] = $phase1s[$record['ikeid']];
                 }
-                
                 /* aggregate child-sas [phase2] information */
                 $agg_fields = [
                     'bytes-in' => 0,
