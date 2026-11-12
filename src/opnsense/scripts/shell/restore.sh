@@ -36,7 +36,7 @@ if [ ! -d /conf/backup ]; then
 	exit 0
 fi
 
-BACKUPS="$(cd /conf/backup; find -s . -name "config-*.xml" | tail -n 24)"
+BACKUPS="$(cd /conf/backup; find -s . -name "config-[0-9]*.xml" | tail -n 24)"
 
 if [ -z "${BACKUPS}" ]; then
 	echo "No backups available."
@@ -50,9 +50,11 @@ for BACKUP in ${BACKUPS}; do
 	DATETIME=${DATETIME%.xml}
 	SUBSEC=${DATETIME#*.}
 	DATETIME=${DATETIME%.*}
+	STAMP=$(date -r "${DATETIME}" '+%Y-%m-%dT%H:%M:%S' 2> /dev/null) || continue
+	${XMLLINT} --noout /conf/backup/${BACKUP} 2> /dev/null || continue
 	USER=$(${XMLLINT} /conf/backup/${BACKUP} --xpath 'string(/opnsense/revision/username)')
 	NOTES=$(${XMLLINT} /conf/backup/${BACKUP} --xpath 'string(/opnsense/revision/description)')
-        if [ -n "${USER}" ]; then
+	if [ -n "${USER}" ]; then
 		NOTES="${USER}: ${NOTES}"
 	fi
 	LEN=$(echo "${NOTES}" | awk '{ print length }')
@@ -63,7 +65,7 @@ for BACKUP in ${BACKUPS}; do
 
 	# write a line with all required info that is prefixed
 	# with a sortable time stamp for our next step...
-	DATED="${DATED}$(date -r ${DATETIME} '+%Y-%m-%dT%H:%M:%S').${SUBSEC} ${DATETIME} ${BACKUP} ${NOTES}
+	DATED="${DATED}${STAMP}.${SUBSEC} ${DATETIME} ${BACKUP} ${NOTES}
 "
 done
 
