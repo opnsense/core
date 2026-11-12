@@ -48,24 +48,32 @@
 
         $("#reconfigureAct").SimpleActionButton();
 
-        $("#tester_exec").click(function() {
+        $("#grid-domains").UIBootgrid({
+            options: {
+                static: true,
+                navigation: 0,
+                selection: false,
+                multiSelect: false,
+            }
+        })
+
+        $("#tester_exec").click(function(){
+            const domains = $("#dnsbltester\\.settings\\.domains").val() || [];
+
             $("#tester_exec_spinner").show();
-            ajaxCall('/api/unbound/diagnostics/testBlocklist', {
-                'domain': $("#tester_domain").val(),
-                'src': $("#tester_src").val(),
+            ajaxCall('/api/unbound/diagnostics/test_blocklist', {
+                'domain': domains.join(","),
+                'src': $("#dnsbltester\\.settings\\.source").val(),
             }, function(data, status) {
-                $("#blocklist_tester_result").empty();
-                $("#blocklist_tester_result").append($("<span/>")).text("{{lang._('Result')}}");
-                if (data.status !== undefined || data.action !== undefined) {
-                    $("#blocklist_tester_result").append($("<pre  style='white-space: pre-wrap; word-break: keep-all;'/>").text(JSON.stringify(data, null, 2)));
-                } else {
-                    $("#blocklist_tester_result").append($("<span/>").text("-"));
+                if (status == "success" &&  data.length > 0) {
+                    $("#grid-domains").bootgrid('replace', data);
                 }
                 $("#tester_exec_spinner").hide();
             });
         });
 
         updateServiceControlUI('unbound');
+        formatTokenizersUI();
    });
 </script>
 
@@ -80,37 +88,32 @@
     </div>
 
     <div id="blocklist_tester" class="tab-pane fade in">
-        <table class="table table-condensed table-striped">
+        {{ partial('layout_partials/base_form', ['fields':formDnsblTester,'id':'frm_BlocklistTester']) }}
+        <section class="grid-bottom-reserve __mt">
+             <div class="alert content-box" style="display: flex; align-items: center; margin-bottom: 0;">
+                   <button class="btn btn-primary"  id="tester_exec" type="button">
+                        {{ lang._('Test') }}
+                        <i id="tester_exec_spinner" class="fa fa-spinner fa-pulse" aria-hidden="true" style="display:none;"></i>
+                   </button>
+             </div>
+        </section>
+        <table id="grid-domains" class="table table-condensed table-hover table-striped table-responsive">
             <thead>
                 <tr>
-                <th>{{ lang._('Property') }}</th>
-                <th>{{ lang._('Value') }}</th>
+                    <th data-column-id="domain" data-width="10em" data-formatter="domain">{{ lang._('Domain') }}</th>
+                    <th data-column-id="status" data-width="4em" data-formatter="status">{{ lang._('Status') }}</th>
+                    <th data-column-id="action" data-width="4em" data-formatter="action">{{ lang._('Action') }}</th>
+                    <th data-column-id="bl" data-formatter="bl">{{ lang._('Blocklist') }}</th>
+                    <th data-column-id="category" data-width="10em" data-formatter="category">{{ lang._('Category') }}</th>
+                    <th data-column-id="description" data-width="6em" data-formatter="description">{{ lang._('Description') }}</th>
+                    <th data-column-id="prio" data-width="6em" data-formatter="prio">{{ lang._('Priority') }}</th>
+                    <th data-column-id="hidx" data-width="5em" data-formatter="hidx">{{ lang._('HIDX') }}</th>
+                    <th data-column-id="passlist" data-formatter="passlist">{{ lang._('Passlist') }}</th>
+                    <th data-column-id="source_nets" data-formatter="source_nets" data-type="expand" >{{ lang._('Source nets') }}</th>
+                    <th data-column-id="address" data-formatter="address">{{ lang._('Return address') }}</th>
+                    <th data-column-id="rcode" data-width="5em" data-formatter="rcode">{{ lang._('Rcode') }}</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>{{ lang._('Domain') }}</td>
-                    <td><input type="text" id='tester_domain'></td>
-                </tr>
-                <tr>
-                    <td>{{ lang._('Source') }}</td>
-                    <td><input type="text"  id='tester_src'></td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td></td>
-                    <td>
-                        <button class="btn btn-primary" id="tester_exec">
-                            {{ lang._('Test') }}
-                            <i id="tester_exec_spinner" class="fa fa-spinner fa-pulse" aria-hidden="true" style="display:none;"></i>
-                        </button>
-                    </td>
-                </tr>
-            </tfoot>
-            </table>
-            <div id="blocklist_tester_result">
-            </div>
         </table>
     </div>
 </div>
