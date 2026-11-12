@@ -127,7 +127,7 @@
         <id>dhcpv6.ha.enabled</id>
         <label>Enabled</label>
         <type>checkbox</type>
-        <help>Enable the High Availability hook for direct communication between DHCP peers.</help>
+        <help>Enable the high availability hook for direct communication between DHCP peers.</help>
     </field>
     <field>
         <id>dhcpv6.ha.this_server_name</id>
