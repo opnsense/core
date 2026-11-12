@@ -14,6 +14,12 @@
                     <MaximumValue>19</MaximumValue>
                     <ValidationMessage>Maximum number of zones reached.</ValidationMessage>
                     <Required>Y</Required>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>A zone number must be unique.</ValidationMessage>
+                            <type>UniqueConstraint</type>
+                        </check001>
+                    </Constraints>
                 </zoneid>
                 <interfaces type="InterfaceField">
                     <Required>Y</Required>
