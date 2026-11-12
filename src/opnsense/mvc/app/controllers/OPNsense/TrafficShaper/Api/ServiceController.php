@@ -50,6 +50,11 @@ class ServiceController extends ApiControllerBase
             $backend->configdRun('template reload OPNsense/Shaper');
             $backend->configdRun('template reload OPNsense/IPFW');
 
+            /* delete classic CoDel/PIE pipes/queues first, dummynet refuses to
+             * reconfigure AQM on a flowset still carrying traffic (best-effort,
+             * a no-op on a clean system). */
+            $backend->configdRun("shaper reset");
+
             $result = trim($backend->configdRun("shaper reload"));
             if ($result != "OK") {
                 return ["status" => "error reloading shaper (" . $result . ")"];
