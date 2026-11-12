@@ -163,7 +163,7 @@ function unbound_service_stop()
 
     killbypid('/var/run/unbound_logger.pid');
     killbypid('/var/run/unbound_dhcpd.pid');
-    killbypid('/var/run/unbound.pid');
+    mwexecf('/usr/local/etc/rc.d/unbound onestop');
 }
 
 function unbound_generate_config()
