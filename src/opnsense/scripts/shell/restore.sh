@@ -50,15 +50,11 @@ for BACKUP in ${BACKUPS}; do
 	DATETIME=${DATETIME%.xml}
 	SUBSEC=${DATETIME#*.}
 	DATETIME=${DATETIME%.*}
-	case "${DATETIME}" in
-	""|*[!0-9]*)
-		# not named by the system, so not one of ours
-		continue
-		;;
-	esac
-	USER=$(${XMLLINT} /conf/backup/${BACKUP} --xpath 'string(/opnsense/revision/username)' 2> /dev/null || true)
-	NOTES=$(${XMLLINT} /conf/backup/${BACKUP} --xpath 'string(/opnsense/revision/description)' 2> /dev/null || true)
-        if [ -n "${USER}" ]; then
+	STAMP=$(date -r "${DATETIME}" '+%Y-%m-%dT%H:%M:%S' 2> /dev/null) || continue
+	${XMLLINT} --noout /conf/backup/${BACKUP} 2> /dev/null || continue
+	USER=$(${XMLLINT} /conf/backup/${BACKUP} --xpath 'string(/opnsense/revision/username)')
+	NOTES=$(${XMLLINT} /conf/backup/${BACKUP} --xpath 'string(/opnsense/revision/description)')
+	if [ -n "${USER}" ]; then
 		NOTES="${USER}: ${NOTES}"
 	fi
 	LEN=$(echo "${NOTES}" | awk '{ print length }')
@@ -69,7 +65,7 @@ for BACKUP in ${BACKUPS}; do
 
 	# write a line with all required info that is prefixed
 	# with a sortable time stamp for our next step...
-	DATED="${DATED}$(date -r ${DATETIME} '+%Y-%m-%dT%H:%M:%S').${SUBSEC} ${DATETIME} ${BACKUP} ${NOTES}
+	DATED="${DATED}${STAMP}.${SUBSEC} ${DATETIME} ${BACKUP} ${NOTES}
 "
 done
 
