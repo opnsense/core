@@ -33,7 +33,7 @@
 
 name=kea_supervisor
 rcvar=kea_supervisor_enable
-supervisor_profiles="dhcp4 dhcp6 dhcp_ddns ctrl_agent prefix_watcher"
+supervisor_profiles="dhcp4 dhcp6 dhcp_ddns prefix_watcher"
 supervisor_profile_configure=kea_supervisor_configure
 supervisor_profile_enabled=kea_supervisor_enabled
 supervisor_profiles_fallback=/usr/local/etc/rc.d/kea
