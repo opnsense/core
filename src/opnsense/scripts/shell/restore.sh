@@ -36,7 +36,7 @@ if [ ! -d /conf/backup ]; then
 	exit 0
 fi
 
-BACKUPS="$(cd /conf/backup; find -s . -name "config-*.xml" | tail -n 24)"
+BACKUPS="$(cd /conf/backup; find -s . -name "config-[0-9]*.xml" | tail -n 24)"
 
 if [ -z "${BACKUPS}" ]; then
 	echo "No backups available."
@@ -50,8 +50,14 @@ for BACKUP in ${BACKUPS}; do
 	DATETIME=${DATETIME%.xml}
 	SUBSEC=${DATETIME#*.}
 	DATETIME=${DATETIME%.*}
-	USER=$(${XMLLINT} /conf/backup/${BACKUP} --xpath 'string(/opnsense/revision/username)')
-	NOTES=$(${XMLLINT} /conf/backup/${BACKUP} --xpath 'string(/opnsense/revision/description)')
+	case "${DATETIME}" in
+	""|*[!0-9]*)
+		# not named by the system, so not one of ours
+		continue
+		;;
+	esac
+	USER=$(${XMLLINT} /conf/backup/${BACKUP} --xpath 'string(/opnsense/revision/username)' 2> /dev/null || true)
+	NOTES=$(${XMLLINT} /conf/backup/${BACKUP} --xpath 'string(/opnsense/revision/description)' 2> /dev/null || true)
         if [ -n "${USER}" ]; then
 		NOTES="${USER}: ${NOTES}"
 	fi
