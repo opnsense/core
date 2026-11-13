@@ -342,6 +342,17 @@ class Filter extends BaseModel
                                 gettext('You can not assign a reply-to destination to a rule that uses a gateway.'),
                                 $rule->replyto->__reference
                             ));
+                        } elseif (!$rule->replyto->isEmpty() && $rule->direction->isEqual('any')) {
+                            $messages->appendMessage(new Message(
+                                gettext('Direction must be explicit with rules that specify routing.'),
+                                $rule->replyto->__reference
+                            ));
+                        }
+                        if (!$rule->gateway->isEmpty() && $rule->direction->isEqual('any')) {
+                            $messages->appendMessage(new Message(
+                                gettext('Direction must be explicit with rules that specify routing.'),
+                                $rule->gateway->__reference
+                            ));
                         }
                     }
                 }
