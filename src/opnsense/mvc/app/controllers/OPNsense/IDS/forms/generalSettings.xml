@@ -106,6 +106,19 @@
         </help>
     </field>
     <field>
+        <id>ids.general.syslog_eve_types</id>
+        <label>Additional eve syslog event types</label>
+        <type>select_multiple</type>
+        <help>
+          Besides alerts, also send these eve event types to syslog (for example to feed a SIEM).
+          HTTP and TLS records use the same detail settings as the eve HTTP and TLS logging options below
+          (extended fields, custom TLS fields such as ja3, ja3s and ja4).
+          Flow and DNS records can be very verbose, mind the volume on busy networks.
+          Leave empty to only send alerts, which is the default.
+        </help>
+        <advanced>true</advanced>
+    </field>
+    <field>
         <id>ids.general.verbosity</id>
         <label>Syslog verbosity</label>
         <type>dropdown</type>
