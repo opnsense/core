@@ -467,9 +467,6 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetNodeContent()
     {
-        unset(Config::getInstance()->object()->tests->OPNsense->TestModel);
-        self::$model = new BaseModel\TestModel();
-
         $NodeContents =
         ['NodeContent' => [
             'value1' => ['example1' => 'innervalue1'],
@@ -478,7 +475,10 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         ];
         self::$model->setNodes($NodeContents);
         $GotNodeContent = self::$model->getNodeContent();
-        $this->assertEquals($GotNodeContent['NodeContent'], $NodeContents['NodeContent']);
+        $this->assertSame(
+            $NodeContents['NodeContent'],
+            $GotNodeContent['NodeContent']
+        );
     }
 
     /**
