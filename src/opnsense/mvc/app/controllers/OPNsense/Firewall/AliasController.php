@@ -35,10 +35,9 @@ use OPNsense\Base\IndexController;
  */
 class AliasController extends IndexController
 {
-    public function indexAction($selected = null)
+    public function indexAction()
     {
         // include dialog form definitions
-        $this->view->selected_alias = $selected;
         $this->view->formGeoIPSettings = $this->getForm("geoIPSettings");
         $this->view->pick('OPNsense/Firewall/alias');
     }
