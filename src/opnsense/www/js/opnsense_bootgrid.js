@@ -203,6 +203,7 @@ class UIBootgrid {
             clone: 'Clone',
             all: 'All',
             search: 'Search',
+            clearSearch: 'Clear search',
             removeWarning: 'Remove selected item(s)?',
             noresultsfound: 'No results found!',
             refresh: 'Refresh',
@@ -1169,6 +1170,10 @@ class UIBootgrid {
         }
     }
 
+    _updateSearchClear() {
+        $(`#${this.id}-search-clear`).toggle($(`#${this.id}-search-field`).val() !== "");
+    }
+
     _showMaximized() {
         if (this.$maximizeModal) {
             this.$maximizeModal.modal('hide');
@@ -1252,6 +1257,13 @@ class UIBootgrid {
         // search functionality
         $(`#${this.id}-search-field`).val(this.searchPhrase).on("keyup", (e) => {
             this._search($(`#${this.id}-search-field`).val(), e);
+        }).on("input", () => this._updateSearchClear());
+        this._updateSearchClear();
+
+        $(`#${this.id}-search-clear`).on("click", (e) => {
+            $(e.currentTarget).tooltip('hide');
+            $(`#${this.id}-search-field`).val("").trigger("keyup").focus();
+            this._updateSearchClear();
         });
 
         // Refresh
@@ -1450,6 +1462,10 @@ class UIBootgrid {
                             <div class="input-group">
                                 <span class="icon fa-solid input-group-addon fa-magnifying-glass"></span>
                                 <input id="${this.id}-search-field" type="text" class="search-field form-control" placeholder="${this._translate('search')}">
+                                <button id="${this.id}-search-clear" class="search-clear" type="button" data-toggle="tooltip"
+                                        title="${this._translate('clearSearch')}" aria-label="${this._translate('clearSearch')}">
+                                    <span class="fa-solid fa-xmark"></span>
+                                </button>
                             </div>
                         </div>
                         <div id="${this.id}-actions-group" class="actions btn-group">
@@ -1764,6 +1780,7 @@ class UIBootgrid {
 
         this.searchPhrase = "";
         $(`#${this.id}-search-field`).val("");
+        this._updateSearchClear();
         this.table.setPage(page).then(() => {
             this.table.scrollToRow(id).then(() => {
                 const $el = $(this.table.getRow(id).getElement());
@@ -2211,6 +2228,7 @@ class UIBootgrid {
             let saveDlg = this.init_save_btn(editDlg);
             const getEndpoint = override?.get ?? this.crud.get;
             const addEndpoint = override?.add ?? this.crud.add;
+            $("#" + editDlg + " i.model-header-icon").attr('class', 'model-header-icon fa fa-plus');
             this.show_edit_dialog(event, getEndpoint, editDlg).then(() => {
                 $('#' + editDlg).trigger('opnsense_bootgrid_mapped', ['add']);
                 saveDlg.click(() => {
@@ -2264,6 +2282,7 @@ class UIBootgrid {
             event.stopPropagation();
         let editDlg = override?.dialog ?? this.$compatElement.attr('data-editDialog');
         if (editDlg !== undefined) {
+            $("#" + editDlg + " i.model-header-icon").attr('class', 'model-header-icon fa fa-pencil');
             if (uuid === null)
                 uuid = $(event.currentTarget).data('row-id') ?? '';
             let saveDlg = this.init_save_btn(editDlg);
@@ -2339,6 +2358,7 @@ class UIBootgrid {
         event.stopPropagation();
         const editDlg = override?.dialog ?? this.$compatElement.attr('data-editDialog');
         if (editDlg !== undefined) {
+            $("#" + editDlg + " i.model-header-icon").attr('class', 'model-header-icon fa fa-clone');
             uuid = uuid ?? $(event.currentTarget).data('row-id');
             const urlMap = {};
             const getEndpoint = override?.get ?? this.crud.get;

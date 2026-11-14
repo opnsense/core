@@ -28,43 +28,48 @@
 
 namespace OPNsense\Firewall;
 
-use OPNsense\Core\Config;
-
 /**
  * Class Plugin
  * @package OPNsense\Firewall
  */
 class Plugin
 {
-    private $gateways = null;
     private $anchors = [];
     private $filterRules = [];
-    private $natRules = [];
-    private $interfaceMapping = [];
     private $gatewayMapping = [];
+    private $gateways = null;
+    private $ifconfigDetails = [];
+    private $interfaceMapping = [];
+    private $model = null;
+    private $natRules = [];
+    private $settings = [];
     private $systemDefaults = [];
     private $tables = [];
-    private $ifconfigDetails = [];
 
     /**
      * init firewall plugin component
      */
     public function __construct()
     {
-        $this->systemDefaults = array("filter" => [], "forward" => [], "nat" => []);
-        if (!empty(Config::getInstance()->object()->system->disablereplyto)) {
+        $this->systemDefaults = ['filter' => [], 'forward' => [], 'nat' => []];
+
+        $this->model = new Filter();
+        /* cache the settings alongside the model to avoid some extra overhead */
+        $this->settings = $this->model->settings->getNodeContent();
+
+        if (!empty($this->settings['filter']['disable_reply_to'])) {
             $this->systemDefaults['filter']['disablereplyto'] = true;
         }
-        if (!empty(Config::getInstance()->object()->system->skip_rules_gw_down)) {
+        if (!empty($this->settings['filter']['skip_rules_gw_down'])) {
             $this->systemDefaults['filter']['skip_rules_gw_down'] = true;
         }
-        if (empty(Config::getInstance()->object()->system->disablenatreflection)) {
-            $this->systemDefaults['forward']['natreflection'] = "enable";
+        if (!empty($this->settings['nat']['reflection_dnat'])) {
+            $this->systemDefaults['forward']['natreflection'] = 'enable';
         }
-        if (!empty(Config::getInstance()->object()->system->enablebinatreflection)) {
-            $this->systemDefaults['nat']['natreflection'] = "enable";
+        if (!empty($this->settings['nat']['reflection_binat'])) {
+            $this->systemDefaults['nat']['natreflection'] = 'enable';
         }
-        if (!empty(Config::getInstance()->object()->system->enablenatreflectionhelper)) {
+        if (!empty($this->settings['nat']['reflection_snat'])) {
             $this->systemDefaults['forward']['enablenatreflectionhelper'] = true;
             $this->systemDefaults['nat']['enablenatreflectionhelper'] = true;
         }
@@ -119,6 +124,22 @@ class Plugin
     }
 
     /**
+     * @return firewall settings content from \OPNsense\Firewall\Filter
+     */
+    public function getModel(): ?\OPNsense\Firewall\Filter
+    {
+        return $this->model;
+    }
+
+    /**
+     * @return firewall settings content from \OPNsense\Firewall\Filter
+     */
+    public function getSettings(): array
+    {
+        return $this->settings;
+    }
+
+    /**
      * @return \OPNsense\Routing\Gateways gateway object
      */
     public function getGateways(): ?\OPNsense\Routing\Gateways
@@ -132,41 +153,43 @@ class Plugin
      */
     public function setGatewayGroups($groups)
     {
-        if (is_array($groups)) {
-            foreach ($groups as $key => $gwgr) {
-                $routeto = [];
-                $proto = null;
-                /* All route-to tags must match, either {(if1 ip1), (if2 ip2)} or {if1 if2} */
-                $mode = null;
-                foreach ($gwgr as $gw) {
-                    if ($proto !== null && $proto != $gw['ipprotocol']) {
-                        /* protocols must match */
-                        continue;
-                    }
-                    $proto = $gw['ipprotocol'];
-                    $gwweight = empty($gw['weight']) ? 1 : $gw['weight'];
-                    if ((Util::isIpAddress($gw['gwip']) && !empty($gw['int'])) && ($mode === null || $mode === 'gw')) {
-                        $routeto[] = rtrim(str_repeat(" ( {$gw['int']} {$gw['gwip']} ) ,", $gwweight), ',');
-                        $mode = 'gw'; /* gateway [ip] mode */
-                    } elseif ($mode === null || $mode === 'if') {
-                        $routeto[] = rtrim(str_repeat(" {$gw['int']} ,", $gwweight), ',');
-                        $mode = 'if'; /* interface [ip] mode */
+        if (!is_array($groups)) {
+            return;
+        }
+
+        foreach ($groups as $key => $gwgr) {
+            $routeto = [];
+            $proto = null;
+            /* All route-to tags must match, either {(if1 ip1), (if2 ip2)} or {if1 if2} */
+            $mode = null;
+            foreach ($gwgr as $gw) {
+                if ($proto !== null && $proto != $gw['ipprotocol']) {
+                    /* protocols must match */
+                    continue;
+                }
+                $proto = $gw['ipprotocol'];
+                $gwweight = empty($gw['weight']) ? 1 : $gw['weight'];
+                if ((Util::isIpAddress($gw['gwip']) && !empty($gw['int'])) && ($mode === null || $mode === 'gw')) {
+                    $routeto[] = rtrim(str_repeat(" ( {$gw['int']} {$gw['gwip']} ) ,", $gwweight), ',');
+                    $mode = 'gw'; /* gateway [ip] mode */
+                } elseif ($mode === null || $mode === 'if') {
+                    $routeto[] = rtrim(str_repeat(" {$gw['int']} ,", $gwweight), ',');
+                    $mode = 'if'; /* interface [ip] mode */
+                }
+            }
+            if (count($routeto) > 0) {
+                $routetologic = "route-to {" . implode(' , ', $routeto) . "}";
+                if (!empty($gwgr[0]['poolopts'])) {
+                    // Since Gateways->getGroups() returns detail items, we have no other choice than
+                    // to copy top level attributes into the details if they matter (poolopts)
+                    $routetologic .= " {$gwgr[0]['poolopts']} ";
+                } elseif (count($routeto) > 1) {
+                    $routetologic .= " round-robin ";
+                    if (!empty($this->settings['filter']['lb_use_sticky'])) {
+                        $routetologic .= " sticky-address ";
                     }
                 }
-                if (count($routeto) > 0) {
-                    $routetologic = "route-to {" . implode(' , ', $routeto) . "}";
-                    if (!empty($gwgr[0]['poolopts'])) {
-                        // Since Gateways->getGroups() returns detail items, we have no other choice than
-                        // to copy top level attributes into the details if they matter (poolopts)
-                        $routetologic .= " {$gwgr[0]['poolopts']} ";
-                    } elseif (count($routeto) > 1) {
-                        $routetologic .= " round-robin ";
-                        if (!empty(Config::getInstance()->object()->system->lb_use_sticky)) {
-                            $routetologic .= " sticky-address ";
-                        }
-                    }
-                    $this->gatewayMapping[$key] = ["logic" => $routetologic, "proto" => $proto, "type" => "group"];
-                }
+                $this->gatewayMapping[$key] = ["logic" => $routetologic, "proto" => $proto, "type" => "group"];
             }
         }
     }
@@ -257,7 +280,7 @@ class Plugin
      * @param array $conf configuration
      * @param array $defaults merge these defaults when provided
      */
-    public function registerFilterRule($prio, $conf, $defaults = null)
+    public function registerFilterRule($prio, $conf, $defaults = null, $origin = 'default')
     {
         if (!empty($this->systemDefaults['filter'])) {
             $conf = array_merge($this->systemDefaults['filter'], $conf);
@@ -271,7 +294,7 @@ class Plugin
             $conf['label'] = $rule_hash;
         }
         $conf['#priority'] = $prio;
-        $rule = new FilterRule($this->interfaceMapping, $this->gatewayMapping, $conf);
+        $rule = new FilterRule($this->interfaceMapping, $this->gatewayMapping, $conf, $origin);
         if (empty($this->filterRules[$prio])) {
             $this->filterRules[$prio] = [];
         }
@@ -381,16 +404,34 @@ class Plugin
 
     /**
      * iterate through registered rules
+     * @param array $origins list of origins to collect
      * @return Iterator
      */
-    public function iterateFilterRules()
+    public function iterateFilterRules($origins = [])
     {
         ksort($this->filterRules);  /* sort rules by priority */
         foreach ($this->filterRules as $prio => $ruleset) {
             foreach ($ruleset as $rule) {
-                 yield $prio => $rule;
+                if (empty($origins) || in_array($rule->getOrigin(), $origins)) {
+                    yield $prio => $rule;
+                }
             }
         }
+    }
+
+    /**
+     * @param array $origins list of origins to collect
+     * @return array
+     */
+    public function getFilterRules($origins = [])
+    {
+        $result = [];
+        foreach ($this->iterateFilterRules($origins) as $prio => $item) {
+            $rule = $item->getRawRule();
+            $rule['prio'] = $prio;
+            $result[] = $rule;
+        }
+        return $result;
     }
 
     /**

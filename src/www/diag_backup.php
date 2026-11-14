@@ -650,6 +650,12 @@ $( document ).ready(function() {
                         <div id="show-<?=$fieldId;?>-val" style="display:none">
                           <textarea name="<?=$fieldId;?>" rows="10"><?=$pconfig[$fieldId];?></textarea>
                         </div>
+<?php elseif ($field['type'] == 'dropdown'): ?>
+                        <select name="<?=$fieldId;?>" class="selectpicker" data-live-search="true" data-size="10">
+<?php foreach ($field['options'] ?? [] as $value => $label): ?>
+                          <option value="<?= html_safe($value) ?>" <?= (string)$value === (string)($pconfig[$fieldId] ?? '') ? 'selected="selected"' : '' ?>><?= html_safe($label) ?></option>
+<?php endforeach ?>
+                        </select>
 <?php endif ?>
                         <div class="hidden" data-for="help_for_<?=$fieldId;?>">
                             <?=!empty($field['help']) ? $field['help'] : "";?>

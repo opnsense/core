@@ -1,5 +1,55 @@
 <form>
     <field>
+        <type>header</type>
+        <label>Shared Networks</label>
+        <advanced>true</advanced>
+    </field>
+    <field>
+        <id>subnet4.interface</id>
+        <label>Interface</label>
+        <type>dropdown</type>
+        <advanced>true</advanced>
+        <help>Bind this subnet to an interface. Subnets selecting the same interface are grouped into a shared network. This is useful if multiple different subnets should be served from the same interface.</help>
+        <grid_view>
+            <visible>false</visible>
+            <formatter>interface</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet4.match_code</id>
+        <label>Match Code</label>
+        <type>dropdown</type>
+        <help>Only clients sending the selected DHCP option with matching data may use this subnet. Leave empty to allow clients regardless of their DHCP options.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet4.match_encoding</id>
+        <label>Match Encoding</label>
+        <type>dropdown</type>
+        <help>Encoding used to evaluate the match condition. "Hex" supports all encapsulated and structured options generically via payload in hexadecimal byte pairs.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet4.match_data</id>
+        <label>Match Data</label>
+        <type>text</type>
+        <help>Data to match against the selected DHCP option.</help>
+        <advanced>true</advanced>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>header</type>
+        <label>Subnet</label>
+    </field>
+    <field>
         <id>subnet4.subnet_id</id>
         <label>Subnet ID</label>
         <type>text</type>

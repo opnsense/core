@@ -85,6 +85,62 @@
         </ha>
         <subnets>
             <subnet4 type="ArrayField">
+                <interface type="InterfaceField"/>
+                <match_code type="JsonKeyValueStoreField">
+                    <ConfigdPopulateAct>kea list dhcp_options</ConfigdPopulateAct>
+                    <OptionValues>
+                        <!-- mock option groups returned by JSON -->
+                        <optgroup1>Assigned</optgroup1>
+                        <optgroup2>Unassigned</optgroup2>
+                    </OptionValues>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Match code is required when an interface or match data is set.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>match_data</field1>
+                                <field2>interface</field2>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </match_code>
+                <match_encoding type="OptionField">
+                    <OptionValues>
+                        <hex>Hex</hex>
+                        <ipv4-address>IPv4 address</ipv4-address>
+                        <ipv6-address>IPv6 address</ipv6-address>
+                        <uint8>Uint8</uint8>
+                        <uint16>Uint16</uint16>
+                        <uint32>Uint32</uint32>
+                        <int32>Int32</int32>
+                        <boolean>Boolean</boolean>
+                        <string>String</string>
+                        <fqdn>FQDN</fqdn>
+                    </OptionValues>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Field is required when match data is set.</ValidationMessage>
+                            <type>DependConstraint</type>
+                            <addFields>
+                                <field1>match_data</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </match_encoding>
+                <match_data type=".\KeaOptionDataField">
+                    <CodeSource>match_code</CodeSource>
+                    <EncodingSource>match_encoding</EncodingSource>
+                    <OptionSpace>dhcp4</OptionSpace>
+                    <Constraints>
+                        <check001>
+                            <ValidationMessage>Match code and match data must either both be set or left empty.</ValidationMessage>
+                            <type>SetConstraint</type>
+                            <addFields>
+                                <field1>match_code</field1>
+                            </addFields>
+                        </check001>
+                    </Constraints>
+                </match_data>
                 <subnet_id type="AutoNumberField">
                     <Required>Y</Required>
                     <MinimumValue>1</MinimumValue>

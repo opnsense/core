@@ -253,8 +253,9 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
         (string)(new \OPNsense\IPsec\IPsec())->general->disablevpnrules == '0' &&
             isset($config['ipsec']['enable']) && ipsec_legacy()
     ) {
-        $enable_replyto = empty($config['system']['disablereplyto']);
-        $enable_routeto = empty($config['system']['pf_disable_force_gw']);
+        $settings = $fw->getSettings();
+        $enable_replyto = empty($settings['filter']['disable_reply_to']);
+        $enable_routeto = empty($settings['filter']['pf_disable_force_gw']);
         foreach ($config['ipsec']['phase1'] as $ph1ent) {
             if (!isset($ph1ent['disabled'])) {
                 // detect remote ip
@@ -280,14 +281,15 @@ function ipsec_firewall(\OPNsense\Firewall\Plugin $fw)
                         }
                     }
                     $interface = explode('_vip', $ph1ent['interface'])[0];
-                    $baserule = array("interface" => $interface,
-                                      "log" => !isset($config['syslog']['nologdefaultpass']),
-                                      "quick" => false,
-                                      "type" => "pass",
-                                      "statetype" => "keep",
-                                      "#ref" => "ui/ipsec/connections/settings",
-                                      "descr" => "IPsec: " . (!empty($ph1ent['descr']) ? $ph1ent['descr'] : $rgip)
-                                    );
+                    $baserule = [
+                        '#ref' => 'ui/ipsec/connections/settings',
+                        'descr' => 'IPsec: ' . (!empty($ph1ent['descr']) ? $ph1ent['descr'] : $rgip),
+                        'interface' => $interface,
+                        'log' => !empty($settings['logging']['default_pass']),
+                        'quick' => false,
+                        'statetype' => 'keep',
+                        'type' => 'pass',
+                    ];
 
                     // find gateway
                     $gwname = $fw->getGateways()->getInterfaceGateway($interface, $ph1ent['protocol'], true, 'name');

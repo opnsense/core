@@ -347,6 +347,7 @@
             clone: "{{ lang._('Clone') }}",
             all: "{{ lang._('All') }}",
             search: "{{ lang._('Search') }}",
+            clearSearch: "{{ lang._('Clear search') }}",
             removeWarning: "{{ lang._('Remove selected item(s)?') }}",
             noresultsfound: "{{ lang._('No results found') }}",
             refresh: "{{ lang._('Refresh') }}",

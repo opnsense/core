@@ -28,8 +28,22 @@
 
 namespace OPNsense\Hostdiscovery;
 
+use OPNsense\Core\ACL;
+
 class SettingsController extends \OPNsense\Base\IndexController
 {
+    private function canAccessEndpoints($endpoints)
+    {
+        $acl = new ACL();
+        foreach ($endpoints as $endpoint) {
+            if (!$acl->isPageAccessible($this->getUserName(), $endpoint)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     protected function templateJSIncludes()
     {
         return array_merge(parent::templateJSIncludes(), [
@@ -39,6 +53,14 @@ class SettingsController extends \OPNsense\Base\IndexController
 
     public function indexAction()
     {
+        $accessibleColumns = [];
+        if ($this->canAccessEndpoints(['/api/diagnostics/dns/reverse_lookup'])) {
+            $accessibleColumns[] = 'hostname';
+        }
+        if ($this->canAccessEndpoints(['/api/diagnostics/firewall/query_pf_top_summary'])) {
+            $accessibleColumns[] = 'statistics';
+        }
+        $this->view->accessibleColumns = implode(',', $accessibleColumns);
         $this->view->generalForm = $this->getForm("general");
         $this->view->pick('OPNsense/Hostdiscovery/settings');
     }

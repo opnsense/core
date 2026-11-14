@@ -39,6 +39,8 @@ interface IBackupProvider
     /**
      * get required (user interface) fields for backup connector, ideally these should be stored in a model
      * but for backwards compatibility reasons we delegate the decision what to use to the backup class.
+     * Field types: checkbox, text, file, password, textarea, passwordarea and dropdown, the latter
+     * with its choices in 'options' (value => label).
      * @return array configuration fields, types and description
      */
     public function getConfigurationFields();

@@ -133,13 +133,13 @@ class KeyPairsController extends ApiMutableModelControllerBase
             }
             $attrs['private_key_type'] = OPENSSL_KEYTYPE_EC;
             switch ($size ?? '384') {
-                case '256';
+                case '256':
                     $attrs['curve_name'] = "prime256v1";
                     break;
-                case '384';
+                case '384':
                     $attrs['curve_name'] = "secp384r1";
                     break;
-                case '521';
+                case '521':
                     $attrs['curve_name'] = "secp521r1";
                     break;
             }

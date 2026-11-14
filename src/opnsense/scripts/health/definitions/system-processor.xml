@@ -3,11 +3,22 @@
     <file-match>system-processor</file-match>
     <title> System Information - Utilization and Processes</title>
     <y-axis_label>[U]tilization ,  [#]Number</y-axis_label>
+    <axis_labels>
+        <y>CPU utilization (%)</y>
+        <y1>Processes/threads</y1>
+    </axis_labels>
+    <field_axes>
+        <user>y</user>
+        <nice>y</nice>
+        <system>y</system>
+        <interrupt>y</interrupt>
+        <processes>y1</processes>
+    </field_axes>
     <field_units>
-        <user>[U]</user>
-        <nice>[U]</nice>
-        <system>[U]</system>
-        <interrupt>[#]</interrupt>
-        <processes>[#]</processes>
+        <user>%</user>
+        <nice>%</nice>
+        <system>%</system>
+        <interrupt>%</interrupt>
+        <processes>processes/threads</processes>
     </field_units>
 </systemhealth>

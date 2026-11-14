@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2024 Deciso B.V.
+ * Copyright (C) 2024-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -44,6 +44,46 @@ class ApiKeyField extends BaseField
     }
 
     /**
+     * unpack api keys from internal string storage
+     * @return array
+     */
+    private function deserialize(): array
+    {
+        $result = [];
+        foreach (array_filter(explode("\n", (string)$this->internalValue)) as $line) {
+            $parts = explode("|", $line, 4);
+            if (count($parts) >= 2) {
+                $result[$parts[0]] = [
+                    'key' => $parts[0],
+                    'secret' => $parts[1],
+                    'created' => $parts[2] ?? '',
+                    'descr' => $parts[3] ?? ''
+                ];
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * pack api keys into internal string storage
+     * @param array $data
+     */
+    private function serialize(array $data): void
+    {
+        $lines = [];
+        foreach ($data as $key => $item) {
+            $lines[] = sprintf(
+                "%s|%s|%s|%s",
+                $key,
+                $item['secret'] ?? '',
+                $item['created'] ?? '',
+                $item['descr'] ?? ''
+            );
+        }
+        $this->internalValue = implode("\n", $lines);
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function setValue($value)
@@ -64,20 +104,11 @@ class ApiKeyField extends BaseField
     /**
      * get api key + secret
      * @param string $key
-     * @return array with key and crypted secret
+     * @return array|null with key and crypted secret
      */
     public function get(string $key)
     {
-        foreach (array_filter(explode("\n", $this->internalValue)) as $line) {
-            $parts = explode("|", $line);
-            if (count($parts) == 2 && $parts[0] == $key) {
-                return [
-                    "key" => $parts[0],
-                    "secret" => $parts[1]
-                ];
-            }
-        }
-        return null;
+        return $this->deserialize()[$key] ?? null;
     }
 
     /**
@@ -86,11 +117,13 @@ class ApiKeyField extends BaseField
     public function all()
     {
         $result = [];
-        foreach (array_filter(explode("\n", $this->internalValue)) as $line) {
-            $parts = explode("|", $line);
-            if (count($parts) == 2) {
-                $result[] = ['key' => $parts[0], 'id' => base64_encode($parts[0])];
-            }
+        foreach ($this->deserialize() as $key => $item) {
+            $result[] = [
+                'key' => $key,
+                'id' => base64_encode($key),
+                'created' => $item['created'],
+                'descr' => $item['descr']
+            ];
         }
         return $result;
     }
@@ -102,18 +135,30 @@ class ApiKeyField extends BaseField
      */
     public function del(string $key)
     {
-        $found = false;
-        $tmp = '';
-        $searchkey = sprintf("%s|", $key);
-        foreach (array_filter(explode("\n", $this->internalValue)) as $line) {
-            if (strpos($line, $searchkey) === 0) {
-                $found = true;
-            } else {
-                $tmp .= sprintf("%s\n", $line);
-            }
+        $data = $this->deserialize();
+        if (isset($data[$key])) {
+            unset($data[$key]);
+            $this->serialize($data);
+            return true;
         }
-        $this->internalValue = $tmp;
-        return $found;
+        return false;
+    }
+
+    /**
+     * update api key description
+     * @param string $key
+     * @param string $value
+     * @return bool key found and updated
+     */
+    public function setDescription(string $key, string $value)
+    {
+        $data = $this->deserialize();
+        if (isset($data[$key])) {
+            $data[$key]['descr'] = $value;
+            $this->serialize($data);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -122,16 +167,15 @@ class ApiKeyField extends BaseField
      */
     public function add()
     {
+        $data = $this->deserialize();
         $result = [
             'key' => base64_encode(random_bytes(60)),
-            'secret' => base64_encode(random_bytes(60))
+            'secret' => base64_encode(random_bytes(60)),
+            'created' => (string)time(),
+            'descr' => ''
         ];
-        $new_items = array_merge(
-            array_filter(explode("\n", $this->internalValue)),
-            [sprintf("%s|%s", $result['key'], crypt($result['secret'], '$6$'))]
-        );
-
-        $this->internalValue = implode("\n", $new_items);
+        $data[$result['key']] = array_merge($result, ['secret' => crypt($result['secret'], '$6$')]);
+        $this->serialize($data);
         return $result;
     }
 }

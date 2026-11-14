@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<systemhealth>
+    <file-match>system-memory$</file-match>
+    <title>System Information - Memory </title>
+    <y-axis_label>Percentage</y-axis_label>
+    <field_units>
+        <active>%</active>
+        <inactive>%</inactive>
+        <free>%</free>
+        <cache>%</cache>
+        <wire>%</wire>
+    </field_units>
+</systemhealth>

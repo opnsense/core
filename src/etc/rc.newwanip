@@ -46,6 +46,9 @@ exit_on_bootup(function ($argument) {
     file_put_contents('/tmp/newwanip_' . $argument, $argument);
 }, [$argument]);
 
+/* merge pending changes when UI is processing */
+interfaces_merge_pending();
+
 if (empty($argument)) {
     $interface = 'wan';
     $device = get_real_interface($interface);

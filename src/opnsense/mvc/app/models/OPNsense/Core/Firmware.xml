@@ -5,7 +5,7 @@
     <items>
         <mirror type="StrictTextField">
             <ValidationMessage>The mirror URL contains invalid or unencoded characters.</ValidationMessage>
-            <Mask>/[^|"]+/</Mask>
+            <Mask>/[^|"']+/</Mask>
         </mirror>
         <flavour type="StrictTextField"/>
         <plugins type="StrictTextField"/>

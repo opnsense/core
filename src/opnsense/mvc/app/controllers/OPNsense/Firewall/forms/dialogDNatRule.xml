@@ -95,8 +95,7 @@
     </field>
     <field>
         <type>header</type>
-        <label>Source (advanced)</label>
-        <collapse>true</collapse>
+        <label>Source</label>
     </field>
     <field>
         <id>rule.source.not</id>

@@ -110,6 +110,9 @@
                             );
                         }
                         return container.html();
+                    },
+                    authority: function (column, row) {
+                        return row[column.id].split(',').join('<br/>');
                     }
                 }
             }
@@ -127,9 +130,16 @@
         });
 
         let grid_apikey = $("#grid-apikey").UIBootgrid({
-            search:'/api/auth/user/search_api_key/',
-            del:'/api/auth/user/del_api_key/',
-            datakey: 'id'
+            search:'/api/auth/user_api_key/search/',
+            get:'/api/auth/user_api_key/get/',
+            set:'/api/auth/user_api_key/set/',
+            del:'/api/auth/user_api_key/del/',
+            datakey: 'uuid',
+            commands: {
+                copy: {
+                    classname: undefined
+                }
+            }
         });
 
         /**
@@ -229,12 +239,14 @@
         }}
     </div>
     <div id="apikeys" class="tab-pane fade in">
-        <table id="grid-apikey" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogUser">
+        <table id="grid-apikey" class="table table-condensed table-hover table-striped table-responsive" data-editDialog="DialogApiKey">
             <thead>
                 <tr>
                     <th data-column-id="id" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                     <th data-column-id="username" data-type="string">{{ lang._('Username') }}</th>
                     <th data-column-id="key" data-type="string">{{ lang._('Api key') }}</th>
+                    <th data-column-id="created" data-type="string" data-formatter="datetime">{{ lang._('Created') }}</th>
+                    <th data-column-id="descr" data-type="string">{{ lang._('Description') }}</th>
                     <th data-column-id="commands" data-width="11em" data-formatter="commands" data-sortable="false">{{ lang._('Commands') }}</th>
                 </tr>
             </thead>
@@ -253,3 +265,4 @@
 </div>
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogEditUser,'id':formGridUser['edit_dialog_id'],'label':lang._('Edit User')])}}
+{{ partial("layout_partials/base_dialog",['fields':formDialogEditApiKey,'id':'DialogApiKey','label':lang._('API key')])}}

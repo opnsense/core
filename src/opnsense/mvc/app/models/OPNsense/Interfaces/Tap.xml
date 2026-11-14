@@ -1,0 +1,16 @@
+<model>
+    <mount>//OPNsense/Interfaces/taps</mount>
+    <version>1.0.0</version>
+    <description>TAP configuration</description>
+    <items>
+        <tap type="ArrayField">
+            <deviceId type="AutoNumberField">
+                <Required>Y</Required>
+            </deviceId>
+            <deviceName type="TextField" volatile="true"/>
+            <description type="DescriptionField">
+                <Required>Y</Required>
+            </description>
+        </tap>
+    </items>
+</model>

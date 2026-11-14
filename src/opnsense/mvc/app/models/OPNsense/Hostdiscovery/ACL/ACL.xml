@@ -1,6 +1,6 @@
 <acl>
     <page-hostdiscovery>
-        <name>Interfaces: Neighbors: Automatic discovery</name>
+        <name>Interfaces: Hostwatch</name>
         <description>Allow access to the hostdiscovery server</description>
         <patterns>
             <pattern>ui/hostdiscovery/settings</pattern>
@@ -10,7 +10,7 @@
         </patterns>
     </page-hostdiscovery>
     <page-diagnostics-logs-hostdiscovery>
-        <name>Interfaces: Neighbors: Discovery Log</name>
+        <name>Interfaces: Hostwatch: Log File</name>
         <description>Allow access to the host discovery Log File</description>
         <patterns>
             <pattern>ui/diagnostics/log/core/hostwatch/*</pattern>

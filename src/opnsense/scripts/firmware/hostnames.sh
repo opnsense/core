@@ -27,7 +27,7 @@
 # collect HTTPS URLs related to firmware and provide the
 # deduplicated host names thereof for further processing
 
-URLS=$(opnsense-update -M; opnsense-update -X)
+URLS=$(opnsense-update -M; opnsense-update -X; echo https://forum.opnsense.org)
 
 # Make a few assumptions about plugged package repositories:
 #

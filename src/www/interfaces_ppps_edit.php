@@ -185,8 +185,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if ($pconfig['idletimeout'] != '' && !is_numericint($pconfig['idletimeout'])) {
         $input_errors[] = gettext("The idle timeout value must be an integer.");
     }
-    if ($pconfig['username'] != '' && strpbrk($pconfig['username'], "\n\r") !== false) {
-        $input_errors[] = gettext('The username contains invalid characters.');
+
+    foreach ($pconfig as $key => $value) {
+      if (is_string($value) && strpbrk($value, "\n\r") !== false) {
+          $input_errors[] = sprintf(gettext('The %s field contains invalid characters.'), $key);
+      }
     }
 
     foreach ($pconfig['ports'] as $iface_idx => $iface) {

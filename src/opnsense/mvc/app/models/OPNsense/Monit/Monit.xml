@@ -36,7 +36,9 @@
                 <ValidationMessage>Port needs to be an integer value between 0 and 65535.</ValidationMessage>
             </port>
             <username type="StrictTextField"/>
-            <password type="StrictTextField"/>
+            <password type="StrictTextField">
+                <AllowSpaces>Y</AllowSpaces>
+            </password>
             <ssl type="BooleanField">
                 <Default>0</Default>
                 <Required>Y</Required>

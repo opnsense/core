@@ -38,14 +38,30 @@ use OPNsense\Routing\Gateways;
 
 class NetworkInterface extends BaseModel
 {
-    var $todo_file = '/tmp/.interfaces.todo';
+    private static $todo_filename = '/tmp/.interfaces.todo';
+
+    /**
+     * @param string $filename change target filename to ease testability
+     */
+    public static function setTodoFilename($filename)
+    {
+        self::$todo_filename = $filename;
+    }
+
+    /**
+     * @return filename used for pending interface changes
+     */
+    public static function getTodoFilename()
+    {
+        return self::$todo_filename;
+    }
 
     /**
      * @param array $payload data to store
      */
     private function store_if_todo($id, $payload)
     {
-        $fobj = new FileObject($this->todo_file, 'a+', 0600, LOCK_EX);
+        $fobj = new FileObject(self::$todo_filename, 'a+', 0600, LOCK_EX);
         $data = $fobj->readJson() ?? [];
         $data[$id] = array_merge($data[$id] ?? [], $payload);
         $fobj->truncate(0)->writeJson($data);
@@ -70,8 +86,8 @@ class NetworkInterface extends BaseModel
      */
     public function get_if_todo()
     {
-        if (is_file($this->todo_file)) {
-            return (new FileObject($this->todo_file, 'r'))->readJson() ?? [];
+        if (is_file(self::$todo_filename)) {
+            return (new FileObject(self::$todo_filename, 'r'))->readJson() ?? [];
         } else {
             return [];
         }
@@ -82,8 +98,8 @@ class NetworkInterface extends BaseModel
      */
     public function flush_todo()
     {
-        if (is_file($this->todo_file)) {
-            unlink($this->todo_file);
+        if (is_file(self::$todo_filename)) {
+            unlink(self::$todo_filename);
         }
     }
 
@@ -139,10 +155,12 @@ class NetworkInterface extends BaseModel
 
             /* compare config on an unsanitized copy to figure out actual changes */
             foreach ($this->interface->$key->toLegacy(false) as $prop => $value) {
-                if ($prop === 'dhcp6_norequest_dns' && !isset($intf->$prop)) {
-                    $curval = '0'; /* actually stored as dhcp6_request_dns in our model */
-                } elseif ($prop === 'disablevlanhwfilter' && !isset($intf->$prop)) {
-                    $curval = '0'; /* legacy omits writing '0' due to empty() */
+                if (
+                    in_array($prop, ['dhcp6-ia-pd-len', 'dhcp6_norequest_dns', 'disablevlanhwfilter']) &&
+                    !isset($intf->$prop)
+                ) {
+                    /* legacy keys which are omitted when set to '0' */
+                    $curval = '0';
                 } elseif (!isset($intf->$prop)) {
                     $curval = ($this->interface->$key->$prop instanceof BooleanField) ? '0' : '';
                 } else {

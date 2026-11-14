@@ -54,17 +54,17 @@ function set_language()
     }
 
     $lang_encoding = $lang . '.UTF-8';
-
-    putenv('LANG=' . $lang_encoding);
-    putenv('LANGUAGE=' . $lang_encoding);
-    putenv('LC_ALL=' . $lang_encoding);
-    setlocale(LC_ALL, $lang_encoding);
-
     $textdomain = 'OPNsense';
+
+    $lang_locale = setlocale(LC_ALL, $lang_encoding, 'en_US.UTF-8');
+
+    putenv('LANG=' . $lang_locale);
+    putenv('LANGUAGE=' . $lang_encoding);
+    putenv('LC_ALL=' . $lang_locale);
 
     textdomain($textdomain);
     bindtextdomain($textdomain, '/usr/local/share/locale');
-    bind_textdomain_codeset($textdomain, $lang_encoding);
+    bind_textdomain_codeset($textdomain, 'UTF-8');
 }
 
 /* DNS ReBinding attack prevention, return true when rebind detected*/

@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 
 """
-    Copyright (c) 2016-2019 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2016-2026 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -24,52 +24,37 @@
     CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
     ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
     POSSIBILITY OF SUCH DAMAGE.
-
-    --------------------------------------------------------------------------------------
-    returns the system routing table
 """
+import copy
 import subprocess
 import sys
 import ujson
 
 if __name__ == '__main__':
-    result = []
-    fieldnames=[]
-    if '-n' in sys.argv:
-        resolv = 'n'
-    else:
-        resolv = ''
-    sp = subprocess.run(['/usr/bin/netstat', '-rW' + resolv], capture_output=True, text=True)
-    current_proto = ""
-    for line in sp.stdout.split("\n"):
-        fields = line.split()
-        if len(fields) == 0:
+    result = {}
+    opts = '-rWn' if '-n' in sys.argv else '-rW'
+    data = subprocess.run(['/usr/bin/netstat', opts, '--libxo', 'json'], capture_output=True, text=True).stdout
+    payload = ujson.loads(data)
+    for token in ['statistics', 'route-information', 'route-table', 'rt-family']:
+        payload = payload[token] if token in payload else {}
+    for item in payload:
+        if not item.get('address-family', '').startswith('Internet'):
             continue
-        elif len(fields) == 1 and fields[0] == 'Internet:':
-            current_proto = 'ipv4'
-        elif len(fields) == 1 and  fields[0] == 'Internet6:':
-            current_proto = 'ipv6'
-        elif len(fields) > 2 and fields[0] == 'Destination' and fields[1] == 'Gateway':
-            fieldnames = list(map(lambda x : x.lower(), fields))
-        elif len(fields) > 2:
-            record = {'proto': current_proto}
-            for fieldid in range(len(fields)):
-                if len(fieldnames) > fieldid:
-                    record[fieldnames[fieldid]] = fields[fieldid]
-            # space out missing fields
-            for fieldname in fieldnames:
-                if fieldname not in record:
-                    record[fieldname] = ""
-            result.append(record)
+        ipproto = 'ipv6' if item.get('address-family') == 'Internet6' else 'ipv4'
+        for rtentry in item.get('rt-entry', []):
+            dest = rtentry['destination']
+            rtentry['proto'] = ipproto
+            rtentry['netif'] = rtentry.pop('interface-name')
+            if dest not in result:
+                result[dest] = rtentry
+            else:
+                # duplicate routes as children under a common destination
+                if '_children' not in result[dest]:
+                    result[dest]['_children'] = [copy.copy(result[dest])]
+                    for key in result[dest]:
+                        if key not in ['destination', 'proto', '_children']:
+                            result[dest][key] = None
+                result[dest]['_children'].append(rtentry)
 
-    # handle command line argument (type selection)
-    if len(sys.argv) > 1 and 'json' in sys.argv:
-        print(ujson.dumps(result))
-    else:
-        # output plain
-        print ('\t\t'.join(fieldnames))
-        frmt = "%(proto)s\t"
-        for fieldname in fieldnames:
-            frmt = frmt + "%("+fieldname+")s\t"
-        for record in result:
-            print (frmt%record)
+
+    print(ujson.dumps(list(result.values())))

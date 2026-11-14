@@ -114,7 +114,7 @@ class OverviewController extends ApiControllerBase
 
         /* abbreviated information */
         $ifinfo = json_decode($backend->configdpRun('interface list ifconfig', [$interface]), true);
-        $routes = json_decode($backend->configdRun('interface routes list -n json'), true);
+        $routes = json_decode($backend->configdRun('interface routes list -n'), true);
         $ifaddr = json_decode($backend->configdRun('interface address'), true);
 
         /* detailed information */

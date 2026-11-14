@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $pconfig = array();
 
     if (isset($_GET['savemsg'])) {
-        $savemsg = htmlspecialchars(sprintf(gettext($_GET['savemsg']), $username));
+        $savemsg = htmlspecialchars($_GET['savemsg']);
     } elseif (!empty($_SESSION['user_shouldChangePassword'])) {
         $savemsg = gettext('Your password does not match the selected security policies. Please provide a new one.');
     }
@@ -122,9 +122,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             write_config();
-
-            $unused_but_needed_for_translation = gettext('Saved settings for user "%s"');
-            header(url_safe('Location: /system_usermanager_passwordmg.php?savemsg=%s', array('Saved settings for user "%s"')));
+            header(url_safe('Location: /system_usermanager_passwordmg.php?savemsg=%s', [
+              sprintf(gettext('Saved settings for user "%s"'), $username)
+            ]));
             exit;
         }
     }

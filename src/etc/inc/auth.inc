@@ -366,7 +366,7 @@ function local_user_set(&$user, $userattrs = null)
 
     /* read from pw db if not provided (batch mode) */
     if ($userattrs === null) {
-        $fd = popen(exec_safe('/usr/sbin/pw usershow -n %s', $user_name), 'r');
+        $fd = popen(exec_safe('/usr/sbin/pw usershow -n %s 2> /dev/null', $user_name), 'r');
         $pwread = fgets($fd);
         pclose($fd);
         if (substr_count($pwread, ':')) {

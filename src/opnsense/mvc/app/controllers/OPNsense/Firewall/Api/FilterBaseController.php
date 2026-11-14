@@ -33,6 +33,7 @@ use OPNsense\Base\FieldTypes\PortField;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Core\Type;
 use OPNsense\Firewall\Alias;
 use OPNsense\Firewall\Category;
 use OPNsense\Firewall\Util;
@@ -130,8 +131,10 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
 
             /* create alias object for summary */
             Util::attachAliasObject(new Alias(true));
-            foreach (Alias::getCachedData()['aliases']['alias'] ?? [] as $alias) {
+            foreach (Alias::getCachedData()['aliases']['alias'] ?? [] as $uuid => $alias) {
                 $this->networks[$alias['name']] = [
+                    // XXX 'uuid' is included for ui edit actions, uuid=null therefore means not editable.
+                    'uuid' => Type::isUUID($uuid) ? $uuid : null,
                     'summary' => Util::aliasSummary($alias['name']),
                     'description' => $alias['description'],
                     'value' => $alias['name'],
@@ -286,19 +289,11 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
 
         $result['aliases']['items'] += $aliases;
 
-
         /*
          * XXX Eventually it might make more sense to instantate the
          * actual protocol fields of the rules in order to get the full
          * list of options in one go (modifying the model XML to
          * automatically get the correct values).
-         *
-         * This works using e.g.
-         *   (new Filter())->rules->rule->getTemplateNode()->source_port
-         * but loads all rules as a side effect if they exist which we
-         * want to avoid and raises the question how we're going to deal
-         * with every field's own setup as we can't simply derive one
-         * field's accepted values for another.
          */
         $skip_ports = array_map('strtolower', array_values($aliases));
         foreach (PortField::getWellKnown() as $service => $port) {

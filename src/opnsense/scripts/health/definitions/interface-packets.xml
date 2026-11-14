@@ -3,4 +3,10 @@
     <file-match>.*-packets$</file-match>
     <title>System Information - Packets </title>
     <y-axis_label>Packets/Second</y-axis_label>
+    <axis_formats>
+        <y>metric</y>
+    </axis_formats>
+    <tooltip_formats>
+        <y>metric</y>
+    </tooltip_formats>
 </systemhealth>

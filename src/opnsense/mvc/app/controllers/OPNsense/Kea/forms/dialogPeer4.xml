@@ -15,7 +15,6 @@
         <id>peer.url</id>
         <label>Url</label>
         <type>text</type>
-        <help>This specifies the URL of our server instance, which should use a different port than the control agent.
-        For example http://192.0.2.1:8001/</help>
+        <help>This specifies the URL of the HA listener for this peer. Use different ports for DHCPv4 and DHCPv6 listeners on the same address. For example http://192.0.2.1:8081/</help>
     </field>
 </form>

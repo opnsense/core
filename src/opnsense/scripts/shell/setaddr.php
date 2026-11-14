@@ -556,8 +556,10 @@ if ($config['system']['webgui']['protocol'] == 'https') {
 }
 
 if (console_prompt_for_yn('Restore web GUI access defaults?', 'n')) {
-    if (isset($config['system']['webgui']['noantilockout'])) {
-        unset($config['system']['webgui']['noantilockout']);
+    $filter = legacy_firewall_model();
+    if (!$filter->settings->filter->disable_anti_lockout->isEmpty()) {
+        $filter->settings->filter->disable_anti_lockout = '0';
+        $filter->serializeToConfig(false, true);
         $restart_webgui = true;
     }
     if (isset($config['system']['webgui']['interfaces'])) {
@@ -616,7 +618,7 @@ filter_configure_sync(true);
 
 if ($restart_dhcpd) {
     plugins_configure('dhcp', true);
-    plugins_configure('dns', true); /* dnsmasq dhcp */
+    plugins_configure('dns', true, [$interface]); /* dnsmasq dhcp */
 }
 
 if ($restart_webgui) {

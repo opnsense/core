@@ -184,6 +184,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     /* initialize fw plugin object */
     $fw = filter_core_get_initialized_plugin_system();
+    $settings = $fw->getSettings();
     filter_core_bootstrap($fw);
     $cnfint = iterator_to_array($fw->getInterfaceMapping());
     plugins_firewall($fw);
@@ -214,7 +215,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
                 'dstport' => $dstport,
                 'interface' => $interface,
                 'ipprotocol' => 'inet',
-                'log' => !empty($config['syslog']['logoutboundnat']),
+                'log' => !empty($settings['logging']['source_nat']),
                 'staticnatport' => !empty($dstport),
             ];
 
@@ -251,7 +252,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
             foreach ($config['schedules']['schedule'] as $sched) {
                 if ($sched['name'] == $rrule['sched']) {
                     if (!filter_get_time_based_rule_status($sched)) {
-                        if (!isset($config['system']['schedule_states'])) {
+                        if (empty($settings['filter']['schedule_states'])) {
                             $sched_kill_states[] = $rrule['label'];
                         }
                         /* disable rule, suffix label to mark end of schedule */
@@ -279,8 +280,7 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     service_log('.', $verbose);
 
-    /* enable pf if we need to, otherwise disable */
-    if (!isset($config['system']['disablefilter'])) {
+    if (empty($settings['filter']['disabled'])) {
         mwexecfm('/sbin/pfctl -e');
     } else {
         mwexecfm('/sbin/pfctl -d');
@@ -298,9 +298,10 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
 
     $limitrules = '';
 
-    if (!empty($config['system']['maximumtableentries'])) {
-        $limitrules .= "set limit table-entries {$config['system']['maximumtableentries']}\n";
-        set_single_sysctl('net.pf.request_maxcount', $config['system']['maximumtableentries']);
+    $maximumTableEntries = $settings['filter']['maximum_table_entries'];
+    if (!empty($maximumTableEntries)) {
+        $limitrules .= "set limit table-entries {$maximumTableEntries}\n";
+        set_single_sysctl('net.pf.request_maxcount', $maximumTableEntries);
     } else {
         $max_table_entries = filter_current_table_entries();
         $req_table_entries = filter_default_table_entries();
@@ -312,46 +313,64 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
 
-    if ($config['system']['optimization'] != '') {
-        $limitrules .= "set optimization {$config['system']['optimization']}\n";
-        if ($config['system']['optimization'] == "conservative") {
+    $optimization = $settings['filter']['optimization'];
+    if (!empty($optimization)) {
+        $limitrules .= "set optimization {$optimization}\n";
+        if ($optimization == 'conservative') {
             $limitrules .= "set timeout { udp.first 300, udp.single 150, udp.multiple 900 }\n";
         }
     } else {
         $limitrules .= "set optimization normal\n";
     }
 
-    if (!empty($config['system']['adaptivestart']) && !empty($config['system']['adaptiveend'])) {
-        $limitrules .= "set timeout { adaptive.start {$config['system']['adaptivestart']}, adaptive.end {$config['system']['adaptiveend']} }\n";
+    $adaptive_start = $settings['filter']['adaptive_start'];
+    $adaptive_end = $settings['filter']['adaptive_end'];
+    if ($adaptive_start !== '' && $adaptive_end !== '') {
+        $limitrules .= sprintf(
+            "set timeout { adaptive.start %s, adaptive.end %s }\n",
+            $adaptive_start,
+            $adaptive_end
+        );
     } else {
         $limitrules .= "set timeout { adaptive.start 0, adaptive.end 0 }\n";
     }
-    if (!empty($config['system']['state-policy'])) {
+
+    if (!empty($settings['filter']['state_policy'])) {
         $limitrules .= "set state-policy if-bound\n";
     }
 
-    if (!empty($config['system']['maximumstates'])) {
-        $limitrules .= "set limit states {$config['system']['maximumstates']}\n";
-        $limitrules .= "set limit src-nodes {$config['system']['maximumstates']}\n";
+    $maximumStates = $settings['filter']['maximum_states'];
+    if (!empty($maximumStates)) {
+        $limitrules .= "set limit states {$maximumStates}\n";
+        $limitrules .= "set limit src-nodes {$maximumStates}\n";
     } else {
         $max_states = filter_default_state_size();
         $limitrules .= "set limit states {$max_states}\n";
         $limitrules .= "set limit src-nodes {$max_states}\n";
     }
-    if (!empty($config['system']['maximumfrags'])) {
-        $limitrules .= "set limit frags {$config['system']['maximumfrags']}\n";
+
+    if (!empty($settings['filter']['maximum_fragments'])) {
+        $limitrules .= "set limit frags " . $settings['filter']['maximum_fragments'] . "\n";
     }
 
-    if (isset($config['system']['lb_use_sticky']) && is_numeric($config['system']['srctrack'] ?? null) && ($config['system']['srctrack'] > 0)) {
-        $limitrules .= "set timeout src.track {$config['system']['srctrack']}\n";
+    if (!empty($settings['filter']['lb_use_sticky']) && !empty($settings['filter']['source_tracking_timeout'])) {
+        $limitrules .= "set timeout src.track {$settings['filter']['source_tracking_timeout']}\n";
     }
 
-    if (!empty($config['system']['syncookies'])) {
-        $arange = "";
-        if ($config['system']['syncookies'] == "adaptive") {
-            $arange = "(start {$config['system']['syncookies_adaptstart']}%, end {$config['system']['syncookies_adaptend']}%)";
+    if (!empty($settings['filter']['syncookies'])) {
+        $range = '';
+        if (
+            $settings['filter']['syncookies'] == 'adaptive' &&
+            $settings['filter']['syncookies_adaptive_start'] != '' &&
+            $settings['filter']['syncookies_adaptive_end'] != ''
+        ) {
+            $range = sprintf(
+                '(start %s%%, end %s%%)',
+                $settings['filter']['syncookies_adaptive_start'],
+                $settings['filter']['syncookies_adaptive_end']
+            );
         }
-        $limitrules .= "set syncookies {$config['system']['syncookies']} {$arange}\n";
+        $limitrules .= "set syncookies {$settings['filter']['syncookies']} {$range}\n";
     }
 
     /* if pf already generated a hostid, reuse it */
@@ -360,10 +379,9 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         $limitrules .= "set hostid {$current_hostid}\n";
     }
 
-    $pfdebug = !empty($config['system']['pfdebug']) ? $config['system']['pfdebug'] : 'urgent';
-    $limitrules .= "set debug {$pfdebug}\n";
+    $limitrules .= "set debug {$settings['logging']['debug']}\n";
 
-    if (!empty($config['system']['keepcounters'])) {
+    if (!empty($settings['filter']['keep_counters'])) {
         $limitrules .= "set keepcounters\n";
     }
 
@@ -378,15 +396,15 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         }
     }
     $rules .= "\n";
-    $rules .= filter_generate_scrubbing();
+    $rules .= filter_generate_scrubbing($settings);
     $rules .= "\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'head');
     $rules .= "{$natrules}\n";
     $rules .= $fw->anchorToText('nat,binat,rdr', 'tail');
     /* Generated scrub matches are filter rules and must follow translation rules. */
-    $rules .= filter_generate_scrub_rules($cnfint);
+    $rules .= filter_generate_scrub_rules($cnfint, $settings);
     $rules .= $fw->anchorToText('fw', 'head');
-    $rules .= filter_rules_legacy($cnfint);
+    $rules .= filter_rules_legacy($cnfint, $settings);
     $rules .= $fw->outputFilterRules();
     $rules .= $fw->anchorToText('fw', 'tail');
 
@@ -438,6 +456,17 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
         return;
     }
 
+    /* flush non mvc ruleset to disk for the frontend to use */
+    \OPNsense\Core\File::file_put_contents(
+        '/tmp/rules_internal.json',
+        json_encode([
+            'filter' => $fw->getFilterRules(['default']),
+            'source_nat' => plugins_run('rules_source_nat'),
+            'destination_nat' => plugins_run('rules_destination_nat'),
+        ]),
+        0640,
+        0
+    );
     unlink('/tmp/rules.debug.error');
 
     service_log('.', $verbose);
@@ -467,36 +496,37 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     service_log("done.\n", $verbose);
 }
 
-function filter_generate_scrubbing()
+function filter_generate_scrubbing($settings)
 {
-    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'filter', false);
-    $enabled = !isset($settings['scrub_enabled']) || !empty($settings['scrub_enabled']);
+    $enabled = !empty($settings['filter']['scrub_enabled']);
 
-    /* Fragment reassembly is a global option with the modern scrub syntax. */
-    return sprintf("set reassemble %s%s\n", $enabled ? 'yes' : 'no', $enabled && !empty($settings['scrub_no_df']) ? ' no-df' : '');
+    /* fragment reassembly is a global option with the modern scrub syntax. */
+    return sprintf("set reassemble %s%s\n", $enabled ? 'yes' : 'no', $enabled && !empty($settings['filter']['scrub_no_df']) ? ' no-df' : '');
 }
 
-function filter_generate_scrub_rules(&$FilterIflist)
+function filter_generate_scrub_rules(&$FilterIflist, $settings)
 {
-    $settings = config_read_array('OPNsense', 'Firewall', 'Filter', 'settings', 'filter', false);
+    $enabled = !empty($settings['filter']['scrub_enabled']);
     $scrubrules = '';
-    $enabled = !isset($settings['scrub_enabled']) || !empty($settings['scrub_enabled']);
+
     if (!$enabled) {
         return $scrubrules;
     }
 
-    if (!empty($settings['scrub_random_id'])) {
+    if (!empty($settings['filter']['scrub_random_id'])) {
         $scrubrules .= "match in inet all scrub ( random-id )\n";
     }
+
     foreach ($FilterIflist as $scrubcfg) {
         if (is_numeric($scrubcfg['mss'] ?? '')) {
-            /**
-             * The interface value is an MTU, while PF expects the TCP payload MSS.
-             * Keep random-id on these bidirectional rules to preserve the old interface scrub behavior.
+            /*
+             * The interface value is an MTU, while PF expects the TCP
+             * payload MSS.  Keep random-id on these bidirectional rules
+             * to preserve the old interface scrub behavior.
              */
             $mssclampv4 = 'max-mss ' . (intval($scrubcfg['mss'] - 40));
             $mssclampv6 = 'max-mss ' . (intval($scrubcfg['mss'] - 60));
-            $random_id = !empty($settings['scrub_random_id']) ? ' random-id' : '';
+            $random_id = !empty($settings['filter']['scrub_random_id']) ? ' random-id' : '';
             $scrubrules .= "match on {$scrubcfg['if']} inet all scrub ( {$mssclampv4}{$random_id} )\n";
             $scrubrules .= "match on {$scrubcfg['if']} inet6 all scrub ( {$mssclampv6}{$random_id} )\n";
         }
@@ -560,11 +590,9 @@ function filter_generate_aliases()
     return $aliases;
 }
 
-function filter_rules_legacy(&$FilterIflist)
+function filter_rules_legacy(&$FilterIflist, $settings)
 {
-    global $config;
-
-    $log = !isset($config['syslog']['nologdefaultblock']) ? 'log' : '';
+    $log = !empty($settings['logging']['default_block']) ? 'log' : '';
     $bridge_interfaces = [];
     $ipfrules = '';
 

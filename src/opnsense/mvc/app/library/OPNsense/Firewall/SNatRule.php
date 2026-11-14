@@ -28,6 +28,8 @@
 
 namespace OPNsense\Firewall;
 
+use OPNsense\Base\FieldTypes\PortField;
+
 /**
  * Class SNatRule, outbound / source nat rules
  * @package OPNsense\Firewall
@@ -125,7 +127,13 @@ class SNatRule extends Rule
                     }
                 }
                 if (!empty($rule[$fieldname]) && !str_starts_with((string)$rule[$fieldname], '$')) {
-                    $rule[$fieldname] = str_replace('-', ':', $rule[$fieldname]); // range interpretation
+                    $known = PortField::getWellKnown($rule[$fieldname]);
+                    $port = str_replace('-', ':', $rule[$fieldname]); // range interpretation
+                    if (!empty($known)) {
+                        $rule[$fieldname] = array_shift($known);
+                    } elseif (Util::isPort($port, true)) {
+                        $rule[$fieldname] = $port;
+                    }
                 }
             }
             if (empty($rule['poolopts']) || $rule['poolopts'] != "source-hash") {

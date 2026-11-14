@@ -165,7 +165,8 @@
                     let sub = $(this).val();
                     let category = $('#health-category-select').val();
                     let system = `${sub}-${category}`;
-                    await healthGraph.update(system);
+                    const logarithmic = await healthGraph.update(system);
+                    $('#logarithmic-select').prop('checked', logarithmic);
                     $('#spinner').hide();
                 });
 
@@ -184,13 +185,21 @@
 
                 $('#detail-select').change(async function() {
                     $('#spinner').show();
-                    await healthGraph.update(null, $(this).val());
+                    const logarithmic = await healthGraph.update(null, $(this).val());
+                    $('#logarithmic-select').prop('checked', logarithmic);
                     $('#spinner').hide();
                 });
 
                 $("#stacked-select").change(async function() {
                     $('#spinner').show();
-                    await healthGraph.update(null, null, $(this).is(':checked'));
+                    const logarithmic = await healthGraph.update(null, null, $(this).is(':checked'));
+                    $('#logarithmic-select').prop('checked', logarithmic);
+                    $('#spinner').hide();
+                });
+
+                $("#logarithmic-select").change(async function() {
+                    $('#spinner').show();
+                    await healthGraph.update(null, null, null, true, $(this).is(':checked'));
                     $('#spinner').hide();
                 });
 
@@ -291,6 +300,11 @@
                 <div class="label-select-pair" style="height: 55px">
                     <label for="stacked-select"><b>{{ lang._('Stacked') }}</b></label>
                     <input id="stacked-select" type="checkbox"/>
+                </div>
+
+                <div class="label-select-pair" style="height: 55px">
+                    <label for="logarithmic-select"><b>{{ lang._('Logarithmic') }}</b></label>
+                    <input id="logarithmic-select" type="checkbox"/>
                 </div>
 
                 <button id="export" class="btn btn-default" data-toggle="tooltip" data-original-title="{{ lang._('Export current selection as CSV')}}" style="align-self: flex-end;">

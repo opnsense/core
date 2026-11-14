@@ -143,10 +143,12 @@ def cmd_rehash(*args, **kwargs):
                 is_ut = target_name == 'untrusted'
                 src_filename = record['filename']
                 dst_filename = "%s/%s" % (UNTRUSTDESTDIR if is_ut else CERTDESTDIR, pattern % seq)
-                if not is_ut and hash in targets['untrusted']:
+                if not is_ut and pattern in targets['untrusted']:
                     print(
-                        "Skipping untrusted certificate %s (%s/%s)" % (filename, UNTRUSTDESTDIR, pattern % seq)
+                        "Skipping untrusted certificate %s (%s/%s)" % (src_filename, UNTRUSTDESTDIR, pattern % seq)
                     )
+                    if os.path.isfile('%s/%s' % (CERTDESTDIR, pattern % seq)):
+                        changes += 1
                     continue
 
                 current_target_files.append(dst_filename)

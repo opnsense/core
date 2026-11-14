@@ -33,8 +33,10 @@ use OPNsense\Base\BaseModel;
 use OPNsense\Base\Messages\Message;
 use OPNsense\Core\Config;
 use OPNsense\Dnsmasq\Dnsmasq;
+use OPNsense\Firewall\Filter;
 use OPNsense\Firewall\Util;
 use OPNsense\Routing\Gateways;
+use OPNsense\Unbound\Unbound;
 
 /**
  * wrapper model class to update various configuration parts in a controlled way for the setup wizard
@@ -133,17 +135,19 @@ class InitialSetup extends BaseModel
             $this->interfaces->lan->configure_dhcp = '0';
             $this->interfaces->lan->disable = '1';
         }
-        if (
-            $this->getConfigItem('system.pf_disable_force_gw', true) ||
-            $this->getConfigItem('system.disablereplyto', true)
-        ) {
+
+        $mdl = new Filter();
+        if (!$mdl->settings->filter->pf_disable_force_gw->isEmpty() || !$mdl->settings->filter->disable_reply_to->isEmpty()) {
             $this->deployment_type->multiwan = '0';
         } else {
             $this->deployment_type->multiwan = '1';
         }
+
         foreach ((new Tunables())->item->iterateItems() as $node) {
             if ($node->tunable == 'net.isr.maxthreads' && $node->value->isEqual('-1')) {
                 $this->deployment_type->maxthreads = '1';
+            } elseif ($node->tunable == 'net.route.multipath' && $node->value->isEqual('1')) {
+                $this->deployment_type->multipath = '1';
             }
         }
 
@@ -425,18 +429,21 @@ class InitialSetup extends BaseModel
     private function flush_deployment_type()
     {
         $target = Config::getInstance()->object();
+        $mdl = new Filter();
+
         if ($this->deployment_type->multiwan->isEmpty()) {
-            $target->system->pf_disable_force_gw = '1';
-            $target->system->disablereplyto = '1';
+            $mdl->settings->filter->pf_disable_force_gw = '1';
+            $mdl->settings->filter->disable_reply_to = '1';
         } else {
-            unset($target->system->pf_disable_force_gw);
-            unset($target->system->disablereplyto);
+            $mdl->settings->filter->pf_disable_force_gw = '0';
+            $mdl->settings->filter->disable_reply_to = '0';
         }
+        $mdl->serializeToConfig(false, true);
 
         if (!$this->deployment_type->dhcp_dns_registration->isEmpty()) {
             /* only configure when set (do not touch otherwise) */
             $target->dnsmasq->port = '53053';
-            $mdl = new \OPNsense\Unbound\Unbound();
+            $mdl = new Unbound();
             foreach ($mdl->dots->dot->iterateItems() as $uuid => $dot) {
                 if ($dot->server->isEqual('127.0.0.1')) {
                     /* likely existing local domain forward, remove */
@@ -454,31 +461,36 @@ class InitialSetup extends BaseModel
             $mdl->serializeToConfig(false, true);
         }
 
-        /* net.isr.maxthreads (IPsec optimalisations) */
+        /**
+         * Tunables:
+         * net.isr.maxthreads (IPsec optimalisations)
+         * net.route.multipath (ECMP)
+         **/
         $mdl = new Tunables();
-        if ($this->deployment_type->maxthreads->isEmpty()) {
-            foreach ($mdl->item->iterateItems() as $uuid => $node) {
-                if ($node->tunable == 'net.isr.maxthreads' && $node->value->isEqual('-1')) {
-                    $mdl->item->Del($uuid);
-                    $mdl->serializeToConfig(false, true);
-                    break;
-                }
+        $sysctl_match = [];
+        $sysctl_vals = [
+            'net.isr.maxthreads' => !$this->deployment_type->maxthreads->isEmpty() ? '-1' : false,
+            'net.route.multipath' => !$this->deployment_type->multipath->isEmpty() ? '1' : false,
+        ];
+        foreach ($mdl->item->iterateItems() as $uuid => $node) {
+            if (isset($sysctl_vals[$node->tunable->getValue()])) {
+                $sysctl_match[$node->tunable->getValue()] = $node;
             }
-        } else {
-            $isrnode = null;
-            foreach ($mdl->item->iterateItems() as $node) {
-                if ($node->tunable == 'net.isr.maxthreads') {
-                    $isrnode = $node;
-                    break;
-                }
-            }
-            if ($isrnode === null) {
-                $isrnode = $mdl->item->Add();
-                $isrnode->tunable = 'net.isr.maxthreads';
-            }
-            $isrnode->value = '-1';
-            $mdl->serializeToConfig(false, true);
         }
+        foreach ($sysctl_vals as $tag => $value) {
+            if ($value === false && isset($sysctl_match[$tag])) {
+                $mdl->item->Del($sysctl_match[$tag]->getAttribute('uuid'));
+            } elseif ($value !== false) {
+                if (isset($sysctl_match[$tag])) {
+                    $node = $sysctl_match[$tag];
+                } else {
+                    $node = $mdl->item->Add();
+                    $node->tunable = $tag;
+                }
+                $node->value = $value;
+            }
+        }
+        $mdl->serializeToConfig(false, true);
     }
 
     /**

@@ -1,0 +1,16 @@
+<model>
+    <mount>:memory:</mount>
+    <version>1.0.0</version>
+    <description>User API keys</description>
+    <items>
+        <apikey type="ArrayField">
+            <username type="TextField"/>
+            <key type="TextField"/>
+            <created type="TextField"/>
+            <descr type="DescriptionField">
+                <!-- exclude field separator as extra condition -->
+                <Mask>/^[^|]+$/</Mask>
+            </descr>
+        </apikey>
+    </items>
+</model>

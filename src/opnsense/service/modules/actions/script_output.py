@@ -83,9 +83,10 @@ class Action(BaseAction):
                 with open(output_filename, 'a+') as output_stream:
                     fcntl.flock(output_stream, fcntl.LOCK_EX)
                     if script_hash:
+                        # expire at requested interval, minus (-1) equals "end of time"
                         Action.cached_results[script_hash] = {
                             'filename': output_filename,
-                            'expire': time.time() + self.cache_ttl
+                            'expire': time.time() + self.cache_ttl if self.cache_ttl >= 0 else float("inf")
                         }
                     # explicit flush, file may be reused
                     output_stream.seek(0)

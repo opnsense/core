@@ -1097,7 +1097,7 @@ function interface_ppps_configure($interface)
         foreach ($ports as $pid => $port) {
             $ports[$pid] = get_real_interface($port);
             if (empty($ports[$pid])) {
-                log_msg("PPP {$ifcfg['if']} port {$ports[$pid]} resolves to empty device.", LOG_ERR);
+                log_msg("PPP {$ifcfg['if']} port {$port} resolves to empty device.", LOG_ERR);
                 return false;
             }
         }
@@ -2428,19 +2428,19 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
             mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv -no_dad -ifdisabled up', $device);
             break;
         case '6rd':
-            interface_6rd_configure($interface, $wancfg, $reload || $linkup);
             mwexecf('/sbin/ifconfig %s inet6 -no_dad description %s up', [$realifv6, $ifdescr]);
+            interface_6rd_configure($interface, $wancfg, $reload || $linkup);
             break;
         case '6to4':
-            interface_6to4_configure($interface, $wancfg, $reload || $linkup);
             mwexecf('/sbin/ifconfig %s inet6 -no_dad description %s up', [$realifv6, $ifdescr]);
+            interface_6to4_configure($interface, $wancfg, $reload || $linkup);
             break;
         case 'idassoc6':
         case 'track6':
             interface_track6_configure($interface, $wancfg, $reload || $linkup);
             break;
         case 'none':
-            /* no extra changes: "no_dad" and "ifdisabled" is not touched esp. relevant for tunnels */
+            /* no extra changes: "no_dad" and "ifdisabled" are not touched esp. relevant for tunnels */
             break;
         default:
             if (!interface_ppps_bound($interface)) {
@@ -2461,8 +2461,8 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         system_routing_configure($verbose, $interface);
         plugins_configure('ipsec', $verbose, [$interface]);
         plugins_configure('dhcp', $verbose);
-        plugins_configure('dns', $verbose);
-        plugins_configure('updateip', $verbose, [[$interface]]);
+        plugins_configure('dns', $verbose, [$interface]);
+        plugins_configure('updateip', $verbose, [$interface]);
     }
 
     /* XXX device dependency plugin hook */
@@ -2493,9 +2493,11 @@ function interface_track6_configure($interface, $lancfg, $reload = false)
     switch ($wancfg['ipaddrv6']) {
         case '6to4':
             interface_track6_6to4_configure($interface, $lancfg);
+            waitfordad();
             break;
         case '6rd':
             interface_track6_6rd_configure($interface, $lancfg);
+            waitfordad();
             break;
         case 'dhcp6':
             if ($reload || !isset($lancfg['enable'])) {
@@ -4122,4 +4124,32 @@ function interfaces_primary_address6($interface, $ifconfig_details = null)
     }
 
     return _interfaces_primary_address6($interface, $ifconfig_details, false, false);
+}
+
+/*
+ * This is specifically for rc.newwanip(v6) to merge configuration
+ * items when the controller is locking (processing) our working file.
+ */
+function interfaces_merge_pending()
+{
+    $filename = '/tmp/.interfaces.todo';
+
+    $fp = @fopen($filename, 're');
+    if ($fp === false) {
+        return;
+    }
+
+    $interfaces = &config_read_array('interfaces');
+
+    if (!flock($fp, LOCK_EX | LOCK_NB)) {
+        foreach (json_decode(fread($fp, filesize($filename)), true) ?? [] as $uuid => $work) {
+            if ($work['pending_action'] == 'delete') {
+                unset($interfaces[$uuid]);
+            } else {
+                $interfaces[$uuid] = $work['pending'];
+            }
+        }
+    }
+
+    fclose($fp);
 }

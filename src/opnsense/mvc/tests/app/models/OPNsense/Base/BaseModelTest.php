@@ -84,6 +84,23 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     /**
      * @depends testRunMigrations
      */
+    public function testCanUseDefaultValue()
+    {
+        self::$model->general->FromEmail = 'test@test.nl';
+        $this->assertEquals(self::$model->general->FromEmail->getDefault(), 'sample@example.com');
+        $this->assertFalse(self::$model->general->FromEmail->isDefault());
+        self::$model->general->FromEmail->applyDefault();
+        $this->assertEquals(self::$model->general->FromEmail->getDefault(), 'sample@example.com');
+        $this->assertTrue(self::$model->general->FromEmail->isDefault());
+        self::$model->general->FromEmail = 'test@test.nl';
+        self::$model->general->FromEmail->setDefault('test@test.nl');
+        $this->assertTrue(self::$model->general->FromEmail->isDefault());
+        $this->assertEquals(self::$model->general->FromEmail->getDefault(), 'test@test.nl');
+    }
+
+    /**
+     * @depends testRunMigrations
+     */
     public function testCannotSetNonExistingField()
     {
         $this->expectException(\InvalidArgumentException::class);

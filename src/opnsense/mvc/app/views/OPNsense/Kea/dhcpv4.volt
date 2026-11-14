@@ -77,7 +77,12 @@
                             },
                             options: {
                                 triggerEditFor: getUrlHash('edit'),
-                                initialSearchPhrase: getUrlHash('search')
+                                initialSearchPhrase: getUrlHash('search'),
+                                formatters: {
+                                    interface: function(column, row) {
+                                        return row["%" + column.id] || row[column.id] || "{{ lang._('Any') }}";
+                                    },
+                                },
                             },
                             commands: {
                                 upload_reservations: {

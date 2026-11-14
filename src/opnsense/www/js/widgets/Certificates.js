@@ -78,7 +78,7 @@ export default class Certificates extends BaseTableWidget {
             if (!hiddenItems.includes(item.uuid)) {
                 const validTo = new Date(parseInt(item.valid_to) * 1000);
                 const now = new Date();
-                const remainingDays = Math.max(0, Math.floor((validTo - now) / (1000 * 60 * 60 * 24)));
+                const remainingDays = Math.max(0, Math.ceil((validTo - now) / (1000 * 60 * 60 * 24)));
 
                 const colorClass = remainingDays === 0
                     ? 'text-danger'

@@ -32,6 +32,7 @@ use OPNsense\Base\ApiControllerBase;
 use OPNsense\Core\Backend;
 use OPNsense\Auth\AuthenticationFactory;
 use OPNsense\CaptivePortal\CaptivePortal;
+use OPNsense\CaptivePortal\FieldTypes\OriginField;
 
 /**
  * Class AccessController
@@ -40,6 +41,15 @@ use OPNsense\CaptivePortal\CaptivePortal;
 class AccessController extends ApiControllerBase
 {
     private array $arp = [];
+    private ?CaptivePortal $model = null;
+
+    private function getModel()
+    {
+        if ($this->model === null) {
+            $this->model = new CaptivePortal();
+        }
+        return $this->model;
+    }
 
     /**
      * request client session data
@@ -66,8 +76,7 @@ class AccessController extends ApiControllerBase
 
         // return Unauthorized including authentication requirements
         $result = ['clientState' => "NOT_AUTHORIZED", "ipAddress" => $clientIp];
-        $mdlCP = new CaptivePortal();
-        $cpZone = $mdlCP->getByZoneID($zoneid);
+        $cpZone = $this->getModel()->getByZoneID($zoneid);
         if ($cpZone != null && (string)$cpZone->extendedPreAuthData == '1') {
             $mac = $this->getClientMac($result['ipAddress']);
             if (!empty($mac)) {
@@ -170,7 +179,7 @@ class AccessController extends ApiControllerBase
                 $result = [];
                 $clientSession = $this->clientSession($zoneId);
                 $captive = $clientSession["clientState"] != "AUTHORIZED";
-                $zone = (new \OPNsense\CaptivePortal\CaptivePortal())->getByZoneId($zoneId);
+                $zone = $this->getModel()->getByZoneId($zoneId);
 
                 if ($zone != null && !empty($clientSession['startTime'])) {
                     $startTime = (int)$clientSession['startTime'];
@@ -221,8 +230,19 @@ class AccessController extends ApiControllerBase
     public function beforeExecuteRoute($dispatcher)
     {
         // disable standard authentication in CaptivePortal Access API calls.
-        // set CORS headers
-        $this->response->setHeader("Access-Control-Allow-Origin", "*");
+        // Grant cross-origin browser access according to the policy of the zone proxying this request.
+        $origin = OriginField::normalizeOrigin($this->request->getHeader('Origin'));
+        $zone = $this->getModel()->getByZoneID($this->request->getHeader('zoneid'));
+        if ($zone != null && (string)$zone->corsPolicy === 'listed') {
+            $this->response->setHeader('Vary', 'Origin');
+            // Omitting Access-Control-Allow-Origin denies cross-origin browser access. Requests without a
+            // valid Origin header are still processed normally for same-origin and non-browser clients.
+            if ($origin !== null && in_array($origin, $zone->corsOrigins->getValues(), true)) {
+                $this->response->setHeader('Access-Control-Allow-Origin', $origin);
+            }
+        } elseif ($zone != null && (string)$zone->corsPolicy === 'any') {
+            $this->response->setHeader('Access-Control-Allow-Origin', '*');
+        }
         $this->response->setHeader("Access-Control-Allow-Methods", "OPTIONS, GET, POST");
     }
 
@@ -248,8 +268,7 @@ class AccessController extends ApiControllerBase
             $userName = $this->request->getPost("user", "striptags", null);
 
             // search zone info, to retrieve list of authenticators
-            $mdlCP = new CaptivePortal();
-            $cpZone = $mdlCP->getByZoneID($zoneid);
+            $cpZone = $this->getModel()->getByZoneID($zoneid);
             if ($cpZone != null) {
                 if (trim((string)$cpZone->authservers) != "") {
                     // authenticate user

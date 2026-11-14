@@ -32,54 +32,54 @@ require_once("system.inc");
 require_once("config.inc");
 require_once("util.inc");
 
-if (is_array($config['interfaces'])) {
-    $to_configure = [];
-    $todos = [];
+$filename = '/tmp/.interfaces.todo';
 
-    if (is_file('/tmp/.interfaces.todo')) {
-        $todos = (new \OPNsense\Core\FileObject('/tmp/.interfaces.todo', 'r'))->readJson() ?? [];
-    }
+$todos = (new \OPNsense\Core\FileObject($filename, 'r'))->readJson();
+if (empty($todos)) {
+    exit(0);
+}
 
-    foreach ($config['interfaces'] as $id => $ifcfg) {
-        if (!isset($todos[$id])) {
+$interfaces = &config_read_array('interfaces');
+$uuids = [];
+
+foreach ($todos as $uuid => $work) {
+    if (in_array($work['pending_action'], ['delete', 'relink'])) {
+        interface_reset($uuid);
+        if ($work['pending_action'] == 'delete') {
             continue;
         }
-        $pending_act = $todos[$id]['pending_action'] ?? '';
-        if (in_array($pending_act, ['delete', 'relink'])) {
-            interface_reset($id);
-            if ($pending_act == 'relink') {
-                $to_configure[] = $id;
-            }
-        } else {
-            $to_configure[] = $id;
-            /* suspend only when we are changing the enabled status */
-            interface_reset($id, false, !empty($ifcfg['enable']) && !empty($todos[$id]['pending']['enable']));
-        }
+    } else {
+        /* suspend only when we are changing the enabled status */
+        interface_reset($uuid, false, !empty($interfaces[$uuid]['enable']) && !empty($work['pending']['enable']));
     }
 
-    foreach (array_keys($todos) as $id) {
-        if (!isset($config['interfaces'][$id])) {
-            $to_configure[] = $id; /* new interface */
-        }
-    }
+    $uuids[] = $uuid;
+}
 
-    foreach ($to_configure as $ifname) {
-        $config['interfaces'][$ifname] = $todos[$ifname]['pending'];
-    }
+if (!count($uuids)) {
+    exit(0);
+}
 
-    foreach ($to_configure as $ifname) {
-        interface_configure(true, $ifname, true, false, true);
-    }
-
-    if (!empty($to_configure)) {
-        system_routing_configure(true, $to_configure);
-
-        plugins_configure('ipsec', true, $to_configure);
-        plugins_configure('dhcp', true);
-        plugins_configure('dns', true);
-        plugins_configure('updateip', true, [$to_configure]);
-
-        interfaces_pfsync_configure();
-        interface_proxyarp_configure();
+foreach ($todos as $uuid => $work) {
+    if ($work['pending_action'] == 'delete') {
+        unset($interfaces[$uuid]);
+    } else {
+        $interfaces[$uuid] = $work['pending'];
     }
 }
+
+/* XXX at this point interfaces_merge_pending() should start working */
+
+foreach ($uuids as $uuid) {
+    interface_configure(true, $uuid, true, false, true);
+}
+
+system_routing_configure(true, $uuids);
+
+plugins_configure('ipsec', true, [$uuids]);
+plugins_configure('dhcp', true);
+plugins_configure('dns', true, [$uuids]);
+plugins_configure('updateip', true, [$uuids]);
+
+interfaces_pfsync_configure();
+interface_proxyarp_configure();

@@ -27,6 +27,13 @@
 <script>
 
     $( document ).ready(function() {
+        function updateCorsOriginsVisibility() {
+            const showAdvanced = $("#show_advanced_{{formGridZone['edit_dialog_id']}}")
+                .hasClass("fa-toggle-on");
+            const corsPolicy = $("#zone\\.corsPolicy").val();
+            $("#row_zone\\.corsOrigins").toggle(showAdvanced && corsPolicy === 'listed');
+        }
+
         /*************************************************************************************************************
          * link grid actions
          *************************************************************************************************************/
@@ -43,6 +50,12 @@
                 }
             }
         );
+
+        $("#zone\\.corsPolicy").change(updateCorsOriginsVisibility);
+        $("#show_advanced_{{formGridZone['edit_dialog_id']}}").click(function() {
+            $("#zone\\.corsPolicy").change();
+        });
+        $("#{{formGridZone['edit_dialog_id']}}").on('shown.bs.modal', updateCorsOriginsVisibility);
 
         $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
             if (e.target.id == 'templates_tab') {

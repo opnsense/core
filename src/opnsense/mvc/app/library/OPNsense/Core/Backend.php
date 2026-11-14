@@ -85,7 +85,7 @@ class Backend
             sleep(1);
             $timeout_wait -= 1;
             if ($timeout_wait <= 0) {
-                if (file_exists($this->configdSocket) ) {
+                if (file_exists($this->configdSocket)) {
                     $this->getLogger()->error("Failed to connect to configd socket: $errorMessage while executing " . $event);
                     return null;
                 } else {

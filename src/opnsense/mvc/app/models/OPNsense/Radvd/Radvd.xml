@@ -127,6 +127,11 @@
                 <NetMaskRequired>Y</NetMaskRequired>
                 <AddressFamily>ipv6</AddressFamily>
             </nat64prefix>
+            <nat64prefixLifetime type="IntegerField">
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>4294967295</MaximumValue>
+                <ValidationMessage>Value must be between 1 and 4294967295.</ValidationMessage>
+            </nat64prefixLifetime>
             <AdvCurHopLimit type="IntegerField">
                 <Default>64</Default>
                 <Required>Y</Required>

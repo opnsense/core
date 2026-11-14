@@ -74,6 +74,7 @@ class PrivController extends ApiMutableModelControllerBase
                 'match' => implode("\n", $props['match'] ?? []),
                 'users' =>  $userprivs[$auth] ?? [],
                 'groups' =>  $groupprivs[$auth] ?? [],
+                'authority' =>  $props['authority'] ?? [],
             ];
         }
         return $this->searchRecordsetBase($records);

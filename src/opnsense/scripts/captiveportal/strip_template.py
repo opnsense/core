@@ -39,6 +39,8 @@ import base64
 from io import BytesIO
 from hashlib import md5
 
+MAX_SIZE = 50 * 1024 * 1024
+
 htdocs_default_root = '%s/htdocs_default' % os.path.realpath(os.path.dirname(__file__))
 
 
@@ -67,11 +69,28 @@ if 'error' not in response:
         with zipfile.ZipFile(output_data, mode='w', compression=zipfile.ZIP_DEFLATED) as zf_out:
             # the zip content may be in a folder, use index to track actual location
             index_location = None
+            total_size = 0
+            total_items = 0
             for zf_info in zf_in.infolist():
+                total_items += 1
                 if zf_info.filename.find('index.html') > -1:
                     if index_location is None or len(index_location) > len(zf_info.filename):
                         index_location = zf_info.filename.replace('index.html', '')
-            if index_location is not None:
+                info = zf_in.getinfo(zf_info.filename)
+                with zf_in.open(info) as src:
+                    for chunk in iter(lambda: src.read(1024), b""):
+                        total_size += len(chunk)
+                        # max output size 50MB
+                        if total_size > MAX_SIZE:
+                            break
+                    else:
+                        continue
+                    break
+            if total_size > MAX_SIZE:
+                response['error'] = 'Max size exceeded'
+            elif total_items > 1000:
+                response['error'] = 'Too many files'
+            elif index_location is not None:
                 for zf_info in zf_in.infolist():
                     if zf_info.filename[-1] != '/':
                         filename = zf_info.filename.replace(index_location, '')

@@ -39,6 +39,7 @@
 /usr/local/etc/inc/plugins.inc.d/pf.inc
 /usr/local/etc/inc/plugins.inc.d/radvd.inc
 /usr/local/etc/inc/plugins.inc.d/suricata.inc
+/usr/local/etc/inc/plugins.inc.d/tap.inc
 /usr/local/etc/inc/plugins.inc.d/unbound.inc
 /usr/local/etc/inc/plugins.inc.d/vxlan.inc
 /usr/local/etc/inc/plugins.inc.d/webgui.inc
@@ -169,10 +170,12 @@
 /usr/local/opnsense/mvc/app/config/loader.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/Api/GroupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/Api/PrivController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/Api/UserApiKeyController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/Api/UserController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/GroupController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/PrivController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/UserController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/forms/dialogApiKey.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/forms/dialogGroup.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/forms/dialogPriv.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Auth/forms/dialogUser.xml
@@ -380,6 +383,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/NeighborSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/OverviewController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/TapSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VipSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VlanSettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/Api/VxlanSettingsController.php
@@ -393,6 +397,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/NeighborController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/OverviewController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/SettingsController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/TapController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VipController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VlanController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/VxlanController.php
@@ -405,11 +410,11 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogLoopback.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogNeighbor.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogSettings.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogTap.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVip.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogVxlan.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Interfaces/forms/dialogWireless.xml
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/CtrlAgentController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/DdnsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Dhcpv4Controller.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/Dhcpv6Controller.php
@@ -418,7 +423,6 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/LeasesController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/Api/ServiceController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/DhcpController.php
-/usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/agentSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/ddnsSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogOption4.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Kea/forms/dialogOption6.xml
@@ -612,6 +616,8 @@
 /usr/local/opnsense/mvc/app/library/OPNsense/System/SystemStatus.php
 /usr/local/opnsense/mvc/app/library/OPNsense/System/SystemStatusCode.php
 /usr/local/opnsense/mvc/app/library/OPNsense/Trust/Store.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Auth/ApiKey.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Auth/ApiKey.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/ApiKeyField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/ExpiresField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Auth/FieldTypes/GidField.php
@@ -695,6 +701,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/CaptivePortal.php
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/CaptivePortal.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/FieldTypes/OriginField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/Menu/Menu.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/CaptivePortal/Migrations/M1_0_0.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Core/ACL.php
@@ -801,6 +808,14 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_4.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_8.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_0_9.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_0.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_1.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_2.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_3.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_4.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_5.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_6.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_7.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/static_aliases/core.json
 /usr/local/opnsense/mvc/app/models/OPNsense/Hostdiscovery/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Hostdiscovery/Hostwatch.php
@@ -876,6 +891,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/NetworkInterface.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Settings.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Settings.xml
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Tap.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Tap.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vip.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vip.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Interfaces/Vlan.php
@@ -889,8 +906,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaOptionDataField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaPoolsField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/FieldTypes/KeaStaticRoutesField.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaCtrlAgent.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaCtrlAgent.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDdns.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDdns.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Kea/KeaDhcpv4.php
@@ -1054,11 +1069,11 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/neighbor.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/overview.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/settings.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Interface/tap.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vip.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/vxlan.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Interface/wireless.volt
-/usr/local/opnsense/mvc/app/views/OPNsense/Kea/ctrl_agent.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/ddns.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/dhcpv4.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Kea/dhcpv6.volt
@@ -1157,7 +1172,10 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/UpdateOnlyTextFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest/config.xml
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/CaptivePortal/FieldTypes/OriginFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Dnsmasq/FieldTypes/HostnameFieldTest.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Interfaces/NetworkInterfaceTest.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Interfaces/config/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Kea/FieldTypes/KeaOptionDataFieldTest.php
 /usr/local/opnsense/mvc/tests/phpunit.xml
 /usr/local/opnsense/mvc/tests/setup.php
@@ -1249,6 +1267,7 @@
 /usr/local/opnsense/scripts/firmware/config.sh
 /usr/local/opnsense/scripts/firmware/connection.sh
 /usr/local/opnsense/scripts/firmware/details.sh
+/usr/local/opnsense/scripts/firmware/feed.sh
 /usr/local/opnsense/scripts/firmware/health.sh
 /usr/local/opnsense/scripts/firmware/hostnames.sh
 /usr/local/opnsense/scripts/firmware/install.sh
@@ -1279,7 +1298,10 @@
 /usr/local/opnsense/scripts/health/definitions/interface-traffic.xml
 /usr/local/opnsense/scripts/health/definitions/interface-vpnusers.xml
 /usr/local/opnsense/scripts/health/definitions/system-cputemp.xml
+/usr/local/opnsense/scripts/health/definitions/system-mbuf.xml
+/usr/local/opnsense/scripts/health/definitions/system-memory.xml
 /usr/local/opnsense/scripts/health/definitions/system-processor.xml
+/usr/local/opnsense/scripts/health/definitions/system-states.xml
 /usr/local/opnsense/scripts/health/fetchData.py
 /usr/local/opnsense/scripts/health/flush_rrd.py
 /usr/local/opnsense/scripts/health/library/OPNsense/RRD/Factory.php
@@ -1595,7 +1617,6 @@
 /usr/local/opnsense/service/templates/OPNsense/IPsec/+TARGETS
 /usr/local/opnsense/service/templates/OPNsense/IPsec/reqid_events.conf
 /usr/local/opnsense/service/templates/OPNsense/Kea/+TARGETS
-/usr/local/opnsense/service/templates/OPNsense/Kea/kea-ctrl-agent.conf
 /usr/local/opnsense/service/templates/OPNsense/Kea/kea-dhcp4.conf
 /usr/local/opnsense/service/templates/OPNsense/Kea/keactrl.conf
 /usr/local/opnsense/service/templates/OPNsense/Kea/rc.conf.d
@@ -2613,7 +2634,6 @@
 /usr/local/www/services_opendns.php
 /usr/local/www/status_wireless.php
 /usr/local/www/system_advanced_admin.php
-/usr/local/www/system_advanced_firewall.php
 /usr/local/www/system_advanced_misc.php
 /usr/local/www/system_authservers.php
 /usr/local/www/system_general.php

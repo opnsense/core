@@ -377,7 +377,7 @@ class RuleCache(object):
                         if searchcontent.find('*') == -1:
                             prop_values.append("property = :%s and value like :%s " % (pfieldnm, vfieldnm))
                         else:
-                            prop_values.append("property = :%s and value like  '%'|| :%s  || '%'" % (pfieldnm, vfieldnm))
+                            prop_values.append("property = :%s and value like  '%%'|| :%s  || '%%'" % (pfieldnm, vfieldnm))
                         sql_parameters[pfieldnm] = fieldname
                         sql_parameters[vfieldnm] = searchcontent.replace('*', '')
 

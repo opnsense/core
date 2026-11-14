@@ -13,6 +13,13 @@ PKG="/usr/local/sbin/pkg-static"
 PRODUCT="OPNsense"
 VERSION=$(opnsense-update -v)
 
+# XXX
+#
+# We need to add this to a log, but syslog isn't running yet.
+# One possibility is to use the boot log /var/log/boot.log which
+# isn't operated by syslog and extract data for the notification
+# system from there.
+
 # package manager based checks
 
 if [ -z "${CORE}" ]; then
@@ -63,8 +70,6 @@ for SET in base kernel; do
 		echo "Selftest: Unverified consistency check for ${SET}: invalid ${FILE}.sig"
 	fi
 done
-
-# XXX should still test binaries/libraries from base/kernel: fetch, openssl, kernel
 
 # more pacakges consistency
 

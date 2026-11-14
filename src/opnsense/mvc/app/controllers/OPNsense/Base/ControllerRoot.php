@@ -86,16 +86,20 @@ class ControllerRoot extends Controller
         }
 
         $locale = $lang . '.UTF-8';
+        $textdomain = 'OPNsense';
+
         $interpolator = new InterpolatorFactory();
         $this->translator = new ViewTranslator($interpolator, [
             'directory' => '/usr/local/share/locale',
-            'defaultDomain' => 'OPNsense',
-            'locale' => [$locale],
+            'locale' => [$locale, 'en_US.UTF-8'],
+            'defaultDomain' => $textdomain,
         ]);
 
-        /* somehow this is not done by Phalcon */
-        bind_textdomain_codeset('OPNsense', $locale);
-        putenv('LANG=' . $locale);
+        putenv('LANG=' . $this->translator->getLocale());
+        putenv('LC_ALL=' . $this->translator->getLocale());
+        putenv('LANGUAGE=' . $locale);
+
+        bind_textdomain_codeset($textdomain, 'UTF-8');
 
         $this->langcode = $lang;
     }

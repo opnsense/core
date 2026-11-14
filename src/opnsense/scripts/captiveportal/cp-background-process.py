@@ -82,20 +82,8 @@ class CPBackgroundProcess(object):
         if not roaming:
             return [addresses[0]]
 
-        result = []
-        first_ipv4_found = False
-
-        for addr in addresses:
-            ip = ipaddress.ip_address(addr)
-
-            if ip.version == 4:
-                if not first_ipv4_found:
-                    result.append(addr)
-                    first_ipv4_found = True
-            else:
-                result.append(addr)
-
-        return result
+        # Roaming is only needed for clients using multiple IPv6 addresses.
+        return [addr for addr in addresses if ipaddress.ip_address(addr).version == 6]
 
     def initialize_fixed(self):
         """ initialize fixed ip / hosts per zone
@@ -223,15 +211,16 @@ class CPBackgroundProcess(object):
 
                 # if primary IP changed, update db accordingly. Not relevant for static IP-authenticated clients
                 if db_client['authenticated_via'] != '---ip---':
-                    current_ips = self.arp.get_all_addresses_by_mac(db_client['macAddress'])
-                    addresses = self._filter_addresses(current_ips, allow_roaming)
-                    if len(addresses) > 0 and db_client['ipAddress'] != addresses[0]:
-                        if not allow_roaming and db_client['ipAddress'] != '':
-                            # Remove old ip, but only if non-roaming, otherwise, we're state killing traffic from a different IP which may be valid.
-                            # Unused addresses are cleared through arp/hostwatch automatically when roaming.
-                            self._remove_client(zoneid, db_client['ipAddress'])
-                        self.db.update_client_ip(zoneid, db_client['sessionId'], current_ips[0])
-                        db_client['ipAddress'] = current_ips[0]
+                    # Keep an established primary address stable while roaming. IPv6 addresses are attached to
+                    # the session below; an empty MAC-authenticated session still needs an initial address.
+                    if not allow_roaming or db_client['ipAddress'] == '':
+                        current_ips = self.arp.get_all_addresses_by_mac(db_client['macAddress'])
+                        addresses = self._filter_addresses(current_ips, False)
+                        if len(addresses) > 0 and db_client['ipAddress'] != addresses[0]:
+                            if db_client['ipAddress'] != '':
+                                self._remove_client(zoneid, db_client['ipAddress'])
+                            self.db.update_client_ip(zoneid, db_client['sessionId'], addresses[0])
+                            db_client['ipAddress'] = addresses[0]
                 else:
                     # if authenticated via 'allowed addresses', check if we should update the mac address (for display purposes)
                     current_arp = self.arp.get_by_ipaddress(db_client['ipAddress'])
@@ -239,9 +228,15 @@ class CPBackgroundProcess(object):
                         self.db.update_client_mac(zoneid, db_client['sessionId'], current_arp['mac'])
 
                 # session should be active, validate its properties
-                addresses = set(self._filter_addresses(self.arp.get_all_addresses_by_mac(db_client['macAddress']), allow_roaming))
-                if allow_roaming:
-                    # merge primary IP here, if authenticated via ip, the roaming ips may not contain the statically configured IP if there is no MAC known.
+                if db_client['authenticated_via'] == '---ip---':
+                    # An allowed address only authorizes the configured address, regardless of roaming.
+                    self.db.update_roaming_ips(zoneid, db_client['sessionId'], set())
+                    session_ips = {db_client['ipAddress']}
+                elif allow_roaming:
+                    addresses = set(self._filter_addresses(
+                        self.arp.get_all_addresses_by_mac(db_client['macAddress']), allow_roaming
+                    ))
+                    # The primary address may not be present in host discovery, so merge it explicitly.
                     session_ips = {db_client['ipAddress']} | self.db.update_roaming_ips(zoneid, db_client['sessionId'], addresses)
                 else:
                     # may have been updated if primary IP changed

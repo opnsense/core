@@ -4,6 +4,7 @@
     </user-config-readonly>
     <page-diagnostics-backup-restore>
         <name>System: Configuration: Backups</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>diag_backup.php*</pattern>
         </patterns>
@@ -27,6 +28,7 @@
     </page-system-login-logout>
     <page-all>
         <name>All pages</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>*</pattern>
         </patterns>
@@ -46,6 +48,7 @@
     </page-system-status>
     <page-diagnostics-authentication>
         <name>Diagnostics: Authentication</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>diag_authentication.php*</pattern>
         </patterns>
@@ -152,6 +155,8 @@
             <pattern>api/diagnostics/firewall/kill_states*</pattern>
             <pattern>api/diagnostics/firewall/flush_sources*</pattern>
             <pattern>api/diagnostics/firewall/flush_states*</pattern>
+            <pattern>api/diagnostics/firewall/query_pf_top_summary</pattern>
+            <pattern>api/diagnostics/firewall/flush_pf_top_cache</pattern>
         </patterns>
     </page-diagnostics-showstates>
     <page-diagnostics-testport>
@@ -166,6 +171,7 @@
         <patterns>
             <pattern>ui/diagnostics/dns_diagnostics</pattern>
             <pattern>api/diagnostics/dns_diagnostics/*</pattern>
+            <pattern>api/diagnostics/dns/reverse_lookup*</pattern>
         </patterns>
     </page-diagnostics-dns_diagnostics>
     <page-diagnostics-traceroute>
@@ -296,12 +302,14 @@
     </page-interfaces-groups-edit>
     <page-interfaces-ppps>
         <name>Interfaces: PPPs</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>interfaces_ppps.php*</pattern>
         </patterns>
     </page-interfaces-ppps>
     <page-interfaces-ppps-edit>
         <name>Interfaces: PPPs: Edit</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>interfaces_ppps_edit.php*</pattern>
             <pattern>getserviceproviders.php*</pattern>
@@ -309,6 +317,7 @@
     </page-interfaces-ppps-edit>
     <page-interfaces>
         <name>Interfaces: WAN</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>interfaces.php*</pattern>
         </patterns>
@@ -322,6 +331,7 @@
     </page-interfaces-wireless-edit>
     <page-wizard-system>
         <name>System: Configuration: Wizard</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>ui/core/initial_setup</pattern>
             <pattern>api/core/initial_setup/*</pattern>
@@ -412,24 +422,21 @@
     </page-status-dnsoverview>
     <page-diagnostics-wirelessstatus>
         <name>Status: Wireless</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>status_wireless.php*</pattern>
         </patterns>
     </page-diagnostics-wirelessstatus>
     <page-system-advanced-admin>
         <name>System: Advanced: Admin Access Page</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>system_advanced_admin.php*</pattern>
         </patterns>
     </page-system-advanced-admin>
-    <page-system-advanced-firewall>
-        <name>System: Advanced: Firewall and NAT</name>
-        <patterns>
-            <pattern>system_advanced_firewall.php*</pattern>
-        </patterns>
-    </page-system-advanced-firewall>
     <page-system-advanced-misc>
         <name>System: Advanced: Miscellaneous</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>system_advanced_misc.php*</pattern>
         </patterns>
@@ -443,6 +450,7 @@
     </page-system-advanced-sysctl>
     <page-system-authservers>
         <name>System: Authentication Servers</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>system_authservers.php*</pattern>
             <pattern>system_usermanager_settings_ldapacpicker.php*</pattern>
@@ -509,6 +517,7 @@
     </page-system-gatewaygroups>
     <page-system-generalsetup>
         <name>System: General Setup</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>system_general.php*</pattern>
         </patterns>
@@ -522,6 +531,7 @@
     </page-system-hasync>
     <page-system-license>
         <name>Lobby: License</name>
+        <authority>limited</authority>
         <patterns>
             <pattern>ui/core/license</pattern>
         </patterns>
@@ -535,6 +545,7 @@
     </page-system-staticroutes>
     <page-system-usermanager>
         <name>System: Access: Management</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>ui/auth/user</pattern>
             <pattern>api/auth/user/*</pattern>
@@ -546,6 +557,7 @@
     </page-system-usermanager>
     <page-system-usermanager-passwordmg>
         <name>Lobby: Password</name>
+        <authority>limited</authority>
         <patterns>
             <pattern>ui/user_portal</pattern>
             <pattern>api/user_portal/user/*</pattern>
@@ -575,6 +587,7 @@
     </page-openvpn-instances>
     <page-xmlrpclibrary>
         <name>XMLRPC Library</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>xmlrpc.php*</pattern>
         </patterns>

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023 Deciso B.V.
+ * Copyright (C) 2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -26,25 +26,33 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-namespace OPNsense\Kea\Api;
+namespace tests\OPNsense\Interfaces;
 
-use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Core\AppConfig;
+use OPNsense\Core\Config;
+use OPNsense\Interfaces\NetworkInterface;
 
-class CtrlAgentController extends ApiMutableModelControllerBase
+class NetworkInterfaceTest extends \PHPUnit\Framework\TestCase
 {
-    protected static $internalModelName = 'ctrlagent';
-    protected static $internalModelClass = 'OPNsense\Kea\KeaCtrlAgent';
+    protected function setUp(): void
+    {
+        (new AppConfig())->update('application.configDir', __DIR__ . '/config/');
+        Config::getInstance()->forceReload();
+    }
 
     /**
-     * @inheritdoc
+     * simply test if updating one single config entry leads to one (the same) interface pending for apply.
      */
-    public function getAction()
+    public function testSingleChange()
     {
-        $data = parent::getAction();
-        return [
-            self::$internalModelName => [
-                'general' => $data[self::$internalModelName]['general']
-            ]
-        ];
+        $test_targetfilename = '/tmp/unittest.interfaces.apply';
+        @unlink($test_targetfilename);
+        NetworkInterface::setTodoFilename($test_targetfilename);
+        $mdl = new NetworkInterface();
+        $mdl->interface->lan->mtu = '1300';
+        $mdl->serializeToConfig();
+        $payload = json_decode(file_get_contents($test_targetfilename), true);
+        $this->assertEquals(1, count($payload), "Changed interfaces don't match pending ones");
+        $this->assertEquals('lan', array_keys($payload)[0], 'lan expected');
     }
 }

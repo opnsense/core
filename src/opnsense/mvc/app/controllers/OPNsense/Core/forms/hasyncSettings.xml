@@ -84,6 +84,6 @@
         <id>hasync.syncitems</id>
         <label>Services</label>
         <type>select_multiple</type>
-        <help>Select the services that should be send to the other host.</help>
+        <help>Select the services that should be sent to the other host.</help>
     </field>
 </form>

@@ -55,14 +55,6 @@ function kea_services()
         $services[] = $service;
     }
 
-    if (!(new \OPNsense\Kea\KeaCtrlAgent())->general->enabled->isEmpty()) {
-        $service = $template;
-        $service['pidfile'] = '/var/run/kea/kea-ctrl-agent.kea-ctrl-agent.pid';
-        $service['description'] = gettext('KEA control agent');
-        $service['id'] = 'ca';
-        $services[] = $service;
-    }
-
     if (!(new \OPNsense\Kea\KeaDdns())->general->enabled->isEmpty()) {
         $service = $template;
         $service['pidfile'] = '/var/run/kea/kea-dhcp-ddns.kea-dhcp-ddns.pid';
@@ -186,7 +178,6 @@ function kea_configure_do($verbose = false)
             /* skip kea-dhcp-ddns.conf when configured manually */
             $keaDdns->generateConfig();
         }
-        (new \OPNsense\Kea\KeaCtrlAgent())->generateConfig();
         if ($keaDhcpv6->isEnabled()) {
             mwexecfb(
                 '/usr/local/opnsense/scripts/kea/kea_prefix_watcher.py',
@@ -219,15 +210,13 @@ function kea_syslog()
     return ['kea' => ['facility' => [
         'kea-dhcp4',
         'kea-dhcp6',
-        'kea-ctrl-agent',
         'kea-dhcp-ddns',
     ]]];
 }
 
 function kea_firewall($fw)
 {
-    global $config;
-
+    $settings = $fw->getSettings();
     $keav4 = new \OPNsense\Kea\KeaDhcpv4();
     $keav6 = new \OPNsense\Kea\KeaDhcpv6();
 
@@ -245,7 +234,7 @@ function kea_firewall($fw)
                     'to_port' => 67,
                     'interface' => $intf,
                     'descr' => 'allow access to DHCP server',
-                    'log' => !isset($config['syslog']['nologdefaultpass'])
+                    'log' => !empty($settings['logging']['default_pass']),
                 ]
             );
             $fw->registerFilterRule(
@@ -259,7 +248,7 @@ function kea_firewall($fw)
                     'to_port' => 67,
                     'interface' => $intf,
                     'descr' => 'allow access to DHCP server',
-                    'log' => !isset($config['syslog']['nologdefaultpass'])
+                    'log' => !empty($settings['logging']['default_pass']),
                 ]
             );
         }
@@ -273,7 +262,7 @@ function kea_firewall($fw)
                 'interface' => $intf,
                 '#ref' => 'ui/kea/dhcp/v6',
                 'descr' => 'allow access to DHCPv6 server',
-                'log' => !isset($config['syslog']['nologdefaultpass'])
+                'log' => !empty($settings['logging']['default_pass']),
             ];
             $fw->registerFilterRule(
                 1,

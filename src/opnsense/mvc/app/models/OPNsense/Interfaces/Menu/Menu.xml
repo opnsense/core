@@ -10,12 +10,11 @@
             <PPP VisibleName="Point-to-Point" url="/interfaces_ppps.php">
                 <Edit url="/interfaces_ppps_edit.php*" visibility="hidden"/>
             </PPP>
+            <TAP url="/ui/interfaces/tap"/>
             <VLAN url="/ui/interfaces/vlan"/>
             <VXLAN url="/ui/interfaces/vxlan"/>
         </Devices>
-        <Neighbors order="220" cssClass="fa fa-users fa-fw">
-            <Manual VisibleName="Static Assignments" url="/ui/interfaces/neighbor"/>
-        </Neighbors>
+        <Neighbors order="225" url="/ui/interfaces/neighbor" cssClass="fa fa-users fa-fw"/>
         <Overview order="230" url="/ui/interfaces/overview" cssClass="fa fa-tasks fa-fw"/>
         <Settings order="240" url="/ui/interfaces/settings" cssClass="fa fa-cogs fa-fw"/>
         <VIP order="250" VisibleName="Virtual IPs" cssClass="fa fa-clone fa-fw">

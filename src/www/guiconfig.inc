@@ -224,16 +224,16 @@ function print_info_box($msg)
 
 function print_firewall_banner()
 {
-    global $config;
+    $settings_filter = legacy_firewall_settings('filter');
 
-    if (isset($config['system']['disablefilter'])) {
+    if (!empty($settings_filter['disabled'])) {
         print_alert_box(sprintf(
             gettext(
                 'The firewall has globally been disabled and configured rules are ' .
                 'currently not enforced. It can be enabled in the %sFirewall/NAT%s ' .
                 'settings.'
             ),
-            '<a href="/system_advanced_firewall.php">',
+            '<a href="/ui/firewall/settings#settings-filter">',
             '</a>'
         ));
     }

@@ -552,12 +552,15 @@
                         const renderedItems = aliasMetadataList.map(aliasInfo => {
                             if (aliasInfo.isAlias) {
                                 const tooltipHtml = aliasInfo.summary || aliasInfo.description || aliasInfo.value || "";
+                                const editLink = aliasInfo.uuid ? `
+                                    <a href="/ui/firewall/alias/index#aliases&edit=${encodeURIComponent(aliasInfo.uuid)}"
+                                       data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
+                                        <i class="fa fa-fw fa-list"></i>
+                                    </a>
+                                ` : "";
                                 return `
                                     <span data-toggle="tooltip" data-html="true" title="${htmlSafe(tooltipHtml)}">${aliasInfo.value}&nbsp;</span>
-                                    <a href="/ui/firewall/alias/index/${encodeURIComponent(aliasInfo.value)}"
-                                    data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
-                                    <i class="fa fa-fw fa-list"></i>
-                                    </a>
+                                    ${editLink}
                                 `;
                             }
                             // Not an alias, return translated value
@@ -898,7 +901,7 @@
                     .text(`
                         {{ lang._('No %s rules have been defined. ') | format('${ifLabel}') }}
                         {{ lang._('All incoming connections on this interface will be blocked until you add a pass rule. ') }}
-                        {{ lang._('Exceptions for automatically generated or floating rules may apply.') }}
+                        {{ lang._('Exceptions for automatically generated, group or floating rules may apply.') }}
                     `));
             }
         });
@@ -1037,14 +1040,12 @@
         $("#tree_expand_container").show();
 
         $('#expand_tree_button').on('click', function () {
-            const $table = $('#{{ formGridFilterRule["table_id"] }}');
+            const cells = grid.bootgrid('getTable').getColumn('categories').getCells();
+            const rows = cells.map((cell) => cell.getRow()).filter((row) => row.getTreeChildren().length > 0);
+            const expand = rows.some((row) => !row.isTreeExpanded());
 
-            // If there are any collapsed controls, expand them all, otherwise collapse them all
-            if ($table.find('.custom-tree-control-expand').length) {
-                $table.find('.custom-tree-control-expand').trigger('click');
-            } else {
-                $table.find('.custom-tree-control-collapse').trigger('click');
-            }
+            // if there are any collapsed rows, expand them all, otherwise collapse them all
+            rows.forEach((row) => expand ? row.treeExpand() : row.treeCollapse());
         });
 
         // replace all "net" selectors with details retrieved from "list_network_select_options" endpoint

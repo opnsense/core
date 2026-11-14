@@ -120,7 +120,10 @@ class ACL
                     foreach ($node->priv as $priv) {
                         foreach (array_filter(explode(',', $priv)) as $privname) {
                             if (array_key_exists($privname, $pageMap)) {
-                                $this->userDatabase[$username]['priv'][] = $pageMap[$privname];
+                                $this->userDatabase[$username]['priv'][$privname] = $pageMap[$privname];
+                            } else {
+                                /* token only (e.g. user-config-readonly) */
+                                $this->userDatabase[$username]['priv'][$privname] = [];
                             }
                         }
                     }
@@ -153,7 +156,10 @@ class ACL
                 } elseif ($itemKey == "priv") {
                     foreach (array_filter(explode(',', $node_data)) as $privname) {
                         if (array_key_exists($privname, $pageMap)) {
-                            $this->allGroupPrivs[$groupkey]['priv'][] = $pageMap[$privname];
+                            $this->allGroupPrivs[$groupkey]['priv'][$privname] = $pageMap[$privname];
+                        } else {
+                            /* token only (e.g. user-config-readonly) */
+                            $this->allGroupPrivs[$groupkey]['priv'][$privname] = [];
                         }
                     }
                 }
@@ -246,7 +252,7 @@ class ACL
      */
     private function isAddressAllowed($group, $remote_addr)
     {
-        $nets = $this->allGroupPrivs[$group]['source_networks'];
+        $nets = isset($this->allGroupPrivs[$group]) ? $this->allGroupPrivs[$group]['source_networks'] : [];
         if (empty($nets)) {
             return true;
         }
@@ -354,37 +360,71 @@ class ACL
      */
     public function hasPrivilege($username, $reqpriv)
     {
-        $uid = null;
-        $privs = [];
-        $groups = [];
-        $config = Config::getInstance()->object();
-        if ($config->system->count() > 0) {
-            foreach ($config->system->children() as $key => $node) {
-                if ($key == 'user' && (string)$node->name == $username) {
-                    foreach ($node->priv as $priv) {
-                        $privs = array_merge($privs, array_filter(explode(',', $priv)));
-                    }
-                    $uid = (string)$node->uid;
+        $remote_addr = !empty($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : null;
+        if (isset($this->userDatabase[$username])) {
+            if (isset($this->userDatabase[$username]['priv'][$reqpriv])) {
+                return true;
+            }
+            foreach ($this->userDatabase[$username]['groups'] as $group) {
+                if (
+                    isset($this->allGroupPrivs[$group]['priv'][$reqpriv]) &&
+                    $this->isAddressAllowed($group, $remote_addr)
+                ) {
+                    return true;
                 }
             }
-            foreach ($config->system->children() as $key => $groupNode) {
-                if ($key == 'group') {
-                    $group_privs = [];
-                    $userInGrp = false;
-                    foreach ($groupNode->children() as $itemKey => $node) {
-                        if ($node->getName() == "member" && in_array($uid, explode(',', $node))) {
-                            $userInGrp = true;
-                        } elseif ($node->getName() == "priv") {
-                            $group_privs = array_merge($group_privs, array_filter(explode(',', $node)));
+        }
+        return false;
+    }
+
+    /**
+     * create a list of unique authorities per user (highest per subnet prevails)
+     * @return array
+     */
+    public function getUserAuthorities()
+    {
+        $result = [];
+        foreach ($this->userDatabase as $username => $props) {
+            $result[$username] = [];
+            foreach (array_keys($this->userDatabase[$username]['priv']) as $prv) {
+                $authority = ($this->ACLtags[$prv] ?? [])['authority'] ?? '';
+                if (empty($result[$username])) {
+                    $result[$username]['*'] = [];
+                }
+                if (!empty($authority) && !in_array($authority, $result[$username]['*'])) {
+                    $result[$username]['*'][] = $authority;
+                }
+            }
+            foreach ($this->userDatabase[$username]['groups'] as $groupname) {
+                $group = $this->allGroupPrivs[$groupname];
+                foreach (array_keys($this->allGroupPrivs[$groupname]['priv']) as $priv) {
+                    $authority = ($this->ACLtags[$priv] ?? [])['authority'] ?? '';
+                    $nets = !empty($group['source_networks']) ? $group['source_networks'] : ['*'];
+                    foreach ($nets as $net) {
+                        if (!isset($result[$username][$net])) {
+                            $result[$username][$net] = [];
                         }
-                    }
-                    if ($userInGrp) {
-                        $privs = array_merge($privs, $group_privs);
+                        if (!empty($authority) && !in_array($authority, $result[$username][$net])) {
+                            $result[$username][$net][] = $authority;
+                        }
                     }
                 }
             }
         }
-        return in_array($reqpriv, $privs);
+        foreach ($result as &$network) {
+            foreach ($network as &$item) {
+                foreach (['unrestricted', 'administrative', 'limited'] as $auth) {
+                    if (in_array($auth, $item)) {
+                        $item = $auth;
+                        break;
+                    }
+                }
+                if (is_array($item)) {
+                    $item = 'n/a'; /* XXX: unexpected */
+                }
+            }
+        }
+        return $result;
     }
 
     /**

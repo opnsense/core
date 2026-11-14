@@ -2,7 +2,10 @@ import unittest
 import sys
 import os
 import subprocess
+import tempfile
+import xml.etree.ElementTree as ET
 sys.path.insert(0, "%s/../lib" % os.path.dirname(__file__))
+from alias import Alias
 from alias.arpcache import ArpCache
 from alias.base import BaseContentParser
 from alias.bgpasn import BGPASN
@@ -67,3 +70,12 @@ class TestAliasMethods(unittest.TestCase):
     def test_wildcard(self):
         payload = list(BaseContentParser(**self.properties).iter_addresses('192.168.0.0/0.0.255.0'))
         self.assertEqual(len(payload), 256, 'Invalid number of hosts')
+
+    def test_external_alias_not_managed(self):
+        elem = ET.Element('table')
+        ET.SubElement(elem, 'type').text = 'external'
+        ET.SubElement(elem, 'name').text = 'test_external_alias'
+        alias = Alias(elem)
+        with tempfile.NamedTemporaryFile() as hash_file:
+            alias._filename_alias_hash = hash_file.name
+            self.assertFalse(alias.is_managed(), 'external alias should not be managed')
