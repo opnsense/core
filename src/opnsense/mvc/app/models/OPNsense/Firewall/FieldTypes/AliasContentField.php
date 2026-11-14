@@ -103,8 +103,7 @@ class AliasContentField extends BaseField
     private function getCountryCodes()
     {
         if (empty(self::$internalCountryCodes)) {
-            // Maxmind's country code 6255148 (EU Unclassified)
-            self::$internalCountryCodes[] = 'EU';
+            self::$internalCountryCodes[] = 'XK'; /* Kosovo is missing from iana's list */
             $contribDir = (new AppConfig())->application->contribDir;
             foreach (explode("\n", file_get_contents($contribDir . '/iana/tzdata-iso3166.tab')) as $line) {
                 $line = trim($line);
