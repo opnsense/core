@@ -119,6 +119,16 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
                         $domain = (string)$subnet_node->option_data->domain_name;
                     }
                 }
+            } else {
+                $subnet_node = $keamdl->getNodeByReference("subnets.subnet6.{$reservation->subnet}");
+                if ($subnet_node) {
+                    /* DHCPv6 has no domain-name option, use the first domain-search entry instead */
+                    if (!empty((string)$reservation->domain_search)) {
+                        $domain = explode(',', (string)$reservation->domain_search)[0];
+                    } elseif (!empty((string)$subnet_node->option_data->domain_search)) {
+                        $domain = explode(',', (string)$subnet_node->option_data->domain_search)[0];
+                    }
+                }
             }
 
             $entry = [
