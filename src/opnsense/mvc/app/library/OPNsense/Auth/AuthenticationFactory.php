@@ -95,7 +95,7 @@ class AuthenticationFactory
     public function listServers(string $service = '')
     {
         $servers = [];
-        $servers['Local Database'] = array("name" => "Local Database", "type" => "local");
+        $servers['Local Database'] = array("name" => gettext("Local Database"), "type" => "local");
         $configObj = Config::getInstance()->object();
         foreach ($configObj->system->children() as $key => $value) {
             if ($key == 'authserver' && !empty($value->type) && !empty($value->name)) {

@@ -79,6 +79,13 @@ $product = product::getInstance();
     <script src="/<?= cache_safe('ui/js/bootstrap.min.js') ?>"></script>
     <!-- Fancy select with search options -->
     <script src="<?= cache_safe('/ui/js/bootstrap-select.min.js') ?>"></script>
+    <script>
+      $.fn.selectpicker.defaults = $.fn.selectpicker.defaults || {};
+      $.extend($.fn.selectpicker.defaults, {
+        // gettext() is unescaped here; encode quotes, newlines and script delimiters.
+        noneSelectedText: <?= json_encode(gettext('Nothing selected'), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>
+      });
+    </script>
     <!-- bootstrap dialog -->
     <script src="<?= cache_safe('/ui/js/bootstrap-dialog.min.js') ?>"></script>
     <!-- service control hook -->

@@ -357,7 +357,13 @@
             searchColumns: "{{ lang._('Search columns') }}",
             expand: "{{ lang._('Click to expand/collapse cell') }}",
             maximizeGrid: "{{ lang._('Maximize grid') }}",
-            minimizeGrid: "{{ lang._('Minimize grid') }}"
+            minimizeGrid: "{{ lang._('Minimize grid') }}",
+            firstPage: "{{ lang._('First Page') }}",
+            prevPage: "{{ lang._('Prev Page') }}",
+            nextPage: "{{ lang._('Next Page') }}",
+            lastPage: "{{ lang._('Last Page') }}",
+            showPage: "{{ lang._('Show Page') }}",
+            selectRow: "{{ lang._('Select Row') }}"
         });
 
         $.fn.selectpicker.defaults = $.fn.selectpicker.defaults || {};
