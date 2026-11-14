@@ -135,5 +135,11 @@
                 <number type="IntegerField"/>
             </items>
         </simpleList>
+        <NodeContent>
+            <value1>
+                <example1 type="TextField"/>
+            </value1>
+            <value2 type="TextField"/>
+        </NodeContent>
     </items>
 </model>
