@@ -105,6 +105,40 @@ outputs:
 {%     endif %}
              metadata: yes
              tagged-packets: yes
+{%     set syslog_eve_types = OPNsense.IDS.general.syslog_eve_types|default('') %}
+{%     if syslog_eve_types != '' %}
+{%       set syslog_eve_types = syslog_eve_types.split(',') %}
+{%       if 'anomaly' in syslog_eve_types %}
+        - anomaly:
+            enabled: yes
+{%       endif %}
+{%       if 'http' in syslog_eve_types %}
+        - http:
+            extended: {{ 'no' if helpers.empty('OPNsense.IDS.general.eveLog.http.extended') else 'yes' }}
+{%         if not helpers.empty('OPNsense.IDS.general.eveLog.http.dumpAllHeaders') %}
+            dump-all-headers: {{OPNsense.IDS.general.eveLog.http.dumpAllHeaders}}
+{%         endif %}
+{%       endif %}
+{%       if 'tls' in syslog_eve_types %}
+        - tls:
+            extended: {{ 'no' if helpers.empty('OPNsense.IDS.general.eveLog.tls.extended') else 'yes' }}
+            session-resumption: {{ 'no' if helpers.empty('OPNsense.IDS.general.eveLog.tls.sessionResumption') else 'yes' }}
+{%         set tls_custom = OPNsense.IDS.general.eveLog.tls.custom|default('') %}
+            ja4: {{ 'on' if not helpers.empty('OPNsense.IDS.general.eveLog.tls.extended') or 'ja4' in tls_custom.split(',') else 'off' }}
+{%         if tls_custom != '' %}
+            custom: [{{ tls_custom }}]
+{%         endif %}
+{%       endif %}
+{%       if 'dns' in syslog_eve_types %}
+        - dns
+{%       endif %}
+{%       if 'ssh' in syslog_eve_types %}
+        - ssh
+{%       endif %}
+{%       if 'flow' in syslog_eve_types %}
+        - flow
+{%       endif %}
+{%     endif %}
 {% endif %}
 
   - stats:
