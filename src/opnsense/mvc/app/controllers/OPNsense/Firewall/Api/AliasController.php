@@ -245,9 +245,10 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function listCountriesAction()
     {
+        /* Kosovo is missing from iana's list */
         $result = [
-            'EU' => [
-                'name' => gettext('Unclassified'),
+            'XK' => [
+                'name' => gettext('Kosovo'),
                 'region' => 'Europe'
             ]
         ];
