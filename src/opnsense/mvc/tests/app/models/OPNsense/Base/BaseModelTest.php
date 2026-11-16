@@ -481,6 +481,25 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+        /**
+     * @depends testGetNodeContent
+     */
+    public function testGetNodeContentFromConfig()
+    {
+        self::$model->NodeContentConf->value1->example1 = 'innervalue1';
+        self::$model->NodeContentConf->value2 = 'example2';
+        self::$model->serializeToConfig();
+        $GotNodeContent = self::$model->getNodeContent();
+        $this->assertEquals(
+            Config::getInstance()->object()->tests->OPNsense->TestModel->NodeContentConf->value1->example1,
+            'innervalue1'
+        );
+        $this->assertEquals(
+            Config::getInstance()->object()->tests->OPNsense->TestModel->NodeContentConf->value2,
+            'example2'
+        );
+    }
+
     /**
      * @afterClass
      */
