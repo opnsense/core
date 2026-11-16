@@ -238,7 +238,7 @@ class StaticRoute
             }
             $result[$net][0]['network'] = $net;
             $result[$net][0]['interface'] = $gateway['interface'];
-            $result[$net][0]['if'] = $gateway['if'];
+            $result[$net][0]['device'] = $gateway['if'];
             $result[$net][0]['ipproto'] = $ipproto;
             $result[$net][0]['gwipprotocol'] = $gateway['ipprotocol'];
             $result[$net][0]['type'] = 'default';
@@ -269,7 +269,7 @@ class StaticRoute
                 $result[$net][] = [
                     'gatewayip' => $gatewayip,
                     'interface' => $gateway['interface'],
-                    'if' => $gateway['if'],
+                    'device' => $gateway['if'],
                     'fargw' => !empty($gateway['fargw']),
                     'gwipprotocol' => $gateway['ipprotocol'],
                     'network' => $net,
@@ -409,7 +409,7 @@ class StaticRoute
         foreach ($planned as $net => $routes) {
             $gwips = [];
             foreach ($routes as $route) {
-                $gwips[] = empty($route['fargw']) ? $route['gatewayip'] : $route['if'];
+                $gwips[] = empty($route['fargw']) ? $route['gatewayip'] : $route['device'];
             }
             if (isset($current[$net])) {
                 foreach ($current[$net] as $iroute) {
@@ -419,7 +419,7 @@ class StaticRoute
                          * the default is excluded, which logically means (when no other route is overlapping)
                          * the existing value will be kept.
                          */
-                        if (!$this->interfaceHasAddress($routes[0]['if'], $routes[0]['ipproto'])) {
+                        if (!$this->interfaceHasAddress($routes[0]['device'], $routes[0]['ipproto'])) {
                             unset($planned[$net]);
                             continue;
                         } elseif (
@@ -450,7 +450,7 @@ class StaticRoute
                     continue; /* not requested */
                 } elseif (
                     in_array($route['gatewayip'], $cgateways) ||
-                    (!empty($route['if']) && in_array($route['if'], $cgateways))
+                    (!empty($route['device']) && in_array($route['device'], $cgateways))
                 ) {
                     continue; /* route already installed */
                 }
@@ -459,8 +459,8 @@ class StaticRoute
                     $syslog->info(sprintf("blackhole %s route %s", $ipproto, $net));
                     Shell::run_safe('/sbin/route add -%s %s -blackhole', [$ipproto, $net]); /* blackhole */
                 } elseif (!empty($route['fargw'])) {
-                    $syslog->info(sprintf("add %s route %s via %s (fargw)", $ipproto, $net, $route['if']));
-                    Shell::run_safe('/sbin/route add -%s %s -interface %s', [$ipproto, $net, $route['if']]);
+                    $syslog->info(sprintf("add %s route %s via %s (fargw)", $ipproto, $net, $route['device']));
+                    Shell::run_safe('/sbin/route add -%s %s -interface %s', [$ipproto, $net, $route['device']]);
                 } elseif (!empty($route['gatewayip'])) {
                     $syslog->info(
                         sprintf(
