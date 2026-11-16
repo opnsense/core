@@ -229,8 +229,9 @@ if __name__ == '__main__':
             for record in reverse_log_reader(filename):
                 if record['line'].find('filterlog') > -1:
                     rule = parse_record(record, running_conf_descr)
-                    if (rule != None):
-                        result.append(rule)
+                    if rule is None:
+                        continue
+                    result.append(rule)
                     # handle exit criteria, row limit or last digest
                     if cmd_args.limit != 0 and len(result) >= cmd_args.limit:
                         do_exit = True
