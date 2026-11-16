@@ -193,9 +193,9 @@ class StaticRoute
                     $result[$net] = [];
                 }
                 if (($addr = self::normalize($parts[1])) !== false) {
-                    $result[$net][] = $addr;
+                    $result[$net][] = [$addr, 'address'];
                 } else {
-                    $result[$net][] = $parts[5];
+                    $result[$net][] = [$parts[5], 'interface'];
                 }
             }
         }
@@ -240,6 +240,7 @@ class StaticRoute
             $result[$net][0]['interface'] = $gateway['interface'];
             $result[$net][0]['if'] = $gateway['if'];
             $result[$net][0]['ipproto'] = $ipproto;
+            $result[$net][0]['gwipprotocol'] = $gateway['ipprotocol'];
             $result[$net][0]['type'] = 'default';
         }
 
@@ -429,15 +430,15 @@ class StaticRoute
                             continue; /* specific interface requested, but not this one */
                         }
                     }
-                    if (!in_array($iroute, $gwips)) {
+                    if (!in_array($iroute[0], $gwips)) {
                         /* destination found, but not requested */
-                        $syslog->info(sprintf("delete unconfigured route %s via %s", $net, $iroute));
-                        if (strpos($iroute, ':') !== false) {
-                            Shell::run_safe('/sbin/route delete -inet6 %s %s', [$net, $iroute]);
-                        } elseif (strpos($iroute, '.') !== false) {
-                            Shell::run_safe('/sbin/route delete -inet %s %s', [$net, $iroute]);
+                        $syslog->info(sprintf("delete unconfigured route %s via %s", $net, $iroute[0]));
+                        $netproto = strpos($net, ':') !== false ? 'inet6' : 'inet';
+                        if ($iroute[0] === 'address') {
+                            $gwproto = strpos($iroute[0], ':') !== false ? 'inet6' : 'inet';
+                            Shell::run_safe('/sbin/route delete -%s %s -%s %s', [$netproto, $net, $gwproto, $iroute[0]]);
                         } else {
-                            Shell::run_safe('/sbin/route delete %s -interface %s', [$net, $iroute]);
+                            Shell::run_safe('/sbin/route delete -%s %s -interface %s', [$netproto, $net, $iroute[0]]);
                         }
                     }
                 }
@@ -452,8 +453,7 @@ class StaticRoute
                 ) {
                     continue; /* route already installed */
                 }
-                /* RFC 5549: gateway protocol may differ, gateway determines proto */
-                $ipproto = strpos($route['gatewayip'], ':') !== false ? 'inet6' : 'inet';
+                $ipproto = $route['ipproto'];
                 if (in_array($route['gwname'] ?? '', ['Null4', 'Null6'])) {
                     $syslog->info(sprintf("blackhole %s route %s", $ipproto, $net));
                     Shell::run_safe('/sbin/route add -%s %s -blackhole', [$ipproto, $net]); /* blackhole */
@@ -461,8 +461,18 @@ class StaticRoute
                     $syslog->info(sprintf("add %s route %s via %s (fargw)", $ipproto, $net, $route['interface']));
                     Shell::run_safe('/sbin/route add -%s %s -interface %s', [$ipproto, $net, $route['interface']]);
                 } elseif (!empty($route['gatewayip'])) {
-                    $syslog->info(sprintf("add %s route %s via %s", $ipproto, $net, $route['gatewayip']));
-                    Shell::run_safe('/sbin/route add -%s %s %s', [$ipproto, $net, $route['gatewayip']]);
+                    $syslog->info(
+                        sprintf(
+                            "add %s route %s via [%s] %s",
+                            $ipproto, $net, $route['gwipprotocol'], $route['gatewayip']
+                        )
+                    );
+                    Shell::run_safe('/sbin/route add -%s %s -%s %s', [
+                        $ipproto,
+                        $net,
+                        $route['gwipprotocol'],
+                        $route['gatewayip']
+                    ]);
                 } else {
                     $syslog->warning(sprintf("gateway IP could not be found for %s", $net));
                 }
