@@ -434,7 +434,7 @@ class StaticRoute
                         /* destination found, but not requested */
                         $syslog->info(sprintf("delete unconfigured route %s via %s", $net, $iroute[0]));
                         $netproto = strpos($net, ':') !== false ? 'inet6' : 'inet';
-                        if ($iroute[0] === 'address') {
+                        if ($iroute[1] === 'address') {
                             $gwproto = strpos($iroute[0], ':') !== false ? 'inet6' : 'inet';
                             Shell::run_safe('/sbin/route delete -%s %s -%s %s', [$netproto, $net, $gwproto, $iroute[0]]);
                         } else {
@@ -443,7 +443,7 @@ class StaticRoute
                     }
                 }
             }
-            $cgateways = $current[$net] ?? [];
+            $cgateways = array_column($current[$net] ?? [], 0);
             foreach ($routes as $route) {
                 if (!empty($interface_map) && !in_array($route['interface'], $interface_map)) {
                     continue; /* not requested */
