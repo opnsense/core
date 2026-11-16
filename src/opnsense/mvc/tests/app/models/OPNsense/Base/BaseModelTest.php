@@ -492,11 +492,11 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
         $GotNodeContent = self::$model->getNodeContent();
         $this->assertEquals(
             Config::getInstance()->object()->tests->OPNsense->TestModel->NodeContentConf->value1->example1,
-            'innervalue1'
+            $GotNodeContent['NodeContentConf']['value1']['example1']
         );
         $this->assertEquals(
             Config::getInstance()->object()->tests->OPNsense->TestModel->NodeContentConf->value2,
-            'example2'
+            $GotNodeContent['NodeContentConf']['value2']
         );
     }
 
