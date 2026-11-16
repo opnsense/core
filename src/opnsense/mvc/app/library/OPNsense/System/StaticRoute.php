@@ -268,7 +268,8 @@ class StaticRoute
                 }
                 $result[$net][] = [
                     'gatewayip' => $gatewayip,
-                    'interface' => $gateway['if'],
+                    'interface' => $gateway['interface'],
+                    'if' => $gateway['if'],
                     'fargw' => !empty($gateway['fargw']),
                     'gwipprotocol' => $gateway['ipprotocol'],
                     'network' => $net,
@@ -408,7 +409,7 @@ class StaticRoute
         foreach ($planned as $net => $routes) {
             $gwips = [];
             foreach ($routes as $route) {
-                $gwips[] = empty($route['fargw']) ? $route['gatewayip'] : $route['interface'];
+                $gwips[] = empty($route['fargw']) ? $route['gatewayip'] : $route['if'];
             }
             if (isset($current[$net])) {
                 foreach ($current[$net] as $iroute) {
@@ -449,7 +450,7 @@ class StaticRoute
                     continue; /* not requested */
                 } elseif (
                     in_array($route['gatewayip'], $cgateways) ||
-                    (!empty($route['interface']) && in_array($route['interface'], $cgateways))
+                    (!empty($route['if']) && in_array($route['if'], $cgateways))
                 ) {
                     continue; /* route already installed */
                 }
@@ -458,8 +459,8 @@ class StaticRoute
                     $syslog->info(sprintf("blackhole %s route %s", $ipproto, $net));
                     Shell::run_safe('/sbin/route add -%s %s -blackhole', [$ipproto, $net]); /* blackhole */
                 } elseif (!empty($route['fargw'])) {
-                    $syslog->info(sprintf("add %s route %s via %s (fargw)", $ipproto, $net, $route['interface']));
-                    Shell::run_safe('/sbin/route add -%s %s -interface %s', [$ipproto, $net, $route['interface']]);
+                    $syslog->info(sprintf("add %s route %s via %s (fargw)", $ipproto, $net, $route['if']));
+                    Shell::run_safe('/sbin/route add -%s %s -interface %s', [$ipproto, $net, $route['if']]);
                 } elseif (!empty($route['gatewayip'])) {
                     $syslog->info(
                         sprintf(
