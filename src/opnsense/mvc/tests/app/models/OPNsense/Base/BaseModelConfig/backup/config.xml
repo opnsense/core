@@ -5,4 +5,16 @@
     <description>N/A</description>
     <time>0</time>
   </revision>
+  <tests>
+    <OPNsense>
+      <TestModel>
+        <NodeContent>
+          <value1>
+            <example1>innervalue1</example1>
+          </value1>
+          <value2>example2</value2>
+        </NodeContent>
+      </TestModel>
+    </OPNsense>
+  </tests>
 </opnsense>

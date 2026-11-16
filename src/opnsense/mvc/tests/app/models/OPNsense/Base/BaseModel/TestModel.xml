@@ -141,11 +141,5 @@
             </value1>
             <value2 type="TextField"/>
         </NodeContent>
-        <NodeContentConf>
-            <value1>
-                <example1 type="TextField"/>
-            </value1>
-            <value2 type="TextField"/>
-        </NodeContentConf>
     </items>
 </model>

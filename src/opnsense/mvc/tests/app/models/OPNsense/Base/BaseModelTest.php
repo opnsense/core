@@ -467,17 +467,14 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetNodeContent()
     {
-        $NodeContents =
-        ['NodeContent' => [
-            'value1' => ['example1' => 'innervalue1'],
-            'value2' => 'example2'
-            ]
-        ];
-        self::$model->setNodes($NodeContents);
-        $GotNodeContent = self::$model->getNodeContent();
+        Config::getInstance()->forceReload(self::$configDir . '/backup/config.xml');
+        self::$model = new BaseModel\TestModel();
         $this->assertSame(
-            $NodeContents['NodeContent'],
-            $GotNodeContent['NodeContent']
+            [
+                'value1' => ['example1' => 'innervalue1'],
+                'value2' => 'example2'
+            ],
+            self::$model->getNodeContent()['NodeContent']
         );
     }
 
@@ -486,17 +483,14 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetNodeContentFromConfig()
     {
-        self::$model->NodeContentConf->value1->example1 = 'innervalue1';
-        self::$model->NodeContentConf->value2 = 'example2';
-        self::$model->serializeToConfig();
         $GotNodeContent = self::$model->getNodeContent();
         $this->assertEquals(
-            Config::getInstance()->object()->tests->OPNsense->TestModel->NodeContentConf->value1->example1,
-            $GotNodeContent['NodeContentConf']['value1']['example1']
+            Config::getInstance()->object()->tests->OPNsense->TestModel->NodeContent->value1->example1,
+            $GotNodeContent['NodeContent']['value1']['example1']
         );
         $this->assertEquals(
-            Config::getInstance()->object()->tests->OPNsense->TestModel->NodeContentConf->value2,
-            $GotNodeContent['NodeContentConf']['value2']
+            Config::getInstance()->object()->tests->OPNsense->TestModel->NodeContent->value2,
+            $GotNodeContent['NodeContent']['value2']
         );
     }
 
