@@ -1055,6 +1055,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/firewall_migration.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/group.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/nat_rule.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Firewall/schedule.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/settings.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Hostdiscovery/settings.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
