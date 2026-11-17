@@ -28,15 +28,17 @@
 
 namespace OPNsense\Firewall\FieldTypes;
 
-use OPNsense\Base\FieldTypes\TextField;
+use OPNsense\Base\FieldTypes\BaseField;
 use OPNsense\Base\Validators\CallbackValidator;
 
 /**
  * Volatile dates (MM/DD lists) and start_time/stop_time (HH:MM) fields backed by month/day/hour.
  * Read and write the storage fields directly so no duplicate value can become stale.
  */
-class ScheduleListField extends TextField
+class ScheduleListField extends BaseField
 {
+    protected $internalIsContainer = false;
+
     public function getValue(): string
     {
         $range = $this->getParentNode();
