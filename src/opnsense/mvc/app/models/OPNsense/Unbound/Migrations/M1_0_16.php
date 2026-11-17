@@ -43,8 +43,19 @@ class M1_0_16 extends BaseModelMigration
         );
 
         if ($old_safesearch === '1') {
+            $providers = [
+                'google',
+                'duckduckgo',
+                'bing',
+                'youtube',
+                'pixabay',
+                'ecosia',
+            ];
             $model->general->safesearch_providers->setValues(
-                array_keys($model->general->safesearch_providers->getNodeData())
+                array_intersect(
+                    $providers,
+                    array_keys($model->general->safesearch_providers->getNodeData())
+                )
             );
         }
     }
