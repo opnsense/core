@@ -224,13 +224,15 @@
     <page-firewall-schedules>
         <name>Firewall: Schedules</name>
         <patterns>
-            <pattern>firewall_schedule.php*</pattern>
+            <pattern>ui/firewall/schedule/*</pattern>
+            <pattern>api/firewall/schedule/*</pattern>
         </patterns>
     </page-firewall-schedules>
     <page-firewall-schedules-edit>
         <name>Firewall: Schedules: Edit</name>
         <patterns>
-            <pattern>firewall_schedule_edit.php*</pattern>
+            <pattern>ui/firewall/schedule/*</pattern>
+            <pattern>api/firewall/schedule/*</pattern>
         </patterns>
     </page-firewall-schedules-edit>
     <page-diagnostics-logs-firewall-general>
