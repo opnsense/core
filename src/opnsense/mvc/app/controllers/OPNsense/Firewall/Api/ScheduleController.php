@@ -107,10 +107,7 @@ class ScheduleController extends ApiMutableModelControllerBase
         Config::getInstance()->lock();
         $schedule = $this->getModel()->schedule->getChild($this->request->getPost('schedule', 'string', ''));
         if ($schedule === null) {
-            return [
-                'result' => 'failed',
-                'validations' => ['schedule' => gettext('Select a schedule before adding a time range.')]
-            ];
+            return ['result' => 'failed'];
         }
         return $this->addBase('timerange', $schedule->timerange->__reference);
     }
