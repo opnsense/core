@@ -101,6 +101,9 @@ class ScheduleController extends ApiMutableModelControllerBase
 
     public function addRangeAction()
     {
+        if (!$this->request->isPost()) {
+            return ['result' => 'failed'];
+        }
         Config::getInstance()->lock();
         $schedule = $this->getModel()->schedule->getChild($this->request->getPost('schedule', 'string', ''));
         if ($schedule === null) {
@@ -114,6 +117,9 @@ class ScheduleController extends ApiMutableModelControllerBase
 
     public function setRangeAction($uuid)
     {
+        if (!$this->request->isPost()) {
+            return ['result' => 'failed'];
+        }
         Config::getInstance()->lock();
         $range = $this->findRange($uuid);
         if ($range === null) {
