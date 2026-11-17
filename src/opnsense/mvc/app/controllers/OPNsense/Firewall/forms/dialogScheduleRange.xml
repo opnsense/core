@@ -50,8 +50,5 @@
         <id>timerange.rangedescr</id>
         <label>Description</label>
         <type>text</type>
-        <grid_view>
-            <formatter>text</formatter>
-        </grid_view>
     </field>
 </form>

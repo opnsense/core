@@ -39,11 +39,6 @@
                 multiSelect: false,
                 rowSelect: true,
                 stickySelect: true,
-                formatters: {
-                    text: function (column, row) {
-                        return $('<span>').text(row[column.id] || '')[0];
-                    }
-                }
             },
             commands: {
                 copy: {
@@ -71,9 +66,6 @@
             options: {
                 responsive: true,
                 formatters: {
-                    text: function (column, row) {
-                        return $('<span>').text(row[column.id] || '*')[0];
-                    },
                     days: function (column, row) {
                         if (row.position) {
                             return $('<span>').text(row.position.split(',').map(day =>
@@ -85,10 +77,10 @@
                             const [month, day] = value.split('/').map(Number);
                             return new Intl.DateTimeFormat(undefined, {month: 'long', day: 'numeric'})
                                 .format(new Date(2000, month - 1, day));
-                        }).join(', ') || '*')[0];
+                        }).join(', '))[0];
                     },
                     interval: function (column, row) {
-                        return $('<span>').text(row.stop_time ? row.start_time + ' – ' + row.stop_time : '*')[0];
+                        return $('<span>').text(row.stop_time ? row.start_time + ' – ' + row.stop_time : '')[0];
                     }
                 },
                 requestHandler: function (request) {

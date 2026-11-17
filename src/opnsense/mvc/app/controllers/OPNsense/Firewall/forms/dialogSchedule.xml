@@ -3,16 +3,10 @@
         <id>schedule.name</id>
         <label>Name</label>
         <type>text</type>
-        <grid_view>
-            <formatter>text</formatter>
-        </grid_view>
     </field>
     <field>
         <id>schedule.descr</id>
         <label>Description</label>
         <type>text</type>
-        <grid_view>
-            <formatter>text</formatter>
-        </grid_view>
     </field>
 </form>
