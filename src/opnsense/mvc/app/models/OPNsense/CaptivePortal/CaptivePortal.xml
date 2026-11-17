@@ -12,7 +12,7 @@
                 <zoneid type="AutoNumberField">
                     <MinimumValue>0</MinimumValue>
                     <MaximumValue>19</MaximumValue>
-                    <ValidationMessage>Maximum number of zones reached.</ValidationMessage>
+                    <ValidationMessage>Maximum number of zones reached or input invalid.</ValidationMessage>
                     <Required>Y</Required>
                     <Constraints>
                         <check001>
