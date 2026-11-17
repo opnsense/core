@@ -221,6 +221,7 @@
             <pattern>api/firewall/filter_util/rule_stats*</pattern>
         </patterns>
     </page-firewall-rules>
+    <!-- Keep both legacy privilege IDs so existing user/group assignments continue to grant access. -->
     <page-firewall-schedules>
         <name>Firewall: Schedules</name>
         <patterns>

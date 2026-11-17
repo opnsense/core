@@ -44,8 +44,10 @@ class ScheduleController extends ApiMutableModelControllerBase
 
     private function findRange($uuid)
     {
+        // Ranges are nested under schedules, but API routes identify them by their own UUID.
         foreach ($this->getModel()->schedule->iterateItems() as $schedule) {
-            if ($range = $schedule->timerange->getChild($uuid)) {
+            $range = $schedule->timerange->getChild($uuid);
+            if ($range !== null) {
                 return $range;
             }
         }
@@ -90,6 +92,7 @@ class ScheduleController extends ApiMutableModelControllerBase
         $schedule = $range->getParentNode()->getParentNode();
         return [
             'timerange' => $range->getNodes(),
+            // A single option displays the parent name while posting its UUID; ranges cannot be moved here.
             'schedule' => [
                 $schedule->getAttribute('uuid') => ['value' => $schedule->name->getValue(), 'selected' => 1]
             ]

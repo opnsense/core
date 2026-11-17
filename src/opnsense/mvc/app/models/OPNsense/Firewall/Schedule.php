@@ -49,8 +49,8 @@ class Schedule extends BaseModel
     public function performValidation($validateFullModel = false)
     {
         $messages = parent::performValidation($validateFullModel);
-        // XXX: The legacy editor requires at least one time range; revisit this after the master/detail GUI works.
-        // XXX: Both rule stores refer to schedules by name
+        // Schedules without time ranges are allowed and impose no scheduling restriction.
+        // Both rule stores still refer to schedules by name, independently of the editor UUIDs.
         $config = Config::getInstance()->object();
         $referenced = [];
         foreach ($config->xpath('/opnsense/filter/rule/sched | /opnsense/OPNsense/Firewall/Filter/rules/rule/sched') as $name) {

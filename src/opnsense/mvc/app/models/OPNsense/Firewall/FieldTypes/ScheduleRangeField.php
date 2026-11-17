@@ -31,6 +31,10 @@ namespace OPNsense\Firewall\FieldTypes;
 use OPNsense\Base\FieldTypes\ArrayField;
 use OPNsense\Base\FieldTypes\ContainerField;
 
+/**
+ * Hide legacy storage fields from API input/output and field validation.
+ * XML serialization still walks the actual children, skipping the volatile public fields.
+ */
 class ScheduleRangeContainerField extends ContainerField
 {
     private function publicFields($values, $prefix = '')

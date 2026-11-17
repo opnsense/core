@@ -31,6 +31,10 @@ namespace OPNsense\Firewall\FieldTypes;
 use OPNsense\Base\FieldTypes\TextField;
 use OPNsense\Base\Validators\CallbackValidator;
 
+/**
+ * Volatile dates (MM/DD lists) and start_time/stop_time (HH:MM) fields backed by month/day/hour.
+ * Read and write the storage fields directly so no duplicate value can become stale.
+ */
 class ScheduleListField extends TextField
 {
     public function getValue(): string
@@ -44,7 +48,7 @@ class ScheduleListField extends TextField
             ));
         }
         $times = explode('-', $range->hour->getValue());
-        // XXX: Missing hours mean all day in the legacy runtime.
+        // XXX: Missing hours mean all day; editing exposes 00:00-23:59, whose end is exclusive.
         if ($range->hour->isEmpty()) {
             $times = ['00:00', '23:59'];
         }
@@ -88,6 +92,7 @@ class ScheduleListField extends TextField
 
     public function isFieldChanged()
     {
+        // These fields have no stored value of their own; validation follows changes to their sources.
         $range = $this->getParentNode();
         return $this->getInternalXMLTagName() === 'dates' ?
             $range->month->isFieldChanged() || $range->day->isFieldChanged() || $range->position->isFieldChanged() :

@@ -121,9 +121,10 @@
         const field = id => rangeDialog.find('[id="' + id + '"]');
         const row = id => field(id).closest('tr');
 
-        // The calendar uses a reference leap year to edit annual MM/DD dates.
-        $.fn.datepicker.dates.en.titleFormat = 'MM';
+        // Give this yearless calendar its own locale rather than changing the shared English locale.
+        $.fn.datepicker.dates.schedule = $.extend({}, $.fn.datepicker.dates.en, {titleFormat: 'MM'});
         field('timerange.dates').datepicker({
+            language: 'schedule',
             format: {
                 toDisplay: function (date) {
                     return String(date.getUTCMonth() + 1).padStart(2, '0') + '/' +
@@ -138,7 +139,7 @@
             weekStart: 1,
             clearBtn: true,
             maxViewMode: 0,
-            // Year 2000 is the reference leap year so February 29 is always selectable.
+            // Pin parsing and bounds to a leap year; the picker expects UTC dates from toValue().
             defaultViewDate: {year: 2000, month: 0, day: 1},
             startDate: new Date(2000, 0, 1),
             endDate: new Date(2000, 11, 31),

@@ -33,7 +33,7 @@ use OPNsense\Base\FieldTypes\ArrayField;
 class ScheduleArrayField extends ArrayField
 {
     /**
-     * Stock ArrayField::add() only rebinds one container level. Start each schedule with
+     * Stock ArrayField::add() rejects nested arrays. Start each schedule with
      * an empty range list, retaining its template so ranges can be added independently.
      */
     public function add($uuid = null)
