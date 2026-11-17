@@ -195,7 +195,7 @@ class StaticRoute
                 if (($addr = self::normalize($parts[1])) !== false) {
                     $result[$net][] = [$addr, 'address'];
                 } else {
-                    $result[$net][] = [$parts[5], 'interface'];
+                    $result[$net][] = [$parts[5], 'device'];
                 }
             }
         }
