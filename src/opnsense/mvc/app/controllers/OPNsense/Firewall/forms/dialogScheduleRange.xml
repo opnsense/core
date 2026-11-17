@@ -1,0 +1,56 @@
+<form>
+    <field>
+        <id>schedule</id>
+        <label>Schedule</label>
+        <type>text</type>
+        <readonly>true</readonly>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <id>timerange.position</id>
+        <label>Weekdays</label>
+        <help>Repeat on the selected weekdays every week. To use specific calendar dates instead, clear all selected weekdays.</help>
+        <type>select_multiple</type>
+        <grid_view>
+            <formatter>weekdays</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>timerange.dates</id>
+        <label>Calendar dates</label>
+        <type>text</type>
+        <help>Repeat on the selected month and day combinations every year. To use weekdays instead, clear all selected calendar dates.</help>
+        <grid_view>
+            <formatter>dates</formatter>
+            <sortable>false</sortable>
+        </grid_view>
+    </field>
+    <field>
+        <id>timerange.start_time</id>
+        <label>Start time</label>
+        <type>dropdown</type>
+        <grid_view>
+            <ignore>true</ignore>
+        </grid_view>
+    </field>
+    <field>
+        <id>timerange.stop_time</id>
+        <label>End time</label>
+        <type>dropdown</type>
+        <help>The end time is exclusive. For an overnight period, add a separate range for each day.</help>
+        <grid_view>
+            <label>Time range</label>
+            <formatter>interval</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>timerange.rangedescr</id>
+        <label>Description</label>
+        <type>text</type>
+        <grid_view>
+            <formatter>text</formatter>
+        </grid_view>
+    </field>
+</form>

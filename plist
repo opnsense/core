@@ -306,6 +306,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/MigrationController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/NptController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/OneToOneController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/ScheduleController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/SourceNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/CategoryController.php
@@ -315,6 +316,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/MigrationController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/NptController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/OneToOneController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/ScheduleController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/SourceNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/categoryEdit.xml
@@ -324,6 +326,8 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogOneToOneRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogSNatMode.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogSNatRule.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogSchedule.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogScheduleRange.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/geoIPSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/groupEdit.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/settings.xml
