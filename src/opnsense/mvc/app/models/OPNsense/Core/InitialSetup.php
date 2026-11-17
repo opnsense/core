@@ -114,7 +114,7 @@ class InitialSetup extends BaseModel
             );
         } elseif ($ipv4_type == 'pppoe') {
             $pppoeif = $this->getConfigItem('interfaces.wan.if');
-            foreach (Config::getInstance()->object()->ppps->children() as $ppp) {
+            foreach (Config::getInstance()->object()->ppps->children() ?? [] as $ppp) {
                 if ($ppp->if == $pppoeif) {
                     $this->interfaces->wan->pppoe_username = (string)$ppp->username;
                     if (!empty((string)$ppp->password)) {
