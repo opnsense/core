@@ -70,6 +70,7 @@
             set: '/api/firewall/schedule/set_range/',
             del: '/api/firewall/schedule/del_range/',
             options: {
+                responsive: true,
                 formatters: {
                     text: function (column, row) {
                         return $('<span>').text(row[column.id] || '*')[0];
