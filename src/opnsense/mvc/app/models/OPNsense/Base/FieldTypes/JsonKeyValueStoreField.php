@@ -133,37 +133,14 @@ class JsonKeyValueStoreField extends BaseListField
         } else {
             $sourcefile = $this->internalSourceFile;
         }
-        $cachename = $sourcefile != null ? $sourcefile : $this->internalConfigdPopulateAct;
+        $cachename = !empty($this->internalConfigdPopulateAct)
+            ? $this->internalConfigdPopulateAct
+            : $sourcefile;
+
         if (!empty($this->internalConfigdPopulateAct)) {
             if (isset(static::$internalStaticContent[$cachename])) {
                 /* cached for the lifetime of this session */
                 $data = static::$internalStaticContent[$cachename];
-            } elseif ($sourcefile != null) {
-                /* use a file cache for the configd call*/
-                if (is_file($sourcefile)) {
-                    $sourcehandle = fopen($sourcefile, "r+");
-                } else {
-                    $sourcehandle = fopen($sourcefile, "w");
-                }
-                if (flock($sourcehandle, LOCK_EX)) {
-                    $stat = fstat($sourcehandle);
-                    $muttime = $stat['size'] == 0 ? 0 : $stat['mtime'];
-                    if (time() - $muttime > $this->internalConfigdPopulateTTL) {
-                        $response = $this->getConfigdPopulateResponse();
-                        if (!empty($response) && json_decode($response) !== null) {
-                            // only store parsable results
-                            fseek($sourcehandle, 0);
-                            ftruncate($sourcehandle, 0);
-                            fwrite($sourcehandle, $response);
-                            fflush($sourcehandle);
-                        }
-                    }
-                }
-                flock($sourcehandle, LOCK_UN);
-                fclose($sourcehandle);
-                if (is_file($sourcefile)) {
-                    $data = json_decode(file_get_contents($sourcefile), true);
-                }
             } else {
                 /* initial configd call  */
                 $data = json_decode($this->getConfigdPopulateResponse(), true);
