@@ -176,9 +176,9 @@ class StaticRoute
             $parts = preg_split('/\s+/', trim($line));
             if (count($parts) < 4) {
                 continue;
-            } elseif ($family === 'inet' && strpos($parts[1], ':') !== false) {
+            } elseif ($family === 'inet' && strpos($parts[0], ':') !== false) {
                 continue;
-            } elseif ($family === 'inet6' && strpos($parts[1], ':') === false) {
+            } elseif ($family === 'inet6' && strpos($parts[0], ':') === false) {
                 continue;
             } elseif ($parts[0] === 'default') {
                 $parts[0] = strpos($parts[1], ':') === false ? '0.0.0.0/0' : '::/0';
