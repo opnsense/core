@@ -74,41 +74,17 @@
             </weight>
             <latencylow type="IntegerField">
                 <MinimumValue>1</MinimumValue>
-                <Constraints>
-                    <ValidationMessage>The low latency threshold needs to be lower than the high latency threshold.</ValidationMessage>
-                    <type>ComparedToFieldConstraint</type>
-                    <field>latencyhigh</field>
-                    <operator>lt</operator>
-                </Constraints>
             </latencylow>
             <latencyhigh type="IntegerField">
                 <MinimumValue>1</MinimumValue>
-                <Constraints>
-                    <ValidationMessage>The high latency threshold needs to be higher than the low latency threshold.</ValidationMessage>
-                    <type>ComparedToFieldConstraint</type>
-                    <field>latencylow</field>
-                    <operator>gt</operator>
-                </Constraints>
             </latencyhigh>
             <losslow type="IntegerField">
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>99</MaximumValue>
-                <Constraints>
-                    <ValidationMessage>The low latency threshold needs to be lower than the high latency threshold.</ValidationMessage>
-                    <type>ComparedToFieldConstraint</type>
-                    <field>losshigh</field>
-                    <operator>lt</operator>
-                </Constraints>
             </losslow>
             <losshigh type="IntegerField">
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>100</MaximumValue>
-                <Constraints>
-                    <ValidationMessage>The high Packet Loss threshold needs to be higher than the low Packet Loss threshold.</ValidationMessage>
-                    <type>ComparedToFieldConstraint</type>
-                    <field>losslow</field>
-                    <operator>gt</operator>
-                </Constraints>
             </losshigh>
             <interval type="IntegerField">
                 <MinimumValue>1</MinimumValue>
