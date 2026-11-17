@@ -56,11 +56,10 @@
             const rows = schedules.bootgrid('getCurrentRows');
             if (!schedules.bootgrid('getSelectedRows').length && rows.length) {
                 schedules.bootgrid('select', [rows[0].uuid]);
+                return;
             }
+            // UIBootgrid refreshes its own data; keep the detail grid in sync with its parent selection.
             $('#{{formGridRange["table_id"]}}').bootgrid('reload');
-        });
-        $(document).on('settings-changed', function () {
-            schedules.bootgrid('reload');
         });
 
         $('#{{formGridRange["table_id"]}}').UIBootgrid({
