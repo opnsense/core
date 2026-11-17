@@ -38,9 +38,7 @@ class Schedule extends BaseModel
 
     protected function init()
     {
-        foreach ($this->schedule->iterateItems() as $uuid => $schedule) {
-            $this->originalNames[$uuid] = $schedule->name->getValue();
-        }
+        $this->originalNames = array_map(fn($schedule) => $schedule->name->getValue(), $this->schedule->getChildren());
     }
 
     /**
@@ -51,14 +49,12 @@ class Schedule extends BaseModel
         $messages = parent::performValidation($validateFullModel);
         // Schedules without time ranges are allowed and impose no scheduling restriction.
         // Both rule stores still refer to schedules by name, independently of the editor UUIDs.
-        $config = Config::getInstance()->object();
-        $referenced = [];
-        foreach ($config->xpath('/opnsense/filter/rule/sched | /opnsense/OPNsense/Firewall/Filter/rules/rule/sched') as $name) {
-            $referenced[(string)$name] = true;
-        }
+        $referenced = array_map('strval', Config::getInstance()->object()->xpath(
+            '/opnsense/filter/rule/sched | /opnsense/OPNsense/Firewall/Filter/rules/rule/sched'
+        ));
         foreach ($this->originalNames as $uuid => $name) {
             if (
-                isset($referenced[$name]) &&
+                in_array($name, $referenced, true) &&
                 (!isset($this->schedule->$uuid) || !$this->schedule->$uuid->name->isEqual($name))
             ) {
                 $messages->appendMessage(new Message(

@@ -67,7 +67,7 @@ class ScheduleListField extends BaseField
             foreach (array_filter(explode(',', $value), 'strlen') as $date) {
                 [$months[], $days[]] = array_pad(explode('/', trim($date), 2), 2, '');
             }
-            // XXX: Parallel lists preserve date order, duplicate months/days and zero padding.
+            // Parallel lists preserve date order, duplicate months/days and zero padding.
             $range->month->setValue(implode(',', $months));
             $range->day->setValue(implode(',', $days));
         } else {
@@ -82,8 +82,7 @@ class ScheduleListField extends BaseField
         if ($this->getInternalXMLTagName() === 'dates') {
             return $this->getValue();
         }
-        [$hour, $minute] = array_pad(explode(':', $this->getValue()), 2, '0');
-        $selected = sprintf('%02d:%02d', (int)$hour, (int)$minute);
+        $selected = vsprintf('%02d:%02d', array_pad(explode(':', $this->getValue()), 2, '0'));
         $options = [];
         for ($hour = 0; $hour < 24; $hour++) {
             foreach (self::MINUTES as $minute) {
@@ -118,7 +117,7 @@ class ScheduleListField extends BaseField
                 }
                 foreach (explode(',', $value) as $date) {
                     $parts = explode('/', $date);
-                    // XXX: Dates repeat annually, including February 29 in leap years.
+                    // Use a leap year to validate annual dates, including February 29.
                     if (
                         count($parts) !== 2 || !ctype_digit($parts[0]) || !ctype_digit($parts[1]) ||
                         !checkdate((int)$parts[0], (int)$parts[1], 2000)
@@ -136,7 +135,7 @@ class ScheduleListField extends BaseField
                 return [gettext('Enter a valid time with minutes 00, 15, 30, 45 or 59.')];
             }
             $start = array_pad(explode(':', $range->start_time->getValue()), 2, '0');
-            // XXX: The legacy editor rejects overnight ranges but accepts equal endpoints.
+            // Ranges stay within one day; equal endpoints define an inactive interval.
             return $this->getInternalXMLTagName() === 'stop_time' &&
                 (int)$parts[0] * 60 + (int)$parts[1] < (int)$start[0] * 60 + (int)$start[1] ?
                 [gettext('The start time must be no later than the stop time.')] : [];

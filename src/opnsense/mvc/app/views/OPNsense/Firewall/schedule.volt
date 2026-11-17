@@ -110,7 +110,6 @@
 
         const rangeDialog = $('#{{formGridRange["edit_dialog_id"]}}');
         const field = id => rangeDialog.find('[id="' + id + '"]');
-        const row = id => field(id).closest('tr');
 
         // Give this yearless calendar its own locale rather than changing the shared English locale.
         $.fn.datepicker.dates.schedule = $.extend({}, $.fn.datepicker.dates.en, {titleFormat: 'MM'});
@@ -138,8 +137,8 @@
         }).on('changeDate clearDate change', updateDateFields);
 
         function updateDateFields() {
-            row('timerange.dates').toggle(!field('timerange.position').val().length);
-            row('timerange.position').toggle(!field('timerange.dates').val());
+            field('timerange.dates').closest('tr').toggle(!field('timerange.position').val().length);
+            field('timerange.position').closest('tr').toggle(!field('timerange.dates').val());
         }
 
         field('timerange.position').on('change', updateDateFields);

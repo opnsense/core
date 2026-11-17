@@ -6,7 +6,6 @@
         <schedule type=".\ScheduleArrayField">
             <name type="TextField">
                 <Required>Y</Required>
-                <!-- XXX: Review the legacy editor's character restrictions and 32-character limit. -->
                 <Mask>/^[a-zA-Z0-9_\-]{1,32}$/D</Mask>
                 <ValidationMessage>A schedule name must contain 1 to 32 letters, digits, underscores or hyphens.</ValidationMessage>
                 <Constraints>
