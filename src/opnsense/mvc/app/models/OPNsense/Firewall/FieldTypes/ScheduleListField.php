@@ -37,6 +37,8 @@ use OPNsense\Base\Validators\CallbackValidator;
  */
 class ScheduleListField extends BaseField
 {
+    private const MINUTES = [0, 15, 30, 45, 59];
+
     protected $internalIsContainer = false;
 
     public function getValue(): string
@@ -84,7 +86,7 @@ class ScheduleListField extends BaseField
         $selected = sprintf('%02d:%02d', (int)$hour, (int)$minute);
         $options = [];
         for ($hour = 0; $hour < 24; $hour++) {
-            foreach ([0, 15, 30, 45, 59] as $minute) {
+            foreach (self::MINUTES as $minute) {
                 $value = sprintf('%02d:%02d', $hour, $minute);
                 $options[$value] = ['value' => $value, 'selected' => $value === $selected ? 1 : 0];
             }
@@ -129,9 +131,9 @@ class ScheduleListField extends BaseField
             $parts = explode(':', $value);
             if (
                 count($parts) !== 2 || !ctype_digit($parts[0]) || !ctype_digit($parts[1]) ||
-                (int)$parts[0] > 23 || (int)$parts[1] > 59
+                (int)$parts[0] > 23 || !in_array((int)$parts[1], self::MINUTES, true)
             ) {
-                return [gettext('Enter a valid time between 00:00 and 23:59.')];
+                return [gettext('Enter a valid time with minutes 00, 15, 30, 45 or 59.')];
             }
             $start = array_pad(explode(':', $range->start_time->getValue()), 2, '0');
             // XXX: The legacy editor rejects overnight ranges but accepts equal endpoints.
