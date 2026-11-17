@@ -1,0 +1,43 @@
+<model>
+    <mount>/schedules/schedule+</mount>
+    <description>Firewall schedules</description>
+    <items>
+        <schedule type=".\ScheduleArrayField">
+            <name type="TextField">
+                <Required>Y</Required>
+                <!-- XXX: Review the legacy editor's character restrictions and 32-character limit. -->
+                <Mask>/^[a-zA-Z0-9_\-]{1,32}$/D</Mask>
+                <ValidationMessage>A schedule name must contain 1 to 32 letters, digits, underscores or hyphens.</ValidationMessage>
+                <Constraints>
+                    <check001>
+                        <type>UniqueConstraint</type>
+                        <ValidationMessage>A schedule with this name already exists.</ValidationMessage>
+                    </check001>
+                </Constraints>
+            </name>
+            <descr type="TextField"/>
+            <timerange type=".\ScheduleRangeField">
+                <position type="OptionField">
+                    <Multiple>Y</Multiple>
+                    <OptionValues>
+                        <mon value="1">Monday</mon>
+                        <tue value="2">Tuesday</tue>
+                        <wed value="3">Wednesday</wed>
+                        <thu value="4">Thursday</thu>
+                        <fri value="5">Friday</fri>
+                        <sat value="6">Saturday</sat>
+                        <sun value="7">Sunday</sun>
+                    </OptionValues>
+                </position>
+                <!-- Storage fields retain the legacy config.xml structure. -->
+                <month type="TextField"/>
+                <day type="TextField"/>
+                <hour type="TextField"/>
+                <dates type=".\ScheduleListField" volatile="true"/>
+                <start_time type=".\ScheduleListField" volatile="true"/>
+                <stop_time type=".\ScheduleListField" volatile="true"/>
+                <rangedescr type="TextField"/>
+            </timerange>
+        </schedule>
+    </items>
+</model>

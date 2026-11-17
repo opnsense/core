@@ -793,7 +793,10 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/NetworkMappedField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/PortMappedField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/SNatModeField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleArrayField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleListField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleRangeField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/SourceNatRuleField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/TosField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Filter.php
@@ -816,6 +819,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_5.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_6.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_7.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Schedule.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Schedule.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/static_aliases/core.json
 /usr/local/opnsense/mvc/app/models/OPNsense/Hostdiscovery/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Hostdiscovery/Hostwatch.php
@@ -1174,6 +1179,8 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/CaptivePortal/FieldTypes/OriginFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Dnsmasq/FieldTypes/HostnameFieldTest.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Firewall/Schedule/config.xml
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Firewall/ScheduleTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Interfaces/NetworkInterfaceTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Interfaces/config/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Kea/FieldTypes/KeaOptionDataFieldTest.php
