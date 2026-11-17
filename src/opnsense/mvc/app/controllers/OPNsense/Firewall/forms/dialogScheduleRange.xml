@@ -14,7 +14,9 @@
         <help>Repeat on the selected weekdays every week. To use specific calendar dates instead, clear all selected weekdays.</help>
         <type>select_multiple</type>
         <grid_view>
-            <formatter>weekdays</formatter>
+            <label>Days</label>
+            <formatter>days</formatter>
+            <sortable>false</sortable>
         </grid_view>
     </field>
     <field>
@@ -23,8 +25,7 @@
         <type>text</type>
         <help>Repeat on the selected month and day combinations every year. To use weekdays instead, clear all selected calendar dates.</help>
         <grid_view>
-            <formatter>dates</formatter>
-            <sortable>false</sortable>
+            <ignore>true</ignore>
         </grid_view>
     </field>
     <field>

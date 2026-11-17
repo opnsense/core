@@ -75,13 +75,13 @@
                     text: function (column, row) {
                         return $('<span>').text(row[column.id] || '*')[0];
                     },
-                    weekdays: function (column, row) {
-                        return $('<span>').text((row.position || '').split(',').filter(Boolean).map(day =>
-                            new Intl.DateTimeFormat(undefined, {weekday: 'long'})
-                                .format(new Date(2000, 0, 2 + Number(day)))
-                        ).join(', ') || '*')[0];
-                    },
-                    dates: function (column, row) {
+                    days: function (column, row) {
+                        if (row.position) {
+                            return $('<span>').text(row.position.split(',').map(day =>
+                                new Intl.DateTimeFormat(undefined, {weekday: 'long'})
+                                    .format(new Date(2000, 0, 2 + Number(day)))
+                            ).join(', '))[0];
+                        }
                         return $('<span>').text((row.dates || '').split(',').filter(Boolean).map(value => {
                             const [month, day] = value.split('/').map(Number);
                             return new Intl.DateTimeFormat(undefined, {month: 'long', day: 'numeric'})
