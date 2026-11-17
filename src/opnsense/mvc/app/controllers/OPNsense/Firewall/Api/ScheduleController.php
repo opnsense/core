@@ -71,7 +71,14 @@ class ScheduleController extends ApiMutableModelControllerBase
 
     public function delItemAction($uuid)
     {
-        return $this->deleteItem($uuid, fn($uuid) => $this->getModel()->schedule->getChild($uuid));
+        if (!$this->request->isPost()) {
+            return ['result' => 'failed'];
+        }
+        Config::getInstance()->lock();
+        if (!$this->getModel()->schedule->del($uuid)) {
+            return ['result' => 'failed'];
+        }
+        return $this->save();
     }
 
     public function searchRangeAction()
@@ -127,21 +134,15 @@ class ScheduleController extends ApiMutableModelControllerBase
 
     public function delRangeAction($uuid)
     {
-        return $this->deleteItem($uuid, [$this, 'findRange']);
-    }
-
-    private function deleteItem($uuid, callable $lookup)
-    {
         if (!$this->request->isPost()) {
             return ['result' => 'failed'];
         }
         Config::getInstance()->lock();
-        $item = $lookup($uuid);
-        if ($item === null) {
+        $range = $this->findRange($uuid);
+        if ($range === null) {
             return ['result' => 'failed'];
         }
-        $item->getParentNode()->del($uuid);
-        return $this->save();
+        return $this->delBase($range->getParentNode()->__reference, $uuid);
     }
 
     public function reconfigureAction()
