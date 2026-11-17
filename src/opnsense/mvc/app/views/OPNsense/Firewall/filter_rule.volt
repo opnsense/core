@@ -623,7 +623,7 @@
                         }
                         return $('<span>').text(row[column.id] + ' ')
                             .append($('<a>', {
-                                href: '/ui/firewall/schedule#edit=' + encodeURIComponent(row[column.id]),
+                                href: '/ui/firewall/schedule#search=' + encodeURIComponent(row[column.id]),
                                 'data-toggle': 'tooltip',
                                 title: "{{ lang._('Edit') }}"
                             }).append($('<i>', {class: 'fa fa-calendar text-muted'})))[0];

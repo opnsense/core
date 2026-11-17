@@ -39,41 +39,22 @@ class ScheduleController extends ApiMutableModelControllerBase
 
     public function searchItemAction()
     {
-        $result = $this->searchBase('schedule', ['name', 'descr'], 'name');
-        foreach ($result['rows'] as &$row) {
-            $row['uuid'] = $row['name'];
-        }
-        return $result;
+        return $this->searchBase('schedule', ['name', 'descr'], 'name');
     }
 
-    // Names and range positions also work for legacy entries without persisted UUIDs.
-    private function findSchedule($name)
+    private function findRange($uuid)
     {
         foreach ($this->getModel()->schedule->iterateItems() as $schedule) {
-            if ($schedule->name->isEqual($name)) {
-                return $schedule;
+            if ($range = $schedule->timerange->getChild($uuid)) {
+                return $range;
             }
         }
         return null;
     }
 
-    private function findRange($id)
+    public function getItemAction($uuid = null)
     {
-        [$name, $index] = array_pad(explode('.', $id, 2), 2, '');
-        $schedule = $this->findSchedule($name);
-        if ($schedule === null || !ctype_digit($index)) {
-            return null;
-        }
-        return array_values($schedule->timerange->getChildren())[(int)$index] ?? null;
-    }
-
-    public function getItemAction($name = null)
-    {
-        $schedule = $name === null ? $this->getModel()->schedule->add() : $this->findSchedule($name);
-        if ($schedule === null) {
-            return [];
-        }
-        return ['schedule' => $schedule->getNodes()];
+        return $this->getBase('schedule', 'schedule', $uuid);
     }
 
     public function addItemAction()
@@ -81,53 +62,44 @@ class ScheduleController extends ApiMutableModelControllerBase
         return $this->addBase('schedule', 'schedule');
     }
 
-    public function setItemAction($name)
+    public function setItemAction($uuid)
     {
-        Config::getInstance()->lock();
-        $schedule = $this->findSchedule($name);
-        if ($schedule === null) {
-            return ['result' => 'failed'];
-        }
-        return $this->setBase('schedule', 'schedule', $schedule->getAttribute('uuid'));
+        return $this->setBase('schedule', 'schedule', $uuid);
     }
 
-    public function delItemAction($names)
+    public function delItemAction($uuid)
     {
-        return $this->deleteItems($names, [$this, 'findSchedule']);
+        return $this->deleteItem($uuid, fn($uuid) => $this->getModel()->schedule->getChild($uuid));
     }
 
     public function searchRangeAction()
     {
-        $schedule = $this->findSchedule($this->request->get('schedule', 'string', ''));
-        $rows = [];
-        if ($schedule !== null) {
-            foreach (array_values($schedule->timerange->getChildren()) as $index => $range) {
-                $rows[] = $range->getNodeContent() + [
-                    'uuid' => $schedule->name->getValue() . '.' . $index
-                ];
-            }
-        }
-        return $this->searchRecordsetBase($rows);
+        $schedule = $this->getModel()->schedule->getChild($this->request->get('schedule', 'string', ''));
+        return $schedule === null ? $this->searchRecordsetBase([]) :
+            $this->searchBase($schedule->timerange->__reference);
     }
 
-    public function getRangeAction($id = null)
+    public function getRangeAction($uuid = null)
     {
-        $range = $id === null ?
-            $this->findSchedule($this->request->get('schedule', 'string', ''))?->timerange->add() :
-            $this->findRange($id);
+        $range = $uuid === null ?
+            $this->getModel()->schedule->getChild($this->request->get('schedule', 'string', ''))?->timerange->add() :
+            $this->findRange($uuid);
         if ($range === null) {
             return [];
         }
+        $schedule = $range->getParentNode()->getParentNode();
         return [
             'timerange' => $range->getNodes(),
-            'schedule' => $range->getParentNode()->getParentNode()->name->getValue()
+            'schedule' => [
+                $schedule->getAttribute('uuid') => ['value' => $schedule->name->getValue(), 'selected' => 1]
+            ]
         ];
     }
 
     public function addRangeAction()
     {
         Config::getInstance()->lock();
-        $schedule = $this->findSchedule($this->request->getPost('schedule', 'string', ''));
+        $schedule = $this->getModel()->schedule->getChild($this->request->getPost('schedule', 'string', ''));
         if ($schedule === null) {
             return [
                 'result' => 'failed',
@@ -137,39 +109,32 @@ class ScheduleController extends ApiMutableModelControllerBase
         return $this->addBase('timerange', $schedule->timerange->__reference);
     }
 
-    public function setRangeAction($id)
+    public function setRangeAction($uuid)
     {
         Config::getInstance()->lock();
-        $range = $this->findRange($id);
+        $range = $this->findRange($uuid);
         if ($range === null) {
             return ['result' => 'failed'];
         }
-        return $this->setBase('timerange', $range->getParentNode()->__reference, $range->getAttribute('uuid'));
+        return $this->setBase('timerange', $range->getParentNode()->__reference, $uuid);
     }
 
-    public function delRangeAction($ids)
+    public function delRangeAction($uuid)
     {
-        return $this->deleteItems($ids, [$this, 'findRange']);
+        return $this->deleteItem($uuid, [$this, 'findRange']);
     }
 
-    private function deleteItems($ids, callable $lookup)
+    private function deleteItem($uuid, callable $lookup)
     {
         if (!$this->request->isPost()) {
             return ['result' => 'failed'];
         }
         Config::getInstance()->lock();
-        // Resolve positions before deleting so bulk deletion cannot shift the remaining indexes.
-        $items = [];
-        foreach (explode(',', $ids) as $id) {
-            $item = $lookup($id);
-            if ($item === null) {
-                return ['result' => 'failed'];
-            }
-            $items[] = $item;
+        $item = $lookup($uuid);
+        if ($item === null) {
+            return ['result' => 'failed'];
         }
-        foreach ($items as $item) {
-            $item->getParentNode()->del($item->getAttribute('uuid'));
-        }
+        $item->getParentNode()->del($uuid);
         return $this->save();
     }
 

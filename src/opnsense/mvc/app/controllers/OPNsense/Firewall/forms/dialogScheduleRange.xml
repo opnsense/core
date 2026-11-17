@@ -2,7 +2,7 @@
     <field>
         <id>schedule</id>
         <label>Schedule</label>
-        <type>text</type>
+        <type>dropdown</type>
         <readonly>true</readonly>
         <grid_view>
             <ignore>true</ignore>

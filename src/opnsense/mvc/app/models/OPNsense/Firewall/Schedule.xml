@@ -1,5 +1,6 @@
 <model>
     <mount>/schedules/schedule+</mount>
+    <version>1.0.0</version>
     <description>Firewall schedules</description>
     <items>
         <schedule type=".\ScheduleArrayField">

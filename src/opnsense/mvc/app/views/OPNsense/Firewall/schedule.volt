@@ -34,6 +34,7 @@
             del: '/api/firewall/schedule/del_item/',
             options: {
                 triggerEditFor: getUrlHash('edit'),
+                initialSearchPhrase: getUrlHash('search'),
                 selection: true,
                 multiSelect: false,
                 rowSelect: true,
@@ -158,11 +159,12 @@
     });
 </script>
 
+{# Keep deletion single-item in both grids, matching the API. #}
 <div class="content-box __mb">
-    {{ partial('layout_partials/base_bootgrid_table', formGridSchedule) }}
+    {{ partial('layout_partials/base_bootgrid_table', formGridSchedule + {'hide_delete': true}) }}
 </div>
 <div class="content-box">
-    {{ partial('layout_partials/base_bootgrid_table', formGridRange) }}
+    {{ partial('layout_partials/base_bootgrid_table', formGridRange + {'hide_delete': true}) }}
 </div>
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/schedule/reconfigure'}) }}
