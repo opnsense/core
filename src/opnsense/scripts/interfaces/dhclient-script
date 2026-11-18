@@ -241,24 +241,12 @@ EXPIRE|FAIL)
 TIMEOUT)
 	delete_old_alias
 	add_new_address
-	sleep 1
-	if [ -n "$new_routers" ]; then
-		$LOGGER "New Routers ($interface): $new_routers"
-		set "$new_routers"
-		if ping -q -c 1 -t 1 "$1"; then
-			if [ "$new_ip_address" != "$alias_ip_address" ]; then
-				add_new_alias
-			fi
-			add_new_routes
-			add_new_resolv_conf
-			/usr/local/sbin/configctl -d interface newip $interface force
-			exit 0
-		fi
+	if [ "$new_ip_address" != "$alias_ip_address" ]; then
+		add_new_alias
 	fi
-	eval "$IFCONFIG $interface inet -alias $new_ip_address $medium"
-	delete_old_routes
-	/usr/local/sbin/configctl -d interface newip $interface
-	exit 1
+	add_new_routes
+	add_new_resolv_conf
+	/usr/local/sbin/configctl -d interface newip $interface force
 	;;
 esac
 
