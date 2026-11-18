@@ -108,9 +108,6 @@ class ScheduleListField extends BaseField
                     return $value === '' ? [] : [gettext('Select either weekdays or calendar dates.')];
                 }
                 $message = gettext('Select valid calendar dates or weekdays.');
-                if ($value === '') {
-                    return [$message];
-                }
                 foreach (explode(',', $value) as $date) {
                     $parts = explode('/', $date);
                     // Use a leap year to validate annual dates, including February 29.
