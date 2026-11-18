@@ -33,26 +33,6 @@ use OPNsense\Base\Messages\Message;
 
 class Schedule extends BaseModel
 {
-    public function isActive($schedule, ?\DateTimeImmutable $now = null): bool
-    {
-        $now ??= new \DateTimeImmutable();
-        foreach ($schedule->timerange->iterateItems() as $range) {
-            $days = $range->position->getValues();
-            $dates = array_map(
-                fn($date) => vsprintf('%d/%d', array_pad(explode('/', $date), 2, '0')),
-                explode(',', $range->dates->getValue())
-            );
-            $matchesDay = $days ? in_array($now->format('N'), $days, true) :
-                in_array($now->format('n/j'), $dates, true);
-            $start = vsprintf('%02d:%02d', array_pad(explode(':', $range->start_time->getValue()), 2, '0'));
-            $stop = vsprintf('%02d:%02d', array_pad(explode(':', $range->stop_time->getValue()), 2, '0'));
-            if ($matchesDay && $now->format('H:i') >= $start && $now->format('H:i') < $stop) {
-                return true;
-            }
-        }
-        return $schedule->timerange->count() === 0;
-    }
-
     /**
      * {@inheritdoc}
      */
