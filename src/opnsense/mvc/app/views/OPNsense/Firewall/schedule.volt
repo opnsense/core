@@ -107,6 +107,10 @@
             $(this).removeClass('col-sm-12').addClass('col-sm-10');
         });
 
+        $('#{{formGridSchedule["edit_dialog_id"]}}').on('opnsense_bootgrid_mapped', function (event, action) {
+            $(this).find('[id="schedule.name"]').prop('readonly', action === 'edit');
+        });
+
         const rangeDialog = $('#{{formGridRange["edit_dialog_id"]}}');
         const field = id => rangeDialog.find('[id="' + id + '"]');
 

@@ -29,44 +29,7 @@
 namespace OPNsense\Firewall;
 
 use OPNsense\Base\BaseModel;
-use OPNsense\Base\Messages\Message;
-use OPNsense\Core\Config;
 
 class Schedule extends BaseModel
 {
-    private array $originalNames = [];
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function init()
-    {
-        $this->originalNames = array_map(fn($schedule) => $schedule->name->getValue(), $this->schedule->getChildren());
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * Protect schedule references in both rule stores.
-     */
-    public function performValidation($validateFullModel = false)
-    {
-        $messages = parent::performValidation($validateFullModel);
-        // Legacy and MVC firewall rules both store schedule names; refuse changes that would break those references.
-        $referenced = array_map('strval', Config::getInstance()->object()->xpath(
-            '/opnsense/filter/rule/sched | /opnsense/OPNsense/Firewall/Filter/rules/rule/sched'
-        ));
-        foreach ($this->originalNames as $uuid => $name) {
-            if (
-                in_array($name, $referenced, true) &&
-                (!isset($this->schedule->$uuid) || !$this->schedule->$uuid->name->isEqual($name))
-            ) {
-                $messages->appendMessage(new Message(
-                    gettext('A schedule in use by a firewall rule cannot be renamed or deleted.'),
-                    $this->schedule->__reference . '.' . $uuid . '.name'
-                ));
-            }
-        }
-        return $messages;
-    }
 }

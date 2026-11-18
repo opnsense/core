@@ -29,6 +29,7 @@
 namespace OPNsense\Firewall\Api;
 
 use OPNsense\Base\ApiMutableModelControllerBase;
+use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
 
@@ -66,6 +67,15 @@ class ScheduleController extends ApiMutableModelControllerBase
 
     public function setItemAction($uuid)
     {
+        if (!$this->request->isPost()) {
+            return ['result' => 'failed'];
+        }
+        Config::getInstance()->lock();
+        $schedule = $this->getModel()->schedule->getChild($uuid);
+        $name = $this->request->getPost('schedule')['name'] ?? null;
+        if ($schedule !== null && $name !== null && !$schedule->name->isEqual($name)) {
+            throw new UserException(gettext('The name of an existing schedule cannot be changed.'));
+        }
         return $this->setBase('schedule', 'schedule', $uuid);
     }
 
@@ -75,10 +85,19 @@ class ScheduleController extends ApiMutableModelControllerBase
             return ['result' => 'failed'];
         }
         Config::getInstance()->lock();
-        if (!$this->getModel()->schedule->del($uuid)) {
+        $schedule = $this->getModel()->schedule->getChild($uuid);
+        if ($schedule === null) {
             return ['result' => 'failed'];
         }
-        return $this->save();
+        // Both legacy and MVC firewall rules reference schedules by name.
+        foreach (Config::getInstance()->object()->xpath(
+            '/opnsense/filter/rule/sched | /opnsense/OPNsense/Firewall/Filter/rules/rule/sched'
+        ) as $name) {
+            if ($schedule->name->isEqual((string)$name)) {
+                throw new UserException(gettext('A schedule in use by a firewall rule cannot be deleted.'));
+            }
+        }
+        return $this->delBase('schedule', $uuid);
     }
 
     public function searchRangeAction()
