@@ -467,8 +467,6 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetNodeContent()
     {
-        Config::getInstance()->forceReload(self::$configDir . '/backup/config.xml');
-        self::$model = new BaseModel\TestModel();
         $this->assertSame(
             [
                 'value1' => ['example1' => 'innervalue1'],
