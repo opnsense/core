@@ -32,7 +32,7 @@ require_once("system.inc");
 require_once("config.inc");
 require_once("util.inc");
 
-$filename = '/tmp/.interfaces.todo';
+$filename = \OPNsense\Interfaces\NetworkInterface::getTodoFilename();
 
 $todos = (new \OPNsense\Core\FileObject($filename, 'r'))->readJson();
 if (empty($todos)) {

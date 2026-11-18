@@ -4127,7 +4127,7 @@ function interfaces_primary_address6($interface, $ifconfig_details = null)
  */
 function interfaces_merge_pending()
 {
-    $filename = '/tmp/.interfaces.todo';
+    $filename = \OPNsense\Interfaces\NetworkInterface::getTodoFilename();
 
     $fp = @fopen($filename, 're');
     if ($fp === false) {
