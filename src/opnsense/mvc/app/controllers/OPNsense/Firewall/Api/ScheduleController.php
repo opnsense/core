@@ -67,15 +67,6 @@ class ScheduleController extends ApiMutableModelControllerBase
 
     public function setItemAction($uuid)
     {
-        if (!$this->request->isPost()) {
-            return ['result' => 'failed'];
-        }
-        Config::getInstance()->lock();
-        $schedule = $this->getModel()->schedule->getChild($uuid);
-        $name = $this->request->getPost('schedule')['name'] ?? null;
-        if ($schedule !== null && $name !== null && !$schedule->name->isEqual($name)) {
-            throw new UserException(gettext('The name of an existing schedule cannot be changed.'));
-        }
         return $this->setBase('schedule', 'schedule', $uuid);
     }
 

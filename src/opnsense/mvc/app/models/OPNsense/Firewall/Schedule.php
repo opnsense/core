@@ -29,7 +29,28 @@
 namespace OPNsense\Firewall;
 
 use OPNsense\Base\BaseModel;
+use OPNsense\Base\Messages\Message;
 
 class Schedule extends BaseModel
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function performValidation($validateFullModel = false)
+    {
+        $messages = parent::performValidation($validateFullModel);
+        foreach ($this->schedule->iterateItems() as $schedule) {
+            if (!$validateFullModel && !$schedule->isFieldChanged()) {
+                continue;
+            }
+            $key = $schedule->__reference;
+            if (!$schedule->name->isEqual($schedule->name->getInitialValue())) {
+                $messages->appendMessage(new Message(
+                    gettext('The name of an existing schedule cannot be changed.'),
+                    $key . '.name'
+                ));
+            }
+        }
+        return $messages;
+    }
 }
