@@ -209,18 +209,15 @@ function legacy_vlan_proto($ifs, $proto)
 
 function legacy_interface_stats($ifs = null)
 {
-    if ($ifs != null) {
-        // only request data for selected interface
-        $cmd = '/usr/local/sbin/ifinfo ' . escapeshellarg($ifs);
-    } else {
-        // all interfaces
-        $cmd = '/usr/local/sbin/ifinfo';
-    }
+    $cmd = '/usr/local/sbin/ifinfo';
     $stats = [];
+
+    if ($ifs != null) {
+        $cmd = implode(' ', [$cmd, escapeshellarg($ifs)]);
+    }
 
     exec($cmd . ' 2>&1', $out, $ret);
     if ($ret) {
-        legacy_interface_error($cmd);
         return $stats;
     }
 
