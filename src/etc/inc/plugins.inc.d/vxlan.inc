@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2019-2022 Deciso B.V.
+ * Copyright (C) 2019-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -60,24 +60,12 @@ function vxlan_configure_do($verbose = false, $device = null)
 {
     $cnf = OPNsense\Core\Config::getInstance()->object();
     $interfaces_details = legacy_interfaces_details();
-    $configured_devices = array();
-    $changed_devices = array();
+    $configured_devices = [];
+    $changed_devices = [];
     $vxlans = iterator_to_array((new \OPNsense\Interfaces\VxLan())->vxlan->iterateItems());
 
     if (!empty($vxlans)) {
         service_log(sprintf('Configuring VXLAN interface%s...', empty($device) ? 's' : " {$device}"), $verbose);
-    }
-
-    $all_addresses = array();
-    $known_addresses = array();
-    foreach ($interfaces_details as $intf) {
-        foreach (['ipv4', 'ipv6'] as $ipproto) {
-            if (!empty($intf[$ipproto])) {
-                foreach ($intf[$ipproto] as $net) {
-                    $known_addresses[] = $net['ipaddr'];
-                }
-            }
-        }
     }
 
     // (re)configure vxlan devices
@@ -90,17 +78,12 @@ function vxlan_configure_do($verbose = false, $device = null)
             continue;
         }
 
-        if (!in_array((string)$vxlan->vxlanlocal, $known_addresses)) {
-            // skip when interface address is not assigned (yet)
-            continue;
-        }
-
         $configured_devices[] = $device_name;
         $current_settings = [];
 
         if (empty($interfaces_details[$device_name])) {
             // new device
-            mwexecf('/sbin/ifconfig vxlan create name %s', array($device_name));
+            mwexecf('/sbin/ifconfig vxlan create name %s', [$device_name]);
             $isChanged = true;
         } else {
             $current_settings['vxlanid'] = $interfaces_details[$device_name]['vxlan']['vni'];
@@ -114,8 +97,8 @@ function vxlan_configure_do($verbose = false, $device = null)
         }
 
         // gather settings, detect changes
-        $ifcnfcmd = '/sbin/ifconfig %s';
-        $ifcnfcmdp = array($device_name);
+        $cmdfrmt = ['/sbin/ifconfig %s'];
+        $cmdargs = [$device_name];
         foreach (
             [
             'vxlanid', 'vxlanlocal', 'vxlanremote', 'vxlanlocalport', 'vxlanremoteport', 'vxlangroup', 'vxlandev'
@@ -133,8 +116,9 @@ function vxlan_configure_do($verbose = false, $device = null)
                 $value = (string)$vxlan->$param;
             }
             if ($value != '') {
-                $ifcnfcmd .= " {$param} %s ";
-                $ifcnfcmdp[] = $value;
+                $cmdfrmt[] = '%s %s';
+                $cmdargs[] = $param;
+                $cmdargs[] = $value;
             }
             if (isset($current_settings[$param]) && $current_settings[$param] != $value) {
                 // need to bring existing down to apply changes
@@ -144,7 +128,8 @@ function vxlan_configure_do($verbose = false, $device = null)
         }
 
         if ($isChanged) {
-            mwexecf($ifcnfcmd . ' up', $ifcnfcmdp);
+            $cmdfrmt[] = 'up';
+            mwexecf($cmdfrmt, $cmdargs);
             $changed_devices[] = $device_name;
         }
     }
@@ -153,7 +138,7 @@ function vxlan_configure_do($verbose = false, $device = null)
     foreach ($interfaces_details as $intf => $data) {
         if (strpos($intf, "vxlan") === 0) {
             if (!in_array($intf, $configured_devices)) {
-                mwexecf('/sbin/ifconfig %s destroy', array($intf));
+                mwexecf('/sbin/ifconfig %s destroy', [$intf]);
             }
         }
     }
