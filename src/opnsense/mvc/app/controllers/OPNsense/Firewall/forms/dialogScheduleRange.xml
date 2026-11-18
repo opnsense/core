@@ -3,7 +3,6 @@
         <id>schedule</id>
         <label>Schedule</label>
         <type>dropdown</type>
-        <readonly>true</readonly>
         <grid_view>
             <ignore>true</ignore>
         </grid_view>
