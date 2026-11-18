@@ -44,7 +44,7 @@ class StaticRoute
     /**
      * In progress queue
      */
-    private static $todo_file = '/tmp/.static_routes.todo';
+    private static $todo_file = '/var/lib/php/tmp/static_routes.todo';
 
     /**
      *
