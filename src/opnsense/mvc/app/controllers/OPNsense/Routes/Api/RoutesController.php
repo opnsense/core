@@ -154,6 +154,7 @@ class RoutesController extends ApiMutableModelControllerBase
         if (!empty($response['result']) && $response['result'] != 'failed') {
             StaticRoute::claim((string)$node->network);
         }
+        return $response;
     }
 
     /**

@@ -43,7 +43,8 @@
                 'options':{
                     selection:true,
                     multiSelect:true,
-                    batchDelete:false
+                    batchDelete:false,
+                    batchToggle:false
                 },
                 tabulatorOptions: {
                     groupBy: 'network',

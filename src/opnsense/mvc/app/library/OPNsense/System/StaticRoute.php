@@ -176,12 +176,12 @@ class StaticRoute
             $parts = preg_split('/\s+/', trim($line));
             if (count($parts) < 4) {
                 continue;
+            } elseif ($parts[0] === 'default') {
+                $parts[0] = strpos($parts[1], ':') === false ? '0.0.0.0/0' : '::/0';
             } elseif ($family === 'inet' && strpos($parts[0], ':') !== false) {
                 continue;
             } elseif ($family === 'inet6' && strpos($parts[0], ':') === false) {
                 continue;
-            } elseif ($parts[0] === 'default') {
-                $parts[0] = strpos($parts[1], ':') === false ? '0.0.0.0/0' : '::/0';
             }
             /* if we would tag our routes with RTF_PROTO2, we could filter them here (Flags include 2) */
 
