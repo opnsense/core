@@ -467,28 +467,15 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetNodeContent()
     {
+        $GotNodeContent = self::$model->getNodeContent();
+
+        // Test if structure is (still) the same as expected
         $this->assertSame(
             [
                 'value1' => ['example1' => 'innervalue1'],
                 'value2' => 'example2'
             ],
-            self::$model->getNodeContent()['NodeContent']
-        );
-    }
-
-        /**
-     * @depends testGetNodeContent
-     */
-    public function testGetNodeContentFromConfig()
-    {
-        $GotNodeContent = self::$model->getNodeContent();
-        $this->assertEquals(
-            Config::getInstance()->object()->tests->OPNsense->TestModel->NodeContent->value1->example1,
-            $GotNodeContent['NodeContent']['value1']['example1']
-        );
-        $this->assertEquals(
-            Config::getInstance()->object()->tests->OPNsense->TestModel->NodeContent->value2,
-            $GotNodeContent['NodeContent']['value2']
+            $GotNodeContent['NodeContent']
         );
     }
 

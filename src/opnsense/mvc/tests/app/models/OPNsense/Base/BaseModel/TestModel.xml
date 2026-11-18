@@ -142,7 +142,7 @@
                     <Default>innervalue1</Default>
                 </example1>
             </value1>
-            <value2 type="TextField"/>
+            <value2 type="TextField">
                 <Required>Y</Required>
                 <Default>example2</Default>
             </value2>
