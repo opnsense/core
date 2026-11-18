@@ -463,6 +463,32 @@ class BaseModelTest extends \PHPUnit\Framework\TestCase
     }
 
     /**
+     * @depends testDependConstraintOk2
+     */
+    public function testGetNodeContent()
+    {
+        $GotNodeContent = self::$model->getNodeContent();
+
+        // Test against expected array
+        $this->assertSame(
+            [
+                'value1' => ['example1' => 'innervalue1'],
+                'value2' => 'example2'
+            ],
+            $GotNodeContent['NodeContent']
+        );
+        // Test against loaded config
+        $this->assertEquals(
+            Config::getInstance()->object()->tests->OPNsense->TestModel->NodeContent->value1->example1,
+            $GotNodeContent['NodeContent']['value1']['example1']
+        );
+        $this->assertEquals(
+            Config::getInstance()->object()->tests->OPNsense->TestModel->NodeContent->value2,
+            $GotNodeContent['NodeContent']['value2']
+        );
+    }
+
+    /**
      * @afterClass
      */
     public static function postCleanup()
