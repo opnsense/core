@@ -111,8 +111,16 @@ class ScheduleController extends ApiMutableModelControllerBase
         if (!$this->request->isPost()) {
             return ['result' => 'failed'];
         }
+        $scheduleUuid = $this->request->getPost('schedule', 'string', '');
+        // The parent schedule is request context, not a field on the nested time range model.
+        if ($scheduleUuid === '') {
+            return [
+                'result' => 'failed',
+                'validations' => ['schedule' => gettext('A schedule is required.')]
+            ];
+        }
         Config::getInstance()->lock();
-        $schedule = $this->getModel()->schedule->getChild($this->request->getPost('schedule', 'string', ''));
+        $schedule = $this->getModel()->schedule->getChild($scheduleUuid);
         if ($schedule === null) {
             return ['result' => 'failed'];
         }
