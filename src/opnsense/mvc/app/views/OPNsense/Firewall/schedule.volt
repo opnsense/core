@@ -33,7 +33,6 @@
             set: '/api/firewall/schedule/set_item/',
             del: '/api/firewall/schedule/del_item/',
             options: {
-                triggerEditFor: getUrlHash('edit'),
                 initialSearchPhrase: getUrlHash('search'),
                 selection: true,
                 multiSelect: false,
