@@ -36,19 +36,23 @@ class Schedule extends BaseModel
 {
     private array $originalNames = [];
 
+    /**
+     * {@inheritdoc}
+     */
     protected function init()
     {
         $this->originalNames = array_map(fn($schedule) => $schedule->name->getValue(), $this->schedule->getChildren());
     }
 
     /**
+     * {@inheritdoc}
+     *
      * Protect schedule references in both rule stores.
      */
     public function performValidation($validateFullModel = false)
     {
         $messages = parent::performValidation($validateFullModel);
-        // Schedules without time ranges are allowed and impose no scheduling restriction.
-        // Both rule stores still refer to schedules by name, independently of the editor UUIDs.
+        // Legacy and MVC firewall rules both store schedule names; refuse changes that would break those references.
         $referenced = array_map('strval', Config::getInstance()->object()->xpath(
             '/opnsense/filter/rule/sched | /opnsense/OPNsense/Firewall/Filter/rules/rule/sched'
         ));
