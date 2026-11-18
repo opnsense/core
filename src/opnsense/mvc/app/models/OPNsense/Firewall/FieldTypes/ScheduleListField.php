@@ -56,7 +56,7 @@ class ScheduleListField extends BaseField
         if ($range->hour->isEmpty()) {
             $times = ['00:00', '23:59'];
         }
-        return $times[$this->getInternalXMLTagName() === 'start_time' ? 0 : 1] ?? '';
+        return count($times) === 2 ? $times[$this->getInternalXMLTagName() === 'start_time' ? 0 : 1] : '';
     }
 
     public function setValue($value)

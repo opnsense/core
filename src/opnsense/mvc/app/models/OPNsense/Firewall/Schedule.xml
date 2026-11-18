@@ -16,7 +16,7 @@
                 </Constraints>
             </name>
             <descr type="TextField"/>
-            <timerange type=".\ScheduleRangeField">
+            <timerange type="ArrayField">
                 <position type="OptionField">
                     <Multiple>Y</Multiple>
                     <OptionValues>
@@ -33,6 +33,7 @@
                 <month type="TextField"/>
                 <day type="TextField"/>
                 <hour type="TextField"/>
+                <!-- Both representations are exposed by the API; derived fields take precedence when both are posted. -->
                 <dates type=".\ScheduleListField" volatile="true"/>
                 <start_time type=".\ScheduleListField" volatile="true"/>
                 <stop_time type=".\ScheduleListField" volatile="true"/>

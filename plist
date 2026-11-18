@@ -800,7 +800,6 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleArrayField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleListField.php
-/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleRangeField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/SourceNatRuleField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/TosField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Filter.php
