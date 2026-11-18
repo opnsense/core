@@ -43,18 +43,6 @@ class ScheduleController extends ApiMutableModelControllerBase
         return $this->searchBase('schedule', ['name', 'descr'], 'name');
     }
 
-    private function findRange($uuid)
-    {
-        // Ranges are nested under schedules, but API routes identify them by their own UUID.
-        foreach ($this->getModel()->schedule->iterateItems() as $schedule) {
-            $range = $schedule->timerange->getChild($uuid);
-            if ($range !== null) {
-                return $range;
-            }
-        }
-        return null;
-    }
-
     public function getItemAction($uuid = null)
     {
         return $this->getBase('schedule', 'schedule', $uuid);
@@ -89,6 +77,18 @@ class ScheduleController extends ApiMutableModelControllerBase
             }
         }
         return $this->delBase('schedule', $uuid);
+    }
+
+    private function findRange($uuid)
+    {
+        // Ranges are nested under schedules, but API routes identify them by their own UUID.
+        foreach ($this->getModel()->schedule->iterateItems() as $schedule) {
+            $range = $schedule->timerange->getChild($uuid);
+            if ($range !== null) {
+                return $range;
+            }
+        }
+        return null;
     }
 
     public function searchRangeAction()
