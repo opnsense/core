@@ -83,7 +83,6 @@ if __name__ == '__main__':
 
     results = {}
     for domain in domains:
-        print(domain)
         match = dnsbl.policy_match(
             Query(
                 client=inputargs.src,

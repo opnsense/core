@@ -100,18 +100,16 @@
         <table id="grid-domains" class="table table-condensed table-hover table-striped table-responsive">
             <thead>
                 <tr>
-                    <th data-column-id="domain" data-width="10em" data-formatter="domain">{{ lang._('Domain') }}</th>
-                    <th data-column-id="status" data-width="4em" data-formatter="status">{{ lang._('Status') }}</th>
-                    <th data-column-id="action" data-width="4em" data-formatter="action">{{ lang._('Action') }}</th>
-                    <th data-column-id="bl" data-formatter="bl">{{ lang._('Blocklist') }}</th>
-                    <th data-column-id="category" data-width="10em" data-formatter="category">{{ lang._('Category') }}</th>
-                    <th data-column-id="description" data-width="6em" data-formatter="description">{{ lang._('Description') }}</th>
-                    <th data-column-id="prio" data-width="6em" data-formatter="prio">{{ lang._('Priority') }}</th>
-                    <th data-column-id="hidx" data-width="5em" data-formatter="hidx">{{ lang._('HIDX') }}</th>
-                    <th data-column-id="passlist" data-formatter="passlist">{{ lang._('Passlist') }}</th>
-                    <th data-column-id="source_nets" data-formatter="source_nets" data-type="expand" >{{ lang._('Source nets') }}</th>
-                    <th data-column-id="address" data-formatter="address">{{ lang._('Return address') }}</th>
-                    <th data-column-id="rcode" data-width="5em" data-formatter="rcode">{{ lang._('Rcode') }}</th>
+                    <th data-column-id="domain" data-width="10em">{{ lang._('Domain') }}</th>
+                    <th data-column-id="status" data-width="4em">{{ lang._('Status') }}</th>
+                    <th data-column-id="action" data-width="4em">{{ lang._('Action') }}</th>
+                    <th data-column-id="bl">{{ lang._('Blocklist') }}</th>
+                    <th data-column-id="category" data-width="10em">{{ lang._('Category') }}</th>
+                    <th data-column-id="description" data-width="6em">{{ lang._('Description') }}</th>
+                    <th data-column-id="prio" data-width="6em">{{ lang._('Priority') }}</th>
+                    <th data-column-id="source_nets" data-type="expand" >{{ lang._('Source nets') }}</th>
+                    <th data-column-id="address">{{ lang._('Return address') }}</th>
+                    <th data-column-id="rcode" data-width="5em">{{ lang._('Rcode') }}</th>
                 </tr>
             </thead>
         </table>
