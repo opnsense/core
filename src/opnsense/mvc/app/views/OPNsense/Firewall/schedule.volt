@@ -38,6 +38,14 @@
                 multiSelect: false,
                 rowSelect: true,
                 stickySelect: true,
+                formatters: {
+                    name: function (column, row) {
+                        return $('<span>').append($('<i>', {
+                            class: 'fa fa-fw fa-clock-o bootgrid-tooltip ' + (row.active ? 'text-success' : 'text-danger'),
+                            title: row.active ? "{{ lang._('Active') }}" : "{{ lang._('Inactive') }}"
+                        })).append(document.createTextNode(' ' + htmlDecode(row.name)))[0];
+                    }
+                },
             },
             commands: {
                 copy: {

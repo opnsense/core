@@ -40,7 +40,12 @@ class ScheduleController extends ApiMutableModelControllerBase
 
     public function searchItemAction()
     {
-        return $this->searchBase('schedule', ['name', 'descr'], 'name');
+        $result = $this->searchBase('schedule', ['name', 'descr'], 'name');
+        // intentionally not a volatile field
+        foreach ($result['rows'] as &$row) {
+            $row['active'] = $this->getModel()->isActive($this->getModel()->schedule->getChild($row['uuid']));
+        }
+        return $result;
     }
 
     public function getItemAction($uuid = null)
