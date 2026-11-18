@@ -20,9 +20,10 @@ for PPP in $(find /tmp -type f -name "pppconfigure_*"); do
 	INTERFACE=$(cat "${PPP}")
 	rm "${PPP}"
 
+	# Dailing is not the same as e.g. dhclient already
+	# running in the backgound for the above so do the
+	# main connectivity part synchronously (no -d).
+
 	echo "Dialing PPP on ${INTERFACE}"
-	# XXX run without -d to avoid code races for now:
 	configctl -q interface ppp configure ${INTERFACE}
-	# XXX if ppp configure is inadequate we still need this:
-	#configctl -q interface reconfigure ${INTERFACE}
 done
