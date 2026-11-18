@@ -121,7 +121,7 @@ class DiagnosticsController extends ApiControllerBase
             $backend = new Backend();
             $result = json_decode($backend->configdpRun('unbound domain test', [
                 $this->request->getPost('domain'), $src
-            ]), true);
+            ]), true) ?? [];
 
             $mdl = new \OPNsense\Unbound\Unbound();
             $types = $mdl->dnsbl->blocklist->getTemplateNode()->type->getNodeData();
