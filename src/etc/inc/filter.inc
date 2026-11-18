@@ -637,7 +637,7 @@ function filter_rules_legacy(&$FilterIflist, $settings)
 */
 function filter_get_time_based_rule_status($schedule)
 {
-    /* No schedule or no time ranges? The rule should be installed. */
+    /* no schedule? rule should be installed */
     if (empty($schedule['timerange'])) {
         return true;
     }
