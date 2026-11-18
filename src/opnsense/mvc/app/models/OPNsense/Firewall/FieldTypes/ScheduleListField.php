@@ -52,10 +52,6 @@ class ScheduleListField extends BaseField
             ));
         }
         $times = explode('-', $range->hour->getValue());
-        // XXX: Missing hours mean all day; editing exposes 00:00-23:59, whose end is exclusive.
-        if ($range->hour->isEmpty()) {
-            $times = ['00:00', '23:59'];
-        }
         return count($times) === 2 ? $times[$this->getInternalXMLTagName() === 'start_time' ? 0 : 1] : '';
     }
 

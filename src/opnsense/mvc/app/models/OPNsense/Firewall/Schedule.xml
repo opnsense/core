@@ -32,7 +32,10 @@
                 <!-- Storage fields retain the legacy config.xml structure. -->
                 <month type="TextField"/>
                 <day type="TextField"/>
-                <hour type="TextField"/>
+                <hour type="TextField">
+                    <Required>Y</Required>
+                    <Default>00:00-23:59</Default>
+                </hour>
                 <!-- Keep derived fields last: setNodes() applies input in model order, so they override posted storage fields. -->
                 <dates type=".\ScheduleListField" volatile="true"/>
                 <start_time type=".\ScheduleListField" volatile="true"/>

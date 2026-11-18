@@ -51,10 +51,6 @@
       <name>Legacy_Times</name>
       <descr>Runtime compatibility</descr>
       <timerange>
-        <position>1</position>
-        <rangedescr>No hour means all day</rangedescr>
-      </timerange>
-      <timerange>
         <position>2</position>
         <hour>0:0-23:59</hour>
         <rangedescr>Unpadded start time</rangedescr>
