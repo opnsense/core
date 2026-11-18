@@ -44,6 +44,13 @@ class Schedule extends BaseModel
                 continue;
             }
             $key = $schedule->__reference;
+            // XXX: Reserved schedule names are inherited from the legacy editor.
+            if (in_array(strtolower($schedule->name->getValue()), ['wan', 'lan'], true)) {
+                $messages->appendMessage(new Message(
+                    gettext('This schedule name is reserved.'),
+                    $key . '.name'
+                ));
+            }
             if (!$schedule->name->isEqual($schedule->name->getInitialValue())) {
                 $messages->appendMessage(new Message(
                     gettext('The name of an existing schedule cannot be changed.'),
