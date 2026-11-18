@@ -52,6 +52,39 @@ class ScheduleTest extends \PHPUnit\Framework\TestCase
         return $result;
     }
 
+    public function testStorageFieldsProvideVolatileValues()
+    {
+        $model = new Schedule();
+        $range = $model->schedule->add()->timerange->add();
+        $range->setNodes(['month' => '12,12,1', 'day' => '24,25,1', 'hour' => '8:00-17:15']);
+        $this->assertSame(
+            ['12/24,12/25,1/1', '8:00', '17:15'],
+            [$range->dates->getValue(), $range->start_time->getValue(), $range->stop_time->getValue()]
+        );
+    }
+
+    public function testVolatileFieldsOverrideStorageAndAreNotSerialized()
+    {
+        $model = new Schedule();
+        $range = $model->schedule->add()->timerange->add();
+        // Post derived fields first to verify precedence follows model order, not request order.
+        $range->setNodes([
+            'dates' => '02/29,12/25',
+            'start_time' => '09:15',
+            'stop_time' => '17:45',
+            'month' => '1',
+            'day' => '1',
+            'hour' => '00:00-23:59'
+        ]);
+        $xml = new \SimpleXMLElement('<schedule/>');
+        $range->addToXMLNode($xml);
+        $this->assertSame(
+            ['02,12', '29,25', '09:15-17:45'],
+            array_map('strval', [$xml->timerange->month, $xml->timerange->day, $xml->timerange->hour])
+        );
+        $this->assertEmpty($xml->xpath('timerange/dates | timerange/start_time | timerange/stop_time'));
+    }
+
     public function testOutputMatchesFixture()
     {
         $app = new AppConfig();
