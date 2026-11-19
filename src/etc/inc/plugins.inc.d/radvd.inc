@@ -170,12 +170,12 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
         }
 
         $device = get_real_interface($dhcpv6if, 'inet6');
-        $mtu = legacy_interface_stats($device)['mtu'] ?? null;
+        $mtu = $ifconfig_details[$device]['mtu'] ?? null;
 
         if (isset($config['interfaces'][$dhcpv6if]['track6-interface'])) {
             $realtrackif = get_real_interface($config['interfaces'][$dhcpv6if]['track6-interface'], 'inet6');
 
-            $trackmtu = legacy_interface_stats($realtrackif)['mtu'] ?? null;
+            $trackmtu = $ifconfig_details[$realtrackif]['mtu'] ?? null;
             if (!empty($trackmtu) && !empty($mtu)) {
                 if ($trackmtu < $mtu) {
                     $mtu = $trackmtu;
@@ -402,8 +402,8 @@ function radvd_configure_do($verbose = false, $ignorelist = [])
 
         $realtrackif = get_real_interface($trackif, 'inet6');
 
-        $mtu = legacy_interface_stats($device)['mtu'] ?? null;
-        $trackmtu = legacy_interface_stats($realtrackif)['mtu'] ?? null;
+        $mtu = $ifconfig_details[$device]['mtu'] ?? null;
+        $trackmtu = $ifconfig_details[$realtrackif]['mtu'] ?? null;
         if (!empty($trackmtu) && !empty($mtu)) {
             if ($trackmtu < $mtu) {
                 $mtu = $trackmtu;
