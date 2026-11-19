@@ -52,6 +52,7 @@ class LogController extends ApiControllerBase
         $backend = new Backend();
         if ($this->request->isPost() && substr($name, -6) == 'Action') {
             if ($action == "clear") {
+                $this->throwReadOnly();
                 $backend->configdpRun("system clear log", array($module, $scope));
                 return ["status" => "ok"];
             } else {
