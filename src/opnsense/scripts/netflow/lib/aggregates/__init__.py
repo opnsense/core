@@ -32,7 +32,7 @@ import glob
 import syslog
 import datetime
 import sqlite3
-from lib.aggregate import convert_timestamp
+from lib.aggregate import convert_timestamp, timestamp_to_datetime
 sqlite3.register_converter('timestamp', convert_timestamp)
 
 
@@ -181,7 +181,7 @@ class BaseFlowAggregator(object):
                 # upsert data
                 flow['octets_consumed'] = consume_perc * flow['octets']
                 flow['packets_consumed'] = consume_perc * flow['packets']
-                flow['mtime'] = datetime.datetime.utcfromtimestamp(start_time)
+                flow['mtime'] = timestamp_to_datetime(start_time)
                 self._update_cur.execute(self._update_stmt, flow)
                 if self._update_cur.rowcount == 0:
                     self._update_cur.execute(self._insert_stmt, flow)
@@ -220,9 +220,9 @@ class BaseFlowAggregator(object):
         :return: datetime.datetime object
         """
         if type(timestamp) in (int, float):
-            return datetime.datetime.utcfromtimestamp(timestamp)
+            return timestamp_to_datetime(timestamp)
         elif type(timestamp) != datetime.datetime:
-            return datetime.datetime.utcfromtimestamp(0)
+            return timestamp_to_datetime(0)
         else:
             return timestamp
 

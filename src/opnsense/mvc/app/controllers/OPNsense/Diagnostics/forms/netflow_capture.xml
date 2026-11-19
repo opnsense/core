@@ -9,7 +9,7 @@
         <id>netflow.capture.egress_only</id>
         <label>WAN interfaces</label>
         <type>select_multiple</type>
-        <help><![CDATA[Select interfaces used for WAN traffic to avoid counting NAT traffic twice.]]></help>
+        <help><![CDATA[Select WAN interfaces to record NAT traffic from the internal perspective: before source NAT and after destination NAT. This preserves internal host addresses.]]></help>
     </field>
     <field>
         <id>netflow.collect.enable</id>
