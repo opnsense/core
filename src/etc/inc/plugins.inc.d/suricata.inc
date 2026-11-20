@@ -50,6 +50,28 @@ function suricata_services()
     return $services;
 }
 
+function suricata_configure()
+{
+    return [
+        'newwanip' => ['suricata_newwanip:3'],
+    ];
+}
+
+function suricata_newwanip($verbose, $interfaces, $family)
+{
+    $general = config_read_array('OPNsense', 'IDS', 'general', false);
+
+    /* the prefix of the selected interfaces is rendered into the home networks by the template */
+    if (
+        $family === 'inet6' && !empty($general['enabled']) && !empty($general['homenet_interfaces']) &&
+        plugins_argument_map($interfaces) &&
+        count(array_intersect($interfaces, explode(',', $general['homenet_interfaces'])))
+    ) {
+        configd_run('template reload OPNsense/IDS');
+        configd_run('ids reload', true);
+    }
+}
+
 function suricata_syslog()
 {
     $logfacilities = array();
