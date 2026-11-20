@@ -974,6 +974,8 @@ class UIBootgrid {
             }, 100);
         });
         this.table.on('renderComplete', () => {
+            // Tabulator's row-selection formatter has a hard-coded English aria-label.
+            $(`#${this.id} input[aria-label="Select Row"]`).attr('aria-label', this.translations.selectRow || 'Select Row');
             /* tooltips may stick, remove them on redraw */
             $("div.tooltip.fade.top.in").remove();
         });
@@ -1635,6 +1637,15 @@ class UIBootgrid {
             /* SERVER-SIDE OPTIONS */
             dataLoaderLoading: '<span style="height: 33px;"></span>',
 
+            /* Pagination labels follow the selected OPNsense interface language. */
+            locale: 'opnsense',
+            langs: {'opnsense': {pagination: {
+                first_title: this.translations.firstPage || 'First Page',
+                prev_title: this.translations.prevPage || 'Prev Page',
+                next_title: this.translations.nextPage || 'Next Page',
+                last_title: this.translations.lastPage || 'Last Page',
+                page_title: this.translations.showPage || 'Show Page'
+            }}},
             /* pagination */
             pagination: true,
             paginationOutOfRange: function(curPage, maxPage) {
