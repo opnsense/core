@@ -86,8 +86,8 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
         }
 
         if (empty((string)$keamdl->general->enabled)) {
-            /* not enabled */
-            return $staticmap;
+            /* Skip only the disabled address family. */
+            continue;
         }
 
         foreach ($keamdl->reservations->reservation->iterateItems() as $reservation) {
