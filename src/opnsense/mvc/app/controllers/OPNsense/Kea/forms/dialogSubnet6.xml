@@ -142,7 +142,6 @@
     <field>
         <type>header</type>
         <label>Dynamic DNS</label>
-        <collapse>true</collapse>
     </field>
     <field>
         <id>subnet6.ddns_forward_zone</id>
@@ -167,7 +166,7 @@
         <id>subnet6.ddns_qualifying_suffix</id>
         <label>DNS qualifying suffix</label>
         <type>text</type>
-        <help>If a DHCP client only sends a hostname in option 81, append this suffix to create an FQDN (e.g. "home.arpa.").</help>
+        <help>If a DHCP client only sends a hostname in option 81, append this suffix to create an FQDN (e.g. "home.arpa."). Also used as the domain for static reservations when registration is enabled in Unbound or Dnsmasq, even when DDNS is disabled.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>

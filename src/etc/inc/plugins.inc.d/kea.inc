@@ -109,16 +109,16 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
 
             $description = !empty((string)$reservation->description) ? (string)$reservation->description : null;
 
+            /*
+             * DHCP domain and search options configure client name resolution and may differ from the domain
+             * used to register their hostnames. The dedicated qualifying suffix defines that registration domain
+             * for both DHCPv4 and DHCPv6, which aligns most closely with Kea's own DDNS model. Neither subnet
+             * nor reservation DHCP options are used here, since they should never influence this decision.
+             */
             $domain = null;
-            if ($proto == 4) {
-                $subnet_node = $keamdl->getNodeByReference("subnets.subnet4.{$reservation->subnet}");
-                if ($subnet_node) {
-                    if (!empty((string)$reservation->option_data->domain_name)) {
-                        $domain = (string)$reservation->option_data->domain_name;
-                    } elseif (!empty((string)$subnet_node->option_data->domain_name)) {
-                        $domain = (string)$subnet_node->option_data->domain_name;
-                    }
-                }
+            $subnet_node = $keamdl->getNodeByReference("subnets.subnet{$proto}.{$reservation->subnet}");
+            if ($subnet_node && !$subnet_node->ddns_qualifying_suffix->isEmpty()) {
+                $domain = $subnet_node->ddns_qualifying_suffix->getValue();
             }
 
             $entry = [
