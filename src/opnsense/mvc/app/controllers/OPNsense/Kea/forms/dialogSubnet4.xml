@@ -299,7 +299,7 @@
         <id>subnet4.ddns_qualifying_suffix</id>
         <label>DNS qualifying suffix</label>
         <type>text</type>
-        <help>If a DHCP client only sends a hostname in option 81, append this suffix to create an FQDN (e.g. "home.arpa."). Also used as the domain for static reservations when registration is enabled in Unbound or Dnsmasq, even when DDNS is disabled.</help>
+        <help>If a DHCP client only sends a hostname in option 81, append this suffix to create an FQDN (e.g. "home.arpa."). Also used as the domain for static reservations when registration is enabled in local DNS services. Static registration is skipped when a DDNS upstream DNS server is configured for this subnet, even if DDNS is globally disabled.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
