@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (c) 2017 Franco Fichtner <franco@opnsense.org>
+ * Copyright (c) 2017-2026 Franco Fichtner <franco@opnsense.org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -37,13 +37,21 @@ exit_on_bootup();
 
 /* when called with an argument we are in gateway switch mode */
 $monitor_hook = !empty($argv[1]);
-$monitor_gws = $argv[2] ?? '';
+$monitor_gws = !empty($argv[2]) ? explode(',', $argv[2]) : [];
+$monitor_data = null;
 
 /* routing is not allowed to restart monitors when extended hook is requested */
 system_routing_configure(true, null, !$monitor_hook);
 
 if ($monitor_hook) {
-    pass_safe('/usr/local/etc/rc.syshook monitor %s', $monitor_gws);
+    /* make a copy of the current content before modifying dpinger in the hook */
+    $monitor_data = return_gateways_status();
+
+    /* pass down gateways in a shell compatible way as a single argument */
+    pass_safe('/usr/local/etc/rc.syshook monitor %s', implode(',', $monitor_gws));
 }
 
+/* XXX would have to use $monitor_data if set */
 filter_configure_sync(true, false);
+
+filter_gateway_states($monitor_gws, $monitor_data);
