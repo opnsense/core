@@ -91,6 +91,15 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
         }
 
         foreach ($keamdl->reservations->reservation->iterateItems() as $reservation) {
+            $subnet_node = $keamdl->getNodeByReference("subnets.subnet{$proto}.{$reservation->subnet}");
+            if ($subnet_node && !$subnet_node->ddns_dns_server->isEmpty()) {
+                /*
+                 * DDNS manages this subnet's records on the upstream DNS server. Local static records in
+                 * Unbound or Dnsmasq could shadow those records and become stale, so skip registration here.
+                 */
+                continue;
+            }
+
             $hostname = !empty((string)$reservation->hostname) ? (string)$reservation->hostname : null;
             $ip_address = (string)$reservation->ip_address;
             if ($valid_addresses) {
@@ -116,7 +125,6 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
              * nor reservation DHCP options are used here, since they should never influence this decision.
              */
             $domain = null;
-            $subnet_node = $keamdl->getNodeByReference("subnets.subnet{$proto}.{$reservation->subnet}");
             if ($subnet_node && !$subnet_node->ddns_qualifying_suffix->isEmpty()) {
                 $domain = $subnet_node->ddns_qualifying_suffix->getValue();
             }
