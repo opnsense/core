@@ -7,10 +7,17 @@
             <ValidationMessage>The mirror URL contains invalid or unencoded characters.</ValidationMessage>
             <Mask>/[^|"']+/</Mask>
         </mirror>
-        <flavour type="StrictTextField"/>
+        <flavour type="StrictTextField">
+            <ValidationMessage>The flavour contains invalid or unencoded characters.</ValidationMessage>
+            <Mask>/[^|"']+/</Mask>
+        </flavour>
         <plugins type="StrictTextField"/>
         <type type="StrictTextField"/>
-        <subscription type="StrictTextField"/>
+        <subscription type="StrictTextField">
+            <ValidationMessage>The subscription contains invalid or unencoded characters.</ValidationMessage>
+            <!-- approximate character use for default pseudo subscription -->
+            <Mask>/[a-zA-Z0-9-]+/</Mask>
+        </subscription>
         <reboot type="BooleanField"/>
         <aux type="BooleanField"/>
     </items>

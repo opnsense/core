@@ -493,6 +493,7 @@
     </page-snapshots>
     <page-system-firmware-manualupdate>
         <name>System: Firmware</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>ui/core/firmware/*</pattern>
             <pattern>api/core/firmware/*</pattern>
