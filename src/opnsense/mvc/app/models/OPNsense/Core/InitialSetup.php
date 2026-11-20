@@ -231,8 +231,8 @@ class InitialSetup extends BaseModel
         }
         if (
             !$this->deployment_type->dhcp_dns_registration->isEmpty() && (
-                $this->interfaces->lan->configure_dhcp->isEmpty() ||
-                $this->unbound->enabled->isEmpty()
+            $this->interfaces->lan->configure_dhcp->isEmpty() ||
+            $this->unbound->enabled->isEmpty()
             )
         ) {
             $messages->appendMessage(
