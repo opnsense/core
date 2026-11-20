@@ -476,6 +476,45 @@ function filter_configure_sync($verbose = false, $load_aliases = true)
     service_log("done.\n", $verbose);
 }
 
+function filter_gateway_states($affected_gateways, $gateway_status)
+{
+    /* require external historic context to operate the state kill */
+    if (empty($affected_gateways) || empty($gateway_status)) {
+        return;
+    }
+
+    $metered_found_prios = ['inet' => 256, 'inet6' => 256];
+    $metered_gws = ['inet' => [], 'inet6' => []];
+
+    foreach ($gateway_status as $status) {
+        if (strpos($status['status'], 'down') !== false) {
+            /* kill states for all down transitions including "force_down" */
+            if (!empty($status['monitor_killstates']) && in_array($status['name'], $affected_gateways)) {
+                $uuid = trim(configdp_run('filter kill gateway_states', [$status['gateway']], true));
+                log_msg("ROUTING: killing states for unreachable gateway {$status['name']} [$uuid]", LOG_NOTICE);
+            }
+        } else {
+            /* collect "metered" gateways for all non-down status reports */
+            if (!empty($status['monitor_killstates_priority'])) {
+                $metered_gws[$status['ipprotocol']][] = $status;
+            /* only consider currently affected gateways as priority candidates */
+            } elseif (in_array($status['name'], $affected_gateways)) {
+                $metered_found_prios[$status['ipprotocol']] = min($status['priority'], $metered_found_prios[$status['ipprotocol']]);
+            }
+        }
+    }
+
+    foreach ($metered_found_prios as $ipproto => $metered_found_prio) {
+        /* kill states for "metered" gateways */
+        foreach ($metered_gws[$ipproto] as $status) {
+            if ($status['priority'] > $metered_found_prio) {
+                $uuid = trim(configdp_run('filter kill gateway_states', [$status['gateway']], true));
+                log_msg("ROUTING: killing states for deferred gateway {$status['name']} [$uuid]", LOG_NOTICE);
+            }
+        }
+    }
+}
+
 function filter_generate_scrubbing(&$FilterIflist)
 {
     global $config;

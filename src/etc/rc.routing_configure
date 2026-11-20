@@ -37,7 +37,8 @@ exit_on_bootup();
 
 /* when called with an argument we are in gateway switch mode */
 $monitor_hook = !empty($argv[1]);
-$monitor_gws = $argv[2] ?? '';
+$monitor_gws = !empty($argv[2]) ? explode(',', $argv[2]) : [];
+$monitor_data = null;
 
 /* drop deleted routes */
 foreach (glob("/tmp/delete_route_*.todo") as $filename) {
@@ -51,7 +52,12 @@ foreach (glob("/tmp/delete_route_*.todo") as $filename) {
 system_routing_configure(true, null, !$monitor_hook);
 
 if ($monitor_hook) {
-    pass_safe('/usr/local/etc/rc.syshook monitor %s', $monitor_gws);
+    /* make a copy of the current content before modifying dpinger in the hook */
+    $monitor_data = return_gateways_status();
+
+    /* pass down gateways in a shell compatible way as a single argument */
+    pass_safe('/usr/local/etc/rc.syshook monitor %s', implode(',', $monitor_gws));
 }
 
 filter_configure_sync(true, false);
+filter_gateway_states($monitor_gws, $monitor_data);
