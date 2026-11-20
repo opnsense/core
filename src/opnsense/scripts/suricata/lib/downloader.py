@@ -122,12 +122,20 @@ class Downloader(object):
                 if req.status_code == 200:
                     req.raw.decode_content = True
                     src = tempfile.NamedTemporaryFile('wb+', 10240)
-                    while True:
-                        data = req.raw.read(10240)
-                        if not data:
-                            break
-                        else:
-                            src.write(data)
+                    try:
+                        while True:
+                            data = req.raw.read(10240)
+                            if not data:
+                                break
+                            else:
+                                src.write(data)
+                    except Exception as e:
+                        # the connection can break while streaming the body (e.g. large abuse.ch exports),
+                        # skip this file only so the remaining rulesets are still processed.
+                        src.close()
+                        req.close()
+                        syslog.syslog(syslog.LOG_ERR, 'download failed for %s (%s)' % (url, e.__class__.__name__))
+                        return None
                     self._download_cache[frm_url] = {'handle': src, 'filename': filename, 'cached': False}
                 else:
                     syslog.syslog(syslog.LOG_ERR, 'download failed for %s (http_code: %d)' % (url, req.status_code))
