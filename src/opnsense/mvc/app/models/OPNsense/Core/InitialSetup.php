@@ -84,6 +84,7 @@ class InitialSetup extends BaseModel
             $this->language = 'en_US';
         }
         $this->dns_servers = $this->getConfigItem('system.dnsserver');
+        $this->dnsallowoverride = $this->getConfigItem('system.dnsallowoverride', true);
         $this->timezone = $this->getConfigItem('system.timezone');
         if ($this->timezone->isEmpty()) {
             $this->timezone = 'Etc/UTC';
