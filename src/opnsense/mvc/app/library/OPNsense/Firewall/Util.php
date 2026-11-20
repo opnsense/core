@@ -542,6 +542,32 @@ class Util
     }
 
     /**
+     * Return the prefixes remaining after reserving (excluding) the first subnet of an IPv6 prefix.
+     *
+     * @param string $prefix IPv6 CIDR prefix
+     * @param int $reserved_prefix_len prefix length of the first subnet to reserve
+     * @return array non-overlapping CIDR prefixes, largest first, or empty array
+     */
+    public static function excludeIPv6Subnet($prefix, int $reserved_prefix_len): array
+    {
+        if ($reserved_prefix_len < 1 || $reserved_prefix_len > 128) {
+            return [];
+        }
+
+        $prefixes = [];
+        while ($children = self::splitIPv6Prefix($prefix)) {
+            $child_prefix_len = (int)explode('/', $children[1], 2)[1];
+            if ($child_prefix_len > $reserved_prefix_len) {
+                break;
+            }
+            $prefixes[] = $children[1];
+            $prefix = $children[0];
+        }
+
+        return $prefixes;
+    }
+
+    /**
      * convert ipv4 cidr to netmask e.g. 24 --> 255.255.255.0
      * @param int $bits ipv4 bits
      * @return string netmask
