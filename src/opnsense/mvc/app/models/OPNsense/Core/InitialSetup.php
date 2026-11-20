@@ -84,6 +84,7 @@ class InitialSetup extends BaseModel
             $this->language = 'en_US';
         }
         $this->dns_servers = $this->getConfigItem('system.dnsserver');
+        $this->dnsallowoverride = $this->getConfigItem('system.dnsallowoverride', true);
         $this->timezone = $this->getConfigItem('system.timezone');
         if ($this->timezone->isEmpty()) {
             $this->timezone = 'Etc/UTC';
@@ -230,8 +231,8 @@ class InitialSetup extends BaseModel
         }
         if (
             !$this->deployment_type->dhcp_dns_registration->isEmpty() && (
-            $this->interfaces->lan->configure_dhcp->isEmpty() ||
-            $this->unbound->enabled->isEmpty()
+                $this->interfaces->lan->configure_dhcp->isEmpty() ||
+                $this->unbound->enabled->isEmpty()
             )
         ) {
             $messages->appendMessage(
