@@ -73,7 +73,9 @@ set eventqueue basedir {{ OPNsense.monit.general.eventqueuePath }} {{ slots }}
 {%        set ssl = ssl ~ " with options { " ~ ssloptions ~ " }" %}
 {%      endif %}
 {%    endif %}
-set mailserver {{ OPNsense.monit.general.mailserver }} {{ port }} {{ username }} {{ password }} {{ ssl }}
+{#   monit applies the options to the server directly before them, so repeat them for every server #}
+set mailserver {% for mailserver in OPNsense.monit.general.mailserver.split(',') %}{{ mailserver }} {{ port }} {{ username }} {{ password }} {{ ssl }}{% if not loop.last %}, {% endif %}{% endfor %}
+
 {%  endif %}
 
 {%  if helpers.exists('OPNsense.monit.alert') %}
