@@ -40,7 +40,7 @@
                     <Multiple>Y</Multiple>
                     <ConfigdPopulateAct>syslog list applications</ConfigdPopulateAct>
                     <SortByValue>Y</SortByValue>
-                    <ValidationMessage>Specify valid source applications.</ValidationMessage>
+                    <ValidationMessage>Invalid source application.</ValidationMessage>
                 </program>
                 <level type="OptionField">
                     <Multiple>Y</Multiple>
