@@ -1,0 +1,24 @@
+<form>
+    <field>
+        <id>dnsbltester.settings.domains</id>
+        <label>Domain(s)</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>Input the domains you want tested</help>
+        <grid_view>
+            <formatter>expand</formatter>
+        </grid_view>
+    </field>
+    <field>
+        <id>dnsbltester.settings.source</id>
+        <label>Source</label>
+        <type>text</type>
+        <help>
+            Enter the client IP address to test source-specific blocklist rules. If left empty, localhost will be used.
+        </help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+</form>
