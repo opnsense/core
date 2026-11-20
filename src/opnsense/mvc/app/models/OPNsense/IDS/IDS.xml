@@ -242,6 +242,17 @@
                 <Default>0</Default>
                 <Required>Y</Required>
             </syslog_eve>
+            <syslog_eve_types type="OptionField">
+                <Multiple>Y</Multiple>
+                <OptionValues>
+                    <anomaly>Anomaly</anomaly>
+                    <http>HTTP</http>
+                    <tls>TLS</tls>
+                    <dns>DNS</dns>
+                    <ssh>SSH</ssh>
+                    <flow>Flow</flow>
+                </OptionValues>
+            </syslog_eve_types>
             <LogPayload type="BooleanField">
                 <Default>0</Default>
                 <Required>Y</Required>
