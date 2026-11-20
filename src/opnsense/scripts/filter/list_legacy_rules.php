@@ -142,6 +142,14 @@ if (count($filter_rules)) {
             $target_rule['icmp6type'] = implode(',', $items);
         }
 
+        if (empty($target_rule['@uuid'])) {
+            /* Keep exports stable while satisfying the importer's UUID v4 format check. */
+            $hash = md5(json_encode($target_rule));
+            $hash[12] = '4';
+            $hash[16] = dechex((hexdec($hash[16]) & 0x3) | 0x8);
+            $target_rule['@uuid'] = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($hash, 4));
+        }
+
         $result[] = $target_rule;
         $sequence += 10;
     }
