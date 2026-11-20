@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2015 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2015-2026 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions
@@ -29,6 +29,7 @@ set -e
 
 VERSION=$(git describe --abbrev=0 --always ${1})
 REVISION=$(git rev-list ${VERSION}.. --count)
-HASH=$(git rev-list HEAD --max-count=1 | cut -c1-9)
+COMMIT=$(git rev-parse --short=9 HEAD)
+TREE=$(git rev-parse 'HEAD^{tree}')
 
-echo ${VERSION} ${REVISION} ${HASH}
+echo ${VERSION} ${REVISION} ${COMMIT} ${TREE}
