@@ -23,4 +23,12 @@
         <allownew>true</allownew>
         <help>DNS servers to push as configuration payload (RFC4306 3.15 - Value 3 and 10). Accepts multiple IPv4/IPv6 addresses.</help>
     </field>
+    <field>
+        <id>pool.domains</id>
+        <label>DNS Search Domain(s)</label>
+        <type>select_multiple</type>
+        <style>tokenize</style>
+        <allownew>true</allownew>
+        <help>DNS search domains to push as configuration payload. Accepts multiple domains.</help>
+    </field>
 </form>
