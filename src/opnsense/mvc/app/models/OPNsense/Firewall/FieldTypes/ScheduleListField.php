@@ -1,0 +1,138 @@
+<?php
+
+/*
+ * Copyright (C) 2026 Deciso B.V.
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without
+ * modification, are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright
+ *    notice, this list of conditions and the following disclaimer in the
+ *    documentation and/or other materials provided with the distribution.
+ *
+ * THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ * INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ * AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE
+ * AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
+ * OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ * SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ * INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ * CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+namespace OPNsense\Firewall\FieldTypes;
+
+use OPNsense\Base\FieldTypes\BaseField;
+use OPNsense\Base\Validators\CallbackValidator;
+
+/**
+ * Volatile dates (MM/DD lists) and start_time/stop_time (HH:MM) fields backed by month/day/hour.
+ * Read and write the storage fields directly so no duplicate value can become stale.
+ */
+class ScheduleListField extends BaseField
+{
+    private const MINUTES = [0, 15, 30, 45, 59];
+
+    protected $internalIsContainer = false;
+
+    public function getValue(): string
+    {
+        $range = $this->getParentNode();
+        if ($this->getInternalXMLTagName() === 'dates') {
+            return implode(',', array_map(
+                fn($month, $day) => $month . '/' . $day,
+                $range->month->isEmpty() ? [] : explode(',', $range->month->getValue()),
+                $range->day->isEmpty() ? [] : explode(',', $range->day->getValue())
+            ));
+        }
+        $times = explode('-', $range->hour->getValue());
+        return count($times) === 2 ? $times[$this->getInternalXMLTagName() === 'start_time' ? 0 : 1] : '';
+    }
+
+    public function setValue($value)
+    {
+        $range = $this->getParentNode();
+        if ($this->getInternalXMLTagName() === 'dates') {
+            $months = $days = [];
+            foreach (array_filter(explode(',', $value), 'strlen') as $date) {
+                [$months[], $days[]] = array_pad(explode('/', trim($date), 2), 2, '');
+            }
+            // Parallel lists preserve date order, duplicate months/days and zero padding.
+            $range->month->setValue(implode(',', $months));
+            $range->day->setValue(implode(',', $days));
+        } else {
+            $times = [$range->start_time->getValue(), $range->stop_time->getValue()];
+            $times[$this->getInternalXMLTagName() === 'start_time' ? 0 : 1] = $value;
+            $range->hour->setValue(implode('-', $times));
+        }
+    }
+
+    public function getNodeData()
+    {
+        if ($this->getInternalXMLTagName() === 'dates') {
+            return $this->getValue();
+        }
+        $selected = vsprintf('%02d:%02d', array_pad(explode(':', $this->getValue()), 2, '0'));
+        $options = [];
+        for ($hour = 0; $hour < 24; $hour++) {
+            foreach (self::MINUTES as $minute) {
+                $value = sprintf('%02d:%02d', $hour, $minute);
+                $options[$value] = ['value' => $value, 'selected' => $value === $selected ? 1 : 0];
+            }
+        }
+        return $options;
+    }
+
+    public function isFieldChanged()
+    {
+        // These fields have no stored value of their own; validation follows changes to their sources.
+        $range = $this->getParentNode();
+        return $this->getInternalXMLTagName() === 'dates' ?
+            $range->month->isFieldChanged() || $range->day->isFieldChanged() || $range->position->isFieldChanged() :
+            $range->hour->isFieldChanged();
+    }
+
+    public function getValidators()
+    {
+        $validators = parent::getValidators();
+        $validators[] = new CallbackValidator(['callback' => function ($value) {
+            $range = $this->getParentNode();
+            if ($this->getInternalXMLTagName() === 'dates') {
+                if (!$range->position->isEmpty()) {
+                    return $value === '' ? [] : [gettext('Select either weekdays or calendar dates.')];
+                }
+                $message = gettext('Select valid calendar dates or weekdays.');
+                foreach (explode(',', $value) as $date) {
+                    $parts = explode('/', $date);
+                    // Use a leap year to validate annual dates, including February 29.
+                    if (
+                        count($parts) !== 2 || !ctype_digit($parts[0]) || !ctype_digit($parts[1]) ||
+                        !checkdate((int)$parts[0], (int)$parts[1], 2000)
+                    ) {
+                        return [$message];
+                    }
+                }
+                return [];
+            }
+            $parts = explode(':', $value);
+            if (
+                count($parts) !== 2 || !ctype_digit($parts[0]) || !ctype_digit($parts[1]) ||
+                (int)$parts[0] > 23 || !in_array((int)$parts[1], self::MINUTES, true)
+            ) {
+                return [gettext('Enter a valid time with minutes 00, 15, 30, 45 or 59.')];
+            }
+            $start = array_pad(explode(':', $range->start_time->getValue()), 2, '0');
+            // Ranges stay within one day; equal endpoints define an inactive interval.
+            return $this->getInternalXMLTagName() === 'stop_time' &&
+                (int)$parts[0] * 60 + (int)$parts[1] < (int)$start[0] * 60 + (int)$start[1] ?
+                [gettext('The start time must be no later than the stop time.')] : [];
+        }]);
+        return $validators;
+    }
+}

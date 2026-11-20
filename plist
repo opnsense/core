@@ -306,6 +306,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/MigrationController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/NptController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/OneToOneController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/ScheduleController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/Api/SourceNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/CategoryController.php
@@ -315,6 +316,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/MigrationController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/NptController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/OneToOneController.php
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/ScheduleController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/SettingsController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/SourceNatController.php
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/categoryEdit.xml
@@ -324,6 +326,8 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogOneToOneRule.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogSNatMode.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogSNatRule.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogSchedule.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/dialogScheduleRange.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/geoIPSettings.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/groupEdit.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Firewall/forms/settings.xml
@@ -793,7 +797,9 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/NetworkMappedField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/PortMappedField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/SNatModeField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleArrayField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleListField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/SourceNatRuleField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/TosField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Filter.php
@@ -816,6 +822,8 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_5.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_6.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Migrations/MFP1_1_7.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Schedule.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/Schedule.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/static_aliases/core.json
 /usr/local/opnsense/mvc/app/models/OPNsense/Hostdiscovery/ACL/ACL.xml
 /usr/local/opnsense/mvc/app/models/OPNsense/Hostdiscovery/Hostwatch.php
@@ -1047,6 +1055,7 @@
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/firewall_migration.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/group.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/nat_rule.volt
+/usr/local/opnsense/mvc/app/views/OPNsense/Firewall/schedule.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Firewall/settings.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/Hostdiscovery/settings.volt
 /usr/local/opnsense/mvc/app/views/OPNsense/IDS/index.volt
@@ -1176,6 +1185,8 @@
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Base/FieldTypes/VirtualIPFieldTest/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/CaptivePortal/FieldTypes/OriginFieldTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Dnsmasq/FieldTypes/HostnameFieldTest.php
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Firewall/Schedule/config.xml
+/usr/local/opnsense/mvc/tests/app/models/OPNsense/Firewall/ScheduleTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Interfaces/NetworkInterfaceTest.php
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Interfaces/config/config.xml
 /usr/local/opnsense/mvc/tests/app/models/OPNsense/Kea/FieldTypes/KeaOptionDataFieldTest.php
@@ -2619,8 +2630,6 @@
 /usr/local/www/diag_backup.php
 /usr/local/www/fbegin.inc
 /usr/local/www/firewall_rule_lookup.php
-/usr/local/www/firewall_schedule.php
-/usr/local/www/firewall_schedule_edit.php
 /usr/local/www/foot.inc
 /usr/local/www/getserviceproviders.php
 /usr/local/www/guiconfig.inc

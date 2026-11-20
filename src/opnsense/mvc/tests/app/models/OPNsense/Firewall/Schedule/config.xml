@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<opnsense>
+  <schedules>
+    <schedule>
+      <name>Office_Hours</name>
+      <descr>Office &amp; support access</descr>
+      <timerange>
+        <!-- Legacy weekday data: position uses 1 for Monday through 7 for Sunday. -->
+        <position>1,2,3,4,5</position>
+        <hour>8:00-12:00</hour>
+        <rangedescr>Morning</rangedescr>
+      </timerange>
+      <timerange>
+        <position>1,2,3,4,5</position>
+        <hour>13:00-17:15</hour>
+        <rangedescr>Afternoon</rangedescr>
+      </timerange>
+    </schedule>
+    <schedule>
+      <name>Holiday-Access</name>
+      <descr>Annual calendar dates</descr>
+      <timerange>
+        <month>12,12,1</month>
+        <day>24,25,1</day>
+        <hour>0:00-23:59</hour>
+        <rangedescr>Year-end dates</rangedescr>
+      </timerange>
+      <timerange>
+        <month>2</month>
+        <day>29</day>
+        <hour>9:00-10:00</hour>
+        <rangedescr>Leap day</rangedescr>
+      </timerange>
+    </schedule>
+    <schedule>
+      <name>Mixed</name>
+      <descr/>
+      <timerange>
+        <position>6,7</position>
+        <hour>10:00-14:00</hour>
+        <rangedescr/>
+      </timerange>
+      <timerange>
+        <month>6,7</month>
+        <day>15,15</day>
+        <hour>18:30-20:45</hour>
+        <rangedescr>Repeated day values</rangedescr>
+      </timerange>
+    </schedule>
+    <schedule>
+      <name>Legacy_Times</name>
+      <descr>Runtime compatibility</descr>
+      <timerange>
+        <position>2</position>
+        <hour>0:0-23:59</hour>
+        <rangedescr>Unpadded start time</rangedescr>
+      </timerange>
+      <timerange>
+        <position>3</position>
+        <hour>9:00-9:00</hour>
+        <rangedescr>Inactive interval</rangedescr>
+      </timerange>
+    </schedule>
+  </schedules>
+</opnsense>
