@@ -27,6 +27,11 @@
 import subprocess
 import ipaddress
 
+
+class PFError(RuntimeError):
+    pass
+
+
 class PF(object):
     def __init__(self):
         pass
@@ -40,9 +45,16 @@ class PF(object):
             return False
 
     @staticmethod
+    def _run(command):
+        result = subprocess.run(command, capture_output=True, text=True)
+        if result.returncode != 0:
+            raise PFError("%s failed: %s" % (command[0], result.stderr.strip()))
+        return result
+
+    @staticmethod
     def list_table(zoneid):
         pfctl_cmd = ['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'show']
-        for line in subprocess.run(pfctl_cmd, capture_output=True, text=True).stdout.split('\n'):
+        for line in PF._run(pfctl_cmd).stdout.split('\n'):
             # split('\n') on an empty string will return an empty string, we need to make sure to suppress these
             tmp = line.strip()
             if len(tmp) > 0:
@@ -50,13 +62,24 @@ class PF(object):
 
     @staticmethod
     def add_to_table(zoneid, address):
-        subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'add', address], capture_output=True)
+        PF._run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'add', address])
 
     @staticmethod
     def remove_from_table(zoneid, address):
-        subprocess.run(['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'del', address], capture_output=True)
-        # kill associated states to and from this host
-        subprocess.run(['/sbin/pfctl', '-k', f'{address}'], capture_output=True)
+        commands = [
+            ['/sbin/pfctl', '-t', f'__captiveportal_zone_{zoneid}', '-T', 'del', address],
+            # kill associated states to and from this host
+            ['/sbin/pfctl', '-k', f'{address}'],
+        ]
         # Use appropriate wildcard based on IP version
         wildcard = '::/0' if PF._is_ipv6(address) else '0.0.0.0/0'
-        subprocess.run(['/sbin/pfctl', '-k', wildcard, '-k', f'{address}'], capture_output=True)
+        commands.append(['/sbin/pfctl', '-k', wildcard, '-k', f'{address}'])
+
+        errors = []
+        for command in commands:
+            try:
+                PF._run(command)
+            except PFError as error:
+                errors.append(str(error))
+        if errors:
+            raise PFError('; '.join(errors))
