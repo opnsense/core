@@ -97,7 +97,7 @@ if (count($nat_rules)) {
         $destination = $rule['destination'] ?? [];
 
         $target_rule = [
-            '@uuid' => '',
+            '@uuid' => !empty($rule['@attributes']['uuid']) ? $rule['@attributes']['uuid'] : generate_uuid(),
             'enabled' => empty($rule['disabled']) ? '1' : '0',
             'nonat' => !empty($rule['nonat']) ? '1' : '0',
             'nosync' => !empty($rule['nosync']) ? '1' : '0',
