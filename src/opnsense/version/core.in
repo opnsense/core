@@ -1,7 +1,6 @@
 {
     "CORE_ABI": "%%CORE_ABI%%",
     "CORE_ARCH": "%%CORE_ARCH%%",
-    "CORE_COMMIT": "%%CORE_COMMIT%%",
     "CORE_CONFLICTS": "%%CORE_CONFLICTS%%",
     "CORE_COPYRIGHT_HOLDER": "%%CORE_COPYRIGHT_HOLDER%%",
     "CORE_COPYRIGHT_WWW": "%%CORE_COPYRIGHT_WWW%%",
@@ -17,9 +16,10 @@
     "CORE_PKGVERSION": "%%CORE_PKGVERSION%%",
     "CORE_PRODUCT": "%%CORE_PRODUCT%%",
     "CORE_PYTHON_DOT": "%%CORE_PYTHON_DOT%%",
-    "CORE_SERIES_FW": "%%CORE_SERIES_FW%%",
     "CORE_SERIES": "%%CORE_SERIES%%",
+    "CORE_SERIES_FW": "%%CORE_SERIES_FW%%",
     "CORE_SYSLOGNG": "%%CORE_SYSLOGNG%%",
+    "CORE_TREE": "%%CORE_TREE%%",
     "CORE_UID": "%%CORE_UID%%",
     "CORE_USER": "%%CORE_USER%%",
     "CORE_VERSION": "%%CORE_VERSION%%",
@@ -37,6 +37,7 @@
     "product_nickname": "%%CORE_NICKNAME%%",
     "product_series": "%%CORE_SERIES%%",
     "product_tier": "1",
+    "product_tree": "%%CORE_TREE%%",
     "product_version": "%%CORE_PKGVERSION%%",
     "product_website": "%%CORE_WWW%%"
 }

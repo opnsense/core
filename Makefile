@@ -87,13 +87,14 @@ _NEXTMATCH=	--match=${CORE_ABI}\*
 . if empty(_NEXTMATCH)
 . error Did not find appropriate tag for CORE_ABI=${CORE_ABI}
 . endif
-CORE_COMMIT!=	${GITVERSION} ${_NEXTMATCH}
+CORE_SOURCE!=	${GITVERSION} ${_NEXTMATCH}
 .endif
 
-CORE_COMMIT?=	unknown 0 undefined
-CORE_VERSION?=	${CORE_COMMIT:[1]}
-CORE_REVISION?=	${CORE_COMMIT:[2]}
-CORE_HASH?=	${CORE_COMMIT:[3]}
+CORE_SOURCE?=	unknown 0 undefined mismatch
+CORE_VERSION?=	${CORE_SOURCE:[1]}
+CORE_REVISION?=	${CORE_SOURCE:[2]}
+CORE_HASH?=	${CORE_SOURCE:[3]}
+CORE_TREE?=	${CORE_SOURCE:[4]}
 
 _CORE_SERIES=	${CORE_VERSION:S/./ /g}
 CORE_SERIES?=	${_CORE_SERIES:[1]}.${_CORE_SERIES:[2]}

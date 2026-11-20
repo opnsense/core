@@ -44,7 +44,7 @@ ensure_root()
 	fi
 }
 
-while getopts AaCcDeHilNnOoR:stVvwx OPT; do
+while getopts AaCcDeHilNnOoR:sTtVvwx OPT; do
 	case ${OPT} in
 	A)
 		OUTPUT="${OUTPUT} \${product_arch}"
@@ -92,6 +92,9 @@ while getopts AaCcDeHilNnOoR:stVvwx OPT; do
 		;;
 	s)
 		OUTPUT="${OUTPUT} \${product_size}"
+		;;
+	T)
+		OUTPUT="${OUTPUT} \${product_tree}"
 		;;
 	t)
 		OUTPUT="${OUTPUT} \${product_tier}"
