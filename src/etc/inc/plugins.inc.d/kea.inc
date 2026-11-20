@@ -94,11 +94,20 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
         }
 
         if (empty((string)$keamdl->general->enabled)) {
-            /* not enabled */
-            return $staticmap;
+            /* Skip only the disabled address family. */
+            continue;
         }
 
         foreach ($keamdl->reservations->reservation->iterateItems() as $reservation) {
+            $subnet_node = $keamdl->getNodeByReference("subnets.subnet{$proto}.{$reservation->subnet}");
+            if ($subnet_node && !$subnet_node->ddns_dns_server->isEmpty()) {
+                /*
+                 * DDNS manages this subnet's records on the upstream DNS server. Local static records in
+                 * Unbound or Dnsmasq could shadow those records and become stale, so skip registration here.
+                 */
+                continue;
+            }
+
             $hostname = !empty((string)$reservation->hostname) ? (string)$reservation->hostname : null;
             $ip_address = (string)$reservation->ip_address;
             if ($valid_addresses) {
@@ -117,16 +126,15 @@ function kea_staticmap($proto = null, $valid_addresses = true, $ifconfig_details
 
             $description = !empty((string)$reservation->description) ? (string)$reservation->description : null;
 
+            /*
+             * DHCP domain and search options configure client name resolution and may differ from the domain
+             * used to register their hostnames. The dedicated qualifying suffix defines that registration domain
+             * for both DHCPv4 and DHCPv6, which aligns most closely with Kea's own DDNS model. Neither subnet
+             * nor reservation DHCP options are used here, since they should never influence this decision.
+             */
             $domain = null;
-            if ($proto == 4) {
-                $subnet_node = $keamdl->getNodeByReference("subnets.subnet4.{$reservation->subnet}");
-                if ($subnet_node) {
-                    if (!empty((string)$reservation->option_data->domain_name)) {
-                        $domain = (string)$reservation->option_data->domain_name;
-                    } elseif (!empty((string)$subnet_node->option_data->domain_name)) {
-                        $domain = (string)$subnet_node->option_data->domain_name;
-                    }
-                }
+            if ($subnet_node && !$subnet_node->ddns_qualifying_suffix->isEmpty()) {
+                $domain = $subnet_node->ddns_qualifying_suffix->getValue();
             }
 
             $entry = [
