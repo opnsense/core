@@ -29,7 +29,7 @@ set -e
 
 VERSION=$(git describe --abbrev=0 --always ${1})
 REVISION=$(git rev-list ${VERSION}.. --count)
-COMMIT=$(git rev-parse --short=9 HEAD)
+HASH=$(git rev-parse --short=9 HEAD)
 TREE=$(git rev-parse 'HEAD^{tree}')
 
-echo ${VERSION} ${REVISION} ${COMMIT} ${TREE}
+echo ${VERSION} ${REVISION} ${HASH} ${TREE}
