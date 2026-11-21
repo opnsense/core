@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<opnsense>
+    <system>
+        <hostname>test</hostname>
+        <webgui>
+            <protocol>https</protocol>
+            <ssl-certref>dddddddddddd1</ssl-certref>
+        </webgui>
+    </system>
+    <cert uuid="0d000000-0000-4000-8000-000000000001">
+        <refid>dddddddddddd1</refid>
+        <descr>webgui</descr>
+        <caref/>
+        <crt/>
+        <prv/>
+    </cert>
+    <cert uuid="0d000000-0000-4000-8000-000000000002">
+        <refid>dddddddddddd2</refid>
+        <descr>spare</descr>
+        <caref/>
+        <crt/>
+        <prv/>
+    </cert>
+</opnsense>
