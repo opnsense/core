@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/radvd</mount>
-    <version>1.0.1</version>
+    <version>1.0.2</version>
     <description>Radvd configuration</description>
     <items>
         <entries type="ArrayField">
@@ -8,6 +8,10 @@
                 <Default>1</Default>
                 <Required>Y</Required>
             </enabled>
+            <deprecateStalePrefixes type="BooleanField">
+                <Default>1</Default>
+                <Required>Y</Required>
+            </deprecateStalePrefixes>
             <interface type="InterfaceField">
                 <Required>Y</Required>
                 <Constraints>
