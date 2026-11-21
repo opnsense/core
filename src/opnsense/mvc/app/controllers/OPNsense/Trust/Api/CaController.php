@@ -183,9 +183,34 @@ class CaController extends ApiMutableModelControllerBase
         return $response;
     }
 
-    public function delAction($uuid)
+    public function delAction($uuids)
     {
-        $response = $this->delBase('ca', $uuid);
+        if ($this->request->isPost()) {
+            Config::getInstance()->lock();
+            $to_delete = !empty($uuids) ? explode(',', $uuids) : [];
+            foreach ($to_delete as $uuid) {
+                $node = $this->getModel()->getNodeByReference('ca.' . $uuid);
+                if ($node === null || (string)$node->refid === '') {
+                    continue;
+                }
+                $refid = (string)$node->refid;
+                /* a CA's own refid and the caref of a CA it issued share the "ca" path, check issued CAs here */
+                foreach ($this->getModel()->ca->iterateItems() as $item_uuid => $ca) {
+                    if ((string)$ca->caref === $refid && !in_array($item_uuid, $to_delete)) {
+                        throw new UserException(
+                            sprintf(
+                                gettext('Cannot delete "%s", it issued CA "%s".'),
+                                (string)$node->descr,
+                                (string)$ca->descr
+                            ),
+                            gettext('CA in use')
+                        );
+                    }
+                }
+                $this->checkAndThrowValueInUse($refid, false, false, ['ca'], gettext('CA in use'));
+            }
+        }
+        $response = $this->delBase('ca', $uuids);
         (new Backend())->configdRun('system trust configure', true);
         return $response;
     }

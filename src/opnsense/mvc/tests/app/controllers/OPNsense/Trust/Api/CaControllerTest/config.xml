@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<opnsense>
+    <system><hostname>test</hostname></system>
+    <ca uuid="0a000000-0000-4000-8000-000000000001">
+        <refid>aaaaaaaaaaaa1</refid>
+        <descr>rootA</descr>
+        <crt/>
+        <prv/>
+        <serial>1</serial>
+        <caref></caref>
+    </ca>
+    <ca uuid="0a000000-0000-4000-8000-000000000002">
+        <refid>aaaaaaaaaaaa2</refid>
+        <descr>interB</descr>
+        <crt/>
+        <prv/>
+        <serial>1</serial>
+        <caref>aaaaaaaaaaaa1</caref>
+    </ca>
+    <ca uuid="0a000000-0000-4000-8000-000000000003">
+        <refid>aaaaaaaaaaaa3</refid>
+        <descr>spareC</descr>
+        <crt/>
+        <prv/>
+        <serial>1</serial>
+        <caref></caref>
+    </ca>
+    <ca uuid="0a000000-0000-4000-8000-000000000004">
+        <refid>aaaaaaaaaaaa4</refid>
+        <descr>crlD</descr>
+        <crt/>
+        <prv/>
+        <serial>1</serial>
+        <caref></caref>
+    </ca>
+    <ca uuid="0a000000-0000-4000-8000-000000000005">
+        <refid>aaaaaaaaaaaa5</refid>
+        <descr>rootE</descr>
+        <crt/>
+        <prv/>
+        <serial>1</serial>
+        <caref></caref>
+    </ca>
+    <ca uuid="0a000000-0000-4000-8000-000000000006">
+        <refid>aaaaaaaaaaaa6</refid>
+        <descr>interF</descr>
+        <crt/>
+        <prv/>
+        <serial>1</serial>
+        <caref>aaaaaaaaaaaa5</caref>
+    </ca>
+    <ca uuid="0a000000-0000-4000-8000-000000000007">
+        <refid></refid>
+        <descr>norefG</descr>
+        <crt/>
+        <prv/>
+        <serial>1</serial>
+        <caref></caref>
+    </ca>
+    <ca uuid="0a000000-0000-4000-8000-000000000008">
+        <refid>aaaaaaaaaaaa8</refid>
+        <descr>swanH</descr>
+        <crt/>
+        <prv/>
+        <serial>1</serial>
+        <caref></caref>
+    </ca>
+    <cert uuid="0b000000-0000-4000-8000-000000000001">
+        <refid>bbbbbbbbbbbb1</refid>
+        <descr>leafB</descr>
+        <caref>aaaaaaaaaaaa2</caref>
+        <crt/>
+        <prv/>
+    </cert>
+    <crl>
+        <refid>cccccccccccc1</refid>
+        <descr>crlD</descr>
+        <caref>aaaaaaaaaaaa4</caref>
+        <serial>0</serial>
+        <lifetime>9999</lifetime>
+        <crlmethod>internal</crlmethod>
+    </crl>
+    <OPNsense>
+        <Swanctl version="1.0.0">
+            <Connections>
+                <Connection uuid="0c000000-0000-4000-8000-000000000001">
+                    <enabled>1</enabled>
+                    <proposals>default</proposals>
+                    <unique>no</unique>
+                    <aggressive>0</aggressive>
+                    <version>2</version>
+                    <mobike>1</mobike>
+                    <description>conn1</description>
+                </Connection>
+            </Connections>
+            <remotes>
+                <remote uuid="0c000000-0000-4000-8000-000000000002">
+                    <enabled>1</enabled>
+                    <connection>0c000000-0000-4000-8000-000000000001</connection>
+                    <round>0</round>
+                    <auth>pubkey</auth>
+                    <cacerts>aaaaaaaaaaaa8</cacerts>
+                    <description>remH</description>
+                </remote>
+            </remotes>
+        </Swanctl>
+    </OPNsense>
+</opnsense>
