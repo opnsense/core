@@ -305,6 +305,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $if = $_POST['if'];
         // read physical interface name from config.xml
         $pconfig['if'] = $a_interfaces[$if]['if'];
+    } else {
+        // unknown interface, redirect to interface assignments
+        header(url_safe('Location: /ui/interfaces/assignment'));
+        exit;
     }
     $ifgroup = !empty($_GET['group']) ? $_GET['group'] : '';
 
@@ -565,13 +569,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if ($pconfig['gateway'] != "none" || $pconfig['gatewayv6'] != "none") {
-            $match = false;
+            /* the same choices the gateway selects offer */
+            $gateways = ['inet' => [], 'inet6' => []];
             foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway) {
-                if (in_array($pconfig['gateway'], $gateway) || in_array($pconfig['gatewayv6'], $gateway)) {
-                    $match = true;
+                if ($gateway['interface'] == $if && is_ipaddrv4($gateway['gateway'])) {
+                    $gateways['inet'][] = $gateway['name'];
+                } elseif ($gateway['interface'] == $if && is_ipaddrv6($gateway['gateway'])) {
+                    $gateways['inet6'][] = $gateway['name'];
                 }
             }
-            if (!$match) {
+            if (
+                ($pconfig['gateway'] != 'none' && !in_array($pconfig['gateway'], $gateways['inet'], true)) ||
+                ($pconfig['gatewayv6'] != 'none' && !in_array($pconfig['gatewayv6'], $gateways['inet6'], true))
+            ) {
                 $input_errors[] = gettext("A valid gateway must be specified.");
             }
         }
@@ -595,11 +605,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             } else {
                 foreach (config_read_array('interfaces', false) as $idx => $ifdata) {
-                    if ($idx == $if || !strstr($ifdata['if'], 'vlan') || !strstr($ifdata['if'], 'qinq')) {
+                    if ($idx == $if || (!strstr($ifdata['if'], 'vlan') && !strstr($ifdata['if'], 'qinq'))) {
                         continue;
                     }
 
-                    list ($parentif) = interface_parent_devices($ifdata['if']);
+                    $parentif = interface_parent_devices($ifdata['if'])[0] ?? null;
                     if ($parentif != $a_interfaces[$if]['if']) {
                         continue;
                     }
@@ -979,10 +989,9 @@ include("head.inc");
           $("#adv_dhcp_pt_timeout").val(custom_map[$(this).val()][0]);
           $("#adv_dhcp_pt_retry").val(custom_map[$(this).val()][1]);
           $("#adv_dhcp_pt_select_timeout").val(custom_map[$(this).val()][2]);
-          $("#adv_dhcp_pt_reboot.value").val(custom_map[$(this).val()][3]);
+          $("#adv_dhcp_pt_reboot").val(custom_map[$(this).val()][3]);
           $("#adv_dhcp_pt_backoff_cutoff").val(custom_map[$(this).val()][4]);
           $("#adv_dhcp_pt_initial_interval").val(custom_map[$(this).val()][5]);
-          $("#dv_dhcp_pt_values").val(custom_map[$(this).val()][6]);
       });
 
 
@@ -1176,8 +1185,12 @@ include("head.inc");
                               <?= gettext('When used on a single VLAN interface the setting "Promiscuous mode" is required for this to work. ' .
                                   'Alternatively, the parent interface MAC can be spoofed applying the MAC address to all attached VLAN children automatically.') ?><br />
 <?php
-                              $mac = shell_safe('/usr/sbin/arp -an | /usr/bin/grep %s | /usr/bin/cut -d" " -f4', getenv('REMOTE_ADDR'));
-                              if (!empty($mac)):
+                              $mac = shell_safe(
+                                  '/usr/sbin/arp -an | /usr/bin/grep -F %s | /usr/bin/head -n 1 | ' .
+                                  '/usr/bin/cut -d" " -f4',
+                                  '(' . getenv('REMOTE_ADDR') . ')'
+                              );
+                              if (is_macaddr($mac)):
 ?>
                               <a onclick="document.getElementById('spoofmac').value='<?= html_safe($mac) ?>';" href="#"><?=gettext("Insert my currently connected MAC address (use with care)"); ?></a><br />
 <?php
