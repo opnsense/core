@@ -134,7 +134,11 @@ class GifSettingsController extends ApiMutableModelControllerBase
                 foreach ($cfg->interfaces->children() as $key => $value) {
                     if ((string)$value->if == (string)$node->gifif) {
                         throw new UserException(
-                            sprintf(gettext('Cannot delete GIF. Currently in use by [%s] %s'), $key, $value),
+                            sprintf(
+                                gettext('Cannot delete GIF. Currently in use by [%s] %s'),
+                                $key,
+                                !empty((string)$value->descr) ? (string)$value->descr : $key
+                            ),
                             gettext('GIF in use')
                         );
                     }
