@@ -29,6 +29,7 @@
 namespace OPNsense\Auth;
 
 use OPNsense\Base\BaseModel;
+use OPNsense\Base\Messages\Message;
 
 /**
  * Class Group
@@ -48,7 +49,23 @@ class Group extends BaseModel
                 continue;
             }
             $key = $node->__reference;
-            /* XXX: validate reserved groups? (/etc/groups)*/
+            /* Protect required FreeBSD groups (/etc/group), list does not include application specific groups */
+            if (in_array($node->name->getValue(), [
+                'wheel',
+                'daemon',
+                'kmem',
+                'sys',
+                'tty',
+                'operator',
+                'bin',
+                'staff',
+                'nogroup',
+                'nobody',
+            ], true)) {
+                $messages->appendMessage(
+                    new Message(gettext('This group name is reserved for system use.'), $key . '.name')
+                );
+            }
         }
         return $messages;
     }
