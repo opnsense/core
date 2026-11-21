@@ -2406,7 +2406,12 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      * 3. Set "up" flag for UP/RUNNING requirement, adding an address
      *    already does that so at this point try to be more consistent.
      */
-    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s up', [$device, $ifdescr]);
+    if (empty($wancfg['ipaddrv6']) && empty($wancfg['ipaddr'])) {
+        /* skip "up" flag when unconfigured, prevents interfaces like wireguard from flapping when reconfigured and down */
+        mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s', [$device, $ifdescr]);
+    } else {
+        mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s up', [$device, $ifdescr]);
+    }
 
     switch (is_ipv6_allowed() ? ($wancfg['ipaddrv6'] ?? 'none') : 'none') {
         case 'slaac':
