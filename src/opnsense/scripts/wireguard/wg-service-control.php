@@ -333,7 +333,7 @@ if (isset($opts['h']) || empty($args) || !in_array($args[0], ['start', 'stop', '
         }
     }
 
-    if (count($server_devs) && $action == 'restart') {
+    if (count($server_devs)) {
         /* XXX required for filter/NAT rules, as interface was recreated, rules might not match anymore */
         configd_run('filter reload');
     }
