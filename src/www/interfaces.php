@@ -565,13 +565,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
 
         if ($pconfig['gateway'] != "none" || $pconfig['gatewayv6'] != "none") {
-            $match = false;
+            /* the same choices the gateway selects offer */
+            $gateways = ['inet' => [], 'inet6' => []];
             foreach ((new \OPNsense\Routing\Gateways())->gatewayIterator() as $gateway) {
-                if (in_array($pconfig['gateway'], $gateway) || in_array($pconfig['gatewayv6'], $gateway)) {
-                    $match = true;
+                if ($gateway['interface'] == $if && is_ipaddrv4($gateway['gateway'])) {
+                    $gateways['inet'][] = $gateway['name'];
+                } elseif ($gateway['interface'] == $if && is_ipaddrv6($gateway['gateway'])) {
+                    $gateways['inet6'][] = $gateway['name'];
                 }
             }
-            if (!$match) {
+            if (
+                ($pconfig['gateway'] != 'none' && !in_array($pconfig['gateway'], $gateways['inet'], true)) ||
+                ($pconfig['gatewayv6'] != 'none' && !in_array($pconfig['gatewayv6'], $gateways['inet6'], true))
+            ) {
                 $input_errors[] = gettext("A valid gateway must be specified.");
             }
         }
