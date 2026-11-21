@@ -989,10 +989,9 @@ include("head.inc");
           $("#adv_dhcp_pt_timeout").val(custom_map[$(this).val()][0]);
           $("#adv_dhcp_pt_retry").val(custom_map[$(this).val()][1]);
           $("#adv_dhcp_pt_select_timeout").val(custom_map[$(this).val()][2]);
-          $("#adv_dhcp_pt_reboot.value").val(custom_map[$(this).val()][3]);
+          $("#adv_dhcp_pt_reboot").val(custom_map[$(this).val()][3]);
           $("#adv_dhcp_pt_backoff_cutoff").val(custom_map[$(this).val()][4]);
           $("#adv_dhcp_pt_initial_interval").val(custom_map[$(this).val()][5]);
-          $("#dv_dhcp_pt_values").val(custom_map[$(this).val()][6]);
       });
 
 
