@@ -104,27 +104,29 @@ class GroupController extends ApiMutableModelControllerBase
 
     /**
      * Delete alias by uuid, save contents to tmp for removal on apply
-     * @param string $uuid internal id
+     * @param string $uuids internal id[s]
      * @return array save status
      * @throws \OPNsense\Base\ValidationException when field validations fail
      * @throws \ReflectionException when not bound to model
      * @throws \OPNsense\Base\UserException when unable to delete
      */
-    public function delItemAction($uuid)
+    public function delItemAction($uuids)
     {
         Config::getInstance()->lock();
-        $node = $this->getModel()->getNodeByReference('ifgroupentry.' . $uuid);
-        $node_name = $node != null ? (string)$node->ifname : null;
-        $uses = $node_name != null ? $this->getModel()->whereUsed($node_name) : [];
-        if (!empty($uses)) {
-            $message = "";
-            foreach ($uses as $key => $value) {
-                $message .= htmlspecialchars(sprintf("\n[%s] %s", $key, $value), ENT_NOQUOTES | ENT_HTML401);
+        foreach (!empty($uuids) ? explode(',', $uuids) : [] as $uuid) {
+            $node = $this->getModel()->getNodeByReference('ifgroupentry.' . $uuid);
+            $node_name = $node != null ? (string)$node->ifname : null;
+            $uses = $node_name != null ? $this->getModel()->whereUsed($node_name) : [];
+            if (!empty($uses)) {
+                $message = "";
+                foreach ($uses as $key => $value) {
+                    $message .= htmlspecialchars(sprintf("\n[%s] %s", $key, $value), ENT_NOQUOTES | ENT_HTML401);
+                }
+                $message = sprintf(gettext("Cannot delete group. Currently in use by %s"), $message);
+                throw new UserException($message, gettext("Group in use"));
             }
-            $message = sprintf(gettext("Cannot delete group. Currently in use by %s"), $message);
-            throw new UserException($message, gettext("Group in use"));
         }
-        return $this->delBase("ifgroupentry", $uuid);
+        return $this->delBase("ifgroupentry", $uuids);
     }
 
     /**
