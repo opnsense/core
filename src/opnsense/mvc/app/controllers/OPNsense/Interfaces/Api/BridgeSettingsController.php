@@ -102,29 +102,31 @@ class BridgeSettingsController extends ApiMutableModelControllerBase
 
     /**
      * Delete bridge by uuid
-     * @param string $uuid internal id
+     * @param string $uuids internal id[s]
      * @return array save status
      */
-    public function delItemAction($uuid)
+    public function delItemAction($uuids)
     {
         Config::getInstance()->lock();
-        $node = $this->getModel()->getNodeByReference('bridged.' . $uuid);
-        if ($node != null) {
-            $cfg = Config::getInstance()->object();
-            foreach ($cfg->interfaces->children() as $key => $value) {
-                if ((string)$value->if == (string)$node->bridgeif) {
-                    throw new UserException(
-                        sprintf(
-                            gettext("Cannot delete bridge. Currently in use by [%s] %s"),
-                            $key,
-                            !empty((string)$value->descr) ? (string)$value->descr : $key
-                        ),
-                        gettext('Bridge in use')
-                    );
+        foreach (!empty($uuids) ? explode(",", $uuids) : [] as $uuid) {
+            $node = $this->getModel()->getNodeByReference('bridged.' . $uuid);
+            if ($node != null) {
+                $cfg = Config::getInstance()->object();
+                foreach ($cfg->interfaces->children() as $key => $value) {
+                    if ((string)$value->if == (string)$node->bridgeif) {
+                        throw new UserException(
+                            sprintf(
+                                gettext("Cannot delete bridge. Currently in use by [%s] %s"),
+                                $key,
+                                !empty((string)$value->descr) ? (string)$value->descr : $key
+                            ),
+                            gettext('Bridge in use')
+                        );
+                    }
                 }
             }
         }
-        return $this->delBase("bridged", $uuid);
+        return $this->delBase("bridged", $uuids);
     }
 
     /**
