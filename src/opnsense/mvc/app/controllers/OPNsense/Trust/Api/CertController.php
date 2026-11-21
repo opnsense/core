@@ -224,15 +224,17 @@ class CertController extends ApiMutableModelControllerBase
     {
         return $this->setBase('cert', 'cert', $uuid);
     }
-    public function delAction($uuid)
+    public function delAction($uuids)
     {
-        if ($this->request->isPost() && !empty($uuid)) {
+        if ($this->request->isPost() && !empty($uuids)) {
             Config::getInstance()->lock();
-            $node = $this->getModel()->getNodeByReference('cert.' . $uuid);
-            if ($node !== null) {
-                $this->checkAndThrowValueInUse((string)$node->refid, false, false, ['cert', 'system.user']);
+            foreach (explode(',', $uuids) as $uuid) {
+                $node = $this->getModel()->getNodeByReference('cert.' . $uuid);
+                if ($node !== null) {
+                    $this->checkAndThrowValueInUse((string)$node->refid, false, false, ['cert', 'system.user']);
+                }
             }
-            return $this->delBase('cert', $uuid);
+            return $this->delBase('cert', $uuids);
         }
         return ['status' => 'failed'];
     }
