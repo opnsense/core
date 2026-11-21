@@ -129,7 +129,7 @@ class AliasUtilController extends ApiControllerBase
                 //      better address matching at some point in time.
                 $items = !empty((string)$cnfAlias->content) ? explode("\n", $cnfAlias->content) : array();
                 if (strpos($address, "/") === false) {
-                    $address_mask = $address . "/" . (strpos($address, ":") ? '128' : '32');
+                    $address_mask = $address . "/" . (strpos($address, ":") !== false ? '128' : '32');
                 } else {
                     $address_mask = $address;
                 }
@@ -178,7 +178,7 @@ class AliasUtilController extends ApiControllerBase
                 $items = !empty((string)$cnfAlias->content) ? explode("\n", $cnfAlias->content) : array();
                 if (strpos($address, "/") === false && $cnfAlias->type == 'network') {
                     // add mask
-                    $address .= "/" . (strpos($address, ":") ? '128' : '32');
+                    $address .= "/" . (strpos($address, ":") !== false ? '128' : '32');
                 }
                 if (array_search($address, $items) === false) {
                     $items[] = $address;
