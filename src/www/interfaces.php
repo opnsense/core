@@ -595,11 +595,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 }
             } else {
                 foreach (config_read_array('interfaces', false) as $idx => $ifdata) {
-                    if ($idx == $if || !strstr($ifdata['if'], 'vlan') || !strstr($ifdata['if'], 'qinq')) {
+                    if ($idx == $if || (!strstr($ifdata['if'], 'vlan') && !strstr($ifdata['if'], 'qinq'))) {
                         continue;
                     }
 
-                    list ($parentif) = interface_parent_devices($ifdata['if']);
+                    $parentif = interface_parent_devices($ifdata['if'])[0] ?? null;
                     if ($parentif != $a_interfaces[$if]['if']) {
                         continue;
                     }
