@@ -34,7 +34,7 @@ function ppp_inuse($ppp_intf)
 {
     global $config;
 
-    if (isset($config['ppps']['ppp']) && !is_array($config['ppps']['ppp'])) {
+    if (isset($config['ppps']['ppp']) && is_array($config['ppps']['ppp'])) {
         foreach (legacy_config_get_interfaces(array("virtual" => false)) as $intf) {
             if ($intf['if'] == $ppp_intf) {
                 return true;
