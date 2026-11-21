@@ -195,7 +195,10 @@ class AuthenticationFactory
                 $authenticator = $this->get($authname);
                 if ($authenticator !== null) {
                     $this->lastUsedAuth = $authenticator;
-                    if ($authenticator->authenticate($service->getUserName(), $password)) {
+                    $authenticated = $authenticator->authenticate($service->getUserName(), $password);
+                    /* authenticators may log elsewhere, e.g. the config save of a group sync */
+                    openlog("audit", LOG_ODELAY, LOG_AUTH);
+                    if ($authenticated) {
                         if ($service->checkConstraints()) {
                             syslog(LOG_NOTICE, sprintf(
                                 "user %s authenticated successfully for %s [using %s + %s] at %s",
