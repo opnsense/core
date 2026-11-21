@@ -75,3 +75,15 @@ Stable release updates
 
 After merging a pull-request into the `master` branch a team member may cherry-pick
 your work to update the current stable version (branches: `stable/<major>.<minor>`).
+
+Translation
+----------------------
+
+The translation repository and guidelines are located at [opnsense/lang](https://github.com/opnsense/lang).
+
+You can participate in the translation work via [Translation Platform](https://translate.opnsense.org/).
+
+Plugins
+----------------------
+
+The plugins repository and guidelines are located at [opnsense/plugins](https://github.com/opnsense/plugins).
