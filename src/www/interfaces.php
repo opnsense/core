@@ -1176,8 +1176,12 @@ include("head.inc");
                               <?= gettext('When used on a single VLAN interface the setting "Promiscuous mode" is required for this to work. ' .
                                   'Alternatively, the parent interface MAC can be spoofed applying the MAC address to all attached VLAN children automatically.') ?><br />
 <?php
-                              $mac = shell_safe('/usr/sbin/arp -an | /usr/bin/grep %s | /usr/bin/cut -d" " -f4', getenv('REMOTE_ADDR'));
-                              if (!empty($mac)):
+                              $mac = shell_safe(
+                                  '/usr/sbin/arp -an | /usr/bin/grep -F %s | /usr/bin/head -n 1 | ' .
+                                  '/usr/bin/cut -d" " -f4',
+                                  '(' . getenv('REMOTE_ADDR') . ')'
+                              );
+                              if (is_macaddr($mac)):
 ?>
                               <a onclick="document.getElementById('spoofmac').value='<?= html_safe($mac) ?>';" href="#"><?=gettext("Insert my currently connected MAC address (use with care)"); ?></a><br />
 <?php
