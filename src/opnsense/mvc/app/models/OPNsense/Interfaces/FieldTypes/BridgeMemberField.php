@@ -42,9 +42,9 @@ class BridgeMemberField extends BaseListField
                 foreach ($configHandle->interfaces->children() as $ifname => $node) {
                     if (!empty((string)$node->virtual)) {
                         continue;
-                    } elseif (!empty((string)$node->if) && str_starts_with('gre', $node->if)) {
+                    } elseif (!empty((string)$node->if) && str_starts_with($node->if, 'gre')) {
                         continue;
-                    } elseif (!empty((string)$node->if) && str_starts_with('lo', $node->if)) {
+                    } elseif (!empty((string)$node->if) && str_starts_with($node->if, 'lo')) {
                         continue;
                     }
                     $descr = !empty((string)$node->descr) ? (string)$node->descr : strtoupper($ifname);
