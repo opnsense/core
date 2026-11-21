@@ -305,6 +305,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $if = $_POST['if'];
         // read physical interface name from config.xml
         $pconfig['if'] = $a_interfaces[$if]['if'];
+    } else {
+        // unknown interface, redirect to interface assignments
+        header(url_safe('Location: /ui/interfaces/assignment'));
+        exit;
     }
     $ifgroup = !empty($_GET['group']) ? $_GET['group'] : '';
 
