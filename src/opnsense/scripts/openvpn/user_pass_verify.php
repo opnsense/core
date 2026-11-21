@@ -129,7 +129,10 @@ function do_auth($common_name, $serverid, $method, $auth_file)
                 }
             }
 
-            if ($authenticator->authenticate($username, $password)) {
+            $authenticated = $authenticator->authenticate($username, $password);
+            /* authenticators may log elsewhere, e.g. the config save of a group sync */
+            openlog("openvpn", LOG_ODELAY, LOG_AUTH);
+            if ($authenticated) {
                 OPNsense\Core\Config::getInstance()->forceReload();
                 $config = parse_config();
                 $userindex = index_users();
