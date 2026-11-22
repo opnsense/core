@@ -131,7 +131,7 @@ class RuleCache(object):
         policies = dict()
         policy_config_fn = ('%s../rule-policies.config' % rule_source_directory)
         if os.path.exists(policy_config_fn):
-            cnf = ConfigParser()
+            cnf = ConfigParser(interpolation=None)
             cnf.read(policy_config_fn)
             for section in cnf.sections():
                 if cnf.get(section, 'enabled') == '1':
