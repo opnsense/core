@@ -33,8 +33,11 @@ export default class Swap extends BaseGaugeWidget {
     async onMarkupRendered() {
         super.createGaugeChart({
             labels: [this.translations.used, this.translations.free],
+            tooltipLabelCallback: (tooltipItem) => {
+                return `${tooltipItem.label}: ${tooltipItem.parsed} MB`;
+            },
             secondaryText: (data) => {
-                return `(${data[0]} / ${data[0] + data[1]}) MB`;
+                return `${data[0]} / ${data[0] + data[1]} MB`;
             }
         });
     }
@@ -47,6 +50,8 @@ export default class Swap extends BaseGaugeWidget {
             total += parseInt(swapDevice.total);
             used += parseInt(swapDevice.used);
         }
-        super.updateChart([(used / 1024), (total - used) / 1024]);
+        const totalMb = Math.floor(total / 1024);
+        const usedMb = Math.floor(used / 1024);
+        super.updateChart([usedMb, Math.max(0, totalMb - usedMb)]);
     }
 }
