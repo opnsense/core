@@ -41,6 +41,7 @@ function dnsmasq_configure()
 {
     return [
         'dns' => ['dnsmasq_configure_do'],
+        'hosts' => ['dnsmasq_configure_do'],
         'local' => ['dnsmasq_configure_do']
     ];
 }

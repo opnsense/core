@@ -197,6 +197,8 @@ function kea_configure_do($verbose = false)
             );
         }
         service_log("done.\n", $verbose);
+
+        plugins_configure('hosts', $verbose);
     }
 }
 

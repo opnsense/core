@@ -41,6 +41,7 @@ function unbound_configure()
         'bootup' => ['unbound_configure_do'],
         'dns' => ['unbound_configure_do:2'],
         'early' => ['unbound_cache_flush'],
+        'hosts' => ['unbound_hosts_reload'],
         'local' => ['unbound_configure_do'],
         'newwanip' => ['unbound_configure_do:2'],
         'unbound_start' => ['unbound_configure_do'],
@@ -491,6 +492,25 @@ function unbound_configure_do($verbose = false, $interface_map = null)
     service_log("done.\n", $verbose);
 }
 
+function unbound_hosts_reload($verbose = false)
+{
+    if (!unbound_enabled()) {
+        return;
+    }
+
+    $general = config_read_array('OPNsense', 'unboundplus', 'general');
+    if (empty($general['regdhcpstatic'])) {
+        return;
+    }
+
+    if (isvalidpid('/var/run/unbound.pid')) {
+        service_log('Reloading Unbound host entries...', $verbose);
+        unbound_add_host_entries(interfaces_addresses());
+        mwexecf('/usr/local/sbin/unbound-control -c /var/unbound/unbound.conf reload_keep_cache');
+        service_log("done.\n", $verbose);
+    }
+}
+
 function unbound_add_host_entries($ifconfig_details)
 {
     global $config;
@@ -666,9 +686,15 @@ function unbound_add_host_entries($ifconfig_details)
                 if (isset($host['ipaddr'])) {
                     $unbound_entries .= "local-data-ptr: \"{$host['ipaddr']} {$host['hostname']}.{$host['domain']}\"\n";
                     $unbound_entries .= "local-data: \"{$host['hostname']}.{$host['domain']} IN A {$host['ipaddr']}\"\n";
+                    if (!str_contains($host['hostname'], '.')) {
+                        $unbound_entries .= "local-data: \"{$host['hostname']} IN A {$host['ipaddr']}\"\n";
+                    }
                 } else {
                     $unbound_entries .= "local-data-ptr: \"{$host['ipaddrv6']} {$host['hostname']}.{$host['domain']}\"\n";
                     $unbound_entries .= "local-data: \"{$host['hostname']}.{$host['domain']} IN AAAA {$host['ipaddrv6']}\"\n";
+                    if (!str_contains($host['hostname'], '.')) {
+                        $unbound_entries .= "local-data: \"{$host['hostname']} IN AAAA {$host['ipaddrv6']}\"\n";
+                    }
                 }
                 if (!empty($host['descr']) && !empty($general['txtsupport'])) {
                     $unbound_entries .= "local-data: '{$host['hostname']}.{$host['domain']} TXT \"" . addslashes($host['descr']) . "\"'\n";
