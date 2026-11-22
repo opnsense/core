@@ -50,8 +50,10 @@ class M1_0_15 extends BaseModelMigration
 
         foreach ($model->test->iterateItems() as $test) {
             $condition = (string)$test->condition;
-            if (preg_match('/^\s*failed\s+link(\b.*)$/i', $condition, $matches)) {
+            if (preg_match('/^\s*failed\s+(?:the\s+)?link(\b.*)$/i', $condition, $matches)) {
                 $test->condition = 'link down' . $matches[1];
+                /* avoid blocking migration if a pre-existing service already pairs conflicting link tests */
+                $test->condition->markUnchanged();
             }
             if (
                 $model->getTestType((string)$test->condition) === 'NetworkInterface' &&

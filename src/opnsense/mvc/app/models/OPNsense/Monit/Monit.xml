@@ -113,7 +113,7 @@
                 <Required>Y</Required>
                 <MinimumValue>1</MinimumValue>
                 <MaximumValue>86400</MaximumValue>
-                <ValidationMessage>M/Monit Timeout needs to be an integer value between 0 and 86400.</ValidationMessage>
+                <ValidationMessage>M/Monit Timeout needs to be an integer value between 1 and 86400.</ValidationMessage>
             </mmonitTimeout>
             <mmonitRegisterCredentials type="BooleanField">
                 <Default>1</Default>

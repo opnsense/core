@@ -362,6 +362,10 @@ class Monit extends BaseModel
      */
     public function getTestType($condition)
     {
+        if ($this->getLinkDirection($condition) !== null) {
+            return 'NetworkInterface';
+        }
+
         $condition = preg_replace('/\s\s+/', ' ', $condition);
         $keyLength = 0;
         $foundOperand = '';
@@ -401,9 +405,9 @@ class Monit extends BaseModel
     private function getLinkDirection($condition)
     {
         $cond = preg_replace('/\s+/', ' ', trim((string)$condition));
-        if (preg_match('/^link (?:(?:is|was) )?up(\b|$)/i', $cond)) {
+        if (preg_match('/^(?:the )?link (?:(?:is|was) )?up(\b|$)/i', $cond)) {
             return 'up';
-        } elseif (preg_match('/^(?:link (?:(?:is|was) )?down|failed link)(\b|$)/i', $cond)) {
+        } elseif (preg_match('/^(?:(?:the )?link (?:(?:is|was) )?down|failed (?:the )?link)(\b|$)/i', $cond)) {
             return 'down';
         }
         return null;
