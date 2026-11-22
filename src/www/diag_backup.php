@@ -607,7 +607,7 @@ $( document ).ready(function() {
                 </tr>
                 <tr>
                   <td>
-                    <?=gettext("Open a configuration XML file and click the button below to restore the configuration."); ?><br/>
+                    <?=gettext("Open a configuration XML file and click the button above to restore the configuration."); ?><br/>
                   </td>
                 </tr>
             </table>
