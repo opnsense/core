@@ -34,6 +34,20 @@ class M1_0_15 extends BaseModelMigration
 {
     public function run($model)
     {
+        $interval = (string)$model->general->interval;
+        if ($interval !== '' && is_numeric($interval)) {
+            if ((int)$interval < 1) {
+                $model->general->interval = '1';
+            } elseif ((int)$interval > 3600) {
+                $model->general->interval = '3600';
+            }
+        }
+
+        $mmonitTimeout = (string)$model->general->mmonitTimeout;
+        if ($mmonitTimeout !== '' && is_numeric($mmonitTimeout) && (int)$mmonitTimeout < 1) {
+            $model->general->mmonitTimeout = '1';
+        }
+
         foreach ($model->test->iterateItems() as $test) {
             $condition = (string)$test->condition;
             if (preg_match('/^\s*failed\s+link(\b.*)$/i', $condition, $matches)) {
