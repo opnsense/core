@@ -1198,6 +1198,7 @@
                             case '__port__':
                                 /* backwards compatibility */
                                 field = ['srcport', 'dstport']
+                                break;
                             case 'interface':
                             case 'interface_name':
                                 interface = interfaceMap[parts[2]];
