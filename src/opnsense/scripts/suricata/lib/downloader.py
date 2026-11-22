@@ -121,14 +121,15 @@ class Downloader(object):
                     filename = re.findall('filename=(.+)', req.headers['content-disposition'])[0].strip('"')
 
                 if req.status_code == 200:
-                    req.raw.decode_content = True
                     src = tempfile.NamedTemporaryFile('wb+', 10240)
-                    while True:
-                        data = req.raw.read(10240)
-                        if not data:
-                            break
-                        else:
+                    try:
+                        for data in req.iter_content(10240):
                             src.write(data)
+                    except requests.exceptions.RequestException as e:
+                        # connection dropped while reading the body, keep the previously installed rules
+                        syslog.syslog(syslog.LOG_ERR, 'download failed for %s (%s)' % (url, e))
+                        src.close()
+                        return None
                     self._download_cache[frm_url] = {'handle': src, 'filename': filename, 'cached': False}
                 else:
                     syslog.syslog(syslog.LOG_ERR, 'download failed for %s (http_code: %d)' % (url, req.status_code))
