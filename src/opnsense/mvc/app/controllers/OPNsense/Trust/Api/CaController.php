@@ -183,9 +183,24 @@ class CaController extends ApiMutableModelControllerBase
         return $response;
     }
 
-    public function delAction($uuid)
+    public function delAction($uuids)
     {
-        $response = $this->delBase('ca', $uuid);
+        if (!$this->request->isPost()) {
+            return ['result' => 'failed'];
+        }
+        Config::getInstance()->lock();
+        $refs = [];
+        $exclude = [];
+        foreach (!empty($uuids) ? explode(',', $uuids) : [] as $uuid) {
+            $node = $this->getModel()->getNodeByReference('ca.' . $uuid);
+            if ($node === null || $node->refid->isEmpty()) {
+                continue;
+            }
+            $refs[] = $node->refid->getValue();
+            $exclude[] = 'ca.' . $uuid; /* exclude exact references to the targeted nodes */
+        }
+        $this->checkAndThrowValueInUse(implode(',', $refs), false, false, $exclude, gettext('CA in use'));
+        $response = $this->delBase('ca', $uuids);
         (new Backend())->configdRun('system trust configure', true);
         return $response;
     }
