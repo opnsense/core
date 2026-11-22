@@ -74,10 +74,11 @@ if __name__ == '__main__':
                         rule = rule[i:]
                 if 'action' in rule_updates[rule_info_record['metadata']['sid']]:
                     # (new) action in configuration
-                    flowbits_noalert = rule_info_record['rule'].replace(' ', '').find('flowbits:noalert;') > -1
+                    compact_rule = rule_info_record['rule'].replace(' ', '')
+                    noalert = any(token in compact_rule for token in ('flowbits:noalert;', ';noalert;', '(noalert;'))
                     new_action = rule_updates[rule_info_record['metadata']['sid']]['action']
-                    if flowbits_noalert:
-                        # prevent flowbits:noalert from being dropped
+                    if noalert:
+                        # prevent noalert rules (flowbits:noalert or the noalert keyword) from being dropped
                         pass
                     elif rule[0] == '#':
                         rule = '#%s %s' % (new_action, ' '.join(rule.split(' ')[1:]))
