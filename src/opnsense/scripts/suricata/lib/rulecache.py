@@ -354,8 +354,9 @@ class RuleCache(object):
 
             # construct query including filters
             sql_parameters = {}
-            sql_filters = []
+            sql_filters = {}
             prop_values = []
+            prop_names = set()
             rule_search_fields = ['msg', 'sid', 'source', 'action', 'status', 'matched_policy']
             for filtertag in shlex.split(filter_txt):
                 fieldnames, searchcontent = filtertag.split('/', maxsplit=1)
@@ -365,11 +366,12 @@ class RuleCache(object):
                         # construct query string for rule table fields
                         if fieldname != fieldnames.split(',')[0].strip():
                             sql_item.append(' or ')
+                        vfieldnm = "%s_%d" % (fieldname, len(sql_parameters))
                         if searchcontent.find('*') == -1:
-                            sql_item.append('cast(' + fieldname + " as text) like :" + fieldname + " ")
+                            sql_item.append('cast(' + fieldname + " as text) like :" + vfieldnm + " ")
                         else:
-                            sql_item.append('cast(' + fieldname + " as text) like '%'|| :" + fieldname + " || '%' ")
-                        sql_parameters[fieldname] = searchcontent.replace('*', '')
+                            sql_item.append('cast(' + fieldname + " as text) like '%'|| :" + vfieldnm + " || '%' ")
+                        sql_parameters[vfieldnm] = searchcontent.replace('*', '')
                     else:
                         # property value combinations per rule are queried from the rule_properties table
                         pfieldnm = "property_%d" % len(prop_values)
@@ -380,9 +382,11 @@ class RuleCache(object):
                             prop_values.append("property = :%s and value like  '%%'|| :%s  || '%%'" % (pfieldnm, vfieldnm))
                         sql_parameters[pfieldnm] = fieldname
                         sql_parameters[vfieldnm] = searchcontent.replace('*', '')
+                        prop_names.add(fieldname)
 
                 if len(sql_item) > 0:
-                    sql_filters.append("".join(sql_item))
+                    # repeated filters on the same field(s) are alternatives, filters on different fields all apply
+                    sql_filters.setdefault(fieldnames.lower(), []).append("".join(sql_item))
 
             sql = """select *
                      from (
@@ -403,12 +407,12 @@ class RuleCache(object):
             if len(prop_values) > 0:
                 sql_1 = "select sid, count(*) from rule_properties where " + " or ".join(prop_values)
                 sql_1 += " group by sid"
-                sql_1 += " having count(*) = %d " % len(prop_values)
+                sql_1 += " having count(distinct property) = %d " % len(prop_names)
                 sql += "inner join (%s) p on p.sid = rules.sid " % sql_1
             sql += "left join local_rule_changes rc on rules.sid = rc.sid ) a"
 
             if len(sql_filters) > 0:
-                sql += ' where ' + " and ".join(list(map(lambda x:" (%s)"%x, sql_filters)))
+                sql += ' where ' + " and ".join(list(map(lambda x: " (%s)" % " or ".join(x), sql_filters.values())))
 
             # apply sort order (if any)
             sql_sort = []
