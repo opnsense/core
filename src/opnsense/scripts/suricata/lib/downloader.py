@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015-2018 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2026 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -38,6 +38,7 @@ import json
 import hashlib
 import os
 import re
+import urllib3
 
 
 class Downloader(object):
@@ -110,7 +111,7 @@ class Downloader(object):
                     req_opts['headers'] = headers
                 try:
                     req = requests.get(**req_opts)
-                except requests.exceptions.RequestException as e:
+                except (requests.exceptions.RequestException, urllib3.exceptions.HTTPError) as e:
                     syslog.syslog(syslog.LOG_ERR, 'download failed for %s (%s)' % (url, e))
                     return None
                 if 'content-disposition' not in req.headers \
