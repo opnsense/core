@@ -188,9 +188,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
 
     foreach ($pconfig as $key => $value) {
-      if (is_string($value) && strpbrk($value, "\n\r") !== false) {
-          $input_errors[] = sprintf(gettext('The %s field contains invalid characters.'), $key);
-      }
+        foreach ((array)$value as $element) {
+            if (is_string($element) && strpbrk($element, "\n\r") !== false) {
+                $input_errors[] = sprintf(gettext('The %s field contains invalid characters.'), $key);
+            }
+        }
     }
 
     foreach ($pconfig['ports'] as $iface_idx => $iface) {
@@ -202,6 +204,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         }
         if (!empty($pconfig['bandwidth'][$iface_idx]) && !is_numericint($pconfig['bandwidth'][$iface_idx])) {
             $input_errors[] = sprintf(gettext("The bandwidth value for %s must be an integer."), $iface);
+        }
+        if (!empty($pconfig['mtu'][$iface_idx]) && !is_numericint($pconfig['mtu'][$iface_idx])) {
+            $input_errors[] = sprintf(gettext("The MTU for %s must be an integer."), $iface);
+        }
+        if (!empty($pconfig['mru'][$iface_idx]) && !is_numericint($pconfig['mru'][$iface_idx])) {
+            $input_errors[] = sprintf(gettext("The MRU for %s must be an integer."), $iface);
+        }
+        if (!empty($pconfig['mrru'][$iface_idx]) && !is_numericint($pconfig['mrru'][$iface_idx])) {
+            $input_errors[] = sprintf(gettext("The MRRU for %s must be an integer."), $iface);
         }
 
         if (!empty($pconfig['mtu'][$iface_idx]) && $pconfig['mtu'][$iface_idx] < 576) {
