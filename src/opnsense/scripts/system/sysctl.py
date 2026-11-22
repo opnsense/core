@@ -54,6 +54,10 @@ if __name__ == '__main__':
             parts = line.strip().split(": ", 1)
             if len(parts) > 1:
                 result[parts[0]] = parts[1].strip()
+        if 'kern.boot_id' in params:
+            boot_id = subprocess.run(['/sbin/sysctl', '-b', 'kern.boot_id'], capture_output=True)
+            if boot_id.returncode == 0 and len(boot_id.stdout) == 16:
+                result['kern.boot_id'] = boot_id.stdout.hex()
         output = ujson.dumps(result)
     elif inputargs.gather:
         sp = subprocess.run(['/sbin/sysctl', '-a'], capture_output=True, text=True)
