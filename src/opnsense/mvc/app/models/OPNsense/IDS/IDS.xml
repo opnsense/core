@@ -35,6 +35,7 @@
                     <ValidationMessage>Priority should be a number.</ValidationMessage>
                     <Required>Y</Required>
                     <Default>0</Default>
+                    <MinimumValue>0</MinimumValue>
                 </prio>
                 <action type="OptionField">
                     <Multiple>Y</Multiple>
