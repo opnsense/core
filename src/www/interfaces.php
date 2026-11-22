@@ -433,7 +433,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                         $default_id = interface_dhcpv6_id($if);
                         $assoc_pd_ref = !empty($pconfig['dhcp6_assoc_pd']) && ctype_digit($pconfig['dhcp6_assoc_pd']) ?
                             $pconfig['dhcp6_assoc_pd'] : $default_id;
-                        foreach (link_interface_to_track6($pconfig['track6-interface']) as $trackif => $trackcfg) {
+                        foreach (link_interface_to_track6($if) as $trackif => $trackcfg) {
                             $assoc_pd_link = !empty($trackcfg['track6_assoc_pd']) ? $trackcfg['track6_assoc_pd'] : $default_id;
                             if ($assoc_pd_ref == $assoc_pd_link && $trackcfg['track6-prefix-id'] == $dhcp6_prefix_id) {
                                 $input_errors[] = gettext('You specified an IPv6 prefix ID that is already in use.');
