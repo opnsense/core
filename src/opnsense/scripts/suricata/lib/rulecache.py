@@ -135,7 +135,7 @@ class RuleCache(object):
             cnf.read(policy_config_fn)
             for section in cnf.sections():
                 if cnf.get(section, 'enabled') == '1':
-                    policy_id = "%05d-%s" % (cnf.getint(section, 'prio'), section)
+                    policy_id = (cnf.getint(section, 'prio'), section)
                     policy_content = dict()
                     if cnf.has_option(section, 'content'):
                         for content_item in cnf.get(section, 'content').split(','):
