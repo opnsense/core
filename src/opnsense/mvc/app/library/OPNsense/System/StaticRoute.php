@@ -465,7 +465,10 @@ class StaticRoute
                     $syslog->info(
                         sprintf(
                             "add %s route %s via [%s] %s",
-                            $ipproto, $net, $route['gwipprotocol'], $route['gatewayip']
+                            $ipproto,
+                            $net,
+                            $route['gwipprotocol'],
+                            $route['gatewayip']
                         )
                     );
                     Shell::run_safe('/sbin/route add -%s %s -%s %s', [
