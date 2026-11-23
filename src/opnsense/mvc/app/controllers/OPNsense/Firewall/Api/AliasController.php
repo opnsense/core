@@ -43,6 +43,13 @@ class AliasController extends ApiMutableModelControllerBase
     protected static $internalModelName = 'alias';
     protected static $internalModelClass = 'OPNsense\Firewall\Alias';
 
+    private ?Category $categoryModel = null;
+
+    private function getCategoryModel()
+    {
+        return $this->categoryModel ??= new Category();
+    }
+
     /**
      * search aliases
      * @return array search results
@@ -72,8 +79,20 @@ class AliasController extends ApiMutableModelControllerBase
             $types[$key] = (string)$alias->type;
         }
         $group_mapping = null;
+        $mdlcat = $this->getCategoryModel();
         foreach ($result['rows'] as &$record) {
             $record['categories_uuid'] = $categories[$record['uuid']];
+            $record['category_colors'] = [];
+            foreach ($record['categories_uuid'] as $uuid) {
+                $node = $mdlcat->getNodeByReference('categories.category.' . $uuid);
+                if ($node !== null) {
+                    $record['category_colors'][] = [
+                        'color' => !$node->color->isEmpty() ? "#{$node->color->getValue()}" : '',
+                        'name' => $node->name->getValue(),
+                        'uuid' => $uuid,
+                    ];
+                }
+            }
             if ($types[$record['uuid']] == 'authgroup') {
                 if ($group_mapping === null) {
                     $group_mapping = $this->listUserGroupsAction();
@@ -109,7 +128,7 @@ class AliasController extends ApiMutableModelControllerBase
                 }
             }
         }
-        $mdlcat = new Category();
+        $mdlcat = $this->getCategoryModel();
         foreach ($mdlcat->categories->category->iterateItems() as $key => $category) {
             $response['rows'][] = [
                 "uuid" => $key,
