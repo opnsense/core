@@ -248,7 +248,7 @@ class Filter extends BaseModel
                             ));
                         } elseif (!empty((string)$rule->adaptivestart) xor !empty((string)$rule->adaptiveend)) {
                             $messages->appendMessage(new Message(
-                                gettext("The adaptive timouts values must be set together."),
+                                gettext("The adaptive timeouts values must be set together."),
                                 $rule->adaptivestart->__reference
                             ));
                         } elseif (
