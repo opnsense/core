@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2026 Konstantinos Spartalis
+ * Copyright (C) 2026 Konstantinos Spartalis <cspartalis@potatonetworks.com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
