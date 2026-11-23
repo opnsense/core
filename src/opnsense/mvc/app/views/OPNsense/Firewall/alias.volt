@@ -113,6 +113,9 @@
                     return request;
                 },
                 headerFormatters: {
+                    enabled: function (column) {
+                        return '<i class="fa-solid fa-fw fa-check-square" data-toggle="tooltip" title="{{ lang._('Enabled') }}"></i>';
+                    },
                     categories: function (column) {
                         return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Categories") }}"></i>';
                     }
