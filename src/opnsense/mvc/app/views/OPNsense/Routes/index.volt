@@ -1,5 +1,4 @@
 {#
- #
  # Copyright (c) 2017-2026 Deciso B.V.
  # Copyright (c) 2017 Fabian Franz
  # All rights reserved.
