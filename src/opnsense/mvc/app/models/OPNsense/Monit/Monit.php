@@ -128,6 +128,8 @@ class Monit extends BaseModel
             'changed status'
         ],
         'NetworkInterface' => [
+            'link down',
+            'link up',
             'failed link',
             'changed link capacity',
             'saturation',
@@ -215,6 +217,23 @@ class Monit extends BaseModel
                                     // set the test type according to the condition
                                     $parentNode->type = $type;
                                 }
+                                if ($this->getLinkDirection((string)$node) !== null) {
+                                    $testUUID = $parentNode->getAttribute('uuid');
+                                    foreach ($this->service->iterateItems() as $serviceNode) {
+                                        if (
+                                            in_array($testUUID, explode(',', (string)$serviceNode->tests)) &&
+                                            $this->hasConflictingLinkTests($serviceNode)
+                                        ) {
+                                            $messages->appendMessage(new Message(
+                                                sprintf(
+                                                    gettext("Cannot combine 'link up' and 'link down' tests on network service '%s'."),
+                                                    (string)$serviceNode->name
+                                                ),
+                                                $key
+                                            ));
+                                        }
+                                    }
+                                }
                                 break;
                         }
                         break;
@@ -240,6 +259,12 @@ class Monit extends BaseModel
                                             }
                                         }
                                     }
+                                }
+                                if ($this->hasConflictingLinkTests($parentNode)) {
+                                    $messages->appendMessage(new Message(
+                                        gettext("Cannot combine 'link up' and 'link down' tests on the same network service."),
+                                        $key
+                                    ));
                                 }
                                 break;
                             case 'pidfile':
@@ -337,6 +362,10 @@ class Monit extends BaseModel
      */
     public function getTestType($condition)
     {
+        if ($this->getLinkDirection($condition) !== null) {
+            return 'NetworkInterface';
+        }
+
         $condition = preg_replace('/\s\s+/', ' ', $condition);
         $keyLength = 0;
         $foundOperand = '';
@@ -366,5 +395,47 @@ class Monit extends BaseModel
             }
         }
         return $foundTestType;
+    }
+
+    /**
+     * classify a network link status condition direction ('up', 'down', or null)
+     * @param string $condition condition string
+     * @return string|null
+     */
+    private function getLinkDirection($condition)
+    {
+        $cond = preg_replace('/\s+/', ' ', trim((string)$condition));
+        if (preg_match('/^(?:the )?link (?:(?:is|was) )?up(\b|$)/i', $cond)) {
+            return 'up';
+        } elseif (preg_match('/^(?:(?:the )?link (?:(?:is|was) )?down|failed (?:the )?link)(\b|$)/i', $cond)) {
+            return 'down';
+        }
+        return null;
+    }
+
+    /**
+     * check if a network service combines conflicting link up and link down tests
+     * @param mixed $serviceNode service container node
+     * @return bool
+     */
+    private function hasConflictingLinkTests($serviceNode)
+    {
+        if ((string)$serviceNode->type !== 'network') {
+            return false;
+        }
+        $hasLinkUp = false;
+        $hasLinkDown = false;
+        foreach (explode(',', (string)$serviceNode->tests) as $testUUID) {
+            $test = $this->getNodeByReference('test.' . $testUUID);
+            if ($test != null) {
+                $direction = $this->getLinkDirection((string)$test->condition);
+                if ($direction === 'up') {
+                    $hasLinkUp = true;
+                } elseif ($direction === 'down') {
+                    $hasLinkDown = true;
+                }
+            }
+        }
+        return $hasLinkUp && $hasLinkDown;
     }
 }
