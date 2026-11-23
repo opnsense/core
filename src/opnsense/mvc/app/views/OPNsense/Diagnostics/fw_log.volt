@@ -760,7 +760,7 @@
                                         let rid = sender_details[sorted_keys[i]];
                                         let rid_td = $("<td/>").addClass("act_info_fld_"+sorted_keys[i]);
                                         if (rid.length >= 32) {
-                                            let rid_link = $("<a target='_blank' href='/firewall_rule_lookup.php?rid=" + rid + "'/>");
+                                            let rid_link = $("<a target='_blank' href='/ui/diagnostics/firewall/rule_lookup?rid=" + rid + "'/>");
                                             rid_link.text(rid);
                                             rid_td.append($("<i/>").addClass('fa fa-fw fa-search'));
                                             rid_td.append(rid_link);
