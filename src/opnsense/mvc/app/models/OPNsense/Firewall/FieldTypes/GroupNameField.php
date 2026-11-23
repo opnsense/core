@@ -64,7 +64,7 @@ class GroupNameField extends BaseField
                         $result[] = gettext('The group name shall not start or end with a digit.');
                     }
                     $cnf = Config::getInstance()->object();
-                    if (!empty($cnf->$value) && empty($cnf->$value->virtual)) {
+                    if (!empty($cnf->interfaces->$value) && empty($cnf->interfaces->$value->virtual)) {
                         $result[] = gettext(
                             "The specified group name is already used by an interface. Please choose another name."
                         );
