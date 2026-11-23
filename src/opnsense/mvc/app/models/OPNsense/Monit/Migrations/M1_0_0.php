@@ -78,7 +78,7 @@ class M1_0_0 extends BaseModelMigration
         /* define some tests */
         $defaultTests = [
             ["name" => "Ping", "condition" => "failed ping", "action" => "alert", "type" => "NetworkPing"],
-            ["name" => "NetworkLink", "condition" => "failed link", "action" => "alert", "type" => "NetworkInterface"],
+            ["name" => "NetworkLink", "condition" => "link down", "action" => "alert", "type" => "NetworkInterface"],
             ["name" => "NetworkSaturation", "condition" => "saturation is greater than 75%", "action" => "alert", "type" => "NetworkInterface"],
             ["name" => "MemoryUsage", "condition" => "memory usage is greater than 75%", "action" => "alert", "type" => "SystemResource"],
             ["name" => "CPUUsage", "condition" => "cpu usage is greater than 75%", "action" => "alert", "type" => "SystemResource"],

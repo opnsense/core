@@ -1,6 +1,6 @@
 <model>
     <mount>//OPNsense/monit</mount>
-    <version>1.0.14</version>
+    <version>1.0.15</version>
     <description>Monit settings</description>
     <items>
         <general>
@@ -11,9 +11,9 @@
             <interval type="IntegerField">
                 <Default>120</Default>
                 <Required>Y</Required>
-                <MinimumValue>0</MinimumValue>
-                <MaximumValue>86400</MaximumValue>
-                <ValidationMessage>Polling Interval needs to be an integer value between 0 and 86400.</ValidationMessage>
+                <MinimumValue>1</MinimumValue>
+                <MaximumValue>3600</MaximumValue>
+                <ValidationMessage>Polling Interval needs to be an integer value between 1 and 3600.</ValidationMessage>
             </interval>
             <startdelay type="IntegerField">
                 <Default>120</Default>
@@ -111,9 +111,9 @@
             <mmonitTimeout type="IntegerField">
                 <Default>5</Default>
                 <Required>Y</Required>
-                <MinimumValue>0</MinimumValue>
+                <MinimumValue>1</MinimumValue>
                 <MaximumValue>86400</MaximumValue>
-                <ValidationMessage>M/Monit Timeout needs to be an integer value between 0 and 86400.</ValidationMessage>
+                <ValidationMessage>M/Monit Timeout needs to be an integer value between 1 and 86400.</ValidationMessage>
             </mmonitTimeout>
             <mmonitRegisterCredentials type="BooleanField">
                 <Default>1</Default>
