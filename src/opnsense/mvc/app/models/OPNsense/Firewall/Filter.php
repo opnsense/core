@@ -135,7 +135,7 @@ class Filter extends BaseModel
                     if (strpos($rule->destination_net, ',') !== false && $rule->destination_not == '1') {
                         $messages->appendMessage(new Message(
                             gettext("Inverting destinations is only allowed for single targets to avoid mis-interpretations"),
-                            $rule->destination_net->__reference
+                            $rule->destination_not->__reference
                         ));
                     }
 
