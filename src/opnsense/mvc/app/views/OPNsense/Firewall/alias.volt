@@ -710,7 +710,7 @@
                         <tr>
                             <th data-column-id="uuid" data-type="string" data-identifier="true" data-visible="false">{{ lang._('ID') }}</th>
                             <th data-column-id="categories" data-width="65" data-min-width="65" data-type="string" data-formatter="category" data-selectable="false">{{ lang._('Categories') }}</th>
-                            <th data-column-id="enabled" data-width="6em" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
+                            <th data-column-id="enabled" data-width="50" data-type="string" data-formatter="rowtoggle">{{ lang._('Enabled') }}</th>
                             <th data-column-id="name" data-width="20em" data-type="string">{{ lang._('Name') }}</th>
                             <th data-column-id="type" data-width="12em" data-type="string">{{ lang._('Type') }}</th>
                             <th data-column-id="description" data-type="string">{{ lang._('Description') }}</th>
