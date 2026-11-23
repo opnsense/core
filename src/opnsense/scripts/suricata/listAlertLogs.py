@@ -42,7 +42,8 @@ from log_helper import reverse_log_reader
 
 if __name__ == '__main__':
     result = []
-    for filename in sorted(glob.glob('%s*' % suricata_alert_log)):
+    for filename in sorted(glob.glob('%s*' % suricata_alert_log),
+                           key=lambda x: (int(x.split('.')[-1]) if x.split('.')[-1].isdigit() else -1, x)):
         row = dict()
         row['size'] = os.stat(filename).st_size
         # always list first file and non empty next.
