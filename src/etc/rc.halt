@@ -1,6 +1,6 @@
 #!/bin/sh
 
 echo "Performing system poweroff"
-/sbin/shutdown -p now
+/sbin/shutdown -p now || exit ${?}
 
 while :; do sleep 1; done
