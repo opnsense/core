@@ -234,30 +234,32 @@ class UserController extends ApiMutableModelControllerBase
         return $result;
     }
 
-    public function delAction($uuid)
+    public function delAction($uuids)
     {
-        $username = null;
+        $usernames = [];
         if ($this->request->isPost()) {
             Config::getInstance()->lock();
-            $node = $this->getModel()->getNodeByReference('user.' . $uuid);
-            if ($node !== null) {
-                if ($node->scope == 'system') {
-                    throw new UserException(
-                        sprintf(gettext("Not allowed to delete system user %s"), $node->name),
-                        gettext("Usermanager")
-                    );
-                } elseif ($node->name == $this->getUserName()) {
-                    throw new UserException(
-                        sprintf(gettext("Not allowed to remove logged in user %s"), $node->name),
-                        gettext("Usermanager")
-                    );
+            foreach (!empty($uuids) ? explode(',', $uuids) : [] as $uuid) {
+                $node = $this->getModel()->getNodeByReference('user.' . $uuid);
+                if ($node !== null) {
+                    if ($node->scope == 'system') {
+                        throw new UserException(
+                            sprintf(gettext("Not allowed to delete system user %s"), $node->name),
+                            gettext("Usermanager")
+                        );
+                    } elseif ($node->name == $this->getUserName()) {
+                        throw new UserException(
+                            sprintf(gettext("Not allowed to remove logged in user %s"), $node->name),
+                            gettext("Usermanager")
+                        );
+                    }
+                    $usernames[] = (string)$node->name;
                 }
-                $username = (string)$node->name;
             }
         }
-        $this->setSaveAuditMessage(sprintf('The user "%s" was successfully removed.', $username));
-        $result = $this->delBase('user', $uuid);
-        if ($username != null) {
+        $this->setSaveAuditMessage(sprintf('The user "%s" was successfully removed.', implode('", "', $usernames)));
+        $result = $this->delBase('user', $uuids);
+        foreach ($usernames as $username) {
             (new Backend())->configdpRun('auth sync user', [$username]);
         }
         return $result;
