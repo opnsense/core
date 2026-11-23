@@ -43,6 +43,13 @@ class AliasController extends ApiMutableModelControllerBase
     protected static $internalModelName = 'alias';
     protected static $internalModelClass = 'OPNsense\Firewall\Alias';
 
+    private ?Category $categoryModel = null;
+
+    private function getCategoryModel()
+    {
+        return $this->categoryModel ??= new Category();
+    }
+
     /**
      * search aliases
      * @return array search results
@@ -121,7 +128,7 @@ class AliasController extends ApiMutableModelControllerBase
                 }
             }
         }
-        $mdlcat = new Category();
+        $mdlcat = $this->getCategoryModel();
         foreach ($mdlcat->categories->category->iterateItems() as $key => $category) {
             $response['rows'][] = [
                 "uuid" => $key,
