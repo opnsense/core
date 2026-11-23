@@ -117,7 +117,7 @@ class ServiceController extends ApiMutableServiceControllerBase
             $record['ifname'] = $ifnames[$record['if']];
         }
         $filter_funct = null;
-        $types = $this->request->get('type');
+        $types = is_array($this->request->get('type')) ? $this->request->get('type') : [];
         if (!empty($types)) {
             $filter_funct = function ($record) use ($types) {
                 return in_array($record['type'], $types);
