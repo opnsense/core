@@ -135,7 +135,7 @@ class Filter extends BaseModel
                     if (strpos($rule->destination_net, ',') !== false && $rule->destination_not == '1') {
                         $messages->appendMessage(new Message(
                             gettext("Inverting destinations is only allowed for single targets to avoid mis-interpretations"),
-                            $rule->destination_net->__reference
+                            $rule->destination_not->__reference
                         ));
                     }
 
@@ -237,8 +237,8 @@ class Filter extends BaseModel
                         }
                         if (empty((string)$rule->max) && ($rule->adaptivestart == '0' || $rule->adaptiveend == '0')) {
                             $messages->appendMessage(new Message(
-                                gettext('Disabling adaptive timeouts is only supported in ".
-                                    "combination with a configured maximum number of states for the same rule.'),
+                                gettext("Disabling adaptive timeouts is only supported in " .
+                                    "combination with a configured maximum number of states for the same rule."),
                                 $rule->max->__reference
                             ));
                         } elseif ($rule->adaptivestart == '0' xor $rule->adaptiveend == '0') {
@@ -248,7 +248,7 @@ class Filter extends BaseModel
                             ));
                         } elseif (!empty((string)$rule->adaptivestart) xor !empty((string)$rule->adaptiveend)) {
                             $messages->appendMessage(new Message(
-                                gettext("The adaptive timouts values must be set together."),
+                                gettext("The adaptive timeouts values must be set together."),
                                 $rule->adaptivestart->__reference
                             ));
                         } elseif (
