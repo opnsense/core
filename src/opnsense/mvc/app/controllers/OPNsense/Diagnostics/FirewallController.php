@@ -30,6 +30,7 @@ namespace OPNsense\Diagnostics;
 
 use OPNsense\Base\IndexController;
 use OPNsense\Core\Backend;
+use OPNsense\Core\SanitizeFilter;
 use OPNsense\Core\Type;
 use OPNsense\Firewall\Filter;
 
@@ -58,8 +59,11 @@ class FirewallController extends IndexController
 
         $rules = json_decode((new Backend())->configdRun('filter list non_mvc_rules'), true) ?? [];
         foreach ($rules as $rule) {
-            if (($rule['uuid'] ?? '') === $rid && !empty($rule['ref'])) {
-                $this->response->redirect('/' . ltrim($rule['ref'], '/'));
+            if (($rule['uuid'] ?? '') === $rid && is_string($rule['ref'] ?? null) && $rule['ref'] !== '') {
+                $ref = (new SanitizeFilter())->sanitize('/' . ltrim($rule['ref'], '/'), 'local_uri');
+                if ($ref !== null) {
+                    $this->response->redirect($ref);
+                }
                 return;
             }
         }
