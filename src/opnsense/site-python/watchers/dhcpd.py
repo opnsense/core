@@ -27,6 +27,7 @@
 import os
 import calendar
 import datetime
+import syslog
 
 
 class DHCPDLease(object):
@@ -115,8 +116,14 @@ class DHCPDLease(object):
                         self._section_data.append(line)
                     elif len(line) > 1 and line[0] == '}' and len(self._section_data) > 0:
                         self._section_data.append(line)
-                        yield self.parse_lease(self._section_data)
+                        section_data = self._section_data
                         self._section_data = []
+                        try:
+                            lease = self.parse_lease(section_data)
+                        except Exception as e:
+                            syslog.syslog(syslog.LOG_WARNING, "dhcpd leases: skipping unparsable lease (%s)" % e)
+                            continue
+                        yield lease
                     elif len(self._section_data) > 0:
                         self._section_data.append(line)
                 else:
