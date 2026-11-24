@@ -377,7 +377,26 @@
                         return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Categories") }}"></i>';
                     },
                     statistics: function () {
-                        return '<i class="fa-solid fa-fw fa-eye" data-toggle="tooltip" title="{{ lang._('Statistics') }}"></i>';
+                        const element = $(`
+                            <span class="stats-header-icons">
+                                <span data-toggle="tooltip" title="{{ lang._('Statistics') }}">
+                                    <i class="fa-solid fa-fw fa-eye"></i>
+                                </span>
+                                <span class="inspect-cache-flush"
+                                    style="cursor:pointer; margin-left:4px;"
+                                    data-toggle="tooltip"
+                                    title="{{ lang._('Refresh') }}">
+                                    <i class="fa-solid fa-fw fa-rotate-right"></i>
+                                </span>
+                            </span>
+                        `);
+
+                        element.find('.inspect-cache-flush').on('click', function (event) {
+                            event.stopPropagation();
+                            grid.bootgrid('refreshAsyncDataSource', 'ruleStatistics');
+                        });
+
+                        return element[0];
                     },
                 },
                 formatters:{

@@ -134,6 +134,7 @@ class UIBootgrid {
         this.addButton = false;
         this.deleteSelectedButton = false;
         this.asyncDataSources = new Map();
+        this.asyncDataColumns = new Map();
 
         // wrapper-specific options
         this.options = {
@@ -411,7 +412,7 @@ class UIBootgrid {
                     this._onCellRendered(cell, formatterParams);
                 })
 
-                return formatterFn(column, cell.getData(), cb);
+                return formatterFn(column, this._asyncFormatterData(cell), cb);
             }
         }
 
@@ -1277,7 +1278,6 @@ class UIBootgrid {
             $(`#${this.id}-refresh-button`).click(() => {
                 // XXX This refreshes the data, but doesn't trigger a loading screen
                 this._reload();
-                this._refreshAsyncDataSources();
             });
         } else {
             $(`#${this.id}-refresh-button`).remove();
@@ -1681,8 +1681,6 @@ class UIBootgrid {
                 this.loading = false;
                 $(`#${this.id} > .tabulator-tableholder > .bootgrid-overlay`).remove();
 
-                this._mergeAsyncData(response.rows ?? []);
-
                 // handle pagination response, set last_page as appropriate
                 // the counter text (showing x of y) is handled in the 'paginationCounter'
                 if (response.total_rows != undefined) {
@@ -1844,6 +1842,7 @@ class UIBootgrid {
                 generation: 0,
                 cache: new Map()
             });
+            columns.forEach(column => this.asyncDataColumns.set(column, this.asyncDataSources.get(name)));
         }
     }
 
@@ -1854,7 +1853,9 @@ class UIBootgrid {
 
         const key = row[this.options.datakey];
         let patch;
-        if (source.cache.has(String(key))) {
+        if (source.loading) {
+            patch = source.config.pending;
+        } else if (source.cache.has(String(key))) {
             const value = source.cache.get(String(key));
             patch = source.config.map ? source.config.map(value, key) : value;
         } else {
@@ -1866,31 +1867,27 @@ class UIBootgrid {
             .map(column => [column, patch[column]]));
     }
 
-    _mergeAsyncData(rows) {
-        const childField = this.table?.options?.dataTreeChildField ?? '_children';
-        for (const row of rows) {
-            for (const source of this.asyncDataSources.values()) {
-                Object.assign(row, this._asyncDataPatch(source, row));
-            }
-            if (Array.isArray(row[childField])) {
-                this._mergeAsyncData(row[childField]);
-            }
-        }
+    _asyncFormatterData(cell) {
+        const data = cell.getData();
+        const source = this.asyncDataColumns.get(cell.getColumn().getField());
+        return source?.active ? {...data, ...this._asyncDataPatch(source, data)} : data;
     }
 
-    _updateAsyncDataRows(source) {
-        const update = (rows) => {
-            rows.forEach(row => {
-                row.update(this._asyncDataPatch(source, row.getData()));
-                update(row.getTreeChildren());
-            });
-        };
-        update(this.table.getRows());
+    _redrawAsyncDataSource(source) {
+        const rows = new Set();
+        source.config.columns.forEach(column => {
+            this.table.getColumn(column)?.getCells().forEach(cell => rows.add(cell.getRow()));
+        });
+
+        // Reformat instantiated rows, including the virtual DOM buffer. Rows which
+        // have not been instantiated resolve the sidecar cache when first rendered.
+        rows.forEach(row => row.reformat());
     }
 
     _fetchAsyncDataSource(source) {
         const generation = ++source.generation;
         source.loading = true;
+        this._redrawAsyncDataSource(source);
 
         Promise.resolve($.ajax({
             method: 'GET',
@@ -1906,7 +1903,7 @@ class UIBootgrid {
             source.cache = new Map(Object.entries(values ?? {}));
             source.resolved = true;
             source.loading = false;
-            this._updateAsyncDataRows(source);
+            this._redrawAsyncDataSource(source);
         }).catch(() => {
             if (generation !== source.generation) {
                 return;
@@ -1915,21 +1912,13 @@ class UIBootgrid {
             // Keep a previous successful result, but don't leave an initial request pending forever.
             source.resolved = true;
             source.loading = false;
-            this._updateAsyncDataRows(source);
+            this._redrawAsyncDataSource(source);
         });
     }
 
     _loadAsyncDataSources() {
         this.asyncDataSources.forEach(source => {
             if (source.active && !source.resolved && !source.loading) {
-                this._fetchAsyncDataSource(source);
-            }
-        });
-    }
-
-    _refreshAsyncDataSources() {
-        this.asyncDataSources.forEach(source => {
-            if (source.active) {
                 this._fetchAsyncDataSource(source);
             }
         });
@@ -2078,8 +2067,8 @@ class UIBootgrid {
                 });
 
                 const key = `%${cell.getColumn().getDefinition().field}`;
-                const data = cell.getData();
-                return data[key] ?? cell.getValue();
+                const data = this._asyncFormatterData(cell);
+                return data[key] ?? data[cell.getField()] ?? cell.getValue();
             },
             commands: (cell, formatterParams, onRendered) => {
                 let html = [];
@@ -2675,9 +2664,20 @@ class UIBootgrid {
         }
 
         source.active = enabled;
+        this._redrawAsyncDataSource(source);
         if (enabled) {
-            this._updateAsyncDataRows(source);
             this._loadAsyncDataSources();
+        }
+    }
+
+    refreshAsyncDataSource(name) {
+        const source = this.asyncDataSources.get(name);
+        if (!source) {
+            throw new Error(`Unknown async data source '${name}'`);
+        }
+
+        if (source.active) {
+            this._fetchAsyncDataSource(source);
         }
     }
 
