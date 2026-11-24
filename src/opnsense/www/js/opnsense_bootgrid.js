@@ -2748,17 +2748,6 @@ class UIBootgrid {
         }
     }
 
-    refreshAsyncDataSource(name) {
-        const source = this.asyncDataSources.get(name);
-        if (!source) {
-            throw new Error(`Unknown async data source '${name}'`);
-        }
-
-        if (source.active) {
-            this._fetchAsyncDataSource(source, true);
-        }
-    }
-
     search(value, event) {
         this._search(value, event);
     }
