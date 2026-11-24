@@ -149,7 +149,8 @@
                 <Required>Y</Required>
                 <Default>1</Default>
                 <MinimumValue>1</MinimumValue>
-                <MaximumValue>256</MaximumValue>
+                <MaximumValue>16</MaximumValue>
+                <ValidationMessage>Specify a number of listeners between 1 and 16.</ValidationMessage>
             </divert_listeners>
             <promisc type="BooleanField">
                 <Default>0</Default>
