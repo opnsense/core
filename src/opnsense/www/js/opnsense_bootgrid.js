@@ -1825,7 +1825,7 @@ class UIBootgrid {
         for (const [name, config] of Object.entries(this.options.asyncDataSources)) {
             // A source named after its only column does not need columns or a map callback.
             const columns = config.columns ?? [name];
-            if (!config.url || !Array.isArray(columns) || columns.length === 0) {
+            if ((!config.url && !config.request) || !Array.isArray(columns) || columns.length === 0) {
                 console.error(`Invalid async data source '${name}'`);
                 continue;
             }
@@ -1848,6 +1848,7 @@ class UIBootgrid {
                 resolved: false,
                 loading: false,
                 generation: 0,
+                pendingKeys: null,
                 cache: new Map()
             });
             columns.forEach(column => this.asyncDataColumns.set(column, this.asyncDataSources.get(name)));
@@ -1861,11 +1862,10 @@ class UIBootgrid {
 
         const key = row[this.options.datakey];
         let patch;
-        if (source.loading) {
+        if (source.loading && (source.pendingKeys === null || source.pendingKeys.has(String(key)))) {
             patch = source.config.pending;
         } else if (source.cache.has(String(key))) {
-            const value = source.cache.get(String(key));
-            patch = source.config.map ? source.config.map(value, key) : value;
+            patch = source.cache.get(String(key));
         } else {
             patch = source.resolved ? source.config.missing : source.config.pending;
         }
@@ -1900,7 +1900,7 @@ class UIBootgrid {
                 .on('click', (event) => {
                     event.stopPropagation();
                     if (source.active) {
-                        this._fetchAsyncDataSource(source);
+                        this._fetchAsyncDataSource(source, true);
                     }
                 });
 
@@ -1920,41 +1920,83 @@ class UIBootgrid {
         rows.forEach(row => row.reformat());
     }
 
-    _fetchAsyncDataSource(source) {
+    _asyncRequestRows(source, refresh=false) {
+        if (!source.config.loadMissing) {
+            return this.table.getData();
+        }
+
+        return this.table.getData().filter(row => {
+            const key = row[this.options.datakey];
+            return key !== undefined && key !== null && (refresh || !source.cache.has(String(key)));
+        });
+    }
+
+    _fetchAsyncDataSource(source, refresh=false) {
+        const rows = this._asyncRequestRows(source, refresh);
+        if (source.config.loadMissing && rows.length === 0) {
+            source.resolved = true;
+            return;
+        }
+
         const generation = ++source.generation;
         source.loading = true;
+        source.pendingKeys = source.config.loadMissing ?
+            new Set(rows.map(row => String(row[this.options.datakey]))) : null;
         this._redrawAsyncDataSource(source);
 
-        Promise.resolve($.ajax({
-            method: 'GET',
-            dataType: 'json',
-            ...source.config.ajaxConfig,
-            url: source.config.url
-        })).then(response => {
-            if (generation !== source.generation) {
-                return;
-            }
+        Promise.resolve()
+            .then(() => refresh ? source.config.refreshHandler?.() : undefined)
+            .then(() => source.config.request ?
+                source.config.request(rows, refresh) :
+                $.ajax({
+                    method: 'GET',
+                    dataType: 'json',
+                    ...source.config.ajaxConfig,
+                    url: source.config.url
+                })
+            ).then(response => {
+                if (generation !== source.generation) {
+                    return;
+                }
 
-            const values = source.config.responseHandler ? source.config.responseHandler(response) : response;
-            source.cache = new Map(Object.entries(values ?? {}));
-            source.resolved = true;
-            source.loading = false;
-            this._redrawAsyncDataSource(source);
-        }).catch(() => {
-            if (generation !== source.generation) {
-                return;
-            }
+                const values = source.config.responseHandler ? source.config.responseHandler(response) : response;
+                if (source.config.loadMissing) {
+                    Object.entries(values ?? {}).forEach(([key, value]) => source.cache.set(key, value));
+                    rows.forEach(row => {
+                        const key = String(row[this.options.datakey]);
+                        if (!source.cache.has(key)) {
+                            const missing = source.columns.length === 1 && !source.config.map ?
+                                source.config.missing : undefined;
+                            source.cache.set(key, missing);
+                        }
+                    });
+                } else {
+                    source.cache = new Map(Object.entries(values ?? {}));
+                }
+                source.resolved = true;
+                source.loading = false;
+                source.pendingKeys = null;
+                this._redrawAsyncDataSource(source);
+                if (source.config.loadMissing) {
+                    this._loadAsyncDataSources();
+                }
+            }).catch(() => {
+                if (generation !== source.generation) {
+                    return;
+                }
 
-            // Keep a previous successful result, but don't leave an initial request pending forever.
-            source.resolved = true;
-            source.loading = false;
-            this._redrawAsyncDataSource(source);
-        });
+                // Keep a previous successful result, but don't leave an initial request pending forever.
+                source.resolved = true;
+                source.loading = false;
+                source.pendingKeys = null;
+                this._redrawAsyncDataSource(source);
+            });
     }
 
     _loadAsyncDataSources() {
         this.asyncDataSources.forEach(source => {
-            if (source.active && !source.resolved && !source.loading) {
+            const hasMissingRows = source.config.loadMissing && this._asyncRequestRows(source).length > 0;
+            if (source.active && !source.loading && (!source.resolved || hasMissingRows)) {
                 this._fetchAsyncDataSource(source);
             }
         });
@@ -2713,7 +2755,7 @@ class UIBootgrid {
         }
 
         if (source.active) {
-            this._fetchAsyncDataSource(source);
+            this._fetchAsyncDataSource(source, true);
         }
     }
 

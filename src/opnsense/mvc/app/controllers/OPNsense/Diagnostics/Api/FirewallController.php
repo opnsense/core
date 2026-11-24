@@ -290,7 +290,7 @@ class FirewallController extends ApiControllerBase
         /*
          * top callout cache is force flushed each time here.
          * frontend also does some caching and does not block on this request,
-         * so presenting fresh data on each page load is the preferable approach.
+         * so presenting fresh data on each page load is the better approach.
          */
         $pftop = json_decode((new Backend())->configdpRun('!filter diag top'), true) ?? [];
         foreach ($pftop['details'] ?? [] as $record) {

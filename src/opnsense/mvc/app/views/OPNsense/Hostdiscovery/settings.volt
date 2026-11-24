@@ -27,65 +27,11 @@
 <script>
     $( document ).ready(function() {
         const accessibleColumns = new Set("{{ accessibleColumns }}".split(','));
-        const hostnames = new Map();
 
         function updateAccessibleColumns(grid) {
             ['hostname', 'statistics'].forEach(function(column) {
                 grid.bootgrid(accessibleColumns.has(column) ? 'setColumns' : 'unsetColumns', [column]);
             });
-        }
-
-        function renderCache(grid, cache, column) {
-            grid.getTable().getRows().forEach(function(row) {
-                const address = row.getData().ip_address;
-                if (cache.has(address)) {
-                    row.getCell(column).setValue(cache.get(address));
-                }
-            });
-        }
-
-        function resolveHostnames(grid) {
-            if (!accessibleColumns.has('hostname')) {
-                return;
-            }
-
-            const addresses = [];
-            grid.getTable().getRows().forEach(function(row) {
-                const address = row.getData().ip_address;
-                if (address) {
-                    if (!hostnames.has(address)) {
-                        hostnames.set(address, null);
-                        addresses.push(address);
-                        // null explicitly renders the in-progress spinner.
-                        row.getCell('hostname').setValue(null);
-                    } else {
-                        row.getCell('hostname').setValue(hostnames.get(address));
-                    }
-                }
-            });
-
-            for (let i = 0; i < addresses.length; i += 50) {
-                const batch = addresses.slice(i, i + 50);
-                $.ajax({
-                    type: 'GET',
-                    url: '/api/diagnostics/dns/reverse_lookup',
-                    dataType: 'json',
-                    data: {address: batch},
-                    success: function(data) {
-                        batch.forEach(function(address) {
-                            const hostname = data && data[address];
-                            hostnames.set(address, hostname && hostname !== address ? hostname : '');
-                        });
-                        renderCache(grid, hostnames, 'hostname');
-                    },
-                    error: function() {
-                        batch.forEach(function(address) {
-                            hostnames.set(address, '');
-                        });
-                        renderCache(grid, hostnames, 'hostname');
-                    }
-                });
-            }
         }
 
         let data_get_map = {'frm_settings':"/api/hostdiscovery/settings/get"};
@@ -121,6 +67,31 @@
                                 return params;
                             },
                             asyncDataSources: {
+                                hostname: {
+                                    active: accessibleColumns.has('hostname'),
+                                    loadMissing: true,
+                                    pending: null,
+                                    missing: '',
+                                    request: function(rows) {
+                                        const addresses = rows.map(row => row.ip_address).filter(Boolean);
+                                        const batches = [];
+                                        for (let i = 0; i < addresses.length; i += 50) {
+                                            batches.push(addresses.slice(i, i + 50));
+                                        }
+
+                                        return Promise.all(batches.map(batch =>
+                                            Promise.resolve($.ajax({
+                                                type: 'GET',
+                                                url: '/api/diagnostics/dns/reverse_lookup',
+                                                dataType: 'json',
+                                                data: {address: batch}
+                                            })).then(data => Object.fromEntries(batch.map(address => {
+                                                const hostname = data?.[address];
+                                                return [address, hostname && hostname !== address ? hostname : ''];
+                                            })), () => Object.fromEntries(batch.map(address => [address, ''])))
+                                        )).then(results => Object.assign({}, ...results));
+                                    }
+                                },
                                 statistics: {
                                     active: accessibleColumns.has('statistics'),
                                     url: '/api/diagnostics/firewall/query_pf_top_summary',
@@ -174,8 +145,6 @@
                         });
                         grid.on('loaded.rs.jquery.bootgrid', function() {
                             updateAccessibleColumns(grid);
-                            const bootgrid = grid.data('UIBootgrid');
-                            resolveHostnames(bootgrid);
                         });
                     } else {
                         $("#grid-hosts").bootgrid('reload');
