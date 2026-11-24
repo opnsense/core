@@ -199,13 +199,12 @@ class KeaDhcpv4 extends BaseModel
             $record = [
                 'id' => $subnet->subnet_id->asInt(),
                 'subnet' => $subnet->subnet->getValue(),
-                'next-server' => $subnet->next_server->getValue(),
                 'match-client-id' => !$subnet->{'match-client-id'}->isEmpty(),
                 'option-data' => $this->collectOptionData($subnet->option_data, true),
                 'pools' => [],
                 'reservations' => []
             ];
-            foreach (['server_hostname', 'boot_file_name'] as $key) {
+            foreach (['next_server', 'server_hostname', 'boot_file_name'] as $key) {
                 if (!$subnet->$key->isEmpty()) {
                     $record[str_replace('_', '-', $key)] = $subnet->$key->getValue();
                 }
