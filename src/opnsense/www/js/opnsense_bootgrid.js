@@ -1819,7 +1819,7 @@ class UIBootgrid {
         for (const [name, config] of Object.entries(this.options.asyncDataSources)) {
             // A source named after its only column does not need columns or a map callback.
             const columns = config.columns ?? [name];
-            if ((!config.url && !config.request) || !Array.isArray(columns) || columns.length === 0) {
+            if (!config.url || !Array.isArray(columns) || columns.length === 0) {
                 console.error(`Invalid async data source '${name}'`);
                 continue;
             }
@@ -1886,24 +1886,21 @@ class UIBootgrid {
         });
 
         // Reformat instantiated rows, including the virtual DOM buffer. Rows which
-        // have not been instantiated resolve the sidecar cache when first rendered.
+        // have not been instantiated resolve the aux data cache when first rendered.
         rows.forEach(row => row.reformat());
     }
 
-    _fetchAsyncDataSource(source, refresh=false) {
+    _fetchAsyncDataSource(source) {
         const generation = ++source.generation;
         source.loading = true;
         this._redrawAsyncDataSource(source);
 
-        Promise.resolve().then(() => source.config.request ?
-            source.config.request(this.table.getData(), refresh) :
-            $.ajax({
-                method: 'GET',
-                dataType: 'json',
-                ...source.config.ajaxConfig,
-                url: source.config.url
-            })
-        ).then(response => {
+        Promise.resolve($.ajax({
+            method: 'GET',
+            dataType: 'json',
+            ...source.config.ajaxConfig,
+            url: source.config.url
+        })).then(response => {
             if (generation !== source.generation) {
                 return;
             }
@@ -2686,7 +2683,7 @@ class UIBootgrid {
         }
 
         if (source.active) {
-            this._fetchAsyncDataSource(source, true);
+            this._fetchAsyncDataSource(source);
         }
     }
 

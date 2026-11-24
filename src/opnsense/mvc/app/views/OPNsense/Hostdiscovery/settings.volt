@@ -123,22 +123,10 @@
                             asyncDataSources: {
                                 statistics: {
                                     active: accessibleColumns.has('statistics'),
+                                    url: '/api/diagnostics/firewall/query_pf_top_summary',
+                                    ajaxConfig: {method: 'POST'},
                                     pending: null,
                                     missing: {bytes: 0, states: 0},
-                                    request: function(rows, refresh) {
-                                        const addresses = [...new Set(rows
-                                            .map(row => row.ip_address)
-                                            .filter(Boolean))];
-                                        const query = () => addresses.length === 0 ?
-                                            Promise.resolve({items: {}}) :
-                                            ajaxCall('/api/diagnostics/firewall/query_pf_top_summary', {
-                                                addresses: addresses.join(',')
-                                            });
-
-                                        return refresh ?
-                                            ajaxCall('/api/diagnostics/firewall/flush_pf_top_cache', {}).then(query) :
-                                            query();
-                                    },
                                     responseHandler: function(response) {
                                         return response?.items || {};
                                     }
