@@ -130,10 +130,7 @@
                             return '<span style="cursor: pointer;" class="fa fa-fw fa-square-o command-toggle bootgrid-tooltip" data-value="0" data-row-id="' + row.uuid + '"></span>';
                         }
                     },
-                    category: function (column, row, onRendered) {
-                        onRendered(function(cell) {
-                            $(cell.getElement()).find('.category-icon').tooltip({container: 'body'});
-                        });
+                    category: function (column, row) {
                         return (row.category_colors || []).map(category => {
                             const color = category.color ? ` style="color:${htmlSafe(category.color)};"` : '';
                             return `<span class="category-icon" data-toggle="tooltip" title="${htmlSafe(category.name)}">
@@ -171,7 +168,9 @@
             },
         });
 
+        let filtersInitialized = false;
         $("#type_filter, #category_filter").on('changed.bs.select', function(){
+            if (!filtersInitialized) return;
             $('#grid-aliases').bootgrid('reload');
         });
 
@@ -327,7 +326,9 @@
                 });
             },
             false,
-            null,
+            function () {
+                filtersInitialized = true;
+            },
             true  // render_html
         );
         $('#category_filter').parent().find('.dropdown-toggle').prepend('<i class="fa fa-tag" style="margin-right: 6px;"></i>');
