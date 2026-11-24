@@ -26,6 +26,7 @@
 
 <script>
     $( document ).ready(function() {
+        $("#interface\\.if").selectpicker({ iconBase: '' });
         $("#{{formGridAssignment['table_id']}}").UIBootgrid(
             {   search:'/api/interfaces/assignment/search_item/',
                 get:'/api/interfaces/assignment/get_item/',
