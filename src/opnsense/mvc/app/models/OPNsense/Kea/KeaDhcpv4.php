@@ -199,12 +199,16 @@ class KeaDhcpv4 extends BaseModel
             $record = [
                 'id' => $subnet->subnet_id->asInt(),
                 'subnet' => $subnet->subnet->getValue(),
-                'next-server' => $subnet->next_server->getValue(),
                 'match-client-id' => !$subnet->{'match-client-id'}->isEmpty(),
                 'option-data' => $this->collectOptionData($subnet->option_data, true),
                 'pools' => [],
                 'reservations' => []
             ];
+            foreach (['next_server', 'server_hostname', 'boot_file_name'] as $key) {
+                if (!$subnet->$key->isEmpty()) {
+                    $record[str_replace('_', '-', $key)] = $subnet->$key->getValue();
+                }
+            }
             /* admission classes must be evaluated before subnet selection (shared networks) */
             if (!$subnet->match_code->isEmpty()) {
                 $class_name = sprintf('%s', $subnet_uuid);
@@ -256,7 +260,7 @@ class KeaDhcpv4 extends BaseModel
                     continue;
                 }
                 $res = [];
-                foreach (['ip_address', 'hostname'] as $key) {
+                foreach (['ip_address', 'hostname', 'next_server', 'server_hostname', 'boot_file_name'] as $key) {
                     if (!$reservation->$key->isEmpty()) {
                         $res[str_replace('_', '-', $key)] = $reservation->$key->getValue();
                     }
@@ -265,10 +269,6 @@ class KeaDhcpv4 extends BaseModel
                     $res['hw-address'] = str_replace('-', ':', $reservation->hw_address->getValue());
                 } elseif (!$reservation->client_id->isEmpty()) {
                     $res['client-id'] = $reservation->client_id->getValue();
-                }
-
-                if (!$reservation->next_server->isEmpty()) {
-                    $res['next-server'] = $reservation->next_server->getValue();
                 }
 
                 // Add DHCP option-data elements for reservations

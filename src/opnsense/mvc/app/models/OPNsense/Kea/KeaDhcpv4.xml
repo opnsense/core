@@ -170,6 +170,14 @@
                     <NetMaskAllowed>N</NetMaskAllowed>
                     <AddressFamily>ipv4</AddressFamily>
                 </next_server>
+                <server_hostname type="StrictTextField">
+                    <Mask>/^[^"]{0,63}$/D</Mask>
+                    <ValidationMessage>Specify a server hostname of at most 63 bytes without quotes.</ValidationMessage>
+                </server_hostname>
+                <boot_file_name type="StrictTextField">
+                    <Mask>/^[^"]{0,127}$/D</Mask>
+                    <ValidationMessage>Specify a boot filename of at most 127 bytes without quotes.</ValidationMessage>
+                </boot_file_name>
                 <option_data_autocollect type="BooleanField">
                     <Default>1</Default>
                     <Required>Y</Required>
@@ -393,6 +401,14 @@
                     <NetMaskAllowed>N</NetMaskAllowed>
                     <AddressFamily>ipv4</AddressFamily>
                 </next_server>
+                <server_hostname type="StrictTextField">
+                    <Mask>/^[^"]{0,63}$/D</Mask>
+                    <ValidationMessage>Specify a server hostname of at most 63 bytes without quotes.</ValidationMessage>
+                </server_hostname>
+                <boot_file_name type="StrictTextField">
+                    <Mask>/^[^"]{0,127}$/D</Mask>
+                    <ValidationMessage>Specify a boot filename of at most 127 bytes without quotes.</ValidationMessage>
+                </boot_file_name>
                 <option_data>
                     <domain_name_servers type="NetworkField">
                         <NetMaskAllowed>N</NetMaskAllowed>
