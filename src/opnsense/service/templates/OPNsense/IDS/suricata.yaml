@@ -128,6 +128,9 @@ logging:
       facility: local5
       format: "[%i] <%d> -- "
 
+pcap:
+  - interface: default
+    promisc: {% if not helpers.empty('OPNsense.IDS.general.promisc') %}yes{% else %}no{% endif +%}
 
 app-layer:
   error-policy: ignore
