@@ -121,11 +121,10 @@
                                 return params;
                             },
                             asyncDataSources: {
-                                stateTraffic: {
+                                statistics: {
                                     active: accessibleColumns.has('statistics'),
-                                    columns: ['statistics'],
-                                    pending: {statistics: null},
-                                    missing: {statistics: {bytes: 0, states: 0}},
+                                    pending: null,
+                                    missing: {bytes: 0, states: 0},
                                     request: function(rows, refresh) {
                                         const addresses = [...new Set(rows
                                             .map(row => row.ip_address)
@@ -142,9 +141,6 @@
                                     },
                                     responseHandler: function(response) {
                                         return response?.items || {};
-                                    },
-                                    map: function(statistics) {
-                                        return {statistics: statistics};
                                     }
                                 }
                             },
@@ -164,7 +160,7 @@
 
                                     element.find('.statistics-cache-flush').on('click', function(event) {
                                         event.stopPropagation();
-                                        grid.bootgrid('refreshAsyncDataSource', 'stateTraffic');
+                                        grid.bootgrid('refreshAsyncDataSource', 'statistics');
                                     });
 
                                     return element[0];

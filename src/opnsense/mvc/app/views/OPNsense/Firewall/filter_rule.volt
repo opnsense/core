@@ -333,20 +333,16 @@
                 // convert the flat rows into a tree view
                 responseHandler: responseHandler,
                 asyncDataSources: {
-                    ruleStatistics: {
+                    statistics: {
                         active: inspectEnabled,
                         url: '/api/firewall/filter_util/rule_stats',
-                        columns: ['statistics'],
-                        pending: {statistics: null},
-                        missing: {statistics: {}},
+                        pending: null,
+                        missing: {},
                         responseHandler: function(response) {
                             if (response.status !== 'ok') {
                                 throw new Error('Unable to retrieve rule statistics');
                             }
                             return response.stats || {};
-                        },
-                        map: function(statistics) {
-                            return {statistics: statistics};
                         }
                     }
                 },
@@ -393,7 +389,7 @@
 
                         element.find('.inspect-cache-flush').on('click', function (event) {
                             event.stopPropagation();
-                            grid.bootgrid('refreshAsyncDataSource', 'ruleStatistics');
+                            grid.bootgrid('refreshAsyncDataSource', 'statistics');
                         });
 
                         return element[0];
@@ -1039,7 +1035,7 @@
             localStorage.setItem("firewall_rule_inspect", inspectEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', inspectEnabled);
             updateStatisticColumns();
-            grid.bootgrid('setAsyncDataSourceEnabled', 'ruleStatistics', inspectEnabled);
+            grid.bootgrid('setAsyncDataSourceEnabled', 'statistics', inspectEnabled);
         });
 
         $("#tree_toggle_container").detach().insertAfter("#inspect_toggle_container");

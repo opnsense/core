@@ -1817,7 +1817,8 @@ class UIBootgrid {
         const claimedColumns = new Set();
 
         for (const [name, config] of Object.entries(this.options.asyncDataSources)) {
-            const columns = config.columns ?? [];
+            // A source named after its only column does not need columns or a map callback.
+            const columns = config.columns ?? [name];
             if ((!config.url && !config.request) || !Array.isArray(columns) || columns.length === 0) {
                 console.error(`Invalid async data source '${name}'`);
                 continue;
@@ -1836,6 +1837,7 @@ class UIBootgrid {
             });
             this.asyncDataSources.set(name, {
                 config: config,
+                columns: columns,
                 active: config.active ?? true,
                 resolved: false,
                 loading: false,
@@ -1862,7 +1864,11 @@ class UIBootgrid {
             patch = source.resolved ? source.config.missing : source.config.pending;
         }
 
-        return Object.fromEntries(source.config.columns
+        if (source.columns.length === 1 && !source.config.map) {
+            patch = {[source.columns[0]]: patch};
+        }
+
+        return Object.fromEntries(source.columns
             .filter(column => patch && Object.prototype.hasOwnProperty.call(patch, column))
             .map(column => [column, patch[column]]));
     }
@@ -1875,7 +1881,7 @@ class UIBootgrid {
 
     _redrawAsyncDataSource(source) {
         const rows = new Set();
-        source.config.columns.forEach(column => {
+        source.columns.forEach(column => {
             this.table.getColumn(column)?.getCells().forEach(cell => rows.add(cell.getRow()));
         });
 
