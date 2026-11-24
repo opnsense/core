@@ -287,6 +287,11 @@ class FirewallController extends ApiControllerBase
 
         $statistics = [];
 
+        /*
+         * top callout cache is force flushed each time here.
+         * frontend also does some caching and does not block on this request,
+         * so presenting fresh data on each page load is the preferable approach.
+         */
         $pftop = json_decode((new Backend())->configdpRun('!filter diag top'), true) ?? [];
         foreach ($pftop['details'] ?? [] as $record) {
             $recordAddresses = array_unique([

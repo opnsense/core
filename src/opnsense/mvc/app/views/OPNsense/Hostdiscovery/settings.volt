@@ -132,28 +132,6 @@
                                     }
                                 }
                             },
-                            headerFormatters: {
-                                statistics: function() {
-                                    const element = $(`
-                                        <span>
-                                            {{ lang._('Statistics') }}
-                                            <span class="statistics-cache-flush"
-                                                style="cursor:pointer; margin-left:4px;"
-                                                data-toggle="tooltip"
-                                                title="{{ lang._('Refresh') }}">
-                                                <i class="fa-solid fa-fw fa-rotate-right"></i>
-                                            </span>
-                                        </span>
-                                    `);
-
-                                    element.find('.statistics-cache-flush').on('click', function(event) {
-                                        event.stopPropagation();
-                                        grid.bootgrid('refreshAsyncDataSource', 'statistics');
-                                    });
-
-                                    return element[0];
-                                }
-                            },
                             formatters: {
                                 hostname: function(column, row) {
                                     if (row.hostname === null) {

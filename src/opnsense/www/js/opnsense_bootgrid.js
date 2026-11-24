@@ -573,6 +573,12 @@ class UIBootgrid {
                     }
                 }
 
+                let titleFormatter = this.options.headerFormatters[field?.headerFormatter] ?? null;
+                const asyncSource = this.asyncDataColumns.get(field.id);
+                if (asyncSource) {
+                    titleFormatter = this._asyncHeaderFormatter(asyncSource, titleFormatter, field.label);
+                }
+
                 col = {
                     visible: field.visible,
                     editable: field.editable,
@@ -580,7 +586,7 @@ class UIBootgrid {
                     formatter: this.options.formatters[field?.formatter] ?? this.options.formatters['default'],
                     sorter: this.options.sorters[field.sorter] ?? null,
                     title: field.label,
-                    titleFormatter: this.options.headerFormatters[field?.headerFormatter] ?? null,
+                    titleFormatter: titleFormatter,
                     field: field.id,
                     resizable: !this.options.static,
                     sequence: field.sequence ?? null,
@@ -1877,6 +1883,30 @@ class UIBootgrid {
         const data = cell.getData();
         const source = this.asyncDataColumns.get(cell.getColumn().getField());
         return source?.active ? {...data, ...this._asyncDataPatch(source, data)} : data;
+    }
+
+    _asyncHeaderFormatter(source, formatter, label) {
+        return (cell, formatterParams, onRendered) => {
+            const content = formatter ?
+                formatter(cell, formatterParams, onRendered) :
+                document.createTextNode(label);
+            const element = $('<span>').append(content);
+            const refresh = $('<span>', {
+                class: 'async-data-refresh',
+                'data-toggle': 'tooltip',
+                title: this._translate('refresh')
+            }).css({cursor: 'pointer', marginLeft: '4px'})
+                .append($('<i>', {class: 'fa-solid fa-fw fa-rotate-right'}))
+                .on('click', (event) => {
+                    event.stopPropagation();
+                    if (source.active) {
+                        this._fetchAsyncDataSource(source);
+                    }
+                });
+
+            onRendered(() => refresh.tooltip({container: 'body'}));
+            return element.append(refresh)[0];
+        };
     }
 
     _redrawAsyncDataSource(source) {
