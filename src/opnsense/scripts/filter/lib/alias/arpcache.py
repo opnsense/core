@@ -28,6 +28,7 @@ import fcntl
 import time
 import subprocess
 import ujson
+import os
 from .base import BaseContentParser
 
 
@@ -42,6 +43,8 @@ class ArpCache(BaseContentParser):
     @classmethod
     def _update(cls):
         cls._cache_handle = open(cls._cache_filename, 'a+')
+        if os.path.islink(cls._cache_filename):
+            raise OSError("OSError: [Errno 40] Too many levels of symbolic links")
         try:
             fcntl.flock(cls._cache_handle, fcntl.LOCK_EX | fcntl.LOCK_NB)
         except IOError:
