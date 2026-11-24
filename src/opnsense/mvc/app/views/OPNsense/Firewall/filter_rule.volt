@@ -58,8 +58,6 @@
         $('#toggle_tree_button').toggleClass('active btn-primary', treeViewEnabled);
 
         let inspectEnabled = localStorage.getItem("firewall_rule_inspect") === "1";
-        let ruleStatistics = null;
-        let statisticsRequest = null;
         $('#toggle_inspect_button').toggleClass('active btn-primary', inspectEnabled);
 
         function updateStatisticColumns() {
@@ -71,7 +69,7 @@
                 return "";
             }
 
-            const statistics = ruleStatistics === null ? null : ruleStatistics[row.uuid] || {};
+            const statistics = row.statistics;
             if (statistics == null) {
                 return '<span class="fa fa-spinner fa-pulse"></span>';
             }
@@ -113,35 +111,6 @@
                     ${parts.join("")}
                 </div>
             `;
-        }
-
-        function renderRuleStatistics() {
-            if (!inspectEnabled) {
-                return;
-            }
-
-            grid.bootgrid('getTable').getRows('visible').forEach(function(row) {
-                const data = row.getData();
-                if (!data.isGroup) {
-                    row.getCell('statistics').setValue(
-                        ruleStatistics === null ? null : ruleStatistics[data.uuid] || {}
-                    );
-                }
-            });
-        }
-
-        function fetchRuleStatistics() {
-            if (statisticsRequest !== null) {
-                return;
-            }
-
-            ruleStatistics = null;
-            renderRuleStatistics();
-            statisticsRequest = ajaxGet('/api/firewall/filter_util/rule_stats', {}, function(data, status) {
-                ruleStatistics = status === 'success' && data.status === 'ok' ? data.stats || {} : {};
-                statisticsRequest = null;
-                renderRuleStatistics();
-            });
         }
 
         // read interface from URL hash once, for the first grid load
@@ -363,6 +332,24 @@
                 },
                 // convert the flat rows into a tree view
                 responseHandler: responseHandler,
+                asyncDataSources: {
+                    ruleStatistics: {
+                        active: inspectEnabled,
+                        url: '/api/firewall/filter_util/rule_stats',
+                        columns: ['statistics'],
+                        pending: {statistics: null},
+                        missing: {statistics: {}},
+                        responseHandler: function(response) {
+                            if (response.status !== 'ok') {
+                                throw new Error('Unable to retrieve rule statistics');
+                            }
+                            return response.stats || {};
+                        },
+                        map: function(statistics) {
+                            return {statistics: statistics};
+                        }
+                    }
+                },
 
                 headerFormatters: {
                     enabled: function (column) {
@@ -390,25 +377,7 @@
                         return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Categories") }}"></i>';
                     },
                     statistics: function () {
-                        const element = $(`
-                            <span class="stats-header-icons">
-                                <span data-toggle="tooltip" title="{{ lang._('Statistics') }}">
-                                    <i class="fa-solid fa-fw fa-eye"></i>
-                                </span>
-                                <span class="inspect-cache-flush"
-                                    style="cursor:pointer; margin-left:4px;"
-                                    data-toggle="tooltip"
-                                    title="{{ lang._('Refresh') }}">
-                                    <i class="fa-solid fa-fw fa-rotate-right"></i>
-                                </span>
-                            </span>
-                        `);
-
-                        element.find('.inspect-cache-flush').on('click', function () {
-                            fetchRuleStatistics();
-                        });
-
-                        return element[0];
+                        return '<i class="fa-solid fa-fw fa-eye" data-toggle="tooltip" title="{{ lang._('Statistics') }}"></i>';
                     },
                 },
                 formatters:{
@@ -905,9 +874,6 @@
 
         grid.on('loaded.rs.jquery.bootgrid', function () {
             updateStatisticColumns(); // ensures inspect columns are consistent after reload
-            if (inspectEnabled && ruleStatistics === null && statisticsRequest === null) {
-                fetchRuleStatistics();
-            }
 
             // remove empty ruleset message banner if applicable
             $('#{{formGridFilterRule["table_id"]}}-banner').remove();
@@ -1054,9 +1020,7 @@
             localStorage.setItem("firewall_rule_inspect", inspectEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', inspectEnabled);
             updateStatisticColumns();
-            if (inspectEnabled) {
-                fetchRuleStatistics();
-            }
+            grid.bootgrid('setAsyncDataSourceEnabled', 'ruleStatistics', inspectEnabled);
         });
 
         $("#tree_toggle_container").detach().insertAfter("#inspect_toggle_container");

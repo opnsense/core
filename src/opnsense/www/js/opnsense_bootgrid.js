@@ -133,6 +133,7 @@ class UIBootgrid {
         this.cellCommandHandler = this._onCellCommand.bind(this);
         this.addButton = false;
         this.deleteSelectedButton = false;
+        this.asyncDataSources = new Map();
 
         // wrapper-specific options
         this.options = {
@@ -180,6 +181,7 @@ class UIBootgrid {
             triggerEditFor: null,
             static: false, // no persistent storage, no resizable columns
             bottomReserveElement: null,
+            asyncDataSources: {},
             ...options
         };
 
@@ -228,6 +230,7 @@ class UIBootgrid {
         }
 
         this._parseGridView();
+        this._initializeAsyncDataSources();
         this._constructTable();
         this._registerEvents();
         this._renderActionBar();
@@ -359,6 +362,8 @@ class UIBootgrid {
         } else {
             this.options.bottomReserveElement = document.querySelector('.grid-bottom-reserve');
         }
+
+        this.options.asyncDataSources = bootGridOptions?.asyncDataSources ?? {};
 
         if (compatOptions.get) this.crud.get = compatOptions.get;
         if (compatOptions.set) this.crud.set = compatOptions.set;
@@ -792,6 +797,7 @@ class UIBootgrid {
 
         this.table.on('dataProcessed', () =>  {
             this._onDataProcessed();
+            this._loadAsyncDataSources();
         });
 
         this.table.on('dataChanged', debounce(() => {
@@ -1271,6 +1277,7 @@ class UIBootgrid {
             $(`#${this.id}-refresh-button`).click(() => {
                 // XXX This refreshes the data, but doesn't trigger a loading screen
                 this._reload();
+                this._refreshAsyncDataSources();
             });
         } else {
             $(`#${this.id}-refresh-button`).remove();
@@ -1674,6 +1681,8 @@ class UIBootgrid {
                 this.loading = false;
                 $(`#${this.id} > .tabulator-tableholder > .bootgrid-overlay`).remove();
 
+                this._mergeAsyncData(response.rows ?? []);
+
                 // handle pagination response, set last_page as appropriate
                 // the counter text (showing x of y) is handled in the 'paginationCounter'
                 if (response.total_rows != undefined) {
@@ -1804,6 +1813,126 @@ class UIBootgrid {
         } else {
             this.table.replaceData();
         }
+    }
+
+    _initializeAsyncDataSources() {
+        const claimedColumns = new Set();
+
+        for (const [name, config] of Object.entries(this.options.asyncDataSources)) {
+            const columns = config.columns ?? [];
+            if (!config.url || !Array.isArray(columns) || columns.length === 0) {
+                console.error(`Invalid async data source '${name}'`);
+                continue;
+            }
+
+            const invalidColumn = columns.find(column => !(column in this.gridView) || claimedColumns.has(column));
+            if (invalidColumn) {
+                console.error(`Invalid or duplicate async column '${invalidColumn}' in source '${name}'`);
+                continue;
+            }
+
+            columns.forEach(column => {
+                claimedColumns.add(column);
+                // Remote sorting cannot be correct for fields absent from the primary data source.
+                this.gridView[column].sortable = false;
+            });
+            this.asyncDataSources.set(name, {
+                config: config,
+                active: config.active ?? true,
+                resolved: false,
+                loading: false,
+                generation: 0,
+                cache: new Map()
+            });
+        }
+    }
+
+    _asyncDataPatch(source, row) {
+        if (!source.active) {
+            return {};
+        }
+
+        const key = row[this.options.datakey];
+        let patch;
+        if (source.cache.has(String(key))) {
+            const value = source.cache.get(String(key));
+            patch = source.config.map ? source.config.map(value, key) : value;
+        } else {
+            patch = source.resolved ? source.config.missing : source.config.pending;
+        }
+
+        return Object.fromEntries(source.config.columns
+            .filter(column => patch && Object.prototype.hasOwnProperty.call(patch, column))
+            .map(column => [column, patch[column]]));
+    }
+
+    _mergeAsyncData(rows) {
+        const childField = this.table?.options?.dataTreeChildField ?? '_children';
+        for (const row of rows) {
+            for (const source of this.asyncDataSources.values()) {
+                Object.assign(row, this._asyncDataPatch(source, row));
+            }
+            if (Array.isArray(row[childField])) {
+                this._mergeAsyncData(row[childField]);
+            }
+        }
+    }
+
+    _updateAsyncDataRows(source) {
+        const update = (rows) => {
+            rows.forEach(row => {
+                row.update(this._asyncDataPatch(source, row.getData()));
+                update(row.getTreeChildren());
+            });
+        };
+        update(this.table.getRows());
+    }
+
+    _fetchAsyncDataSource(source) {
+        const generation = ++source.generation;
+        source.loading = true;
+
+        Promise.resolve($.ajax({
+            method: 'GET',
+            dataType: 'json',
+            ...source.config.ajaxConfig,
+            url: source.config.url
+        })).then(response => {
+            if (generation !== source.generation) {
+                return;
+            }
+
+            const values = source.config.responseHandler ? source.config.responseHandler(response) : response;
+            source.cache = new Map(Object.entries(values ?? {}));
+            source.resolved = true;
+            source.loading = false;
+            this._updateAsyncDataRows(source);
+        }).catch(() => {
+            if (generation !== source.generation) {
+                return;
+            }
+
+            // Keep a previous successful result, but don't leave an initial request pending forever.
+            source.resolved = true;
+            source.loading = false;
+            this._updateAsyncDataRows(source);
+        });
+    }
+
+    _loadAsyncDataSources() {
+        this.asyncDataSources.forEach(source => {
+            if (source.active && !source.resolved && !source.loading) {
+                this._fetchAsyncDataSource(source);
+            }
+        });
+    }
+
+    _refreshAsyncDataSources() {
+        this.asyncDataSources.forEach(source => {
+            if (source.active) {
+                this._fetchAsyncDataSource(source);
+            }
+        });
     }
 
     _maintainScrollPosition(pos) {
@@ -2536,6 +2665,19 @@ class UIBootgrid {
 
         if (redraw) {
             this.table.redraw();
+        }
+    }
+
+    setAsyncDataSourceEnabled(name, enabled) {
+        const source = this.asyncDataSources.get(name);
+        if (!source) {
+            throw new Error(`Unknown async data source '${name}'`);
+        }
+
+        source.active = enabled;
+        if (enabled) {
+            this._updateAsyncDataRows(source);
+            this._loadAsyncDataSources();
         }
     }
 
