@@ -559,17 +559,18 @@ function system_host_route($host, $gateway)
 function system_interface_route($gw, $routes)
 {
     $interface = $gw['interface'];
-    $gateway = $gw['gateway'] ?? 'missing';
+    $family = $gw['ipprotocol'];
     $far = !empty($gw['fargw']);
+    $gateway = $gw['gateway'];
     $device = $gw['if'];
-    $family = 'inet';
 
-    if (!is_ipaddrv4($gateway)) {
-        log_msg("ROUTING: not a valid {$interface} interface gateway address: '{$gateway}'", LOG_ERR);
-        return;
-    }
-
-    if (!$far) {
+    /*
+     * IPv6 is more complicated due to possible link-local routing
+     * and likely not worth the risk adding a far autodetect here.
+     * It was originally added for DHCPv4 which some providers use
+     * to hand out /32 leases, which then do not work without this.
+     */
+    if ($family == 'inet' && !$far) {
         /* special case tries to turn on far gateway when required for dynamic gateway */
         $dynamicgw = OPNsense\Interface\Autoconf::getRouter($device, 'inet');
         if (!empty($dynamicgw) && $gateway === $dynamicgw) {
@@ -595,7 +596,9 @@ function system_interface_route($gw, $routes)
         /* find host routes on the link for the underlying device */
         if ($route['netif'] != $device) {
             continue;
-        } elseif ($route['proto'] != 'ipv4') {
+        } elseif ($family == 'inet' && $route['proto'] != 'ipv4') {
+            continue;
+        } elseif ($family == 'inet6' && $route['proto'] != 'ipv6') {
             continue;
         } elseif (strpos($route['gateway'], 'link#') !== 0) {
             continue;
@@ -633,14 +636,15 @@ function system_routing_configure($verbose = false, $interface_map = null, $moni
      * XXX: system_interface_route() should likely be moved to StaticRoute() class, but needs further investigation
      */
     foreach ($sroutes->getGateways()->gatewaysIndexedByName() as $gateway) {
-        /* check if we need to add a required interface route to the gateway (IPv4 only) */
-        if ($gateway['ipprotocol'] !== 'inet' || ($family !== null && $family !== 'inet')) {
+        /* check if we need to add a required interface route to the gateway */
+        if (empty($gateway['gateway']) || $family !== null && $family != $gateway['ipprotocol']) {
             continue;
         } elseif (!empty($interface_map) && !in_array($gateway['interface'], $interface_map)) {
             continue;
         }
 
-        if (empty($ifdetails[$gateway['if']]['ipv4'][0])) {
+        $ifdetails_af = $gateway['ipprotocol'] == 'inet6' ? 'ipv6' : 'ipv4';
+        if (empty($ifdetails[$gateway['if']][$ifdetails_af][0])) {
             log_msg("ROUTING: refusing to set interface route on addressless {$gateway['interface']}({$gateway['if']})", LOG_WARNING);
             continue;
         }
@@ -1206,15 +1210,11 @@ function system_login_configure($verbose = false)
 function reset_factory_defaults($sync = true)
 {
     mwexecf('/bin/rm -fr /conf/* /var/log/* /root/.history');
-    mwexecf('/usr/local/sbin/opnsense-beep stop');
 
     /* as we go through a special case directly shut down */
-    $shutdown_cmd = '/sbin/shutdown -op now';
+    $shutdown_cmd = '/usr/local/etc/rc.halt';
     if ($sync) {
         mwexecf($shutdown_cmd);
-        while (true) {
-            sleep(1);
-        }
     } else {
         mwexecfb($shutdown_cmd);
     }

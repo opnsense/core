@@ -32,6 +32,13 @@ import datetime
 import sqlite3
 
 
+def timestamp_to_datetime(timestamp):
+    """Convert a UTC timestamp to the naive UTC format used by the database."""
+    return datetime.datetime.fromtimestamp(
+        timestamp, datetime.timezone.utc
+    ).replace(tzinfo=None)
+
+
 def convert_timestamp(val):
     """ convert timestamps from string (internal sqlite type) or seconds since epoch
     """
@@ -53,11 +60,17 @@ def convert_timestamp(val):
         val = datetime.datetime(year, month, day, hours, minutes, seconds, microseconds)
     else:
         # timestamp stored as seconds since epoch, convert to utc
-        val = datetime.datetime.utcfromtimestamp(float(val))
+        val = timestamp_to_datetime(float(val))
 
     return val
 
 
+def adapt_datetime(val):
+    """Serialize datetimes using sqlite3's former default format."""
+    return val.isoformat(' ')
+
+
+sqlite3.register_adapter(datetime.datetime, adapt_datetime)
 sqlite3.register_converter('timestamp', convert_timestamp)
 
 

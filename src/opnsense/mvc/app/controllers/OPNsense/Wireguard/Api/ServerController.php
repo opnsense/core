@@ -67,8 +67,8 @@ class ServerController extends ApiMutableModelControllerBase
         return $this->setBase('server', 'servers.server', $uuid);
     }
 
-    public function toggleServerAction($uuid)
+    public function toggleServerAction($uuid, $enabled = null)
     {
-        return $this->toggleBase('servers.server', $uuid);
+        return $this->toggleBase('servers.server', $uuid, $enabled);
     }
 }

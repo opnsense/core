@@ -33,6 +33,7 @@ use OPNsense\Base\FieldTypes\PortField;
 use OPNsense\Base\UserException;
 use OPNsense\Core\Backend;
 use OPNsense\Core\Config;
+use OPNsense\Core\Type;
 use OPNsense\Firewall\Alias;
 use OPNsense\Firewall\Category;
 use OPNsense\Firewall\Util;
@@ -130,8 +131,10 @@ abstract class FilterBaseController extends ApiMutableModelControllerBase
 
             /* create alias object for summary */
             Util::attachAliasObject(new Alias(true));
-            foreach (Alias::getCachedData()['aliases']['alias'] ?? [] as $alias) {
+            foreach (Alias::getCachedData()['aliases']['alias'] ?? [] as $uuid => $alias) {
                 $this->networks[$alias['name']] = [
+                    // XXX 'uuid' is included for ui edit actions, uuid=null therefore means not editable.
+                    'uuid' => Type::isUUID($uuid) ? $uuid : null,
                     'summary' => Util::aliasSummary($alias['name']),
                     'description' => $alias['description'],
                     'value' => $alias['name'],

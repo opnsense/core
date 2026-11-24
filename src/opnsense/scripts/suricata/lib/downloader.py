@@ -1,5 +1,5 @@
 """
-    Copyright (c) 2015-2018 Ad Schellevis <ad@opnsense.org>
+    Copyright (c) 2015-2026 Ad Schellevis <ad@opnsense.org>
     All rights reserved.
 
     Redistribution and use in source and binary forms, with or without
@@ -38,6 +38,7 @@ import json
 import hashlib
 import os
 import re
+import urllib3
 
 
 class Downloader(object):
@@ -110,27 +111,27 @@ class Downloader(object):
                     req_opts['headers'] = headers
                 try:
                     req = requests.get(**req_opts)
-                except requests.exceptions.RequestException as e:
+                    if 'content-disposition' not in req.headers \
+                            or req.headers['content-disposition'].find('filename=') == -1:
+                        filename = url.strip().lower().split('?')[0]
+                    else:
+                        filename = re.findall('filename=(.+)', req.headers['content-disposition'])[0].strip('"')
+
+                    if req.status_code == 200:
+                        req.raw.decode_content = True
+                        src = tempfile.NamedTemporaryFile('wb+', 10240)
+                        while True:
+                            data = req.raw.read(10240)
+                            if not data:
+                                break
+                            else:
+                                src.write(data)
+                        self._download_cache[frm_url] = {'handle': src, 'filename': filename, 'cached': False}
+                    else:
+                        syslog.syslog(syslog.LOG_ERR, 'download failed for %s (http_code: %d)' % (url, req.status_code))
+                except (requests.exceptions.RequestException, urllib3.exceptions.HTTPError) as e:
                     syslog.syslog(syslog.LOG_ERR, 'download failed for %s (%s)' % (url, e))
                     return None
-                if 'content-disposition' not in req.headers \
-                        or req.headers['content-disposition'].find('filename=') == -1:
-                    filename = url.strip().lower().split('?')[0]
-                else:
-                    filename = re.findall('filename=(.+)', req.headers['content-disposition'])[0].strip('"')
-
-                if req.status_code == 200:
-                    req.raw.decode_content = True
-                    src = tempfile.NamedTemporaryFile('wb+', 10240)
-                    while True:
-                        data = req.raw.read(10240)
-                        if not data:
-                            break
-                        else:
-                            src.write(data)
-                    self._download_cache[frm_url] = {'handle': src, 'filename': filename, 'cached': False}
-                else:
-                    syslog.syslog(syslog.LOG_ERR, 'download failed for %s (http_code: %d)' % (url, req.status_code))
             else:
                 self._download_cache[frm_url]['cached'] = True
         else:

@@ -12,8 +12,9 @@
     <field>
         <id>zone.zoneid</id>
         <label>Zone number</label>
-        <type>info</type>
+        <type>text</type>
         <help>Internal number used for this zone</help>
+        <advanced>true</advanced>
     </field>
     <field>
         <id>zone.interfaces</id>

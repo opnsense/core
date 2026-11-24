@@ -85,10 +85,10 @@ netflow_setup_interface()
     # disable ingress (traffic to this host) for selected interfaces
     # avoids counting traffic going through this firewall double when using nat
     if [ -n "$(echo " $netflow_egress_only " | grep " $interface ")" ]; then
-        conf="10"
+        conf="6"
         echo "setup $interface [egress only]"
     else
-        conf="11"
+        conf="7"
         echo "setup $interface"
     fi;
 

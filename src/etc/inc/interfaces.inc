@@ -1331,11 +1331,6 @@ EOD;
     /* precaution for post-start 'up' check */
     legacy_interface_flags($ifcfg['if'], 'down', false);
 
-    /* wait for functional parent (only the first port's first parent or the port itself) */
-    $parents = interface_parent_devices($ports[0]);
-    $parents[] = $ports[0];
-    interfaces_device_wait($parents[0], "interface_ppps_configure() waiting threshold exceeded - device {$parents[0]} is still not up");
-
     /* fire up mpd */
     mwexecf(
         '/usr/local/sbin/mpd5 -b -d /var/etc -f %s -p %s -s ppp %s',
@@ -2411,7 +2406,12 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
      * 3. Set "up" flag for UP/RUNNING requirement, adding an address
      *    already does that so at this point try to be more consistent.
      */
-    mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s up', [$device, $ifdescr]);
+    if (empty($wancfg['ipaddrv6']) && empty($wancfg['ipaddr'])) {
+        /* skip "up" flag when unconfigured, prevents interfaces like wireguard from flapping when reconfigured and down */
+        mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s', [$device, $ifdescr]);
+    } else {
+        mwexecf('/sbin/ifconfig %s inet6 -accept_rtadv description %s up', [$device, $ifdescr]);
+    }
 
     switch (is_ipv6_allowed() ? ($wancfg['ipaddrv6'] ?? 'none') : 'none') {
         case 'slaac':
@@ -4132,7 +4132,7 @@ function interfaces_primary_address6($interface, $ifconfig_details = null)
  */
 function interfaces_merge_pending()
 {
-    $filename = '/tmp/.interfaces.todo';
+    $filename = \OPNsense\Interfaces\NetworkInterface::getTodoFilename();
 
     $fp = @fopen($filename, 're');
     if ($fp === false) {

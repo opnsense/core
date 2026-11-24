@@ -29,6 +29,7 @@
 import datetime
 import sys
 import subprocess
+import re
 import ujson
 
 
@@ -111,7 +112,7 @@ def pfctl_rules():
                 rule = sline
                 result[headings[key]][rule] = dict()
             elif rule is not None and sline.startswith('[') and sline.endswith(']'):
-                items = sline[1:].strip().lower().split(':')
+                items = re.split(r':(?=\s)', sline[1:].strip().lower())
                 for idx, item in enumerate(items[1:],1):
                     opt = 'state_creations' if items[idx-1].find('creations') >  -1 else items[idx-1].split()[-1]
                     val = " ".join(item.split()[:-1]).replace('state', '')
@@ -134,4 +135,5 @@ def main():
 
     return result
 
-print(ujson.dumps(main()))
+if __name__ == '__main__':
+    print(ujson.dumps(main()))

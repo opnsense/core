@@ -99,7 +99,7 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
 
     /**
      * check if a specific token is in use, either in a list of options (xxx,yyy) or as exact match
-     * @param string $token token to search recursive
+     * @param string $tokens tokens to search recursive, comma seperated
      * @param bool $contains exact match or in list
      * @param bool $only_mvc only report (versioned) models
      * @param array $exclude_refs exclude topics (for example the tokens original location)
@@ -107,78 +107,90 @@ abstract class ApiMutableModelControllerBase extends ApiControllerBase
      * @throws UserException containing additional information
      */
     protected function checkAndThrowValueInUse(
-        $token,
+        $tokens,
         $contains = true,
         $only_mvc = true,
         $exclude_refs = [],
         $title = null
     ) {
-        if (!preg_match('/^[0-9a-z\-]{1,255}$/i', $token)) {
-            throw new UserException(gettext('Invalid input token provided'), gettext("Invalid token"));
-        } elseif ($contains) {
-            $xpath = "//text()[contains(.,'{$token}')]";
-        } else {
-            $xpath = "//*[text() = '{$token}']";
-        }
-        $usages = [];
-        // find uuid's in our config.xml
-        foreach (Config::getInstance()->object()->xpath($xpath) as $node) {
-            $referring_node = $node->xpath("..")[0];
-            $item_path = [$referring_node->getName()];
-            // collect path, when it's a model stop at model root
-            $parent_node = $referring_node;
-            do {
-                $parent_node = $parent_node->xpath("..");
-                $parent_node = $parent_node != null ? $parent_node[0] : null;
-                if ($parent_node != null) {
-                    $item_path[] = $parent_node->getName();
-                }
-            } while ($parent_node != null && !isset($parent_node->attributes()['version']));
-            $item_description = "";
-            foreach (["description", "descr", "name"] as $key) {
-                if (!empty($referring_node->$key)) {
-                    $item_description = (string)$referring_node->$key;
-                    break;
-                }
+        foreach (explode(',', $tokens) as $token) {
+            if (!preg_match('/^[0-9a-z\-]{1,255}$/i', $token)) {
+                throw new UserException(gettext('Invalid input token provided'), gettext("Invalid token"));
+            } elseif ($contains) {
+                $xpath = "//text()[contains(.,'{$token}')]";
+            } else {
+                $xpath = "//*[text() = '{$token}']";
             }
-            $item_path = array_reverse($item_path);
-            if ($parent_node == null) {
-                /* chop root node when a legacy path */
-                unset($item_path[0]);
-            }
-            $backref = implode(".", $item_path);
-            if (
-                $parent_node != null &&
-                !empty($referring_node->attributes()['uuid']) &&
-                !in_array($backref, $exclude_refs)
-            ) {
-                if ($parent_node != null) {
+            $usages = [];
+            // find uuid's in our config.xml
+            foreach (Config::getInstance()->object()->xpath($xpath) as $node) {
+                $referring_node = $node->xpath("..")[0];
+                $item_path = [$referring_node->getName()];
+                // collect path, when it's a model stop at model root
+                $parent_node = $referring_node;
+                do {
+                    $parent_node = $parent_node->xpath("..");
+                    $parent_node = $parent_node != null ? $parent_node[0] : null;
+                    if ($parent_node != null) {
+                        $item_path[] = $parent_node->getName();
+                    }
+                } while ($parent_node != null && !isset($parent_node->attributes()['version']));
+                $item_description = "";
+                foreach (["description", "descr", "name"] as $key) {
+                    if (!empty($referring_node->$key)) {
+                        $item_description = (string)$referring_node->$key;
+                        break;
+                    }
+                }
+                $item_path = array_reverse($item_path);
+                if ($parent_node == null) {
+                    /* chop root node when a legacy path */
+                    unset($item_path[0]);
+                }
+                $backref = implode(".", $item_path);
+                $backrefs = [$backref];
+                if (!empty($referring_node->attributes()['uuid'])) {
+                    /**
+                     * Add full reference if we want to exclude any specific items
+                     * XXX: this might need some further digging if the node is deeper in the tree
+                     *      (e.g. model.container1.container2.value)
+                     */
+                    $backrefs[] = $backref . '.' . $referring_node->attributes()['uuid'];
+                }
+
+                if (
+                    $parent_node != null &&
+                    !empty($referring_node->attributes()['uuid']) &&
+                    empty(array_intersect($backrefs, $exclude_refs))
+                ) {
+                    if ($parent_node != null) {
+                        $usages[] = [
+                            "reference" =>  $backref . "." .  $referring_node->attributes()['uuid'],
+                            "module" => $item_path[0],
+                            "description" => $item_description
+                        ];
+                    }
+                } elseif (!$only_mvc && empty(array_intersect($backrefs, $exclude_refs))) {
                     $usages[] = [
-                        "reference" =>  $backref . "." .  $referring_node->attributes()['uuid'],
-                        "module" => $item_path[0],
+                        "reference" => $backref,
+                        "module" => $referring_node->getName(),
                         "description" => $item_description
                     ];
                 }
-            } elseif (!$only_mvc && !in_array($backref, $exclude_refs)) {
-                $usages[] = [
-                    "reference" => $backref,
-                    "module" => $referring_node->getName(),
-                    "description" => $item_description
-                ];
             }
-        }
-        if (!empty($usages)) {
-            // render exception message
-            $message = "";
-            foreach ($usages as $usage) {
-                $message .= sprintf(
-                    gettext("%s - %s {%s}"),
-                    $usage['module'],
-                    $usage['description'],
-                    $usage['reference']
-                ) . "\n";
+            if (!empty($usages)) {
+                // render exception message
+                $message = "";
+                foreach ($usages as $usage) {
+                    $message .= sprintf(
+                        gettext("%s - %s {%s}"),
+                        $usage['module'],
+                        $usage['description'],
+                        $usage['reference']
+                    ) . "\n";
+                }
+                throw new UserException($message, $title ?? gettext("Item in use by"));
             }
-            throw new UserException($message, $title ?? gettext("Item in use by"));
         }
     }
 

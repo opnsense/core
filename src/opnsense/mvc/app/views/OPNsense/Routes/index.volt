@@ -1,5 +1,4 @@
 {#
- #
  # Copyright (c) 2017-2026 Deciso B.V.
  # Copyright (c) 2017 Fabian Franz
  # All rights reserved.
@@ -43,7 +42,8 @@
                 'options':{
                     selection:true,
                     multiSelect:true,
-                    batchDelete:false
+                    batchDelete:false,
+                    batchToggle:false
                 },
                 tabulatorOptions: {
                     groupBy: 'network',

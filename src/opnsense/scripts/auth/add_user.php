@@ -2,7 +2,7 @@
 <?php
 
 /*
- * Copyright (C) 2021 Deciso B.V.
+ * Copyright (C) 2021-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -32,14 +32,13 @@ require_once('legacy_bindings.inc');
 use OPNsense\Core\Config;
 use OPNsense\Auth\User;
 
-$opts = getopt('hu:o', array(), $optind);
+$opts = getopt('hu:', [], $optind);
 $args = array_slice($argv, $optind);
 
 if (isset($opts['h']) || empty($opts['u'])) {
-    echo "Usage: add_user.php [-h] \n";
+    echo "Usage: add_user.php [-h]\n";
     echo "\t-h show this help text and exit\n";
     echo "\t-u [required] username\n";
-    echo "\t-o origin (default=automation)";
     exit(-1);
 } else {
     Config::getInstance()->lock();
@@ -47,7 +46,14 @@ if (isset($opts['h']) || empty($opts['u'])) {
     $usermdl = new User();
     $user = $usermdl->user->Add();
     $user->name = $opts['u'];
-    $user->scope = !empty($opts['o']) ? $opts['o'] : 'automation';
+    $user->scope = 'automation';
+    /*
+     * Scope validation prohibits changing the scope away
+     * from the default, but this is an intended use case
+     * where we disable the validation of the field to allow
+     * it to save:
+     */
+    $user->scope->markUnchanged();
 
     /* generate a random password */
     $password = random_bytes(50);
@@ -71,9 +77,9 @@ if (isset($opts['h']) || empty($opts['u'])) {
             Config::getInstance()->save();
         }
         configdp_run('auth user changed', [(string)$user->name]);
-        echo json_encode(["status" => "ok", "uid" => (string)$user->uid, "name" => (string)$user->name]);
+        echo json_encode(['status' => 'ok', 'uid' => (string)$user->uid, 'name' => (string)$user->name]) . PHP_EOL;
     } else {
-        echo json_encode(["status" => "failed", "messages" => $input_errors]);
+        echo json_encode(['status' => 'failed', 'messages' => $input_errors]) . PHP_EOL;
         Config::getInstance()->unlock();
     }
 }
