@@ -120,10 +120,12 @@
                 return;
             }
 
-            grid.bootgrid('getTable').getColumn('statistics').getCells().forEach(function(cell) {
-                const data = cell.getData();
+            grid.bootgrid('getTable').getRows('visible').forEach(function(row) {
+                const data = row.getData();
                 if (!data.isGroup) {
-                    cell.setValue(ruleStatistics === null ? null : ruleStatistics[data.uuid] || {});
+                    row.getCell('statistics').setValue(
+                        ruleStatistics === null ? null : ruleStatistics[data.uuid] || {}
+                    );
                 }
             });
         }
