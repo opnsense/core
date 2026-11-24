@@ -123,9 +123,7 @@ class JsonKeyValueStoreField extends BaseListField
         } else {
             $sourcefile = $this->internalSourceFile;
         }
-        
         $cachename = $sourcefile != null ? $sourcefile : $this->internalConfigdPopulateAct;
-
         if (!empty($this->internalConfigdPopulateAct)) {
             if (isset(static::$internalStaticContent[$cachename])) {
                 /* cached for the lifetime of this session */
