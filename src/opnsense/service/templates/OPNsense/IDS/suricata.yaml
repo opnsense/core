@@ -377,10 +377,13 @@ detect:
     toserver-groups: {% if helpers.exists('OPNsense.IDS.general.detect') %} {{ OPNsense.IDS.general.detect.toserver_groups|default("25")}} {% else %}25{% endif +%}
 
   sgh-mpm-context: auto
+  sgh-mpm-caching: yes
+  sgh-mpm-caching-path: /var/db/suricata/sgh-cache
+  sgh-mpm-caching-max-age: 7d
   inspection-recursion-limit: 3000
 
   prefilter:
-    default: mpm
+    default: auto
 
   profiling:
     grouping:
@@ -388,7 +391,7 @@ detect:
       include-rules: false      # very verbose
       include-mpm-stats: false
 
-mpm-algo: {% if helpers.exists('OPNsense.IDS.general') %} {{ OPNsense.IDS.general.MPMAlgo|default("ac")}} {% else %}ac{% endif +%}
+mpm-algo: {% if not helpers.empty('OPNsense.IDS.general.MPMAlgo') %}{{ OPNsense.IDS.general.MPMAlgo }}{% else %}auto{% endif +%}
 
 spm-algo: auto
 

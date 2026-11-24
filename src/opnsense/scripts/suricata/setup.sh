@@ -1,6 +1,6 @@
 #!/bin/sh
 
-SURICATA_DIRS="/var/log/suricata /usr/local/etc/suricata/conf.d"
+SURICATA_DIRS="/var/log/suricata /usr/local/etc/suricata/conf.d /var/db/suricata/sgh-cache"
 
 for SURICATA_DIR in ${SURICATA_DIRS}; do
 	mkdir -p ${SURICATA_DIR}
