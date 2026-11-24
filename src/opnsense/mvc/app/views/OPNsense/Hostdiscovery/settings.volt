@@ -28,7 +28,6 @@
     $( document ).ready(function() {
         const accessibleColumns = new Set("{{ accessibleColumns }}".split(','));
         const hostnames = new Map();
-        const stateTraffic = new Map();
 
         function updateAccessibleColumns(grid) {
             ['hostname', 'statistics'].forEach(function(column) {
@@ -89,38 +88,6 @@
             }
         }
 
-        function fetchStateTraffic(grid) {
-            if (!accessibleColumns.has('statistics')) {
-                return;
-            }
-
-            const addresses = [];
-            grid.getTable().getRows().forEach(function(row) {
-                const address = row.getData().ip_address;
-                if (!address) {
-                    return;
-                }
-                if (!stateTraffic.has(address)) {
-                    stateTraffic.set(address, null);
-                    addresses.push(address);
-                }
-                row.getCell('statistics').setValue(stateTraffic.get(address));
-            });
-
-            if (addresses.length === 0) {
-                return;
-            }
-
-            ajaxCall('/api/diagnostics/firewall/query_pf_top_summary', {
-                addresses: addresses.join(',')
-            }, function(data) {
-                addresses.forEach(function(address) {
-                    stateTraffic.set(address, data?.items?.[address] || {bytes: 0, states: 0});
-                });
-                renderCache(grid, stateTraffic, 'statistics');
-            });
-        }
-
         let data_get_map = {'frm_settings':"/api/hostdiscovery/settings/get"};
         mapDataToFormUI(data_get_map).done(function(){
             formatTokenizersUI();
@@ -145,12 +112,41 @@
                         const grid = $("#grid-hosts").UIBootgrid({
                         search:'/api/hostdiscovery/service/search',
                         options: {
+                            datakey: 'ip_address',
                             requestHandler: function (params) {
                                 // sort on last_seen by default
                                 if ($.isEmptyObject(params.sort)) {
                                     params.sort = {'last_seen': 'desc'};
                                 }
                                 return params;
+                            },
+                            asyncDataSources: {
+                                stateTraffic: {
+                                    active: accessibleColumns.has('statistics'),
+                                    columns: ['statistics'],
+                                    pending: {statistics: null},
+                                    missing: {statistics: {bytes: 0, states: 0}},
+                                    request: function(rows, refresh) {
+                                        const addresses = [...new Set(rows
+                                            .map(row => row.ip_address)
+                                            .filter(Boolean))];
+                                        const query = () => addresses.length === 0 ?
+                                            Promise.resolve({items: {}}) :
+                                            ajaxCall('/api/diagnostics/firewall/query_pf_top_summary', {
+                                                addresses: addresses.join(',')
+                                            });
+
+                                        return refresh ?
+                                            ajaxCall('/api/diagnostics/firewall/flush_pf_top_cache', {}).then(query) :
+                                            query();
+                                    },
+                                    responseHandler: function(response) {
+                                        return response?.items || {};
+                                    },
+                                    map: function(statistics) {
+                                        return {statistics: statistics};
+                                    }
+                                }
                             },
                             headerFormatters: {
                                 statistics: function() {
@@ -168,22 +164,7 @@
 
                                     element.find('.statistics-cache-flush').on('click', function(event) {
                                         event.stopPropagation();
-                                        if (!accessibleColumns.has('statistics')) {
-                                            return;
-                                        }
-                                        const bootgrid = grid.data('UIBootgrid');
-                                        // Show the loading state while configd refreshes its cache.
-                                        stateTraffic.clear();
-                                        bootgrid.getTable().getRows().forEach(function(row) {
-                                            row.getCell('statistics').setValue(null);
-                                        });
-                                        ajaxCall(
-                                            '/api/diagnostics/firewall/flush_pf_top_cache',
-                                            {},
-                                            function() {
-                                                fetchStateTraffic(bootgrid);
-                                            }
-                                        );
+                                        grid.bootgrid('refreshAsyncDataSource', 'stateTraffic');
                                     });
 
                                     return element[0];
@@ -233,7 +214,6 @@
                             updateAccessibleColumns(grid);
                             const bootgrid = grid.data('UIBootgrid');
                             resolveHostnames(bootgrid);
-                            fetchStateTraffic(bootgrid);
                         });
                     } else {
                         $("#grid-hosts").bootgrid('reload');

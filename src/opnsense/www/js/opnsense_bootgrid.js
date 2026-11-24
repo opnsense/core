@@ -1818,7 +1818,7 @@ class UIBootgrid {
 
         for (const [name, config] of Object.entries(this.options.asyncDataSources)) {
             const columns = config.columns ?? [];
-            if (!config.url || !Array.isArray(columns) || columns.length === 0) {
+            if ((!config.url && !config.request) || !Array.isArray(columns) || columns.length === 0) {
                 console.error(`Invalid async data source '${name}'`);
                 continue;
             }
@@ -1884,17 +1884,20 @@ class UIBootgrid {
         rows.forEach(row => row.reformat());
     }
 
-    _fetchAsyncDataSource(source) {
+    _fetchAsyncDataSource(source, refresh=false) {
         const generation = ++source.generation;
         source.loading = true;
         this._redrawAsyncDataSource(source);
 
-        Promise.resolve($.ajax({
-            method: 'GET',
-            dataType: 'json',
-            ...source.config.ajaxConfig,
-            url: source.config.url
-        })).then(response => {
+        Promise.resolve().then(() => source.config.request ?
+            source.config.request(this.table.getData(), refresh) :
+            $.ajax({
+                method: 'GET',
+                dataType: 'json',
+                ...source.config.ajaxConfig,
+                url: source.config.url
+            })
+        ).then(response => {
             if (generation !== source.generation) {
                 return;
             }
@@ -2677,7 +2680,7 @@ class UIBootgrid {
         }
 
         if (source.active) {
-            this._fetchAsyncDataSource(source);
+            this._fetchAsyncDataSource(source, true);
         }
     }
 
