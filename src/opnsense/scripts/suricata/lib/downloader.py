@@ -102,7 +102,8 @@ class Downloader(object):
             if frm_url not in self._download_cache:
                 req_opts = {
                     'url': frm_url,
-                    'stream': True
+                    'stream': True,
+                    'timeout': 120
                 }
 
                 if auth is not None:
