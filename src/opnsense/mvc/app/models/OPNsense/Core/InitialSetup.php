@@ -84,6 +84,7 @@ class InitialSetup extends BaseModel
             $this->language = 'en_US';
         }
         $this->dns_servers = $this->getConfigItem('system.dnsserver');
+        $this->dnsallowoverride = $this->getConfigItem('system.dnsallowoverride', true);
         $this->timezone = $this->getConfigItem('system.timezone');
         if ($this->timezone->isEmpty()) {
             $this->timezone = 'Etc/UTC';
@@ -114,7 +115,7 @@ class InitialSetup extends BaseModel
             );
         } elseif ($ipv4_type == 'pppoe') {
             $pppoeif = $this->getConfigItem('interfaces.wan.if');
-            foreach (Config::getInstance()->object()->ppps->children() as $ppp) {
+            foreach (Config::getInstance()->object()->ppps->children() ?? [] as $ppp) {
                 if ($ppp->if == $pppoeif) {
                     $this->interfaces->wan->pppoe_username = (string)$ppp->username;
                     if (!empty((string)$ppp->password)) {

@@ -97,7 +97,7 @@ if (count($nat_rules)) {
         $destination = $rule['destination'] ?? [];
 
         $target_rule = [
-            '@uuid' => '',
+            '@uuid' => $rule['@attributes']['uuid'] ?? '',
             'enabled' => empty($rule['disabled']) ? '1' : '0',
             'nonat' => !empty($rule['nonat']) ? '1' : '0',
             'nosync' => !empty($rule['nosync']) ? '1' : '0',
@@ -122,6 +122,14 @@ if (count($nat_rules)) {
             'tagged' => $rule['tagged'] ?? '',
             'description' => $rule['descr'] ?? '',
         ];
+
+        if (empty($target_rule['@uuid'])) {
+            /* Keep exports stable while satisfying the importer's UUID v4 format check. */
+            $hash = md5(json_encode($target_rule));
+            $hash[12] = '4';
+            $hash[16] = dechex((hexdec($hash[16]) & 0x3) | 0x8);
+            $target_rule['@uuid'] = vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split($hash, 4));
+        }
 
         $result[] = $target_rule;
         $sequence += 10;

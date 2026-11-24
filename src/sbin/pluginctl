@@ -152,12 +152,8 @@ function get_all_services($name = '', $id = '', $showall = true)
     return $services;
 }
 
-$jflags = JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_INVALID_UTF8_IGNORE;
-$opts = getopt('46cDdfghIiMmrQqSsvXx', [], $optind);
-$args = array_slice($argv, $optind);
-$ret = 0;
-
-if (isset($opts['h'])) {
+function print_help()
+{
     echo "Usage: pluginctl [-46cDdfghIiMmrQqSsvXx] ...\n\n";
     echo "\t-4 IPv4 address mode, return primary address of interface\n";
     echo "\t-6 IPv4 address mode, return primary address of interface\n";
@@ -179,176 +175,214 @@ if (isset($opts['h'])) {
     echo "\t-v invoke model validations\n";
     echo "\t-X XMLRPC sync metadata dump\n";
     echo "\t-x XMLRPC sync key/value list\n";
-} elseif (isset($opts['4']) || isset($opts['6'])) {
-    $ints = !empty($args[0]) ? [$args[0]] : array_keys($config['interfaces'] ?? []);
-    $ifconfig_details = legacy_interfaces_details();
-    $result = [];
+}
 
-    foreach ($ints as $int) {
-        if (empty($config['interfaces'][$int])) {
-            continue;
-        }
+$jflags = JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT | JSON_INVALID_UTF8_IGNORE;
+$opts = getopt('46cDdfghIiMmrQqSsvXx', [], $optind);
+$args = array_slice($argv, $optind);
+$nopts = array_flip(str_split('q'));
+$ret = 0;
 
-        $result[$int] = [];
+/* mode is enforced by first seen mode argument, or 'c' if none given */
+$mode = array_key_first(array_diff_key($opts, $nopts)) ?? 'c';
 
-        foreach (['inet' => '4', 'inet6' => '6'] as $family => $opt) {
-            if (!isset($opts[$opt])) {
+switch ($mode) {
+    case '4':
+    case '6':
+        $ints = !empty($args[0]) ? [$args[0]] : array_keys($config['interfaces'] ?? []);
+        $ifconfig_details = legacy_interfaces_details();
+        $result = [];
+
+        foreach ($ints as $int) {
+            if (empty($config['interfaces'][$int])) {
                 continue;
             }
 
-            $raw = $opt === '4' ? interfaces_primary_address($int, $ifconfig_details) :
-                interfaces_primary_address6($int, $ifconfig_details);
+            $result[$int] = [];
 
-            $result[$int][] = [
-                'address' => $raw[0],
-                'network' => $raw[1],
-                'bits' => $raw[2],
-                'device' => $raw[3],
-                'interface' => $int,
-                'family' => $family,
-            ];
-        }
-    }
-    echo json_encode(!empty($result) ? $result : new ArrayObject(), $jflags) . PHP_EOL;
-} elseif (isset($opts['D'])) {
-    echo json_encode(legacy_interfaces_details($args[0] ?? null), $jflags) . PHP_EOL;
-} elseif (isset($opts['d'])) {
-    foreach (plugins_devices() as $device) {
-        if (empty($device['type'])) {
-            continue;
-        }
-        if (empty($args[0])) {
-            echo $device['type'] . PHP_EOL;
-        } elseif ($args[0] == $device['type']) {
-            foreach (array_keys($device['names']) as $name) {
-                echo $name . PHP_EOL;
-            }
-        } elseif (in_array($args[0], array_keys($device['names']))) {
-            if (!empty($device['function'])) {
-                echo "Reconfiguring {$args[0]}...";
-                flush();
-                call_user_func_array($device['function'], [$args[0]]);
-                echo "done.\n";
-            } else {
-                echo "Device {$args[0]} cannot be reconfigured\n";
-                exit (1);
-            }
-        }
-    }
-} elseif (isset($opts['f'])) {
-   flush_config_prop(strip_config_path($args[0] ?? ''));
-} elseif (isset($opts['g'])) {
-   echo get_config_prop(strip_config_path($args[0] ?? ''), $config);
-} elseif (isset($opts['i'])) {
-    if (plugins_interfaces()) {
-        write_config('Updated plugin interface configuration');
-    }
-} elseif (isset($opts['I'])) {
-    echo json_encode(legacy_interface_stats($args[0] ?? null), $jflags) . PHP_EOL;
-} elseif (isset($opts['r'])) {
-   $cmd = array_shift($args);
-   $result = plugins_run($cmd, $args);
-   if (!empty($result)) {
-      echo json_encode($result, $jflags) . PHP_EOL;
-   }
-} elseif (isset($opts['S'])) {
-    $services = get_all_services(isset($args[0]) ? $args[0] : '', isset($args[1]) ? $args[1] : '', false);
-    echo json_encode($services, $jflags) . PHP_EOL;
-} elseif (isset($opts['s'])) {
-    $results = [];
-    $services = get_all_services(isset($args[0]) ? $args[0] : '', isset($args[2]) ? $args[2] : '');
-    foreach ($services as $service) {
-        if (empty($args[0])) {
-            $results[$service['name']] = 1;
-            continue;
-        }
-
-        $filter = isset($service['id']) ? ['id' => $service['id']] : [];
-        $act = isset($args[1]) ? $args[1] : '';
-        $name = $service['name'];
-
-        switch ($act) {
-            case 'start':
-                echo service_control_start($name, $filter) . PHP_EOL;
-                break;
-            case 'stop':
-                echo service_control_stop($name, $filter) . PHP_EOL;
-                break;
-            case 'restart':
-                echo service_control_restart($name, $filter) . PHP_EOL;
-                break;
-            case 'status':
-                echo htmlspecialchars($service['status']) . PHP_EOL;
-                break;
-            default:
-                echo "Unknown command `$act'\n";
-                break;
-        }
-    }
-
-    if (empty($args[0])) {
-        ksort($results);
-
-        foreach ($results as $key => $value) {
-            echo "$key\n";
-        }
-    }
-} elseif (isset($opts['X']) || isset($opts['x'])) {
-    $payload = [];
-    foreach (plugins_xmlrpc_sync() as $key => $data) {
-        if (!empty($args[0]) && strcasecmp($key, $args[0])) {
-            continue;
-        }
-        $payload[$key] = isset($opts['x']) ? ($data['description'] ?? '') : $data;
-    }
-    if (!empty($payload)) {
-        natcasesort($payload);
-    } else {
-        $payload = new ArrayObject();
-    }
-    echo json_encode($payload, $jflags) . PHP_EOL;
-} elseif (isset($opts['M'])) {
-    pass_safe('/usr/local/opnsense/mvc/script/run_migrations.php', [], $ret);
-} elseif (isset($opts['m'])) {
-    pass_safe('/usr/local/opnsense/mvc/script/run_migrations.php -v', [], $ret);
-} elseif (isset($opts['Q'])) {
-    echo json_encode(interfaces_dependencies(), $jflags) . PHP_EOL;
-} elseif (isset($opts['v'])) {
-    pass_safe('/usr/local/opnsense/mvc/script/run_validations.php', [], $ret);
-} elseif (empty($args[0])) {
-    // no arguments, list plugins of selected type
-    $results = [];
-    foreach (plugins_scan() as $name => $path) {
-        try {
-            include_once $path;
-        } catch (\Error $e) {
-            error_log($e);
-        }
-        $func = sprintf('%s_configure', $name);
-        if (function_exists($func)) {
-            foreach ($func() as $when => $worker) {
-                if (empty($results[$when])) {
-                    $results[$when] = [];
+            foreach (['inet' => '4', 'inet6' => '6'] as $family => $opt) {
+                if (!isset($opts[$opt])) {
+                    continue;
                 }
-                $results[$when][] = $name;
+
+                $raw = $opt === '4' ? interfaces_primary_address($int, $ifconfig_details) :
+                    interfaces_primary_address6($int, $ifconfig_details);
+
+                $result[$int][] = [
+                    'address' => $raw[0],
+                    'network' => $raw[1],
+                    'bits' => $raw[2],
+                    'device' => $raw[3],
+                    'interface' => $int,
+                    'family' => $family,
+                ];
             }
         }
-    }
+        echo json_encode(!empty($result) ? $result : new ArrayObject(), $jflags) . PHP_EOL;
+        break;
+    case 'c':
+        if (empty($args[0])) {
+            /* no argument list all configure targets  */
+            $results = [];
+            foreach (plugins_scan() as $name => $path) {
+                try {
+                    include_once $path;
+                } catch (\Error $e) {
+                    error_log($e);
+                }
+                $func = sprintf('%s_configure', $name);
+                if (function_exists($func)) {
+                    foreach ($func() as $when => $worker) {
+                        if (empty($results[$when])) {
+                            $results[$when] = [];
+                        }
+                        $results[$when][] = $name;
+                    }
+                }
+            }
 
-    ksort($results);
+            ksort($results);
 
-    foreach ($results as $key => $value) {
-        echo "$key => " . implode(', ', $value) . "\n";
-    }
-} else {
-    /* second argument is hook */
-    $hook = array_shift($args);
-    /* other arguments are passed as is */
-    $ret_int = plugins_configure($hook, !isset($opts['q']), $args);
-    /* cannot taint $ret in this case */
-    if ($ret_int && !isset($opts['q'])) {
-        echo "The configuration hook `$hook' is not known to the system." . PHP_EOL;
-    }
+            foreach ($results as $key => $value) {
+                echo "$key => " . implode(', ', $value) . "\n";
+            }
+        } else {
+            /* second argument is hook */
+            $hook = array_shift($args);
+            /* other arguments are passed as is */
+            $ret_int = plugins_configure($hook, !isset($opts['q']), $args);
+            /* cannot taint $ret in this case */
+            if ($ret_int && !isset($opts['q'])) {
+                echo "The configuration hook `$hook' is not known to the system." . PHP_EOL;
+            }
+        }
+        break;
+    case 'D':
+        echo json_encode(legacy_interfaces_details($args[0] ?? null), $jflags) . PHP_EOL;
+        break;
+    case 'd':
+        foreach (plugins_devices() as $device) {
+            if (empty($device['type'])) {
+                continue;
+            }
+            if (empty($args[0])) {
+                echo $device['type'] . PHP_EOL;
+            } elseif ($args[0] == $device['type']) {
+                foreach (array_keys($device['names']) as $name) {
+                    echo $name . PHP_EOL;
+                }
+            } elseif (in_array($args[0], array_keys($device['names']))) {
+                if (!empty($device['function'])) {
+                    echo "Reconfiguring {$args[0]}...";
+                    flush();
+                    call_user_func_array($device['function'], [$args[0]]);
+                    echo "done.\n";
+                } else {
+                    echo "Device {$args[0]} cannot be reconfigured\n";
+                    exit (1);
+                }
+            }
+        }
+        break;
+    case 'f':
+        flush_config_prop(strip_config_path($args[0] ?? ''));
+        break;
+    case 'g':
+        echo get_config_prop(strip_config_path($args[0] ?? ''), $config);
+        break;
+    case 'h':
+        print_help();
+        break;
+    case 'I':
+        echo json_encode(legacy_interface_stats($args[0] ?? null), $jflags) . PHP_EOL;
+    case 'i':
+        if (plugins_interfaces()) {
+            write_config('Updated plugin interface configuration');
+        }
+        break;
+    case 'M':
+        pass_safe('/usr/local/opnsense/mvc/script/run_migrations.php', [], $ret);
+        break;
+    case 'm':
+        pass_safe('/usr/local/opnsense/mvc/script/run_migrations.php -v', [], $ret);
+        break;
+    case 'Q':
+        echo json_encode(interfaces_dependencies(), $jflags) . PHP_EOL;
+        break;
+    case 'r':
+        $cmd = array_shift($args);
+        $result = plugins_run($cmd, $args);
+        if (!empty($result)) {
+            echo json_encode($result, $jflags) . PHP_EOL;
+        }
+        break;
+    case 'S':
+        $services = get_all_services(isset($args[0]) ? $args[0] : '', isset($args[1]) ? $args[1] : '', false);
+        echo json_encode($services, $jflags) . PHP_EOL;
+        break;
+    case 's':
+        $results = [];
+        $services = get_all_services(isset($args[0]) ? $args[0] : '', isset($args[2]) ? $args[2] : '');
+        foreach ($services as $service) {
+            if (empty($args[0])) {
+                $results[$service['name']] = 1;
+                continue;
+            }
+
+            $filter = isset($service['id']) ? ['id' => $service['id']] : [];
+            $act = isset($args[1]) ? $args[1] : '';
+            $name = $service['name'];
+
+            switch ($act) {
+                case 'start':
+                    echo service_control_start($name, $filter) . PHP_EOL;
+                    break;
+                case 'stop':
+                    echo service_control_stop($name, $filter) . PHP_EOL;
+                    break;
+                case 'restart':
+                    echo service_control_restart($name, $filter) . PHP_EOL;
+                    break;
+                case 'status':
+                    echo htmlspecialchars($service['status']) . PHP_EOL;
+                    break;
+                default:
+                    echo "Unknown command `$act'\n";
+                    break;
+            }
+        }
+
+        if (empty($args[0])) {
+            ksort($results);
+
+            foreach ($results as $key => $value) {
+                echo "$key\n";
+            }
+        }
+
+        break;
+    case 'v':
+        pass_safe('/usr/local/opnsense/mvc/script/run_validations.php', [], $ret);
+        break;
+    case 'X':
+    case 'x':
+        $payload = [];
+        foreach (plugins_xmlrpc_sync() as $key => $data) {
+            if (!empty($args[0]) && strcasecmp($key, $args[0])) {
+                continue;
+            }
+            $payload[$key] = isset($opts['x']) ? ($data['description'] ?? '') : $data;
+        }
+        if (!empty($payload)) {
+            natcasesort($payload);
+        } else {
+            $payload = new ArrayObject();
+        }
+        echo json_encode($payload, $jflags) . PHP_EOL;
+        break;
+    default:
+        /* do nothing */
+        break;
 }
 
 exit($ret);

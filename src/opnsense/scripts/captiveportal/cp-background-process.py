@@ -82,8 +82,21 @@ class CPBackgroundProcess(object):
         if not roaming:
             return [addresses[0]]
 
-        # Roaming is only needed for clients using multiple IPv6 addresses.
-        return [addr for addr in addresses if ipaddress.ip_address(addr).version == 6]
+
+        result = []
+        first_ipv4_found = False
+        for addr in addresses:
+            ip = ipaddress.ip_address(addr)
+
+            if ip.version == 4:
+                if not first_ipv4_found:
+                    result.append(addr)
+                    first_ipv4_found = True
+            else:
+                result.append(addr)
+
+        return result
+
 
     def initialize_fixed(self):
         """ initialize fixed ip / hosts per zone

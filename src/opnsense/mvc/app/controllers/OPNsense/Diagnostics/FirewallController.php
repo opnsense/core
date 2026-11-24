@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2017 Deciso B.V.
+ * Copyright (C) 2017-2026 Deciso B.V.
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -29,6 +29,10 @@
 namespace OPNsense\Diagnostics;
 
 use OPNsense\Base\IndexController;
+use OPNsense\Core\Backend;
+use OPNsense\Core\SanitizeFilter;
+use OPNsense\Core\Type;
+use OPNsense\Firewall\Filter;
 
 /**
  * Class FirewallController
@@ -36,6 +40,35 @@ use OPNsense\Base\IndexController;
  */
 class FirewallController extends IndexController
 {
+    /**
+     * Redirect a rule label to its configuration page.
+     */
+    public function ruleLookupAction()
+    {
+        $this->view->disable();
+        $this->response->setStatusCode(404);
+        $rid = $this->request->getQuery('rid');
+        if (!$this->request->isGet() || !is_string($rid) || $rid === '') {
+            return;
+        }
+
+        if (Type::isUUID($rid) && (new Filter())->getNodeByReference('rules.rule.' . $rid) !== null) {
+            $this->response->redirect('/ui/firewall/filter#search=' . rawurlencode($rid));
+            return;
+        }
+
+        $rules = json_decode((new Backend())->configdRun('filter list non_mvc_rules'), true) ?? [];
+        foreach ($rules as $rule) {
+            if (($rule['uuid'] ?? '') === $rid && is_string($rule['ref'] ?? null) && $rule['ref'] !== '') {
+                $ref = (new SanitizeFilter())->sanitize('/' . ltrim($rule['ref'], '/'), 'local_uri');
+                if ($ref !== null) {
+                    $this->response->redirect($ref);
+                }
+                return;
+            }
+        }
+    }
+
     /**
      * {@inheritdoc}
      */

@@ -43,7 +43,7 @@
           } else {
               s_filter_val = localStorage.getItem('log_severity_{{module}}_{{scope}}') ? localStorage.getItem('log_severity_{{module}}_{{scope}}').split(',') : s_filter_val;
           }
-          $("#validFrom_filter").val(localStorage.getItem('log_validFrom_filter_{{module}}_{{scope}}') ? localStorage.getItem('log_validFrom_filter_{{module}}_{{scope}}') : 'day');
+          $("#validFrom_filter").val(localStorage.getItem('log_validFrom_filter_{{module}}_{{scope}}') ? localStorage.getItem('log_validFrom_filter_{{module}}_{{scope}}') : 'day').selectpicker('refresh');
       }
       switch_mode(s_filter_val);
 

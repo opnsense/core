@@ -37,13 +37,14 @@
                     datakey: 'id',
                     options:{
                         virtualDOM: true,
+                        initialSearchPhrase: getUrlHash('search'),
                         formatters:{
                             commands: function (column, row) {
                                 return  '<button type="button" class="btn btn-xs btn-default command-delete bootgrid-tooltip" title="{{ lang._('Drop') }}" data-row-id="' + row.id + '"><span class="fa fa-trash-o fa-fw"></span></button>';
                             },
                             rule: function (column, row) {
                                 if (row.label !== "") {
-                                    return "<a target=\"_blank\" href=\"/firewall_rule_lookup.php?rid=" + row.label + "\">"+row[column.id]+"</a>";
+                                    return "<a target=\"_blank\" href=\"/ui/diagnostics/firewall/rule_lookup?rid=" + row.label + "\">"+row[column.id]+"</a>";
                                 } else {
                                     return row[column.id];
                                 }
@@ -97,7 +98,8 @@
                     $("#grid-states").bootgrid("reload");
                 });
                 $("#ruleid").selectpicker();
-                let init_state = window.location.hash.substr(1);
+                // Plain hashes are legacy rule UUID links; search hashes initialize the grid instead.
+                let init_state = getUrlHash('search') ? '' : window.location.hash.slice(1);
                 if (init_state) {
                     $("#ruleid").val(init_state);
                     $("#ruleid").change();

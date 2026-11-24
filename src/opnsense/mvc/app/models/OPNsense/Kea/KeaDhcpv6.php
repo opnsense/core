@@ -424,30 +424,37 @@ class KeaDhcpv6 extends BaseModel
                 if ($pdpool->subnet != $subnet_uuid) {
                     continue;
                 }
+                $entries = [];
                 if (!$subnet->dynamic_prefix->isEmpty()) {
-                    $pd_prefixes = Util::splitIPv6Prefix($record['subnet']);
-                    if (empty($pd_prefixes[1])) {
-                        continue;
+                    // Reserve the first block for the on-link /64, aligned to the delegated prefix size.
+                    // For delegations smaller than a /64, reserve the whole on-link /64 to avoid overlap.
+                    $pd_prefixes = Util::excludeIPv6Subnet($record['subnet'], min(64, $pdpool->delegated_len->asInt()));
+                    // Emit one Kea PD entry per remaining CIDR block, all using the user configured delegated length.
+                    // Example: a /57 with /60 delegations reserves the first /60 for IA_NA and leaves /58 + /59 + /60
+                    // for IA_PD, providing seven /60 delegations instead of four from a single upper-half /58.
+                    foreach ($pd_prefixes as $pd_prefix) {
+                        [$pd_prefix, $pd_prefix_len] = explode('/', $pd_prefix, 2);
+                        $entries[] = [
+                            'prefix' => $pd_prefix,
+                            'prefix-len' => (int)$pd_prefix_len,
+                            'delegated-len' => $pdpool->delegated_len->asInt()
+                        ];
                     }
-                    [$pd_prefix, $pd_prefix_len] = explode('/', $pd_prefixes[1], 2);
-                    $entry = [
-                        'prefix' => $pd_prefix,
-                        'prefix-len' => (int)$pd_prefix_len,
-                        'delegated-len' => $pdpool->delegated_len->asInt()
-                    ];
                 } else {
-                    $entry = [
+                    $entries[] = [
                         'prefix' => $pdpool->prefix->getValue(),
                         'prefix-len' => $pdpool->prefix_len->asInt(),
                         'delegated-len' => $pdpool->delegated_len->asInt()
                     ];
                 }
-                /* opnsense metadata is not parsed by Kea; hooks may parse other user-context entries. */
-                $entry['user-context']['opnsense'] = ['uuid' => $pdpool->getAttribute('uuid')];
-                if (!$pdpool->description->isEmpty()) {
-                    $entry['user-context']['opnsense']['description'] = $pdpool->description->getValue();
+                foreach ($entries as $entry) {
+                    /* opnsense metadata is not parsed by Kea; hooks may parse other user-context entries. */
+                    $entry['user-context']['opnsense'] = ['uuid' => $pdpool->getAttribute('uuid')];
+                    if (!$pdpool->description->isEmpty()) {
+                        $entry['user-context']['opnsense']['description'] = $pdpool->description->getValue();
+                    }
+                    $record['pd-pools'][] = $entry;
                 }
-                $record['pd-pools'][] = $entry;
             }
             $subnet_scope = sprintf("member('%s')", $subnet_uuid);
             /*

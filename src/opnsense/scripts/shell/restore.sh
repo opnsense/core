@@ -29,14 +29,13 @@ set -e
 
 XMLLINT="$(which xmllint 2> /dev/null || echo true)"
 DIFF="$(which colordiff 2> /dev/null || echo cat)"
-LESS="less -R"
 
 if [ ! -d /conf/backup ]; then
 	echo "No backups available."
 	exit 0
 fi
 
-BACKUPS="$(cd /conf/backup; find -s . -name "config-*.xml" | tail -n 24)"
+BACKUPS="$(cd /conf/backup; find -s . -name "config-[0-9]*.xml" | tail -n 24)"
 
 if [ -z "${BACKUPS}" ]; then
 	echo "No backups available."
@@ -50,9 +49,11 @@ for BACKUP in ${BACKUPS}; do
 	DATETIME=${DATETIME%.xml}
 	SUBSEC=${DATETIME#*.}
 	DATETIME=${DATETIME%.*}
+	STAMP=$(date -r "${DATETIME}" '+%Y-%m-%dT%H:%M:%S' 2> /dev/null) || continue
+	${XMLLINT} --noout /conf/backup/${BACKUP} 2> /dev/null || continue
 	USER=$(${XMLLINT} /conf/backup/${BACKUP} --xpath 'string(/opnsense/revision/username)')
 	NOTES=$(${XMLLINT} /conf/backup/${BACKUP} --xpath 'string(/opnsense/revision/description)')
-        if [ -n "${USER}" ]; then
+	if [ -n "${USER}" ]; then
 		NOTES="${USER}: ${NOTES}"
 	fi
 	LEN=$(echo "${NOTES}" | awk '{ print length }')
@@ -63,7 +64,7 @@ for BACKUP in ${BACKUPS}; do
 
 	# write a line with all required info that is prefixed
 	# with a sortable time stamp for our next step...
-	DATED="${DATED}$(date -r ${DATETIME} '+%Y-%m-%dT%H:%M:%S').${SUBSEC} ${DATETIME} ${BACKUP} ${NOTES}
+	DATED="${DATED}${STAMP}.${SUBSEC} ${DATETIME} ${BACKUP} ${NOTES}
 "
 done
 
@@ -108,10 +109,8 @@ while [ -z "${RESTORE}" ]; do
 	fi
 
 	if [ -n "${RESTORE}" ]; then
-		# XXX unsure about the direction of diff here:
-		# what changed since r how the restore will change it
 		diff -u /conf/config.xml /conf/backup/${RESTORE} | \
-		    ${DIFF} | ${LESS}
+		    ${DIFF} | less -R -P "Viewing resulting diff - press UP/DOWN to review, 'q' to continue"
 
 		clear
 		read -p "Do you want to proceed restoring this backup? [y/N] " YN

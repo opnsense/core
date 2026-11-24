@@ -44,7 +44,7 @@ class StaticRoute
     /**
      * In progress queue
      */
-    private static $todo_file = '/tmp/.static_routes.todo';
+    private static $todo_file = '/var/lib/php/tmp/static_routes.todo';
 
     /**
      *
@@ -176,12 +176,12 @@ class StaticRoute
             $parts = preg_split('/\s+/', trim($line));
             if (count($parts) < 4) {
                 continue;
-            } elseif ($family === 'inet' && strpos($parts[1], ':') !== false) {
-                continue;
-            } elseif ($family === 'inet6' && strpos($parts[1], ':') === false) {
-                continue;
             } elseif ($parts[0] === 'default') {
                 $parts[0] = strpos($parts[1], ':') === false ? '0.0.0.0/0' : '::/0';
+            } elseif ($family === 'inet' && strpos($parts[0], ':') !== false) {
+                continue;
+            } elseif ($family === 'inet6' && strpos($parts[0], ':') === false) {
+                continue;
             }
             /* if we would tag our routes with RTF_PROTO2, we could filter them here (Flags include 2) */
 
@@ -193,9 +193,9 @@ class StaticRoute
                     $result[$net] = [];
                 }
                 if (($addr = self::normalize($parts[1])) !== false) {
-                    $result[$net][] = $addr;
+                    $result[$net][] = [$addr, 'address'];
                 } else {
-                    $result[$net][] = $parts[5];
+                    $result[$net][] = [$parts[5], 'device'];
                 }
             }
         }
@@ -238,8 +238,9 @@ class StaticRoute
             }
             $result[$net][0]['network'] = $net;
             $result[$net][0]['interface'] = $gateway['interface'];
-            $result[$net][0]['if'] = $gateway['if'];
+            $result[$net][0]['device'] = $gateway['if'];
             $result[$net][0]['ipproto'] = $ipproto;
+            $result[$net][0]['gwipprotocol'] = $gateway['ipprotocol'];
             $result[$net][0]['type'] = 'default';
         }
 
@@ -267,7 +268,8 @@ class StaticRoute
                 }
                 $result[$net][] = [
                     'gatewayip' => $gatewayip,
-                    'interface' => $gateway['if'],
+                    'interface' => $gateway['interface'],
+                    'device' => $gateway['if'],
                     'fargw' => !empty($gateway['fargw']),
                     'gwipprotocol' => $gateway['ipprotocol'],
                     'network' => $net,
@@ -407,7 +409,7 @@ class StaticRoute
         foreach ($planned as $net => $routes) {
             $gwips = [];
             foreach ($routes as $route) {
-                $gwips[] = empty($route['fargw']) ? $route['gatewayip'] : $route['interface'];
+                $gwips[] = empty($route['fargw']) ? $route['gatewayip'] : $route['device'];
             }
             if (isset($current[$net])) {
                 foreach ($current[$net] as $iroute) {
@@ -417,7 +419,7 @@ class StaticRoute
                          * the default is excluded, which logically means (when no other route is overlapping)
                          * the existing value will be kept.
                          */
-                        if (!$this->interfaceHasAddress($routes[0]['if'], $routes[0]['ipproto'])) {
+                        if (!$this->interfaceHasAddress($routes[0]['device'], $routes[0]['ipproto'])) {
                             unset($planned[$net]);
                             continue;
                         } elseif (
@@ -429,40 +431,52 @@ class StaticRoute
                             continue; /* specific interface requested, but not this one */
                         }
                     }
-                    if (!in_array($iroute, $gwips)) {
+                    if (!in_array($iroute[0], $gwips)) {
                         /* destination found, but not requested */
-                        $syslog->info(sprintf("delete unconfigured route %s via %s", $net, $iroute));
-                        if (strpos($iroute, ':') !== false) {
-                            Shell::run_safe('/sbin/route delete -inet6 %s %s', [$net, $iroute]);
-                        } elseif (strpos($iroute, '.') !== false) {
-                            Shell::run_safe('/sbin/route delete -inet %s %s', [$net, $iroute]);
+                        $syslog->info(sprintf("delete unconfigured route %s via %s", $net, $iroute[0]));
+                        $netproto = strpos($net, ':') !== false ? 'inet6' : 'inet';
+                        if ($iroute[1] === 'address') {
+                            $gwproto = strpos($iroute[0], ':') !== false ? 'inet6' : 'inet';
+                            Shell::run_safe('/sbin/route delete -%s %s -%s %s', [$netproto, $net, $gwproto, $iroute[0]]);
                         } else {
-                            Shell::run_safe('/sbin/route delete %s -interface %s', [$net, $iroute]);
+                            Shell::run_safe('/sbin/route delete -%s %s -interface %s', [$netproto, $net, $iroute[0]]);
                         }
                     }
                 }
             }
-            $cgateways = $current[$net] ?? [];
+            $cgateways = array_column($current[$net] ?? [], 0);
             foreach ($routes as $route) {
                 if (!empty($interface_map) && !in_array($route['interface'], $interface_map)) {
                     continue; /* not requested */
                 } elseif (
                     in_array($route['gatewayip'], $cgateways) ||
-                    (!empty($route['interface']) && in_array($route['interface'], $cgateways))
+                    (!empty($route['device']) && in_array($route['device'], $cgateways))
                 ) {
                     continue; /* route already installed */
                 }
-                /* RFC 5549: gateway protocol may differ, gateway determines proto */
-                $ipproto = strpos($route['gatewayip'], ':') !== false ? 'inet6' : 'inet';
+                $ipproto = $route['ipproto'];
                 if (in_array($route['gwname'] ?? '', ['Null4', 'Null6'])) {
                     $syslog->info(sprintf("blackhole %s route %s", $ipproto, $net));
                     Shell::run_safe('/sbin/route add -%s %s -blackhole', [$ipproto, $net]); /* blackhole */
                 } elseif (!empty($route['fargw'])) {
-                    $syslog->info(sprintf("add %s route %s via %s (fargw)", $ipproto, $net, $route['interface']));
-                    Shell::run_safe('/sbin/route add -%s %s -interface %s', [$ipproto, $net, $route['interface']]);
+                    $syslog->info(sprintf("add %s route %s via %s (fargw)", $ipproto, $net, $route['device']));
+                    Shell::run_safe('/sbin/route add -%s %s -interface %s', [$ipproto, $net, $route['device']]);
                 } elseif (!empty($route['gatewayip'])) {
-                    $syslog->info(sprintf("add %s route %s via %s", $ipproto, $net, $route['gatewayip']));
-                    Shell::run_safe('/sbin/route add -%s %s %s', [$ipproto, $net, $route['gatewayip']]);
+                    $syslog->info(
+                        sprintf(
+                            "add %s route %s via [%s] %s",
+                            $ipproto,
+                            $net,
+                            $route['gwipprotocol'],
+                            $route['gatewayip']
+                        )
+                    );
+                    Shell::run_safe('/sbin/route add -%s %s -%s %s', [
+                        $ipproto,
+                        $net,
+                        $route['gwipprotocol'],
+                        $route['gatewayip']
+                    ]);
                 } else {
                     $syslog->warning(sprintf("gateway IP could not be found for %s", $net));
                 }

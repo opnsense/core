@@ -145,7 +145,16 @@ class RoutesController extends ApiMutableModelControllerBase
      */
     public function togglerouteAction($uuid, $enabled = null)
     {
-        return $this->toggleBase("route", $uuid, $enabled);
+        if (!$this->request->isPost()) {
+            return ['status' => 'failed'];
+        }
+        Config::getInstance()->lock();
+        $node = $this->getModel()->getNodeByReference('route.' . $uuid);
+        $response = $this->toggleBase("route", $uuid, $enabled);
+        if (!empty($response['result']) && $response['result'] != 'failed') {
+            StaticRoute::claim((string)$node->network);
+        }
+        return $response;
     }
 
     /**

@@ -552,12 +552,15 @@
                         const renderedItems = aliasMetadataList.map(aliasInfo => {
                             if (aliasInfo.isAlias) {
                                 const tooltipHtml = aliasInfo.summary || aliasInfo.description || aliasInfo.value || "";
+                                const editLink = aliasInfo.uuid ? `
+                                    <a href="/ui/firewall/alias/index#aliases&edit=${encodeURIComponent(aliasInfo.uuid)}"
+                                       data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
+                                        <i class="fa fa-fw fa-list"></i>
+                                    </a>
+                                ` : "";
                                 return `
                                     <span data-toggle="tooltip" data-html="true" title="${htmlSafe(tooltipHtml)}">${aliasInfo.value}&nbsp;</span>
-                                    <a href="/ui/firewall/alias/index/${encodeURIComponent(aliasInfo.value)}"
-                                    data-toggle="tooltip" title="{{ lang._('Edit alias') }}">
-                                    <i class="fa fa-fw fa-list"></i>
-                                    </a>
+                                    ${editLink}
                                 `;
                             }
                             // Not an alias, return translated value

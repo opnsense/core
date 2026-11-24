@@ -233,7 +233,7 @@ class FirewallController extends ApiControllerBase
                 } elseif (Util::isSubnet($item)) {
                     $networks[] = $item;
                 } elseif (Util::isIpAddress($item)) {
-                    $networks[] = $item . "/" . (strpos($item, ':') ? '128' : '32');
+                    $networks[] = $item . "/" . (strpos($item, ':') !== false ? '128' : '32');
                 } else {
                     $clauses[] = $item;
                 }
@@ -274,6 +274,53 @@ class FirewallController extends ApiControllerBase
                 $clauses
             );
         }
+    }
+
+    public function flushPfTopCacheAction()
+    {
+        if (!$this->request->isPost()) {
+            return ['status' => 'error'];
+        }
+
+        (new Backend())->configdRun('!filter diag top');
+
+        return ['status' => 'ok'];
+    }
+
+    /**
+     * Aggregate cached pftop counters for the requested addresses.
+     */
+    public function queryPfTopSummaryAction()
+    {
+        if (!$this->request->isPost()) {
+            return ['status' => 'error'];
+        }
+
+        $statistics = [];
+        foreach (explode(',', (string)$this->request->getPost('addresses', null, '')) as $address) {
+            if (Util::isIpAddress($address)) {
+                $statistics[$address] = ['bytes' => 0, 'states' => 0];
+            }
+        }
+
+        if (!empty($statistics)) {
+            $pftop = json_decode((new Backend())->configdpRun('filter diag top'), true) ?? [];
+            foreach ($pftop['details'] ?? [] as $record) {
+                $recordAddresses = array_unique([
+                    $record['src_addr'] ?? null,
+                    $record['dst_addr'] ?? null,
+                    $record['gw_addr'] ?? null
+                ]);
+                foreach ($recordAddresses as $address) {
+                    if ($address !== null && isset($statistics[$address])) {
+                        $statistics[$address]['bytes'] += (int)($record['bytes'] ?? 0);
+                        $statistics[$address]['states']++;
+                    }
+                }
+            }
+        }
+
+        return ['items' => $statistics];
     }
 
     /**

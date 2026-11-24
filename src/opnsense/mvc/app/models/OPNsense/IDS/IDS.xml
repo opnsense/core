@@ -35,6 +35,7 @@
                     <ValidationMessage>Priority should be a number.</ValidationMessage>
                     <Required>Y</Required>
                     <Default>0</Default>
+                    <MinimumValue>0</MinimumValue>
                 </prio>
                 <action type="OptionField">
                     <Multiple>Y</Multiple>
@@ -208,7 +209,7 @@
                 <OptionValues>
                     <ac>Aho-Corasick</ac>
                     <ac-ks>Aho-Corasick, "Ken Steele" variant</ac-ks>
-                    <hs>Hyperscan</hs>
+                    <hs>Vectorscan</hs>
                 </OptionValues>
                 <ValidationMessage>Please select a valid pattern matcher algorithm.</ValidationMessage>
             </MPMAlgo>

@@ -176,7 +176,7 @@ class NetworkInterfaceContainerField extends ContainerField
     {
         if (self::$pppDevices === null) {
             self::$pppDevices = [];
-            foreach (Config::getInstance()->object()->ppps->children() as $intf) {
+            foreach (Config::getInstance()->object()->ppps->children() ?? [] as $intf) {
                 if (!empty((string)$intf->if)) {
                     self::$pppDevices[(string)$intf->if] = (string)$intf->type;
                 }
