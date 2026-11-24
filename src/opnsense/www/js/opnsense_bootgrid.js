@@ -1819,6 +1819,9 @@ class UIBootgrid {
         }
     }
 
+    /**
+     * Set up async data sources as configured, but do some validation as well.
+     */
     _initializeAsyncDataSources() {
         const claimedColumns = new Set();
 
@@ -1855,6 +1858,11 @@ class UIBootgrid {
         }
     }
 
+    /**
+     * get data of a cell, short-circuit to cell.getData() for any normal
+     * cell, but if it's part of an async column, apply either
+     * resolved, missing or pending based on internal cache state.
+     */
     _asyncFormatterData(cell) {
         const data = cell.getData();
         const source = this.asyncDataColumns.get(cell.getColumn().getField());
@@ -1882,6 +1890,10 @@ class UIBootgrid {
         return {...data, ...overlay};
     }
 
+    /**
+     * If a column is used for async auxiliary data, this formatter is applied
+     * by default, providing a refresh button
+     */
     _asyncHeaderFormatter(source, formatter, label) {
         return (cell, formatterParams, onRendered) => {
             const content = formatter ?
@@ -1906,6 +1918,10 @@ class UIBootgrid {
         };
     }
 
+    /**
+     * auxiliary data is rendered via the formatters (_asyncFormatterData) to prevent having to
+     * call .update() directly on the whole table.
+     */
     _redrawAsyncDataSource(source) {
         const rows = new Set();
         source.columns.forEach(column => {
@@ -1917,6 +1933,9 @@ class UIBootgrid {
         rows.forEach(row => row.reformat());
     }
 
+    /**
+     * Handle auxiliary data fetch
+     */
     async _fetchAsyncDataSource(source, refresh=false) {
         const rows = source.config.loadMissing ? this.table.getData().filter(row => {
             const key = row[this.options.datakey];
@@ -1980,6 +1999,9 @@ class UIBootgrid {
         }
     }
 
+    /**
+     * Entry point for auxiliary data called on dataProcessed to make sure we don't hold up rendering of the grid.
+     */
     _loadAsyncDataSources() {
         this.asyncDataSources.forEach(source => {
             const hasMissingRows = source.config.loadMissing && this.table.getData().some(row => {
