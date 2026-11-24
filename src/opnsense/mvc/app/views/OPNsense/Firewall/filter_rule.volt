@@ -58,10 +58,88 @@
         $('#toggle_tree_button').toggleClass('active btn-primary', treeViewEnabled);
 
         let inspectEnabled = localStorage.getItem("firewall_rule_inspect") === "1";
+        let ruleStatistics = null;
+        let statisticsRequest = null;
         $('#toggle_inspect_button').toggleClass('active btn-primary', inspectEnabled);
 
         function updateStatisticColumns() {
             grid.bootgrid(inspectEnabled ? "setColumns" : "unsetColumns", ['statistics']);
+        }
+
+        function formatRuleStatistics(row) {
+            if (row.isGroup || !inspectEnabled) {
+                return "";
+            }
+
+            const statistics = ruleStatistics === null ? null : ruleStatistics[row.uuid] || {};
+            if (statistics == null) {
+                return '<span class="fa fa-spinner fa-pulse"></span>';
+            }
+
+            const evals   = statistics["evaluations"] ?? "";
+            const states  = statistics["states"] ?? "";
+            const packets = statistics["packets"] ?? "";
+            const bytes   = statistics["bytes"] ?? "";
+            const uuid    = row["uuid"] ?? "";
+
+            function render(icon, title, value, is_number = false, link = null) {
+                if (!value || value === "0") {
+                    return "";
+                }
+
+                const numValue  = parseInt(value, 10);
+                const formatted = byteFormat(numValue, 1, is_number);
+
+                return `
+                    <span data-toggle="tooltip" title="${title}: ${numValue.toLocaleString()}">
+                        ${link
+                            ? `<a href="${link}" target="_blank" rel="noopener noreferrer" id="${uuid}_states">
+                                <i class="fa fa-fw ${icon}"></i> ${formatted}
+                            </a>`
+                            : `<i class="fa fa-fw ${icon}"></i> ${formatted}`}
+                    </span>
+                `;
+            }
+
+            const parts = [
+                render("fa-chart-line", "{{ lang._('States') }}", states, true, `/ui/diagnostics/firewall/states#${uuid}`),
+                render("fa-bullseye", "{{ lang._('Evaluations') }}", evals, true),
+                render("fa-box", "{{ lang._('Packets') }}", packets, true),
+                render("fa-database", "{{ lang._('Bytes') }}", bytes)
+            ].filter(Boolean);
+
+            return parts.length === 0 ? "" : `
+                <div class="stats-cell">
+                    ${parts.join("")}
+                </div>
+            `;
+        }
+
+        function renderRuleStatistics() {
+            if (!inspectEnabled) {
+                return;
+            }
+
+            grid.bootgrid('getTable').getColumn('statistics').getCells().forEach(function(cell) {
+                const data = cell.getData();
+                if (!data.isGroup) {
+                    cell.setValue(ruleStatistics === null ? null : ruleStatistics[data.uuid] || {});
+                }
+            });
+        }
+
+        function fetchRuleStatistics() {
+            if (statisticsRequest !== null) {
+                return;
+            }
+
+            ruleStatistics = null;
+            renderRuleStatistics();
+            statisticsRequest = ajaxGet('/api/firewall/filter_util/rule_stats', {}, function(data, status) {
+                ruleStatistics = status === 'success' && data.status === 'ok' ? data.stats || {} : {};
+                statisticsRequest = null;
+                renderRuleStatistics();
+            });
         }
 
         // read interface from URL hash once, for the first grid load
@@ -277,8 +355,7 @@
                         // '__any' omit parameter for all rules
                     }
                     if (inspectEnabled) {
-                        // Send as a comma separated string
-                        request['show_all'] = true;
+                        request['inspect'] = true;
                     }
                     return request;
                 },
@@ -326,15 +403,7 @@
                         `);
 
                         element.find('.inspect-cache-flush').on('click', function () {
-                            ajaxCall(
-                                '/api/firewall/filter/flush_inspect_cache',
-                                {},
-                                function () {
-                                    $('#{{ formGridFilterRule["table_id"] }}').bootgrid('reload');
-                                },
-                                null,
-                                'POST'
-                            );
+                            fetchRuleStatistics();
                         });
 
                         return element[0];
@@ -571,51 +640,7 @@
                         return isNegated + renderedItems;
                     },
                     statistics: function(column, row) {
-                        if (row.isGroup || !inspectEnabled) {
-                            return "";
-                        }
-
-                        const evals   = row["evaluations"] ?? "";
-                        const states  = row["states"] ?? "";
-                        const packets = row["packets"] ?? "";
-                        const bytes   = row["bytes"] ?? "";
-                        const uuid    = row["uuid"] ?? "";
-
-                        function render(icon, title, value, is_number = false, link = null) {
-                            if (!value || value === "0") {
-                                return "";
-                            }
-
-                            const numValue  = parseInt(value, 10);
-                            const formatted = byteFormat(numValue, 1, is_number);
-
-                            return `
-                                <span data-toggle="tooltip" title="${title}: ${numValue.toLocaleString()}">
-                                    ${link
-                                        ? `<a href="${link}" target="_blank" rel="noopener noreferrer" id="${uuid}_states">
-                                            <i class="fa fa-fw ${icon}"></i> ${formatted}
-                                        </a>`
-                                        : `<i class="fa fa-fw ${icon}"></i> ${formatted}`}
-                                </span>
-                            `;
-                        }
-
-                        const parts = [
-                            render("fa-chart-line", "{{ lang._('States') }}", states, true, `/ui/diagnostics/firewall/states#${uuid}`),
-                            render("fa-bullseye", "{{ lang._('Evaluations') }}", evals, true),
-                            render("fa-box", "{{ lang._('Packets') }}", packets, true),
-                            render("fa-database", "{{ lang._('Bytes') }}", bytes)
-                        ].filter(Boolean);
-
-                        if (parts.length === 0) {
-                            return "";
-                        }
-
-                        return `
-                            <div class="stats-cell">
-                                ${parts.join("")}
-                            </div>
-                        `;
+                        return formatRuleStatistics(row);
                     },
                     sched: function(column, row) {
                         if (row.isGroup || typeof row[column.id] !== "string" || row[column.id] === "") {
@@ -878,6 +903,9 @@
 
         grid.on('loaded.rs.jquery.bootgrid', function () {
             updateStatisticColumns(); // ensures inspect columns are consistent after reload
+            if (inspectEnabled && ruleStatistics === null && statisticsRequest === null) {
+                fetchRuleStatistics();
+            }
 
             // remove empty ruleset message banner if applicable
             $('#{{formGridFilterRule["table_id"]}}-banner').remove();
@@ -1024,7 +1052,9 @@
             localStorage.setItem("firewall_rule_inspect", inspectEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', inspectEnabled);
             updateStatisticColumns();
-            grid.bootgrid("reload");
+            if (inspectEnabled) {
+                fetchRuleStatistics();
+            }
         });
 
         $("#tree_toggle_container").detach().insertAfter("#inspect_toggle_container");
