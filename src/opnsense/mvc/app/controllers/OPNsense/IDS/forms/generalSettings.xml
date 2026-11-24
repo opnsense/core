@@ -75,7 +75,7 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>Networks to interpret as local</help>
+        <help>Networks to interpret as local, all other addresses are considered external. Do not cover a whole address family (e.g. any, 0.0.0.0/0 or ::/0): nothing is left as external, so Suricata refuses to start or rules for external networks cannot match.</help>
         <advanced>true</advanced>
     </field>
     <field>
