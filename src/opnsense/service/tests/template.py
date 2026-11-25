@@ -28,6 +28,7 @@
     package : configd
 """
 import os
+import stat
 import unittest
 import collections
 from modules import config
@@ -96,6 +97,13 @@ class TestTemplateMethods(unittest.TestCase):
         """
         generated_filenames = self.tmpl.generate('OPNsense/Sample')
         self.assertEqual(len(generated_filenames), 4, 'number of output files not 4')
+        for filename in generated_filenames:
+            root_perm = stat.S_IMODE(os.lstat(os.path.dirname(filename)).st_mode) & (~stat.S_IXGRP & ~stat.S_IXUSR & ~stat.S_IXOTH)
+            file_perm = stat.S_IMODE(os.lstat(filename).st_mode)
+            if os.path.basename(filename) == 'simple_page.txt':
+                self.assertEqual(file_perm, int('600', 8))
+            else:
+                self.assertEqual(file_perm, root_perm)
 
     @unittest.skip("Very fragile test, only works on clean install")
     def test_all(self):
