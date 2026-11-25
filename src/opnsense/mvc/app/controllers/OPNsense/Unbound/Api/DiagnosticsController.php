@@ -146,7 +146,6 @@ class DiagnosticsController extends ApiControllerBase
 
                 $response['domain'] = $domain;
                 $domains[] = $response;
-                
             }
             return $domains;
         }

@@ -516,6 +516,7 @@
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostAlias.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dialogHostOverride.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dnsbl.xml
+/usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dnsblTester.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/dnsreporting.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/forwarding.xml
 /usr/local/opnsense/mvc/app/controllers/OPNsense/Unbound/forms/general.xml
