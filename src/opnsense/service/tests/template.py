@@ -134,4 +134,3 @@ class TestTemplateMethods(unittest.TestCase):
         for expected_filename in self.expected_filenames:
             message = 'missing %s (%s' % (expected_filename, self.expected_filenames[expected_filename]['src'])
             self.assertIn(expected_filename, self.generated_filenames, message)
-
