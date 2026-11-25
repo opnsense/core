@@ -1,0 +1,2 @@
+example_config.txt:/tmp/template_sample/test_[interfaces.%.if]_[version].conf
+example_simple_page.txt:/tmp/template_sample/simple_page.txt

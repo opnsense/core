@@ -1,0 +1,2 @@
+the parent template
+{% block content %}{% endblock %}

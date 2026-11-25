@@ -70,8 +70,9 @@ class TestTemplateMethods(unittest.TestCase):
         """
         conf_path = '%s/config/config.xml' % '/'.join(__file__.split('/')[:-1])
         self.output_path = '%s/output/' % '/'.join(__file__.split('/')[:-1])
+        template_path = '%s/templates/' % '/'.join(__file__.split('/')[:-1])
         self.conf = config.Config(conf_path)
-        self.tmpl = template.Template(target_root_directory=self.output_path)
+        self.tmpl = template.Template(target_root_directory=self.output_path, template_dir=template_path)
         self.tmpl.set_config(self.conf.get())
         if not os.path.exists(self.output_path):
             os.mkdir(self.output_path)
@@ -106,7 +107,7 @@ class TestTemplateMethods(unittest.TestCase):
         self.expected_filenames = dict()
         self.generated_filenames = list()
         templates_path = '%s/../templates' % '/'.join(__file__.split('/')[:-1])
-        for root, dirs, files in os.walk(templates_path):
+        for root, _, files in os.walk(templates_path):
             for filenm in files:
                 if filenm == '+TARGETS':
                     filename = '%s/%s' % (root, filenm)
@@ -125,3 +126,4 @@ class TestTemplateMethods(unittest.TestCase):
         for expected_filename in self.expected_filenames:
             message = 'missing %s (%s' % (expected_filename, self.expected_filenames[expected_filename]['src'])
             self.assertIn(expected_filename, self.generated_filenames, message)
+
