@@ -126,7 +126,7 @@
         <id>subnet4.option_data_autocollect</id>
         <label>Auto collect option data</label>
         <type>checkbox</type>
-        <help>Automatically update option data for relevant attributes as routers, dns servers and ntp servers when applying settings from the gui.</help>
+        <help>Automatically update option data for relevant attributes as routers, DNS servers, NTP servers and the system domain name when applying settings from the GUI.</help>
         <grid_view>
             <type>boolean</type>
             <formatter>boolean</formatter>
@@ -177,6 +177,7 @@
         <id>subnet4.option_data.domain_name</id>
         <label>Domain name</label>
         <type>text</type>
+        <style>option_data_autocollect</style>
         <help>A custom domain name to offer to the clients.</help>
         <grid_view>
             <visible>false</visible>

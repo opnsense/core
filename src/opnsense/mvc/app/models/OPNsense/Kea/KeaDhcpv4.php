@@ -47,6 +47,7 @@ class KeaDhcpv4 extends BaseModel
         $ifconfig = json_decode((new Backend())->configdRun('interface list ifconfig'), true) ?? [];
         foreach ($this->subnets->subnet4->iterateItems() as $subnet) {
             if (!$subnet->option_data_autocollect->isEmpty()) {
+                $subnet->option_data->domain_name = (string)Config::getInstance()->object()->system->domain;
                 // find first possible candidate to use as a gateway.
                 $host_ip = null;
                 foreach ($ifconfig as $if => $details) {
@@ -150,10 +151,9 @@ class KeaDhcpv4 extends BaseModel
 
     /**
      * @param FieldType $node node to iterate
-     * @param bool $defaults add defaults when set
      * @return array
      */
-    private function collectOptionData($node, $defaults = false)
+    private function collectOptionData($node)
     {
         $result = [];
         foreach ($node->iterateItems() as $key => $value) {
@@ -165,11 +165,6 @@ class KeaDhcpv4 extends BaseModel
                 $result[] = [
                     'name' => $target_fieldname,
                     'data' => (string)$value
-                ];
-            } elseif ($key == 'domain_name' && $defaults) {
-                $result[] = [
-                    'name' => $target_fieldname,
-                    'data' => (string)Config::getInstance()->object()->system->domain
                 ];
             }
         }
@@ -200,7 +195,7 @@ class KeaDhcpv4 extends BaseModel
                 'id' => $subnet->subnet_id->asInt(),
                 'subnet' => $subnet->subnet->getValue(),
                 'match-client-id' => !$subnet->{'match-client-id'}->isEmpty(),
-                'option-data' => $this->collectOptionData($subnet->option_data, true),
+                'option-data' => $this->collectOptionData($subnet->option_data),
                 'pools' => [],
                 'reservations' => []
             ];
