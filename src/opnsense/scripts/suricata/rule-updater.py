@@ -40,7 +40,7 @@ from lib import rule_source_directory
 
 # check for a running update process, this may take a while so it's better to check...
 try:
-    lck = open('/tmp/suricata-rule-updater.py', 'a')
+    lck = open('/var/run/suricata-rule-updater.lock', 'a')
     fcntl.flock(lck, fcntl.LOCK_EX | fcntl.LOCK_NB)
 except IOError:
     # already running, exit status 99
