@@ -44,7 +44,7 @@ ensure_root()
 	fi
 }
 
-while getopts AaCcDeHilNnOoR:sTtVvwx OPT; do
+while getopts AaCcDeHilNnOoR:sTtVvwxX OPT; do
 	case ${OPT} in
 	A)
 		OUTPUT="${OUTPUT} \${product_arch}"
@@ -107,6 +107,9 @@ while getopts AaCcDeHilNnOoR:sTtVvwx OPT; do
 		;;
 	w)
 		OUTPUT="${OUTPUT} \${product_website}"
+		;;
+	X)
+		OUTPUT="${OUTPUT} \${community_abi_major}.\${community_abi_minor}"
 		;;
 	x)
 		OUTPUT="${OUTPUT} \${target_abi_major}.\${target_abi_minor}"
@@ -190,6 +193,23 @@ core)
 		RESULT=$(${PKG} info -s ${product_id})
 		product_size=${RESULT##* }
 	fi
+	if [ -z "${OUTPUT%%*community_abi*}" ]; then
+		community_abi_major=${product_abi%%.*}
+		community_abi_minor=${product_abi#*.}
+
+		# if this is business we need to go back 3 months
+		if [ "${product_id%-business}" != "${product_id}" ]; then
+			case ${community_abi_minor} in
+			[1-3])
+				community_abi_major=$((community_abi_major - 1))
+				community_abi_minor=$((community_abi_minor + 9))
+				;;
+			*)
+				community_abi_minor=$((community_abi_minor - 3))
+				;;
+			esac
+		fi
+	fi
 	if [ -z "${OUTPUT%%*target_abi*}" -a -f ${PLUGINCTL} ]; then
 		target_abi_major=${product_abi%%.*}
 		target_abi_minor=${product_abi#*.}
@@ -197,7 +217,7 @@ core)
 		IS_BUSINESS=$(echo ${product_id} | grep -c -- '-business')
 		WANT_BUSINESS=$(${PLUGINCTL} -g system.firmware.subscription | grep -c '.')
 
-		if [ "${IS_BUSINESS}${WANT_BUSINESS}" = "01" -o ]; then
+		if [ "${IS_BUSINESS}${WANT_BUSINESS}" = "01" ]; then
 			case ${target_abi_minor} in
 			1[0-2])
 				target_abi_major=$((target_abi_major + 1))
