@@ -383,7 +383,7 @@ detect:
   inspection-recursion-limit: 3000
 
   prefilter:
-    default: auto
+    default: mpm
 
   profiling:
     grouping:
