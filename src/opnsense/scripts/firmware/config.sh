@@ -170,7 +170,7 @@ fi
 # initialize environment to operate in
 env_init()
 {
-	if [ -n "$(opnsense-update -x)" -o -e /var/run/development ]; then
+	if [ -n "$(opnsense-update -Y)" -o -e /var/run/development ]; then
 		if [ -n "${REQUEST}" ]; then
 			output_txt "Strict TLS 1.3 and CRL checking is enabled."
 		fi
