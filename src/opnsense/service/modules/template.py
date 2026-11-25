@@ -116,7 +116,7 @@ class Template(object):
                                 result['+CLEANUP_TARGETS'][source_file] = target_name
                             elif parts[2].strip() != "":
                                 result['+CLEANUP_TARGETS'][source_file] = parts[2].strip()
-                            if len(parts) >= 3:
+                            if len(parts) >= 4:
                                 result['+CHMOD'][source_file] = parts[3]
         return result
 
