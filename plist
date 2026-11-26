@@ -797,6 +797,7 @@
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/NetworkMappedField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/PortMappedField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/SNatModeField.php
+/usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleActiveField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleArrayField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleField.php
 /usr/local/opnsense/mvc/app/models/OPNsense/Firewall/FieldTypes/ScheduleListField.php

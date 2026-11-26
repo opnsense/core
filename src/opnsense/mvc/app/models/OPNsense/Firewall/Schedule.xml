@@ -4,6 +4,7 @@
     <description>Firewall schedules</description>
     <items>
         <schedule type=".\ScheduleArrayField">
+            <active type=".\ScheduleActiveField" volatile="true"/>
             <name type="TextField">
                 <Required>Y</Required>
                 <Mask>/^[a-zA-Z0-9_\-]{1,32}$/D</Mask>

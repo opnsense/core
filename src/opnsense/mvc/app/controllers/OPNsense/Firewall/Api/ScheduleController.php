@@ -38,34 +38,9 @@ class ScheduleController extends ApiMutableModelControllerBase
     protected static $internalModelName = 'schedule';
     protected static $internalModelClass = 'OPNsense\Firewall\Schedule';
 
-    private function isActive($schedule, ?\DateTimeImmutable $now = null): bool
-    {
-        $now ??= new \DateTimeImmutable();
-        foreach ($schedule->timerange->iterateItems() as $range) {
-            $days = $range->position->getValues();
-            $dates = array_map(
-                fn($date) => vsprintf('%d/%d', array_pad(explode('/', $date), 2, '0')),
-                explode(',', $range->dates->getValue())
-            );
-            $matchesDay = $days ? in_array($now->format('N'), $days, true) :
-                in_array($now->format('n/j'), $dates, true);
-            $start = vsprintf('%02d:%02d', array_pad(explode(':', $range->start_time->getValue()), 2, '0'));
-            $stop = vsprintf('%02d:%02d', array_pad(explode(':', $range->stop_time->getValue()), 2, '0'));
-            if ($matchesDay && $now->format('H:i') >= $start && $now->format('H:i') < $stop) {
-                return true;
-            }
-        }
-        return $schedule->timerange->count() === 0;
-    }
-
     public function searchItemAction()
     {
-        $result = $this->searchBase('schedule', ['name', 'descr'], 'name');
-        // intentionally not a volatile field
-        foreach ($result['rows'] as &$row) {
-            $row['active'] = $this->isActive($this->getModel()->schedule->getChild($row['uuid']));
-        }
-        return $result;
+        return $this->searchBase('schedule', ['name', 'descr'], 'name');
     }
 
     public function getItemAction($uuid = null)
