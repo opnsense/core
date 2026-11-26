@@ -63,7 +63,7 @@ foreach (config_read_array('ppps', 'ppp', false) as $ppp) {
             if (in_array($type, ['BACKUP', 'INIT'])) {
                 interface_suspend($ifkey);
             } else {
-                interface_ppps_configure($ifkey);
+                interface_ppps_carp_configure($ifkey);
             }
         }
     }
