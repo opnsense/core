@@ -72,24 +72,30 @@
                                     loadMissing: true,
                                     pending: null,
                                     missing: '',
-                                    request: function(rows) {
+                                    request: async function(rows) {
                                         const addresses = rows.map(row => row.ip_address).filter(Boolean);
-                                        const batches = [];
+                                        const hostnames = {};
+                                        // Resolve one batch at a time.
                                         for (let i = 0; i < addresses.length; i += 50) {
-                                            batches.push(addresses.slice(i, i + 50));
+                                            const batch = addresses.slice(i, i + 50);
+                                            let response = {};
+                                            try {
+                                                response = await $.ajax({
+                                                    type: 'GET',
+                                                    url: '/api/diagnostics/dns/reverse_lookup',
+                                                    dataType: 'json',
+                                                    data: {address: batch}
+                                                });
+                                            } catch {
+                                                // Leave failed lookups empty and continue with the next batch.
+                                                continue;
+                                            }
+                                            batch.forEach(address => {
+                                                const hostname = response?.[address];
+                                                hostnames[address] = hostname && hostname !== address ? hostname : '';
+                                            });
                                         }
-
-                                        return Promise.all(batches.map(batch =>
-                                            Promise.resolve($.ajax({
-                                                type: 'GET',
-                                                url: '/api/diagnostics/dns/reverse_lookup',
-                                                dataType: 'json',
-                                                data: {address: batch}
-                                            })).then(data => Object.fromEntries(batch.map(address => {
-                                                const hostname = data?.[address];
-                                                return [address, hostname && hostname !== address ? hostname : ''];
-                                            })), () => Object.fromEntries(batch.map(address => [address, ''])))
-                                        )).then(results => Object.assign({}, ...results));
+                                        return hostnames;
                                     }
                                 },
                                 statistics: {
