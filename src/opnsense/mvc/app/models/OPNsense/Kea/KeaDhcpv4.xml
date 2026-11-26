@@ -179,7 +179,7 @@
                     <ValidationMessage>Specify a boot filename of at most 127 bytes without quotes.</ValidationMessage>
                 </boot_file_name>
                 <option_data_autocollect type="BooleanField">
-                    <Default>1</Default>
+                    <Default>0</Default>
                     <Required>Y</Required>
                 </option_data_autocollect>
                 <option_data>

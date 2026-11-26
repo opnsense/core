@@ -120,7 +120,11 @@
     </field>
     <field>
         <type>header</type>
-        <label>DHCP option data</label>
+        <label>DHCP options</label>
+    </field>
+    <field>
+        <type>subheader</type>
+        <label>Automatic</label>
     </field>
     <field>
         <id>subnet4.option_data_autocollect</id>
@@ -140,24 +144,6 @@
         <style>tokenize option_data_autocollect</style>
         <allownew>true</allownew>
         <help>Default gateways to offer to the clients</help>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
-        <id>subnet4.option_data.static_routes</id>
-        <label>Static routes</label>
-        <type>text</type>
-        <help>Static routes that the client should install in its routing cache, defined as dest-ip1,router-ip1,dest-ip2,router-ip2</help>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
-        <id>subnet4.option_data.classless_static_route</id>
-        <label>Classless static routes</label>
-        <type>text</type>
-        <help>Classless static routes (option 121) that the client should install in its routing cache, defined as dest_net1 - router_ip1,dest_net2 - router_ip2</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
@@ -184,6 +170,39 @@
         </grid_view>
     </field>
     <field>
+        <id>subnet4.option_data.ntp_servers</id>
+        <label>NTP servers</label>
+        <type>select_multiple</type>
+        <style>tokenize option_data_autocollect</style>
+        <allownew>true</allownew>
+        <help>Specifies a list of IP addresses indicating NTP (RFC 5905) servers available to the client.</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <type>subheader</type>
+        <label>Static</label>
+    </field>
+    <field>
+        <id>subnet4.option_data.static_routes</id>
+        <label>Static routes</label>
+        <type>text</type>
+        <help>Static routes that the client should install in its routing cache, defined as dest-ip1,router-ip1,dest-ip2,router-ip2</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
+        <id>subnet4.option_data.classless_static_route</id>
+        <label>Classless static routes</label>
+        <type>text</type>
+        <help>Classless static routes (option 121) that the client should install in its routing cache, defined as dest_net1 - router_ip1,dest_net2 - router_ip2</help>
+        <grid_view>
+            <visible>false</visible>
+        </grid_view>
+    </field>
+    <field>
         <id>subnet4.option_data.domain_search</id>
         <label>Domain search</label>
         <type>select_multiple</type>
@@ -191,17 +210,6 @@
         <allownew>true</allownew>
         <separator>,</separator>
         <help>Specifies a ´search list´ of Domain Names to be used by the client to locate not-fully-qualified domain names.</help>
-        <grid_view>
-            <visible>false</visible>
-        </grid_view>
-    </field>
-    <field>
-        <id>subnet4.option_data.ntp_servers</id>
-        <label>NTP servers</label>
-        <type>select_multiple</type>
-        <style>tokenize option_data_autocollect</style>
-        <allownew>true</allownew>
-        <help>Specifies a list of IP addresses indicating NTP (RFC 5905) servers available to the client.</help>
         <grid_view>
             <visible>false</visible>
         </grid_view>
