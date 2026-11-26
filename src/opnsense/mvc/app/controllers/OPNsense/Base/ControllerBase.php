@@ -383,7 +383,7 @@ class ControllerBase extends ControllerRoot
             // check for valid csrf on post requests
             if ($this->request->isPost() && !$this->security->checkToken(null, null, false)) {
                 // post without csrf, exit.
-                $this->response->setStatusCode(403, "Forbidden");
+                $this->response->setStatusCode(403);
                 return false;
             }
 
@@ -396,7 +396,8 @@ class ControllerBase extends ControllerRoot
                 $this->request->isPatch() ||
                 $this->request->isOptions()
             ) {
-                throw new \Exception('request type not supported');
+                $this->response->setStatusCode(405);
+                return false;
             }
         }
 
