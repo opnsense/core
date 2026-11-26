@@ -83,9 +83,13 @@
     </field>
     <field>
         <type>header</type>
-        <label>DHCP option data</label>
+        <label>DHCP options</label>
     </field>
-        <field>
+    <field>
+        <type>subheader</type>
+        <label>Automatic</label>
+    </field>
+    <field>
         <id>subnet6.option_data_autocollect</id>
         <label>Auto collect option data</label>
         <type>checkbox</type>
@@ -119,6 +123,10 @@
             <formatter>option_data_autocollect</formatter>
             <visible>false</visible>
         </grid_view>
+    </field>
+    <field>
+        <type>subheader</type>
+        <label>Static</label>
     </field>
     <field>
         <id>subnet6.option_data.v6_dnr</id>
