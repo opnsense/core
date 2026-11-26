@@ -78,6 +78,7 @@ class ScheduleController extends ApiMutableModelControllerBase
                 throw new UserException(gettext('A schedule in use by a firewall rule cannot be deleted.'));
             }
         }
+        // Intentional: Deleting a schedule also deletes all of its time ranges because its a nested array
         return $this->delBase('schedule', $uuids);
     }
 
