@@ -370,6 +370,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 write_config('System restore flushed local history');
             }
         }
+    } elseif (!empty($mode) && userHasPrivilege(getUserEntry($_SESSION['Username']), 'user-config-readonly')) {
+        /* providers save through the MVC config, which does not check this as write_config() does */
+        $input_errors[] = gettext('You do not have the permission to perform this action.');
     } elseif (!empty($mode)){
         // setup backup provider, collect provider settings and save/validate
         $providerId = substr($mode, 6);
