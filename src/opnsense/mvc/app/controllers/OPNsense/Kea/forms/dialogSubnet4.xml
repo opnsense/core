@@ -124,7 +124,7 @@
     </field>
     <field>
         <type>subheader</type>
-        <label>Automatic</label>
+        <label>Common</label>
     </field>
     <field>
         <id>subnet4.option_data_autocollect</id>
@@ -182,7 +182,7 @@
     </field>
     <field>
         <type>subheader</type>
-        <label>Static</label>
+        <label>Other</label>
     </field>
     <field>
         <id>subnet4.option_data.static_routes</id>
