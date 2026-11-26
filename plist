@@ -29,7 +29,6 @@
 /usr/local/etc/inc/plugins.inc.d/monit.inc
 /usr/local/etc/inc/plugins.inc.d/netflow.inc
 /usr/local/etc/inc/plugins.inc.d/ntpd.inc
-/usr/local/etc/inc/plugins.inc.d/opendns.inc
 /usr/local/etc/inc/plugins.inc.d/openssh.inc
 /usr/local/etc/inc/plugins.inc.d/openvpn.inc
 /usr/local/etc/inc/plugins.inc.d/openvpn/dh.rfc7919
@@ -2638,7 +2637,6 @@
 /usr/local/www/services_ntpd.php
 /usr/local/www/services_ntpd_gps.php
 /usr/local/www/services_ntpd_pps.php
-/usr/local/www/services_opendns.php
 /usr/local/www/status_wireless.php
 /usr/local/www/system_advanced_admin.php
 /usr/local/www/system_advanced_misc.php
