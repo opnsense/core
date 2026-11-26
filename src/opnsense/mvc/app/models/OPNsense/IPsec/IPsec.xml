@@ -118,7 +118,9 @@
                     </split-include>
                     <!-- UNITY_DEF_DOMAIN -->
                     <x_28674 type="StrictTextField"/>
-                    <x_28675 type="StrictTextField"/>
+                    <x_28675 type="StrictTextField">
+                        <AllowSpaces>Y</AllowSpaces>
+                    </x_28675>
                     <x_28672 type="StrictTextField"/>
                     <x_28673 type="BooleanField"/>
                     <x_28679 type="OptionField">
