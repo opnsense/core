@@ -337,9 +337,9 @@ class ApiControllerBase extends ControllerRoot
                                     " not accessible for user " . $authResult['username'] . " using api key " .
                                     $apiKey);
                                 // not authenticated
-                                $this->response->setStatusCode(403, "Forbidden");
+                                $this->response->setStatusCode(403);
                                 $this->response->setContentType('application/json', 'UTF-8');
-                                $this->response->setContent(['status'  => 403,'message' => 'Forbidden']);
+                                $this->response->setContent(['status' => 403, 'message' => 'Forbidden']);
                                 $this->response->send();
                                 return false;
                             } else {
@@ -348,9 +348,9 @@ class ApiControllerBase extends ControllerRoot
                                 // if body is send as json data, parse to $_POST first
                                 $dispatchError = $this->parseJsonBodyData();
                                 if ($dispatchError != null) {
-                                    $this->response->setStatusCode(400, "Bad Request");
+                                    $this->response->setStatusCode(400);
                                     $this->response->setContentType('application/json', 'UTF-8');
-                                    $this->response->setContent(['status'  => 400, 'message' => $dispatchError]);
+                                    $this->response->setContent(['status' => 400, 'message' => $dispatchError]);
                                     $this->response->send();
                                     return false;
                                 }
@@ -370,9 +370,9 @@ class ApiControllerBase extends ControllerRoot
                 }
             }
             // not authenticated
-            $this->response->setStatusCode(401, "Unauthorized");
+            $this->response->setStatusCode(401);
             $this->response->setContentType('application/json', 'UTF-8');
-            $this->response->setContent(['status'  => 401, 'message' => 'Authentication Failed']);
+            $this->response->setContent(['status' => 401, 'message' => 'Authentication Failed']);
             $this->response->send();
             return false;
         } else {
@@ -380,9 +380,9 @@ class ApiControllerBase extends ControllerRoot
             // use session data and ACL to validate request.
             if (!$this->doAuth()) {
                 if (!$this->session->has("Username")) {
-                    $this->response->setStatusCode(401, "Unauthorized");
+                    $this->response->setStatusCode(401);
                 } else {
-                    $this->response->setStatusCode(403, "Forbidden");
+                    $this->response->setStatusCode(403);
                 }
                 return false;
             }
@@ -401,7 +401,7 @@ class ApiControllerBase extends ControllerRoot
             ) {
                 // missing csrf, exit.
                 $this->getLogger()->error("no matching csrf found for request");
-                $this->response->setStatusCode(403, "Forbidden");
+                $this->response->setStatusCode(403);
                 return false;
             }
             // when request is using a json body (based on content type), parse it first

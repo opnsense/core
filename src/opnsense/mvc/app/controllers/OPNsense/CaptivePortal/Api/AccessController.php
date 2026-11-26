@@ -219,7 +219,7 @@ class AccessController extends ApiControllerBase
 
         $this->response->setStatusCode(400);
         $this->response->setContentType('application/json', 'UTF-8');
-        $this->response->setContent(['status'  => 400, 'message' => 'Bad request']);
+        $this->response->setContent(['status' => 400, 'message' => 'Bad Request']);
     }
 
     /**
