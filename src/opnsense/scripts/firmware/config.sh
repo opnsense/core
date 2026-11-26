@@ -162,6 +162,25 @@ output_reboot()
 	/usr/local/etc/rc.reboot
 }
 
+create_snapshot()
+{
+	if ! df -Tt zfs / > /dev/null 2>&1; then
+		output_txt "Automatic snapshot skipped: unsupported root filesystem."
+		return 0
+	fi
+
+	SNAPSHOT_VERSION=$(opnsense-version -v | LC_ALL=C tr -cd 'A-Za-z0-9._-')
+	SNAPSHOT_NAME="auto-${SNAPSHOT_VERSION:-unknown}-$(date +%Y%m%d%H%M%S)"
+
+	output_txt -n "Creating automatic snapshot '${SNAPSHOT_NAME}', please wait... "
+	if ! output_cmd bectl create -- "${SNAPSHOT_NAME}"; then
+		output_txt "Automatic snapshot creation failed; aborting. Resolve the error or disable the automatic snapshot setting and try again."
+		return 1
+	fi
+
+	output_txt "done"
+}
+
 # if output is requested clear file and set new request right away
 if [ -n "${REQUEST}" ]; then
 	output_request "${REQUEST}"

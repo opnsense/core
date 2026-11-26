@@ -967,7 +967,10 @@ class FirmwareController extends ApiMutableModelControllerBase
      */
     public function getOptionsAction()
     {
-        return $this->getModel()->getRepositoryOptions();
+        $options = $this->getModel()->getRepositoryOptions();
+        $result = json_decode((new Backend())->configdRun('zfs snapshot supported') ?? '', true) ?? [];
+        $options['snapshots_supported'] = !empty($result['status']) && $result['status'] == 'OK';
+        return $options;
     }
 
     /**

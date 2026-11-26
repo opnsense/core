@@ -20,5 +20,6 @@
         </subscription>
         <reboot type="BooleanField"/>
         <aux type="BooleanField"/>
+        <snapshot type="BooleanField"/>
     </items>
 </model>

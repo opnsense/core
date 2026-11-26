@@ -691,6 +691,8 @@
                     $("#firmware_flavour").find('option').remove();
                     $("#firmware_reboot").prop('checked', fwconf['reboot'] == '1');
                     $("#firmware_aux").prop('checked', fwconf['aux'] == '1');
+                    $("#firmware_snapshot").prop('checked', fwconf['snapshot'] == '1' && !!fwopts.snapshots_supported);
+                    $("#firmware_snapshot").prop('disabled', !fwopts.snapshots_supported);
 
                     $.each(fwopts.mirrors, function(key, value) {
                         var selected = false;
@@ -738,7 +740,8 @@
 
                     $("#firmware_flavour").selectpicker('refresh');
                     $("#firmware_flavour").change();
-                    if (fwconf['flavour'] !== '' || fwconf['reboot'] === '1' || fwconf['aux'] === '1') {
+                    if (fwconf['flavour'] !== '' || fwconf['reboot'] === '1' || fwconf['aux'] === '1' ||
+                        (fwconf['snapshot'] === '1' && !!fwopts.snapshots_supported)) {
                         $("i.fa-toggle-off#show_advanced_firmware").click();
                     }
 
@@ -786,6 +789,9 @@
             confopt.type = $("#firmware_type").val();
             confopt.reboot = $("#firmware_reboot").is(":checked") ? '1' : '0';
             confopt.aux = $("#firmware_aux").is(":checked") ? '1' : '0';
+            if (!$("#firmware_snapshot").is(":disabled")) {
+                confopt.snapshot = $("#firmware_snapshot").is(":checked") ? '1' : '0';
+            }
             confopt.subscription = $("#firmware_subscription").val();
             ajaxCall('/api/core/firmware/set', { 'firmware': confopt }, function (data, status) {
                 $("#settingstab_progress").removeClass("fa fa-spinner fa-pulse");
@@ -1066,6 +1072,17 @@
                                     <td>
                                         <input type="checkbox" id="firmware_aux">
                                         {{ lang._('Activate the auxiliary packages repository') }}
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                <tr data-advanced="true">
+                                    <td style="width: 150px;"><a id="help_for_snapshot" href="#" class="showhelp"><i class="fa fa-info-circle"></i></a> {{ lang._('Snapshot') }}</td>
+                                    <td>
+                                        <input type="checkbox" id="firmware_snapshot">
+                                        {{ lang._('Automatically create a snapshot before updating') }}
+                                        <div class="hidden" data-for="help_for_snapshot">
+                                            {{ lang._('Create a ZFS boot environment snapshot automatically before downloading and applying firmware updates. Only available on ZFS installations.') }}
+                                        </div>
                                     </td>
                                     <td></td>
                                 </tr>

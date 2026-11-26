@@ -43,10 +43,32 @@ if [ "${SUFFIX}" = "-" ]; then
 	SUFFIX=
 fi
 
-# read reboot flag and record current package name and version state
+# read reboot/snapshot flags and record current package name and version state
 ALWAYS_REBOOT=$(/usr/local/sbin/pluginctl -g system.firmware.reboot)
+AUTO_SNAPSHOT=$(/usr/local/sbin/pluginctl -g system.firmware.snapshot)
 PKGS_HASH=$(${PKG} query %n-%v 2> /dev/null | sha256)
 UPDATE_FAILED=
+
+# create automatic snapshot before starting downloads if updates are available
+if [ "${AUTO_SNAPSHOT}" = "1" ]; then
+	NEED_SNAPSHOT=
+	if [ "$(opnsense-version -n)" != "opnsense${SUFFIX}" ] || \
+	    opnsense-update ${FORCE} -bk -c; then
+		NEED_SNAPSHOT=1
+	else
+		PKG_CHECK=$(${PKG} upgrade ${FORCE} -n 2> /dev/null)
+		if [ ${?} -ne 0 ] || printf '%s\n' "${PKG_CHECK}" | \
+		    grep -qE '(INSTALLED|UPGRADED|DOWNGRADED|REINSTALLED|REMOVED):'; then
+			NEED_SNAPSHOT=1
+		fi
+	fi
+
+	if [ -n "${NEED_SNAPSHOT}" ]; then
+		if ! create_snapshot; then
+			output_done keep-log
+		fi
+	fi
+fi
 
 # update all packages if possible
 if ! output_cmd opnsense-update ${FORCE} -pt "opnsense${SUFFIX}"; then
