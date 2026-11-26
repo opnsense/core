@@ -167,7 +167,7 @@
 </script>
 
 <div class="content-box __mb">
-    {{ partial('layout_partials/base_bootgrid_table', formGridSchedule }}
+    {{ partial('layout_partials/base_bootgrid_table', formGridSchedule) }}
 </div>
 <div class="content-box">
     {{ partial('layout_partials/base_bootgrid_table', formGridRange) }}
