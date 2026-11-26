@@ -32,18 +32,26 @@
             add: '/api/firewall/schedule/add_item/',
             set: '/api/firewall/schedule/set_item/',
             del: '/api/firewall/schedule/del_item/',
+            tabulatorOptions: {
+                initialSort: [{column: 'active', dir: 'desc'}]
+            },
             options: {
                 initialSearchPhrase: getUrlHash('search'),
                 selection: true,
                 multiSelect: false,
                 rowSelect: true,
                 stickySelect: true,
+                headerFormatters: {
+                    active: function (column) {
+                        return '<i class="fa fa-fw fa-clock-o" data-toggle="tooltip" title="{{ lang._("Active") }}"></i>';
+                    }
+                },
                 formatters: {
-                    name: function (column, row) {
-                        return $('<span>').append($('<i>', {
+                    active: function (column, row) {
+                        return $('<i>', {
                             class: 'fa fa-fw fa-clock-o bootgrid-tooltip ' + (row.active === '1' ? 'text-success' : 'text-danger'),
                             title: row.active === '1' ? "{{ lang._('Active') }}" : "{{ lang._('Inactive') }}"
-                        })).append(document.createTextNode(' ' + htmlDecode(row.name)))[0];
+                        })[0];
                     }
                 },
             },

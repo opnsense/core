@@ -40,7 +40,7 @@ class ScheduleController extends ApiMutableModelControllerBase
 
     public function searchItemAction()
     {
-        return $this->searchBase('schedule', ['name', 'descr'], 'name');
+        return $this->searchBase('schedule');
     }
 
     public function getItemAction($uuid = null)
