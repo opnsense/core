@@ -91,7 +91,7 @@ function vxlan_configure_do($verbose = false, $device = null)
         }
 
         if (!in_array((string)$vxlan->vxlanlocal, $known_addresses)) {
-            // skip when interface address is not assigned (yet)
+            // skip when interface address is not assigned (yet) https://github.com/opnsense/src/issues/353
             continue;
         }
 

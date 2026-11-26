@@ -467,7 +467,7 @@ class ACL
                 return "index.php";
             }
             foreach ($this->urlMasks($username) as $pattern) {
-                if (str_starts_with('api', $pattern) || $pattern == "*") {
+                if (str_starts_with($pattern, 'api/') || $pattern == '*') {
                     continue;
                 } elseif (!empty($pattern)) {
                     /* remove wildcard and optional trailing slashes or query symbols */

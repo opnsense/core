@@ -127,6 +127,7 @@
     <page-diagnostics-system-pftop>
         <name>Diagnostics: Firewall sessions</name>
         <patterns>
+            <pattern>ui/diagnostics/firewall/rule_lookup*</pattern>
             <pattern>ui/diagnostics/firewall/pf_top*</pattern>
             <pattern>api/diagnostics/firewall/query_pf_top</pattern>
             <pattern>api/diagnostics/firewall/list_rule_ids</pattern>
@@ -149,6 +150,7 @@
     <page-diagnostics-showstates>
         <name>Diagnostics: Show States</name>
         <patterns>
+            <pattern>ui/diagnostics/firewall/rule_lookup*</pattern>
             <pattern>ui/diagnostics/firewall/states*</pattern>
             <pattern>api/diagnostics/firewall/query_states*</pattern>
             <pattern>api/diagnostics/firewall/del_state*</pattern>
@@ -245,6 +247,7 @@
     <page-diagnostics-logs-firewall-dynamic>
         <name>Diagnostics: Logs: Firewall: Live View</name>
         <patterns>
+            <pattern>ui/diagnostics/firewall/rule_lookup*</pattern>
             <pattern>ui/diagnostics/firewall/log*</pattern>
             <pattern>api/diagnostics/firewall/stream_log</pattern>
             <pattern>api/diagnostics/firewall/log*</pattern>
@@ -488,6 +491,7 @@
     </page-snapshots>
     <page-system-firmware-manualupdate>
         <name>System: Firmware</name>
+        <authority>unrestricted</authority>
         <patterns>
             <pattern>ui/core/firmware/*</pattern>
             <pattern>api/core/firmware/*</pattern>

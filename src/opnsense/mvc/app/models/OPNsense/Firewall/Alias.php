@@ -201,7 +201,7 @@ class Alias extends BaseModel
             if (!in_array($alias->type, array('geoip', 'urltable'))) {
                 $nodeData = $alias->content->getNodeData();
                 if (isset($nodeData[$name])) {
-                    if (!empty($alias->description)) {
+                    if (!empty((string)$alias->description)) {
                         $result[(string)$alias->__reference] = (string)$alias->description;
                     } else {
                         $result[(string)$alias->__reference] = (string)$alias->name;

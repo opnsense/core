@@ -170,7 +170,7 @@ class ServiceController extends ApiMutableServiceControllerBase
 
             if ($this->request->getPost('searchPhrase', 'string', '') != "") {
                 $filterTag = (new SanitizeFilter())->sanitize($this->request->getPost('searchPhrase'), "query");
-                $searchPhrase = 'alert,alert_action,src_ip,dest_ip/"*' . $filterTag . '*"';
+                $searchPhrase = $filterTag;
             } else {
                 $searchPhrase = '';
             }

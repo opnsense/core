@@ -29,8 +29,6 @@
 import argparse
 import sys
 import os.path
-import re
-import shlex
 import ujson
 sys.path.insert(0, "/usr/local/opnsense/site-python")
 from log_helper import reverse_log_reader
@@ -49,30 +47,17 @@ if __name__ == '__main__':
     else:
         suricata_log = suricata_alert_log
 
-    data_filters = {}
-    data_filters_comp = {}
-    for filter_txt in shlex.split(args.filter):
-        filterField = filter_txt.split('/')[0]
-        if filter_txt.find('/') > -1:
-            data_filters[filterField] = '/'.join(filter_txt.split('/')[1:])
-            filter_regexp = data_filters[filterField]
-            filter_regexp = filter_regexp.replace('*', '.*')
-            filter_regexp = filter_regexp.lower()
-            try:
-                data_filters_comp[filterField] = re.compile(filter_regexp)
-            except re.error:
-                # remove illegal expression
-                # del data_filters[filterField]
-                data_filters_comp[filterField] = re.compile('.*')
-
     # filter one specific log line
-    if 'filepos' in data_filters and data_filters['filepos'].isdigit():
-        log_start_pos = int(data_filters['filepos']) + 5000
+    filepos = args.filter[len('filepos/'):] if args.filter.startswith('filepos/') else ''
+    if filepos.isdecimal():
+        log_start_pos = int(filepos) + 5000
     else:
         log_start_pos = None
+    # every token must be found in the signature, action or addresses
+    search_tokens = args.filter.lower().replace('*', ' ').split()
 
     # query suricata eve log
-    result = {'filters': data_filters, 'rows': [], 'total_rows': 0, 'origin': suricata_log.split('/')[-1]}
+    result = {'rows': [], 'total_rows': 0, 'origin': suricata_log.split('/')[-1]}
     if os.path.exists(suricata_log):
         for line in reverse_log_reader(filename=suricata_log, start_pos=log_start_pos):
             try:
@@ -91,17 +76,13 @@ if __name__ == '__main__':
                 record['alert_action'] = record['alert']['action']
                 record['alert'] = record['alert']['signature']
 
-                # use filters on data (using regular expressions)
-                do_output = True
-                for filterKeys in data_filters:
-                    filter_hit = False
-                    for filterKey in filterKeys.split(','):
-                        if filterKey in record and data_filters_comp[filterKeys].match(
-                                ('%s' % record[filterKey]).lower()):
-                            filter_hit = True
-
-                    if not filter_hit:
-                        do_output = False
+                if log_start_pos is not None:
+                    do_output = record['filepos'] == int(filepos)
+                else:
+                    text = ' '.join(
+                        '%s' % record.get(key, '') for key in ('alert', 'alert_action', 'src_ip', 'dest_ip')
+                    ).lower()
+                    do_output = all(token in text for token in search_tokens)
                 if do_output:
                     result['total_rows'] += 1
                     if (len(result['rows']) < args.limit or args.limit == 0) and result['total_rows'] >= args.offset:

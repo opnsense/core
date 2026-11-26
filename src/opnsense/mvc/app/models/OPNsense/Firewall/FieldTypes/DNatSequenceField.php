@@ -60,7 +60,8 @@ class DNatSequenceField extends AutoNumberField
                 }
             }
         }
-        if ($this->internalValue == '') {
+        if ($this->internalValue == '' && !$this->internalParentNode->getInternalIsVirtual()) {
+            /* number entries without a sequence, but not the template of an empty list */
             self::$current_max_seq += 100;
             $this->internalValue = (string)self::$current_max_seq;
         }

@@ -34,7 +34,7 @@
         <label>Listeners</label>
         <style>ids_mode ids_mode_divert</style>
         <type>text</type>
-        <help>Specify the number of listeners to initiate, usually this equals the number of CPUs in your system.</help>
+        <help>Specify the number of listeners to initiate, usually this equals the number of CPUs in your system, up to a maximum of 16.</help>
     </field>
     <field>
         <type>header</type>
@@ -75,7 +75,7 @@
         <type>select_multiple</type>
         <style>tokenize</style>
         <allownew>true</allownew>
-        <help>Networks to interpret as local</help>
+        <help>Networks to interpret as local, all other addresses are considered external. Do not cover a whole address family (e.g. any, 0.0.0.0/0 or ::/0): nothing is left as external, so Suricata refuses to start or rules for external networks cannot match.</help>
         <advanced>true</advanced>
     </field>
     <field>

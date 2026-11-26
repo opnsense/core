@@ -90,7 +90,7 @@ if [ -n "${product_xabi}" -a "${product_abi}" != "${product_xabi}" ]; then
 fi
 
 # business subscriptions come with additional license metadata
-if [ -n "$(opnsense-update -x)" ]; then
+if [ -n "$(opnsense-update -Y)" ]; then
     output_txt -n "Fetching subscription information, please wait... "
     if output_cmd fetch -qT 30 -o "${LICENSEFILE}" "$(opnsense-update -M)/subscription"; then
         output_txt "done"

@@ -47,6 +47,7 @@ class KeaDhcpv4 extends BaseModel
         $ifconfig = json_decode((new Backend())->configdRun('interface list ifconfig'), true) ?? [];
         foreach ($this->subnets->subnet4->iterateItems() as $subnet) {
             if (!$subnet->option_data_autocollect->isEmpty()) {
+                $subnet->option_data->domain_name = (string)Config::getInstance()->object()->system->domain;
                 // find first possible candidate to use as a gateway.
                 $host_ip = null;
                 foreach ($ifconfig as $if => $details) {
@@ -150,10 +151,9 @@ class KeaDhcpv4 extends BaseModel
 
     /**
      * @param FieldType $node node to iterate
-     * @param bool $defaults add defaults when set
      * @return array
      */
-    private function collectOptionData($node, $defaults = false)
+    private function collectOptionData($node)
     {
         $result = [];
         foreach ($node->iterateItems() as $key => $value) {
@@ -165,11 +165,6 @@ class KeaDhcpv4 extends BaseModel
                 $result[] = [
                     'name' => $target_fieldname,
                     'data' => (string)$value
-                ];
-            } elseif ($key == 'domain_name' && $defaults) {
-                $result[] = [
-                    'name' => $target_fieldname,
-                    'data' => (string)Config::getInstance()->object()->system->domain
                 ];
             }
         }
@@ -199,12 +194,16 @@ class KeaDhcpv4 extends BaseModel
             $record = [
                 'id' => $subnet->subnet_id->asInt(),
                 'subnet' => $subnet->subnet->getValue(),
-                'next-server' => $subnet->next_server->getValue(),
                 'match-client-id' => !$subnet->{'match-client-id'}->isEmpty(),
-                'option-data' => $this->collectOptionData($subnet->option_data, true),
+                'option-data' => $this->collectOptionData($subnet->option_data),
                 'pools' => [],
                 'reservations' => []
             ];
+            foreach (['next_server', 'server_hostname', 'boot_file_name'] as $key) {
+                if (!$subnet->$key->isEmpty()) {
+                    $record[str_replace('_', '-', $key)] = $subnet->$key->getValue();
+                }
+            }
             /* admission classes must be evaluated before subnet selection (shared networks) */
             if (!$subnet->match_code->isEmpty()) {
                 $class_name = sprintf('%s', $subnet_uuid);
@@ -256,7 +255,7 @@ class KeaDhcpv4 extends BaseModel
                     continue;
                 }
                 $res = [];
-                foreach (['ip_address', 'hostname'] as $key) {
+                foreach (['ip_address', 'hostname', 'next_server', 'server_hostname', 'boot_file_name'] as $key) {
                     if (!$reservation->$key->isEmpty()) {
                         $res[str_replace('_', '-', $key)] = $reservation->$key->getValue();
                     }
@@ -265,10 +264,6 @@ class KeaDhcpv4 extends BaseModel
                     $res['hw-address'] = str_replace('-', ':', $reservation->hw_address->getValue());
                 } elseif (!$reservation->client_id->isEmpty()) {
                     $res['client-id'] = $reservation->client_id->getValue();
-                }
-
-                if (!$reservation->next_server->isEmpty()) {
-                    $res['next-server'] = $reservation->next_server->getValue();
                 }
 
                 // Add DHCP option-data elements for reservations

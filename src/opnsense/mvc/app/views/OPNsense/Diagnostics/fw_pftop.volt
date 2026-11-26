@@ -38,7 +38,7 @@
                 formatters:{
                     rule: function (column, row) {
                         if (row.label) {
-                            return "<a target=\"_blank\" href=\"/firewall_rule_lookup.php?rid=" + row.label + "\">"+row[column.id]+"</a>";
+                            return "<a target=\"_blank\" href=\"/ui/diagnostics/firewall/rule_lookup?rid=" + row.label + "\">"+row[column.id]+"</a>";
                         } else {
                             return row[column.id];
                         }

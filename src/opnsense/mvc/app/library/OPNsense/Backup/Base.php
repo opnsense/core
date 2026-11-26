@@ -191,16 +191,20 @@ abstract class Base
     }
 
     /**
-     * validate model and return simple array with validation messages
+     * validate model and return simple array with validation messages, each led by its field's label
      * @param OPNsense\Base\BaseModel $mdl model to set properties to
      * @return array
      */
     protected function validateModel($mdl)
     {
-        $result = array();
+        $labels = array_column($this->getConfigurationFields(), 'label', 'name');
+        $result = [];
         foreach ($mdl->performValidation() as $validation_message) {
-            $result[] = (string)$validation_message;
+            $field = $validation_message->getField();
+            $result[] = isset($labels[$field]) ? sprintf('%s: %s', $labels[$field], $validation_message) :
+                (string)$validation_message;
         }
-        return $result;
+        /* a field can fail several checks with the same message */
+        return array_values(array_unique($result));
     }
 }

@@ -1,8 +1,14 @@
 #!/usr/local/bin/php
 <?php
 
+echo 'Acquiring config lock... ';
+flush();
+
 $fp = fopen('/conf/config.xml', 'a+e');
-if (flock($fp, LOCK_EX)) {
+if ($fp !== false && flock($fp, LOCK_EX)) {
     flock($fp, LOCK_UN);
     fclose($fp);
+    echo "done.\n";
+} else {
+    echo "failed.\n";
 }

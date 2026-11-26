@@ -140,7 +140,8 @@ class LaggSettingsController extends ApiMutableModelControllerBase
             if (isset($cfg->vlans) && isset($cfg->vlans->vlan)) {
                 foreach ($cfg->vlans->children() as $vlan) {
                     if ((string)$vlan->if == $laggif) {
-                        $uses[(string)$vlan->vlanif] = !empty($vlan->descr) ? (string)$vlan->descr : $key;
+                        $uses[(string)$vlan->vlanif] = !empty($vlan->descr) ?
+                            (string)$vlan->descr : (string)$vlan->vlanif;
                     }
                 }
             }

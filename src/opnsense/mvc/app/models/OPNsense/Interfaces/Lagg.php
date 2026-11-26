@@ -62,10 +62,10 @@ class Lagg extends BaseModel
             }
             $uuid = $node->getAttributes()['uuid'];
             $key = $node->__reference;
-            $members = explode(',', (string)$node->members);
+            $item_members = explode(',', (string)$node->members);
 
             $tmp = [];
-            foreach ($members as $intf) {
+            foreach ($item_members as $intf) {
                 if (!empty($members[$intf]) && count($members[$intf]) > 1) {
                     $tmp[] = $intf;
                 }
@@ -78,7 +78,7 @@ class Lagg extends BaseModel
                     )
                 );
             }
-            if (!empty((string)$node->primary_member) && !in_array((string)$node->primary_member, $members)) {
+            if (!empty((string)$node->primary_member) && !in_array((string)$node->primary_member, $item_members)) {
                 $messages->appendMessage(
                     new Message(
                         sprintf(gettext('Primary member %s not in member list.'), (string)$node->primary_member),

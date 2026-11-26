@@ -317,6 +317,7 @@
             <nophase2connected>Phase2 disconnected</nophase2connected>
             <connect>Connect</connect>
             <disconnect>Disconnect</disconnect>
+            <defunct>Tunnel defunct</defunct>
         </translations>
     </ipsectunnels>
     <Wireguard>

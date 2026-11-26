@@ -52,7 +52,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     # check for a running download process, this may take a while so it's better to check...
     try:
-        lck = open('/tmp/unbound-download_blocklists.tmp', 'w+')
+        lck = open('/tmp/unbound-download_blocklists.tmp', 'a')
         fcntl.flock(lck, fcntl.LOCK_EX | fcntl.LOCK_NB)
     except IOError:
         # already running, exit status 99

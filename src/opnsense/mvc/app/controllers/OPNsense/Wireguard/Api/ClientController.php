@@ -133,9 +133,9 @@ class ClientController extends ApiMutableModelControllerBase
         return $result;
     }
 
-    public function toggleClientAction($uuid)
+    public function toggleClientAction($uuid, $enabled = null)
     {
-        return $this->toggleBase('clients.client', $uuid);
+        return $this->toggleBase('clients.client', $uuid, $enabled);
     }
 
     public function getClientBuilderAction()

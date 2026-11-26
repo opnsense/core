@@ -1,0 +1,18 @@
+{% extends "/OPNsense/Sample/example_parent.txt" %}
+{% block content %}
+
+For demonstration purposes this template is based upon another template in the OPNsense/Sample module.
+The block named "content" is replaced with this data
+
+In the +TARGETS file, the name of the output is describes as elements of the config data, because we will receive
+all of the config.xml data when rendering this template, we have to filter the parts we need.
+
+For example, only use this interfaces data:
+
+{% for key,item in interfaces.items() %}
+    {% if TARGET_FILTERS['interfaces.'+key] %}
+       my interface name is {{ key }}, connected to {{ item.if }} using {{ item.ipaddr }}
+    {% endif %}
+{% endfor %}
+
+{% endblock %}

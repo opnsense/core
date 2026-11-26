@@ -28,6 +28,7 @@
     package : configd
 """
 import os
+import stat
 import unittest
 import collections
 from modules import config
@@ -70,8 +71,9 @@ class TestTemplateMethods(unittest.TestCase):
         """
         conf_path = '%s/config/config.xml' % '/'.join(__file__.split('/')[:-1])
         self.output_path = '%s/output/' % '/'.join(__file__.split('/')[:-1])
+        template_path = '%s/templates/' % '/'.join(__file__.split('/')[:-1])
         self.conf = config.Config(conf_path)
-        self.tmpl = template.Template(target_root_directory=self.output_path)
+        self.tmpl = template.Template(target_root_directory=self.output_path, template_dir=template_path)
         self.tmpl.set_config(self.conf.get())
         if not os.path.exists(self.output_path):
             os.mkdir(self.output_path)
@@ -95,6 +97,13 @@ class TestTemplateMethods(unittest.TestCase):
         """
         generated_filenames = self.tmpl.generate('OPNsense/Sample')
         self.assertEqual(len(generated_filenames), 4, 'number of output files not 4')
+        for filename in generated_filenames:
+            root_perm = stat.S_IMODE(os.lstat(os.path.dirname(filename)).st_mode) & (~stat.S_IXGRP & ~stat.S_IXUSR & ~stat.S_IXOTH)
+            file_perm = stat.S_IMODE(os.lstat(filename).st_mode)
+            if os.path.basename(filename) == 'simple_page.txt':
+                self.assertEqual(file_perm, int('600', 8))
+            else:
+                self.assertEqual(file_perm, root_perm)
 
     @unittest.skip("Very fragile test, only works on clean install")
     def test_all(self):
@@ -106,7 +115,7 @@ class TestTemplateMethods(unittest.TestCase):
         self.expected_filenames = dict()
         self.generated_filenames = list()
         templates_path = '%s/../templates' % '/'.join(__file__.split('/')[:-1])
-        for root, dirs, files in os.walk(templates_path):
+        for root, _, files in os.walk(templates_path):
             for filenm in files:
                 if filenm == '+TARGETS':
                     filename = '%s/%s' % (root, filenm)

@@ -1,5 +1,5 @@
 .\"
-.\" Copyright (c) 2018-2025 Franco Fichtner <franco@opnsense.org>
+.\" Copyright (c) 2018-2026 Franco Fichtner <franco@opnsense.org>
 .\"
 .\" Redistribution and use in source and binary forms, with or without
 .\" modification, are permitted provided that the following conditions
@@ -24,7 +24,7 @@
 .\" OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
 .\" SUCH DAMAGE.
 .\"
-.Dd October 14, 2026
+.Dd November 25, 2026
 .Dt OPNSENSE-VERSION 8
 .Os
 .Sh NAME
@@ -32,7 +32,7 @@
 .Nd OPNsense version utility
 .Sh SYNOPSIS
 .Nm
-.Op Fl AaCDefHilNnsVvwx
+.Op Fl AaCDefHilNnsTtVvwXx
 .Op Ar package
 .Nm
 .Fl ( c | O | o | Fl R Ar tag_or_file )
@@ -101,6 +101,8 @@ by expanding the full string or file given.
 This feature is restricted to the root user.
 .It Fl s
 Return the accumulated file size of the package.
+.It Fl T
+Return the package tree hash.
 .It Fl t
 Return the support tier level of the package.
 .It Fl V
@@ -109,6 +111,8 @@ Return the package series.
 Return the package version.
 .It Fl w
 Return the product version website.
+.It Fl X
+Return the matching community ABI string.
 .It Fl x
 Return the required ABI string.
 This is necessary for detecting an ABI-crossing that

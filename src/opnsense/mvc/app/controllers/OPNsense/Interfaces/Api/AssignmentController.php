@@ -203,6 +203,6 @@ class AssignmentController extends ApiMutableModelControllerBase
     {
         $backend = new Backend();
 
-        return ['status' => file_exists('/tmp/.interfaces.todo') ? 'pending' : 'ok'];
+        return ['status' => file_exists(NetworkInterface::getTodoFilename()) ? 'pending' : 'ok'];
     }
 }

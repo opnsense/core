@@ -46,7 +46,7 @@ __author__ = 'Ad Schellevis'
 
 
 class Template(object):
-    def __init__(self, target_root_directory="/"):
+    def __init__(self, target_root_directory="/", template_dir=None):
         # init config (config.xml) data
         self._config = {}
 
@@ -54,7 +54,11 @@ class Template(object):
         self._target_root_directory = target_root_directory
 
         # setup jinja2 environment
-        self._template_dir = os.path.dirname(os.path.abspath(__file__)) + '/../templates/'
+        if template_dir is None:
+            self._template_dir = os.path.dirname(os.path.abspath(__file__)) + '/../templates/'
+        else:
+            self._template_dir = template_dir
+
         self._j2_env = jinja2.Environment(loader=jinja2.FileSystemLoader(self._template_dir), trim_blocks=True,
                                           extensions=["jinja2.ext.do", "jinja2.ext.loopcontrols"])
         # register additional filters
@@ -85,7 +89,7 @@ class Template(object):
         :param module_name: module name in dot notation ( company.module )
         :return: dictionary with module data
         """
-        result = {'+TARGETS': dict(), '+CLEANUP_TARGETS': dict()}
+        result = {'+TARGETS': {}, '+CLEANUP_TARGETS': {}, '+CHMOD': {}}
         file_path = '%s/%s' % (self._template_dir, module_name.replace('.', '/'))
         target_sources = ['%s/+TARGETS' % file_path]
         if os.path.exists('%s/+TARGETS.D' % file_path):
@@ -108,10 +112,12 @@ class Template(object):
                                     target_name, os.path.basename(target_source)
                                 ))
                             result['+TARGETS'][source_file] = target_name
-                            if len(parts) == 2:
+                            if len(parts) <= 2 or parts[2] == '':
                                 result['+CLEANUP_TARGETS'][source_file] = target_name
                             elif parts[2].strip() != "":
                                 result['+CLEANUP_TARGETS'][source_file] = parts[2].strip()
+                            if len(parts) >= 4:
+                                result['+CHMOD'][source_file] = parts[3]
         return result
 
     def list_modules(self):
@@ -121,7 +127,7 @@ class Template(object):
         :return: list (dict) of registered modules
         """
         result = list()
-        for root, dirs, files in os.walk(self._template_dir):
+        for root, _, _ in os.walk(self._template_dir):
             if root.count('/') > self._template_dir.count('/'):
                 module_name = root.replace(self._template_dir, '')
                 result.append(module_name)
@@ -228,6 +234,7 @@ class Template(object):
         module_data = self.list_module(module_name, strict)
         for src_template in list(module_data['+TARGETS']):
             target = module_data['+TARGETS'][src_template]
+            target_chmod = module_data['+CHMOD'][src_template] if src_template in module_data['+CHMOD'] else None
 
             target_filename_tags = self.__find_string_tags(target)
             target_filters = self.__find_filters(target_filename_tags)
@@ -288,11 +295,13 @@ class Template(object):
                                 f_out.write('\n')
                         f_out.close()
                         # copy root permissions, without exec
-                        root_perm = stat.S_IMODE(os.lstat(os.path.dirname(filename)).st_mode)
-                        os.chmod(filename, root_perm & (~stat.S_IXGRP & ~stat.S_IXUSR & ~stat.S_IXOTH))
+                        if target_chmod is None:
+                            root_perm = stat.S_IMODE(os.lstat(os.path.dirname(filename)).st_mode)
+                            os.chmod(filename, root_perm & (~stat.S_IXGRP & ~stat.S_IXUSR & ~stat.S_IXOTH))
+                        else:
+                            os.chmod(filename, int(target_chmod, 8))
 
                         result.append(filename)
-
         return result
 
     def iter_modules(self, module_name):
