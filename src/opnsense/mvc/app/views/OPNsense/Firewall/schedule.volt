@@ -166,12 +166,11 @@
     });
 </script>
 
-{# Keep deletion single-item in both grids, matching the API. #}
 <div class="content-box __mb">
-    {{ partial('layout_partials/base_bootgrid_table', formGridSchedule + {'hide_delete': true}) }}
+    {{ partial('layout_partials/base_bootgrid_table', formGridSchedule }}
 </div>
 <div class="content-box">
-    {{ partial('layout_partials/base_bootgrid_table', formGridRange + {'hide_delete': true}) }}
+    {{ partial('layout_partials/base_bootgrid_table', formGridRange) }}
 </div>
 
 {{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/firewall/schedule/reconfigure'}) }}

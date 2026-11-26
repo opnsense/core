@@ -58,25 +58,27 @@ class ScheduleController extends ApiMutableModelControllerBase
         return $this->setBase('schedule', 'schedule', $uuid);
     }
 
-    public function delItemAction($uuid)
+    public function delItemAction($uuids)
     {
         if (!$this->request->isPost()) {
             return ['result' => 'failed'];
         }
         Config::getInstance()->lock();
-        $schedule = $this->getModel()->schedule->getChild($uuid);
-        if ($schedule === null) {
-            return ['result' => 'failed'];
-        }
         // Both legacy and MVC firewall rules reference schedules by name.
-        foreach (Config::getInstance()->object()->xpath(
+        $referenced = array_map('strval', Config::getInstance()->object()->xpath(
             '/opnsense/filter/rule/sched | /opnsense/OPNsense/Firewall/Filter/rules/rule/sched'
-        ) as $name) {
-            if ($schedule->name->isEqual((string)$name)) {
+        ));
+        // Check the whole batch before removing any schedules
+        foreach (explode(',', $uuids) as $uuid) {
+            $schedule = $this->getModel()->schedule->getChild($uuid);
+            if ($schedule === null) {
+                return ['result' => 'failed'];
+            }
+            if (in_array($schedule->name->getValue(), $referenced, true)) {
                 throw new UserException(gettext('A schedule in use by a firewall rule cannot be deleted.'));
             }
         }
-        return $this->delBase('schedule', $uuid);
+        return $this->delBase('schedule', $uuids);
     }
 
     private function findRange($uuid)
@@ -150,17 +152,18 @@ class ScheduleController extends ApiMutableModelControllerBase
         return $this->setBase('timerange', $range->getParentNode()->__reference, $uuid);
     }
 
-    public function delRangeAction($uuid)
+    public function delRangeAction($uuids)
     {
         if (!$this->request->isPost()) {
             return ['result' => 'failed'];
         }
         Config::getInstance()->lock();
-        $range = $this->findRange($uuid);
+        // Timeranges cannot belong to different schedules, so we only have to resolve one
+        $range = $this->findRange(explode(',', $uuids)[0]);
         if ($range === null) {
             return ['result' => 'failed'];
         }
-        return $this->delBase($range->getParentNode()->__reference, $uuid);
+        return $this->delBase($range->getParentNode()->__reference, $uuids);
     }
 
     public function reconfigureAction()
