@@ -1081,7 +1081,7 @@
                                         <input type="checkbox" id="firmware_snapshot">
                                         {{ lang._('Automatically create a snapshot before updating') }}
                                         <div class="hidden" data-for="help_for_snapshot">
-                                            {{ lang._('Create a ZFS boot environment snapshot automatically before downloading and applying firmware updates. Only available on ZFS installations.') }}
+                                            {{ lang._('Create a snapshot automatically before downloading and applying firmware updates. Only available on ZFS installations.') }}
                                         </div>
                                     </td>
                                     <td></td>
