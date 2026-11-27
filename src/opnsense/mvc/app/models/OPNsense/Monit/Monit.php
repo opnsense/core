@@ -306,15 +306,15 @@ class Monit extends BaseModel
                                 }
                                 break;
                             case 'polltime':
-                            case 'pollmode':
+                            case 'invertpolltime':
                                 if (
-                                    (string)$parentNode->pollmode == 'notevery' && (
+                                    (string)$parentNode->invertpolltime == '1' && (
                                         empty((string)$parentNode->polltime) ||
                                         stripos((string)$parentNode->polltime, 'cycles') !== false
                                     )
                                 ) {
                                     $messages->appendMessage(new Message(
-                                        gettext("Skipping checks requires a Cron-style Poll Time."),
+                                        gettext("Invert Poll Time requires a Cron-style Poll Time."),
                                         $key
                                     ));
                                 }
