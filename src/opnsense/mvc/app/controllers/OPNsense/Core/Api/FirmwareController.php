@@ -958,6 +958,14 @@ class FirmwareController extends ApiMutableModelControllerBase
 
         $response['product'] = $product;
 
+        $response['snapshot_count'] = null;
+        if (!empty($config->system->firmware->snapshot)) {
+            $snapshots = json_decode(trim($backend->configdRun('zfs snapshot list') ?? ''), true);
+            if (is_array($snapshots) && array_is_list($snapshots)) {
+                $response['snapshot_count'] = count($snapshots);
+            }
+        }
+
         return $response;
     }
 

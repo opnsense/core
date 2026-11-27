@@ -508,6 +508,13 @@
                 $('#plugin_actions').hide();
             }
 
+            if (data['snapshot_count'] != null) {
+                $('.snapshot_count').text(data['snapshot_count']);
+                $('.snapshot_status').show();
+            } else {
+                $('.snapshot_status').hide();
+            }
+
             $("#changeloglist > tbody").empty();
             $("#changeloglist > thead").html("<tr><th>{{ lang._('Version') }}</th>" +
             "<th>{{ lang._('Date') }}</th><th></th></tr>");
@@ -859,6 +866,7 @@
                                     <button class="btn btn-info" id="upgrade"><i class="fa fa-check"></i> {{ lang._('Update') }}</button>
                                     <button class='btn btn-warning' id="upgrade_maj"><i class="fa fa-check"></i> {{ lang._('Upgrade') }}</button>
                                     <button class="btn btn-default" id="upgrade_cancel"><i class="fa fa-times"></i> {{ lang._('Cancel') }}</button>
+                                    <a href="/ui/core/snapshots" class="btn btn-default snapshot_status" style="display:none;"><i class="fa fa-shield text-success"></i> {{ lang._('Snapshot protected') }} <span class="badge snapshot_count"></span></a>
                                 </td>
                                 <td colspan="2" style="vertical-align:middle">
                                     <strong><div id="updatestatus"></div></strong>
@@ -955,6 +963,7 @@
                                             <li><a id="plugin_set" href="#">{{ lang._('Reset all local conflicts') }}</a></li>
                                         </ul>
                                     </div>
+                                    <a href="/ui/core/snapshots" class="btn btn-default snapshot_status" style="display:none;"><i class="fa fa-shield text-success"></i> {{ lang._('Snapshot protected') }} <span class="badge snapshot_count"></span></a>
                                 </td>
                                 <td></td>
                             </tr>
