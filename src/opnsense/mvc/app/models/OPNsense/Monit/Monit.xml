@@ -278,10 +278,7 @@
                 <Mask>/^([0-9a-zA-Z\*\-\,\/ ]){1,255}$/u</Mask>
                 <ValidationMessage>Should be a string between 1 and 255 characters. Allowed characters are letters and numbers as well as asterisk, hyphen, comma, slash and space.</ValidationMessage>
             </polltime>
-            <invertpolltime type="BooleanField">
-                <Default>0</Default>
-                <Required>Y</Required>
-            </invertpolltime>
+            <invertpolltime type="BooleanField"/>
         </service>
         <test type="ArrayField">
             <name type="StrictTextField">
