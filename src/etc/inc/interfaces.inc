@@ -2338,7 +2338,12 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
         mwexecf($mac_frmt, $mac_args);
     }
 
-    if (!empty($wancfg['media'])) {
+    /*
+     * Never (re)apply media from a link-up event: on drivers that reset the
+     * link when media is set and report the selection back as "autoselect"
+     * (e.g. ix(4) SFP+ ports) this re-triggers itself on every link-up.
+     */
+    if (!empty($wancfg['media']) && !$linkup) {
         $intf_details = $ifconfig_details[$realhwif];
         /* sanitizing current media to avoid mismatching on change detection */
         $media_changed = stripos(explode('(', $intf_details['media_raw'])[0], $wancfg['media']) == false;
