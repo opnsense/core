@@ -243,6 +243,7 @@ class ServiceController extends ApiMutableServiceControllerBase
     public function dropAlertLogAction()
     {
         if ($this->request->isPost()) {
+            $this->throwReadOnly();
             $filename = $this->request->getPost('filename', 'string', null);
             if ($filename != null) {
                 $filename = basename($filename);
