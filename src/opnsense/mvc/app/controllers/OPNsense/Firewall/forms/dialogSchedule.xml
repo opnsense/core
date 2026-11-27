@@ -1,0 +1,21 @@
+<form>
+    <field>
+        <id>schedule.active</id>
+        <label>Active</label>
+        <type>hidden</type>
+        <grid_view>
+            <formatter>active</formatter>
+            <width>50</width>
+        </grid_view>
+    </field>
+    <field>
+        <id>schedule.name</id>
+        <label>Name</label>
+        <type>text</type>
+    </field>
+    <field>
+        <id>schedule.descr</id>
+        <label>Description</label>
+        <type>text</type>
+    </field>
+</form>
