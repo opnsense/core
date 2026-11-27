@@ -108,16 +108,6 @@ class JsonKeyValueStoreField extends BaseListField
     }
 
     /**
-     * @param string $value set TTL for config action
-     */
-    public function setConfigdPopulateTTL($value)
-    {
-        if (is_numeric($value)) {
-            $this->internalConfigdPopulateTTL = $value;
-        }
-    }
-
-    /**
      * populate selection data
      */
     protected function actionPostLoadingEvent()
@@ -150,7 +140,7 @@ class JsonKeyValueStoreField extends BaseListField
                     $muttime = $stat['size'] == 0 ? 0 : $stat['mtime'];
                     if (time() - $muttime > $this->internalConfigdPopulateTTL) {
                         $act = $this->internalConfigdPopulateAct;
-                        $response = (new Backend())->configdRun($act, false, 20);
+                        $response = $this->getConfigdPopulateResponse();
                         if (!empty($response) && json_decode($response) !== null) {
                             // only store parsable results
                             fseek($sourcehandle, 0);
@@ -167,10 +157,7 @@ class JsonKeyValueStoreField extends BaseListField
                 }
             } else {
                 /* initial configd call  */
-                $data = json_decode(
-                    (new Backend())->configdRun($this->internalConfigdPopulateAct, false, 20),
-                    true
-                );
+                $data = json_decode($this->getConfigdPopulateResponse(), true);
             }
         } elseif ($sourcefile != null && is_file($sourcefile)) {
             if (isset(static::$internalStaticContent[$cachename])) {
@@ -203,6 +190,11 @@ class JsonKeyValueStoreField extends BaseListField
                 $this->internalValue = implode(',', array_keys($this->internalOptionList));
             }
         }
+    }
+
+    protected function getConfigdPopulateResponse()
+    {
+        return (new Backend())->configdRun($this->internalConfigdPopulateAct, false, 20);
     }
 
     /**
