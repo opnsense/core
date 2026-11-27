@@ -93,6 +93,13 @@
       <help><![CDATA[Set the service poll time. Either as a number of cycles "<i>NUMBER</i> CYCLES" or Cron-style "* 8-19 * * 1-5"]]></help>
    </field>
    <field>
+      <id>service.pollmode</id>
+      <label>Poll Time Mode</label>
+      <type>dropdown</type>
+      <advanced>true</advanced>
+      <help><![CDATA[How a Cron-style Poll Time is applied: either check the service only while the schedule matches, or skip the checks while it matches (e.g. "40-49 3 * * *" to pause during a nightly job) and check at all other times.]]></help>
+   </field>
+   <field>
       <id>service.description</id>
       <label>Description</label>
       <type>text</type>
