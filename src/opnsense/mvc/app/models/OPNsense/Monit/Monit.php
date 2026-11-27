@@ -305,6 +305,20 @@ class Monit extends BaseModel
                                     ));
                                 }
                                 break;
+                            case 'polltime':
+                            case 'invertpolltime':
+                                if (
+                                    (string)$parentNode->invertpolltime == '1' && (
+                                        empty((string)$parentNode->polltime) ||
+                                        stripos((string)$parentNode->polltime, 'cycles') !== false
+                                    )
+                                ) {
+                                    $messages->appendMessage(new Message(
+                                        gettext("Invert Poll Time requires a Cron-style Poll Time."),
+                                        $key
+                                    ));
+                                }
+                                break;
                             case 'interface':
                                 if (
                                     empty((string)$node) && (string)$parentNode->type == 'network'
