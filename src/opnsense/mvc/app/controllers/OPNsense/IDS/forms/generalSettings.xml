@@ -44,7 +44,7 @@
         <id>ids.general.MPMAlgo</id>
         <label>Pattern matcher</label>
         <type>dropdown</type>
-        <help>Select the multi-pattern matcher algorithm to use.</help>
+        <help>Select the multi-pattern matcher algorithm to use. Default automatically selects Vectorscan when available for better performance and lower memory usage, falling back to Aho-Corasick otherwise.</help>
     </field>
     <field>
         <id>ids.general.detect.Profile</id>
