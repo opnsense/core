@@ -104,9 +104,11 @@ class SettingsController extends ApiMutableModelControllerBase
             // add metadata filters
             foreach ($_POST as $key => $value) {
                 $key = $filter->sanitize($key, "string");
-                $value = $filter->sanitize($value, "string");
                 if (!in_array($key, ['current', 'rowCount', 'sort', 'searchPhrase'])) {
-                    $searchPhrase .= " {$key}/\"{$value}\" ";
+                    foreach (is_array($value) ? $value : [$value] as $item) {
+                        $item = $filter->sanitize($item, "string");
+                        $searchPhrase .= " {$key}/\"{$item}\" ";
+                    }
                 }
             }
 

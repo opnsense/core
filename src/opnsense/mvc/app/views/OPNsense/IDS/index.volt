@@ -108,10 +108,9 @@
             $('#rulemetadata').find("option:selected").each(function(){
                 let filter_name = $(this).data('property');
                 if (request[filter_name] === undefined) {
-                    request[filter_name] = $(this).data('value');
-                } else {
-                    request[filter_name] += "," + $(this).data('value');
+                    request[filter_name] = [];
                 }
+                request[filter_name].push($(this).data('value'));
             });
             return request;
         }
