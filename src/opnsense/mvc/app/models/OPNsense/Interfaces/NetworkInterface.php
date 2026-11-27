@@ -190,8 +190,16 @@ class NetworkInterface extends BaseModel
         }
 
         foreach ($interfaces as $key => $intf) {
-            $newIdentifier = 'opt' . $next_if;
             if (!isset(Config::getInstance()->object()->interfaces->$key)) {
+                /* Read Identifier from identifier field if possible, else find unused identifier  */
+                $newIdentifier = $intf['identifier'];
+                if (!preg_match('/^opt[1-9][0-9]{0,4}$/', $newIdentifier) || in_array($newIdentifier, $existing_ifnames)) {
+                    do {
+                        $newIdentifier = 'opt'.$next_if;
+                        $next_if++;
+                    } while (in_array($newIdentifier, $existing_ifnames));
+                }
+                $existing_ifnames[] = $newIdentifier;
                 /* register anchor with description, the rest of the data is stored in pending */
                 $newif = Config::getInstance()->object()->interfaces->addChild($newIdentifier);
                 $newif->if = $intf['if'];
