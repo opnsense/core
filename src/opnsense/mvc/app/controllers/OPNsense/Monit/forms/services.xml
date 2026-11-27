@@ -96,6 +96,7 @@
       <id>service.invertpolltime</id>
       <label>Invert Poll Time</label>
       <type>checkbox</type>
+      <advanced>true</advanced>
       <help><![CDATA[Skip the checks while the Cron-style Poll Time matches and check at all other times, e.g. "40-49 3 * * *" to pause during a nightly job.]]></help>
    </field>
    <field>
