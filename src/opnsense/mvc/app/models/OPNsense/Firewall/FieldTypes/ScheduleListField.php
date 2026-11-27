@@ -128,10 +128,10 @@ class ScheduleListField extends BaseField
                 return [gettext('Enter a valid time with minutes 00, 15, 30, 45 or 59.')];
             }
             $start = array_pad(explode(':', $range->start_time->getValue()), 2, '0');
-            // Ranges stay within one day; equal endpoints define an inactive interval.
+            // Ranges must have a positive duration within one day.
             return $this->getInternalXMLTagName() === 'stop_time' &&
-                (int)$parts[0] * 60 + (int)$parts[1] < (int)$start[0] * 60 + (int)$start[1] ?
-                [gettext('The start time must be no later than the stop time.')] : [];
+                (int)$parts[0] * 60 + (int)$parts[1] <= (int)$start[0] * 60 + (int)$start[1] ?
+                [gettext('The end time must be later than the start time.')] : [];
         }]);
         return $validators;
     }
