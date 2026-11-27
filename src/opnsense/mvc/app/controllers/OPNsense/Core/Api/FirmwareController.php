@@ -958,6 +958,14 @@ class FirmwareController extends ApiMutableModelControllerBase
 
         $response['product'] = $product;
 
+        $response['snapshot_count'] = null;
+        if (!empty($config->system->firmware->snapshot)) {
+            $snapshots = json_decode(trim($backend->configdRun('zfs snapshot list') ?? ''), true);
+            if (is_array($snapshots) && array_is_list($snapshots)) {
+                $response['snapshot_count'] = count($snapshots);
+            }
+        }
+
         return $response;
     }
 
@@ -967,7 +975,10 @@ class FirmwareController extends ApiMutableModelControllerBase
      */
     public function getOptionsAction()
     {
-        return $this->getModel()->getRepositoryOptions();
+        $options = $this->getModel()->getRepositoryOptions();
+        $result = json_decode((new Backend())->configdRun('zfs snapshot supported') ?? '', true) ?? [];
+        $options['snapshots_supported'] = !empty($result['status']) && $result['status'] == 'OK';
+        return $options;
     }
 
     /**

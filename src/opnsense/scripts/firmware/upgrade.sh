@@ -29,6 +29,14 @@ REQUEST="UPGRADE"
 
 . /usr/local/opnsense/scripts/firmware/config.sh
 
+if [ "$(/usr/local/sbin/pluginctl -g system.firmware.snapshot)" = "1" ]; then
+	if opnsense-update -uc; then
+		if ! create_snapshot; then
+			output_done keep-log
+		fi
+	fi
+fi
+
 if output_cmd opnsense-update -u; then
 	if output_cmd /usr/local/etc/rc.syshook upgrade; then
 		# pending kernel applies before reboot
