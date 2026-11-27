@@ -144,11 +144,24 @@ class ServiceController extends ApiMutableServiceControllerBase
     {
         $status = "failed";
         if ($this->request->isPost()) {
+            $this->throwReadOnly();
             $backend = new Backend();
             // flush rule configuration
             $bckresult = trim($backend->configdRun('template reload OPNsense/IDS'));
             if ($bckresult == "OK") {
-                $status = $backend->configdRun("ids reload");
+                $running = $this->statusAction()['status'] == 'running';
+                if (!$this->serviceEnabled()) {
+                    $status = $running ? $this->stopAction()['response'] : "OK";
+                } elseif ($running) {
+                    $status = $backend->configdRun("ids reload");
+                } else {
+                    $bckresult = trim($backend->configdRun("ids install rules"));
+                    if ($bckresult == "OK") {
+                        $status = $this->startAction()['response'];
+                    } else {
+                        $status = "error installing ids rules (" . $bckresult . ")";
+                    }
+                }
             } else {
                 $status = "template error";
             }

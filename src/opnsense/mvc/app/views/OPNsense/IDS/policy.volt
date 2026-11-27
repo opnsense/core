@@ -143,7 +143,7 @@
     </div>
 </div>
 
-{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/ids/service/reconfigure'}) }}
+{{ partial('layout_partials/base_apply_button', {'data_endpoint': '/api/ids/service/reload_rules'}) }}
 
 {{ partial("layout_partials/base_dialog",['fields':formDialogPolicy,'id':formGridPolicy['edit_dialog_id'],'label':lang._('Rule details'),'hasSaveBtn':'true'])}}
 {{ partial("layout_partials/base_dialog",['fields':formDialogPolicyRule,'id':formGridPolicyRule['edit_dialog_id'],'label':lang._('Rule details'),'hasSaveBtn':'true'])}}
