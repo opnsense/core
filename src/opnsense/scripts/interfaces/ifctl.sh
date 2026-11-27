@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2022-2025 Franco Fichtner <franco@opnsense.org>
+# Copyright (c) 2022-2026 Franco Fichtner <franco@opnsense.org>
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -212,20 +212,22 @@ elif [ "${DO_COMMAND}" = "-l" ]; then
 		FILE=${MATCH##*/}
 		IF=${FILE%_*}
 		IF=${IF%%:*}
-		IF=$(echo ${IF} | sed -e 's/[.:]/__/g')
 		MD=${FILE##*_}
+
+		KEY=ifctl_$(md5 -qs "${IF}_${MD}") || exit 23
 
 		# suffix :slaac matched before plain interface
 		# so we can export the resulting file name first
 		# and overwrite later
-		if [ -z "$(eval echo \${${IF}_${MD}})" ]; then
-			RESULTS="${RESULTS} ${IF}_${MD}"
+		if [ -z "$(printenv "${KEY}")" ]; then
+			RESULTS="${RESULTS} ${KEY}"
 		fi
-		eval export ${IF}_${MD}='${MATCH}'
+
+		export "${KEY}=${MATCH}"
 	done
 
 	for RESULT in ${RESULTS}; do
-		eval echo \${${RESULT}}
+		printenv "${RESULT}"
 	done
 
 	exit 0
@@ -237,20 +239,23 @@ if [ -z "${IF}" ]; then
 	RESULTS=
 
 	# list all interfaces that have the requested file
-	for FOUND in $(find -s /tmp -name ${FILE#/tmp/}); do
+	for FOUND in $(find -s /tmp -name "${FILE#/tmp/}"); do
 		FOUND=${FOUND#/tmp/}
 		FOUND=${FOUND%_*}
 		FOUND=${FOUND%:*}
-		IF=$(echo ${FOUND} | sed -e 's/[.:]/__/g')
-		if [ -z "$(eval echo \${${IF}_found})" ]; then
-			RESULTS="${RESULTS} ${IF}_found"
+
+		KEY=ifctl_$(md5 -qs "${FOUND}") || exit 23
+
+		if [ -z "$(printenv "${KEY}")" ]; then
+			RESULTS="${RESULTS} ${KEY}"
 		fi
-		eval export ${IF}_found='${FOUND}'
+
+		export "${KEY}=${FOUND}"
 	done
 
 	# only list possible interfaces for user to choose from
 	for RESULT in ${RESULTS}; do
-		eval echo \${${RESULT}}
+		printenv "${RESULT}"
 	done
 
 	exit 0
