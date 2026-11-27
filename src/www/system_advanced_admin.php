@@ -1017,7 +1017,7 @@ $(document).ready(function() {
                 <td>
                   <select name="authmode[]" multiple="multiple" class="selectpicker" data-style="btn-default">
 <?php foreach ($a_authmode as $auth_key => $auth_server): ?>
-                    <option value="<?= html_safe($auth_key) ?>" <?= !empty($pconfig['authmode']) && in_array($auth_key, $pconfig['authmode']) ? 'selected="selected"' : '' ?>>
+                    <option value="<?= html_safe($auth_key) ?>" <?= !empty($pconfig['authmode']) && in_array(html_safe($auth_key), $pconfig['authmode']) ? 'selected="selected"' : '' ?>>
                       <?= html_safe($auth_server['name']) ?>
                     </option>
 <?php endforeach ?>
