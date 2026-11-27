@@ -132,7 +132,7 @@ class SystemController extends ApiControllerBase
     public function systemTimeAction()
     {
         $config = Config::getInstance()->object();
-        $boottime = json_decode((new Backend())->configdRun('system sysctl values kern.boottime,vm.loadavg'), true);
+        $boottime = json_decode((new Backend())->configdRun('system sysctl values kern.boottime,kern.boot_id,vm.loadavg'), true);
         preg_match("/sec = (\d+)/", $boottime['kern.boottime'], $matches);
 
         $last_change = date("D M j G:i:s T Y", !empty($config->revision->time) ? intval($config->revision->time) : 0);
@@ -147,6 +147,7 @@ class SystemController extends ApiControllerBase
             'uptime' => $this->formatUptime(time() - $matches[1]),
             'datetime' => date("D M j G:i:s T Y"),
             'boottime' => date("D M j G:i:s T Y", $matches[1]),
+            'boot_id' => $boottime['kern.boot_id'] ?? null,
             'config' => $last_change,
             'loadavg' => $loadavg,
         ];
