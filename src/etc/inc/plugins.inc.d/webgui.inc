@@ -461,7 +461,10 @@ EOD;
             $listener = "[{$listener}]";
         }
         $lighty_config .= "\$SERVER[\"socket\"] == \"{$listener}:{$lighty_port}\" {\n";
-        $lighty_config .= "\t\$HTTP[\"url\"] =~ \"^/api/\" {\n\t\tserver.stream-response-body = 2\n\t}\n";
+        /* XXX lighttpd 1.4.84+ truncates streamed FastCGI responses; buffer /api/ until fixed upstream */
+        $lighty_config .= "\t\$HTTP[\"url\"] =~ \"^/api/\" {\n\t\tserver.stream-response-body = 0\n\t}\n";
+        /* endpoints that stream forever (Server-Sent Events) must not be buffered */
+        $lighty_config .= "\t\$HTTP[\"url\"] =~ \"^/api/diagnostics/(traffic/stream|cpu_usage/stream|firewall/stream_log|log/)\" {\n\t\tserver.stream-response-body = 2\n\t}\n";
         if ($config['system']['webgui']['protocol'] == "https") {
             $lighty_config .= "\tssl.engine = \"enable\"" . PHP_EOL;
         }
