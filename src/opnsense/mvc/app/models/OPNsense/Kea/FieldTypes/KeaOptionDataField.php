@@ -204,6 +204,7 @@ class KeaOptionDataField extends BaseField
         159 => [KeaEncoding::HEX->value],       // DHCP Captive Portal (binary URL encoding variant)
         212 => [KeaEncoding::HEX->value],       // 6RD: IPv6 + IPv4 + prefix structure (mixed types)
         213 => [KeaEncoding::FQDN->value],
+        252 => [KeaEncoding::STRING->value],    // auto-proxy-config WPAD url
     ];
 
     private const DHCPV6_OPTION_TYPES = [
