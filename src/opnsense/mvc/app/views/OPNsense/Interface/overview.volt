@@ -43,11 +43,14 @@
             for (let key in data) {
                 if (data.hasOwnProperty(key)) {
                     let value = data[key];
+                    let $cell = $('<td>');
                     if (Array.isArray(value)) {
                         // If the value is an array, join the elements with a newline
-                        value = value.join('<br>');
+                        $cell.html(value.map(item => $('<div>').text(item).html()).join('<br>'));
+                    } else {
+                        $cell.text(value);
                     }
-                    dataRow.append($('<td>').html(value));
+                    dataRow.append($cell);
                 }
             }
             table.append(dataRow);
@@ -93,7 +96,7 @@
                     })
                         .addClass('badge badge-pill')
                         .css('background-color', ip.status === 'MASTER' ? 'green' : 'primary')
-                        .prop('title', titleLines.join('<br/>'));
+                        .prop('title', titleLines.map(line => $('<div>').text(line).html()).join('<br/>'));
 
                     $span.append($carp);
                 }
@@ -163,6 +166,9 @@
                                     }
                                     if (key === 'ipv4' || key === 'ipv6') {
                                         value = iterate_ips(value);
+                                    } else if (typeof value === 'string' || Array.isArray(value)) {
+                                        // Escape received values before adding our own line breaks.
+                                        value = $('<div>').text(value.toString()).html();
                                     }
 
                                     if (!'translation' in data[key]) {
@@ -194,9 +200,9 @@
                                 }
 
                                 $table.append($table_body);
-                                $('[data-toggle="tooltip"]').tooltip({container: 'body', html:true});
+                                $('[data-toggle="tooltip"]').tooltip({container: 'body'});
                                 BootstrapDialog.show({
-                                    title: data['description']['value'],
+                                    title: $('<span>').text(data['description']['value']),
                                     message: $table.prop('outerHTML'),
                                     type: BootstrapDialog.TYPE_INFO,
                                     draggable: true,
@@ -222,7 +228,7 @@
                             if (row.identifier) {
                                 descr += ' (' + row.identifier + ')';
                             }
-                            return descr;
+                            return $('<div>').text(descr).html();
                         },
                         "vlan": function (column, row) {
                             if (row.vlan_tag) {
@@ -243,7 +249,8 @@
                                 connected = '';
                             }
 
-                            return '<i class="fa fa-plug ' + connected + '" title="' + status + '" data-toggle="tooltip"></i>';
+                            return $('<i>').addClass('fa fa-plug ' + connected)
+                                .attr('title', status).attr('data-toggle', 'tooltip').prop('outerHTML');
                         },
                         "ipv4": function (column, row) {
                             if (row.ipv4) {
