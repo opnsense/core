@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2023-2024 Deciso B.V.
+ * Copyright (C) 2023-2026 Deciso B.V.
  * Copyright (C) 2018 Michael Muenz <m.muenz@gmail.com>
  * All rights reserved.
  *
@@ -158,21 +158,23 @@ function wireguard_configure_do($verbose = false)
 
     service_log('Configuring WireGuard VPN...', $verbose);
 
-    configd_run('wireguard configure');
+    /* XXX dispatch to unblock during boot -- consider always dispatching */
+    configd_run('wireguard configure', product::getInstance()->booting());
 
     service_log("done.\n", $verbose);
 }
 
 function wireguard_sync($verbose = false)
 {
+    $instances = [];
+
     if (!wireguard_enabled()) {
         return;
     }
 
-    $instances = [];
     foreach ((new OPNsense\Wireguard\Server())->servers->server->iterateItems() as $node) {
-        if (!empty((string)$node->enabled)) {
-            $instances[(string)$node->interface] = (string)$node->cnfFilename;
+        if (!$node->enabled->isEmpty()) {
+            $instances[] = $node;
         }
     }
 
@@ -182,8 +184,13 @@ function wireguard_sync($verbose = false)
 
     service_log('Synchronizing WireGuard VPN...', $verbose);
 
-    foreach ($instances as $device => $config) {
-        mwexecf('/usr/bin/wg syncconf %s %s', [$device, $config]);
+    foreach ($instances as $node) {
+        $statHandle = fopen($node->statFilename, 'a+e');
+        if (flock($statHandle, LOCK_EX)) {
+            mwexecf('/usr/bin/wg syncconf %s %s', [$node->interface, $node->cnfFilename]);
+            flock($statHandle, LOCK_UN);
+        }
+        fclose($statHandle);
     }
 
     service_log("done.\n", $verbose);
