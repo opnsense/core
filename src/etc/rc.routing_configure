@@ -47,11 +47,19 @@ if ($monitor_hook) {
     /* make a copy of the current content before modifying dpinger in the hook */
     $monitor_data = return_gateways_status();
 
+    /*
+     * XXX We should dump the $monitor_data into a temporary JSON file and
+     * or use an environment variable to point ot the file for subsequent
+     * calls of return_gateways_status() which also matters for the
+     * filter_configure_sync() call below.
+     */
+
     /* pass down gateways in a shell compatible way as a single argument */
     pass_safe('/usr/local/etc/rc.syshook monitor %s', implode(',', $monitor_gws));
 }
 
-/* XXX would have to use $monitor_data if set */
+/* XXX would have to use $monitor_data if set, see above */
 filter_configure_sync(true, false);
 
+/* XXX monitor data doesn't have to be passed if we use something more clever */
 filter_gateway_states($monitor_gws, $monitor_data);
