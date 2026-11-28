@@ -48,6 +48,7 @@ Reference: [Development Workflow](https://docs.opnsense.org/development/workflow
 - Avoid formatting-only churn in unrelated lines.
 - Keep public API shape stable unless a breaking change is intentional.
 - Wrap user-facing PHP strings in `gettext()` where appropriate, important: except log messages
+- Changing a `gettext()` string drops its existing translations until it is translated again; mention it in the PR.
 
 Reference: [Coding Guidelines](https://docs.opnsense.org/development/guidelines.html)
 
@@ -69,6 +70,13 @@ A good change should be easy to explain:
 - How was it tested?
 
 Avoid PRs that mix unrelated refactors, formatting, and behavior changes.
+
+## Before Submitting
+
+- Check current master and the open issues and pull requests first; the problem may already be fixed or in progress.
+- Reproduce the problem on a running OPNsense, test the change there, and describe in the PR what was run and what changed.
+- Add unit tests only for risk areas, not for every small fix.
+- Fill in the pull request template (`.github/pull_request_template.md`), including the AI disclosure.
 
 ## Agent Rules
 
