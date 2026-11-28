@@ -79,6 +79,14 @@
         <advanced>true</advanced>
     </field>
     <field>
+        <id>ids.general.homenet_interfaces</id>
+        <label>Dynamic IPv6 interfaces</label>
+        <type>select_multiple</type>
+        <style>selectpicker</style>
+        <advanced>true</advanced>
+        <help>Add the IPv6 prefix delegated to the selected interfaces to the home networks and keep it up to date when it changes. Select the interface that receives the delegated prefix, usually the WAN. The whole delegated prefix is added, including unused subnets.</help>
+    </field>
+    <field>
         <id>ids.general.defaultPacketSize</id>
         <label>Default packet size</label>
         <type>text</type>
