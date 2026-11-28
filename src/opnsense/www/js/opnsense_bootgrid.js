@@ -133,6 +133,8 @@ class UIBootgrid {
         this.cellCommandHandler = this._onCellCommand.bind(this);
         this.addButton = false;
         this.deleteSelectedButton = false;
+        this.asyncDataSources = new Map();
+        this.asyncDataColumns = new Map();
 
         // wrapper-specific options
         this.options = {
@@ -180,6 +182,7 @@ class UIBootgrid {
             triggerEditFor: null,
             static: false, // no persistent storage, no resizable columns
             bottomReserveElement: null,
+            asyncDataSources: {},
             ...options
         };
 
@@ -228,6 +231,7 @@ class UIBootgrid {
         }
 
         this._parseGridView();
+        this._initializeAsyncDataSources();
         this._constructTable();
         this._registerEvents();
         this._renderActionBar();
@@ -360,6 +364,8 @@ class UIBootgrid {
             this.options.bottomReserveElement = document.querySelector('.grid-bottom-reserve');
         }
 
+        this.options.asyncDataSources = bootGridOptions?.asyncDataSources ?? {};
+
         if (compatOptions.get) this.crud.get = compatOptions.get;
         if (compatOptions.set) this.crud.set = compatOptions.set;
         if (compatOptions.add) this.crud.add = compatOptions.add;
@@ -406,7 +412,7 @@ class UIBootgrid {
                     this._onCellRendered(cell, formatterParams);
                 })
 
-                return formatterFn(column, cell.getData(), cb);
+                return formatterFn(column, this._asyncFormatterData(cell), cb);
             }
         }
 
@@ -567,6 +573,12 @@ class UIBootgrid {
                     }
                 }
 
+                let titleFormatter = this.options.headerFormatters[field?.headerFormatter] ?? null;
+                const asyncSource = this.asyncDataColumns.get(field.id);
+                if (asyncSource) {
+                    titleFormatter = this._asyncHeaderFormatter(asyncSource, titleFormatter, field.label);
+                }
+
                 col = {
                     visible: field.visible,
                     editable: field.editable,
@@ -574,7 +586,7 @@ class UIBootgrid {
                     formatter: this.options.formatters[field?.formatter] ?? this.options.formatters['default'],
                     sorter: this.options.sorters[field.sorter] ?? null,
                     title: field.label,
-                    titleFormatter: this.options.headerFormatters[field?.headerFormatter] ?? null,
+                    titleFormatter: titleFormatter,
                     field: field.id,
                     resizable: !this.options.static,
                     sequence: field.sequence ?? null,
@@ -792,6 +804,7 @@ class UIBootgrid {
 
         this.table.on('dataProcessed', () =>  {
             this._onDataProcessed();
+            this._loadAsyncDataSources();
         });
 
         this.table.on('dataChanged', debounce(() => {
@@ -1806,6 +1819,201 @@ class UIBootgrid {
         }
     }
 
+    /**
+     * Set up async data sources as configured, but do some validation as well.
+     */
+    _initializeAsyncDataSources() {
+        const claimedColumns = new Set();
+
+        for (const [name, config] of Object.entries(this.options.asyncDataSources)) {
+            // A source named after its only column does not need an explicit columns list.
+            const columns = config.columns ?? [name];
+            if ((!config.url && !config.request) || !Array.isArray(columns) || columns.length === 0) {
+                console.error(`Invalid async data source '${name}'`);
+                continue;
+            }
+
+            const invalidColumn = columns.find(column => !(column in this.gridView) || claimedColumns.has(column));
+            if (invalidColumn) {
+                console.error(`Invalid or duplicate async column '${invalidColumn}' in source '${name}'`);
+                continue;
+            }
+
+            columns.forEach(column => {
+                claimedColumns.add(column);
+                // Remote sorting cannot be correct for fields absent from the primary data source.
+                this.gridView[column].sortable = false;
+            });
+            this.asyncDataSources.set(name, {
+                config,
+                columns: columns,
+                active: config.active ?? true,
+                resolved: false,
+                loading: false,
+                generation: 0,
+                pendingKeys: null,
+                cache: new Map()
+            });
+            columns.forEach(column => this.asyncDataColumns.set(column, this.asyncDataSources.get(name)));
+        }
+    }
+
+    /**
+     * get data of a cell, short-circuit to cell.getData() for any normal
+     * cell, but if it's part of an async column, apply either
+     * resolved, missing or pending based on internal cache state.
+     */
+    _asyncFormatterData(cell) {
+        const data = cell.getData();
+        const source = this.asyncDataColumns.get(cell.getColumn().getField());
+        if (!source?.active) {
+            return data;
+        }
+
+        const key = String(data[this.options.datakey]);
+        const isPending = source.loading &&
+            (source.pendingKeys === null || source.pendingKeys.has(key));
+        let patch = isPending ? source.config.pending : source.cache.get(key);
+        if (!isPending && !source.cache.has(key)) {
+            patch = source.resolved ? source.config.missing : source.config.pending;
+        }
+        if (source.columns.length === 1) {
+            patch = {[source.columns[0]]: patch};
+        }
+
+        const overlay = {};
+        source.columns.forEach(column => {
+            if (patch && Object.prototype.hasOwnProperty.call(patch, column)) {
+                overlay[column] = patch[column];
+            }
+        });
+        return {...data, ...overlay};
+    }
+
+    /**
+     * If a column is used for async auxiliary data, this formatter is applied
+     * by default, providing a refresh button
+     */
+    _asyncHeaderFormatter(source, formatter, label) {
+        return (cell, formatterParams, onRendered) => {
+            const content = formatter ?
+                formatter(cell, formatterParams, onRendered) :
+                document.createTextNode(label);
+            const element = $('<span>').append(content);
+            const refresh = $('<span>', {
+                class: 'async-data-refresh',
+                'data-toggle': 'tooltip',
+                title: this._translate('refresh')
+            }).css({cursor: 'pointer', marginLeft: '4px'})
+                .append($('<i>', {class: 'fa-solid fa-fw fa-rotate-right'}))
+                .on('click', (event) => {
+                    event.stopPropagation();
+                    if (source.active) {
+                        this._fetchAsyncDataSource(source, true);
+                    }
+                });
+
+            onRendered(() => refresh.tooltip({container: 'body'}));
+            return element.append(refresh)[0];
+        };
+    }
+
+    /**
+     * auxiliary data is rendered via the formatters (_asyncFormatterData) to prevent having to
+     * call .update() directly on the whole table.
+     */
+    _redrawAsyncDataSource(source) {
+        const rows = new Set();
+        source.columns.forEach(column => {
+            this.table.getColumn(column)?.getCells().forEach(cell => rows.add(cell.getRow()));
+        });
+
+        // Reformat instantiated rows, including the virtual DOM buffer. Rows which
+        // have not been instantiated resolve the aux data cache when first rendered.
+        rows.forEach(row => row.reformat());
+    }
+
+    /**
+     * Handle auxiliary data fetch
+     */
+    async _fetchAsyncDataSource(source, refresh=false) {
+        const rows = source.config.loadMissing ? this.table.getData().filter(row => {
+            const key = row[this.options.datakey];
+            return key !== undefined && key !== null && (refresh || !source.cache.has(String(key)));
+        }) : this.table.getData();
+        if (source.config.loadMissing && rows.length === 0) {
+            source.resolved = true;
+            return;
+        }
+
+        const generation = ++source.generation;
+        source.loading = true;
+        source.pendingKeys = source.config.loadMissing ?
+            new Set(rows.map(row => String(row[this.options.datakey]))) : null;
+        this._redrawAsyncDataSource(source);
+
+        let failed = false;
+        let values;
+        try {
+            if (refresh) {
+                await source.config.refreshHandler?.();
+            }
+            const response = source.config.request ?
+                await source.config.request(rows, refresh) :
+                await $.ajax({
+                    method: 'GET',
+                    dataType: 'json',
+                    ...source.config.ajaxConfig,
+                    url: source.config.url
+                });
+            values = source.config.responseHandler ? source.config.responseHandler(response) : response;
+        } catch {
+            failed = true;
+        }
+
+        if (generation !== source.generation) {
+            return;
+        }
+
+        if (!failed) {
+            if (source.config.loadMissing) {
+                Object.entries(values ?? {}).forEach(([key, value]) => source.cache.set(key, value));
+                rows.forEach(row => {
+                    const key = String(row[this.options.datakey]);
+                    if (!source.cache.has(key)) {
+                        source.cache.set(key, source.columns.length === 1 ? source.config.missing : undefined);
+                    }
+                });
+            } else {
+                source.cache = new Map(Object.entries(values ?? {}));
+            }
+        }
+
+        // Keep a previous successful result on failure, but don't leave an initial request pending forever.
+        source.resolved = true;
+        source.loading = false;
+        source.pendingKeys = null;
+        this._redrawAsyncDataSource(source);
+        if (!failed && source.config.loadMissing) {
+            this._loadAsyncDataSources();
+        }
+    }
+
+    /**
+     * Entry point for auxiliary data called on dataProcessed to make sure we don't hold up rendering of the grid.
+     */
+    _loadAsyncDataSources() {
+        this.asyncDataSources.forEach(source => {
+            const hasMissingRows = source.config.loadMissing && this.table.getData().some(row => {
+                const key = row[this.options.datakey];
+                return key !== undefined && key !== null && !source.cache.has(String(key));
+            });
+            if (source.active && !source.loading && (!source.resolved || hasMissingRows)) {
+                this._fetchAsyncDataSource(source);
+            }
+        });
+    }
+
     _maintainScrollPosition(pos) {
         $(`#${this.id} > .tabulator-tableholder`)[0].scrollTop = pos;
     }
@@ -1949,8 +2157,8 @@ class UIBootgrid {
                 });
 
                 const key = `%${cell.getColumn().getDefinition().field}`;
-                const data = cell.getData();
-                return data[key] ?? cell.getValue();
+                const data = this._asyncFormatterData(cell);
+                return data[key] ?? data[cell.getField()] ?? cell.getValue();
             },
             commands: (cell, formatterParams, onRendered) => {
                 let html = [];
@@ -2536,6 +2744,19 @@ class UIBootgrid {
 
         if (redraw) {
             this.table.redraw();
+        }
+    }
+
+    setAsyncDataSourceEnabled(name, enabled) {
+        const source = this.asyncDataSources.get(name);
+        if (!source) {
+            throw new Error(`Unknown async data source '${name}'`);
+        }
+
+        source.active = enabled;
+        this._redrawAsyncDataSource(source);
+        if (enabled) {
+            this._loadAsyncDataSources();
         }
     }
 

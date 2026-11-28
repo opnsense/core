@@ -27,97 +27,10 @@
 <script>
     $( document ).ready(function() {
         const accessibleColumns = new Set("{{ accessibleColumns }}".split(','));
-        const hostnames = new Map();
-        const stateTraffic = new Map();
 
         function updateAccessibleColumns(grid) {
             ['hostname', 'statistics'].forEach(function(column) {
                 grid.bootgrid(accessibleColumns.has(column) ? 'setColumns' : 'unsetColumns', [column]);
-            });
-        }
-
-        function renderCache(grid, cache, column) {
-            grid.getTable().getRows().forEach(function(row) {
-                const address = row.getData().ip_address;
-                if (cache.has(address)) {
-                    row.getCell(column).setValue(cache.get(address));
-                }
-            });
-        }
-
-        function resolveHostnames(grid) {
-            if (!accessibleColumns.has('hostname')) {
-                return;
-            }
-
-            const addresses = [];
-            grid.getTable().getRows().forEach(function(row) {
-                const address = row.getData().ip_address;
-                if (address) {
-                    if (!hostnames.has(address)) {
-                        hostnames.set(address, null);
-                        addresses.push(address);
-                        // null explicitly renders the in-progress spinner.
-                        row.getCell('hostname').setValue(null);
-                    } else {
-                        row.getCell('hostname').setValue(hostnames.get(address));
-                    }
-                }
-            });
-
-            for (let i = 0; i < addresses.length; i += 50) {
-                const batch = addresses.slice(i, i + 50);
-                $.ajax({
-                    type: 'GET',
-                    url: '/api/diagnostics/dns/reverse_lookup',
-                    dataType: 'json',
-                    data: {address: batch},
-                    success: function(data) {
-                        batch.forEach(function(address) {
-                            const hostname = data && data[address];
-                            hostnames.set(address, hostname && hostname !== address ? hostname : '');
-                        });
-                        renderCache(grid, hostnames, 'hostname');
-                    },
-                    error: function() {
-                        batch.forEach(function(address) {
-                            hostnames.set(address, '');
-                        });
-                        renderCache(grid, hostnames, 'hostname');
-                    }
-                });
-            }
-        }
-
-        function fetchStateTraffic(grid) {
-            if (!accessibleColumns.has('statistics')) {
-                return;
-            }
-
-            const addresses = [];
-            grid.getTable().getRows().forEach(function(row) {
-                const address = row.getData().ip_address;
-                if (!address) {
-                    return;
-                }
-                if (!stateTraffic.has(address)) {
-                    stateTraffic.set(address, null);
-                    addresses.push(address);
-                }
-                row.getCell('statistics').setValue(stateTraffic.get(address));
-            });
-
-            if (addresses.length === 0) {
-                return;
-            }
-
-            ajaxCall('/api/diagnostics/firewall/query_pf_top_summary', {
-                addresses: addresses.join(',')
-            }, function(data) {
-                addresses.forEach(function(address) {
-                    stateTraffic.set(address, data?.items?.[address] || {bytes: 0, states: 0});
-                });
-                renderCache(grid, stateTraffic, 'statistics');
             });
         }
 
@@ -145,6 +58,7 @@
                         const grid = $("#grid-hosts").UIBootgrid({
                         search:'/api/hostdiscovery/service/search',
                         options: {
+                            datakey: 'ip_address',
                             requestHandler: function (params) {
                                 // sort on last_seen by default
                                 if ($.isEmptyObject(params.sort)) {
@@ -152,41 +66,47 @@
                                 }
                                 return params;
                             },
-                            headerFormatters: {
-                                statistics: function() {
-                                    const element = $(`
-                                        <span>
-                                            {{ lang._('Statistics') }}
-                                            <span class="statistics-cache-flush"
-                                                style="cursor:pointer; margin-left:4px;"
-                                                data-toggle="tooltip"
-                                                title="{{ lang._('Refresh') }}">
-                                                <i class="fa-solid fa-fw fa-rotate-right"></i>
-                                            </span>
-                                        </span>
-                                    `);
-
-                                    element.find('.statistics-cache-flush').on('click', function(event) {
-                                        event.stopPropagation();
-                                        if (!accessibleColumns.has('statistics')) {
-                                            return;
-                                        }
-                                        const bootgrid = grid.data('UIBootgrid');
-                                        // Show the loading state while configd refreshes its cache.
-                                        stateTraffic.clear();
-                                        bootgrid.getTable().getRows().forEach(function(row) {
-                                            row.getCell('statistics').setValue(null);
-                                        });
-                                        ajaxCall(
-                                            '/api/diagnostics/firewall/flush_pf_top_cache',
-                                            {},
-                                            function() {
-                                                fetchStateTraffic(bootgrid);
+                            asyncDataSources: {
+                                hostname: {
+                                    active: accessibleColumns.has('hostname'),
+                                    loadMissing: true,
+                                    pending: null,
+                                    missing: '',
+                                    request: async function(rows) {
+                                        const addresses = rows.map(row => row.ip_address).filter(Boolean);
+                                        const hostnames = {};
+                                        // Resolve one batch at a time.
+                                        for (let i = 0; i < addresses.length; i += 50) {
+                                            const batch = addresses.slice(i, i + 50);
+                                            let response = {};
+                                            try {
+                                                response = await $.ajax({
+                                                    type: 'GET',
+                                                    url: '/api/diagnostics/dns/reverse_lookup',
+                                                    dataType: 'json',
+                                                    data: {address: batch}
+                                                });
+                                            } catch {
+                                                // Leave failed lookups empty and continue with the next batch.
+                                                continue;
                                             }
-                                        );
-                                    });
-
-                                    return element[0];
+                                            batch.forEach(address => {
+                                                const hostname = response?.[address];
+                                                hostnames[address] = hostname && hostname !== address ? hostname : '';
+                                            });
+                                        }
+                                        return hostnames;
+                                    }
+                                },
+                                statistics: {
+                                    active: accessibleColumns.has('statistics'),
+                                    url: '/api/diagnostics/firewall/query_pf_top_summary',
+                                    ajaxConfig: {method: 'POST'},
+                                    pending: null,
+                                    missing: {bytes: 0, states: 0},
+                                    responseHandler: function(response) {
+                                        return response?.items || {};
+                                    }
                                 }
                             },
                             formatters: {
@@ -231,9 +151,6 @@
                         });
                         grid.on('loaded.rs.jquery.bootgrid', function() {
                             updateAccessibleColumns(grid);
-                            const bootgrid = grid.data('UIBootgrid');
-                            resolveHostnames(bootgrid);
-                            fetchStateTraffic(bootgrid);
                         });
                     } else {
                         $("#grid-hosts").bootgrid('reload');

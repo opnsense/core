@@ -276,19 +276,8 @@ class FirewallController extends ApiControllerBase
         }
     }
 
-    public function flushPfTopCacheAction()
-    {
-        if (!$this->request->isPost()) {
-            return ['status' => 'error'];
-        }
-
-        (new Backend())->configdRun('!filter diag top');
-
-        return ['status' => 'ok'];
-    }
-
     /**
-     * Aggregate cached pftop counters for the requested addresses.
+     * Aggregate pftop counters
      */
     public function queryPfTopSummaryAction()
     {
@@ -297,25 +286,21 @@ class FirewallController extends ApiControllerBase
         }
 
         $statistics = [];
-        foreach (explode(',', (string)$this->request->getPost('addresses', null, '')) as $address) {
-            if (Util::isIpAddress($address)) {
-                $statistics[$address] = ['bytes' => 0, 'states' => 0];
-            }
-        }
 
-        if (!empty($statistics)) {
-            $pftop = json_decode((new Backend())->configdpRun('filter diag top'), true) ?? [];
-            foreach ($pftop['details'] ?? [] as $record) {
-                $recordAddresses = array_unique([
-                    $record['src_addr'] ?? null,
-                    $record['dst_addr'] ?? null,
-                    $record['gw_addr'] ?? null
-                ]);
-                foreach ($recordAddresses as $address) {
-                    if ($address !== null && isset($statistics[$address])) {
-                        $statistics[$address]['bytes'] += (int)($record['bytes'] ?? 0);
-                        $statistics[$address]['states']++;
-                    }
+        $pftop = json_decode((new Backend())->configdpRun('filter diag top'), true) ?? [];
+        foreach ($pftop['details'] ?? [] as $record) {
+            $recordAddresses = array_unique([
+                $record['src_addr'] ?? null,
+                $record['dst_addr'] ?? null,
+                $record['gw_addr'] ?? null
+            ]);
+            foreach ($recordAddresses as $address) {
+                if ($address !== null && Util::isIpAddress($address)) {
+                    $statistics[$address] ??= ['bytes' => 0, 'states' => 0];
+                }
+                if ($address !== null && isset($statistics[$address])) {
+                    $statistics[$address]['bytes'] += (int)($record['bytes'] ?? 0);
+                    $statistics[$address]['states']++;
                 }
             }
         }

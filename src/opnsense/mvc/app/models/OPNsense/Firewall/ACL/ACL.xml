@@ -11,6 +11,7 @@
         <patterns>
             <pattern>ui/firewall/filter/*</pattern>
             <pattern>api/firewall/filter/*</pattern>
+            <pattern>api/firewall/filter_util/rule_stats*</pattern>
         </patterns>
     </page-filter-api>
     <page-filter-snat-api>

@@ -64,6 +64,55 @@
             grid.bootgrid(inspectEnabled ? "setColumns" : "unsetColumns", ['statistics']);
         }
 
+        function formatRuleStatistics(row) {
+            if (row.isGroup || !inspectEnabled) {
+                return "";
+            }
+
+            const statistics = row.statistics;
+            if (statistics == null) {
+                return '<span class="fa fa-spinner fa-pulse"></span>';
+            }
+
+            const evals   = statistics["evaluations"] ?? "";
+            const states  = statistics["states"] ?? "";
+            const packets = statistics["packets"] ?? "";
+            const bytes   = statistics["bytes"] ?? "";
+            const uuid    = row["uuid"] ?? "";
+
+            function render(icon, title, value, is_number = false, link = null) {
+                if (!value || value === "0") {
+                    return "";
+                }
+
+                const numValue  = parseInt(value, 10);
+                const formatted = byteFormat(numValue, 1, is_number);
+
+                return `
+                    <span data-toggle="tooltip" title="${title}: ${numValue.toLocaleString()}">
+                        ${link
+                            ? `<a href="${link}" target="_blank" rel="noopener noreferrer" id="${uuid}_states">
+                                <i class="fa fa-fw ${icon}"></i> ${formatted}
+                            </a>`
+                            : `<i class="fa fa-fw ${icon}"></i> ${formatted}`}
+                    </span>
+                `;
+            }
+
+            const parts = [
+                render("fa-chart-line", "{{ lang._('States') }}", states, true, `/ui/diagnostics/firewall/states#${uuid}`),
+                render("fa-bullseye", "{{ lang._('Evaluations') }}", evals, true),
+                render("fa-box", "{{ lang._('Packets') }}", packets, true),
+                render("fa-database", "{{ lang._('Bytes') }}", bytes)
+            ].filter(Boolean);
+
+            return parts.length === 0 ? "" : `
+                <div class="stats-cell">
+                    ${parts.join("")}
+                </div>
+            `;
+        }
+
         // read interface from URL hash once, for the first grid load
         let pendingUrlInterface = getUrlHash('interface') || null;
         let previousGroupType = null;
@@ -277,13 +326,26 @@
                         // '__any' omit parameter for all rules
                     }
                     if (inspectEnabled) {
-                        // Send as a comma separated string
-                        request['show_all'] = true;
+                        request['inspect'] = true;
                     }
                     return request;
                 },
                 // convert the flat rows into a tree view
                 responseHandler: responseHandler,
+                asyncDataSources: {
+                    statistics: {
+                        active: inspectEnabled,
+                        url: '/api/firewall/filter_util/rule_stats',
+                        pending: null,
+                        missing: {},
+                        responseHandler: function(response) {
+                            if (response.status !== 'ok') {
+                                throw new Error('Unable to retrieve rule statistics');
+                            }
+                            return response.stats || {};
+                        }
+                    }
+                },
 
                 headerFormatters: {
                     enabled: function (column) {
@@ -311,33 +373,7 @@
                         return '<i class="fa-solid fa-fw fa-tag" data-toggle="tooltip" title="{{ lang._("Categories") }}"></i>';
                     },
                     statistics: function () {
-                        const element = $(`
-                            <span class="stats-header-icons">
-                                <span data-toggle="tooltip" title="{{ lang._('Statistics') }}">
-                                    <i class="fa-solid fa-fw fa-eye"></i>
-                                </span>
-                                <span class="inspect-cache-flush"
-                                    style="cursor:pointer; margin-left:4px;"
-                                    data-toggle="tooltip"
-                                    title="{{ lang._('Refresh') }}">
-                                    <i class="fa-solid fa-fw fa-rotate-right"></i>
-                                </span>
-                            </span>
-                        `);
-
-                        element.find('.inspect-cache-flush').on('click', function () {
-                            ajaxCall(
-                                '/api/firewall/filter/flush_inspect_cache',
-                                {},
-                                function () {
-                                    $('#{{ formGridFilterRule["table_id"] }}').bootgrid('reload');
-                                },
-                                null,
-                                'POST'
-                            );
-                        });
-
-                        return element[0];
+                        return '<i class="fa-solid fa-fw fa-eye" data-toggle="tooltip" title="{{ lang._('Statistics') }}"></i>';
                     },
                 },
                 formatters:{
@@ -571,51 +607,7 @@
                         return isNegated + renderedItems;
                     },
                     statistics: function(column, row) {
-                        if (row.isGroup || !inspectEnabled) {
-                            return "";
-                        }
-
-                        const evals   = row["evaluations"] ?? "";
-                        const states  = row["states"] ?? "";
-                        const packets = row["packets"] ?? "";
-                        const bytes   = row["bytes"] ?? "";
-                        const uuid    = row["uuid"] ?? "";
-
-                        function render(icon, title, value, is_number = false, link = null) {
-                            if (!value || value === "0") {
-                                return "";
-                            }
-
-                            const numValue  = parseInt(value, 10);
-                            const formatted = byteFormat(numValue, 1, is_number);
-
-                            return `
-                                <span data-toggle="tooltip" title="${title}: ${numValue.toLocaleString()}">
-                                    ${link
-                                        ? `<a href="${link}" target="_blank" rel="noopener noreferrer" id="${uuid}_states">
-                                            <i class="fa fa-fw ${icon}"></i> ${formatted}
-                                        </a>`
-                                        : `<i class="fa fa-fw ${icon}"></i> ${formatted}`}
-                                </span>
-                            `;
-                        }
-
-                        const parts = [
-                            render("fa-chart-line", "{{ lang._('States') }}", states, true, `/ui/diagnostics/firewall/states#${uuid}`),
-                            render("fa-bullseye", "{{ lang._('Evaluations') }}", evals, true),
-                            render("fa-box", "{{ lang._('Packets') }}", packets, true),
-                            render("fa-database", "{{ lang._('Bytes') }}", bytes)
-                        ].filter(Boolean);
-
-                        if (parts.length === 0) {
-                            return "";
-                        }
-
-                        return `
-                            <div class="stats-cell">
-                                ${parts.join("")}
-                            </div>
-                        `;
+                        return formatRuleStatistics(row);
                     },
                     sched: function(column, row) {
                         if (row.isGroup || typeof row[column.id] !== "string" || row[column.id] === "") {
@@ -1024,7 +1016,7 @@
             localStorage.setItem("firewall_rule_inspect", inspectEnabled ? "1" : "0");
             $(this).toggleClass('active btn-primary', inspectEnabled);
             updateStatisticColumns();
-            grid.bootgrid("reload");
+            grid.bootgrid('setAsyncDataSourceEnabled', 'statistics', inspectEnabled);
         });
 
         $("#tree_toggle_container").detach().insertAfter("#inspect_toggle_container");
