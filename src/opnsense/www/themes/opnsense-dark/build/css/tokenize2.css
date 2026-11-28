@@ -33,6 +33,8 @@
 }
 
 .tokenize > .tokens-container > .token {
+    max-width: 100%;
+    overflow-wrap: anywhere;
     padding: 0 1.2em 0 5px;
     background-color: #1a1d27;
     -webkit-border-radius: 2px;
