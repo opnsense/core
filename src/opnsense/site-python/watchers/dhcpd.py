@@ -27,6 +27,7 @@
 import os
 import calendar
 import datetime
+import syslog
 
 
 class DHCPDLease(object):
@@ -62,9 +63,11 @@ class DHCPDLease(object):
         lease['address'] = lines[0].split()[1]
         for line in lines:
             parts = line.split()
+            if not parts:
+                continue
             field_name = parts[0]
             field_value = None
-            if field_name in ('starts', 'ends', 'tstp', 'tsfp', 'atsfp', 'cltt') and len(parts) >= 3:
+            if field_name in ('starts', 'ends', 'tstp', 'tsfp', 'atsfp', 'cltt') and len(parts) >= 4:
                 dt = '%s %s' % (parts[2], parts[3])
                 try:
                     field_value = calendar.timegm(datetime.datetime.strptime(dt, "%Y/%m/%d %H:%M:%S;").timetuple())
@@ -102,14 +105,25 @@ class DHCPDLease(object):
 
         if self._fhandle is not None:
             while True:
+                line_pos = self._fhandle.tell()
                 line = self._fhandle.readline()
-                if line:
+                if line and not line.endswith('\n'):
+                    # dhcpd is still appending, don't consume a partial line, retry on next pass
+                    self._fhandle.seek(line_pos)
+                    break
+                elif line:
                     if len(line) > 5 and line[0:5] == 'lease':
                         self._section_data.append(line)
                     elif len(line) > 1 and line[0] == '}' and len(self._section_data) > 0:
                         self._section_data.append(line)
-                        yield self.parse_lease(self._section_data)
+                        section_data = self._section_data
                         self._section_data = []
+                        try:
+                            lease = self.parse_lease(section_data)
+                        except Exception as e:
+                            syslog.syslog(syslog.LOG_WARNING, "dhcpd leases: skipping unparsable lease (%s)" % e)
+                            continue
+                        yield lease
                     elif len(self._section_data) > 0:
                         self._section_data.append(line)
                 else:
