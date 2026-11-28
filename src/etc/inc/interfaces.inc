@@ -1003,6 +1003,78 @@ function interface_ppps_hardware($device)
     return $devices;
 }
 
+function interface_ppps_carp_master($ports)
+{
+    /*
+     * Whether CARP considers this node the one to run a PPP link on: null when
+     * CARP does not own the link, true when a parent device is MASTER and false
+     * when the link must not run here.  A VIP that is configured but not up yet
+     * counts as false, because being unable to tell is not a reason to start.
+     */
+    if (empty(config_read_array('hasync', false)['disconnectppps'])) {
+        return null;
+    }
+
+    $owned = false;
+
+    foreach ($ports as $port) {
+        foreach (legacy_interface_details($port)['carp'] ?? [] as $carp) {
+            if ($carp['status'] == 'MASTER') {
+                return true;
+            }
+            $owned = true;
+        }
+    }
+
+    if (!$owned) {
+        /* the parent interface may not be configured yet, so ask the configuration */
+        foreach (config_read_array('virtualip', 'vip', false) as $vip) {
+            if (($vip['mode'] ?? '') == 'carp' && in_array(get_real_interface($vip['interface']), $ports)) {
+                $owned = true;
+                break;
+            }
+        }
+    }
+
+    return $owned ? false : null;
+}
+
+function interface_ppps_carp_configure($interface)
+{
+    /*
+     * With "Disconnect dialup interfaces" a PPP link only starts where a
+     * parent device is CARP MASTER.  Besides the CARP hook this covers the
+     * starts that come without a transition: the deferred start after bootup,
+     * a reconfigure and an interface apply.  Checking the live state instead
+     * of the caller's view also keeps a MASTER event that arrives late after
+     * a quick flap from dialing on what is the BACKUP by then.
+     */
+    $ports = interface_ppps_hardware(config_read_array('interfaces', $interface, false)['if'] ?? '');
+
+    /* during bootup the start is deferred and checked here once bootup is done */
+    if (!product::getInstance()->booting() && interface_ppps_carp_master($ports) === false) {
+        log_msg("interface_ppps_configure() skipped for {$interface}, no parent device is CARP MASTER", LOG_NOTICE);
+        return false;
+    }
+
+    if (!interface_ppps_configure($interface)) {
+        return false;
+    }
+
+    /*
+     * CARP may have moved on while the link was coming up.  A teardown that
+     * arrived before mpd5 wrote its pid file could not stop it, so check once
+     * more now that there is a pid file to act on.
+     */
+    if (interface_ppps_carp_master($ports) === false) {
+        log_msg("interface_ppps_configure() stopping {$interface}, no parent device is CARP MASTER", LOG_NOTICE);
+        interface_suspend($interface);
+        return false;
+    }
+
+    return true;
+}
+
 function interface_ppps_reset($interface, $suspend, $ifcfg, $ppps)
 {
     if (!interface_ppps_capable($ifcfg, $ppps)) {
@@ -2383,7 +2455,7 @@ function interface_configure($verbose = false, $interface = 'wan', $reload = fal
     }
 
     /* XXX start additional daemons on this interface now: needs a plugin facility */
-    if (!interface_ppps_configure($interface)) {
+    if (!interface_ppps_carp_configure($interface)) {
         /* return early since PPP is not going to come up either way */
         return $loaded;
     }

@@ -33,8 +33,7 @@ require_once("config.inc");
 require_once("util.inc");
 
 # XXX at the moment the reconfiguration is for one device only
-# XXX with the script in place we can consider adding CARP glue
 
-interface_ppps_configure($argv[1] ?? '');
+interface_ppps_carp_configure($argv[1] ?? '');
 
 exit(0);
