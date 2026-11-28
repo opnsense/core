@@ -83,7 +83,7 @@ class FilterController extends FilterBaseController
      */
     public function searchRuleAction()
     {
-        $categories = $this->request->get('category');
+        $categories = is_array($this->request->get('category')) ? $this->request->get('category') : [];
         $show_all = !empty($this->request->get('show_all'));
         $search_phrase = trim((string)$this->request->getPost('searchPhrase', null, ''));
         if (!$this->request->has('interface')) {

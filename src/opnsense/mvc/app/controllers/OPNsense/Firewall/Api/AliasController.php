@@ -50,8 +50,8 @@ class AliasController extends ApiMutableModelControllerBase
      */
     public function searchItemAction()
     {
-        $type = $this->request->get('type');
-        $category = $this->request->get('category');
+        $type = is_array($this->request->get('type')) ? $this->request->get('type') : [];
+        $category = is_array($this->request->get('category')) ? $this->request->get('category') : [];
         $filter_funct = function ($record) use ($type, $category) {
             $match_type = empty($type) || in_array($record->type, $type);
             $match_cat = empty($category) || array_intersect(explode(',', $record->categories), $category);
